@@ -2,6 +2,6 @@
 
 ## Todos:
 
--   Meta tags
--   Lang tag
+-   <strike>Lang tag</strike>
+-   <strike>Meta tags</strike>
 -   Enable PWA
