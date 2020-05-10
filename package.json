@@ -1,19 +1,39 @@
 {
-  "name": "with-styled-components",
-  "version": "1.0.0",
-  "scripts": {
-    "dev": "next",
-    "build": "next build",
-    "start": "next start"
-  },
-  "dependencies": {
-    "next": "latest",
-    "react": "^16.8.0",
-    "react-dom": "^16.8.0",
-    "styled-components": "^5.0.0"
-  },
-  "devDependencies": {
-    "babel-plugin-styled-components": "^1.8.0"
-  },
-  "license": "ISC"
+	"name": "with-styled-components",
+	"version": "1.0.0",
+	"scripts": {
+		"dev": "next",
+		"build": "next build",
+		"start": "next start",
+		"compile": "tsc --watch",
+		"lint": "eslint '{pages,components}/**/*.{js,ts,tsx}' --cache --fix",
+		"prettier": "prettier --write '{pages,components}/**/*.{js,jsx,ts,tsx}'"
+	},
+	"dependencies": {
+		"@mdx-js/loader": "^1.6.1",
+		"@next/mdx": "^9.3.6",
+		"next": "latest",
+		"react": "^16.13.1",
+		"react-dom": "^16.13.1",
+		"styled-components": "^5.0.0"
+	},
+	"devDependencies": {
+		"@types/eslint": "^6.8.0",
+		"@types/node": "^13.13.4",
+		"@types/prettier": "^2.0.0",
+		"@types/react": "^16.9.34",
+		"@types/react-dom": "^16.9.7",
+		"@types/styled-components": "^5.1.0",
+		"@typescript-eslint/eslint-plugin": "^2.31.0",
+		"@typescript-eslint/parser": "^2.31.0",
+		"babel-plugin-styled-components": "^1.8.0",
+		"eslint": "^6.8.0",
+		"eslint-plugin-react": "^7.19.0",
+		"eslint-plugin-react-hooks": "^4.0.0",
+		"husky": "^4.2.5",
+		"lint-staged": "^10.2.2",
+		"prettier": "^2.0.5",
+		"typescript": "^3.8.3"
+	},
+	"license": "ISC"
 }
