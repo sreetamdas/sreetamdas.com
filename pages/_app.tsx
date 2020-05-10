@@ -43,7 +43,6 @@ export default class MyApp extends App {
 				<Layout>
 					<Center>
 						<Navbar />
-
 						<Component {...pageProps} />
 					</Center>
 				</Layout>
