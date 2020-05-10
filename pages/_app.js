@@ -1,6 +1,7 @@
-import App from "next/app";
 import React from "react";
-import { createGlobalStyle, ThemeProvider } from "styled-components";
+import App from "next/app";
+import styled, { createGlobalStyle, ThemeProvider } from "styled-components";
+import { Navbar } from "../components/Navbar";
 
 const theme = {
 	colors: {
@@ -20,13 +21,32 @@ const GlobalStyles = createGlobalStyle`
 	
 `;
 
+const Layout = styled.div`
+	display: grid;
+	/* padding: 0 200px; */
+	border: 1px solid red;
+	grid-template-columns: 1fr 3fr 1fr;
+`;
+
+const Center = styled.div`
+	display: grid;
+	justify-items: center;
+	grid-column: 2;
+`;
+
 export default class MyApp extends App {
 	render() {
 		const { Component, pageProps } = this.props;
 		return (
 			<ThemeProvider theme={theme}>
 				<GlobalStyles />
-				<Component {...pageProps} />
+				<Layout>
+					<Center>
+						<Navbar />
+
+						<Component {...pageProps} />
+					</Center>
+				</Layout>
 			</ThemeProvider>
 		);
 	}

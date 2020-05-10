@@ -20,12 +20,12 @@ const Navbar = () => {
 	return (
 		<NavbarWithLogo>
 			<Link href="/">
-				<div>Logo</div>
+				<a>Logo</a>
 			</Link>
 			<NavbarWithNavs>
 				<div>About</div>
-				<Link href="/blog" prefetch={true}>
-					<div>Blog</div>
+				<Link href="/blog">
+					<a>Blog</a>
 				</Link>
 				<div>Another One</div>
 			</NavbarWithNavs>
