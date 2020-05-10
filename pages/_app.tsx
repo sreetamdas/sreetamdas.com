@@ -24,7 +24,6 @@ const GlobalStyles = createGlobalStyle`
 const Layout = styled.div`
 	display: grid;
 	/* padding: 0 200px; */
-	border: 1px solid red;
 	grid-template-columns: 1fr 3fr 1fr;
 `;
 
