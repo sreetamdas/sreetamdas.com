@@ -2,6 +2,6 @@
 
 ## Todos:
 
-[] Meta tags
-[] Lang tag
-[] Enable PWA
+-   Meta tags
+-   Lang tag
+-   Enable PWA
