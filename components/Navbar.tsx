@@ -4,8 +4,10 @@ import styled from "styled-components";
 
 const NavbarWithLogo = styled.div`
 	width: 100%;
+	padding-top: 20px;
 	display: grid;
 	grid-template-columns: repeat(2, auto);
+	align-items: center;
 `;
 
 const NavbarWithNavs = styled.div`
@@ -20,7 +22,11 @@ const Navbar = () => {
 	return (
 		<NavbarWithLogo>
 			<Link href="/">
-				<a>Logo</a>
+				<img
+					src="/favicon.png"
+					width={25}
+					alt="just a orange square with rounded corners"
+				/>
 			</Link>
 			<NavbarWithNavs>
 				<div>About</div>
