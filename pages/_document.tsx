@@ -42,6 +42,7 @@ export default class MyDocument extends Document {
 						name="viewport"
 						content="initial-scale=1.0, width=device-width"
 					/>
+					<meta name="description" content="Hey! I'm Sreetam Das" />
 					<meta property="og:title" content="Sreetam Das" />
 				</Head>
 				<body>
