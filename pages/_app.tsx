@@ -1,7 +1,7 @@
 import React from "react";
 import App from "next/app";
 import styled, { createGlobalStyle, ThemeProvider } from "styled-components";
-import { Navbar } from "../components/Navbar";
+import { Navbar } from "components/Navbar";
 
 const theme = {
 	colors: {

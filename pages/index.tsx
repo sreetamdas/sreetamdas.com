@@ -10,9 +10,9 @@ const Index = () => {
 	return (
 		<Fragment>
 			<Head>
-				<title>👋 Sreetam Das</title>
+				<title>Hey! I&apos;m Sreetam Das 👋</title>
 			</Head>
-			<Title>Hey, I&apos;m Sreetam Das!👋</Title>
+			<Title>Hey! I&apos;m Sreetam Das 👋</Title>
 		</Fragment>
 	);
 };

@@ -1,18 +1,19 @@
 {
-	"name": "with-styled-components",
+	"name": "foobar",
 	"version": "1.0.0",
 	"scripts": {
 		"dev": "next",
+		"devdev": "next dev",
 		"build": "next build",
 		"start": "next start",
 		"compile": "tsc --watch",
-		"lint": "eslint '{pages,components}/**/*.{js,ts,tsx}' --cache --fix",
-		"prettier": "prettier --write '{pages,components}/**/*.{js,jsx,ts,tsx}'"
+		"lint": "eslint '{pages,components,typings}/**/*.{js,jsx,ts,tsx}' --cache --fix",
+		"prettier": "prettier --write '{pages,components,typings}/**/*.{js,jsx,ts,tsx}'"
 	},
 	"dependencies": {
 		"@mdx-js/loader": "^1.6.1",
 		"@next/mdx": "^9.3.6",
-		"next": "latest",
+		"next": "^9.4.0",
 		"react": "^16.13.1",
 		"react-dom": "^16.13.1",
 		"react-is": "^16.13.1",
@@ -26,6 +27,7 @@
 		"@types/prettier": "^2.0.0",
 		"@types/react": "^16.9.34",
 		"@types/react-dom": "^16.9.7",
+		"@types/react-is": "^16.7.1",
 		"@types/styled-components": "^5.1.0",
 		"@typescript-eslint/eslint-plugin": "^2.31.0",
 		"@typescript-eslint/parser": "^2.31.0",
