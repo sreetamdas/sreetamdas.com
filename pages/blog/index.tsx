@@ -15,7 +15,7 @@ const Index = ({ postsData }: { postsData: Array<TBlogPost> }) => {
 			<Title>FooBar: The Blog</Title>
 			<BlogPostsPreviewLayout>
 				{postsData?.map((post, index) => (
-					<BlogPostPreview key={index}>{post.title}</BlogPostPreview>
+					<BlogPostPreview {...{ post }} key={index} />
 				))}
 			</BlogPostsPreviewLayout>
 		</Fragment>
