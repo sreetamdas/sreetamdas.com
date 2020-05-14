@@ -3,7 +3,7 @@ import styled from "styled-components";
 export const BlogPostsPreviewLayout = styled.div`
 	width: 100%;
 	display: grid;
-	grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+	grid-template-columns: repeat(2, minmax(200px, 1fr));
 	grid-gap: 1rem;
 `;
 
