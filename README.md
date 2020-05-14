@@ -7,3 +7,4 @@
 -   Enable PWA
 -   About page
 -   Dark mode toggle
+-   Reading time for posts
