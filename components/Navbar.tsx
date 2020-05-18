@@ -2,6 +2,8 @@ import React from "react";
 import Link from "next/link";
 import styled from "styled-components";
 import { FaGithub, FaTwitter } from "react-icons/fa";
+import { ExternalLink } from "components/Layouts";
+import OrangeSquare from "public/orangeSquare.svg";
 
 const NavbarWithLogo = styled.div`
 	width: 100%;
@@ -21,7 +23,7 @@ const NavbarWithNavs = styled.div`
 `;
 
 const IconToExternalLink = styled.a`
-	color: black;
+	color: var(--primary-accent-color);
 	font-size: 25px;
 `;
 
@@ -29,16 +31,21 @@ const Navbar = () => {
 	return (
 		<NavbarWithLogo>
 			<Link href="/">
-				<img
+				<IconToExternalLink>
+					<OrangeSquare />
+				</IconToExternalLink>
+				{/* <img
 					src="/favicon.png"
 					width={25}
 					alt="just a orange square with rounded corners"
-				/>
+				/> */}
 			</Link>
 			<NavbarWithNavs>
-				<Link href="/about">About</Link>
+				<Link href="/about">
+					<ExternalLink>About</ExternalLink>
+				</Link>
 				<Link href="/blog">
-					<a>Blog</a>
+					<ExternalLink>Blog</ExternalLink>
 				</Link>
 				<IconToExternalLink
 					href="https://github.com/sreetamdas"

@@ -35,3 +35,30 @@ export const BlogPostPreview = ({ post }: { post: TBlogPost }) => {
 		</Card>
 	);
 };
+
+export const Title = styled.h1`
+	font-size: 32px;
+	padding-top: 30px;
+`;
+
+export const Text = styled.p<{ paddedTop?: boolean }>`
+	font-size: 18px;
+	line-height: 1.4;
+	margin: 0; /* thanks @mxstbr! */
+	padding: 15px 0;
+	padding-top: ${({ paddedTop }) => (paddedTop ? "150px" : null)};
+`;
+
+export const ExternalLink = styled.a`
+	text-decoration: none;
+	color: var(--primary-accent-color);
+	cursor: pointer;
+
+	&:visited {
+		text-decoration: none;
+	}
+
+	&:hover {
+		text-decoration: underline;
+	}
+`;

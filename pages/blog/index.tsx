@@ -1,13 +1,12 @@
 import { Fragment } from "react";
 import fs from "fs";
 import path from "path";
-import styled from "styled-components";
 import { GetStaticProps } from "next";
-import { BlogPostsPreviewLayout, BlogPostPreview } from "components/Layouts";
-
-const Title = styled.h1`
-	font-size: 50px;
-`;
+import {
+	BlogPostsPreviewLayout,
+	BlogPostPreview,
+	Title,
+} from "components/Layouts";
 
 const Index = ({ postsData }: { postsData: Array<TBlogPost> }) => {
 	return (
