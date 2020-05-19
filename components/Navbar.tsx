@@ -7,15 +7,18 @@ import OrangeSquare from "public/orangeSquare.svg";
 
 const NavbarWithLogo = styled.div`
 	width: 100%;
-	padding-top: 20px;
+	max-width: 550px;
+	padding: 20px;
 	display: grid;
 	grid-template-columns: repeat(2, auto);
-	align-items: center;
+	align-content: center;
+	grid-gap: 1rem;
 `;
 
 const NavbarWithNavs = styled.div`
 	display: grid;
-	grid-template-columns: repeat(5, minmax(min-content, max-content));
+	grid-auto-flow: column;
+	grid-template-columns: repeat(auto-fill, minmax(min-content, 1fr));
 	grid-column-gap: 1rem;
 	white-space: nowrap;
 	justify-self: end;
@@ -23,7 +26,7 @@ const NavbarWithNavs = styled.div`
 `;
 
 const IconToExternalLink = styled.a`
-	color: var(--primary-accent-color);
+	color: var(--color-primary-accent);
 	font-size: 25px;
 `;
 

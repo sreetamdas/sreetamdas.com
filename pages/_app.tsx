@@ -1,7 +1,8 @@
 import React from "react";
 import App from "next/app";
-import styled, { createGlobalStyle, ThemeProvider } from "styled-components";
+import { createGlobalStyle, ThemeProvider } from "styled-components";
 import { Navbar } from "components/Navbar";
+import { Center } from "components/Layouts";
 
 const theme = {
 	colors: {
@@ -10,31 +11,18 @@ const theme = {
 };
 
 const GlobalStyles = createGlobalStyle`
-  	html,
-	body {
-	font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu,
-		Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
-
-	--primary-accent-color: #FF4500;
-	
-	color: white;
-	/* background-color: #F6F7F8; */
-	background-color: #000;
+	:root {
+		--color-primary-accent: #FF4500;
+		--color-primary: #FFF;
+		--color-background: #000;
 	}
 
-	
-`;
-
-const Layout = styled.div`
-	display: grid;
-	/* padding: 0 200px; */
-	grid-template-columns: minmax(0, 1fr) minmax(auto, 550px) minmax(0, 1fr);
-`;
-
-const Center = styled.div`
-	display: grid;
-	justify-items: center;
-	grid-column: 2;
+  	html, body {
+	font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu,
+		Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+	color: var(--color-primary);
+	background-color: var(--color-background);
+	}
 `;
 
 export default class MyApp extends App {
@@ -43,12 +31,10 @@ export default class MyApp extends App {
 		return (
 			<ThemeProvider theme={theme}>
 				<GlobalStyles />
-				<Layout>
-					<Center>
-						<Navbar />
-						<Component {...pageProps} />
-					</Center>
-				</Layout>
+				<Center>
+					<Navbar />
+					<Component {...pageProps} />
+				</Center>
 			</ThemeProvider>
 		);
 	}
