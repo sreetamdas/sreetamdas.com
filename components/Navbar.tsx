@@ -8,7 +8,7 @@ import OrangeSquare from "public/orangeSquare.svg";
 const NavbarWithLogo = styled.div`
 	width: 100%;
 	max-width: 550px;
-	padding: 20px;
+	padding: 20px 40px;
 	display: grid;
 	grid-template-columns: repeat(2, auto);
 	align-content: center;
@@ -54,6 +54,7 @@ const Navbar = () => {
 					href="https://github.com/sreetamdas"
 					target="_blank"
 					rel="noopener noreferrer"
+					title="Sreetam Das' GitHub"
 				>
 					<FaGithub />
 				</IconToExternalLink>
@@ -61,6 +62,7 @@ const Navbar = () => {
 					href="https://twitter.com/_SreetamDas"
 					target="_blank"
 					rel="noopener noreferrer"
+					title="Sreetam Das' Twitter"
 				>
 					<FaTwitter />
 				</IconToExternalLink>
