@@ -4,19 +4,19 @@ export const BlogPostsPreviewLayout = styled.div`
 	width: 100%;
 	display: grid;
 	max-width: 550px;
-	grid-gap: 2rem;
+	grid-gap: 1rem;
 `;
 
 export const Card = styled.div`
 	padding: 15px;
-	border-radius: 10px;
 	/* background: #ffffff; */
-	border: 1px solid grey;
+	/* border: 1px solid slategray; */
 `;
 
 export const BlogPostTitle = styled.h2`
 	color: var(--color-primary-accent);
 	margin: 0;
+	padding-bottom: 5px;
 `;
 
 export const Datestamp = styled.p`
