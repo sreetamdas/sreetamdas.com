@@ -18,10 +18,25 @@ const GlobalStyles = createGlobalStyle`
 	}
 
   	html, body {
-	font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu,
-		Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
-	color: var(--color-primary);
-	background-color: var(--color-background);
+		font-size: 18px;
+		font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu,
+			Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+		color: var(--color-primary);
+		background-color: var(--color-background);
+	}
+
+	a {
+	text-decoration: none;
+	color: var(--color-primary-accent);
+	cursor: pointer;
+
+	&:visited {
+		text-decoration: none;
+	}
+
+	&:hover {
+		text-decoration: underline;
+	}
 	}
 `;
 

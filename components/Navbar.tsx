@@ -2,6 +2,7 @@ import React from "react";
 import Link from "next/link";
 import styled from "styled-components";
 import { FaGithub, FaTwitter } from "react-icons/fa";
+import { FiSun } from "react-icons/fi";
 import { ExternalLink } from "components/Layouts";
 import OrangeSquare from "public/orangeSquare.svg";
 
@@ -25,7 +26,7 @@ const NavbarWithNavs = styled.div`
 	align-items: center;
 `;
 
-const IconToExternalLink = styled.a`
+const IconContainer = styled.a`
 	color: var(--color-primary-accent);
 	font-size: 25px;
 `;
@@ -34,14 +35,9 @@ const Navbar = () => {
 	return (
 		<NavbarWithLogo>
 			<Link href="/">
-				<IconToExternalLink>
+				<IconContainer>
 					<OrangeSquare />
-				</IconToExternalLink>
-				{/* <img
-					src="/favicon.png"
-					width={25}
-					alt="just a orange square with rounded corners"
-				/> */}
+				</IconContainer>
 			</Link>
 			<NavbarWithNavs>
 				<Link href="/about">
@@ -50,22 +46,28 @@ const Navbar = () => {
 				<Link href="/blog">
 					<ExternalLink>Blog</ExternalLink>
 				</Link>
-				<IconToExternalLink
+				<Link href="/uses">
+					<ExternalLink>Uses</ExternalLink>
+				</Link>
+				<IconContainer
 					href="https://github.com/sreetamdas"
 					target="_blank"
 					rel="noopener noreferrer"
 					title="Sreetam Das' GitHub"
 				>
 					<FaGithub />
-				</IconToExternalLink>
-				<IconToExternalLink
+				</IconContainer>
+				<IconContainer
 					href="https://twitter.com/_SreetamDas"
 					target="_blank"
 					rel="noopener noreferrer"
 					title="Sreetam Das' Twitter"
 				>
 					<FaTwitter />
-				</IconToExternalLink>
+				</IconContainer>
+				<IconContainer>
+					<FiSun />
+				</IconContainer>
 			</NavbarWithNavs>
 		</NavbarWithLogo>
 	);

@@ -1,6 +1,14 @@
 import Head from "next/head";
 import { Fragment } from "react";
-import { Text, Title, ExternalLink, Layout, Center } from "components/Layouts";
+import {
+	Text,
+	Title,
+	ExternalLink,
+	Layout,
+	Center,
+	MDXText,
+} from "components/Layouts";
+import Tooling from "mdx/Tooling.mdx";
 
 const Index = () => {
 	return (
@@ -26,8 +34,11 @@ const Index = () => {
 					working with React + Redux + TypeScript, the sweetest
 					combination in my opinion.
 				</Text>
+				<MDXText>
+					<Tooling />
+				</MDXText>
 				<Text paddedTop>
-					I also ❤️ a lot of other things, so in no particular order:
+					I also ❤️ a lot of other things, in no particular order:
 				</Text>
 				<Text>
 					CSGO, Reddit, Mechanical Keyboards, Open Source, GitHub,

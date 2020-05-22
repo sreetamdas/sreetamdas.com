@@ -47,7 +47,6 @@ export const Title = styled.h1`
 `;
 
 export const Text = styled.p<{ paddedTop?: boolean }>`
-	font-size: 18px;
 	line-height: 1.4;
 	margin: 0; /* thanks @mxstbr! */
 	padding: 15px 0;
@@ -82,5 +81,21 @@ export const Layout = styled.div`
 export const Center = styled.div`
 	display: grid;
 	justify-items: center;
-	grid-column: 2;
+	/* grid-column: 2; */
+`;
+
+export const MDXText = styled.div`
+	line-height: 1.4;
+	margin: 0; /* thanks @mxstbr! */
+	padding: 15px 0;
+`;
+
+export const RemoveBullterFromOL = styled.div`
+	& ul {
+		list-style: none;
+		padding-left: 30px;
+	}
+	& ul li {
+		padding: 5px;
+	}
 `;
