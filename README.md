@@ -1,10 +1,11 @@
 # Sreetam Das dot com
 
-## Todos:
+### Roadmap:
 
--   <strike>Lang tag</strike>
--   <strike>Meta tags</strike>
--   Enable PWA
--   About page
--   Dark mode toggle
--   Reading time for posts
+-   [x] <strike>Lang tag</strike>
+-   [x] <strike>Meta tags</strike>
+-   [ ] Enable PWA
+-   [ ] About page
+-   [x] Dark mode toggle
+-   [ ] Reading time for posts
+-   [x] a11y
