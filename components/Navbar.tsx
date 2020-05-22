@@ -1,4 +1,4 @@
-import React, { useState, useLayoutEffect } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import styled from "styled-components";
 import { FaGithub, FaTwitter } from "react-icons/fa";
@@ -39,7 +39,7 @@ const Navbar = () => {
 		setDarkTheme(!darkTheme);
 	};
 
-	useLayoutEffect(() => {
+	useEffect(() => {
 		if (darkTheme)
 			document.documentElement.setAttribute("data-theme", "dark");
 		else document.documentElement.removeAttribute("data-theme");
