@@ -12,13 +12,13 @@ const theme = {
 
 const GlobalStyles = createGlobalStyle`
 	:root {
-		--color-primary-accent: #FF4500;
+		--color-primary-accent: #5B34DA;
 		--color-primary: #000;
 		--color-background: #FFF;
 	}
 
 	[data-theme="dark"] {
-		--color-primary-accent: #FF4500;
+		--color-primary-accent: #9D86E9;
 		--color-primary: #FFF;
 		--color-background: #000;
 	}
