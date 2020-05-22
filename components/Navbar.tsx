@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useState, useLayoutEffect } from "react";
 import Link from "next/link";
 import styled from "styled-components";
 import { FaGithub, FaTwitter } from "react-icons/fa";
 import { FiSun } from "react-icons/fi";
+import { IoMdMoon } from "react-icons/io";
 import { ExternalLink } from "components/Layouts";
 import OrangeSquare from "public/orangeSquare.svg";
 
@@ -32,6 +33,18 @@ const IconContainer = styled.a`
 `;
 
 const Navbar = () => {
+	const [darkTheme, setDarkTheme] = useState(false);
+	const handleThemeSwitch = (event: React.MouseEvent) => {
+		event.preventDefault();
+		setDarkTheme(!darkTheme);
+	};
+
+	useLayoutEffect(() => {
+		if (darkTheme)
+			document.documentElement.setAttribute("data-theme", "dark");
+		else document.documentElement.removeAttribute("data-theme");
+	}, [darkTheme]);
+
 	return (
 		<NavbarWithLogo>
 			<Link href="/">
@@ -65,8 +78,8 @@ const Navbar = () => {
 				>
 					<FaTwitter />
 				</IconContainer>
-				<IconContainer>
-					<FiSun />
+				<IconContainer onClick={handleThemeSwitch}>
+					{darkTheme ? <IoMdMoon /> : <FiSun />}
 				</IconContainer>
 			</NavbarWithNavs>
 		</NavbarWithLogo>

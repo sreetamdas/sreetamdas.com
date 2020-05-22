@@ -13,9 +13,16 @@ const theme = {
 const GlobalStyles = createGlobalStyle`
 	:root {
 		--color-primary-accent: #FF4500;
+		--color-primary: #000;
+		--color-background: #FFF;
+	}
+
+	[data-theme="dark"] {
+		--color-primary-accent: #FF4500;
 		--color-primary: #FFF;
 		--color-background: #000;
 	}
+
 
   	html, body {
 		font-size: 18px;
@@ -23,6 +30,7 @@ const GlobalStyles = createGlobalStyle`
 			Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
 		color: var(--color-primary);
 		background-color: var(--color-background);
+		transition: 0.3 linear;
 	}
 
 	a {
