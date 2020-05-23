@@ -33,16 +33,31 @@ const IconContainer = styled.a`
 `;
 
 const Navbar = () => {
-	const [darkTheme, setDarkTheme] = useState(false);
+	const [darkTheme, setDarkTheme] = useState(undefined);
 	const handleThemeSwitch = (event: React.MouseEvent) => {
 		event.preventDefault();
 		setDarkTheme(!darkTheme);
 	};
 
 	useEffect(() => {
-		if (darkTheme)
-			document.documentElement.setAttribute("data-theme", "dark");
-		else document.documentElement.removeAttribute("data-theme");
+		const root = window.document.documentElement;
+		const initialColorValue: "light" | "dark" = root.style.getPropertyValue(
+			"--initial-color-mode"
+		) as "light" | "dark";
+
+		setDarkTheme(initialColorValue === "dark");
+	}, []);
+
+	useEffect(() => {
+		if (darkTheme !== undefined) {
+			if (darkTheme) {
+				document.documentElement.setAttribute("data-theme", "dark");
+				window.localStorage.setItem("theme", "dark");
+			} else {
+				document.documentElement.removeAttribute("data-theme");
+				window.localStorage.setItem("theme", "light");
+			}
+		}
 	}, [darkTheme]);
 
 	return (
@@ -79,7 +94,13 @@ const Navbar = () => {
 					<FaTwitter />
 				</IconContainer>
 				<IconContainer onClick={handleThemeSwitch}>
-					{darkTheme ? <IoMdMoon /> : <FiSun />}
+					{darkTheme === undefined ? (
+						<div style={{ width: "25px" }} />
+					) : darkTheme ? (
+						<IoMdMoon />
+					) : (
+						<FiSun />
+					)}
 				</IconContainer>
 			</NavbarWithNavs>
 		</NavbarWithLogo>
