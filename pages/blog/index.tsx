@@ -39,7 +39,9 @@ export const getStaticProps: GetStaticProps = async (_context) => {
 				slug: file.replace(/\.mdx?$/, ""),
 			};
 		})
-		.filter((meta) => meta.published)
+		.filter(
+			(meta) => process.env.NODE_ENV === "development" || meta.published
+		)
 		.sort((a, b) => {
 			return (
 				new Date(b.publishedAt).getTime() -
