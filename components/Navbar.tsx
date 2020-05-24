@@ -4,7 +4,7 @@ import styled from "styled-components";
 import { FaGithub, FaTwitter } from "react-icons/fa";
 import { FiSun } from "react-icons/fi";
 import { IoMdMoon } from "react-icons/io";
-import { ExternalLink } from "components/Layouts";
+import { ExternalLink } from "styled/blog";
 import OrangeSquare from "public/orangeSquare.svg";
 
 const NavbarWithLogo = styled.div`

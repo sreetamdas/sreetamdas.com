@@ -4,5 +4,5 @@ declare type TBlogPost = {
 	image?: string;
 	publishedAt: string;
 	published: boolean;
-	path: string;
+	slug: string;
 };

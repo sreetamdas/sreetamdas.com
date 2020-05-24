@@ -1,14 +1,8 @@
 import Head from "next/head";
 import { Fragment } from "react";
-import {
-	Text,
-	Title,
-	ExternalLink,
-	Layout,
-	Center,
-	MDXText,
-} from "components/Layouts";
-import Tooling from "mdx/Tooling.mdx";
+import { Layout, Center, MDXText } from "components/Layouts";
+import Tooling from "content/Tooling.mdx";
+import { Text, Title, ExternalLink } from "styled/blog";
 
 const Index = () => {
 	return (

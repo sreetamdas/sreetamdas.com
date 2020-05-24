@@ -1,24 +1,7 @@
-import { Fragment } from "react";
 import fs from "fs";
 import path from "path";
-import { GetStaticProps } from "next";
-import { BlogPostsPreviewLayout } from "components/Layouts";
-import { BlogPostPreview, Title } from "styled/blog";
 
-const Index = ({ postsData }: { postsData: Array<TBlogPost> }) => {
-	return (
-		<Fragment>
-			<Title>FooBar: The Blog</Title>
-			<BlogPostsPreviewLayout>
-				{postsData?.map((post, index) => (
-					<BlogPostPreview {...{ post }} key={index} />
-				))}
-			</BlogPostsPreviewLayout>
-		</Fragment>
-	);
-};
-
-export const getStaticProps: GetStaticProps = async (_context) => {
+export const getPostsData = () => {
 	const META = /export\s+const\s+meta\s+=\s+(\{(\n|.)*?\n\})/;
 	const DIR = path.join(process.cwd(), "content/blog");
 	const files = fs.readdirSync(DIR).filter((file) => file.endsWith(".mdx"));
@@ -47,9 +30,5 @@ export const getStaticProps: GetStaticProps = async (_context) => {
 			);
 		});
 
-	return {
-		props: { postsData },
-	};
+	return postsData;
 };
-
-export default Index;

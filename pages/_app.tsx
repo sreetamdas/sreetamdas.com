@@ -4,11 +4,7 @@ import { createGlobalStyle, ThemeProvider } from "styled-components";
 import { Navbar } from "components/Navbar";
 import { Center } from "components/Layouts";
 
-const theme = {
-	colors: {
-		primary: "#0070f3",
-	},
-};
+const theme = {};
 
 const GlobalStyles = createGlobalStyle`
 	:root {

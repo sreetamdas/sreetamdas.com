@@ -1,5 +1,5 @@
 import { Fragment } from "react";
-import MDXUses from "mdx/Uses.mdx";
+import MDXUses from "content/Uses.mdx";
 import { Layout, RemoveBullterFromOL } from "components/Layouts";
 
 const Uses = () => {
