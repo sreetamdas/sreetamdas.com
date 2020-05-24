@@ -3,7 +3,7 @@ import styled from "styled-components";
 
 export const BlogPostPreview = ({ post }: { post: TBlogPost }) => {
 	return (
-		<Link href={`blog/${post.slug}`}>
+		<Link href="/blog/[slug]" as={`/blog/${post.slug}`}>
 			<Card>
 				<BlogPostPreviewTitle>{post.title}</BlogPostPreviewTitle>
 				<Datestamp>
