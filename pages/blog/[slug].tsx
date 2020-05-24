@@ -10,21 +10,19 @@ const Post = ({ post }: { post: TBlogPost }) => {
 	const MDXPost = dynamic(() => import(`content/blog/${post.slug}.mdx`));
 
 	return (
-		<div>
-			<Layout>
-				<BlogPostTitle>{post.title}</BlogPostTitle>
-				<Datestamp>
-					{new Date(post.publishedAt).toLocaleDateString("en-US", {
-						month: "long",
-						year: "numeric",
-						day: "numeric",
-					})}
-				</Datestamp>
-				<BlogPostMDXContent>
-					<MDXPost />
-				</BlogPostMDXContent>
-			</Layout>
-		</div>
+		<Layout>
+			<BlogPostTitle>{post.title}</BlogPostTitle>
+			<Datestamp>
+				{new Date(post.publishedAt).toLocaleDateString("en-US", {
+					month: "long",
+					year: "numeric",
+					day: "numeric",
+				})}
+			</Datestamp>
+			<BlogPostMDXContent>
+				<MDXPost />
+			</BlogPostMDXContent>
+		</Layout>
 	);
 };
 

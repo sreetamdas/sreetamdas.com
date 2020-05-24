@@ -9,3 +9,4 @@
 -   [x] Dark mode toggle
 -   [ ] Reading time for posts
 -   [x] a11y
+-   [ ] Responsive navbar

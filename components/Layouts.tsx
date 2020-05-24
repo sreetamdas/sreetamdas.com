@@ -8,8 +8,8 @@ export const BlogPostsPreviewLayout = styled.div`
 `;
 
 export const Layout = styled.div`
-	/* padding: 0 200px; */
 	max-width: 550px;
+	width: 100%;
 `;
 
 export const Center = styled.div`

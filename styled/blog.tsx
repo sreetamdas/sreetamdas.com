@@ -38,7 +38,7 @@ export const BlogPostMDXContent = styled.div`
 `;
 
 export const Card = styled.div`
-	padding: 15px;
+	padding: 25px 0;
 	cursor: pointer;
 	/* background: #ffffff; */
 	/* border: 1px solid slategray; */
