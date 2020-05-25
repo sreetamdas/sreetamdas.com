@@ -12,6 +12,7 @@ export const BlogPostPreview = ({ post }: { post: TBlogPost }) => {
 						year: "numeric",
 						day: "numeric",
 					})}
+					{!post.published && <PostNotPublishedWarning />}
 				</Datestamp>
 				<SmallText>{post.summary}</SmallText>
 			</Card>
@@ -35,6 +36,7 @@ export const BlogPostPreviewTitle = styled.h2`
 
 export const BlogPostMDXContent = styled.div`
 	padding: 30px 0;
+	line-height: 1.4;
 `;
 
 export const Card = styled.div`
@@ -81,3 +83,15 @@ export const ExternalLink = styled.a`
 		text-decoration: underline;
 	}
 `;
+
+export const WarningSpan = styled.span`
+	padding: 5px 15px;
+	margin: 0 15px;
+	background-color: red;
+	color: var(--color-background);
+	border-radius: 5px;
+`;
+
+export const PostNotPublishedWarning = () => {
+	return <WarningSpan>UNPUBLISHED</WarningSpan>;
+};

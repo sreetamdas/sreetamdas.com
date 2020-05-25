@@ -1,4 +1,3 @@
-import Head from "next/head";
 import { Fragment } from "react";
 import { Layout, Center, MDXText } from "components/Layouts";
 import Tooling from "content/Tooling.mdx";
@@ -7,9 +6,6 @@ import { Text, Title, ExternalLink } from "styled/blog";
 const Index = () => {
 	return (
 		<Fragment>
-			<Head>
-				<title>Hey I&apos;m Sreetam 👋</title>
-			</Head>
 			<Layout>
 				<Center>
 					<Title>Hey, I&apos;m Sreetam Das!</Title>
