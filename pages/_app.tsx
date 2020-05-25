@@ -1,8 +1,9 @@
 import React from "react";
 import App from "next/app";
-import { createGlobalStyle, ThemeProvider } from "styled-components";
-import { Navbar } from "components/Navbar";
+
 import { Center } from "components/Layouts";
+import { Navbar } from "components/Navbar";
+import { createGlobalStyle, ThemeProvider } from "styled-components";
 
 const theme = {};
 
@@ -11,12 +12,16 @@ const GlobalStyles = createGlobalStyle`
 		--color-primary-accent: #5B34DA;
 		--color-primary: #000;
 		--color-background: #FFF;
+		--color-inlineCode-fg: #EB5757;
+		--color-inlineCode-bg: #eee;
 	}
 
 	[data-theme="dark"] {
 		--color-primary-accent: #9D86E9;
 		--color-primary: #FFF;
 		--color-background: #000;
+		--color-inlineCode-fg: #EB5757;
+		--color-inlineCode-bg: #111;
 	}
 
 
@@ -34,13 +39,20 @@ const GlobalStyles = createGlobalStyle`
 	color: var(--color-primary-accent);
 	cursor: pointer;
 
-	&:visited {
-		text-decoration: none;
+		&:visited {
+			text-decoration: none;
+		}
+		&:hover {
+			text-decoration: underline;
+		}
 	}
 
-	&:hover {
-		text-decoration: underline;
-	}
+	code {
+		color: var(--color-inlineCode-fg);
+		background-color: var(--color-inlineCode-bg);
+		font-size: 85%;
+		padding: 0.2em 0.4rem;
+		border-radius: 5px;
 	}
 `;
 
