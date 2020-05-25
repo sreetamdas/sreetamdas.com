@@ -9,7 +9,7 @@ import OrangeSquare from "public/orangeSquare.svg";
 
 const NavbarWithLogo = styled.div`
 	width: 100%;
-	max-width: 550px;
+	max-width: 600px;
 	padding: 20px 40px;
 	display: grid;
 	grid-template-columns: repeat(2, auto);

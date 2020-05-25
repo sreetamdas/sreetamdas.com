@@ -3,12 +3,12 @@ import styled from "styled-components";
 export const BlogPostsPreviewLayout = styled.div`
 	width: 100%;
 	display: grid;
-	max-width: 550px;
+	max-width: 600px;
 	grid-gap: 1rem;
 `;
 
 export const Layout = styled.div`
-	max-width: 550px;
+	max-width: 600px;
 	width: 100%;
 `;
 
