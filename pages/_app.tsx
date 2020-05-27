@@ -4,8 +4,15 @@ import App from "next/app";
 import { Center } from "components/Layouts";
 import { Navbar } from "components/Navbar";
 import { createGlobalStyle, ThemeProvider } from "styled-components";
+import { MDXProvider } from "@mdx-js/react";
+import { MDXCodeBlock } from "utils/mdx";
 
 const theme = {};
+
+const MDXComponents = {
+	pre: MDXCodeBlock,
+	code: MDXCodeBlock,
+};
 
 const GlobalStyles = createGlobalStyle`
 	:root {
@@ -47,6 +54,10 @@ const GlobalStyles = createGlobalStyle`
 		}
 	}
 
+	code, pre {
+		font-family: SFMono-Regular, Roboto Mono, Menlo, Monaco, Consolas, Liberation Mono, Lucida Console, monospace;
+	}
+
 	code {
 		color: var(--color-inlineCode-fg);
 		background-color: var(--color-inlineCode-bg);
@@ -61,11 +72,13 @@ export default class MyApp extends App {
 		const { Component, pageProps } = this.props;
 		return (
 			<ThemeProvider theme={theme}>
-				<GlobalStyles />
-				<Center>
-					<Navbar />
-					<Component {...pageProps} />
-				</Center>
+				<MDXProvider components={MDXComponents}>
+					<GlobalStyles />
+					<Center>
+						<Navbar />
+						<Component {...pageProps} />
+					</Center>
+				</MDXProvider>
 			</ThemeProvider>
 		);
 	}
