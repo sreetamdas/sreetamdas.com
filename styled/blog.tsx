@@ -95,3 +95,15 @@ export const WarningSpan = styled.span`
 export const PostNotPublishedWarning = () => {
 	return <WarningSpan>UNPUBLISHED</WarningSpan>;
 };
+
+export const ProgressBar = styled.div<{ scroll: number }>`
+	position: fixed;
+	background: linear-gradient(
+		to right,
+		var(--color-primary-accent) ${({ scroll }) => scroll}%,
+		transparent 0
+	);
+	width: 100%;
+	height: 4px;
+	z-index: 3;
+`;

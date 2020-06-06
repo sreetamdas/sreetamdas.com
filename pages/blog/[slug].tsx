@@ -11,6 +11,7 @@ import {
 import { getPostsData } from "utils/blog";
 import { Fragment } from "react";
 import Head from "next/head";
+import { ReadingProgress } from "components/Meh";
 
 const Post = ({ post }: { post: TBlogPost }) => {
 	const MDXPost = dynamic(() => import(`content/blog/${post.slug}.mdx`));
@@ -20,6 +21,7 @@ const Post = ({ post }: { post: TBlogPost }) => {
 			<Head>
 				<title>Blog &mdash; Sreetam Das</title>
 			</Head>
+			<ReadingProgress />
 			<Layout>
 				<BlogPostTitle>{post.title}</BlogPostTitle>
 				<Datestamp>

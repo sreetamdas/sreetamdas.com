@@ -39,6 +39,7 @@ const GlobalStyles = createGlobalStyle`
 		color: var(--color-primary);
 		background-color: var(--color-background);
 		transition: 0.3 linear;
+		margin: 0;
 	}
 
 	a {
