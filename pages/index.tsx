@@ -17,7 +17,7 @@ const Index = () => {
 					like Node, Django and Redux.
 				</Text>
 				<Text>
-					I&apos;m currently leading the frontend team at{" "}
+					I&apos;m currently the module lead for the frontend team at{" "}
 					<ExternalLink href="https://www.microland.com/">
 						Microland
 					</ExternalLink>{" "}
