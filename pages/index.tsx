@@ -2,13 +2,17 @@ import { Fragment } from "react";
 import { Layout, Center, MDXText } from "components/Layouts";
 import Tooling from "content/Tooling.mdx";
 import { Text, Title, ExternalLink } from "styled/blog";
+import Head from "next/head";
 
 const Index = () => {
 	return (
 		<Fragment>
+			<Head>
+				<title>Home &mdash; Sreetam Das</title>
+			</Head>
 			<Layout>
 				<Center>
-					<Title>Hey, I&apos;m Sreetam Das!</Title>
+					<Title>Hey, I&apos;m Sreetam Das! 👋</Title>
 				</Center>
 				<Text>
 					I&apos;m a developer from India in love with all things
