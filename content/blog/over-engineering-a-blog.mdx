@@ -4,3 +4,34 @@ export const meta = {
 	title: "Over-engineering a Blog",
 	summary: "All the goodness",
 };
+
+I've always wanted to have a personal blog (and maintain it!) but I was just never able to get around to it. Its 2020 and I didn't want to push this any further.
+
+I'd experimented with [Jekyll](https://jekyllrb.com/) before. Its a dead simple way to host your own blog, but having worked with React over the past couple of years I just didn't feel content with just a markdown blog.
+
+I'd also peeked at [Medium](https://medium.com), but their move to a paywall just didn't fit with me. [DEV](https://dev.to) also looked like a really good option, but I increasingly wanted to host something that was really _made by me_.
+
+## React with Client Side rendering
+
+The easiest solution would have been to run `yarn create react-app my-app` and then going berserk (_I'm a yarn user btw /s_). If I decided to not go the [CRA](https://create-react-app.dev/) route and instead use only the packages that I actually need by building everything from scratch, I did have the following benefits:
+
+-   I wouldn't have [over 1500 dependencies](https://news.ycombinator.com/item?id=19195148), some of which I _probably_ don't need for a blog
+-   Let's talk about the first point again
+
+However, using a stock React app also has a one pretty decently sized issue that one notices little by little over time: the dreaded blankness of our HTML while our JavaScript is still being loaded.
+
+### The Problem of Client Side Rendering
+
+Whenever you've hit refresh on a vanilla React app, you've probably noticed this: a blank page gets loaded, and there is a (considerable at times) delay when the things start "popping up" on the screen. You check if your WiFi connection is fast enough, but that's not the problem 🙁
+
+A quick refresher on how React works: Our page's HTML loads first, and the HTML defines the JS files that need to be loaded in order for React to take over things. In the time that the page HTML has been loaded and the JS is yet to be finish loading, the client only sees what has already been loaded at this point in time, the HTML (and if we've taken care of it, the CSS too!). This problem is especially highlighted when the client has a poor/slow internet connection (you can also experience this in browser by going over to the **Network** tab in your browser's console and selecting an option there, like **slow 3G**).
+
+### The Renaissance of Static
+
+here's a code block:
+
+```jsx {2}
+import React from "react";
+import Example from "./place";
+export default () => <Example />;
+```

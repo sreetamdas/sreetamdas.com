@@ -53,8 +53,7 @@ export const Datestamp = styled.p`
 `;
 
 export const Title = styled.h1`
-	font-size: 32px;
-	padding-top: 30px;
+	padding-top: 20px;
 `;
 
 export const Text = styled.p<{ paddedTop?: boolean }>`

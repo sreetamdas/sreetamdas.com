@@ -1,5 +1,23 @@
+import MDXAbout from "content/about.mdx";
+import { Fragment } from "react";
+import Head from "next/head";
+import { Layout, Center } from "components/Layouts";
+import { Title } from "styled/blog";
+
 const About = () => {
-	return <div>Aboooot me!</div>;
+	return (
+		<Fragment>
+			<Head>
+				<title>About &mdash; Sreetam Das</title>
+			</Head>
+			<Layout>
+				<Center>
+					<Title>/about</Title>
+				</Center>
+				<MDXAbout />
+			</Layout>
+		</Fragment>
+	);
 };
 
 /**

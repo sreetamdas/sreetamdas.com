@@ -68,14 +68,14 @@ const Navbar = () => {
 				</IconContainer>
 			</Link>
 			<NavbarWithNavs>
-				<Link href="/about">
-					<ExternalLink>About</ExternalLink>
-				</Link>
 				<Link href="/blog">
-					<ExternalLink>Blog</ExternalLink>
+					<ExternalLink>blog</ExternalLink>
 				</Link>
 				<Link href="/uses">
-					<ExternalLink>Uses</ExternalLink>
+					<ExternalLink>uses</ExternalLink>
+				</Link>
+				<Link href="/about">
+					<ExternalLink>about</ExternalLink>
 				</Link>
 				<IconContainer
 					href="https://github.com/sreetamdas"

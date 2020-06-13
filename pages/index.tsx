@@ -1,6 +1,6 @@
 import { Fragment } from "react";
 import { Layout, Center, MDXText } from "components/Layouts";
-import Tooling from "content/Tooling.mdx";
+import Tooling from "content/tooling.mdx";
 import { Text, Title, ExternalLink } from "styled/blog";
 import Head from "next/head";
 
