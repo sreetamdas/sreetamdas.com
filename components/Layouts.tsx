@@ -24,11 +24,17 @@ export const MDXText = styled.div`
 	padding: 15px 0;
 `;
 
-export const RemoveBullterFromOL = styled.div`
+export const RemoveBulletsFromOL = styled.div`
 	& ul {
 		list-style: none;
 		padding-left: 30px;
 	}
+	& ul li {
+		padding: 5px;
+	}
+`;
+
+export const PaddingListItems = styled.div`
 	& ul li {
 		padding: 5px;
 	}

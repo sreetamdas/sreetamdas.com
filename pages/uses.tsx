@@ -1,6 +1,6 @@
 import { Fragment } from "react";
 import MDXUses from "content/uses.mdx";
-import { Layout, RemoveBullterFromOL, Center } from "components/Layouts";
+import { Layout, RemoveBulletsFromOL, Center } from "components/Layouts";
 import Head from "next/head";
 import { Title } from "styled/blog";
 
@@ -14,9 +14,9 @@ const Uses = () => {
 				<Center>
 					<Title>/uses</Title>
 				</Center>
-				<RemoveBullterFromOL>
+				<RemoveBulletsFromOL>
 					<MDXUses />
-				</RemoveBullterFromOL>
+				</RemoveBulletsFromOL>
 			</Layout>
 		</Fragment>
 	);

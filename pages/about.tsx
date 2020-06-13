@@ -1,8 +1,8 @@
 import MDXAbout from "content/about.mdx";
 import { Fragment } from "react";
 import Head from "next/head";
-import { Layout, Center } from "components/Layouts";
-import { Title } from "styled/blog";
+import { Layout, Center, PaddingListItems } from "components/Layouts";
+import { Title, Text, LinkTo } from "styled/blog";
 
 const About = () => {
 	return (
@@ -15,6 +15,19 @@ const About = () => {
 					<Title>/about</Title>
 				</Center>
 				<MDXAbout />
+				<Text>
+					Here&apos;s a list of pages that curate my likes to give you
+					more insight into me:
+				</Text>
+				<PaddingListItems>
+					<Text>
+						<LinkTo href="/podcasts">Podcasts</LinkTo> that I listen
+						to
+						{/* <br />
+						<LinkTo href="/tooling">Tooling</LinkTo> that I am
+						always excited to use */}
+					</Text>
+				</PaddingListItems>
 			</Layout>
 		</Fragment>
 	);

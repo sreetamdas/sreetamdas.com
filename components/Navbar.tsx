@@ -4,7 +4,7 @@ import styled from "styled-components";
 import { FaGithub, FaTwitter } from "react-icons/fa";
 import { FiSun } from "react-icons/fi";
 import { IoMdMoon } from "react-icons/io";
-import { ExternalLink } from "styled/blog";
+import { StyledLink } from "styled/blog";
 import OrangeSquare from "public/orangeSquare.svg";
 
 const NavbarWithLogo = styled.div`
@@ -69,13 +69,13 @@ const Navbar = () => {
 			</Link>
 			<NavbarWithNavs>
 				<Link href="/blog">
-					<ExternalLink>blog</ExternalLink>
+					<StyledLink>blog</StyledLink>
 				</Link>
 				<Link href="/uses">
-					<ExternalLink>uses</ExternalLink>
+					<StyledLink>uses</StyledLink>
 				</Link>
 				<Link href="/about">
-					<ExternalLink>about</ExternalLink>
+					<StyledLink>about</StyledLink>
 				</Link>
 				<IconContainer
 					href="https://github.com/sreetamdas"

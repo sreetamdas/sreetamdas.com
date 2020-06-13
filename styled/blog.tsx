@@ -1,5 +1,6 @@
-import Link from "next/link";
+import Link, { LinkProps } from "next/link";
 import styled from "styled-components";
+import { PropsWithChildren } from "react";
 
 export const BlogPostPreview = ({ post }: { post: TBlogPost }) => {
 	return (
@@ -69,7 +70,7 @@ export const SmallText = styled.p`
 	padding-bottom: 10px;
 `;
 
-export const ExternalLink = styled.a`
+export const StyledLink = styled.a`
 	text-decoration: none;
 	color: var(--color-primary-accent);
 	cursor: pointer;
@@ -106,3 +107,14 @@ export const ProgressBar = styled.div<{ scroll: number }>`
 	height: 4px;
 	z-index: 3;
 `;
+
+export const LinkTo = ({
+	children,
+	...props
+}: PropsWithChildren<LinkProps>) => {
+	return (
+		<Link {...props}>
+			<StyledLink>{children}</StyledLink>
+		</Link>
+	);
+};

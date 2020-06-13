@@ -1,7 +1,7 @@
 import { Fragment } from "react";
 import { Layout, Center, MDXText } from "components/Layouts";
 import Tooling from "content/tooling.mdx";
-import { Text, Title, ExternalLink } from "styled/blog";
+import { Text, Title, LinkTo } from "styled/blog";
 import Head from "next/head";
 
 const Index = () => {
@@ -22,9 +22,7 @@ const Index = () => {
 				</Text>
 				<Text>
 					I&apos;m currently the module lead for the frontend team at{" "}
-					<ExternalLink href="https://www.microland.com/">
-						Microland
-					</ExternalLink>{" "}
+					<LinkTo href="https://www.microland.com/">Microland</LinkTo>{" "}
 					working with React + Redux + TypeScript, the sweetest
 					combination in my opinion.
 				</Text>

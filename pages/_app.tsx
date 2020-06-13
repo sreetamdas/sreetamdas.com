@@ -6,10 +6,12 @@ import { Navbar } from "components/Navbar";
 import { createGlobalStyle, ThemeProvider } from "styled-components";
 import { MDXProvider } from "@mdx-js/react";
 import { MDXCodeBlock } from "utils/mdx";
+import { Text } from "styled/blog";
 
 const theme = {};
 
 const MDXComponents = {
+	p: Text,
 	pre: MDXCodeBlock,
 	code: MDXCodeBlock,
 };
@@ -56,7 +58,7 @@ const GlobalStyles = createGlobalStyle`
 	}
 
 	code, pre {
-		font-family: SFMono-Regular, Roboto Mono, Menlo, Monaco, Consolas, Liberation Mono, Lucida Console, monospace;
+		font-family: SFMono-Regular, Consolas, Roboto Mono, Menlo, Monaco, Liberation Mono, Lucida Console, monospace;
 	}
 
 	code {
