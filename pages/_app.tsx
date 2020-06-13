@@ -44,6 +44,10 @@ const GlobalStyles = createGlobalStyle`
 		margin: 0;
 	}
 
+	h1, h2, h3 {
+		margin: 20px 0 0 0;
+	}
+
 	a {
 	text-decoration: none;
 	color: var(--color-primary-accent);

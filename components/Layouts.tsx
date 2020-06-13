@@ -14,6 +14,7 @@ export const Layout = styled.div`
 
 export const Center = styled.div`
 	display: grid;
+	padding: 0 20px;
 	justify-items: center;
 	/* grid-column: 2; */
 `;

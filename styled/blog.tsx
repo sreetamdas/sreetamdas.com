@@ -25,7 +25,7 @@ export const BlogPostTitle = styled.h1`
 	color: var(--color-primary-accent);
 	font-size: 40px;
 	margin: 0;
-	padding-top: 25px;
+	padding-top: 30px;
 	padding-bottom: 5px;
 `;
 
