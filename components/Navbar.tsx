@@ -4,8 +4,8 @@ import styled from "styled-components";
 import { FaGithub, FaTwitter } from "react-icons/fa";
 import { FiSun } from "react-icons/fi";
 import { IoMdMoon } from "react-icons/io";
-import { StyledLink } from "styled/blog";
-import OrangeSquare from "public/orangeSquare.svg";
+import { StyledLink } from "components/styled/blog";
+import RoundedSquare from "public/roundedSquare.svg";
 
 const NavbarWithLogo = styled.div`
 	width: 100%;
@@ -64,7 +64,7 @@ const Navbar = () => {
 		<NavbarWithLogo>
 			<Link href="/">
 				<IconContainer>
-					<OrangeSquare />
+					<RoundedSquare />
 				</IconContainer>
 			</Link>
 			<NavbarWithNavs>

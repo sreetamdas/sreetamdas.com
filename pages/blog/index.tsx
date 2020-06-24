@@ -1,8 +1,8 @@
 import { Fragment } from "react";
 import { GetStaticProps } from "next";
 
-import { BlogPostsPreviewLayout } from "components/Layouts";
-import { BlogPostPreview, Title } from "styled/blog";
+import { BlogPostsPreviewLayout } from "components/styled/Layouts";
+import { BlogPostPreview, Title } from "components/styled/blog";
 import { getPostsData } from "utils/blog";
 import Head from "next/head";
 

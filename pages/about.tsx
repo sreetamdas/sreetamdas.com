@@ -1,8 +1,8 @@
 import MDXAbout from "content/about.mdx";
 import { Fragment } from "react";
 import Head from "next/head";
-import { Layout, Center, PaddingListItems } from "components/Layouts";
-import { Title, Text, LinkTo } from "styled/blog";
+import { Layout, Center, PaddingListItems } from "components/styled/Layouts";
+import { Title, Text, LinkTo } from "components/styled/blog";
 
 const About = () => {
 	return (

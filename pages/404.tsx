@@ -1,4 +1,4 @@
-import { Text, Title, LinkTo } from "styled/blog";
+import { Text, Title, LinkTo } from "components/styled/blog";
 import { Fragment } from "react";
 
 const Custom404 = () => {

@@ -1,13 +1,13 @@
 import { GetStaticPaths, GetStaticProps } from "next";
 import dynamic from "next/dynamic";
 
-import { Layout } from "components/Layouts";
+import { Layout } from "components/styled/Layouts";
 import {
 	BlogPostTitle,
 	BlogPostMDXContent,
 	Datestamp,
 	PostNotPublishedWarning,
-} from "styled/blog";
+} from "components/styled/blog";
 import { getPostsData } from "utils/blog";
 import { Fragment } from "react";
 import Head from "next/head";

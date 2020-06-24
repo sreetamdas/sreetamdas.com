@@ -1,8 +1,8 @@
 import { Fragment } from "react";
 import MDXPodcasts from "content/podcasts.mdx";
-import { Layout, Center, PaddingListItems } from "components/Layouts";
+import { Layout, Center, PaddingListItems } from "components/styled/Layouts";
 import Head from "next/head";
-import { Title } from "styled/blog";
+import { Title } from "components/styled/blog";
 
 const Uses = () => {
 	return (

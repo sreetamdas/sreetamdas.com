@@ -1,12 +1,12 @@
 import React from "react";
 import App from "next/app";
 
-import { Center } from "components/Layouts";
+import { Center } from "components/styled/Layouts";
 import { Navbar } from "components/Navbar";
 import { createGlobalStyle, ThemeProvider } from "styled-components";
 import { MDXProvider } from "@mdx-js/react";
 import { MDXCodeBlock } from "utils/mdx";
-import { Text } from "styled/blog";
+import { Text } from "components/styled/blog";
 
 const theme = {};
 

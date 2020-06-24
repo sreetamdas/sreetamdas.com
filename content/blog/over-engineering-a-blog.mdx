@@ -28,10 +28,8 @@ A quick refresher on how React works: Our page's HTML loads first, and the HTML 
 
 ### The Renaissance of Static
 
-here's a code block:
+To be precise, static website never really _went away_. But their introduction into the React ecosystem was pretty much exactly what developers were looking for. So, what exactly are "static" websites and why does just about everyone seem to be in love with them?
 
-```jsx {2}
-import React from "react";
-import Example from "./place";
-export default () => <Example />;
-```
+Static websites allow your web application to be _server-side rendered_ (SSR). What this means is that instead of your application having just a barebones HTML which needs all of its accompanying JS to be loaded so that the app can be rendered properly, your app gets _pre-rendered_: using all the data that is available statically, the app (or rather, the DOM) is rendered and we can get access to the (static) app as HTML and CSS.
+
+Now that our webpage (or at least some parts of it) is available as HTML, our website can be loaded _much_ faster, since there is no waiting time period for the JS to load first!
