@@ -6,6 +6,8 @@
 		"devdev": "next dev",
 		"build": "next build",
 		"start": "next start",
+		"export": "next export",
+		"deploy": "yarn build && yarn export",
 		"compile": "tsc --watch",
 		"lint": "eslint '{pages,components,typings}/**/*.{js,jsx,ts,tsx}' --cache --fix",
 		"prettier": "prettier --write '{pages,components,typings}/**/*.{js,jsx,ts,tsx}'"
