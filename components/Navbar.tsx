@@ -8,9 +8,7 @@ import { StyledLink } from "components/styled/blog";
 import RoundedSquare from "public/roundedSquare.svg";
 
 const NavbarWithLogo = styled.div`
-	width: 100%;
-	max-width: 600px;
-	padding: 20px 40px;
+	padding: 20px 0;
 	display: grid;
 	grid-template-columns: repeat(2, auto);
 	align-content: center;

@@ -1,7 +1,7 @@
 import React from "react";
 import App from "next/app";
 
-import { Center } from "components/styled/Layouts";
+import { Center, Layout } from "components/styled/Layouts";
 import { Navbar } from "components/Navbar";
 import { createGlobalStyle, ThemeProvider } from "styled-components";
 import { MDXProvider } from "@mdx-js/react";
@@ -30,7 +30,7 @@ const GlobalStyles = createGlobalStyle`
 		--color-primary: #FFF;
 		--color-background: #000;
 		--color-inlineCode-fg: #EB5757;
-		--color-inlineCode-bg: #111;
+		--color-inlineCode-bg: #222;
 	}
 
 
@@ -82,7 +82,9 @@ export default class MyApp extends App {
 				<MDXProvider components={MDXComponents}>
 					<GlobalStyles />
 					<Center>
-						<Navbar />
+						<Layout>
+							<Navbar />
+						</Layout>
 						<Component {...pageProps} />
 					</Center>
 				</MDXProvider>

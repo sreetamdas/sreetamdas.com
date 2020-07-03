@@ -1,7 +1,7 @@
 import { Fragment } from "react";
 import { GetStaticProps } from "next";
 
-import { BlogPostsPreviewLayout } from "components/styled/Layouts";
+import { BlogPostsPreviewLayout, Layout } from "components/styled/Layouts";
 import { BlogPostPreview, Title } from "components/styled/blog";
 import { getPostsData } from "utils/blog";
 import Head from "next/head";
@@ -12,12 +12,14 @@ const Index = ({ postsData }: { postsData: Array<TBlogPost> }) => {
 			<Head>
 				<title>Blog &mdash; Sreetam Das</title>
 			</Head>
-			<Title>FooBar: The Blog</Title>
-			<BlogPostsPreviewLayout>
-				{postsData?.map((post, index) => (
-					<BlogPostPreview {...{ post }} key={index} />
-				))}
-			</BlogPostsPreviewLayout>
+			<Title>/blog</Title>
+			<Layout>
+				<BlogPostsPreviewLayout>
+					{postsData?.map((post, index) => (
+						<BlogPostPreview {...{ post }} key={index} />
+					))}
+				</BlogPostsPreviewLayout>
+			</Layout>
 		</Fragment>
 	);
 };

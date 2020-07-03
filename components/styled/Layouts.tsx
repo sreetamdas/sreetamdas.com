@@ -1,9 +1,7 @@
 import styled from "styled-components";
 
 export const BlogPostsPreviewLayout = styled.div`
-	width: 100%;
 	display: grid;
-	max-width: 600px;
 	grid-gap: 1rem;
 `;
 
@@ -16,7 +14,6 @@ export const Center = styled.div`
 	display: grid;
 	padding: 0 20px;
 	justify-items: center;
-	/* grid-column: 2; */
 `;
 
 export const MDXText = styled.div`

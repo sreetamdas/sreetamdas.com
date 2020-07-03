@@ -17,16 +17,16 @@ const Index = () => {
 				<Text>
 					I&apos;m a developer from India in love with all things
 					React. I&apos;ve also worked with different languages like
-					Python, JavaScript, TypeScript and C++, as well as things
-					like Node, Django and Redux.
+					Python, JavaScript, TypeScript and C++, as well as Node,
+					Django and Redux.
 				</Text>
 				<Text>
 					I&apos;m currently the module lead for the frontend team at{" "}
 					<StyledLink href="https://www.microland.com">
 						Microland
 					</StyledLink>{" "}
-					working with React + Redux + TypeScript, the sweetest
-					combination in my opinion.
+					working with <code>React + Redux + TypeScript</code>, the{" "}
+					<em>sweetest</em> combination in my opinion.
 				</Text>
 				<MDXText>
 					<Tooling />
