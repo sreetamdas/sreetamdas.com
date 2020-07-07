@@ -98,13 +98,11 @@ export const PostNotPublishedWarning = () => {
 
 export const ProgressBar = styled.div<{ scroll: number }>`
 	position: fixed;
-	background: linear-gradient(
-		to right,
-		var(--color-primary-accent) ${({ scroll }) => scroll}%,
-		transparent 0
-	);
-	width: 100%;
+	left: 0;
+	background-color: var(--color-primary-accent);
+	width: ${({ scroll }) => scroll}%;
 	height: 4px;
+	transition: 0.2s ease;
 	z-index: 3;
 `;
 
