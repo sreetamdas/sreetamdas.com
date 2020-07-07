@@ -37,3 +37,7 @@ export const PaddingListItems = styled.div`
 		padding: 5px;
 	}
 `;
+
+export const ReallyBigTitle = styled.h1`
+	font-size: 10rem;
+`;
