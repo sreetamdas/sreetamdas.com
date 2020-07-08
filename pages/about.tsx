@@ -3,6 +3,7 @@ import { Fragment } from "react";
 import Head from "next/head";
 import { Layout, Center, PaddingListItems } from "components/styled/Layouts";
 import { Title, Text, LinkTo } from "components/styled/blog";
+import { ExternalLinksOverlay } from "components/Navbar";
 
 const About = () => {
 	return (
@@ -15,6 +16,8 @@ const About = () => {
 					<Title>/about</Title>
 				</Center>
 				<MDXAbout />
+				<Text>You can check me out from the following links:</Text>
+				<ExternalLinksOverlay />
 				<Text>
 					Here&apos;s a list of pages that curate my likes to give you
 					more insight into me:

@@ -1,7 +1,13 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import styled from "styled-components";
-import { FaGithub, FaTwitter } from "react-icons/fa";
+import {
+	FaGithub,
+	FaTwitter,
+	FaStackOverflow,
+	FaLinkedin,
+	FaEnvelope,
+} from "react-icons/fa";
 import { FiSun } from "react-icons/fi";
 import { IoMdMoon } from "react-icons/io";
 import { StyledLink } from "components/styled/blog";
@@ -22,7 +28,8 @@ const NavbarWithNavs = styled.div`
 	grid-column-gap: 1rem;
 	white-space: nowrap;
 	justify-self: end;
-	align-items: center;
+	place-items: center;
+	justify-content: center;
 `;
 
 const IconContainer = styled.a`
@@ -106,3 +113,50 @@ const Navbar = () => {
 };
 
 export { Navbar };
+
+export const ExternalLinksOverlay = () => {
+	return (
+		<NavbarWithNavs>
+			<IconContainer
+				href="https://twitter.com/_SreetamDas"
+				target="_blank"
+				rel="noopener noreferrer"
+				title="Sreetam Das' GitHub"
+			>
+				<FaGithub />
+			</IconContainer>
+			<IconContainer
+				href="https://twitter.com/_SreetamDas"
+				target="_blank"
+				rel="noopener noreferrer"
+				title="Sreetam Das' Twitter"
+			>
+				<FaTwitter />
+			</IconContainer>
+			<IconContainer
+				href="https://stackoverflow.com/users/5283213"
+				target="_blank"
+				rel="noopener noreferrer"
+				title="Sreetam Das' StackOverflow"
+			>
+				<FaStackOverflow />
+			</IconContainer>
+			<IconContainer
+				href="https://www.linkedin.com/in/sreetamdas"
+				target="_blank"
+				rel="noopener noreferrer"
+				title="Sreetam Das' LinkedIn"
+			>
+				<FaLinkedin />
+			</IconContainer>
+			<IconContainer
+				href="mailto:sreetam@sreetamdas.com"
+				target="_blank"
+				rel="noopener noreferrer"
+				title="Send Mail to Sreetam Das"
+			>
+				<FaEnvelope />
+			</IconContainer>
+		</NavbarWithNavs>
+	);
+};
