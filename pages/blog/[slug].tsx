@@ -1,7 +1,7 @@
 import { GetStaticPaths, GetStaticProps } from "next";
 import dynamic from "next/dynamic";
 
-import { Layout } from "components/styled/Layouts";
+import { Layout, TextGradient } from "components/styled/Layouts";
 import {
 	BlogPostTitle,
 	BlogPostMDXContent,
@@ -23,7 +23,9 @@ const Post = ({ post }: { post: TBlogPost }) => {
 			</Head>
 			<ReadingProgress />
 			<Layout>
-				<BlogPostTitle>{post.title}</BlogPostTitle>
+				<BlogPostTitle>
+					<TextGradient>{post.title}</TextGradient>
+				</BlogPostTitle>
 				<Datestamp>
 					{new Date(post.publishedAt).toLocaleDateString("en-US", {
 						month: "long",

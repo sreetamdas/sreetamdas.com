@@ -1,7 +1,7 @@
 import React from "react";
 import App from "next/app";
 
-import { Center, Layout } from "components/styled/Layouts";
+import { Center } from "components/styled/Layouts";
 import { Navbar } from "components/Navbar";
 import { createGlobalStyle, ThemeProvider } from "styled-components";
 import { MDXProvider } from "@mdx-js/react";
@@ -82,9 +82,7 @@ export default class MyApp extends App {
 				<MDXProvider components={MDXComponents}>
 					<GlobalStyles />
 					<Center>
-						<Layout>
-							<Navbar />
-						</Layout>
+						<Navbar />
 						<Component {...pageProps} />
 					</Center>
 				</MDXProvider>

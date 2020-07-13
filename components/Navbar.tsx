@@ -12,6 +12,7 @@ import { FiSun } from "react-icons/fi";
 import { IoMdMoon } from "react-icons/io";
 import { StyledLink } from "components/styled/blog";
 import RoundedSquare from "public/roundedSquare.svg";
+import { Layout } from "components/styled/Layouts";
 
 const NavbarWithLogo = styled.div`
 	padding: 20px 0;
@@ -66,49 +67,51 @@ const Navbar = () => {
 	}, [darkTheme]);
 
 	return (
-		<NavbarWithLogo>
-			<Link href="/">
-				<IconContainer>
-					<RoundedSquare />
-				</IconContainer>
-			</Link>
-			<NavbarWithNavs>
-				<Link href="/blog">
-					<StyledLink>blog</StyledLink>
+		<Layout>
+			<NavbarWithLogo>
+				<Link href="/">
+					<IconContainer>
+						<RoundedSquare />
+					</IconContainer>
 				</Link>
-				<Link href="/uses">
-					<StyledLink>uses</StyledLink>
-				</Link>
-				<Link href="/about">
-					<StyledLink>about</StyledLink>
-				</Link>
-				<IconContainer
-					href="https://github.com/sreetamdas"
-					target="_blank"
-					rel="noopener noreferrer"
-					title="Sreetam Das' GitHub"
-				>
-					<FaGithub />
-				</IconContainer>
-				<IconContainer
-					href="https://twitter.com/_SreetamDas"
-					target="_blank"
-					rel="noopener noreferrer"
-					title="Sreetam Das' Twitter"
-				>
-					<FaTwitter />
-				</IconContainer>
-				<IconContainer onClick={handleThemeSwitch}>
-					{darkTheme === undefined ? (
-						<div style={{ width: "25px" }} />
-					) : darkTheme ? (
-						<IoMdMoon />
-					) : (
-						<FiSun />
-					)}
-				</IconContainer>
-			</NavbarWithNavs>
-		</NavbarWithLogo>
+				<NavbarWithNavs>
+					<Link href="/blog">
+						<StyledLink>blog</StyledLink>
+					</Link>
+					<Link href="/uses">
+						<StyledLink>uses</StyledLink>
+					</Link>
+					<Link href="/about">
+						<StyledLink>about</StyledLink>
+					</Link>
+					<IconContainer
+						href="https://github.com/sreetamdas"
+						target="_blank"
+						rel="noopener noreferrer"
+						title="Sreetam Das' GitHub"
+					>
+						<FaGithub />
+					</IconContainer>
+					<IconContainer
+						href="https://twitter.com/_SreetamDas"
+						target="_blank"
+						rel="noopener noreferrer"
+						title="Sreetam Das' Twitter"
+					>
+						<FaTwitter />
+					</IconContainer>
+					<IconContainer onClick={handleThemeSwitch}>
+						{darkTheme === undefined ? (
+							<div style={{ width: "25px" }} />
+						) : darkTheme ? (
+							<IoMdMoon />
+						) : (
+							<FiSun />
+						)}
+					</IconContainer>
+				</NavbarWithNavs>
+			</NavbarWithLogo>
+		</Layout>
 	);
 };
 

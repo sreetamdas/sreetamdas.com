@@ -1,5 +1,10 @@
 import { Fragment } from "react";
-import { Layout, Center, MDXText } from "components/styled/Layouts";
+import {
+	Layout,
+	Center,
+	MDXText,
+	TextGradient,
+} from "components/styled/Layouts";
 import Tooling from "content/tooling.mdx";
 import { Text, Title, StyledLink } from "components/styled/blog";
 import Head from "next/head";
@@ -25,7 +30,8 @@ const Index = () => {
 					<StyledLink href="https://www.microland.com">
 						Microland
 					</StyledLink>{" "}
-					working with <code>React + Redux + TypeScript</code>, the{" "}
+					working with{" "}
+					<TextGradient>React + Redux + TypeScript</TextGradient>, the{" "}
 					<em>sweetest</em> combination in my opinion.
 				</Text>
 				<MDXText>

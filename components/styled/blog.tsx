@@ -22,7 +22,7 @@ export const BlogPostPreview = ({ post }: { post: TBlogPost }) => {
 };
 
 export const BlogPostTitle = styled.h1`
-	color: var(--color-primary-accent);
+	/* color: var(--color-primary-accent); */
 	font-size: 40px;
 	margin: 0;
 	padding-top: 30px;
@@ -30,7 +30,7 @@ export const BlogPostTitle = styled.h1`
 `;
 
 export const BlogPostPreviewTitle = styled.h2`
-	color: var(--color-primary-accent);
+	/* color: var(--color-primary-accent); */
 	margin: 0;
 	padding-bottom: 5px;
 `;
@@ -48,7 +48,7 @@ export const Card = styled.div`
 `;
 
 export const Datestamp = styled.p`
-	font-size: 12px;
+	font-size: 11px;
 	padding-bottom: 10px;
 	margin: 0; /* thanks @mxstbr! */
 `;
@@ -85,10 +85,10 @@ export const StyledLink = styled.a`
 `;
 
 export const WarningSpan = styled.span`
-	padding: 5px 15px;
+	padding: 5px 10px;
 	margin: 0 15px;
 	background-color: red;
-	color: var(--color-background);
+	color: white;
 	border-radius: 5px;
 `;
 
@@ -99,9 +99,13 @@ export const PostNotPublishedWarning = () => {
 export const ProgressBar = styled.div<{ scroll: number }>`
 	position: fixed;
 	left: 0;
-	background-color: var(--color-primary-accent);
+	background: linear-gradient(
+		90deg,
+		var(--color-primary-accent) 0%,
+		rgba(106, 218, 251, 1) 100%
+	);
 	width: ${({ scroll }) => scroll}%;
-	height: 4px;
+	height: 8px;
 	transition: 0.2s ease;
 	z-index: 3;
 `;

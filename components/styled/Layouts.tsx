@@ -39,5 +39,22 @@ export const PaddingListItems = styled.div`
 `;
 
 export const ReallyBigTitle = styled.h1`
-	font-size: 10rem;
+	font-size: 5rem;
+`;
+
+export const TextGradient = styled.span`
+	font-weight: 900;
+	background: linear-gradient(
+		90deg,
+		var(--color-primary-accent),
+		rgba(106, 218, 251, 1) 100%
+	);
+
+	background-clip: text;
+	-webkit-text-fill-color: transparent;
+`;
+
+export const Monospace = styled.span`
+	font-family: SFMono-Regular, Consolas, Roboto Mono, Menlo, Monaco,
+		Liberation Mono, Lucida Console, monospace;
 `;
