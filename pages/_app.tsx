@@ -71,6 +71,8 @@ const GlobalStyles = createGlobalStyle`
 		font-size: 85%;
 		padding: 0.2em 0.4rem;
 		border-radius: 5px;
+		/* https://developer.mozilla.org/en-US/docs/Web/CSS/box-decoration-break */
+		box-decoration-break: clone;
 	}
 `;
 
