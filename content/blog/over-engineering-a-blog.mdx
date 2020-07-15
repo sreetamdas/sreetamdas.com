@@ -7,11 +7,11 @@ export const meta = {
 
 I've always wanted to have a personal blog (and maintain it!) but I was just never able to get around to it. Its 2020 and I didn't want to push this any further.
 
-I'd experimented with [Jekyll](https://jekyllrb.com/) before. Its a dead simple way to host your own blog, but having worked with React over the past couple of years I just didn't feel content with just a markdown blog.
+I'd experimented with [Jekyll](https://jekyllrb.com/) before. It's a dead-simple way to host your own blog, but having worked with React over the past couple of years I just didn't feel content with just a markdown blog.
 
 I'd also peeked at [Medium](https://medium.com), but their move to a paywall just didn't fit with me. [DEV](https://dev.to) also looked like a really good option, but I increasingly wanted to host something that was really _made by me_.
 
-## React with Client Side rendering
+## React with Client-Side rendering
 
 The easiest solution would have been to run `yarn create react-app my-app` and then going berserk (_I'm a yarn user btw /s_). If I decided to not go the [CRA](https://create-react-app.dev/) route and instead use only the packages that I actually need by building everything from scratch, I did have the following benefits:
 
@@ -20,23 +20,23 @@ The easiest solution would have been to run `yarn create react-app my-app` and t
 
 However, using a stock React app also has a one pretty decently sized issue that one notices little by little over time: the dreaded blankness of our HTML while our JavaScript is still being loaded.
 
-## The Problem of Client Side Rendering
+## The Problem of Client-Side Rendering
 
 Whenever you've hit refresh on a vanilla React app, you've probably noticed this: a blank page gets loaded, and there is a (considerable at times) delay when the things start "popping up" on the screen. You check if your WiFi connection is fast enough, but that's not the problem 🙁
 
-A quick refresher on how React works: Our page's HTML loads first, and the HTML defines the JS files that need to be loaded in order for React to take over things. In the time that the page HTML has been loaded and the JS is yet to be finish loading, the client only sees what has already been loaded at this point in time, the HTML (and if we've taken care of it, the CSS too!). This problem is especially highlighted when the client has a poor/slow internet connection (you can also experience this in browser by going over to the **Network** tab in your browser's console and selecting an option there, like **slow 3G**).
+A quick refresher on how React works: Our page's HTML loads first, and the HTML defines the JS files that need to be loaded for React to take over things. In the time that the page HTML has been loaded and the JS is yet to be finish loading, the client only sees what has already been loaded at this point, the HTML (and if we've taken care of it, the CSS too!). This problem is especially highlighted when the client has a poor/slow internet connection (you can also experience this in the browser by going over to the **Network** tab in your browser's console and selecting an option there, like **slow 3G**).
 
 ## The Renaissance of Static
 
-To be precise, static website never really _went away_. But their introduction into the React ecosystem was pretty much exactly what developers were looking for. So, what exactly are "static" websites and why does just about everyone seem to be in love with them?
+To be precise, static websites never really _went away_. But their introduction into the React ecosystem was pretty much exactly what developers were looking for. So, what exactly are "static" websites and why does just about everyone seem to be in love with them?
 
-Static websites allow your web application to be _server-side rendered_ (SSR). What this means is that instead of your application having just a barebones HTML which needs all of its accompanying JS to be loaded so that the app can be rendered properly, your app gets _pre-rendered_: using all the data that is available statically, the app (or rather, the DOM) is rendered and we can get access to the (static) app as HTML and CSS.
+Static websites allow your web application to be _server-side rendered_ (SSR). What this means is that instead of your application consisting of just barebones HTML which needs all of its accompanying JS to be loaded so that the app can be rendered properly, your app gets _pre-rendered_: using all the data that is available statically, the app (or rather, the DOM) is rendered and we can get access to the (static) app as HTML and CSS.
 
 Now that our webpage (or at least some parts of it) is available as HTML, our website can be loaded _much_ faster, since there is no waiting time period for the JS to load first!
 
 ### IDE Tooling
 
-One thing that I've learnt over the last couple of years is that it is almost _always_ better to put in some of that extra effort right in the beginning even if it might seem like overkill, since it definitely pays off over the future. This was primarily my takeaway from when rewriting my work codebase using TypeScript; in the early stages it was an absolute pain to learn a not-so-pleasing-to-the-eyes-at-first syntax.
+One thing that I've learnt over the last couple of years is that it is almost _always_ better to put in some of that extra effort right in the beginning even if it might seem like overkill since it pays off over the future. This was primarily my takeaway from when rewriting my work codebase using TypeScript; in the early stages it was an absolute pain to learn a not-so-pleasing-to-the-eyes-at-first syntax.
 
 One of my goals with the rewrite of my website was that I wanted to be able to play around with it. This meant being able to use third-party packages; and TypeScript allows your [IDE](/uses) to use types from respective packages with VSCode's IntelliSense.
 
@@ -48,6 +48,6 @@ I've tried out CSS Modules, but CSS-in-JS just seemed more comfortable.
 
 ### Framework
 
-This was a decision between Gatsby and Next.js, and being able to support non-static sites with Next.js was a big reason for going with it. Gatsby does bring with it its huge ecosystem of plugins, as well as top-class support for GraphQL (something that I've been looking forward to work with) but Next.js is an absoluted delight to play around with, so I went ahead with my choice.
+This was a decision between Gatsby and Next.js, and being able to support non-static sites with Next.js was a big reason for going with it. Gatsby does bring with it its huge ecosystem of plugins, as well as top-class support for GraphQL (something that I've been looking forward to working with) but Next.js is an absolute delight to play around with, so I went ahead with my choice.
 
 And that's about it! That's the primary stack for this personal website. It's open-sourced, so feel free to check it out and contribute if you'd like 😁
