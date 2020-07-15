@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import Link from "next/link";
 import styled from "styled-components";
 import {
 	FaGithub,
@@ -69,14 +68,12 @@ const Navbar = () => {
 	return (
 		<Layout>
 			<NavbarWithLogo>
-				<Link href="/">
-					<IconContainer tabIndex={0}>
-						<RoundedSquare
-							aria-label="Home &mdash; Sreetam Das"
-							title="Home &mdash; Sreetam Das"
-						/>
-					</IconContainer>
-				</Link>
+				<IconContainer href="/" tabIndex={0}>
+					<RoundedSquare
+						aria-label="Home &mdash; Sreetam Das"
+						title="Home &mdash; Sreetam Das"
+					/>
+				</IconContainer>
 				<NavbarWithNavs>
 					<LinkTo href="/blog">blog</LinkTo>
 					<LinkTo href="/uses">uses</LinkTo>
