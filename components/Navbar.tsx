@@ -10,7 +10,7 @@ import {
 } from "react-icons/fa";
 import { FiSun } from "react-icons/fi";
 import { IoMdMoon } from "react-icons/io";
-import { StyledLink } from "components/styled/blog";
+import { LinkTo } from "components/styled/blog";
 import RoundedSquare from "public/roundedSquare.svg";
 import { Layout } from "components/styled/Layouts";
 
@@ -70,43 +70,50 @@ const Navbar = () => {
 		<Layout>
 			<NavbarWithLogo>
 				<Link href="/">
-					<IconContainer>
-						<RoundedSquare />
+					<IconContainer tabIndex={0}>
+						<RoundedSquare
+							aria-label="Home &mdash; Sreetam Das"
+							title="Home &mdash; Sreetam Das"
+						/>
 					</IconContainer>
 				</Link>
 				<NavbarWithNavs>
-					<Link href="/blog">
-						<StyledLink>blog</StyledLink>
-					</Link>
-					<Link href="/uses">
-						<StyledLink>uses</StyledLink>
-					</Link>
-					<Link href="/about">
-						<StyledLink>about</StyledLink>
-					</Link>
+					<LinkTo href="/blog">blog</LinkTo>
+					<LinkTo href="/uses">uses</LinkTo>
+					<LinkTo href="/about">about</LinkTo>
 					<IconContainer
 						href="https://github.com/sreetamdas"
 						target="_blank"
 						rel="noopener noreferrer"
-						title="Sreetam Das' GitHub"
 					>
-						<FaGithub />
+						<FaGithub
+							aria-label="Sreetam's GitHub"
+							title="Sreetam's GitHub"
+						/>
 					</IconContainer>
 					<IconContainer
 						href="https://twitter.com/_SreetamDas"
 						target="_blank"
 						rel="noopener noreferrer"
-						title="Sreetam Das' Twitter"
 					>
-						<FaTwitter />
+						<FaTwitter
+							aria-label="Sreetam Das' Twitter"
+							title="Sreetam Das' Twitter"
+						/>
 					</IconContainer>
-					<IconContainer onClick={handleThemeSwitch}>
+					<IconContainer onClick={handleThemeSwitch} tabIndex={0}>
 						{darkTheme === undefined ? (
 							<div style={{ width: "25px" }} />
 						) : darkTheme ? (
-							<IoMdMoon />
+							<IoMdMoon
+								aria-label="Switch to Light Mode"
+								title="Switch to Light Mode"
+							/>
 						) : (
-							<FiSun />
+							<FiSun
+								aria-label="Switch to Dark Mode"
+								title="Switch to Dark Mode"
+							/>
 						)}
 					</IconContainer>
 				</NavbarWithNavs>
