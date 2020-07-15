@@ -10,3 +10,9 @@
 -   [ ] Reading time for posts
 -   [x] a11y
 -   [ ] Responsive navbar
+
+<img src="public/lighthouse_scores.png" align="center" alt="Lighthouse scores' screenshot: 100, 100, 100, 100" />
+
+<h5 align="center">
+	perfect lighthouse scores!
+</h5>
