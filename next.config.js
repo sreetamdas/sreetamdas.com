@@ -9,7 +9,15 @@ module.exports = withMDX({
 			issuer: {
 				test: /\.(js|ts)x?$/,
 			},
-			use: ["@svgr/webpack"],
+			use: [
+				{
+					loader: "@svgr/webpack",
+					options: {
+						icon: true,
+						titleProp: true,
+					},
+				},
+			],
 		});
 
 		return config;
