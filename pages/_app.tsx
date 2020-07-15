@@ -23,10 +23,12 @@ const GlobalStyles = createGlobalStyle`
 		--color-background: #FFF;
 		--color-inlineCode-fg: #EB5757;
 		--color-inlineCode-bg: #eee;
+		--color-secondary-accent: #61DAFB;
 	}
 
 	[data-theme="dark"] {
 		--color-primary-accent: #9D86E9;
+		--color-secondary-accent: #61DAFB;
 		--color-primary: #FFF;
 		--color-background: #000;
 		--color-inlineCode-fg: #EB5757;
