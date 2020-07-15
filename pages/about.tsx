@@ -19,6 +19,16 @@ const About = () => {
 				<Text>You can check me out from the following links:</Text>
 				<ExternalLinksOverlay />
 				<Text>
+					and if you&apos;re interested, you can take a look at my{" "}
+					<a
+						href="https://drive.google.com/file/u/2/d/121tFdPrPPImCeWJg0NMLVwBfpGc5RCnV/view"
+						target="_blank"
+						rel="noopener noreferrer"
+					>
+						resume
+					</a>
+				</Text>
+				<Text>
 					Here&apos;s a list of pages that curate my likes to give you
 					more insight into me:
 				</Text>
