@@ -1,12 +1,15 @@
 import Link, { LinkProps } from "next/link";
 import styled from "styled-components";
 import { PropsWithChildren } from "react";
+import { TextGradient } from "components/styled/Layouts";
 
-export const BlogPostPreview = ({ post }: { post: TBlogPost }) => {
-	return (
-		<Link href="/blog/[slug]" as={`/blog/${post.slug}`}>
+export const BlogPostPreview = ({ post }: { post: TBlogPost }) => (
+	<Link href="/blog/[slug]" as={`/blog/${post.slug}`}>
+		<StyledLink href={`/blog/${post.slug}`}>
 			<Card>
-				<BlogPostPreviewTitle>{post.title}</BlogPostPreviewTitle>
+				<BlogPostPreviewTitle>
+					<TextGradient>{post.title}</TextGradient>
+				</BlogPostPreviewTitle>
 				<Datestamp>
 					{new Date(post.publishedAt).toLocaleDateString("en-US", {
 						month: "long",
@@ -17,13 +20,13 @@ export const BlogPostPreview = ({ post }: { post: TBlogPost }) => {
 				</Datestamp>
 				<SmallText>{post.summary}</SmallText>
 			</Card>
-		</Link>
-	);
-};
+		</StyledLink>
+	</Link>
+);
 
 export const BlogPostTitle = styled.h1`
 	/* color: var(--color-primary-accent); */
-	font-size: 40px;
+	font-size: 3rem;
 	margin: 0;
 	padding-top: 30px;
 	padding-bottom: 5px;
@@ -33,6 +36,7 @@ export const BlogPostPreviewTitle = styled.h2`
 	/* color: var(--color-primary-accent); */
 	margin: 0;
 	padding-bottom: 5px;
+	font-size: 2rem;
 `;
 
 export const BlogPostMDXContent = styled.div`
@@ -43,18 +47,19 @@ export const BlogPostMDXContent = styled.div`
 export const Card = styled.div`
 	padding: 10px 0;
 	cursor: pointer;
-	/* background: #ffffff; */
-	/* border: 1px solid slategray; */
 `;
 
 export const Datestamp = styled.p`
+	color: var(--color-primary-accent);
 	font-size: 11px;
-	padding-bottom: 10px;
+	padding: 10px 0;
 	margin: 0; /* thanks @mxstbr! */
+	/* opacity: 0.6; */
 `;
 
 export const Title = styled.h1`
 	padding: 20px 0;
+	font-size: 2rem;
 `;
 
 export const Text = styled.p<{ paddedTop?: boolean }>`
@@ -72,16 +77,19 @@ export const SmallText = styled.p`
 
 export const StyledLink = styled.a`
 	text-decoration: none;
-	color: var(--color-primary-accent);
 	cursor: pointer;
+	color: var(--color-primary);
 
 	&:visited {
 		text-decoration: none;
 	}
-
 	&:hover {
-		text-decoration: underline;
+		text-decoration: none;
 	}
+`;
+
+export const StyledAccentLink = styled(StyledLink)`
+	color: var(--color-primary-accent);
 `;
 
 export const WarningSpan = styled.span`
@@ -102,7 +110,7 @@ export const ProgressBar = styled.div<{ scroll: number }>`
 	background: linear-gradient(
 		90deg,
 		var(--color-primary-accent) 0%,
-		rgba(106, 218, 251, 1) 100%
+		var(--color-secondary-accent) 100%
 	);
 	width: ${({ scroll }) => scroll}%;
 	height: 8px;
@@ -115,8 +123,21 @@ export const LinkTo = ({
 	...props
 }: PropsWithChildren<LinkProps>) => {
 	return (
-		<Link {...props}>
-			<StyledLink>{children}</StyledLink>
+		<Link {...props} passHref>
+			<StyledAccentLink>{children}</StyledAccentLink>
 		</Link>
 	);
 };
+
+export const PostMetaDataGrid = styled.div`
+	display: grid;
+	grid-auto-flow: column;
+	grid-gap: 0.5rem;
+	justify-content: start;
+	align-items: center;
+`;
+
+export const RoundedImageSmall = styled.img`
+	height: 25px;
+	border-radius: 50%;
+`;

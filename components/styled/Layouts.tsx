@@ -43,16 +43,19 @@ export const ReallyBigTitle = styled.h1`
 `;
 
 export const TextGradient = styled.span`
-	font-weight: 900;
 	background: linear-gradient(
 		90deg,
-		var(--color-primary-accent),
-		rgba(106, 218, 251, 1) 100%
+		var(--color-primary-accent) 0%,
+		var(--color-secondary-accent) 90%
 	);
 
 	background-clip: text;
 	-webkit-background-clip: text;
 	-webkit-text-fill-color: transparent;
+`;
+
+export const Heavy = styled.span`
+	font-weight: bold;
 `;
 
 export const Monospace = styled.span`

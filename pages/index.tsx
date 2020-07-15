@@ -4,9 +4,10 @@ import {
 	Center,
 	MDXText,
 	TextGradient,
+	Heavy,
 } from "components/styled/Layouts";
 import Tooling from "content/tooling.mdx";
-import { Text, Title, StyledLink } from "components/styled/blog";
+import { Text, Title, StyledAccentLink } from "components/styled/blog";
 import Head from "next/head";
 
 const Index = () => {
@@ -27,12 +28,14 @@ const Index = () => {
 				</Text>
 				<Text>
 					I&apos;m currently the module lead for the frontend team at{" "}
-					<StyledLink href="https://www.microland.com">
+					<StyledAccentLink href="https://www.microland.com">
 						Microland
-					</StyledLink>{" "}
+					</StyledAccentLink>{" "}
 					working with{" "}
-					<TextGradient>React + Redux + TypeScript</TextGradient>, the{" "}
-					<em>sweetest</em> combination in my opinion.
+					<TextGradient>
+						<Heavy>React + Redux + TypeScript</Heavy>
+					</TextGradient>
+					, the <em>sweetest</em> combination in my opinion.
 				</Text>
 				<MDXText>
 					<Tooling />
