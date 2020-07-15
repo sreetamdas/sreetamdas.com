@@ -7,6 +7,8 @@ import {
 	BlogPostMDXContent,
 	Datestamp,
 	PostNotPublishedWarning,
+	RoundedImageSmall,
+	PostMetaDataGrid,
 } from "components/styled/blog";
 import { getPostsData } from "utils/blog";
 import { Fragment } from "react";
@@ -26,14 +28,21 @@ const Post = ({ post }: { post: TBlogPost }) => {
 				<BlogPostTitle>
 					<TextGradient>{post.title}</TextGradient>
 				</BlogPostTitle>
-				<Datestamp>
-					{new Date(post.publishedAt).toLocaleDateString("en-US", {
-						month: "long",
-						year: "numeric",
-						day: "numeric",
-					})}
-					{!post.published && <PostNotPublishedWarning />}
-				</Datestamp>
+				<PostMetaDataGrid>
+					<RoundedImageSmall src="/SreetamDas.jpg" />
+					<Datestamp>
+						Sreetam Das &bull;{" "}
+						{new Date(post.publishedAt).toLocaleDateString(
+							"en-US",
+							{
+								month: "long",
+								year: "numeric",
+								day: "numeric",
+							}
+						)}
+						{!post.published && <PostNotPublishedWarning />}
+					</Datestamp>
+				</PostMetaDataGrid>
 				<BlogPostMDXContent>
 					<MDXPost />
 				</BlogPostMDXContent>
