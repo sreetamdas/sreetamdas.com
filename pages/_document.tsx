@@ -65,6 +65,11 @@ export default class MyDocument extends Document {
 							__html: blockingSetInitialColorMode,
 						}}
 					></script>
+					<div
+						dangerouslySetInnerHTML={{
+							__html: TS_SOURCE_COMMENT,
+						}}
+					></div>
 					<Main />
 					<NextScript />
 				</body>
@@ -76,7 +81,10 @@ export default class MyDocument extends Document {
 const blockingSetInitialColorMode = `(function() {
 	${setInitialColorMode.toString()}
 	setInitialColorMode();
-})()`;
+})()
+
+// IIFE!
+`;
 
 function setInitialColorMode() {
 	function getInitialColorMode() {
@@ -115,3 +123,13 @@ function setInitialColorMode() {
 	if (colorMode === "dark")
 		document.documentElement.setAttribute("data-theme", "dark");
 }
+
+const TS_SOURCE_COMMENT = `
+
+
+
+<!-- Hello there! -->
+
+
+
+`;
