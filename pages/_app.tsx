@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment } from "react";
 import App from "next/app";
 
 import { Center } from "components/styled/Layouts";
@@ -7,6 +7,7 @@ import { createGlobalStyle, ThemeProvider } from "styled-components";
 import { MDXProvider } from "@mdx-js/react";
 import { MDXCodeBlock } from "utils/mdx";
 import { Text } from "components/styled/blog";
+import { Console } from "components/Console";
 
 const theme = {};
 
@@ -85,6 +86,10 @@ export default class MyApp extends App {
 			<ThemeProvider theme={theme}>
 				<MDXProvider components={MDXComponents}>
 					<GlobalStyles />
+					<Fragment>
+						{/* Components needed globally go here */}
+						<Console />
+					</Fragment>
 					<Center>
 						<Navbar />
 						<Component {...pageProps} />
