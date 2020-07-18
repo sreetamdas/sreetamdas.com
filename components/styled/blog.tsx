@@ -120,11 +120,12 @@ export const ProgressBar = styled.div<{ scroll: number }>`
 
 export const LinkTo = ({
 	children,
+	style = {},
 	...props
-}: PropsWithChildren<LinkProps>) => {
+}: PropsWithChildren<LinkProps & { style?: React.CSSProperties }>) => {
 	return (
 		<Link {...props} passHref>
-			<StyledAccentLink>{children}</StyledAccentLink>
+			<StyledAccentLink {...{ style }}>{children}</StyledAccentLink>
 		</Link>
 	);
 };
