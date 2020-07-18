@@ -3,6 +3,11 @@ import { useEffect } from "react";
 
 const Console = (): null => {
 	useEffect(() => {
+		// @ts-expect-error
+		window.hack = () => {
+			console.log("Hello there!!");
+		};
+
 		console.log(TS_I_LOVE_JS);
 		console.log("Hello there!");
 	}, []);
