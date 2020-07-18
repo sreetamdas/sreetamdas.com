@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, PropsWithChildren } from "react";
 import styled from "styled-components";
 import {
 	FaGithub,
@@ -12,6 +12,7 @@ import { IoMdMoon } from "react-icons/io";
 import { LinkTo } from "components/styled/blog";
 import RoundedSquare from "public/roundedSquare.svg";
 import { Layout } from "components/styled/Layouts";
+import Link from "next/link";
 
 const NavbarWithLogo = styled.div`
 	padding: 20px 0;
@@ -65,15 +66,28 @@ const Navbar = () => {
 		}
 	}, [darkTheme]);
 
+	const NextIconLink = ({
+		children,
+		href,
+	}: PropsWithChildren<{ href: string }>) => {
+		return (
+			<Link href={href} passHref>
+				<IconContainer href={href} tabIndex={0}>
+					{children}
+				</IconContainer>
+			</Link>
+		);
+	};
+
 	return (
 		<Layout>
 			<NavbarWithLogo>
-				<IconContainer href="/" tabIndex={0}>
+				<NextIconLink href="/">
 					<RoundedSquare
 						aria-label="Home &mdash; Sreetam Das"
 						title="Home &mdash; Sreetam Das"
 					/>
-				</IconContainer>
+				</NextIconLink>
 				<NavbarWithNavs>
 					<LinkTo href="/blog">blog</LinkTo>
 					<LinkTo href="/uses">uses</LinkTo>
