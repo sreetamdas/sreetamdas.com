@@ -27,7 +27,7 @@ const Index = () => {
 					Django and Redux.
 				</Text>
 				<Text>
-					I&apos;m currently the module lead for the frontend team at{" "}
+					I&apos;m currently the Module Lead for the Frontend team at{" "}
 					<StyledAccentLink href="https://www.microland.com">
 						Microland
 					</StyledAccentLink>{" "}
