@@ -84,6 +84,7 @@ export default class MyApp extends App {
 		const { Component, pageProps } = this.props;
 		return (
 			<ThemeProvider theme={theme}>
+				{/* @ts-expect-error */}
 				<MDXProvider components={MDXComponents}>
 					<GlobalStyles />
 					<Fragment>

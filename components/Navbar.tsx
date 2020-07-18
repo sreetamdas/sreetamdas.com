@@ -39,7 +39,7 @@ const IconContainer = styled.a`
 `;
 
 const Navbar = () => {
-	const [darkTheme, setDarkTheme] = useState(undefined);
+	const [darkTheme, setDarkTheme] = useState<boolean | undefined>(undefined);
 	const handleThemeSwitch = (event: React.MouseEvent) => {
 		event.preventDefault();
 		setDarkTheme(!darkTheme);

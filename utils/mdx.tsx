@@ -81,10 +81,11 @@ const CodePreBlockWithHighlight = styled.pre`
 
 const RE = /{([\d,-]+)}/;
 const calculateLinesToHighlight = (meta: string) => {
-	if (!RE.test(meta)) {
+	const regExpExecArray = RE.exec(meta);
+	if (!RE.test(meta) || regExpExecArray === null) {
 		return () => false;
 	} else {
-		const lineNumbers = RE.exec(meta)[1]
+		const lineNumbers = regExpExecArray[1]
 			.split(",")
 			.map((v) => v.split("-").map((v) => parseInt(v, 10)));
 		return (index: number) => {
