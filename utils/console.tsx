@@ -16,8 +16,8 @@ export const getDataFromLocalForage = async <T extends unknown>(
 	}
 };
 
-export const loadLocalDataOnMount = async (): Promise<TLocalData | null> => {
-	const data = await getDataFromLocalForage<TLocalData>("top_secret");
+export const loadLocalDataOnMount = async (): Promise<TFoobarData | null> => {
+	const data = await getDataFromLocalForage<TFoobarData>("top_secret");
 	return data;
 };
 
@@ -38,4 +38,22 @@ export const checkIfKonamiCodeEntered = (codes: Array<string>) => {
 	const joinedCodes = codes.join(""),
 		konamiCodeJoined = KONAMI_CODE.join("");
 	return joinedCodes === konamiCodeJoined;
+};
+
+export const handleKonami = (
+	konamiCodeInput: Array<string>,
+	{ konami, updateFoobarDataFromConsumer }: TFoobarContext
+) => {
+	const check = checkIfKonamiCodeEntered(konamiCodeInput);
+	let updatedKonamiCodeInput: Array<string> | null = null;
+
+	if (check) updateFoobarDataFromConsumer({ konami: !konami });
+	else {
+		if (konamiCodeInput.length > 10) {
+			updatedKonamiCodeInput = [...konamiCodeInput];
+			updatedKonamiCodeInput.shift();
+		}
+	}
+
+	return updatedKonamiCodeInput;
 };

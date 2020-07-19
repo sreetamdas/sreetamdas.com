@@ -1,28 +1,48 @@
 /* eslint-disable no-console */
-import { useEffect, useState } from "react";
+import {
+	useEffect,
+	useState,
+	PropsWithChildren,
+	createContext,
+	useCallback,
+} from "react";
 import { useRouter } from "next/router";
 import {
 	doAsyncThings,
 	loadLocalDataOnMount,
-	checkIfKonamiCodeEntered,
+	handleKonami,
 } from "utils/console";
 
-const initialData: TLocalData = {
+const initialData: TFoobarData = {
 	visited: false,
 	visitedPages: [],
 	konami: false,
 };
 
-const Console = () => {
+export const FoobarContext = createContext<Partial<TFoobarContext>>({});
+
+const Console = ({ children }: PropsWithChildren<{}>): JSX.Element => {
 	const router = useRouter();
-	const [localData, setLocalData] = useState<TLocalData>(initialData);
+	const [foobarData, setFoobarData] = useState<TFoobarData>(initialData);
 	const [konamiCodeInput, setKonamiCodeInput] = useState<Array<string>>([]);
+
+	const updateFoobarDataFromConsumer = useCallback(
+		(data: Partial<TFoobarData>) => {
+			console.log({ data });
+			setFoobarData((prevState) => ({ ...prevState, ...data }));
+		},
+		[]
+	);
+	const getFoobarContextValue = {
+		...foobarData,
+		updateFoobarDataFromConsumer,
+	};
 
 	useEffect(() => {
 		const onMountAsync = async () => {
 			const dataFromLocalForage = await loadLocalDataOnMount();
 			if (dataFromLocalForage !== null) {
-				setLocalData(dataFromLocalForage);
+				setFoobarData(dataFromLocalForage);
 				console.log("local data from localforage loaded");
 				return;
 			}
@@ -59,33 +79,30 @@ const Console = () => {
 		OnEveryReRender();
 	});
 	useEffect(() => {
-		const check = checkIfKonamiCodeEntered(konamiCodeInput);
-
-		if (check) console.log("konami!");
-		else {
-			if (konamiCodeInput.length > 10) {
-				const updatedKonamiCodeInput = [...konamiCodeInput];
-				updatedKonamiCodeInput.shift();
-				setKonamiCodeInput(updatedKonamiCodeInput);
-			}
-		}
+		const updated = handleKonami(konamiCodeInput, getFoobarContextValue);
+		if (updated) setKonamiCodeInput(updated);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [konamiCodeInput]);
 
 	const OnEveryReRender = () => {
 		const { pathname, asPath } = router;
 
-		if (!localData.visitedPages.includes(pathname)) {
+		if (!foobarData.visitedPages.includes(pathname)) {
 			console.log("new");
 			if (asPath !== "/404") {
-				setLocalData({
-					...localData,
-					visitedPages: [...localData.visitedPages, pathname],
+				setFoobarData({
+					...foobarData,
+					visitedPages: [...foobarData.visitedPages, pathname],
 				});
 			}
 		}
 	};
 
-	return null;
+	return (
+		<FoobarContext.Provider value={getFoobarContextValue}>
+			{children}
+		</FoobarContext.Provider>
+	);
 };
 
 export { Console };

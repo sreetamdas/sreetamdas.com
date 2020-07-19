@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React from "react";
 import App from "next/app";
 
 import { Center } from "components/styled/Layouts";
@@ -9,7 +9,7 @@ import { MDXCodeBlock } from "utils/mdx";
 import { Text } from "components/styled/blog";
 import { Console } from "components/console";
 
-const theme = {};
+export const themeObject = {};
 
 const MDXComponents = {
 	p: Text,
@@ -35,7 +35,7 @@ const GlobalStyles = createGlobalStyle`
 		--color-inlineCode-fg: #EB5757;
 		--color-inlineCode-bg: #222;
 	}
-	[data-theme="foobar"] {
+	[data-theme="batman"] {
 		--color-primary-accent: #FFFF00;
 		--color-secondary-accent: #61DAFB;
 		--color-primary: #FFF;
@@ -91,18 +91,16 @@ export default class MyApp extends App {
 	render() {
 		const { Component, pageProps } = this.props;
 		return (
-			<ThemeProvider theme={theme}>
+			<ThemeProvider theme={themeObject}>
 				{/* @ts-expect-error */}
 				<MDXProvider components={MDXComponents}>
-					<GlobalStyles />
-					<Fragment>
-						{/* Components needed globally go here */}
-						<Console />
-					</Fragment>
-					<Center>
-						<Navbar />
-						<Component {...pageProps} />
-					</Center>
+					<Console>
+						<GlobalStyles />
+						<Center>
+							<Navbar />
+							<Component {...pageProps} />
+						</Center>
+					</Console>
 				</MDXProvider>
 			</ThemeProvider>
 		);

@@ -1,4 +1,9 @@
-import React, { useState, useEffect, PropsWithChildren } from "react";
+import React, {
+	useState,
+	useEffect,
+	PropsWithChildren,
+	useContext,
+} from "react";
 import styled from "styled-components";
 import {
 	FaGithub,
@@ -13,6 +18,7 @@ import { LinkTo } from "components/styled/blog";
 import RoundedSquare from "public/roundedSquare.svg";
 import { Layout } from "components/styled/Layouts";
 import Link from "next/link";
+import { FoobarContext } from "components/console";
 
 const NavbarWithLogo = styled.div`
 	padding: 20px 0;
@@ -40,6 +46,9 @@ const IconContainer = styled.a`
 
 const Navbar = () => {
 	const [darkTheme, setDarkTheme] = useState<boolean | undefined>(undefined);
+	const { updateFoobarDataFromConsumer, ...foobar } = useContext(
+		FoobarContext
+	) as TFoobarContext;
 	const handleThemeSwitch = (event: React.MouseEvent) => {
 		event.preventDefault();
 		setDarkTheme(!darkTheme);
@@ -57,14 +66,17 @@ const Navbar = () => {
 	useEffect(() => {
 		if (darkTheme !== undefined) {
 			if (darkTheme) {
-				document.documentElement.setAttribute("data-theme", "dark");
+				document.documentElement.setAttribute(
+					"data-theme",
+					foobar.konami ? "batman" : "dark"
+				);
 				window.localStorage.setItem("theme", "dark");
 			} else {
 				document.documentElement.removeAttribute("data-theme");
 				window.localStorage.setItem("theme", "light");
 			}
 		}
-	}, [darkTheme]);
+	}, [darkTheme, foobar.konami]);
 
 	const NextIconLink = ({
 		children,
