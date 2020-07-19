@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import {
 	useEffect,
 	useState,
@@ -11,6 +10,7 @@ import {
 	doAsyncThings,
 	loadLocalDataOnMount,
 	handleKonami,
+	logConsoleMessages,
 } from "utils/console";
 
 const initialData: TFoobarData = {
@@ -28,7 +28,6 @@ const Console = ({ children }: PropsWithChildren<{}>): JSX.Element => {
 
 	const updateFoobarDataFromConsumer = useCallback(
 		(data: Partial<TFoobarData>) => {
-			console.log({ data });
 			setFoobarData((prevState) => ({ ...prevState, ...data }));
 		},
 		[]
@@ -43,24 +42,20 @@ const Console = ({ children }: PropsWithChildren<{}>): JSX.Element => {
 			const dataFromLocalForage = await loadLocalDataOnMount();
 			if (dataFromLocalForage !== null) {
 				setFoobarData(dataFromLocalForage);
-				console.log("local data from localforage loaded");
 				return;
 			}
-			console.log("no local data");
 			return;
 		};
 		onMountAsync();
 
 		// @ts-expect-error
 		window.hack = () => {
+			// eslint-disable-next-line no-console
 			console.log("Hello there!!");
 		};
 
 		doAsyncThings();
-		console.log(TS_I_LOVE_JS);
-		console.log(
-			"Hello! If you see this, DM me on Twitter @_SreetamDas / send me an email: sreetam [at] sreetamdas [dot] com\n\nCheers!"
-		);
+		logConsoleMessages();
 	}, []);
 
 	const handleKonamiCode = (event: KeyboardEvent) => {
@@ -88,7 +83,6 @@ const Console = ({ children }: PropsWithChildren<{}>): JSX.Element => {
 		const { pathname, asPath } = router;
 
 		if (!foobarData.visitedPages.includes(pathname)) {
-			console.log("new");
 			if (asPath !== "/404") {
 				setFoobarData({
 					...foobarData,
@@ -106,41 +100,3 @@ const Console = ({ children }: PropsWithChildren<{}>): JSX.Element => {
 };
 
 export { Console };
-
-// const TS_I_LOVE_JS = `
-// ========================================================================================
-// ========================================================================================
-// ====             ========      =======      ==========              =======        =====
-// =========  =============          ===          ==============  ===========  ======  ====
-// =========  ===========             =             ============  ===========  ============
-// =========  ==========                             ===========  ============  ===========
-// =========  ==========                             ===========  =============  ==========
-// =========  ==========                             ===========  ==============  =========
-// =========  ===========                           ============  ===============  ========
-// =========  =============                       ==============  ================  =======
-// =========  ===============                   ================  =================  ======
-// =========  =================               ==================  ==================  =====
-// =========  ===================           ============  ======  ===================  ====
-// =========  =====================       ==============  ======  ===================  ====
-// =========  =======================   =================  =====  ===========  ======  ====
-// ====             ================== ===================       =============        =====
-// ========================================================================================
-// ========================================================================================`;
-
-const TS_I_LOVE_JS = `                                                      
-             ///////        ,///////                            
-            //       //* ///       //                           
-            /          ///         ,/                           
-            /*       //   //       //                           
-            /////////////////////////                           
-       ////  //  //,         //.  //  ////                      
-     //       ////   ///////   ////       //                    
-    //         //   /////////   //         //                   
-     ///      ////   ///////   ////      ///                    
-        ///////  */*         //   //////*                       
-            //  *///////////////*  //                           
-            /*       //   //       //                           
-           ./          ///         ./                           
-            //       //  ///       //                           
-             ///////         ///////                            
-`;

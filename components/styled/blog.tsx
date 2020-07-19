@@ -1,7 +1,8 @@
+import { PropsWithoutRef, Ref } from "react";
 import Link, { LinkProps } from "next/link";
-import styled from "styled-components";
-import { PropsWithChildren } from "react";
+import styled, { StyledComponentPropsWithRef } from "styled-components";
 import { TextGradient } from "components/styled/Layouts";
+import React from "react";
 
 export const BlogPostPreview = ({ post }: { post: TBlogPost }) => (
 	<Link href="/blog/[slug]" as={`/blog/${post.slug}`}>
@@ -88,18 +89,26 @@ export const StyledLink = styled.a`
 	}
 `;
 
-export const StyledAccentLink = ({ style, ...props }: any) => {
-	return (
+type TStyledLinkProps = PropsWithoutRef<
+	StyledComponentPropsWithRef<typeof StyledLink>
+>;
+export const StyledAccentLink = React.forwardRef(
+	(
+		{ style, href, onClick, children, ...props }: TStyledLinkProps,
+		ref: Ref<HTMLAnchorElement>
+	) => (
 		<StyledLink
-			{...props}
+			{...{ href, onClick, ref, ...props }}
 			style={
-				Object.keys(style).length
+				Object.keys(style ?? {}).length
 					? style
 					: { color: "var(--color-primary-accent)" }
 			}
-		/>
-	);
-};
+		>
+			{children}
+		</StyledLink>
+	)
+);
 
 export const WarningSpan = styled.span`
 	padding: 5px 10px;
@@ -129,14 +138,15 @@ export const ProgressBar = styled.div<{ scroll: number }>`
 
 export const LinkTo = ({
 	children,
+	href,
+	as,
+	replace,
 	style = {},
 	...props
-}: PropsWithChildren<LinkProps & { style?: React.CSSProperties }>) => {
+}: PropsWithoutRef<LinkProps & React.HTMLProps<HTMLAnchorElement>>) => {
 	return (
-		<Link {...props} passHref>
-			<StyledAccentLink as={StyledLink} {...{ style, ...props }}>
-				{children}
-			</StyledAccentLink>
+		<Link {...{ href }} passHref>
+			<StyledAccentLink {...{ style, ...props }}>Hi</StyledAccentLink>
 		</Link>
 	);
 };
