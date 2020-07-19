@@ -146,7 +146,9 @@ export const LinkTo = ({
 }: PropsWithoutRef<LinkProps & React.HTMLProps<HTMLAnchorElement>>) => {
 	return (
 		<Link {...{ href }} passHref>
-			<StyledAccentLink {...{ style, ...props }}>Hi</StyledAccentLink>
+			<StyledAccentLink {...{ style, ...props }}>
+				{children}
+			</StyledAccentLink>
 		</Link>
 	);
 };
