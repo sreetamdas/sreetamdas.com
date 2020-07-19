@@ -40,12 +40,20 @@ const About = () => {
 						<LinkTo href="/tooling">Tooling</LinkTo> that I am
 						always excited to use */}
 					</Text>
-					<LinkTo
-						href="/foobar"
-						style={{ color: "var(--color-background)" }}
-					>
-						x
-					</LinkTo>
+					<Center>
+						<Text paddedTop>
+							<LinkTo
+								href="/foobar"
+								data-testid="X marks the spot"
+								style={{
+									color: "var(--color-background)",
+									alignSelf: "center",
+								}}
+							>
+								x
+							</LinkTo>
+						</Text>
+					</Center>
 				</PaddingListItems>
 			</Layout>
 		</Fragment>

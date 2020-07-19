@@ -88,9 +88,18 @@ export const StyledLink = styled.a`
 	}
 `;
 
-export const StyledAccentLink = styled(StyledLink)`
-	color: var(--color-primary-accent);
-`;
+export const StyledAccentLink = ({ style, ...props }: any) => {
+	return (
+		<StyledLink
+			{...props}
+			style={
+				Object.keys(style).length
+					? style
+					: { color: "var(--color-primary-accent)" }
+			}
+		/>
+	);
+};
 
 export const WarningSpan = styled.span`
 	padding: 5px 10px;
@@ -125,7 +134,9 @@ export const LinkTo = ({
 }: PropsWithChildren<LinkProps & { style?: React.CSSProperties }>) => {
 	return (
 		<Link {...props} passHref>
-			<StyledAccentLink {...{ style }}>{children}</StyledAccentLink>
+			<StyledAccentLink as={StyledLink} {...{ style, ...props }}>
+				{children}
+			</StyledAccentLink>
 		</Link>
 	);
 };
