@@ -50,7 +50,7 @@ const About = () => {
 									alignSelf: "center",
 								}}
 							>
-								x
+								Ⅹ
 							</LinkTo>
 						</Text>
 					</Center>
