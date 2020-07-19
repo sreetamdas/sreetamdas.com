@@ -7,7 +7,7 @@ import { createGlobalStyle, ThemeProvider } from "styled-components";
 import { MDXProvider } from "@mdx-js/react";
 import { MDXCodeBlock } from "utils/mdx";
 import { Text } from "components/styled/blog";
-import { Console } from "components/Console";
+import { Console } from "components/console";
 
 const theme = {};
 

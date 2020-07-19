@@ -10,6 +10,7 @@ import {
 const initialData: TLocalData = {
 	visited: false,
 	visitedPages: [],
+	konami: false,
 };
 
 const Console = () => {
@@ -38,7 +39,7 @@ const Console = () => {
 		doAsyncThings();
 		console.log(TS_I_LOVE_JS);
 		console.log(
-			"Hello there! If you see this, DM me on Twitter @_SreetamDas / send me an email: sreetam [at] sreetamdas [dot] com\n\nCheers!"
+			"Hello! If you see this, DM me on Twitter @_SreetamDas / send me an email: sreetam [at] sreetamdas [dot] com\n\nCheers!"
 		);
 	}, []);
 
@@ -55,7 +56,7 @@ const Console = () => {
 	}, []);
 
 	useEffect(() => {
-		updateOnReRender();
+		OnEveryReRender();
 	});
 	useEffect(() => {
 		const check = checkIfKonamiCodeEntered(konamiCodeInput);
@@ -70,7 +71,7 @@ const Console = () => {
 		}
 	}, [konamiCodeInput]);
 
-	const updateOnReRender = () => {
+	const OnEveryReRender = () => {
 		const { pathname, asPath } = router;
 
 		if (!localData.visitedPages.includes(pathname)) {
