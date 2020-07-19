@@ -47,7 +47,7 @@ const GlobalStyles = createGlobalStyle`
 
   	html, body {
 		font-size: 18px;
-		font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu,
+		font-family: -apple-system, BlinkMacSystemFont, Karla, Roboto, Segoe UI, Oxygen, Ubuntu,
 			Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
 		color: var(--color-primary);
 		background-color: var(--color-background);
