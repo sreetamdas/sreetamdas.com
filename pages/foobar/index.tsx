@@ -7,7 +7,7 @@ const Index = () => {
 
 export default Index;
 export const getServerSideProps: GetServerSideProps = async ({ res }) => {
-	res.setHeader("x-code", "https://sreetamdas.com/foobar/headers");
+	res.setHeader("x-foobar", "https://sreetamdas.com/foobar/headers");
 	return {
 		props: {},
 	};
