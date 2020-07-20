@@ -42,7 +42,10 @@ export default class MyDocument extends Document {
 						name="viewport"
 						content="initial-scale=1.0, width=device-width"
 					/>
-					<meta name="description" content="Hey! I'm Sreetam Das" />
+					<meta
+						name="description"
+						content="Self-taught React developer currently working as the Module Lead for the Frontend Team at Microland"
+					/>
 					<meta property="og:title" content="Sreetam Das" />
 
 					<link rel="shortcut icon" href="/favicon.png" />
