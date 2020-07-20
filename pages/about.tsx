@@ -44,7 +44,7 @@ const About = () => {
 						<Text paddedTop>
 							<LinkTo
 								href="/foobar"
-								data-testid="X marks the spot"
+								data-testid="Ⅹ"
 								style={{
 									color: "var(--color-background)",
 									alignSelf: "center",

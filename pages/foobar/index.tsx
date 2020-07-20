@@ -2,7 +2,7 @@ import { Title } from "components/styled/blog";
 import { GetServerSideProps } from "next";
 
 const Index = () => {
-	return <Title>X marks the spot</Title>;
+	return <Title>Ⅹ marks the spot</Title>;
 };
 
 export default Index;
