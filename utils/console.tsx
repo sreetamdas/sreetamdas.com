@@ -60,17 +60,35 @@ export const handleKonami = (
 
 export const logConsoleMessages = () => {
 	// eslint-disable-next-line no-console
-	console.log(`%c${CONSOLE_REACT}`, "color: cyan; font-weight: bold;");
+	console.log(
+		`%c${CONSOLE_REACT}`,
+		`color: #61DAFB;
+		font-weight: bold;
+		font-size: 1.1em;
+		background-color: black;
+		line-height: 1.1`
+	);
 	// eslint-disable-next-line no-console
 	console.log(
-		`%c${CONSOLE_GREETING}`,
-		"color: cyan; font-size: 1.5em; font-family: monospace; font-weight: bold;"
+		`         %c${CONSOLE_GREETING}`,
+		"font-size: 1.5em; font-family: monospace; font-weight: bold;"
 	);
 	// eslint-disable-next-line no-console
 	console.log(
 		`%c${CONSOLE_MESSAGE}`,
-		"color: cyan; font-size: 1.1em; font-family: monospace"
+		"font-size: 1.1em; font-family: monospace"
 	);
+};
+
+type TCustomLogMessages = Array<any>;
+
+/**
+ * `dog`: development-only `console.log`
+ * @param messages to be logged only during dev
+ */
+export const dog = (...messages: TCustomLogMessages) => {
+	// eslint-disable-next-line no-console
+	process.env.NODE_ENV === "development" && console.log(...messages);
 };
 
 // const TS_I_LOVE_JS = `
@@ -93,22 +111,24 @@ export const logConsoleMessages = () => {
 // ========================================================================================
 // ========================================================================================`;
 
-const CONSOLE_REACT = `                                                      
-         ///////        ,///////                            
-        //       //* ///       //                           
-        /          ///         ,/                           
-        /*       //   //       //                           
-        /////////////////////////                           
-   ////  //  //,         //.  //  ////                      
- //       ////   ///////   ////       //                    
-//         //   /////////   //         //                   
- ///      ////   ///////   ////      ///                    
-    ///////  */*         //   //////*                       
-        //  *///////////////*  //                           
-        /*       //   //       //                           
-       ./          ///         ./                           
-        //       //  ///       //                           
-         ///////         ///////                            
+const CONSOLE_REACT = `
+                                           
+          ///////        ,///////          
+         //       //* ///       //         
+         /          ///         ,/         
+         /*       //   //       //         
+         /////////////////////////         
+    ////  //  //,         //.  //  ////    
+  //       ////   ///////   ////       //  
+ //         //   /////////   //         // 
+  ///      ////   ///////   ////      ///  
+     ///////  */*         //   //////*     
+         //  *///////////////*  //         
+         /*       //   //       //         
+        ./          ///         ./         
+         //       //  ///       //         
+          ///////         ///////          
+                                           
 `;
 
 const CONSOLE_GREETING = "Hello Beautiful Nerd!";
