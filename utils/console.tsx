@@ -84,7 +84,6 @@ export const useNotInitialRender = (
 };
 
 export const logConsoleMessages = () => {
-	return;
 	// eslint-disable-next-line no-console
 	console.log(
 		`%c${CONSOLE_REACT}`,
@@ -119,7 +118,7 @@ export const dog = (...messages: Array<any>) => {
 			"%cdev%c🐶",
 			`font-family: monospace;
 			color: indianred;
-			background-color: lightgray;
+			background-color: #eee;
 			border-radius: 2px;
 			padding: 2px;
 			margin-right: 2px;

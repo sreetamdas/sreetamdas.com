@@ -14,7 +14,7 @@ import {
 	updateLocalData,
 } from "utils/console";
 
-const initialData: TFoobarData = {
+export const initialFoobarData: TFoobarData = {
 	visitedPages: [],
 	unlocked: false,
 };
@@ -27,8 +27,8 @@ export const FoobarContext = createContext<TFoobarContext>(
 const Console = ({ children }: PropsWithChildren<{}>): JSX.Element => {
 	const router = useRouter();
 	const [dataLoaded, setDataLoaded] = useState(false);
-	const [foobarData, setFoobarData] = useState<typeof initialData>(
-		initialData
+	const [foobarData, setFoobarData] = useState<typeof initialFoobarData>(
+		initialFoobarData
 	);
 	const [konamiCodeInput, setKonamiCodeInput] = useState<Array<string>>([]);
 
