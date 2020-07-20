@@ -57,6 +57,16 @@ const Console = ({ children }: PropsWithChildren<{}>): JSX.Element => {
 		doAsyncThings();
 		logConsoleMessages();
 	}, []);
+	useEffect(() => {
+		// @ts-expect-error
+		window.logStatus = () => {
+			// eslint-disable-next-line no-console
+			console.log(
+				"🐶 here's your data:",
+				`\n\n${JSON.stringify(foobarData, null, 2)}`
+			);
+		};
+	}, [foobarData]);
 
 	const handleKonamiCode = (event: KeyboardEvent) => {
 		setKonamiCodeInput((konamiCodeInput) => [

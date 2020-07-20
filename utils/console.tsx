@@ -82,13 +82,11 @@ export const logConsoleMessages = () => {
 	dog("Hello", "there!");
 };
 
-type TCustomLogMessages = Array<any>;
-
 /**
  * `dog`: development-only `console.log`
  * @param messages to be logged only during dev
  */
-export const dog = (...messages: TCustomLogMessages) => {
+export const dog = (...messages: Array<any>) => {
 	process.env.NODE_ENV === "development" &&
 		// eslint-disable-next-line no-console
 		console.log(
