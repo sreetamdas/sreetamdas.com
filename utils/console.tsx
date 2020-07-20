@@ -1,5 +1,4 @@
 import localforage from "localforage";
-import { useRef, useEffect, DependencyList, EffectCallback } from "react";
 
 export const doAsyncThings = async () => {
 	await localforage.setItem("Hello", "there!");
@@ -70,17 +69,27 @@ export const handleKonami = (
 	return updatedKonamiCodeInput;
 };
 
-export const useNotInitialRender = (
-	func: EffectCallback,
-	deps: DependencyList
-) => {
-	const didMount = useRef(0);
+export const mergeLocalDataIntoStateOnMount = (
+	parent: TFoobarData,
+	localforageData: TFoobarData | null
+): TFoobarData => {
+	if (localforageData === null) return parent;
+	const result = { ...parent },
+		localforageCopy = { ...localforageData };
+	for (const key in result) {
+		if (key === "unlocked" || key === "konami") {
+			// @ts-expect-error
+			result[key] = localforageCopy[key]
+				? localforageCopy[key]
+				: result[key];
+		} else if (key === "completed" || key === "visitedPages") {
+			result[key] = [
+				...new Set([...result[key], ...localforageCopy[key]]),
+			];
+		}
+	}
 
-	useEffect(() => {
-		if (didMount.current === 2) func();
-		else didMount.current = didMount.current + 1;
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, deps);
+	return result;
 };
 
 export const logConsoleMessages = () => {

@@ -12,11 +12,45 @@ import {
 	handleKonami,
 	logConsoleMessages,
 	updateLocalData,
+	mergeLocalDataIntoStateOnMount,
 } from "utils/console";
 
 export const initialFoobarData: TFoobarData = {
 	visitedPages: [],
 	unlocked: false,
+	completed: [],
+};
+
+/**
+ * Simple object check.
+ * @param item
+ * @returns {boolean}
+ */
+export function isObject(item: object): boolean {
+	return item && typeof item === "object" && !Array.isArray(item);
+}
+
+/**
+ * Deep merge two objects.
+ * @param target
+ * @param ...sources
+ */
+export const mergeDeep = (target: any, ...sources: any): any => {
+	if (!sources.length) return target;
+	const source = sources.shift();
+
+	if (isObject(target) && isObject(source)) {
+		for (const key in source) {
+			if (isObject(source[key])) {
+				if (!target[key]) Object.assign(target, { [key]: {} });
+				mergeDeep(target[key], source[key]);
+			} else {
+				Object.assign(target, { [key]: source[key] });
+			}
+		}
+	}
+
+	return mergeDeep(target, ...sources);
 };
 
 // we're gonna hydrate this just below, and <Console /> wraps the entire usable DOM anyway
@@ -33,8 +67,18 @@ const Console = ({ children }: PropsWithChildren<{}>): JSX.Element => {
 	const [konamiCodeInput, setKonamiCodeInput] = useState<Array<string>>([]);
 
 	const updateFoobarDataPartially = useCallback(
-		(data: Partial<TFoobarData>) => {
-			setFoobarData((prevState) => ({ ...prevState, ...data }));
+		(data: Partial<TFoobarData>, mergeManually = false) => {
+			setFoobarData((prevState) => {
+				let final: TFoobarData;
+				const temp = { ...prevState };
+				if (mergeManually)
+					final = mergeLocalDataIntoStateOnMount(
+						temp,
+						data as TFoobarData
+					);
+				else final = mergeDeep(temp, data);
+				return final;
+			});
 		},
 		[]
 	);
@@ -48,7 +92,7 @@ const Console = ({ children }: PropsWithChildren<{}>): JSX.Element => {
 		const onMountAsync = async () => {
 			const dataFromLocalForage = await loadLocalDataOnMount();
 			if (dataFromLocalForage !== null) {
-				setFoobarData(dataFromLocalForage);
+				updateFoobarDataPartially(dataFromLocalForage, true);
 				setDataLoaded(true);
 				return;
 			}
@@ -65,7 +109,7 @@ const Console = ({ children }: PropsWithChildren<{}>): JSX.Element => {
 
 		doAsyncThings();
 		logConsoleMessages();
-	}, []);
+	}, [updateFoobarDataPartially]);
 	useEffect(() => {
 		dataLoaded && updateLocalData(foobarData);
 		// @ts-expect-error

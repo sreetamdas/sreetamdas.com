@@ -170,3 +170,12 @@ export const RoundedImageSmall = styled.img`
 	height: 25px;
 	border-radius: 50%;
 `;
+
+export const StyledPre = styled.pre`
+	background-color: var(--color-inlineCode-bg);
+	color: var(--color-inlineCode-fg);
+	margin: 0;
+	padding: 15px;
+	border-radius: 5px;
+	font-size: 14px;
+`;

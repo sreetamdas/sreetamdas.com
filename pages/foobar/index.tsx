@@ -1,4 +1,4 @@
-import { Title } from "components/styled/blog";
+import { Title, LinkTo, StyledPre } from "components/styled/blog";
 import { GetServerSideProps } from "next";
 import { useState, useContext, Fragment, useEffect } from "react";
 import { FoobarContext, initialFoobarData } from "components/console";
@@ -33,7 +33,8 @@ export const Foobar = () => {
 		<Fragment>
 			<Layout>
 				<Title>You&apos;re unlocked!</Title>
-				{JSON.stringify(foobarObject, null, 2)}
+				<StyledPre>{JSON.stringify(foobarObject, null, 2)}</StyledPre>
+
 				<button onClick={handleClearFoobarData}>Restart</button>
 			</Layout>
 		</Fragment>
@@ -63,11 +64,30 @@ export const FoobarButLocked = () => (
 	</Fragment>
 );
 
-export const FoobarSchrodinger = () => {
+type TFoobarSchrodingerProps = {
+	completedPage?: string;
+};
+export const FoobarSchrodinger = ({
+	completedPage,
+}: TFoobarSchrodingerProps) => {
 	const foobarObject = useContext(FoobarContext);
-	const { unlocked, dataLoaded } = foobarObject;
+	const {
+		unlocked,
+		dataLoaded,
+		updateFoobarDataPartially,
+		completed,
+	} = foobarObject;
 	const [foobarUnlocked, setFoobarUnlocked] = useState(unlocked);
 
+	useEffect(() => {
+		if (completedPage && !completed?.includes(completedPage)) {
+			const updatedPages = [...completed];
+			updatedPages.push(completedPage);
+			updateFoobarDataPartially({
+				completed: updatedPages,
+			});
+		}
+	}, [completed, completedPage, updateFoobarDataPartially]);
 	useEffect(() => {
 		setFoobarUnlocked(unlocked);
 	}, [unlocked]);
@@ -76,7 +96,12 @@ export const FoobarSchrodinger = () => {
 		<Fragment>
 			{dataLoaded ? (
 				foobarUnlocked ? (
-					<Foobar />
+					<Fragment>
+						<Foobar />
+						<code>
+							<LinkTo href="/foobar">to /foobar</LinkTo>
+						</code>
+					</Fragment>
 				) : (
 					<FoobarButLocked />
 				)
