@@ -1,9 +1,4 @@
-import React from "react";
-import { Title } from "components/styled/blog";
+import { FoobarSchrodinger } from "pages/foobar";
 
-const Index = () => {
-	// TODO: headers
-	return <Title>Congrats!</Title>;
-};
-
+const Index = () => <FoobarSchrodinger />;
 export default Index;
