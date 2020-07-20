@@ -40,7 +40,7 @@ const Index = () => {
 				<MDXText>
 					<Tooling />
 				</MDXText>
-				<Text paddedTop>
+				<Text paddingTop>
 					I also ❤️ a lot of other things, in no particular order:
 				</Text>
 				<Text>

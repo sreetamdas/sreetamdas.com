@@ -36,12 +36,12 @@ const About = () => {
 					<Text>
 						<LinkTo href="/podcasts">Podcasts</LinkTo> that I listen
 						to
-						{/* <br />
+						<br />
 						<LinkTo href="/tooling">Tooling</LinkTo> that I am
-						always excited to use */}
+						always excited to use
 					</Text>
 					<Center>
-						<Text paddedTop>
+						<Text paddingTop={50}>
 							<LinkTo
 								href="/foobar"
 								data-testid="Ⅹ"

@@ -63,11 +63,16 @@ export const Title = styled.h1`
 	font-size: 2rem;
 `;
 
-export const Text = styled.p<{ paddedTop?: boolean }>`
+export const Text = styled.p<{ paddingTop?: boolean | number }>`
 	line-height: 1.4;
 	margin: 0; /* thanks @mxstbr! */
 	padding: 15px 0;
-	padding-top: ${({ paddedTop }) => (paddedTop ? "150px" : null)};
+	padding-top: ${({ paddingTop }) =>
+		paddingTop
+			? typeof paddingTop === "number"
+				? `${paddingTop}px`
+				: "150px"
+			: null};
 `;
 
 export const SmallText = styled.p`
