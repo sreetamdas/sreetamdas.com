@@ -78,6 +78,8 @@ export const logConsoleMessages = () => {
 		`%c${CONSOLE_MESSAGE}`,
 		"font-size: 1.1em; font-family: monospace"
 	);
+
+	dog("Hello", "there!");
 };
 
 type TCustomLogMessages = Array<any>;
@@ -87,8 +89,24 @@ type TCustomLogMessages = Array<any>;
  * @param messages to be logged only during dev
  */
 export const dog = (...messages: TCustomLogMessages) => {
-	// eslint-disable-next-line no-console
-	process.env.NODE_ENV === "development" && console.log(...messages);
+	process.env.NODE_ENV === "development" &&
+		// eslint-disable-next-line no-console
+		console.log(
+			"%cdev%c🐶",
+			`font-family: monospace;
+			color: indianred;
+			background-color: lightgray;
+			border-radius: 2px;
+			padding: 2px;
+			margin-right: 2px;
+			font-size: 1.1em`,
+			`font-family: unset;
+			color: unset;
+			background-color: unset;
+			border: unset
+			font-size: 1.2em`,
+			...messages
+		);
 };
 
 // const TS_I_LOVE_JS = `
