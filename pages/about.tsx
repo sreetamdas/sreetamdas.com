@@ -1,11 +1,19 @@
 import MDXAbout from "content/about.mdx";
-import { Fragment } from "react";
+import { Fragment, useContext } from "react";
 import Head from "next/head";
 import { Layout, Center, PaddingListItems } from "components/styled/Layouts";
 import { Title, Text, LinkTo } from "components/styled/blog";
 import { ExternalLinksOverlay } from "components/Navbar";
+import { FoobarContext } from "components/console";
 
 const About = () => {
+	const foobar = useContext(FoobarContext);
+	const { updateFoobarDataPartially, unlocked } = foobar;
+
+	const handleXDiscovery = () => {
+		if (!unlocked) updateFoobarDataPartially({ unlocked: true });
+	};
+
 	return (
 		<Fragment>
 			<Head>
@@ -45,6 +53,7 @@ const About = () => {
 							<LinkTo
 								href="/foobar"
 								data-testid="Ⅹ"
+								onClick={handleXDiscovery}
 								style={{
 									color: "var(--color-background)",
 									alignSelf: "center",

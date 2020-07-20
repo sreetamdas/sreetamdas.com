@@ -11,22 +11,28 @@ import {
 	loadLocalDataOnMount,
 	handleKonami,
 	logConsoleMessages,
+	updateLocalData,
 } from "utils/console";
 
 const initialData: TFoobarData = {
-	visited: false,
 	visitedPages: [],
-	konami: false,
+	unlocked: false,
 };
 
-export const FoobarContext = createContext<Partial<TFoobarContext>>({});
+// we're gonna hydrate this just below, and <Console /> wraps the entire usable DOM anyway
+export const FoobarContext = createContext<TFoobarContext>(
+	{} as TFoobarContext
+);
 
 const Console = ({ children }: PropsWithChildren<{}>): JSX.Element => {
 	const router = useRouter();
-	const [foobarData, setFoobarData] = useState<TFoobarData>(initialData);
+	const [dataLoaded, setDataLoaded] = useState(false);
+	const [foobarData, setFoobarData] = useState<typeof initialData>(
+		initialData
+	);
 	const [konamiCodeInput, setKonamiCodeInput] = useState<Array<string>>([]);
 
-	const updateFoobarDataFromConsumer = useCallback(
+	const updateFoobarDataPartially = useCallback(
 		(data: Partial<TFoobarData>) => {
 			setFoobarData((prevState) => ({ ...prevState, ...data }));
 		},
@@ -34,7 +40,8 @@ const Console = ({ children }: PropsWithChildren<{}>): JSX.Element => {
 	);
 	const getFoobarContextValue = {
 		...foobarData,
-		updateFoobarDataFromConsumer,
+		dataLoaded,
+		updateFoobarDataPartially,
 	};
 
 	useEffect(() => {
@@ -42,8 +49,10 @@ const Console = ({ children }: PropsWithChildren<{}>): JSX.Element => {
 			const dataFromLocalForage = await loadLocalDataOnMount();
 			if (dataFromLocalForage !== null) {
 				setFoobarData(dataFromLocalForage);
+				setDataLoaded(true);
 				return;
 			}
+			setDataLoaded(true);
 			return;
 		};
 		onMountAsync();
@@ -58,6 +67,7 @@ const Console = ({ children }: PropsWithChildren<{}>): JSX.Element => {
 		logConsoleMessages();
 	}, []);
 	useEffect(() => {
+		dataLoaded && updateLocalData(foobarData);
 		// @ts-expect-error
 		window.logStatus = () => {
 			// eslint-disable-next-line no-console
@@ -66,7 +76,7 @@ const Console = ({ children }: PropsWithChildren<{}>): JSX.Element => {
 				`\n\n${JSON.stringify(foobarData, null, 2)}`
 			);
 		};
-	}, [foobarData]);
+	}, [foobarData, dataLoaded]);
 
 	const handleKonamiCode = (event: KeyboardEvent) => {
 		setKonamiCodeInput((konamiCodeInput) => [
@@ -92,10 +102,9 @@ const Console = ({ children }: PropsWithChildren<{}>): JSX.Element => {
 	const OnEveryReRender = () => {
 		const { pathname, asPath } = router;
 
-		if (!foobarData.visitedPages.includes(pathname)) {
+		if (!foobarData.visitedPages?.includes(pathname)) {
 			if (asPath !== "/404") {
-				setFoobarData({
-					...foobarData,
+				updateFoobarDataPartially({
 					visitedPages: [...foobarData.visitedPages, pathname],
 				});
 			}

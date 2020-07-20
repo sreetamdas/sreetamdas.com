@@ -46,7 +46,7 @@ const IconContainer = styled.a`
 
 const Navbar = () => {
 	const [darkTheme, setDarkTheme] = useState<boolean | undefined>(undefined);
-	const { updateFoobarDataFromConsumer, ...foobar } = useContext(
+	const { updateFoobarDataPartially, ...foobar } = useContext(
 		FoobarContext
 	) as TFoobarContext;
 	const handleThemeSwitch = (event: React.MouseEvent) => {

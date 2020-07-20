@@ -1,4 +1,5 @@
 import localforage from "localforage";
+import { useRef, useEffect, DependencyList, EffectCallback } from "react";
 
 export const doAsyncThings = async () => {
 	await localforage.setItem("Hello", "there!");
@@ -16,8 +17,19 @@ export const getDataFromLocalForage = async <T extends unknown>(
 	}
 };
 
+export const saveToLocalForage = async (data: any) => {
+	try {
+		await localforage.setItem("foobar-data", data);
+	} catch (error) {
+		throw new Error(error);
+	}
+};
+export const updateLocalData = async (data: any) => {
+	await saveToLocalForage(data);
+};
+
 export const loadLocalDataOnMount = async (): Promise<TFoobarData | null> => {
-	const data = await getDataFromLocalForage<TFoobarData>("top_secret");
+	const data = await getDataFromLocalForage<TFoobarData>("foobar-data");
 	return data;
 };
 
@@ -42,12 +54,12 @@ export const checkIfKonamiCodeEntered = (codes: Array<string>) => {
 
 export const handleKonami = (
 	konamiCodeInput: Array<string>,
-	{ konami, updateFoobarDataFromConsumer }: TFoobarContext
+	{ konami, updateFoobarDataPartially }: TFoobarContext
 ) => {
 	const check = checkIfKonamiCodeEntered(konamiCodeInput);
 	let updatedKonamiCodeInput: Array<string> | null = null;
 
-	if (check) updateFoobarDataFromConsumer({ konami: !konami });
+	if (check) updateFoobarDataPartially({ konami: !konami });
 	else {
 		if (konamiCodeInput.length > 10) {
 			updatedKonamiCodeInput = [...konamiCodeInput];
@@ -58,7 +70,21 @@ export const handleKonami = (
 	return updatedKonamiCodeInput;
 };
 
+export const useNotInitialRender = (
+	func: EffectCallback,
+	deps: DependencyList
+) => {
+	const didMount = useRef(0);
+
+	useEffect(() => {
+		if (didMount.current === 2) func();
+		else didMount.current = didMount.current + 1;
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, deps);
+};
+
 export const logConsoleMessages = () => {
+	return;
 	// eslint-disable-next-line no-console
 	console.log(
 		`%c${CONSOLE_REACT}`,

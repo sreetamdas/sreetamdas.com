@@ -1,9 +1,10 @@
 declare type TFoobarData = {
-	visited: boolean;
 	visitedPages: Array<string>;
-	konami: boolean;
+	konami?: boolean;
+	unlocked: boolean;
 };
 
-declare type TFoobarContext = TFoobarData & {
-	updateFoobarDataFromConsumer: (data: Partial<TFoobarData>) => void;
+declare type TFoobarContext = Partial<TFoobarData> & {
+	dataLoaded: boolean;
+	updateFoobarDataPartially: (data: Partial<TFoobarData>) => void;
 };
