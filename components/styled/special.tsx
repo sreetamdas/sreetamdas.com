@@ -1,4 +1,4 @@
-import React, { PropsWithChildren, HTMLAttributes, Key } from "react";
+import React, { PropsWithChildren, HTMLAttributes, Key, Fragment } from "react";
 import styled, { keyframes, CSSProperties } from "styled-components";
 
 const range = (start: number, end?: number, step = 1) => {
@@ -78,7 +78,7 @@ type TSparkle = {
 	size: number;
 	style: CSSProperties;
 };
-const DEFAULT_COLOR = "#FFC700";
+const DEFAULT_COLOR = "#FFFF00";
 const generateSparkle = (color: string): Omit<TSparkle, "key"> => {
 	const sparkle = {
 		id: String(random(10000, 99999)),
@@ -186,10 +186,105 @@ const SparkleSvg = styled.svg`
 		animation: ${spin} 1000ms linear;
 	}
 `;
-const ChildWrapper = styled.strong`
+const ChildWrapper = styled.div`
 	position: relative;
-	z-index: 1;
-	font-weight: bold;
+	z-index: 2;
 `;
 
 export { Sparkles };
+
+const drifting = keyframes`
+	{
+  	0% {
+    transform: translate(0,0);
+  }
+  	100% {
+    transform: translate(10px, 10px) 
+  	}
+}
+`;
+
+const FullscreenWrapper = styled.span`
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100vh;
+	overflow: hidden;
+	z-index: 1;
+`;
+
+const DriftingSparkleWrapper = styled.span`
+	position: absolute;
+	display: block;
+	@media (prefers-reduced-motion: no-preference) {
+		animation: ${drifting} 4000ms linear;
+	}
+`;
+const DriftingSparkleSvg = styled.svg`
+	display: block;
+	@media (prefers-reduced-motion: no-preference) {
+		animation: ${comeInOut} 4000ms linear;
+	}
+`;
+
+const DriftingSparkle = ({
+	size,
+	color,
+	style,
+}: Pick<TSparkle, "size" | "color" | "style">) => {
+	const path =
+		"M26.5 25.5C19.0043 33.3697 0 34 0 34C0 34 19.1013 35.3684 26.5 43.5C33.234 50.901 34 68 34 68C34 68 36.9884 50.7065 44.5 43.5C51.6431 36.647 68 34 68 34C68 34 51.6947 32.0939 44.5 25.5C36.5605 18.2235 34 0 34 0C34 0 33.6591 17.9837 26.5 25.5Z";
+	return (
+		<DriftingSparkleWrapper style={style}>
+			<DriftingSparkleSvg
+				width={size}
+				height={size}
+				viewBox="0 0 68 68"
+				fill="none"
+			>
+				<path d={path} fill={color} />
+			</DriftingSparkleSvg>
+		</DriftingSparkleWrapper>
+	);
+};
+
+export const DriftingSparklesContainer = ({
+	color = DEFAULT_COLOR,
+	children,
+	...props
+}: PropsWithChildren<HTMLAttributes<HTMLElement>>) => {
+	const [sparkles, setSparkles] = React.useState(() => {
+		return range(10).map(() => generateSparkle(color));
+	});
+	const prefersReducedMotion = usePrefersReducedMotion();
+	useRandomInterval(
+		() => {
+			const sparkle = generateSparkle(color);
+			const now = Date.now();
+			const nextSparkles = sparkles.filter((sp) => {
+				const delta = now - sp.createdAt;
+				return delta <= 2000;
+			});
+			nextSparkles.push(sparkle);
+			setSparkles(nextSparkles);
+		},
+		prefersReducedMotion ? null : 0,
+		prefersReducedMotion ? null : 100
+	);
+	return (
+		<Fragment>
+			<FullscreenWrapper {...props}>
+				{sparkles.map((sparkle) => (
+					<DriftingSparkle
+						key={sparkle.id}
+						color={sparkle.color}
+						size={sparkle.size}
+						style={sparkle.style}
+					/>
+				))}
+			</FullscreenWrapper>
+			<ChildWrapper>{children}</ChildWrapper>
+		</Fragment>
+	);
+};

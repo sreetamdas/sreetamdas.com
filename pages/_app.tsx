@@ -40,7 +40,7 @@ const GlobalStyles = createGlobalStyle`
 		--color-secondary-accent: #61DAFB;
 		--color-primary: #FFF;
 		--color-background: #000;
-		--color-inlineCode-fg: #FFFF00;
+		--color-inlineCode-fg: #EB5757;
 		--color-inlineCode-bg: #222;
 	}
 

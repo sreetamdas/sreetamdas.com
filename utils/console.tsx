@@ -76,7 +76,7 @@ export const mergeLocalDataIntoStateOnMount = (
 	if (localforageData === null) return parent;
 	const result = { ...parent },
 		localforageCopy = { ...localforageData };
-	for (const key in result) {
+	for (const key in localforageData) {
 		if (key === "unlocked" || key === "konami") {
 			// @ts-expect-error
 			result[key] = localforageCopy[key]
