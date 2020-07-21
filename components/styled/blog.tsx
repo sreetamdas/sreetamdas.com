@@ -136,7 +136,7 @@ export const ProgressBar = styled.div<{ scroll: number }>`
 		var(--color-secondary-accent) 100%
 	);
 	width: ${({ scroll }) => scroll}%;
-	height: 8px;
+	height: 5px;
 	transition: 0.2s ease;
 	z-index: 3;
 `;

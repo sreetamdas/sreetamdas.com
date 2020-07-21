@@ -2,8 +2,7 @@
 	"name": "foobar",
 	"version": "1.0.0",
 	"scripts": {
-		"dev": "next",
-		"devdev": "next dev",
+		"dev": "next dev",
 		"build": "next build",
 		"start": "next start",
 		"export": "next export",
