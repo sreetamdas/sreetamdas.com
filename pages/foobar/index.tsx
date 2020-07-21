@@ -5,6 +5,7 @@ import { FoobarContext, initialFoobarData } from "components/console";
 import Custom404 from "pages/404";
 import { dog } from "utils/console";
 import { Layout } from "components/styled/Layouts";
+import { Sparkles } from "components/styled/special";
 
 /**
  * this page is only "activated" once `X` has been discovered
@@ -32,7 +33,9 @@ export const Foobar = () => {
 	return (
 		<Fragment>
 			<Layout>
-				<Title>You&apos;re unlocked!</Title>
+				<Sparkles>
+					<Title>You&apos;re unlocked!</Title>
+				</Sparkles>
 				<StyledPre>{JSON.stringify(foobarObject, null, 2)}</StyledPre>
 
 				<button onClick={handleClearFoobarData}>Restart</button>
