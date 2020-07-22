@@ -9,7 +9,13 @@ import { MDXCodeBlock } from "utils/mdx";
 import { Text } from "components/styled/blog";
 import { Console } from "components/console";
 
-export const themeObject = {};
+export const themeObject = {
+	getCSSVarValue: (variable: string) => {
+		if (typeof window !== "undefined")
+			return getComputedStyle(document.body).getPropertyValue(variable);
+		return undefined;
+	},
+};
 
 const MDXComponents = {
 	p: Text,

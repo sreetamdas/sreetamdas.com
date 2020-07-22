@@ -14,7 +14,6 @@ import {
 	updateLocalData,
 	mergeLocalDataIntoStateOnMount,
 } from "utils/console";
-import { DriftingSparklesContainer } from "components/styled/special";
 
 export const initialFoobarData: TFoobarData = {
 	visitedPages: [],
@@ -158,7 +157,6 @@ const Console = ({ children }: PropsWithChildren<{}>): JSX.Element => {
 
 	return (
 		<FoobarContext.Provider value={getFoobarContextValue}>
-			{foobarData.konami ? <DriftingSparklesContainer /> : null}
 			{children}
 		</FoobarContext.Provider>
 	);
