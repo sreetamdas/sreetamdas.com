@@ -1,10 +1,11 @@
-import { Title, LinkTo, StyledPre } from "components/styled/blog";
+import { Title, StyledPre } from "components/styled/blog";
 import { GetServerSideProps } from "next";
 import { useState, useContext, Fragment, useEffect } from "react";
 import { FoobarContext, initialFoobarData } from "components/console";
 import Custom404 from "pages/404";
 import { dog } from "utils/console";
-import { Layout } from "components/styled/Layouts";
+import { Layout, Space } from "components/styled/Layouts";
+import { SupportSreetamDas } from "components/styled/special";
 
 /**
  * this page is only "activated" once `X` has been discovered
@@ -21,7 +22,7 @@ export const getServerSideProps: GetServerSideProps = async ({ res }) => {
 	};
 };
 
-export const Foobar = () => {
+export const Foobar = ({ completedPage }: TFoobarSchrodingerProps) => {
 	const foobarContextObj = useContext(FoobarContext);
 	const { updateFoobarDataPartially, ...foobarObject } = foobarContextObj;
 
@@ -32,9 +33,17 @@ export const Foobar = () => {
 	return (
 		<Fragment>
 			<Layout>
-				<Title>You&apos;re unlocked!</Title>
+				{completedPage && (
+					<Title>
+						You&apos;ve unlocked <code>{completedPage}</code>!
+					</Title>
+				)}
+				Here are your completed challenges:
+				<Space />
 				<StyledPre>{JSON.stringify(foobarObject, null, 2)}</StyledPre>
 				<button onClick={handleClearFoobarData}>Restart</button>
+				<Space />
+				<SupportSreetamDas />
 			</Layout>
 		</Fragment>
 	);
@@ -96,10 +105,7 @@ export const FoobarSchrodinger = ({
 			{dataLoaded ? (
 				foobarUnlocked ? (
 					<Fragment>
-						<Foobar />
-						<code>
-							<LinkTo href="/foobar">to /foobar</LinkTo>
-						</code>
+						<Foobar {...{ completedPage }} />
 					</Fragment>
 				) : (
 					<FoobarButLocked />

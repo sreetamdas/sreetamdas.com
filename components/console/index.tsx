@@ -4,6 +4,7 @@ import {
 	PropsWithChildren,
 	createContext,
 	useCallback,
+	Fragment,
 } from "react";
 import { useRouter } from "next/router";
 import {
@@ -14,6 +15,8 @@ import {
 	updateLocalData,
 	mergeLocalDataIntoStateOnMount,
 } from "utils/console";
+import { Space, Center } from "components/styled/Layouts";
+import { StyledAccentLink } from "components/styled/blog";
 
 export const initialFoobarData: TFoobarData = {
 	visitedPages: [],
@@ -158,6 +161,19 @@ const Console = ({ children }: PropsWithChildren<{}>): JSX.Element => {
 	return (
 		<FoobarContext.Provider value={getFoobarContextValue}>
 			{children}
+			{foobarData.unlocked && (
+				<Fragment>
+					<Space />
+					<Center>
+						<code>
+							<StyledAccentLink href="/foobar">
+								resume /foobar
+							</StyledAccentLink>
+						</code>
+					</Center>
+				</Fragment>
+			)}
+			<Space size={50} />
 		</FoobarContext.Provider>
 	);
 };

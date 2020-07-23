@@ -62,3 +62,8 @@ export const Monospace = styled.span`
 	font-family: SFMono-Regular, Consolas, Roboto Mono, Menlo, Monaco,
 		Liberation Mono, Lucida Console, monospace;
 `;
+
+export const Space = styled.div<{ size?: number }>`
+	margin: 0;
+	padding: ${({ size }) => (size ? `${size / 2}px` : "50px")};
+`;

@@ -31,6 +31,7 @@ const GlobalStyles = createGlobalStyle`
 		--color-inlineCode-fg: #EB5757;
 		--color-inlineCode-bg: #eee;
 		--color-secondary-accent: #61DAFB;
+		--font-family-code: SFMono-Regular, Consolas, Roboto Mono, Menlo, Monaco, Liberation Mono, Lucida Console, monospace;
 	}
 
 	[data-theme="dark"] {
@@ -40,6 +41,7 @@ const GlobalStyles = createGlobalStyle`
 		--color-background: #000;
 		--color-inlineCode-fg: #EB5757;
 		--color-inlineCode-bg: #222;
+		--font-family-code: SFMono-Regular, Consolas, Roboto Mono, Menlo, Monaco, Liberation Mono, Lucida Console, monospace;
 	}
 	[data-theme="batman"] {
 		--color-primary-accent: #FFFF00;
@@ -48,6 +50,7 @@ const GlobalStyles = createGlobalStyle`
 		--color-background: #000;
 		--color-inlineCode-fg: #EB5757;
 		--color-inlineCode-bg: #222;
+		--font-family-code: SFMono-Regular, Consolas, Roboto Mono, Menlo, Monaco, Liberation Mono, Lucida Console, monospace;
 	}
 
 
@@ -79,7 +82,7 @@ const GlobalStyles = createGlobalStyle`
 	}
 
 	code, pre {
-		font-family: SFMono-Regular, Consolas, Roboto Mono, Menlo, Monaco, Liberation Mono, Lucida Console, monospace;
+		font-family: var(--font-family-code);
 	}
 
 	code {

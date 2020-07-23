@@ -315,3 +315,51 @@ export const DriftingSparklesContainer = ({
 		</Fragment>
 	);
 };
+
+const SupportLinkStyled = styled.a`
+	margin: 0;
+	padding: 0.5rem;
+	width: auto;
+	line-height: 35px;
+	text-decoration: none;
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(max-content, 1fr));
+	grid-gap: 0.5rem;
+	grid-auto-flow: column;
+	border-radius: 5px;
+	border: 1px solid var(--color-primary-accent);
+	/* letter-spacing: 0.6px; */
+
+	& img {
+		box-shadow: none;
+		border: none;
+		vertical-align: middle;
+	}
+
+	&:hover,
+	&:active,
+	&:focus {
+		background-color: var(--color-primary-accent);
+		color: var(--color-background);
+		text-decoration: none;
+	}
+`;
+
+const SupportLinkWrapper = styled.div`
+	display: grid;
+	width: max-content;
+`;
+
+export const SupportSreetamDas = () => {
+	return (
+		<SupportLinkWrapper>
+			<SupportLinkStyled href="https://www.buymeacoffee.com/sreetamdas">
+				<img
+					src="https://cdn.buymeacoffee.com/buttons/bmc-new-btn-logo.svg"
+					alt="Buy Sreetam Das a coffee"
+				/>
+				Buy me a coffee
+			</SupportLinkStyled>
+		</SupportLinkWrapper>
+	);
+};
