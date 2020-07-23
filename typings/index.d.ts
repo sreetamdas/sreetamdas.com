@@ -50,3 +50,5 @@ declare module "@mdx-js/react" {
 	}
 	export class MDXProvider extends React.Component<MDXProviderProps> {}
 }
+
+declare type TFoobarPaths = ["headers", "dns-txt", "source-code", "easter-egg"];
