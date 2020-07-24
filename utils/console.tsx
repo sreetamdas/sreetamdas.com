@@ -85,10 +85,9 @@ export const mergeLocalDataIntoStateOnMount = (
 		} else if (key === "completed" || key === "visitedPages") {
 			result[key] = [
 				...new Set([...result[key], ...localforageCopy[key]]),
-			];
+			] as Array<TFoobarPages> & Array<string>;
 		}
 	}
-
 	return result;
 };
 

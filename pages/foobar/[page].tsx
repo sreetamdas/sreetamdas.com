@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 
 type TRouterFoobarQuery = {
 	query: {
-		page: string;
+		page: TFoobarPages;
 	};
 };
 

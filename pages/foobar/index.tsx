@@ -72,9 +72,6 @@ export const FoobarButLocked = () => (
 	</Fragment>
 );
 
-type TFoobarSchrodingerProps = {
-	completedPage?: string;
-};
 export const FoobarSchrodinger = ({
 	completedPage,
 }: TFoobarSchrodingerProps) => {
@@ -89,7 +86,7 @@ export const FoobarSchrodinger = ({
 
 	useEffect(() => {
 		if (completedPage && !completed?.includes(completedPage)) {
-			const updatedPages = [...completed];
+			const updatedPages: Array<TFoobarPages> = [...completed];
 			updatedPages.push(completedPage);
 			updateFoobarDataPartially({
 				completed: updatedPages,
