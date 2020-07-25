@@ -10,14 +10,9 @@ declare type TFoobarContext = Partial<TFoobarData> & {
 	updateFoobarDataPartially: (data: Partial<TFoobarData>) => void;
 };
 
-declare const FoobarPages = {
-	sourceCode: "source-code",
-	headers: "headers",
-	DNS_TXT: "dns-txt",
-	easterEgg: "easter-egg",
-} as const;
+declare type TFoobarPagesImported = import("pages/foobar").FOOBAR_PAGES;
 
-declare type TFoobarPages = typeof FoobarPages[keyof typeof FoobarPages];
+declare type TFoobarPages = typeof TFoobarPagesImported[keyof typeof TFoobarPagesImported];
 
 declare type TFoobarSchrodingerProps = {
 	completedPage?: TFoobarPages;

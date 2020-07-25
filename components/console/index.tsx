@@ -10,13 +10,12 @@ import { useRouter } from "next/router";
 import {
 	doAsyncThings,
 	loadLocalDataOnMount,
-	handleKonami,
 	logConsoleMessages,
 	updateLocalData,
 	mergeLocalDataIntoStateOnMount,
 } from "utils/console";
 import { Space, Center } from "components/styled/Layouts";
-import { StyledAccentLink } from "components/styled/blog";
+import { LinkTo } from "components/styled/blog";
 
 export const initialFoobarData: TFoobarData = {
 	visitedPages: [],
@@ -67,7 +66,6 @@ const Console = ({ children }: PropsWithChildren<{}>): JSX.Element => {
 	const [foobarData, setFoobarData] = useState<typeof initialFoobarData>(
 		initialFoobarData
 	);
-	const [konamiCodeInput, setKonamiCodeInput] = useState<Array<string>>([]);
 
 	const updateFoobarDataPartially = useCallback(
 		(data: Partial<TFoobarData>, mergeManually = false) => {
@@ -125,26 +123,9 @@ const Console = ({ children }: PropsWithChildren<{}>): JSX.Element => {
 		};
 	}, [foobarData, dataLoaded]);
 
-	const handleKonamiCode = (event: KeyboardEvent) => {
-		setKonamiCodeInput((prevKonamiCodeInput) => [
-			...prevKonamiCodeInput,
-			event.key,
-		]);
-	};
-	useEffect(() => {
-		window.addEventListener("keydown", handleKonamiCode);
-
-		return () => window.removeEventListener("keydown", handleKonamiCode);
-	}, []);
-
 	useEffect(() => {
 		OnEveryReRender();
 	});
-	useEffect(() => {
-		const updated = handleKonami(konamiCodeInput, getFoobarContextValue);
-		if (updated) setKonamiCodeInput(updated);
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [konamiCodeInput]);
 
 	const OnEveryReRender = () => {
 		const { pathname, asPath } = router;
@@ -166,9 +147,7 @@ const Console = ({ children }: PropsWithChildren<{}>): JSX.Element => {
 					<Space />
 					<Center>
 						<code>
-							<StyledAccentLink href="/foobar">
-								resume /foobar
-							</StyledAccentLink>
+							<LinkTo href="/foobar">resume /foobar</LinkTo>
 						</code>
 					</Center>
 				</Fragment>

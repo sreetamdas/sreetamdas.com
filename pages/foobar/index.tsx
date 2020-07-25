@@ -6,45 +6,87 @@ import Custom404 from "pages/404";
 import { dog } from "utils/console";
 import { Layout, Space } from "components/styled/Layouts";
 import { SupportSreetamDas } from "components/styled/special";
+import { Terminal } from "components/console/goto";
+import { KonamiWrapper } from "components/console/konami";
+
+export const FOOBAR_PAGES = {
+	sourceCode: "source-code",
+	headers: "headers",
+	DNS_TXT: "dns-txt",
+	easterEgg: "easter-egg",
+	index: "/",
+	devtools: "devtools",
+	navigator: "navigator",
+	konami: "konami",
+} as const;
 
 /**
  * this page is only "activated" once `X` has been discovered
  */
 
-const Index = () => <Foobar />;
+const Index = () => <FoobarSchrodinger completedPage="/" />;
 
 export default Index;
 
 export const getServerSideProps: GetServerSideProps = async ({ res }) => {
-	res.setHeader("x-foobar", "https://sreetamdas.com/foobar/headers");
+	res.setHeader("x-foobar", "/foobar/headers");
 	return {
 		props: {},
 	};
 };
 
+const XMarksTheSpot = (_props: { foobar: string }) => <div />;
+
 export const Foobar = ({ completedPage }: TFoobarSchrodingerProps) => {
 	const foobarContextObj = useContext(FoobarContext);
 	const { updateFoobarDataPartially, ...foobarObject } = foobarContextObj;
+	const [terminalVisible, setTerminalVisible] = useState(false);
+
+	const handleGotoToggle = (event: KeyboardEvent) => {
+		if (event.key === "Escape") setTerminalVisible(false);
+		if (event.key === "/") {
+			setTerminalVisible(true);
+			event.stopPropagation();
+		}
+		if (event.key === "p" && event.metaKey) {
+			event.preventDefault();
+			setTerminalVisible(true);
+		}
+	};
+
+	useEffect(() => {
+		window.addEventListener("keydown", handleGotoToggle);
+
+		return () => {
+			window.removeEventListener("keydown", handleGotoToggle);
+		};
+	}, []);
 
 	const handleClearFoobarData = () => {
 		updateFoobarDataPartially(initialFoobarData);
 		dog("cleared");
 	};
+	const toggleTerminal = () => {
+		setTerminalVisible((prev) => !prev);
+	};
 	return (
 		<Fragment>
 			<Layout>
-				{completedPage && (
+				{completedPage && completedPage !== "/" && (
 					<Title>
 						You&apos;ve unlocked <code>{completedPage}</code>!
 					</Title>
 				)}
-				Here are your completed challenges:
 				<Space />
+				Here are your completed challenges:
 				<StyledPre>{JSON.stringify(foobarObject, null, 2)}</StyledPre>
 				<button onClick={handleClearFoobarData}>Restart</button>
 				<Space />
 				<SupportSreetamDas />
 			</Layout>
+			<Terminal {...{ visible: terminalVisible, toggleTerminal }} />
+			{!terminalVisible && <KonamiWrapper />}
+			<XMarksTheSpot foobar={"/foobar/devtools"} />
 		</Fragment>
 	);
 };
