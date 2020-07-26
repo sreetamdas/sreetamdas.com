@@ -103,7 +103,7 @@ export const logConsoleMessages = () => {
 	);
 	// eslint-disable-next-line no-console
 	console.log(
-		`         %c${CONSOLE_GREETING}`,
+		`        %c${CONSOLE_GREETING}`,
 		"font-size: 1.5em; font-family: monospace; font-weight: bold;"
 	);
 	// eslint-disable-next-line no-console
@@ -111,6 +111,13 @@ export const logConsoleMessages = () => {
 		`%c${CONSOLE_MESSAGE}`,
 		"font-size: 1.1em; font-family: monospace"
 	);
+
+	// eslint-disable-next-line no-console
+	console.groupCollapsed("need a hint?");
+	// eslint-disable-next-line no-console
+	console.log(`%c${CONSOLE_X}`, "font-family: monospace");
+	// eslint-disable-next-line no-console
+	console.groupEnd();
 
 	dog("Hello", "there!");
 };
@@ -192,3 +199,12 @@ To start, how /about you get to know me better?
 
 
 Cheers, Good Luck, and most importantly, Have Fun!`;
+const CONSOLE_X = `storytime!
+
+I loved playing video games since I was a kid, and one of my all time favorites was Age of Empires III. Sometimes (read: almost every single time) when I'd get stuck or was at a disadvantages against NPCs, I'd just go ahead and use the inbuilt cheats! (remember Medium Rare Please?)
+
+Anyway, cheats might not work (yet) on here, but "revealing the map" will guide you to what you seek :D
+
+
+Please don't hesitate reaching out for more hints!
+`;
