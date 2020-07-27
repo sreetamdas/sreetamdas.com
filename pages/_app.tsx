@@ -1,5 +1,5 @@
-import React from "react";
-import App from "next/app";
+import React, { useState } from "react";
+import { AppProps } from "next/app";
 
 import { Center } from "components/styled/Layouts";
 import { Navbar } from "components/Navbar";
@@ -8,14 +8,7 @@ import { MDXProvider } from "@mdx-js/react";
 import { MDXCodeBlock } from "utils/mdx";
 import { Text } from "components/styled/blog";
 import { FoobarWrapper } from "components/foobar";
-
-export const themeObject = {
-	getCSSVarValue: (variable: string) => {
-		if (typeof window !== "undefined")
-			return getComputedStyle(document.body).getPropertyValue(variable);
-		return undefined;
-	},
-};
+import { TGlobalThemeObject } from "typings/styled";
 
 const MDXComponents = {
 	p: Text,
@@ -98,22 +91,41 @@ const GlobalStyles = createGlobalStyle`
 	}
 `;
 
-export default class MyApp extends App {
-	render() {
-		const { Component, pageProps } = this.props;
-		return (
-			<ThemeProvider theme={themeObject}>
-				<GlobalStyles />
-				{/* @ts-expect-error */}
-				<MDXProvider components={MDXComponents}>
-					<FoobarWrapper>
-						<Center>
-							<Navbar />
-							<Component {...pageProps} />
-						</Center>
-					</FoobarWrapper>
-				</MDXProvider>
-			</ThemeProvider>
-		);
-	}
-}
+type TThemeObjectInitial = Pick<TGlobalThemeObject, "theme">;
+const MyApp = ({ Component, pageProps }: AppProps) => {
+	const [themeObject, setThemeObject] = useState<TThemeObjectInitial>({
+		theme: undefined,
+	});
+	const getCSSVarValue = (variable: string) => {
+		if (typeof window !== "undefined")
+			return getComputedStyle(document.body).getPropertyValue(variable);
+		return undefined;
+	};
+	const changeThemeVariant: TGlobalThemeObject["changeThemeVariant"] = (
+		theme
+	) => {
+		setThemeObject({ theme });
+	};
+	const themeForContext: TGlobalThemeObject = {
+		...themeObject,
+		getCSSVarValue,
+		changeThemeVariant,
+	};
+
+	return (
+		<ThemeProvider theme={themeForContext}>
+			<GlobalStyles />
+			{/* @ts-expect-error */}
+			<MDXProvider components={MDXComponents}>
+				<FoobarWrapper>
+					<Center>
+						<Navbar {...{ currentTheme: themeObject.theme }} />
+						<Component {...pageProps} />
+					</Center>
+				</FoobarWrapper>
+			</MDXProvider>
+		</ThemeProvider>
+	);
+};
+
+export default MyApp;

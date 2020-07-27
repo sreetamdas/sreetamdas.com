@@ -19,6 +19,7 @@ import RoundedSquare from "public/roundedSquare.svg";
 import { Layout } from "components/styled/Layouts";
 import Link from "next/link";
 import { FoobarContext } from "components/foobar";
+import { TGlobalThemeObject } from "typings/styled";
 
 const NavbarWithLogo = styled.div`
 	padding: 20px 0;
@@ -44,7 +45,11 @@ const IconContainer = styled.a`
 	font-size: 25px;
 `;
 
-const Navbar = () => {
+const Navbar = ({
+	currentTheme,
+}: {
+	currentTheme: TGlobalThemeObject["theme"];
+}) => {
 	const [darkTheme, setDarkTheme] = useState<boolean | undefined>(undefined);
 	const { updateFoobarDataPartially, ...foobar } = useContext(
 		FoobarContext
@@ -59,7 +64,6 @@ const Navbar = () => {
 		const initialColorValue: "light" | "dark" = root.style.getPropertyValue(
 			"--initial-color-mode"
 		) as "light" | "dark";
-
 		setDarkTheme(initialColorValue === "dark");
 	}, []);
 
@@ -77,6 +81,9 @@ const Navbar = () => {
 			}
 		}
 	}, [darkTheme, foobar.konami]);
+	useEffect(() => {
+		if (currentTheme) setDarkTheme(currentTheme === "dark");
+	}, [currentTheme]);
 
 	const NextIconLink = ({
 		children,
