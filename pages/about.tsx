@@ -4,7 +4,7 @@ import Head from "next/head";
 import { Layout, Center, PaddingListItems } from "components/styled/Layouts";
 import { Title, Text, LinkTo } from "components/styled/blog";
 import { ExternalLinksOverlay } from "components/Navbar";
-import { FoobarContext } from "components/console";
+import { FoobarContext } from "components/foobar";
 
 const About = () => {
 	const foobar = useContext(FoobarContext);

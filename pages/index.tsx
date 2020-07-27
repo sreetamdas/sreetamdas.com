@@ -45,7 +45,7 @@ const Index = () => {
 				</Text>
 				<Text>
 					CSGO, Reddit, Mechanical Keyboards, Open Source, GitHub,
-					Factorio, Tactile Switches
+					Factorio, Tactile Switches, Batman and the Internet!
 				</Text>
 			</Layout>
 		</Fragment>

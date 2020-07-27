@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect, useContext } from "react";
 import { handleKonami } from "utils/console";
-import { FoobarContext } from "components/console";
+import { FoobarContext } from "components/foobar";
 
 const KonamiWrapper = () => {
 	const foobarContextObj = useContext(FoobarContext);

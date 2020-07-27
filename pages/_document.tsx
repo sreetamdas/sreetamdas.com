@@ -62,7 +62,7 @@ export default class MyDocument extends Document {
 					<meta name="apple-mobile-web-app-capable" content="yes" />
 					<meta name="mobile-web-app-capable" content="yes" />
 					<link
-						href="https://fonts.googleapis.com/css2?family=Karla:ital,wght@0,400;0,700;1,400&display=swap"
+						href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,700;1,400&display=swap"
 						rel="stylesheet"
 					/>
 				</Head>

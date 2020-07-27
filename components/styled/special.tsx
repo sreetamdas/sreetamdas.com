@@ -353,7 +353,11 @@ const SupportLinkWrapper = styled.div`
 export const SupportSreetamDas = () => {
 	return (
 		<SupportLinkWrapper>
-			<SupportLinkStyled href="https://www.buymeacoffee.com/sreetamdas">
+			<SupportLinkStyled
+				href="https://buymeacoff.ee/sreetamdas"
+				target="_blank"
+				rel="noopener noreferrer"
+			>
 				<img
 					src="https://cdn.buymeacoffee.com/buttons/bmc-new-btn-logo.svg"
 					alt="Buy Sreetam Das a coffee"

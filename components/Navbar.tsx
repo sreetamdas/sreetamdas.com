@@ -18,7 +18,7 @@ import { LinkTo } from "components/styled/blog";
 import RoundedSquare from "public/roundedSquare.svg";
 import { Layout } from "components/styled/Layouts";
 import Link from "next/link";
-import { FoobarContext } from "components/console";
+import { FoobarContext } from "components/foobar";
 
 const NavbarWithLogo = styled.div`
 	padding: 20px 0;

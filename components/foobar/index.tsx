@@ -14,7 +14,12 @@ import {
 	updateLocalData,
 	mergeLocalDataIntoStateOnMount,
 } from "utils/console";
-import { Space, Center } from "components/styled/Layouts";
+import {
+	Space,
+	Center,
+	AttachToBottom,
+	WrapperForFooter,
+} from "components/styled/Layouts";
 import { LinkTo } from "components/styled/blog";
 
 export const initialFoobarData: TFoobarData = {
@@ -55,12 +60,12 @@ export const mergeDeep = (target: any, ...sources: any): any => {
 	return mergeDeep(target, ...sources);
 };
 
-// we're gonna hydrate this just below, and <Console /> wraps the entire usable DOM anyway
+// we're gonna hydrate this just below, and <FoobarWrapper /> wraps the entire usable DOM anyway
 export const FoobarContext = createContext<TFoobarContext>(
 	{} as TFoobarContext
 );
 
-const Console = ({ children }: PropsWithChildren<{}>): JSX.Element => {
+const FoobarWrapper = ({ children }: PropsWithChildren<{}>): JSX.Element => {
 	const router = useRouter();
 	const [dataLoaded, setDataLoaded] = useState(false);
 	const [foobarData, setFoobarData] = useState<typeof initialFoobarData>(
@@ -141,20 +146,26 @@ const Console = ({ children }: PropsWithChildren<{}>): JSX.Element => {
 
 	return (
 		<FoobarContext.Provider value={getFoobarContextValue}>
-			{children}
-			{foobarData.unlocked && (
-				<Fragment>
-					<Space />
-					<Center>
-						<code>
-							<LinkTo href="/foobar">resume /foobar</LinkTo>
-						</code>
-					</Center>
-				</Fragment>
-			)}
-			<Space size={50} />
+			<WrapperForFooter>
+				{children}
+				{foobarData.unlocked && (
+					<Fragment>
+						<Space />
+						<Center>
+							<AttachToBottom>
+								<code>
+									<LinkTo href="/foobar">
+										resume /foobar
+									</LinkTo>
+								</code>
+							</AttachToBottom>
+						</Center>
+					</Fragment>
+				)}
+				<Space size={50} />
+			</WrapperForFooter>
 		</FoobarContext.Provider>
 	);
 };
 
-export { Console };
+export { FoobarWrapper };

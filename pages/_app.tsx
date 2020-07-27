@@ -7,7 +7,7 @@ import { createGlobalStyle, ThemeProvider } from "styled-components";
 import { MDXProvider } from "@mdx-js/react";
 import { MDXCodeBlock } from "utils/mdx";
 import { Text } from "components/styled/blog";
-import { Console } from "components/console";
+import { FoobarWrapper } from "components/foobar";
 
 export const themeObject = {
 	getCSSVarValue: (variable: string) => {
@@ -56,12 +56,14 @@ const GlobalStyles = createGlobalStyle`
 
   	html, body {
 		font-size: 18px;
-		font-family: -apple-system, BlinkMacSystemFont, Karla, Roboto, Segoe UI, Oxygen, Ubuntu,
+		font-family: -apple-system, BlinkMacSystemFont, Inter, Roboto, Segoe UI, Oxygen, Ubuntu,
 			Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
 		color: var(--color-primary);
 		background-color: var(--color-background);
 		transition: 0.3 linear;
 		margin: 0;
+		height: 100%;
+		min-height: 100%;
 	}
 
 	h1, h2, h3 {
@@ -101,15 +103,15 @@ export default class MyApp extends App {
 		const { Component, pageProps } = this.props;
 		return (
 			<ThemeProvider theme={themeObject}>
+				<GlobalStyles />
 				{/* @ts-expect-error */}
 				<MDXProvider components={MDXComponents}>
-					<Console>
-						<GlobalStyles />
+					<FoobarWrapper>
 						<Center>
 							<Navbar />
 							<Component {...pageProps} />
 						</Center>
-					</Console>
+					</FoobarWrapper>
 				</MDXProvider>
 			</ThemeProvider>
 		);

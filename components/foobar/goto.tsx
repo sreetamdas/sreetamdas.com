@@ -9,7 +9,7 @@ import {
 	FormEvent,
 } from "react";
 import { useRouter } from "next/router";
-import { FoobarContext } from "components/console";
+import { FoobarContext } from "components/foobar";
 
 const TerminalBackdrop = styled.div`
 	background-color: #00000077;

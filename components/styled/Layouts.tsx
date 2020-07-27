@@ -6,8 +6,9 @@ export const BlogPostsPreviewLayout = styled.div`
 `;
 
 export const Layout = styled.div`
-	max-width: 600px;
+	max-width: 650px;
 	width: 100%;
+	padding: 0 15px;
 `;
 
 export const Center = styled.div`
@@ -60,10 +61,22 @@ export const Heavy = styled.span`
 
 export const Monospace = styled.span`
 	font-family: SFMono-Regular, Consolas, Roboto Mono, Menlo, Monaco,
-		Liberation Mono, Lucida Console, monospace;
+		Liberation Mono, Lucida FoobarWrapper, monospace;
 `;
 
 export const Space = styled.div<{ size?: number }>`
 	margin: 0;
 	padding: ${({ size }) => (size ? `${size / 2}px` : "50px")};
+`;
+
+export const AttachToBottom = styled.div`
+	/* position: absolute;
+	bottom: 50px; */
+`;
+
+export const WrapperForFooter = styled.div`
+	display: grid;
+	grid-template-rows: 1fr auto;
+	min-height: 100vh;
+	align-items: start;
 `;
