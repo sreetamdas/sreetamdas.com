@@ -159,11 +159,6 @@ const FoobarWrapper = ({ children }: PropsWithChildren<{}>): JSX.Element => {
 									</LinkTo>
 								</code>
 								<Space size={10} />
-								{process.env.NODE_ENV === "development" && (
-									<LinkTo href="/fancy-pants">
-										McFancyPants
-									</LinkTo>
-								)}
 							</AttachToBottom>
 						</Center>
 					</Fragment>

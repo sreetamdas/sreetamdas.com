@@ -7,7 +7,7 @@ import {
 	Heavy,
 } from "components/styled/Layouts";
 import Tooling from "content/tooling.mdx";
-import { Text, Title, StyledAccentLink } from "components/styled/blog";
+import { Text, Title, StyledAccentLink, LinkTo } from "components/styled/blog";
 import Head from "next/head";
 
 const Index = () => {
@@ -47,6 +47,9 @@ const Index = () => {
 					CSGO, Reddit, Mechanical Keyboards, Open Source, GitHub,
 					Factorio, Tactile Switches, Batman and the Internet!
 				</Text>
+				{process.env.NODE_ENV === "development" && (
+					<LinkTo href="/fancy-pants">McFancyPants</LinkTo>
+				)}
 			</Layout>
 		</Fragment>
 	);
