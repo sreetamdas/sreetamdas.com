@@ -39,10 +39,6 @@ export default class MyDocument extends Document {
 			<Html lang="en">
 				<Head>
 					<meta
-						name="viewport"
-						content="initial-scale=1.0, width=device-width"
-					/>
-					<meta
 						name="description"
 						content="Self-taught React developer currently working as the Module Lead for the Frontend Team at Microland"
 					/>

@@ -22,4 +22,17 @@ module.exports = withMDX({
 
 		return config;
 	},
+	async headers() {
+		return [
+			{
+				source: "/foobar",
+				headers: [
+					{
+						key: "x-foobar",
+						value: "/foobar/headers", // Matched parameters can be used in the value
+					},
+				],
+			},
+		];
+	},
 });

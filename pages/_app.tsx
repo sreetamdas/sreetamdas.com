@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, Fragment } from "react";
 import { AppProps } from "next/app";
 
 import { Center } from "components/styled/Layouts";
@@ -9,6 +9,7 @@ import { MDXCodeBlock } from "utils/mdx";
 import { Text } from "components/styled/blog";
 import { FoobarWrapper } from "components/foobar";
 import { TGlobalThemeObject } from "typings/styled";
+import Head from "next/head";
 
 const MDXComponents = {
 	p: Text,
@@ -113,18 +114,26 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
 	};
 
 	return (
-		<ThemeProvider theme={themeForContext}>
-			<GlobalStyles />
-			{/* @ts-expect-error */}
-			<MDXProvider components={MDXComponents}>
-				<FoobarWrapper>
-					<Center>
-						<Navbar {...{ currentTheme: themeObject.theme }} />
-						<Component {...pageProps} />
-					</Center>
-				</FoobarWrapper>
-			</MDXProvider>
-		</ThemeProvider>
+		<Fragment>
+			<Head>
+				<meta
+					name="viewport"
+					content="initial-scale=1.0, width=device-width"
+				/>
+			</Head>
+			<ThemeProvider theme={themeForContext}>
+				<GlobalStyles />
+				{/* @ts-expect-error */}
+				<MDXProvider components={MDXComponents}>
+					<FoobarWrapper>
+						<Center>
+							<Navbar {...{ currentTheme: themeObject.theme }} />
+							<Component {...pageProps} />
+						</Center>
+					</FoobarWrapper>
+				</MDXProvider>
+			</ThemeProvider>
+		</Fragment>
 	);
 };
 

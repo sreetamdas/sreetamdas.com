@@ -28,13 +28,6 @@ const Index = () => <FoobarSchrodinger completedPage="/" />;
 
 export default Index;
 
-export const getServerSideProps: GetServerSideProps = async ({ res }) => {
-	res.setHeader("x-foobar", "/foobar/headers");
-	return {
-		props: {},
-	};
-};
-
 const XMarksTheSpot = (_props: { foobar: string }) => <div />;
 
 export const Foobar = ({ completedPage }: TFoobarSchrodingerProps) => {
