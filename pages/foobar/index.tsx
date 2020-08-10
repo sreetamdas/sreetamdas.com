@@ -1,5 +1,4 @@
 import { Title, StyledPre } from "components/styled/blog";
-import { GetServerSideProps } from "next";
 import { useState, useContext, Fragment, useEffect } from "react";
 import { FoobarContext, initialFoobarData } from "components/foobar";
 import Custom404 from "pages/404";
