@@ -47,7 +47,10 @@ export default class MyDocument extends Document {
 						name="og:description"
 						content="Software Developer from India. Self-certified Genius. Will never shame Googling."
 					/>
-					<meta name="og:image" content="/SreetamDas.jpg" />
+					<meta
+						name="og:image"
+						content="https://sreetamdas.com/SreetamDas.jpg"
+					/>
 					<meta name="og:image:alt" content="Image of Sreetam Das" />
 					<meta property="og:url" content="https://sreetamdas.com" />
 					<meta property="og:type" content="website" />
@@ -59,7 +62,10 @@ export default class MyDocument extends Document {
 						name="twitter:description"
 						content="Software Developer from India. Self-certified Genius. Will never shame Googling."
 					/>
-					<meta name="twitter:image" content="/SreetamDas.jpg" />
+					<meta
+						name="twitter:image"
+						content="https://sreetamdas.com/SreetamDas.jpg"
+					/>
 
 					<link rel="shortcut icon" href="/favicon.png" />
 					<meta name="theme-color" content="#ff6600" />
