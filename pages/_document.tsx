@@ -43,6 +43,23 @@ export default class MyDocument extends Document {
 						content="Self-taught React developer currently working as the Module Lead for the Frontend Team at Microland"
 					/>
 					<meta property="og:title" content="Sreetam Das" />
+					<meta
+						name="og:description"
+						content="Software Developer from India. Self-certified Genius. Will never shame Googling."
+					/>
+					<meta name="og:image" content="/SreetamDas.png" />
+					<meta name="og:image:alt" content="Image of Sreetam Das" />
+					<meta property="og:url" content="https://sreetamdas.com" />
+					<meta property="og:type" content="website" />
+
+					<meta name="twitter:card" content="summary" />
+					<meta name="twitter:site" content="@_SreetamDas" />
+					<meta name="twitter:title" content="Sreetam Das" />
+					<meta
+						name="twitter:description"
+						content="Software Developer from India. Self-certified Genius. Will never shame Googling."
+					/>
+					<meta name="twitter:image" content="/SreetamDas.png" />
 
 					<link rel="shortcut icon" href="/favicon.png" />
 					<meta name="theme-color" content="#ff6600" />
