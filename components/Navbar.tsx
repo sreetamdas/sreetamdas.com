@@ -131,7 +131,7 @@ const Navbar = ({
 							title="Sreetam Das' Twitter"
 						/>
 					</IconContainer>
-					<IconContainer onClick={handleThemeSwitch} tabIndex={0}>
+					<IconContainer onClick={handleThemeSwitch} href="#">
 						{darkTheme === undefined ? (
 							<div style={{ width: "25px" }} />
 						) : darkTheme ? (
