@@ -11,6 +11,8 @@ import {
 	FaStackOverflow,
 	FaLinkedin,
 	FaEnvelope,
+	FaSteam,
+	FaRedditAlien,
 } from "react-icons/fa";
 import { FiSun } from "react-icons/fi";
 import { IoMdMoon } from "react-icons/io";
@@ -154,49 +156,69 @@ const Navbar = ({
 
 export { Navbar };
 
+type TExternalLinksArray = Array<{
+	link: string;
+	title: string;
+	icon: JSX.Element;
+}>;
 export const ExternalLinksOverlay = () => {
+	const externalLinks: TExternalLinksArray = [
+		{
+			link: "https://twitter.com/_SreetamDas",
+			title: "Sreetam Das' GitHub",
+			icon: <FaGithub />,
+		},
+
+		{
+			link: "https://twitter.com/_SreetamDas",
+			title: "Sreetam Das' Twitter",
+			icon: <FaTwitter />,
+		},
+
+		{
+			link: "https://stackoverflow.com/users/5283213",
+			title: "Sreetam Das' StackOverflow",
+			icon: <FaStackOverflow />,
+		},
+
+		{
+			link: "https://www.linkedin.com/in/sreetamdas",
+			title: "Sreetam Das' LinkedIn",
+			icon: <FaLinkedin />,
+		},
+
+		{
+			link: "mailto:sreetam@sreetamdas.com",
+			title: "Send Mail to Sreetam Das",
+			icon: <FaEnvelope />,
+		},
+
+		{
+			link: "https://steamcommunity.com/id/sreetamdas",
+			title: "Sreetam Das' Steam",
+			icon: <FaSteam />,
+		},
+
+		{
+			link: "https://giphy.com/gifs/LrmU6jXIjwziE/tile",
+			title: "Sreetam Das' Reddit",
+			icon: <FaRedditAlien />,
+		},
+	];
+
 	return (
 		<NavbarWithNavs>
-			<IconContainer
-				href="https://twitter.com/_SreetamDas"
-				target="_blank"
-				rel="noopener noreferrer"
-				title="Sreetam Das' GitHub"
-			>
-				<FaGithub />
-			</IconContainer>
-			<IconContainer
-				href="https://twitter.com/_SreetamDas"
-				target="_blank"
-				rel="noopener noreferrer"
-				title="Sreetam Das' Twitter"
-			>
-				<FaTwitter />
-			</IconContainer>
-			<IconContainer
-				href="https://stackoverflow.com/users/5283213"
-				target="_blank"
-				rel="noopener noreferrer"
-				title="Sreetam Das' StackOverflow"
-			>
-				<FaStackOverflow />
-			</IconContainer>
-			<IconContainer
-				href="https://www.linkedin.com/in/sreetamdas"
-				target="_blank"
-				rel="noopener noreferrer"
-				title="Sreetam Das' LinkedIn"
-			>
-				<FaLinkedin />
-			</IconContainer>
-			<IconContainer
-				href="mailto:sreetam@sreetamdas.com"
-				target="_blank"
-				rel="noopener noreferrer"
-				title="Send Mail to Sreetam Das"
-			>
-				<FaEnvelope />
-			</IconContainer>
+			{externalLinks.map((linkObject) => (
+				<IconContainer
+					href={linkObject.link}
+					title={linkObject.title}
+					key={linkObject.title}
+					target="_blank"
+					rel="noopener noreferrer"
+				>
+					{linkObject.icon}
+				</IconContainer>
+			))}
 		</NavbarWithNavs>
 	);
 };
