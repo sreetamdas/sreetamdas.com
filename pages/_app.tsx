@@ -54,7 +54,6 @@ const GlobalStyles = createGlobalStyle`
 			Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
 		color: var(--color-primary);
 		background-color: var(--color-background);
-		transition: 0.3 linear;
 		margin: 0;
 		height: 100%;
 		min-height: 100%;

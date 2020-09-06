@@ -1,11 +1,10 @@
-import { PropsWithoutRef, Ref } from "react";
+import React, { PropsWithoutRef, Ref } from "react";
 import Link, { LinkProps } from "next/link";
 import styled, { StyledComponentPropsWithRef } from "styled-components";
-import { TextGradient } from "components/styled/Layouts";
-import React from "react";
+import { TextGradient, PaddingListItems } from "components/styled/Layouts";
 
 export const BlogPostPreview = ({ post }: { post: TBlogPost }) => (
-	<Link href="/blog/[slug]" as={`/blog/${post.slug}`}>
+	<Link href="/blog/[slug]" as={`/blog/${post.slug}`} scroll={false}>
 		<StyledLink href={`/blog/${post.slug}`}>
 			<Card>
 				<BlogPostPreviewTitle>
@@ -40,7 +39,7 @@ export const BlogPostPreviewTitle = styled.h2`
 	font-size: 2rem;
 `;
 
-export const BlogPostMDXContent = styled.div`
+export const BlogPostMDXContent = styled(PaddingListItems)`
 	padding: 30px 0;
 	line-height: 1.4;
 `;
