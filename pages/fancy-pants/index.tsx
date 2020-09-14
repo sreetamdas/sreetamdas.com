@@ -1,6 +1,5 @@
-import { Center } from "components/styled/Layouts";
-import { Title } from "components/styled/blog";
-import { useContext, useEffect } from "react";
+import { ReallyBigTitle } from "components/styled/Layouts";
+import { useContext, useEffect, Fragment } from "react";
 import { ThemeContext } from "styled-components";
 
 const FancyPants = () => {
@@ -11,9 +10,9 @@ const FancyPants = () => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 	return (
-		<Center>
-			<Title>Oooh, ya fancy!</Title>
-		</Center>
+		<Fragment>
+			<ReallyBigTitle>Sreetam Das</ReallyBigTitle>
+		</Fragment>
 	);
 };
 
