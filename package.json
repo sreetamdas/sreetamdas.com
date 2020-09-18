@@ -48,6 +48,8 @@
 	},
 	"license": "ISC",
 	"resolutions": {
-		"**/**/lodash": "^4.17.19"
+		"**/**/lodash": "^4.17.19",
+		"**/**/serialize-javascript": "^3.1.0",
+		"**/**/node-fetch": "^2.6.1"
 	}
 }
