@@ -13,7 +13,12 @@ const Index = () => {
 	const {
 		query: { page },
 	} = (router as unknown) as TRouterFoobarQuery;
+
 	if (!Object.values(FOOBAR_PAGES).includes(page)) return <Custom404 />;
+
+	// activate offline page only when, well, user is offline
+	if (page === "offline" && navigator.onLine)
+		return <Custom404 message="pssst try going offline" />;
 
 	return <FoobarSchrodinger completedPage={page} />;
 };

@@ -7,6 +7,7 @@ import { Layout, Space } from "components/styled/Layouts";
 import { SupportSreetamDas } from "components/styled/special";
 import { Terminal } from "components/foobar/goto";
 import { KonamiWrapper } from "components/foobar/konami";
+import { useRouter } from "next/router";
 
 export const FOOBAR_PAGES = {
 	sourceCode: "source-code",
@@ -17,6 +18,7 @@ export const FOOBAR_PAGES = {
 	devtools: "devtools",
 	navigator: "navigator",
 	konami: "konami",
+	offline: "offline",
 } as const;
 
 /**
@@ -30,6 +32,7 @@ export default Index;
 const XMarksTheSpot = (_props: { foobar: string }) => <div />;
 
 export const Foobar = ({ completedPage }: TFoobarSchrodingerProps) => {
+	const router = useRouter();
 	const foobarContextObj = useContext(FoobarContext);
 	const { updateFoobarDataPartially, ...foobarObject } = foobarContextObj;
 	const [terminalVisible, setTerminalVisible] = useState(false);
@@ -39,19 +42,36 @@ export const Foobar = ({ completedPage }: TFoobarSchrodingerProps) => {
 		if (event.key === "/") {
 			setTerminalVisible(true);
 			event.stopPropagation();
+			event.preventDefault();
 		}
 		if (event.key === "p" && event.metaKey) {
 			event.preventDefault();
 			setTerminalVisible(true);
 		}
+		if (
+			process.env.NODE_ENV === "development" &&
+			event.key === "g" &&
+			event.metaKey
+		) {
+			event.preventDefault();
+			dog("dev mode, going to offline-only page");
+			handleUserIsOffline();
+		}
+	};
+
+	const handleUserIsOffline = () => {
+		router.push("foobar/offline");
 	};
 
 	useEffect(() => {
 		window.addEventListener("keydown", handleGotoToggle);
+		window.addEventListener("offline", handleUserIsOffline);
 
 		return () => {
 			window.removeEventListener("keydown", handleGotoToggle);
+			window.removeEventListener("offline", handleUserIsOffline);
 		};
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	const handleClearFoobarData = () => {
