@@ -1,8 +1,8 @@
 import MDXAbout from "content/about.mdx";
 import { Fragment, useContext } from "react";
 import Head from "next/head";
-import { Layout, Center, PaddingListItems } from "components/styled/Layouts";
-import { Title, Text, LinkTo } from "components/styled/blog";
+import { Layout, Center, PaddingListItems } from "styles/layouts";
+import { Title, Text, LinkTo } from "styles/blog";
 import { ExternalLinksOverlay } from "components/Navbar";
 import { FoobarContext } from "components/foobar";
 

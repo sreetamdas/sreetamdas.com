@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { ProgressBar } from "components/styled/blog";
+import { ProgressBar } from "styles/blog";
 
 export const ReadingProgress = () => {
 	const [readingProgress, setReadingProgress] = useState(0);

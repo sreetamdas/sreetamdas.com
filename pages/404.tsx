@@ -1,6 +1,6 @@
-import { Text, Title, LinkTo } from "components/styled/blog";
+import { Text, Title, LinkTo } from "styles/blog";
 import { Fragment } from "react";
-import { ReallyBigTitle, Space } from "components/styled/Layouts";
+import { ReallyBigTitle, Space } from "styles/layouts";
 import Head from "next/head";
 
 export type T404PageMessage = {

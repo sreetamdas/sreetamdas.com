@@ -1,5 +1,5 @@
-import { Title, Text } from "components/styled/blog";
-import { Center } from "components/styled/Layouts";
+import { Title, Text } from "styles/blog";
+import { Center } from "styles/layouts";
 
 const Greenscreen = () => {
 	return (

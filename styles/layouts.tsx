@@ -40,7 +40,7 @@ export const PaddingListItems = styled.div`
 `;
 
 export const ReallyBigTitle = styled.h1`
-	font-size: 5rem;
+	font-size: 8rem;
 `;
 
 export const TextGradient = styled.span`
@@ -67,11 +67,6 @@ export const Monospace = styled.span`
 export const Space = styled.div<{ size?: number }>`
 	margin: 0;
 	padding: ${({ size }) => (size ? `${size / 2}px` : "50px")};
-`;
-
-export const AttachToBottom = styled.div`
-	/* position: absolute;
-	bottom: 50px; */
 `;
 
 export const WrapperForFooter = styled.div`

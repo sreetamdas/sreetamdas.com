@@ -14,13 +14,8 @@ import {
 	updateLocalData,
 	mergeLocalDataIntoStateOnMount,
 } from "utils/console";
-import {
-	Space,
-	Center,
-	AttachToBottom,
-	WrapperForFooter,
-} from "components/styled/Layouts";
-import { LinkTo } from "components/styled/blog";
+import { Space, Center, WrapperForFooter } from "styles/layouts";
+import { LinkTo } from "styles/blog";
 
 export const initialFoobarData: TFoobarData = {
 	visitedPages: [],
@@ -152,14 +147,10 @@ const FoobarWrapper = ({ children }: PropsWithChildren<{}>): JSX.Element => {
 					<Fragment>
 						<Space />
 						<Center>
-							<AttachToBottom>
-								<code>
-									<LinkTo href="/foobar">
-										resume /foobar
-									</LinkTo>
-								</code>
-								<Space size={10} />
-							</AttachToBottom>
+							<code>
+								<LinkTo href="/foobar">resume /foobar</LinkTo>
+							</code>
+							<Space size={10} />
 						</Center>
 					</Fragment>
 				)}

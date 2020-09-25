@@ -1,10 +1,10 @@
-import { Title, StyledPre } from "components/styled/blog";
+import { Title, StyledPre } from "styles/blog";
 import { useState, useContext, Fragment, useEffect } from "react";
 import { FoobarContext, initialFoobarData } from "components/foobar";
 import Custom404 from "pages/404";
 import { dog } from "utils/console";
-import { Layout, Space } from "components/styled/Layouts";
-import { SupportSreetamDas } from "components/styled/special";
+import { Layout, Space } from "styles/layouts";
+import { SupportSreetamDas } from "styles/special";
 import { Terminal } from "components/foobar/goto";
 import { KonamiWrapper } from "components/foobar/konami";
 import { useRouter } from "next/router";

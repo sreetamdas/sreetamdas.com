@@ -1,7 +1,7 @@
 import React, { PropsWithoutRef, Ref } from "react";
 import Link, { LinkProps } from "next/link";
 import styled, { StyledComponentPropsWithRef } from "styled-components";
-import { TextGradient, PaddingListItems } from "components/styled/Layouts";
+import { TextGradient, PaddingListItems } from "styles/layouts";
 
 export const BlogPostPreview = ({ post }: { post: TBlogPost }) => (
 	<Link href="/blog/[slug]" as={`/blog/${post.slug}`} scroll={false}>

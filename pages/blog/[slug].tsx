@@ -1,7 +1,7 @@
 import { GetStaticPaths, GetStaticProps } from "next";
 import dynamic from "next/dynamic";
 
-import { Layout, TextGradient } from "components/styled/Layouts";
+import { Layout, TextGradient } from "styles/layouts";
 import {
 	BlogPostTitle,
 	BlogPostMDXContent,
@@ -9,7 +9,7 @@ import {
 	PostNotPublishedWarning,
 	RoundedImageSmall,
 	PostMetaDataGrid,
-} from "components/styled/blog";
+} from "styles/blog";
 import { getPostsData } from "utils/blog";
 import { Fragment } from "react";
 import Head from "next/head";

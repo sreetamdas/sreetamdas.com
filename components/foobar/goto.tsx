@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { Center } from "components/styled/Layouts";
+import { Center } from "styles/layouts";
 import {
 	useState,
 	useEffect,

@@ -1,4 +1,4 @@
-import { ReallyBigTitle } from "components/styled/Layouts";
+import { ReallyBigTitle } from "styles/layouts";
 import { useContext, useEffect, Fragment } from "react";
 import { ThemeContext } from "styled-components";
 

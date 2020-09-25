@@ -1,8 +1,8 @@
 import { Fragment } from "react";
 import MDXUses from "content/uses.mdx";
-import { Layout, RemoveBulletsFromOL, Center } from "components/styled/Layouts";
+import { Layout, RemoveBulletsFromOL, Center } from "styles/layouts";
 import Head from "next/head";
-import { Title } from "components/styled/blog";
+import { Title } from "styles/blog";
 
 const Uses = () => {
 	return (

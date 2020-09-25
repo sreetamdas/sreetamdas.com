@@ -16,9 +16,9 @@ import {
 } from "react-icons/fa";
 import { FiSun } from "react-icons/fi";
 import { IoMdMoon } from "react-icons/io";
-import { LinkTo } from "components/styled/blog";
+import { LinkTo } from "styles/blog";
 import RoundedSquare from "public/roundedSquare.svg";
-import { Layout } from "components/styled/Layouts";
+import { Layout } from "styles/layouts";
 import Link from "next/link";
 import { FoobarContext } from "components/foobar";
 import { TGlobalThemeObject } from "typings/styled";

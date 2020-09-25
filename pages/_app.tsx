@@ -1,12 +1,12 @@
 import React, { useState, Fragment } from "react";
 import { AppProps } from "next/app";
 
-import { Center } from "components/styled/Layouts";
+import { Center } from "styles/layouts";
 import { Navbar } from "components/Navbar";
 import { createGlobalStyle, ThemeProvider } from "styled-components";
 import { MDXProvider } from "@mdx-js/react";
 import { MDXCodeBlock } from "utils/mdx";
-import { Text } from "components/styled/blog";
+import { Text } from "styles/blog";
 import { FoobarWrapper } from "components/foobar";
 import { TGlobalThemeObject } from "typings/styled";
 import Head from "next/head";
