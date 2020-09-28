@@ -6,7 +6,7 @@ export const BlogPostsPreviewLayout = styled.div`
 `;
 
 export const Layout = styled.div`
-	max-width: 650px;
+	max-width: var(--max-width);
 	width: 100%;
 	padding: 0 15px;
 `;
@@ -18,7 +18,6 @@ export const Center = styled.div`
 `;
 
 export const MDXText = styled.div`
-	line-height: 1.4;
 	margin: 0; /* thanks @mxstbr! */
 	padding: 15px 0;
 `;

@@ -2,8 +2,9 @@ import React from "react";
 import Highlight, { defaultProps, Language } from "prism-react-renderer";
 import nightOwl from "prism-react-renderer/themes/nightOwl";
 import styled from "styled-components";
+import { MDXProviderProps } from "@mdx-js/react";
 
-type TMDXProviderPassedProps = {
+type TMDXProviderCodeblockPassedProps = {
 	children: {
 		props: {
 			children: string;
@@ -17,7 +18,9 @@ type TMDXProviderPassedProps = {
 	};
 };
 
-const MDXCodeBlock = (props: TMDXProviderPassedProps) => {
+export { MDXCodeBlock, MDXImageWithWrapper };
+
+const MDXCodeBlock = (props: TMDXProviderCodeblockPassedProps) => {
 	const {
 		children: {
 			props: { children, className, metastring },
@@ -61,7 +64,9 @@ const MDXCodeBlock = (props: TMDXProviderPassedProps) => {
 	);
 };
 
-export { MDXCodeBlock };
+const MDXImageWithWrapper = (props: MDXProviderProps) => (
+	<img {...props} style={{ maxWidth: "var(--max-width)", width: "100%" }} />
+);
 
 const CodePreBlockWithHighlight = styled.pre`
 	padding: 15px;
@@ -79,6 +84,10 @@ const CodePreBlockWithHighlight = styled.pre`
 	}
 `;
 
+/**
+ * pattern for highlighting lines in code blocks for future reference:
+ * ```lang {2, 4-5}
+ */
 const RE = /{([\d,-]+)}/;
 const calculateLinesToHighlight = (meta: string) => {
 	const regExpExecArray = RE.exec(meta);

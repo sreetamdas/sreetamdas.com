@@ -5,7 +5,7 @@ import { Center } from "styles/layouts";
 import { Navbar } from "components/Navbar";
 import { createGlobalStyle, ThemeProvider } from "styled-components";
 import { MDXProvider } from "@mdx-js/react";
-import { MDXCodeBlock } from "utils/mdx";
+import { MDXCodeBlock, MDXImageWithWrapper } from "utils/mdx";
 import { Text } from "styles/blog";
 import { FoobarWrapper } from "components/foobar";
 import { TGlobalThemeObject } from "typings/styled";
@@ -15,6 +15,7 @@ const MDXComponents = {
 	p: Text,
 	pre: MDXCodeBlock,
 	code: MDXCodeBlock,
+	img: MDXImageWithWrapper,
 };
 
 const GlobalStyles = createGlobalStyle`
@@ -24,8 +25,10 @@ const GlobalStyles = createGlobalStyle`
 		--color-background: #FFF;
 		--color-inlineCode-fg: #EB5757;
 		--color-inlineCode-bg: #eee;
-		--color-secondary-accent: #61DAFB;
+		--color-secondary-accent: #358EF1;
 		--font-family-code: SFMono-Regular, Consolas, Roboto Mono, Menlo, Monaco, Liberation Mono, Lucida Console, monospace;
+
+		--max-width: 650px;
 	}
 
 	[data-theme="dark"] {
@@ -59,7 +62,7 @@ const GlobalStyles = createGlobalStyle`
 		min-height: 100%;
 	}
 
-	h1, h2, h3 {
+	h1, h2, h3, h4 {
 		margin: 20px 0 0 0;
 	}
 
@@ -84,9 +87,10 @@ const GlobalStyles = createGlobalStyle`
 		color: var(--color-inlineCode-fg);
 		background-color: var(--color-inlineCode-bg);
 		font-size: 85%;
-		padding: 0.2em 0.4rem;
-		border-radius: 5px;
-		/* https://developer.mozilla.org/en-US/docs/Web/CSS/box-decoration-break */
+		padding: 0.2em;
+		border-radius: 3px;
+		/* prevent our code block from being broken into different sections on linebreak
+		https://developer.mozilla.org/en-US/docs/Web/CSS/box-decoration-break */
 		box-decoration-break: clone;
 	}
 `;

@@ -29,7 +29,7 @@ export const BlogPostTitle = styled.h1`
 	font-size: 3rem;
 	margin: 0;
 	padding-top: 30px;
-	padding-bottom: 5px;
+	padding-bottom: 15px;
 `;
 
 export const BlogPostPreviewTitle = styled.h2`
@@ -41,7 +41,7 @@ export const BlogPostPreviewTitle = styled.h2`
 
 export const BlogPostMDXContent = styled(PaddingListItems)`
 	padding: 30px 0;
-	line-height: 1.4;
+	line-height: 1.6;
 `;
 
 export const Card = styled.div`
@@ -51,7 +51,7 @@ export const Card = styled.div`
 
 export const Datestamp = styled.p`
 	color: var(--color-primary-accent);
-	font-size: 11px;
+	font-size: 12px;
 	padding: 10px 0;
 	margin: 0; /* thanks @mxstbr! */
 	/* opacity: 0.6; */
@@ -63,7 +63,7 @@ export const Title = styled.h1`
 `;
 
 export const Text = styled.p<{ paddingTop?: boolean | number }>`
-	line-height: 1.4;
+	line-height: 1.6;
 	margin: 0; /* thanks @mxstbr! */
 	padding: 15px 0;
 	padding-top: ${({ paddingTop }) =>
