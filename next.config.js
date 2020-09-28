@@ -1,6 +1,13 @@
+const remarkSlug = require("remark-slug");
+const remarkAutolinkHeadings = require("remark-autolink-headings");
+
 const withMDX = require("@next/mdx")({
 	extension: /\.mdx?$/,
+	options: {
+		remarkPlugins: [remarkSlug, remarkAutolinkHeadings],
+	},
 });
+
 module.exports = withMDX({
 	pageExtensions: ["js", "jsx", "ts", "tsx", "mdx"],
 	webpack(config) {
