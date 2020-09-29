@@ -1,4 +1,4 @@
-import React, { PropsWithoutRef, Ref } from "react";
+import React, { PropsWithChildren, PropsWithoutRef, Ref } from "react";
 import Link, { LinkProps } from "next/link";
 import styled, { StyledComponentPropsWithRef } from "styled-components";
 import { TextGradient, PaddingListItems } from "styles/layouts";
@@ -178,3 +178,31 @@ export const StyledPre = styled.pre`
 	border-radius: 5px;
 	font-size: 14px;
 `;
+
+export const IconContainer = styled.a`
+	color: var(--color-primary-accent);
+	font-size: 25px;
+`;
+
+export const LinkedHeaderIconWrapper = styled.a<{ isHovered: boolean }>`
+	color: var(--color-primary-accent);
+	position: absolute;
+	transform: translateX(-125%) translateY(0.2rem);
+	font-size: inherit;
+
+	opacity: ${({ isHovered }) => (isHovered ? 0.75 : 0)};
+	transition: opacity 200ms ease;
+`;
+
+export const NextIconLink = ({
+	children,
+	href,
+}: PropsWithChildren<{ href: string }>) => {
+	return (
+		<Link href={href} passHref>
+			<IconContainer href={href} tabIndex={0}>
+				{children}
+			</IconContainer>
+		</Link>
+	);
+};

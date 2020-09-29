@@ -1,15 +1,4 @@
-# Sreetam Das dot com
-
-### Roadmap:
-
--   [x] <strike>Lang tag</strike>
--   [x] <strike>Meta tags</strike>
--   [ ] Enable PWA
--   [ ] About page
--   [x] Dark mode toggle
--   [ ] Reading time for posts
--   [x] a11y
--   [ ] Responsive navbar
+# [sreetamdas.com](https://sreetamdas.com)
 
 <img src="public/lighthouse_scores.png" align="center" alt="Lighthouse scores' screenshot: 100, 100, 100, 100" />
 

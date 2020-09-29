@@ -1,8 +1,10 @@
-import React from "react";
-import Highlight, { defaultProps, Language } from "prism-react-renderer";
-import nightOwl from "prism-react-renderer/themes/nightOwl";
+import React, { PropsWithChildren } from "react";
 import styled from "styled-components";
-import { MDXProviderProps } from "@mdx-js/react";
+import Highlight, { defaultProps, Language } from "prism-react-renderer";
+import { ComponentType, MDXProviderProps } from "@mdx-js/react";
+import { FiLink } from "react-icons/fi";
+import { useHover } from "utils/hooks";
+import { LinkedHeaderIconWrapper } from "styles/blog";
 
 type TMDXProviderCodeblockPassedProps = {
 	children: {
@@ -18,7 +20,7 @@ type TMDXProviderCodeblockPassedProps = {
 	};
 };
 
-export { MDXCodeBlock, MDXImageWithWrapper };
+export { MDXCodeBlock, MDXImageWithWrapper, MDXHeadingWrapper };
 
 const MDXCodeBlock = (props: TMDXProviderCodeblockPassedProps) => {
 	const {
@@ -35,7 +37,7 @@ const MDXCodeBlock = (props: TMDXProviderCodeblockPassedProps) => {
 			{...defaultProps}
 			code={children.trim()}
 			language={language as Language}
-			theme={nightOwl}
+			theme={karmaPrismTheme}
 		>
 			{({ className, style, tokens, getLineProps, getTokenProps }) => (
 				<CodePreBlockWithHighlight
@@ -68,19 +70,50 @@ const MDXImageWithWrapper = (props: MDXProviderProps) => (
 	<img {...props} style={{ maxWidth: "var(--max-width)", width: "100%" }} />
 );
 
+type TIDPropsWithChildren = PropsWithChildren<{ id: string }>;
+const HandleMDXHeaderElement = (
+	el: ComponentType,
+	// propsWithoutChildren contains `id` attr here
+	{ children, ...propsWithoutChildren }: TIDPropsWithChildren
+) => {
+	const [hoverRef, isHovered] = useHover();
+	const LinkIcons = (
+		<LinkedHeaderIconWrapper
+			href={`#${propsWithoutChildren.id ?? ""}`}
+			isHovered={isHovered}
+		>
+			<FiLink />
+		</LinkedHeaderIconWrapper>
+	);
+	const ActualHeading = React.createElement(
+		el,
+		propsWithoutChildren,
+		LinkIcons,
+		children
+	);
+
+	return <div ref={hoverRef}>{ActualHeading}</div>;
+};
+
+const MDXHeadingWrapper = {
+	h1: (props: TIDPropsWithChildren) => HandleMDXHeaderElement("h1", props),
+	h2: (props: TIDPropsWithChildren) => HandleMDXHeaderElement("h2", props),
+	h3: (props: TIDPropsWithChildren) => HandleMDXHeaderElement("h3", props),
+};
+
 const CodePreBlockWithHighlight = styled.pre`
 	padding: 15px;
 	border-radius: 5px;
 	font-size: 14px;
 
 	.highlight-line {
-		background-color: rgb(53, 59, 69, 0.5);
+		background-color: rgb(255, 255, 255, 0.07);
 		display: block;
 		margin-right: -1em;
 		margin-left: -1em;
 		padding-right: 1em;
 		padding-left: 0.75em;
-		border-left: 0.3em solid #9d86e9;
+		border-left: 0.3em solid var(--color-primary-accent);
 	}
 `;
 
@@ -107,4 +140,82 @@ const calculateLinesToHighlight = (meta: string) => {
 			return inRange;
 		};
 	}
+};
+
+const karmaPrismTheme = {
+	plain: {
+		color: "#f7f1ff",
+		backgroundColor: "#0a0e14",
+	},
+	styles: [
+		{
+			types: ["comment"],
+			style: {
+				color: "#363742",
+				fontStyle: "italic" as const,
+			},
+		},
+		{
+			types: ["constant", "number", "builtin", "char"],
+			style: {
+				color: "#AF98E6",
+			},
+		},
+		{
+			types: ["symbol"],
+			style: {
+				color: "#FD9353",
+			},
+		},
+		{
+			types: ["class-name"],
+			style: {
+				color: "#51C7DA",
+			},
+		},
+		{
+			types: ["function", "inserted"],
+			style: {
+				color: "#7BD88F",
+			},
+		},
+		{
+			types: ["tag", "keyword", "operator", "deleted", "changed"],
+			style: {
+				color: "#FC618D",
+			},
+		},
+		{
+			types: ["attr-name"],
+			style: {
+				color: "#51C7DA",
+				fontStyle: "italic" as const,
+			},
+		},
+		{
+			types: ["punctuation"],
+			style: {
+				color: "#88898F",
+			},
+		},
+		{
+			types: ["string"],
+			style: {
+				color: "#E3CF65",
+			},
+		},
+		{
+			types: ["property"],
+			style: {
+				color: "#D7D7D7",
+			},
+		},
+		{
+			types: ["variable"],
+			style: {
+				color: "#FD9353",
+				fontStyle: "italic" as const,
+			},
+		},
+	],
 };

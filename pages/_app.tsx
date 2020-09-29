@@ -5,7 +5,11 @@ import { Center } from "styles/layouts";
 import { Navbar } from "components/Navbar";
 import { createGlobalStyle, ThemeProvider } from "styled-components";
 import { MDXProvider } from "@mdx-js/react";
-import { MDXCodeBlock, MDXImageWithWrapper } from "utils/mdx";
+import {
+	MDXCodeBlock,
+	MDXHeadingWrapper,
+	MDXImageWithWrapper,
+} from "utils/mdx";
 import { Text } from "styles/blog";
 import { FoobarWrapper } from "components/foobar";
 import { TGlobalThemeObject } from "typings/styled";
@@ -13,6 +17,9 @@ import Head from "next/head";
 
 const MDXComponents = {
 	p: Text,
+	h1: MDXHeadingWrapper.h1,
+	h2: MDXHeadingWrapper.h2,
+	h3: MDXHeadingWrapper.h3,
 	pre: MDXCodeBlock,
 	code: MDXCodeBlock,
 	img: MDXImageWithWrapper,

@@ -1,9 +1,4 @@
-import React, {
-	useState,
-	useEffect,
-	PropsWithChildren,
-	useContext,
-} from "react";
+import React, { useState, useEffect, useContext } from "react";
 import styled from "styled-components";
 import {
 	FaGithub,
@@ -16,10 +11,9 @@ import {
 } from "react-icons/fa";
 import { FiSun } from "react-icons/fi";
 import { IoMdMoon } from "react-icons/io";
-import { LinkTo } from "styles/blog";
+import { IconContainer, LinkTo, NextIconLink } from "styles/blog";
 import RoundedSquare from "public/roundedSquare.svg";
 import { Layout } from "styles/layouts";
-import Link from "next/link";
 import { FoobarContext } from "components/foobar";
 import { TGlobalThemeObject } from "typings/styled";
 
@@ -40,11 +34,6 @@ const NavbarWithNavs = styled.div`
 	justify-self: end;
 	place-items: center;
 	justify-content: center;
-`;
-
-const IconContainer = styled.a`
-	color: var(--color-primary-accent);
-	font-size: 25px;
 `;
 
 const Navbar = ({
@@ -86,19 +75,6 @@ const Navbar = ({
 	useEffect(() => {
 		if (currentTheme) setDarkTheme(currentTheme === "dark");
 	}, [currentTheme]);
-
-	const NextIconLink = ({
-		children,
-		href,
-	}: PropsWithChildren<{ href: string }>) => {
-		return (
-			<Link href={href} passHref>
-				<IconContainer href={href} tabIndex={0}>
-					{children}
-				</IconContainer>
-			</Link>
-		);
-	};
 
 	return (
 		<Layout>
