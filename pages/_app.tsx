@@ -35,7 +35,15 @@ const GlobalStyles = createGlobalStyle`
 		--color-secondary-accent: #358EF1;
 		--font-family-code: SFMono-Regular, Consolas, Roboto Mono, Menlo, Monaco, Liberation Mono, Lucida Console, monospace;
 
+		--color-success-accent: #00FF7F;
+		--color-success-accent-faded: #00FF7F30;
+		--color-danger-accent: #FF8000;
+		--color-danger-accent-faded: #FF800033;
+		--color-info-accent: #00BFFF;
+		--color-info-accent-faded: #00BFFF44;
+
 		--max-width: 650px;
+		--border-radius: 5px;
 	}
 
 	[data-theme="dark"] {
@@ -70,7 +78,8 @@ const GlobalStyles = createGlobalStyle`
 	}
 
 	h1, h2, h3, h4 {
-		margin: 20px 0 0 0;
+		margin: 0;
+		padding-top: 2rem;
 	}
 
 	a {

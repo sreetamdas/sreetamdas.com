@@ -326,7 +326,7 @@ const SupportLinkStyled = styled.a`
 	grid-template-columns: repeat(auto-fill, minmax(max-content, 1fr));
 	grid-gap: 0.5rem;
 	grid-auto-flow: column;
-	border-radius: 5px;
+	border-radius: var(--border-radius);
 	border: 1px solid var(--color-primary-accent);
 	/* letter-spacing: 0.6px; */
 

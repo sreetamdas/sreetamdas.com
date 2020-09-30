@@ -1,6 +1,6 @@
 import React, { PropsWithChildren, PropsWithoutRef, Ref } from "react";
+import styled, { StyledComponentPropsWithRef, css } from "styled-components";
 import Link, { LinkProps } from "next/link";
-import styled, { StyledComponentPropsWithRef } from "styled-components";
 import { TextGradient, PaddingListItems } from "styles/layouts";
 
 export const BlogPostPreview = ({ post }: { post: TBlogPost }) => (
@@ -64,7 +64,7 @@ export const Title = styled.h1`
 
 export const Text = styled.p<{ paddingTop?: boolean | number }>`
 	line-height: 1.6;
-	margin: 0; /* thanks @mxstbr! */
+	margin: 0;
 	padding: 15px 0;
 	padding-top: ${({ paddingTop }) =>
 		paddingTop
@@ -119,7 +119,7 @@ export const WarningSpan = styled.span`
 	margin: 0 15px;
 	background-color: red;
 	color: white;
-	border-radius: 5px;
+	border-radius: var(--border-radius);
 `;
 
 export const PostNotPublishedWarning = () => {
@@ -175,7 +175,7 @@ export const StyledPre = styled.pre`
 	color: var(--color-inlineCode-fg);
 	margin: 0;
 	padding: 15px;
-	border-radius: 5px;
+	border-radius: var(--border-radius);
 	font-size: 14px;
 `;
 
@@ -206,3 +206,19 @@ export const NextIconLink = ({
 		</Link>
 	);
 };
+
+export const CustomBlockquote = styled.aside<{ type?: string }>`
+	padding: 20px;
+	border-radius: var(--border-radius);
+
+	${({ type }) =>
+		type
+			? `
+					background-color: var(--color-${type}-accent-faded);
+					border-left: 0.3em var(--color-${type}-accent) solid;
+			  `
+			: css`
+					background-color: var(--color-info-accent-faded);
+					border-left: 0.3em var(--color-info-accent) solid;
+			  `}
+`;

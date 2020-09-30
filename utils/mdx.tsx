@@ -1,4 +1,4 @@
-import React, { PropsWithChildren } from "react";
+import React, { createElement, CSSProperties, PropsWithChildren } from "react";
 import styled from "styled-components";
 import Highlight, { defaultProps, Language } from "prism-react-renderer";
 import { ComponentType, MDXProviderProps } from "@mdx-js/react";
@@ -67,7 +67,14 @@ const MDXCodeBlock = (props: TMDXProviderCodeblockPassedProps) => {
 };
 
 const MDXImageWithWrapper = (props: MDXProviderProps) => (
-	<img {...props} style={{ maxWidth: "var(--max-width)", width: "100%" }} />
+	<img
+		{...props}
+		style={{
+			maxWidth: "var(--max-width)",
+			width: "100%",
+			borderRadius: "var(--border-radius)",
+		}}
+	/>
 );
 
 type TIDPropsWithChildren = PropsWithChildren<{ id: string }>;
@@ -77,6 +84,10 @@ const HandleMDXHeaderElement = (
 	{ children, ...propsWithoutChildren }: TIDPropsWithChildren
 ) => {
 	const [hoverRef, isHovered] = useHover();
+	const headerStyles: CSSProperties = {
+		color: "var(--color-primary-accent)",
+	};
+	const propsWithStyles = { ...propsWithoutChildren, style: headerStyles };
 	const LinkIcons = (
 		<LinkedHeaderIconWrapper
 			href={`#${propsWithoutChildren.id ?? ""}`}
@@ -85,9 +96,9 @@ const HandleMDXHeaderElement = (
 			<FiLink />
 		</LinkedHeaderIconWrapper>
 	);
-	const ActualHeading = React.createElement(
+	const ActualHeading = createElement(
 		el,
-		propsWithoutChildren,
+		propsWithStyles,
 		LinkIcons,
 		children
 	);
@@ -103,7 +114,7 @@ const MDXHeadingWrapper = {
 
 const CodePreBlockWithHighlight = styled.pre`
 	padding: 15px;
-	border-radius: 5px;
+	border-radius: var(--border-radius);
 	font-size: 14px;
 
 	.highlight-line {
