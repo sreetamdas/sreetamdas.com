@@ -72,9 +72,23 @@ const Navbar = ({
 			}
 		}
 	}, [darkTheme, foobar.konami]);
+
 	useEffect(() => {
 		if (currentTheme) setDarkTheme(currentTheme === "dark");
 	}, [currentTheme]);
+
+	useEffect(() => {
+		const handleKeyboardDarkModeToggle = (event: KeyboardEvent) => {
+			if (event.key === "l" && event.shiftKey && event.metaKey) {
+				setDarkTheme(!darkTheme);
+			}
+		};
+		window.addEventListener("keydown", handleKeyboardDarkModeToggle);
+
+		return () => {
+			window.removeEventListener("keydown", handleKeyboardDarkModeToggle);
+		};
+	}, [darkTheme]);
 
 	return (
 		<Layout>
