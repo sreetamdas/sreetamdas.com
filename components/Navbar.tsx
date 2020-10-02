@@ -79,9 +79,12 @@ const Navbar = ({
 
 	useEffect(() => {
 		const handleKeyboardDarkModeToggle = (event: KeyboardEvent) => {
-			if (event.key === "l" && event.shiftKey && event.metaKey) {
+			if (
+				event.key.toLowerCase() === "l" &&
+				event.shiftKey &&
+				event.metaKey
+			)
 				setDarkTheme(!darkTheme);
-			}
 		};
 		window.addEventListener("keydown", handleKeyboardDarkModeToggle);
 
