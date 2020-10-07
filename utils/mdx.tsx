@@ -5,6 +5,7 @@ import { ComponentType, MDXProviderProps } from "@mdx-js/react";
 import { FiLink } from "react-icons/fi";
 import { useHover } from "utils/hooks";
 import { LinkedHeaderIconWrapper } from "styles/blog";
+import Link from "next/link";
 
 type TMDXProviderCodeblockPassedProps = {
 	children: {
@@ -20,7 +21,7 @@ type TMDXProviderCodeblockPassedProps = {
 	};
 };
 
-export { MDXCodeBlock, MDXImageWithWrapper, MDXHeadingWrapper };
+export { MDXCodeBlock, MDXImageWithWrapper, MDXHeadingWrapper, MDXLinkWrapper };
 
 const MDXCodeBlock = (props: TMDXProviderCodeblockPassedProps) => {
 	const {
@@ -76,6 +77,12 @@ const MDXImageWithWrapper = (props: MDXProviderProps) => (
 		}}
 	/>
 );
+
+type THrefPropsWithChildren = PropsWithChildren<{ href: string }>;
+const MDXLinkWrapper = (props: THrefPropsWithChildren) => {
+	if (props.href[0] === "/") return <Link {...props} />;
+	return <a {...props} />;
+};
 
 type TIDPropsWithChildren = PropsWithChildren<{ id: string }>;
 const HandleMDXHeaderElement = (

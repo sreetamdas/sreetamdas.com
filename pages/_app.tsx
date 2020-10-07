@@ -9,6 +9,7 @@ import {
 	MDXCodeBlock,
 	MDXHeadingWrapper,
 	MDXImageWithWrapper,
+	MDXLinkWrapper,
 } from "utils/mdx";
 import { Text } from "styles/blog";
 import { FoobarWrapper } from "components/foobar";
@@ -23,6 +24,7 @@ const MDXComponents = {
 	pre: MDXCodeBlock,
 	code: MDXCodeBlock,
 	img: MDXImageWithWrapper,
+	a: MDXLinkWrapper,
 };
 
 const GlobalStyles = createGlobalStyle`

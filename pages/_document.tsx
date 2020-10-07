@@ -68,7 +68,7 @@ export default class MyDocument extends Document {
 					/>
 
 					<link rel="shortcut icon" href="/favicon.png" />
-					<meta name="theme-color" content="#ff6600" />
+					<meta name="theme-color" content="#9D86E9" />
 					<link rel="apple-touch-icon" href="/logo.png" />
 					<meta
 						name="apple-mobile-web-app-title"
