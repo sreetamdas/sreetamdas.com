@@ -8,6 +8,7 @@ import {
 	FaEnvelope,
 	FaSteam,
 	FaRedditAlien,
+	FaSpotify,
 } from "react-icons/fa";
 import { FiSun } from "react-icons/fi";
 import { IoMdMoon } from "react-icons/io";
@@ -161,41 +162,40 @@ export const ExternalLinksOverlay = () => {
 			title: "Sreetam Das' GitHub",
 			icon: <FaGithub />,
 		},
-
 		{
 			link: "https://twitter.com/_SreetamDas",
 			title: "Sreetam Das' Twitter",
 			icon: <FaTwitter />,
 		},
-
 		{
 			link: "https://stackoverflow.com/users/5283213",
 			title: "Sreetam Das' StackOverflow",
 			icon: <FaStackOverflow />,
 		},
-
 		{
 			link: "https://www.linkedin.com/in/sreetamdas",
 			title: "Sreetam Das' LinkedIn",
 			icon: <FaLinkedin />,
 		},
-
 		{
 			link: "mailto:sreetam@sreetamdas.com",
 			title: "Send Mail to Sreetam Das",
 			icon: <FaEnvelope />,
 		},
-
 		{
 			link: "https://steamcommunity.com/id/sreetamdas",
 			title: "Sreetam Das' Steam",
 			icon: <FaSteam />,
 		},
-
 		{
 			link: "https://giphy.com/gifs/LrmU6jXIjwziE/tile",
 			title: "Sreetam Das' Reddit",
 			icon: <FaRedditAlien />,
+		},
+		{
+			link: "https://open.spotify.com/user/22nkuerb2tgjpqwhy4tp4aecq",
+			title: "Sreetam Das' Spotify",
+			icon: <FaSpotify />,
 		},
 	];
 
