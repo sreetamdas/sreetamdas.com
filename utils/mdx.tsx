@@ -131,7 +131,7 @@ const CodePreBlockWithHighlight = styled.pre`
 		margin-left: -1em;
 		padding-right: 1em;
 		padding-left: 0.75em;
-		border-left: 0.3em solid var(--color-primary-accent);
+		border-left: 0.3em solid #9d86e9;
 	}
 `;
 
@@ -160,6 +160,9 @@ const calculateLinesToHighlight = (meta: string) => {
 	}
 };
 
+/**
+ * many thanks to @NikkitaFTW and @_philpl for prism.dotenv.dev!
+ */
 const karmaPrismTheme = {
 	plain: {
 		color: "#f7f1ff",
