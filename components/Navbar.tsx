@@ -84,8 +84,10 @@ const Navbar = ({
 				event.key.toLowerCase() === "l" &&
 				event.shiftKey &&
 				event.metaKey
-			)
+			) {
+				event.preventDefault();
 				setDarkTheme(!darkTheme);
+			}
 		};
 		window.addEventListener("keydown", handleKeyboardDarkModeToggle);
 
