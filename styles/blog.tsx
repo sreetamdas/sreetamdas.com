@@ -59,13 +59,13 @@ export const Datestamp = styled.p`
 
 export const Title = styled.h1`
 	padding: 20px 0;
-	font-size: 2.5rem;
+	font-size: 3rem;
 `;
 
 export const Text = styled.p<{ paddingTop?: boolean | number }>`
 	line-height: 1.6;
 	margin: 0;
-	padding: 15px 0;
+	padding: 10px 0;
 	padding-top: ${({ paddingTop }) =>
 		paddingTop
 			? typeof paddingTop === "number"

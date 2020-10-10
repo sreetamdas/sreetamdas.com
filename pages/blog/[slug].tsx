@@ -10,7 +10,7 @@ import {
 	RoundedImageSmall,
 	PostMetaDataGrid,
 } from "styles/blog";
-import { getPostsData } from "utils/blog";
+import { getBlogPostsData } from "utils/blog";
 import { Fragment } from "react";
 import Head from "next/head";
 import { ReadingProgress } from "components/Meh";
@@ -52,7 +52,7 @@ const Post = ({ post }: { post: TBlogPost }) => {
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {
-	const postsData: Array<TBlogPost> = getPostsData();
+	const postsData: Array<TBlogPost> = getBlogPostsData();
 
 	// Get the paths we want to pre-render based on posts
 	const paths = postsData.map((post) => ({
@@ -66,7 +66,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
 	if (!params) return { props: {} };
-	const postsData = getPostsData();
+	const postsData = getBlogPostsData();
 
 	const post = postsData.find((postData) => postData.slug === params.slug);
 	return { props: { post } };
