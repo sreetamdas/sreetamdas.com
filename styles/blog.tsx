@@ -35,8 +35,15 @@ export const BlogPostTitle = styled.h1`
 export const BlogPostPreviewTitle = styled.h2`
 	/* color: var(--color-primary-accent); */
 	margin: 0;
-	padding-bottom: 5px;
+	padding: 5px 0;
 	font-size: 2rem;
+`;
+
+export const removeListStyleMixin = css`
+	& ul {
+		list-style: none;
+		padding-left: 30px;
+	}
 `;
 
 export const BlogPostMDXContent = styled(PaddingListItems)`
@@ -113,6 +120,15 @@ export const StyledAccentLink = React.forwardRef(
 		</StyledLink>
 	)
 );
+
+export const StyledAccentTextLink = styled(StyledAccentLink)`
+	&:visited {
+		text-decoration: none;
+	}
+	&:hover {
+		text-decoration: underline;
+	}
+`;
 
 export const WarningSpan = styled.span`
 	padding: 5px 10px;
@@ -221,4 +237,10 @@ export const CustomBlockquote = styled.aside<{ type?: string }>`
 					background-color: var(--color-info-accent-faded);
 					border-left: 0.3em var(--color-info-accent) solid;
 			  `}
+`;
+
+export const Highlighted = styled.span`
+	color: var(--color-primary-accent);
+	font-style: italic;
+	font-weight: bold;
 `;

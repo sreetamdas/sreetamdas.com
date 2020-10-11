@@ -76,6 +76,12 @@ const GlobalStyles = createGlobalStyle`
 		margin: 0;
 		height: 100%;
 		min-height: 100%;
+
+	}
+	
+	::selection {
+		background: var(--color-primary-accent);
+		color: var(--color-background);
 	}
 
 	h1, h2, h3, h4 {
