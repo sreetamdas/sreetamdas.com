@@ -6,8 +6,7 @@ import { Title, Text, LinkTo } from "styles/blog";
 import { FoobarContext } from "components/foobar";
 
 const About = () => {
-	const foobar = useContext(FoobarContext);
-	const { updateFoobarDataPartially, unlocked } = foobar;
+	const { updateFoobarDataPartially, unlocked } = useContext(FoobarContext);
 
 	const handleXDiscovery = () => {
 		if (!unlocked) updateFoobarDataPartially({ unlocked: true });

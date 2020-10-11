@@ -214,8 +214,8 @@ export const CustomBlockquote = styled.aside<{ type?: string }>`
 	${({ type }) =>
 		type
 			? `
-					background-color: var(--color-${type}-accent-faded);
-					border-left: 0.3em var(--color-${type}-accent) solid;
+				background-color: var(--color-${type}-accent-faded);
+				border-left: 0.3em var(--color-${type}-accent) solid;
 			  `
 			: css`
 					background-color: var(--color-info-accent-faded);

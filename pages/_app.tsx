@@ -22,7 +22,6 @@ const MDXComponents = {
 	h2: MDXHeadingWrapper.h2,
 	h3: MDXHeadingWrapper.h3,
 	pre: MDXCodeBlock,
-	code: MDXCodeBlock,
 	img: MDXImageWithWrapper,
 	a: MDXLinkWrapper,
 };

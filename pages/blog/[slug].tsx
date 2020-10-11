@@ -54,13 +54,10 @@ const Post = ({ post }: { post: TBlogPost }) => {
 export const getStaticPaths: GetStaticPaths = async () => {
 	const postsData: Array<TBlogPost> = getBlogPostsData();
 
-	// Get the paths we want to pre-render based on posts
 	const paths = postsData.map((post) => ({
 		params: { slug: post.slug },
 	}));
 
-	// We'll pre-render only these paths at build time.
-	// { fallback: false } means other routes should 404.
 	return { paths, fallback: false };
 };
 
