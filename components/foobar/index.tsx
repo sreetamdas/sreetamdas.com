@@ -1,10 +1,9 @@
-import {
+import React, {
 	useEffect,
 	useState,
 	PropsWithChildren,
 	createContext,
 	useCallback,
-	Fragment,
 } from "react";
 import { useRouter } from "next/router";
 import {
@@ -16,6 +15,7 @@ import {
 } from "utils/console";
 import { Space, Center, WrapperForFooter } from "styles/layouts";
 import { LinkTo } from "styles/blog";
+import { Footer } from "components/Footer";
 
 export const initialFoobarData: TFoobarData = {
 	visitedPages: [],
@@ -143,18 +143,19 @@ const FoobarWrapper = ({ children }: PropsWithChildren<{}>): JSX.Element => {
 		<FoobarContext.Provider value={getFoobarContextValue}>
 			<WrapperForFooter>
 				{children}
+				<Space />
+				<Center>
+					<Footer />
+				</Center>
 				{foobarData.unlocked && (
-					<Fragment>
-						<Space />
-						<Center>
-							<code>
-								<LinkTo href="/foobar">resume /foobar</LinkTo>
-							</code>
-							<Space size={10} />
-						</Center>
-					</Fragment>
+					<Center>
+						<Space size={10} />
+						<code>
+							<LinkTo href="/foobar">resume /foobar</LinkTo>
+						</code>
+						<Space size={10} />
+					</Center>
 				)}
-				<Space size={50} />
 			</WrapperForFooter>
 		</FoobarContext.Provider>
 	);
