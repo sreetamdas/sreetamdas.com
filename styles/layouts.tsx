@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 export const BlogPostsPreviewLayout = styled.div`
 	display: grid;
@@ -42,7 +42,7 @@ export const ReallyBigTitle = styled.h1`
 	font-size: 8rem;
 `;
 
-export const TextGradient = styled.span`
+export const TextGradientCSS = css`
 	background: linear-gradient(
 		90deg,
 		var(--color-primary-accent) 0%,
@@ -52,6 +52,9 @@ export const TextGradient = styled.span`
 	background-clip: text;
 	-webkit-background-clip: text;
 	-webkit-text-fill-color: transparent;
+`;
+export const TextGradient = styled.span`
+	${TextGradientCSS}
 `;
 
 export const Heavy = styled.span`

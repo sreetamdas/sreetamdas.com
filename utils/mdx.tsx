@@ -81,13 +81,11 @@ const MDXImageWithWrapper = (props: MDXProviderProps) => (
 const MDXLinkStyled = styled.span`
 	& a {
 		color: var(--color-primary);
-		text-decoration: underline;
-		text-decoration-color: var(--color-primary-accent);
-		text-decoration-thickness: 0.125em;
-		text-underline-offset: 0.25em;
+		border-bottom: 0.18em solid var(--color-primary-accent);
 
 		:hover {
 			color: var(--color-primary-accent);
+			text-decoration: none;
 		}
 	}
 `;
