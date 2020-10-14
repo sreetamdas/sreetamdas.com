@@ -146,10 +146,10 @@ const FoobarWrapper = ({ children }: PropsWithChildren<{}>): JSX.Element => {
 				<Space />
 				<Center>
 					<Footer />
+					<Space size={10} />
 				</Center>
 				{foobarData.unlocked && (
 					<Center>
-						<Space size={10} />
 						<code>
 							<LinkTo href="/foobar">resume /foobar</LinkTo>
 						</code>

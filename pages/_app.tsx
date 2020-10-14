@@ -34,8 +34,8 @@ const GlobalStyles = createGlobalStyle`
 		--color-inlineCode-fg: #EB5757;
 		--color-inlineCode-bg: #eee;
 		--color-secondary-accent: #358EF1;
-		--font-family-code: SFMono-Regular, Consolas, Roboto Mono, Menlo, Monaco, Liberation Mono, Lucida Console, monospace;
 
+		--font-family-code: SFMono-Regular, Consolas, Roboto Mono, Menlo, Monaco, Liberation Mono, Lucida Console, monospace;
 		--color-success-accent: #00FF7F;
 		--color-success-accent-faded: #00FF7F30;
 		--color-danger-accent: #FF8000;
@@ -54,7 +54,6 @@ const GlobalStyles = createGlobalStyle`
 		--color-background: #000;
 		--color-inlineCode-fg: #EB5757;
 		--color-inlineCode-bg: #222;
-		--font-family-code: SFMono-Regular, Consolas, Roboto Mono, Menlo, Monaco, Liberation Mono, Lucida Console, monospace;
 	}
 	[data-theme="batman"] {
 		--color-primary-accent: #FFFF00;
@@ -63,7 +62,6 @@ const GlobalStyles = createGlobalStyle`
 		--color-background: #000;
 		--color-inlineCode-fg: #EB5757;
 		--color-inlineCode-bg: #222;
-		--font-family-code: SFMono-Regular, Consolas, Roboto Mono, Menlo, Monaco, Liberation Mono, Lucida Console, monospace;
 	}
 
 
@@ -79,7 +77,7 @@ const GlobalStyles = createGlobalStyle`
 
 	}
 	
-	::selection {
+	:not(pre span)::selection {
 		background: var(--color-primary-accent);
 		color: var(--color-background);
 	}
