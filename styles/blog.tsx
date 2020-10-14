@@ -1,28 +1,41 @@
 import React, { PropsWithChildren, PropsWithoutRef, Ref } from "react";
 import styled, { StyledComponentPropsWithRef, css } from "styled-components";
 import Link, { LinkProps } from "next/link";
-import { TextGradient, PaddingListItems } from "styles/layouts";
+import { PaddingListItems, TextGradientCSS } from "styles/layouts";
+import { useHover } from "utils/hooks";
+import { FaArrowRight } from "react-icons/fa";
 
-export const BlogPostPreview = ({ post }: { post: TBlogPost }) => (
-	<Link href="/blog/[slug]" as={`/blog/${post.slug}`} scroll={false}>
-		<StyledLink href={`/blog/${post.slug}`}>
-			<Card>
-				<BlogPostPreviewTitle>
-					<TextGradient>{post.title}</TextGradient>
-				</BlogPostPreviewTitle>
-				<Datestamp>
-					{new Date(post.publishedAt).toLocaleDateString("en-US", {
-						month: "long",
-						year: "numeric",
-						day: "numeric",
-					})}
-					{!post.published && <PostNotPublishedWarning />}
-				</Datestamp>
-				<SmallText>{post.summary}</SmallText>
-			</Card>
-		</StyledLink>
-	</Link>
-);
+export const BlogPostPreview = ({ post }: { post: TBlogPost }) => {
+	const [hoverRef, isHovered] = useHover();
+
+	return (
+		<Link href="/blog/[slug]" as={`/blog/${post.slug}`} scroll={false}>
+			<StyledLink href={`/blog/${post.slug}`}>
+				<Card ref={hoverRef}>
+					<BlogPostPreviewTitle>{post.title}</BlogPostPreviewTitle>
+					<Datestamp>
+						{new Date(post.publishedAt).toLocaleDateString(
+							"en-US",
+							{
+								month: "long",
+								year: "numeric",
+								day: "numeric",
+							}
+						)}
+						{!post.published && <PostNotPublishedWarning />}
+					</Datestamp>
+					<SmallText>{post.summary}</SmallText>
+					<ReadMorePrompt {...{ isHovered }}>
+						Read more{" "}
+						{isHovered && (
+							<FaArrowRight style={{ fontSize: "12px" }} />
+						)}
+					</ReadMorePrompt>
+				</Card>
+			</StyledLink>
+		</Link>
+	);
+};
 
 export const BlogPostTitle = styled.h1`
 	/* color: var(--color-primary-accent); */
@@ -33,10 +46,10 @@ export const BlogPostTitle = styled.h1`
 `;
 
 export const BlogPostPreviewTitle = styled.h2`
-	/* color: var(--color-primary-accent); */
 	margin: 0;
 	padding: 5px 0;
 	font-size: 2rem;
+	${TextGradientCSS}
 `;
 
 export const removeListStyleMixin = css`
@@ -59,9 +72,8 @@ export const Card = styled.div`
 export const Datestamp = styled.p`
 	color: var(--color-primary-accent);
 	font-size: 12px;
-	padding: 10px 0;
-	margin: 0; /* thanks @mxstbr! */
-	/* opacity: 0.6; */
+	padding: 5px 0;
+	margin: 0;
 `;
 
 export const Title = styled.h1`
@@ -83,8 +95,9 @@ export const Text = styled.p<{ paddingTop?: boolean | number }>`
 
 export const SmallText = styled.p`
 	font-size: 14px;
-	margin: 0; /* thanks @mxstbr! */
+	margin: 0;
 	padding-bottom: 10px;
+	line-height: 1.6;
 `;
 
 export const StyledLink = styled.a`
@@ -243,4 +256,12 @@ export const Highlight = styled.span`
 	color: var(--color-primary-accent);
 	font-style: italic;
 	font-weight: bold;
+`;
+
+export const ReadMorePrompt = styled.p<{ isHovered: boolean }>`
+	font-weight: bold;
+	font-size: 14px;
+	margin: 0;
+	color: ${({ isHovered }) =>
+		isHovered ? "var(--color-primary-accent)" : null};
 `;
