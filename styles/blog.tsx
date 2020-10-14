@@ -239,7 +239,7 @@ export const CustomBlockquote = styled.aside<{ type?: string }>`
 			  `}
 `;
 
-export const Highlighted = styled.span`
+export const Highlight = styled.span`
 	color: var(--color-primary-accent);
 	font-style: italic;
 	font-weight: bold;

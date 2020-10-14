@@ -78,10 +78,26 @@ const MDXImageWithWrapper = (props: MDXProviderProps) => (
 	/>
 );
 
+const MDXLinkStyled = styled.span`
+	& a {
+		color: var(--color-primary);
+		text-decoration: underline;
+		text-decoration-color: var(--color-primary-accent);
+		text-decoration-thickness: 0.125em;
+		text-underline-offset: 0.25em;
+
+		:hover {
+			color: var(--color-primary-accent);
+		}
+	}
+`;
 type THrefPropsWithChildren = PropsWithChildren<{ href: string }>;
 const MDXLinkWrapper = (props: THrefPropsWithChildren) => {
-	if (props.href[0] === "/") return <Link {...props} />;
-	return <a {...props} />;
+	return (
+		<MDXLinkStyled>
+			{props.href[0] === "/" ? <Link {...props} /> : <a {...props} />}
+		</MDXLinkStyled>
+	);
 };
 
 type TIDPropsWithChildren = PropsWithChildren<{ id: string }>;

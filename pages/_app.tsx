@@ -77,7 +77,7 @@ const GlobalStyles = createGlobalStyle`
 
 	}
 	
-	:not(pre span)::selection {
+	:not(pre):not(span)::selection {
 		background: var(--color-primary-accent);
 		color: var(--color-background);
 	}
