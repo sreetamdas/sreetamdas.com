@@ -1,7 +1,8 @@
-import { Text, Title, LinkTo } from "styles/blog";
-import { Fragment } from "react";
-import { ReallyBigTitle, Space } from "styles/layouts";
 import Head from "next/head";
+import { Fragment } from "react";
+
+import { Text, Title, LinkTo } from "styles/blog";
+import { ReallyBigTitle, Space } from "styles/layouts";
 
 export type T404PageMessage = {
 	message?: string;

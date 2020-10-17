@@ -1,8 +1,9 @@
+import Head from "next/head";
 import { Fragment } from "react";
-import { Layout, Center, MDXText, TextGradient, Heavy } from "styles/layouts";
+
 import Tooling from "content/tooling.mdx";
 import { Text, Title, StyledAccentLink, LinkTo } from "styles/blog";
-import Head from "next/head";
+import { Layout, Center, MDXText, TextGradient, Heavy } from "styles/layouts";
 
 const Index = () => {
 	return (

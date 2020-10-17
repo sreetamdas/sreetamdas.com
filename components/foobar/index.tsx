@@ -1,3 +1,4 @@
+import { useRouter } from "next/router";
 import React, {
 	useEffect,
 	useState,
@@ -5,7 +6,10 @@ import React, {
 	createContext,
 	useCallback,
 } from "react";
-import { useRouter } from "next/router";
+
+import { Footer } from "components/Footer";
+import { LinkTo } from "styles/blog";
+import { Space, Center, WrapperForFooter } from "styles/layouts";
 import {
 	doAsyncThings,
 	loadLocalDataOnMount,
@@ -13,9 +17,6 @@ import {
 	updateLocalData,
 	mergeLocalDataIntoStateOnMount,
 } from "utils/console";
-import { Space, Center, WrapperForFooter } from "styles/layouts";
-import { LinkTo } from "styles/blog";
-import { Footer } from "components/Footer";
 
 export const initialFoobarData: TFoobarData = {
 	visitedPages: [],

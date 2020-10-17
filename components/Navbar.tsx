@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useContext } from "react";
-import styled from "styled-components";
 import {
 	FaGithub,
 	FaTwitter,
@@ -12,10 +11,12 @@ import {
 } from "react-icons/fa";
 import { FiSun } from "react-icons/fi";
 import { IoMdMoon } from "react-icons/io";
-import { IconContainer, LinkTo, NextIconLink } from "styles/blog";
-import RoundedSquare from "public/roundedSquare.svg";
-import { Layout } from "styles/layouts";
+import styled from "styled-components";
+
 import { FoobarContext } from "components/foobar";
+import RoundedSquare from "public/roundedSquare.svg";
+import { IconContainer, LinkTo, NextIconLink } from "styles/blog";
+import { Layout } from "styles/layouts";
 import { TGlobalThemeObject } from "typings/styled";
 
 const NavbarWithLogo = styled.div`

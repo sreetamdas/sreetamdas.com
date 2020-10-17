@@ -1,9 +1,10 @@
-import MDXAbout from "content/about.mdx";
-import React, { Fragment, useContext } from "react";
 import Head from "next/head";
-import { Layout, Center, RemoveBulletsFromOL } from "styles/layouts";
-import { Title, Text, LinkTo } from "styles/blog";
+import React, { Fragment, useContext } from "react";
+
 import { FoobarContext } from "components/foobar";
+import MDXAbout from "content/about.mdx";
+import { Title, Text, LinkTo } from "styles/blog";
+import { Layout, Center, RemoveBulletsFromOL } from "styles/layouts";
 
 const About = () => {
 	const { updateFoobarDataPartially, unlocked } = useContext(FoobarContext);
