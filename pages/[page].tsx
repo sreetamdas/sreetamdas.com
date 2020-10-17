@@ -1,8 +1,9 @@
-import { Fragment } from "react";
 import { GetStaticPaths, GetStaticProps } from "next";
 import dynamic from "next/dynamic";
 import Head from "next/head";
 import { useRouter } from "next/router";
+import { Fragment } from "react";
+
 import { Title } from "styles/blog";
 import {
 	Layout,

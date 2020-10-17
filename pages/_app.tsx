@@ -1,20 +1,20 @@
-import React, { useState, Fragment } from "react";
-import { AppProps } from "next/app";
-
-import { Center } from "styles/layouts";
-import { Navbar } from "components/Navbar";
-import { createGlobalStyle, ThemeProvider } from "styled-components";
 import { MDXProvider } from "@mdx-js/react";
+import { AppProps } from "next/app";
+import Head from "next/head";
+import React, { useState, Fragment } from "react";
+import { createGlobalStyle, ThemeProvider } from "styled-components";
+
+import { Navbar } from "components/Navbar";
+import { FoobarWrapper } from "components/foobar";
+import { Text } from "styles/blog";
+import { Center } from "styles/layouts";
+import { TGlobalThemeObject } from "typings/styled";
 import {
 	MDXCodeBlock,
 	MDXHeadingWrapper,
 	MDXImageWithWrapper,
 	MDXLinkWrapper,
 } from "utils/mdx";
-import { Text } from "styles/blog";
-import { FoobarWrapper } from "components/foobar";
-import { TGlobalThemeObject } from "typings/styled";
-import Head from "next/head";
 
 const MDXComponents = {
 	p: Text,

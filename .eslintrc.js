@@ -8,6 +8,9 @@ module.exports = {
 		"eslint:recommended",
 		"plugin:react/recommended",
 		"plugin:@typescript-eslint/eslint-recommended",
+		"plugin:import/errors",
+		"plugin:import/warnings",
+		"plugin:import/typescript",
 	],
 	globals: {
 		Atomics: "readonly",
@@ -33,10 +36,20 @@ module.exports = {
 		"react-hooks/exhaustive-deps": "warn",
 		"react/react-in-jsx-scope": "off",
 		"react/display-name": "off",
+		"import/order": [
+			"error",
+			{
+				"newlines-between": "always",
+				alphabetize: { order: "asc" },
+			},
+		],
 	},
 	settings: {
 		react: {
 			version: "detect",
+		},
+		"import/resolver": {
+			typescript: {},
 		},
 	},
 };

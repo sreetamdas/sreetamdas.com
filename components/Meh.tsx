@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+
 import { ProgressBar } from "styles/blog";
 
 export const ReadingProgress = () => {

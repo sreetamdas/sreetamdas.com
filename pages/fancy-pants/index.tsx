@@ -1,6 +1,7 @@
-import { ReallyBigTitle } from "styles/layouts";
 import { useContext, useEffect, Fragment } from "react";
 import { ThemeContext } from "styled-components";
+
+import { ReallyBigTitle } from "styles/layouts";
 
 const FancyPants = () => {
 	const { changeThemeVariant } = useContext(ThemeContext);

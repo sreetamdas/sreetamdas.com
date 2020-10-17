@@ -1,5 +1,4 @@
-import styled from "styled-components";
-import { Center } from "styles/layouts";
+import { useRouter } from "next/router";
 import {
 	useState,
 	useEffect,
@@ -8,8 +7,10 @@ import {
 	ChangeEvent,
 	FormEvent,
 } from "react";
-import { useRouter } from "next/router";
+import styled from "styled-components";
+
 import { FoobarContext } from "components/foobar";
+import { Center } from "styles/layouts";
 
 const TerminalBackdrop = styled.div`
 	background-color: #00000077;

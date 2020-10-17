@@ -1,13 +1,14 @@
-import { Title, StyledPre } from "styles/blog";
+import { useRouter } from "next/router";
 import { useState, useContext, Fragment, useEffect } from "react";
+
 import { FoobarContext, initialFoobarData } from "components/foobar";
-import Custom404 from "pages/404";
-import { dog } from "utils/console";
-import { Layout, Space } from "styles/layouts";
-import { SupportSreetamDas } from "styles/special";
 import { Terminal } from "components/foobar/goto";
 import { KonamiWrapper } from "components/foobar/konami";
-import { useRouter } from "next/router";
+import Custom404 from "pages/404";
+import { Title, StyledPre } from "styles/blog";
+import { Layout, Space } from "styles/layouts";
+import { SupportSreetamDas } from "styles/special";
+import { dog } from "utils/console";
 
 export const FOOBAR_PAGES = {
 	sourceCode: "source-code",
