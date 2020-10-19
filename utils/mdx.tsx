@@ -1,11 +1,12 @@
-import React, { createElement, CSSProperties, PropsWithChildren } from "react";
-import styled from "styled-components";
-import Highlight, { defaultProps, Language } from "prism-react-renderer";
 import { ComponentType, MDXProviderProps } from "@mdx-js/react";
-import { FiLink } from "react-icons/fi";
-import { useHover } from "utils/hooks";
-import { LinkedHeaderIconWrapper } from "styles/blog";
 import Link from "next/link";
+import Highlight, { defaultProps, Language } from "prism-react-renderer";
+import React, { createElement, CSSProperties, PropsWithChildren } from "react";
+import { FiLink } from "react-icons/fi";
+import styled from "styled-components";
+
+import { LinkedHeaderIconWrapper } from "styles/blog";
+import { useHover } from "utils/hooks";
 
 type TMDXProviderCodeblockPassedProps = {
 	children: {

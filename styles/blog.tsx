@@ -1,9 +1,10 @@
-import React, { PropsWithChildren, PropsWithoutRef, Ref } from "react";
-import styled, { StyledComponentPropsWithRef, css } from "styled-components";
 import Link, { LinkProps } from "next/link";
+import { forwardRef, PropsWithChildren, PropsWithoutRef, Ref } from "react";
+import { FaArrowRight } from "react-icons/fa";
+import styled, { StyledComponentPropsWithRef, css } from "styled-components";
+
 import { PaddingListItems, TextGradientCSS } from "styles/layouts";
 import { useHover } from "utils/hooks";
-import { FaArrowRight } from "react-icons/fa";
 
 export const BlogPostPreview = ({ post }: { post: TBlogPost }) => {
 	const [hoverRef, isHovered] = useHover();
@@ -116,7 +117,7 @@ export const StyledLink = styled.a`
 type TStyledLinkProps = PropsWithoutRef<
 	StyledComponentPropsWithRef<typeof StyledLink>
 >;
-export const StyledAccentLink = React.forwardRef(
+export const StyledAccentLink = forwardRef(
 	(
 		{ style, href, onClick, children, ...props }: TStyledLinkProps,
 		ref: Ref<HTMLAnchorElement>

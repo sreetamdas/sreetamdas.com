@@ -1,9 +1,18 @@
-import React, { PropsWithChildren, HTMLAttributes, Key, Fragment } from "react";
-import styled, { keyframes, CSSProperties } from "styled-components";
 import { motion } from "framer-motion";
+import {
+	PropsWithChildren,
+	HTMLAttributes,
+	Key,
+	Fragment,
+	useCallback,
+	useEffect,
+	useRef,
+	useState,
+} from "react";
+import styled, { keyframes, CSSProperties } from "styled-components";
 
 const range = (start: number, end?: number, step = 1) => {
-	let output = [];
+	const output = [];
 	if (typeof end === "undefined") {
 		end = start;
 		start = 0;
@@ -25,10 +34,10 @@ const getInitialState = () => {
 	return isRenderingOnServer ? true : !window.matchMedia(QUERY).matches;
 };
 function usePrefersReducedMotion() {
-	const [prefersReducedMotion, setPrefersReducedMotion] = React.useState(
+	const [prefersReducedMotion, setPrefersReducedMotion] = useState(
 		getInitialState
 	);
-	React.useEffect(() => {
+	useEffect(() => {
 		const mediaQueryList = window.matchMedia(QUERY);
 		const listener = (event: MediaQueryListEvent) => {
 			setPrefersReducedMotion(!event.matches);
@@ -46,12 +55,12 @@ const useRandomInterval = (
 	minDelay: null | number,
 	maxDelay: null | number
 ) => {
-	const timeoutId = React.useRef<any>(null);
-	const savedCallback = React.useRef(callback);
-	React.useEffect(() => {
+	const timeoutId = useRef<any>(null);
+	const savedCallback = useRef(callback);
+	useEffect(() => {
 		savedCallback.current = callback;
 	});
-	React.useEffect(() => {
+	useEffect(() => {
 		if (typeof minDelay === "number" && typeof maxDelay === "number") {
 			const handleTick = () => {
 				const nextTickAt = random(minDelay, maxDelay);
@@ -65,7 +74,7 @@ const useRandomInterval = (
 
 		return () => window.clearTimeout(timeoutId.current);
 	}, [minDelay, maxDelay]);
-	const cancel = React.useCallback(function () {
+	const cancel = useCallback(function () {
 		window.clearTimeout(timeoutId.current);
 	}, []);
 	return cancel;
@@ -98,7 +107,7 @@ const Sparkles = ({
 	children,
 	...props
 }: PropsWithChildren<HTMLAttributes<HTMLElement>>) => {
-	const [sparkles, setSparkles] = React.useState(() => {
+	const [sparkles, setSparkles] = useState(() => {
 		return range(3).map(() => generateSparkle(color));
 	});
 	const prefersReducedMotion = usePrefersReducedMotion();
@@ -279,7 +288,7 @@ export const DriftingSparklesContainer = ({
 	visible,
 	...props
 }: PropsWithChildren<HTMLAttributes<HTMLElement> & { visible?: boolean }>) => {
-	const [sparkles, setSparkles] = React.useState(() => {
+	const [sparkles, setSparkles] = useState(() => {
 		return range(10).map(() => generateSparkle(color));
 	});
 	const prefersReducedMotion = usePrefersReducedMotion();
