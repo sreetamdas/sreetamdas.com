@@ -1,7 +1,10 @@
 import { GetStaticPaths, GetStaticProps } from "next";
 import dynamic from "next/dynamic";
+import Head from "next/head";
+import { Fragment } from "react";
+import { renderToStaticMarkup } from "react-dom/server";
 
-import { Layout, TextGradient } from "styles/layouts";
+import { ReadingProgress } from "components/Meh";
 import {
 	BlogPostTitle,
 	BlogPostMDXContent,
@@ -10,13 +13,13 @@ import {
 	RoundedImageSmall,
 	PostMetaDataGrid,
 } from "styles/blog";
+import { Layout, TextGradient } from "styles/layouts";
 import { getBlogPostsData } from "utils/blog";
-import { Fragment } from "react";
-import Head from "next/head";
-import { ReadingProgress } from "components/Meh";
 
-const Post = ({ post }: { post: TBlogPost }) => {
-	const MDXPost = dynamic(() => import(`content/blog/${post.slug}.mdx`));
+const Post = ({ post, mdxString }: { post: TBlogPost; mdxString: string }) => {
+	const MDXPost = dynamic(() => import(`content/blog/${post.slug}.mdx`), {
+		loading: () => <div dangerouslySetInnerHTML={{ __html: mdxString }} />,
+	});
 
 	return (
 		<Fragment>
@@ -66,7 +69,11 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 	const postsData = getBlogPostsData();
 
 	const post = postsData.find((postData) => postData.slug === params.slug);
-	return { props: { post } };
+	const { default: MDXContent } = await import(
+		`content/blog/${post?.slug}.mdx`
+	);
+	const mdxString = renderToStaticMarkup(<MDXContent />);
+	return { props: { post, mdxString } };
 };
 
 export default Post;
