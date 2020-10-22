@@ -74,7 +74,7 @@ const GlobalStyles = createGlobalStyle`
 		margin: 0;
 		height: 100%;
 		min-height: 100%;
-
+		line-height: 1.6;
 	}
 	
 	:not(pre):not(span)::selection {

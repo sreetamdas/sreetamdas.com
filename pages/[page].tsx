@@ -1,8 +1,8 @@
 import { GetStaticPaths, GetStaticProps } from "next";
 import dynamic from "next/dynamic";
 import Head from "next/head";
-import { useRouter } from "next/router";
 import { Fragment } from "react";
+import { renderToStaticMarkup } from "react-dom/server";
 
 import { Title } from "styles/blog";
 import {
@@ -13,13 +13,10 @@ import {
 } from "styles/layouts";
 import { getAboutMDXPagesData } from "utils/blog";
 
-const AboutPage = () => {
-	const router = useRouter();
-	const {
-		query: { page },
-	} = (router as unknown) as { query: { page: string } };
-
-	const MDXPage = dynamic(() => import(`content/${page}.mdx`));
+const Page = ({ page, mdxString }: { page: string; mdxString: string }) => {
+	const MDXPage = dynamic(() => import(`content/${page}.mdx`), {
+		loading: () => <div dangerouslySetInnerHTML={{ __html: mdxString }} />,
+	});
 
 	return (
 		<Fragment>
@@ -57,8 +54,10 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 
 	const postsData = getAboutMDXPagesData();
 	const post = postsData.find((postData) => postData.page === params.page);
+	const { default: MDXContent } = await import(`content/${post?.page}.mdx`);
+	const mdxString = renderToStaticMarkup(<MDXContent />);
 
-	return { props: { post } };
+	return { props: { page: post?.page, mdxString } };
 };
 
-export default AboutPage;
+export default Page;

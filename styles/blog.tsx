@@ -39,8 +39,7 @@ export const BlogPostPreview = ({ post }: { post: TBlogPost }) => {
 };
 
 export const BlogPostTitle = styled.h1`
-	/* color: var(--color-primary-accent); */
-	font-size: 3rem;
+	font-size: 5rem;
 	margin: 0;
 	padding-top: 30px;
 	padding-bottom: 15px;
@@ -62,7 +61,6 @@ export const removeListStyleMixin = css`
 
 export const BlogPostMDXContent = styled(PaddingListItems)`
 	padding: 30px 0;
-	line-height: 1.6;
 `;
 
 export const Card = styled.div`
@@ -83,7 +81,6 @@ export const Title = styled.h1`
 `;
 
 export const Text = styled.p<{ paddingTop?: boolean | number }>`
-	line-height: 1.6;
 	margin: 0;
 	padding: 10px 0;
 	padding-top: ${({ paddingTop }) =>
@@ -98,7 +95,6 @@ export const SmallText = styled.p`
 	font-size: 14px;
 	margin: 0;
 	padding-bottom: 10px;
-	line-height: 1.6;
 `;
 
 export const StyledLink = styled.a`
@@ -239,6 +235,7 @@ export const NextIconLink = ({
 
 export const CustomBlockquote = styled.aside<{ type?: string }>`
 	padding: 20px;
+	margin: 20px 0;
 	border-radius: var(--border-radius);
 
 	${({ type }) =>

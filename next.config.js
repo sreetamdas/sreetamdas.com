@@ -1,5 +1,5 @@
 const remarkSlug = require("remark-slug");
-
+// eslint-disable-next-line import/order
 const withMDX = require("@next/mdx")({
 	extension: /\.mdx?$/,
 	options: {
