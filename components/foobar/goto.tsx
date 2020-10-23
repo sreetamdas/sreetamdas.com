@@ -98,6 +98,7 @@ const Terminal = ({ visible = false, toggleTerminal }: TTerminalProps) => {
 					onClick={ignoreClick}
 					onSubmit={handleGoToSubmit}
 				>
+					{/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
 					<label
 						style={{
 							paddingLeft: "10px",
@@ -109,6 +110,7 @@ const Terminal = ({ visible = false, toggleTerminal }: TTerminalProps) => {
 						<TerminalInput
 							value={goto}
 							onChange={handleOnChange}
+							// eslint-disable-next-line jsx-a11y/no-autofocus
 							autoFocus
 						/>
 					</label>

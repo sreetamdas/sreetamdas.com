@@ -13,7 +13,12 @@ const Index = () => {
 			</Head>
 			<Layout>
 				<Center>
-					<Title>Hey, I&apos;m Sreetam Das! 👋</Title>
+					<Title>
+						Hey, I&apos;m Sreetam Das!{" "}
+						<span role="img" aria-label="wave emoji">
+							👋
+						</span>
+					</Title>
 				</Center>
 				<Text>
 					I&apos;m a developer from India in love with all things
@@ -36,7 +41,11 @@ const Index = () => {
 					<Tooling />
 				</MDXText>
 				<Text>
-					I also ❤️ a lot of other things, in no particular order:
+					I also{" "}
+					<span role="img" aria-label="heart emoji">
+						❤️
+					</span>{" "}
+					a lot of other things, in no particular order:
 				</Text>
 				<Text>
 					CSGO, Reddit, Mechanical Keyboards, Open Source, GitHub,

@@ -1,4 +1,4 @@
-import { ComponentType, MDXProviderProps } from "@mdx-js/react";
+import { ComponentType } from "@mdx-js/react";
 import Link from "next/link";
 import Highlight, { defaultProps, Language } from "prism-react-renderer";
 import React, { createElement, CSSProperties, PropsWithChildren } from "react";
@@ -68,9 +68,9 @@ const MDXCodeBlock = (props: TMDXProviderCodeblockPassedProps) => {
 	);
 };
 
-const MDXImageWithWrapper = (props: MDXProviderProps) => (
+const MDXImageWithWrapper = ({ alt, src }: { alt: string; src: string }) => (
 	<img
-		{...props}
+		{...{ alt, src }}
 		style={{
 			maxWidth: "var(--max-width)",
 			width: "100%",
@@ -94,7 +94,11 @@ type THrefPropsWithChildren = PropsWithChildren<{ href: string }>;
 const MDXLinkWrapper = (props: THrefPropsWithChildren) => {
 	return (
 		<MDXLinkStyled>
-			{props.href[0] === "/" ? <Link {...props} /> : <a {...props} />}
+			{props.href[0] === "/" ? (
+				<Link {...props} />
+			) : (
+				<a {...props}>{props.children}</a>
+			)}
 		</MDXLinkStyled>
 	);
 };

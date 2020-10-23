@@ -11,6 +11,7 @@ module.exports = {
 		"plugin:import/errors",
 		"plugin:import/warnings",
 		"plugin:import/typescript",
+		"plugin:jsx-a11y/recommended",
 	],
 	globals: {
 		Atomics: "readonly",
@@ -24,7 +25,7 @@ module.exports = {
 		ecmaVersion: 2018,
 		sourceType: "module",
 	},
-	plugins: ["react", "@typescript-eslint", "react-hooks"],
+	plugins: ["react", "@typescript-eslint", "react-hooks", "jsx-a11y"],
 	rules: {
 		indent: ["error", "tab", { SwitchCase: 1 }],
 		"linebreak-style": ["error", "unix"],
