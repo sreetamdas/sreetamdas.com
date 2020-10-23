@@ -119,7 +119,7 @@ const HandleMDXHeaderElement = (
 			href={`#${propsWithoutChildren.id ?? ""}`}
 			isHovered={isHovered}
 		>
-			<FiLink />
+			<FiLink aria-label={propsWithoutChildren.id} />
 		</LinkedHeaderIconWrapper>
 	);
 	const ActualHeading = createElement(
