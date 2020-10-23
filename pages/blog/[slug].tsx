@@ -10,7 +10,6 @@ import {
 	BlogPostMDXContent,
 	Datestamp,
 	PostNotPublishedWarning,
-	RoundedImageSmall,
 	PostMetaDataGrid,
 } from "styles/blog";
 import { Layout, TextGradient } from "styles/layouts";
@@ -32,9 +31,7 @@ const Post = ({ post, mdxString }: { post: TBlogPost; mdxString: string }) => {
 					<TextGradient>{post.title}</TextGradient>
 				</BlogPostTitle>
 				<PostMetaDataGrid>
-					<RoundedImageSmall src="/SreetamDas.jpg" />
 					<Datestamp>
-						Sreetam Das &bull;{" "}
 						{new Date(post.publishedAt).toLocaleDateString(
 							"en-US",
 							{

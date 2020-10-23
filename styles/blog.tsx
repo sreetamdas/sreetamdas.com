@@ -13,7 +13,9 @@ export const BlogPostPreview = ({ post }: { post: TBlogPost }) => {
 		<Link href="/blog/[slug]" as={`/blog/${post.slug}`} scroll={false}>
 			<StyledLink href={`/blog/${post.slug}`}>
 				<Card ref={hoverRef}>
-					<BlogPostPreviewTitle>{post.title}</BlogPostPreviewTitle>
+					<BlogPostPreviewTitle {...{ isHovered }}>
+						{post.title}
+					</BlogPostPreviewTitle>
 					<Datestamp>
 						{new Date(post.publishedAt).toLocaleDateString(
 							"en-US",
@@ -39,17 +41,18 @@ export const BlogPostPreview = ({ post }: { post: TBlogPost }) => {
 };
 
 export const BlogPostTitle = styled.h1`
-	font-size: 5rem;
+	left: 0;
+	font-size: 7rem;
+	line-height: 1.1;
 	margin: 0;
 	padding-top: 30px;
 	padding-bottom: 15px;
 `;
 
-export const BlogPostPreviewTitle = styled.h2`
+export const BlogPostPreviewTitle = styled.h2<{ isHovered: boolean }>`
 	margin: 0;
-	padding: 5px 0;
 	font-size: 2rem;
-	${TextGradientCSS}
+	${({ isHovered }) => isHovered && TextGradientCSS}
 `;
 
 export const removeListStyleMixin = css`
@@ -77,7 +80,7 @@ export const Datestamp = styled.p`
 
 export const Title = styled.h1`
 	padding: 20px 0;
-	font-size: 3rem;
+	font-size: 5rem;
 `;
 
 export const Text = styled.p<{ paddingTop?: boolean | number }>`

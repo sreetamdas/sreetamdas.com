@@ -31,3 +31,5 @@ yarn-error.log*
 
 .eslintcache
 .vercel
+
+pages/foobar/spec.md
