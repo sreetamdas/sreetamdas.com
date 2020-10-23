@@ -1,3 +1,4 @@
+import Head from "next/head";
 import { useRouter } from "next/router";
 import { useState, useContext, Fragment, useEffect } from "react";
 
@@ -6,7 +7,7 @@ import { Terminal } from "components/foobar/goto";
 import { KonamiWrapper } from "components/foobar/konami";
 import Custom404 from "pages/404";
 import { Title, StyledPre } from "styles/blog";
-import { Layout, Space } from "styles/layouts";
+import { Center, Layout, Space } from "styles/layouts";
 import { SupportSreetamDas } from "styles/special";
 import { dog } from "utils/console";
 
@@ -21,12 +22,13 @@ export const FOOBAR_PAGES = {
 	konami: "konami",
 	offline: "offline",
 	hack: "hack",
+	"404": "404",
+	dogs: "dogs",
 } as const;
 
 /**
  * this page is only "activated" once `X` has been discovered
  */
-
 const Index = () => <FoobarSchrodinger completedPage="/" />;
 
 export default Index;
@@ -85,6 +87,9 @@ export const Foobar = ({ completedPage }: TFoobarSchrodingerProps) => {
 	};
 	return (
 		<Fragment>
+			<Head>
+				<title>Foobar &mdash; Sreetam Das</title>
+			</Head>
 			<Layout>
 				{completedPage && completedPage !== "/" && (
 					<Title>
@@ -96,7 +101,9 @@ export const Foobar = ({ completedPage }: TFoobarSchrodingerProps) => {
 				<StyledPre>{JSON.stringify(foobarObject, null, 2)}</StyledPre>
 				<button onClick={handleClearFoobarData}>Restart</button>
 				<Space />
-				<SupportSreetamDas />
+				<Center>
+					<SupportSreetamDas />
+				</Center>
 			</Layout>
 			<Terminal {...{ visible: terminalVisible, toggleTerminal }} />
 			{!terminalVisible && <KonamiWrapper />}
@@ -157,9 +164,7 @@ export const FoobarSchrodinger = ({
 		<Fragment>
 			{dataLoaded ? (
 				foobarUnlocked ? (
-					<Fragment>
-						<Foobar {...{ completedPage }} />
-					</Fragment>
+					<Foobar {...{ completedPage }} />
 				) : (
 					<FoobarButLocked />
 				)

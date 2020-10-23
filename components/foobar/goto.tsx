@@ -13,7 +13,7 @@ import { FoobarContext } from "components/foobar";
 import { Center } from "styles/layouts";
 
 const TerminalBackdrop = styled.div`
-	background-color: #00000077;
+	background-color: #000000cc;
 	position: absolute;
 	top: 0;
 	left: 0;
@@ -34,7 +34,6 @@ const TerminalContainer = styled.form`
 	max-width: 80vw;
 	border-radius: 5px;
 	border: 2px solid var(--color-primary-accent);
-	box-shadow: 0 0 50px 5px var(--color-primary-accent);
 	margin-bottom: 5px;
 `;
 const TerminalInput = styled.input<{ isButton?: boolean; konami?: boolean }>`
@@ -73,14 +72,19 @@ const Terminal = ({ visible = false, toggleTerminal }: TTerminalProps) => {
 		event.stopPropagation();
 		event.preventDefault();
 
-		goto !== "" && router.push("/foobar/[page]", `/foobar/${goto}`);
-		goto === "" && router.push("/foobar");
+		if (goto !== "") router.push(`/foobar/${goto}`);
+		else if (goto === "") router.push("/foobar");
+		resetTerminal();
 	};
 	const handleOnChange = (event: ChangeEvent<HTMLInputElement>) => {
 		setGoto(event.target.value);
 	};
 	const ignoreClick = (event: MouseEvent<HTMLFormElement>) => {
 		event.stopPropagation();
+	};
+	const resetTerminal = () => {
+		setGoto("");
+		toggleTerminalVisible();
 	};
 
 	useEffect(() => {

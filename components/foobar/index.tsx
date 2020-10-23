@@ -124,14 +124,14 @@ const FoobarWrapper = ({ children }: PropsWithChildren<{}>): JSX.Element => {
 	});
 
 	const OnEveryReRender = () => {
-		const { pathname, asPath } = router;
+		const { asPath: path, pathname } = router;
+		let pageName = path;
+		if (pathname === "/404") pageName = "/404";
 
-		if (!foobarData.visitedPages?.includes(pathname)) {
-			if (asPath !== "/404") {
-				updateFoobarDataPartially({
-					visitedPages: [...foobarData.visitedPages, pathname],
-				});
-			}
+		if (!foobarData.visitedPages?.includes(pageName)) {
+			updateFoobarDataPartially({
+				visitedPages: [...foobarData.visitedPages, pageName],
+			});
 		}
 	};
 
