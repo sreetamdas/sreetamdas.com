@@ -78,9 +78,15 @@ export const Datestamp = styled.p`
 	margin: 0;
 `;
 
-export const Title = styled.h1`
+export const Title = styled.h1<{ resetLineHeight?: boolean; size?: number }>`
 	padding: 20px 0;
-	font-size: 5rem;
+	font-size: ${({ size }) => (size ? `${size}rem` : "3rem")};
+
+	${({ resetLineHeight }) =>
+		resetLineHeight &&
+		css`
+			line-height: 1;
+		`}
 `;
 
 export const Text = styled.p<{ paddingTop?: boolean | number }>`

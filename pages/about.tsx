@@ -20,7 +20,7 @@ const About = () => {
 			</Head>
 			<Layout>
 				<Center>
-					<Title>/about</Title>
+					<Title size={5}>/about</Title>
 				</Center>
 				<RemoveBulletsFromOL>
 					<MDXAbout />

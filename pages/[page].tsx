@@ -28,7 +28,7 @@ const Page = ({ page, mdxString }: { page: string; mdxString: string }) => {
 			</Head>
 			<Layout>
 				<Center>
-					<Title>/{page}</Title>
+					<Title size={5}>/{page}</Title>
 				</Center>
 				<PaddingListItems>
 					<RemoveBulletsFromOL>

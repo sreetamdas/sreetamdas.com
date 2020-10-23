@@ -40,6 +40,7 @@ export const PaddingListItems = styled.div`
 
 export const ReallyBigTitle = styled.h1`
 	font-size: 8rem;
+	line-height: 1;
 `;
 
 export const TextGradientCSS = css`

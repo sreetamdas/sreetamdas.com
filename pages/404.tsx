@@ -14,9 +14,11 @@ const Custom404 = ({ message }: T404PageMessage) => {
 				<title>404!</title>
 			</Head>
 			<ReallyBigTitle>404!</ReallyBigTitle>
-			<Title>Page not found</Title>
+			<Title resetLineHeight>Page not found</Title>
 			<Text style={{ textAlign: "center" }}>
-				<LinkTo href="/">Go back home</LinkTo>
+				<LinkTo href="/">
+					<h2>Go back home</h2>
+				</LinkTo>
 				<br />
 				or check out{" "}
 				<a

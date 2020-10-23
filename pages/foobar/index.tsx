@@ -20,6 +20,7 @@ export const FOOBAR_PAGES = {
 	navigator: "navigator",
 	konami: "konami",
 	offline: "offline",
+	hack: "hack",
 } as const;
 
 /**
@@ -114,7 +115,7 @@ export const FoobarButLocked = () => (
 				left: "0",
 				right: "0",
 				margin: "auto",
-				padding: "15px 0",
+				padding: "50px 0",
 				textAlign: "center",
 			}}
 		>

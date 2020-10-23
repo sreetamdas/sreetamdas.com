@@ -24,14 +24,9 @@ export const initialFoobarData: TFoobarData = {
 	completed: [],
 };
 
-/**
- * Simple object check.
- * @param item
- * @returns {boolean}
- */
-export function isObject(item: object): boolean {
+export const isObject = (item: object): boolean => {
 	return item && typeof item === "object" && !Array.isArray(item);
-}
+};
 
 /**
  * Deep merge two objects.
@@ -106,7 +101,7 @@ const FoobarWrapper = ({ children }: PropsWithChildren<{}>): JSX.Element => {
 		// @ts-expect-error
 		window.hack = () => {
 			// eslint-disable-next-line no-console
-			console.log("Hello there!!");
+			console.warn("/foobar/hack");
 		};
 
 		doAsyncThings();

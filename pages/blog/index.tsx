@@ -12,7 +12,7 @@ const Index = ({ postsData }: { postsData: Array<TBlogPost> }) => {
 			<Head>
 				<title>Blog &mdash; Sreetam Das</title>
 			</Head>
-			<Title>/blog</Title>
+			<Title size={5}>/blog</Title>
 			<Layout>
 				<BlogPostsPreviewLayout>
 					{postsData?.map((post, index) => (
