@@ -336,7 +336,7 @@ const SupportLinkStyled = styled.a`
 	grid-gap: 0.5rem;
 	grid-auto-flow: column;
 	border-radius: var(--border-radius);
-	border: 1px solid var(--color-primary-accent);
+	border: 2px solid var(--color-primary-accent);
 	/* letter-spacing: 0.6px; */
 
 	& img {

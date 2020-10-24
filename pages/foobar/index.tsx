@@ -3,15 +3,15 @@ import { useRouter } from "next/router";
 import { useState, useContext, Fragment, useEffect } from "react";
 
 import { FoobarContext, initialFoobarData } from "components/foobar";
-import { Terminal } from "components/foobar/goto";
 import { KonamiWrapper } from "components/foobar/konami";
+import { Terminal } from "components/foobar/terminal";
 import Custom404 from "pages/404";
 import { Title, StyledPre } from "styles/blog";
 import { Center, Layout, Space } from "styles/layouts";
 import { SupportSreetamDas } from "styles/special";
 import { dog } from "utils/console";
 
-export const FOOBAR_PAGES = {
+export const FOOBAR_PAGES: typeof TFOOBAR_PAGES = {
 	sourceCode: "source-code",
 	headers: "headers",
 	DNS_TXT: "dns-txt",
@@ -24,7 +24,7 @@ export const FOOBAR_PAGES = {
 	hack: "hack",
 	"404": "404",
 	dogs: "dogs",
-} as const;
+};
 
 /**
  * this page is only "activated" once `X` has been discovered
