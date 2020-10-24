@@ -2,7 +2,7 @@ import Head from "next/head";
 import { Fragment, useContext, useEffect } from "react";
 
 import { FoobarContext } from "components/foobar";
-import { FOOBAR_PAGES } from "pages/foobar";
+import { FOOBAR_PAGES } from "components/foobar/badges";
 import { Text, Title, LinkTo } from "styles/blog";
 import { ReallyBigTitle, Space } from "styles/layouts";
 

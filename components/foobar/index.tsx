@@ -120,10 +120,6 @@ const FoobarWrapper = ({ children }: PropsWithChildren<{}>): JSX.Element => {
 	}, [foobarData, dataLoaded]);
 
 	useEffect(() => {
-		OnEveryReRender();
-	});
-
-	const OnEveryReRender = () => {
 		const { asPath: path, pathname } = router;
 		let pageName = path;
 		if (pathname === "/404") pageName = "/404";
@@ -133,7 +129,7 @@ const FoobarWrapper = ({ children }: PropsWithChildren<{}>): JSX.Element => {
 				visitedPages: [...foobarData.visitedPages, pageName],
 			});
 		}
-	};
+	}, [foobarData.visitedPages, router, updateFoobarDataPartially]);
 
 	return (
 		<FoobarContext.Provider value={getFoobarContextValue}>

@@ -13,10 +13,8 @@ import { MdDns } from "react-icons/md";
 import { RiWifiOffLine } from "react-icons/ri";
 import { VscDebug, VscTelescope } from "react-icons/vsc";
 
-import { FOOBAR_PAGES } from "pages/foobar";
-
-/**
- 	sourceCode: "source-code",
+export const FOOBAR_PAGES: typeof TFOOBAR_PAGES = {
+	sourceCode: "source-code",
 	headers: "headers",
 	DNS_TXT: "dns-txt",
 	easterEgg: "easter-egg",
@@ -28,7 +26,7 @@ import { FOOBAR_PAGES } from "pages/foobar";
 	hack: "hack",
 	"404": "404",
 	dogs: "dogs",
- */
+};
 
 type TFOOBAR_PAGE_EACH =
 	| typeof TFOOBAR_PAGES[keyof typeof FOOBAR_PAGES]
