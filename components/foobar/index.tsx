@@ -8,6 +8,7 @@ import React, {
 } from "react";
 
 import { Footer } from "components/Footer";
+import { FOOBAR_PAGES } from "components/foobar/badges";
 import { LinkTo } from "styles/blog";
 import { Space, Center, WrapperForFooter } from "styles/layouts";
 import {
@@ -16,39 +17,13 @@ import {
 	logConsoleMessages,
 	updateLocalData,
 	mergeLocalDataIntoStateOnMount,
+	mergeDeep,
 } from "utils/console";
 
 export const initialFoobarData: TFoobarData = {
 	visitedPages: [],
 	unlocked: false,
 	completed: [],
-};
-
-export const isObject = (item: object): boolean => {
-	return item && typeof item === "object" && !Array.isArray(item);
-};
-
-/**
- * Deep merge two objects.
- * @param target
- * @param ...sources
- */
-export const mergeDeep = (target: any, ...sources: any): any => {
-	if (!sources.length) return target;
-	const source = sources.shift();
-
-	if (isObject(target) && isObject(source)) {
-		for (const key in source) {
-			if (isObject(source[key])) {
-				if (!target[key]) Object.assign(target, { [key]: {} });
-				mergeDeep(target[key], source[key]);
-			} else {
-				Object.assign(target, { [key]: source[key] });
-			}
-		}
-	}
-
-	return mergeDeep(target, ...sources);
 };
 
 // we're gonna hydrate this just below, and <FoobarWrapper /> wraps the entire usable DOM anyway
@@ -129,7 +104,20 @@ const FoobarWrapper = ({ children }: PropsWithChildren<{}>): JSX.Element => {
 				visitedPages: [...foobarData.visitedPages, pageName],
 			});
 		}
-	}, [foobarData.visitedPages, router, updateFoobarDataPartially]);
+		if (
+			foobarData.visitedPages.length >= 5 &&
+			!foobarData.completed.includes(FOOBAR_PAGES.navigator)
+		) {
+			updateFoobarDataPartially({
+				completed: [...foobarData.completed, FOOBAR_PAGES.navigator],
+			});
+		}
+	}, [
+		foobarData.completed,
+		foobarData.visitedPages,
+		router,
+		updateFoobarDataPartially,
+	]);
 
 	return (
 		<FoobarContext.Provider value={getFoobarContextValue}>

@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import React, { useContext, useState, useEffect, Fragment } from "react";
 
 import { FoobarContext, initialFoobarData } from "components/foobar";
+import { ShowCompletedBadges } from "components/foobar/badges";
 import { KonamiWrapper } from "components/foobar/konami";
 import { Terminal } from "components/foobar/terminal";
 import Custom404 from "pages/404";
@@ -76,7 +77,13 @@ export const Foobar = ({ completedPage }: TFoobarSchrodingerProps) => {
 				)}
 				<Space />
 				Here are your completed challenges:
-				<StyledPre>{JSON.stringify(foobarObject, null, 2)}</StyledPre>
+				<ShowCompletedBadges />
+				{process.env.NODE_ENV === "development" && (
+					<StyledPre>
+						<Title>DEV</Title>
+						{JSON.stringify(foobarObject, null, 2)}
+					</StyledPre>
+				)}
 				<button onClick={handleClearFoobarData}>Restart</button>
 				<Space />
 				<Center>

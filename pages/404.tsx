@@ -14,9 +14,9 @@ const Custom404 = ({ message }: T404PageMessage) => {
 
 	useEffect(() => {
 		const updatedPages: Array<TFoobarPages> = [...completed];
-		// @ts-expect-error
-		if (!FOOBAR_PAGES[404] in updatedPages) {
-			updatedPages.push(FOOBAR_PAGES[404]);
+
+		if (!updatedPages.includes(FOOBAR_PAGES.notFound)) {
+			updatedPages.push(FOOBAR_PAGES.notFound);
 			updateFoobarDataPartially({
 				completed: updatedPages,
 			});
@@ -25,8 +25,7 @@ const Custom404 = ({ message }: T404PageMessage) => {
 
 	const handleDogLinkClick = () => {
 		const updatedPages: Array<TFoobarPages> = [...completed];
-		// @ts-expect-error
-		if (!FOOBAR_PAGES.dogs in updatedPages) {
+		if (!updatedPages.includes(FOOBAR_PAGES.dogs)) {
 			updatedPages.push(FOOBAR_PAGES.dogs);
 			updateFoobarDataPartially({
 				completed: updatedPages,

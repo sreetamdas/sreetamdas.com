@@ -19,8 +19,10 @@ const KonamiWrapper = () => {
 	}, [handleKonamiCode]);
 
 	useEffect(() => {
-		const updated = handleKonami(konamiCodeInput, foobarContextObj);
-		if (updated) setKonamiCodeInput(updated);
+		if (foobarContextObj.unlocked) {
+			const updated = handleKonami(konamiCodeInput, foobarContextObj);
+			if (updated) setKonamiCodeInput(updated);
+		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [konamiCodeInput]);
 	return <div />;

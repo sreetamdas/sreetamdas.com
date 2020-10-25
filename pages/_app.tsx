@@ -32,7 +32,7 @@ const GlobalStyles = createGlobalStyle`
 		--color-primary: #000;
 		--color-background: #FFF;
 		--color-inlineCode-fg: #EB5757;
-		--color-inlineCode-bg: #eee;
+		--color-inlineCode-bg: #ddd;
 		--color-secondary-accent: #358EF1;
 
 		--font-family-code: SFMono-Regular, Consolas, Roboto Mono, Menlo, Monaco, Liberation Mono, Lucida Console, monospace;

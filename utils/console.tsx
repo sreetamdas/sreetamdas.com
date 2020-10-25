@@ -1,5 +1,7 @@
 import localforage from "localforage";
 
+import { FOOBAR_PAGES } from "components/foobar/badges";
+
 export const doAsyncThings = async () => {
 	await localforage.setItem("Hello", "there!");
 };
@@ -53,13 +55,19 @@ export const checkIfKonamiCodeEntered = (codes: Array<string>) => {
 
 export const handleKonami = (
 	konamiCodeInput: Array<string>,
-	{ konami, updateFoobarDataPartially }: TFoobarContext
+	{ konami, updateFoobarDataPartially, unlocked, completed }: TFoobarContext
 ) => {
-	const check = checkIfKonamiCodeEntered(konamiCodeInput);
+	const check = unlocked && checkIfKonamiCodeEntered(konamiCodeInput);
 	let updatedKonamiCodeInput: Array<string> | null = null;
 
-	if (check) updateFoobarDataPartially({ konami: !konami });
-	else {
+	if (check) {
+		const completedCopy = [...completed];
+		completedCopy.push(FOOBAR_PAGES.konami);
+		updateFoobarDataPartially({
+			konami: !konami,
+			completed: completedCopy,
+		});
+	} else {
 		if (konamiCodeInput.length > 10) {
 			updatedKonamiCodeInput = [...konamiCodeInput];
 			updatedKonamiCodeInput.shift();
@@ -89,6 +97,33 @@ export const mergeLocalDataIntoStateOnMount = (
 		}
 	}
 	return result;
+};
+
+export const isObject = (item: object): boolean => {
+	return item && typeof item === "object" && !Array.isArray(item);
+};
+
+/**
+ * Deep merge two objects.
+ * @param target
+ * @param ...sources
+ */
+export const mergeDeep = (target: any, ...sources: any): any => {
+	if (!sources.length) return target;
+	const source = sources.shift();
+
+	if (isObject(target) && isObject(source)) {
+		for (const key in source) {
+			if (isObject(source[key])) {
+				if (!target[key]) Object.assign(target, { [key]: {} });
+				mergeDeep(target[key], source[key]);
+			} else {
+				Object.assign(target, { [key]: source[key] });
+			}
+		}
+	}
+
+	return mergeDeep(target, ...sources);
 };
 
 export const logConsoleMessages = () => {
