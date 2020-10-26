@@ -113,6 +113,7 @@ const GlobalStyles = createGlobalStyle`
 		/* prevent our code block from being broken into different sections on linebreak
 		https://developer.mozilla.org/en-US/docs/Web/CSS/box-decoration-break */
 		box-decoration-break: clone;
+		white-space: nowrap;
 	}
 `;
 

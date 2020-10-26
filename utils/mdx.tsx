@@ -143,6 +143,8 @@ const CodePreBlockWithHighlight = styled.pre`
 	border-radius: var(--border-radius);
 	font-size: 14px;
 	overflow-x: scroll;
+	white-space: pre-wrap;
+	word-wrap: break-word;
 
 	.highlight-line {
 		background-color: rgb(255, 255, 255, 0.07);

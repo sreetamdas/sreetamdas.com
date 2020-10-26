@@ -9,7 +9,7 @@ declare const TFOOBAR_PAGES = {
 	konami: "konami",
 	offline: "offline",
 	hack: "hack",
-	"404": "404",
+	notFound: "error404",
 	dogs: "dogs",
 } as const;
 
@@ -19,7 +19,7 @@ declare type TFoobarData = {
 	visitedPages: Array<string>;
 	konami?: boolean;
 	unlocked: boolean;
-	completed: Array<TFOOBAR_PAGES>;
+	completed: Array<TFoobarPages>;
 };
 
 declare type TFoobarContext = Partial<TFoobarData> & {
