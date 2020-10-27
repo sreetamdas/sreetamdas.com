@@ -53,6 +53,9 @@ const MDXCodeBlock = (props: TMDXProviderCodeblockPassedProps) => {
 						}
 						return (
 							<div {...lineProps} key={i}>
+								<span className="line-number-style">
+									{i + 1}
+								</span>
 								{line.map((token, key) => (
 									<span
 										{...getTokenProps({ token, key })}
@@ -154,6 +157,16 @@ const CodePreBlockWithHighlight = styled.pre`
 		padding-right: 1em;
 		padding-left: 0.75em;
 		border-left: 0.3em solid #9d86e9;
+	}
+
+	.line-number-style {
+		display: inline-block;
+		padding-right: 0.6em;
+		width: 1rem;
+		user-select: none;
+		opacity: 0.25;
+		text-align: center;
+		position: relative;
 	}
 `;
 
