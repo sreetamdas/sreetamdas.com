@@ -206,7 +206,6 @@ export const RoundedImageSmall = styled.img`
 
 export const StyledPre = styled.pre`
 	background-color: var(--color-inlineCode-bg);
-	color: var(--color-inlineCode-fg);
 	margin: 0;
 	padding: 15px;
 	border-radius: var(--border-radius);

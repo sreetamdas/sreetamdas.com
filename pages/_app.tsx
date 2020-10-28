@@ -31,8 +31,8 @@ const GlobalStyles = createGlobalStyle`
 		--color-primary-accent: #5B34DA;
 		--color-primary: #000;
 		--color-background: #FFF;
-		--color-inlineCode-fg: #EB5757;
-		--color-inlineCode-bg: #ddd;
+		--color-inlineCode-fg: var(--color-primary);
+		--color-inlineCode-bg: #dcdcdc;
 		--color-secondary-accent: #358EF1;
 
 		--font-family-code: SFMono-Regular, Consolas, Roboto Mono, Menlo, Monaco, Liberation Mono, Lucida Console, monospace;
@@ -52,15 +52,15 @@ const GlobalStyles = createGlobalStyle`
 		--color-secondary-accent: #61DAFB;
 		--color-primary: #FFF;
 		--color-background: #000;
-		--color-inlineCode-fg: #EB5757;
-		--color-inlineCode-bg: #222;
+		--color-inlineCode-fg: var(--color-primary);
+		--color-inlineCode-bg: #333;
 	}
 	[data-theme="batman"] {
 		--color-primary-accent: #FFFF00;
 		--color-secondary-accent: #61DAFB;
 		--color-primary: #FFF;
 		--color-background: #000;
-		--color-inlineCode-fg: #EB5757;
+		--color-inlineCode-fg: var(--color-primary);
 		--color-inlineCode-bg: #222;
 	}
 
@@ -105,9 +105,8 @@ const GlobalStyles = createGlobalStyle`
 	}
 
 	code {
-		color: var(--color-inlineCode-fg);
 		background-color: var(--color-inlineCode-bg);
-		font-size: 85%;
+		font-size: 75%;
 		padding: 0.2em;
 		border-radius: 3px;
 		/* prevent our code block from being broken into different sections on linebreak

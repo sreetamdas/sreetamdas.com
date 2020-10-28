@@ -15,9 +15,10 @@ type TMDXProviderCodeblockPassedProps = {
 			className: string;
 			originalType: string;
 			parentName: string;
-			metastring: string;
+			metastring?: string;
 			mdxType: string;
 			[key: string]: any;
+			filename?: string;
 		};
 	};
 };
@@ -32,7 +33,7 @@ const MDXCodeBlock = (props: TMDXProviderCodeblockPassedProps) => {
 	} = props;
 
 	const language = className.replace(/language-/, "");
-	const shouldHighlightLine = calculateLinesToHighlight(metastring);
+	const shouldHighlightLine = calculateLinesToHighlight(metastring!);
 
 	return (
 		<Highlight
@@ -46,6 +47,9 @@ const MDXCodeBlock = (props: TMDXProviderCodeblockPassedProps) => {
 					className={className}
 					style={{ ...style }}
 				>
+					<CodeBlockLanguageWrapper>
+						{language.toLocaleUpperCase()}
+					</CodeBlockLanguageWrapper>
 					{tokens.map((line, i) => {
 						const lineProps = getLineProps({ line, key: i });
 						if (shouldHighlightLine(i)) {
@@ -53,9 +57,9 @@ const MDXCodeBlock = (props: TMDXProviderCodeblockPassedProps) => {
 						}
 						return (
 							<div {...lineProps} key={i}>
-								<span className="line-number-style">
+								<CodeblockLineNumber>
 									{i + 1}
-								</span>
+								</CodeblockLineNumber>
 								{line.map((token, key) => (
 									<span
 										{...getTokenProps({ token, key })}
@@ -70,6 +74,16 @@ const MDXCodeBlock = (props: TMDXProviderCodeblockPassedProps) => {
 		</Highlight>
 	);
 };
+
+const CodeBlockLanguageWrapper = styled.span`
+	float: right;
+	background-color: rgba(256, 256, 256, 0.09);
+	color: rgba(256, 256, 256, 0.6);
+	margin-top: -15px;
+	padding: 5px;
+	border-bottom-left-radius: var(--border-radius);
+	border-bottom-right-radius: var(--border-radius);
+`;
 
 const MDXImageWithWrapper = ({ alt, src }: { alt: string; src: string }) => (
 	<img
@@ -158,26 +172,26 @@ const CodePreBlockWithHighlight = styled.pre`
 		padding-left: 0.75em;
 		border-left: 0.3em solid #9d86e9;
 	}
+`;
 
-	.line-number-style {
-		display: inline-block;
-		padding-right: 0.6em;
-		width: 1rem;
-		user-select: none;
-		opacity: 0.25;
-		text-align: center;
-		position: relative;
-	}
+const CodeblockLineNumber = styled.span`
+	display: inline-block;
+	padding-right: 0.6em;
+	width: 1rem;
+	user-select: none;
+	opacity: 0.25;
+	text-align: center;
+	position: relative;
 `;
 
 /**
  * pattern for highlighting lines in code blocks for future reference:
  * ```lang {2, 4-5}
  */
-const RE = /{([\d,-]+)}/;
+const RE_LINE_HIGHLIGHT = /{([\d,-]+)}/;
 const calculateLinesToHighlight = (meta: string) => {
-	const regExpExecArray = RE.exec(meta);
-	if (!RE.test(meta) || regExpExecArray === null) {
+	const regExpExecArray = RE_LINE_HIGHLIGHT.exec(meta);
+	if (!RE_LINE_HIGHLIGHT.test(meta) || regExpExecArray === null) {
 		return () => false;
 	} else {
 		const lineNumbers = regExpExecArray[1]
@@ -207,7 +221,7 @@ const karmaPrismTheme = {
 		{
 			types: ["comment"],
 			style: {
-				color: "#363742",
+				color: "#444",
 				fontStyle: "italic" as const,
 			},
 		},
