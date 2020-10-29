@@ -28,47 +28,52 @@ const MDXComponents = {
 
 const GlobalStyles = createGlobalStyle`
 	:root {
-		--color-primary-accent: #5B34DA;
-		--color-primary: #000;
-		--color-background: #FFF;
-		--color-inlineCode-fg: var(--color-primary);
-		--color-inlineCode-bg: #dcdcdc;
-		--color-secondary-accent: #358EF1;
+	--color-primary-accent: rgb(91, 52, 218);
+	--color-primary: rgb(0, 0, 0);
+	--color-background: rgb(255, 255, 255);
+	--color-inlineCode-fg: var(--color-primary);
+	--color-inlineCode-bg: rgb(220, 220, 220);
+	--color-secondary-accent: rgb(53, 142, 241);
+	--values-primary-accent: 91, 52, 218;
 
-		--font-family-code: SFMono-Regular, Consolas, Roboto Mono, Menlo, Monaco, Liberation Mono, Lucida Console, monospace;
-		--color-success-accent: #00FF7F;
-		--color-success-accent-faded: #00FF7F30;
-		--color-danger-accent: #FF8000;
-		--color-danger-accent-faded: #FF800033;
-		--color-info-accent: #00BFFF;
-		--color-info-accent-faded: #00BFFF44;
+	--font-family-code: SFMono-Regular, Consolas, Roboto Mono, Menlo, Monaco,
+		Liberation Mono, Lucida Console, monospace;
+	--color-success-accent: rgb(0, 255, 127);
+	--color-success-accent-faded: rgba(0, 255, 127, 0.19);
+	--color-danger-accent: rgb(255, 128, 0);
+	--color-danger-accent-faded: rgba(255, 128, 0, 0.2);
+	--color-info-accent: rgb(0, 191, 255);
+	--color-info-accent-faded: rgba(0, 191, 255, 0.27);
 
-		--max-width: 650px;
-		--border-radius: 5px;
-	}
+	--max-width: 650px;
+	--border-radius: 5px;
+}
 
 	[data-theme="dark"] {
-		--color-primary-accent: #9D86E9;
-		--color-secondary-accent: #61DAFB;
-		--color-primary: #FFF;
-		--color-background: #000;
+		--color-primary-accent: rgb(157, 134, 233);
+		--color-secondary-accent: rgb(97, 218, 251);
+		--color-primary: rgb(255, 255, 255);
+		--color-background: rgb(0, 0, 0);
 		--color-inlineCode-fg: var(--color-primary);
-		--color-inlineCode-bg: #333;
+		--color-inlineCode-bg: rgb(51, 51, 51);
+		--values-primary-accent: 157, 134, 233;
 	}
 	[data-theme="batman"] {
-		--color-primary-accent: #FFFF00;
-		--color-secondary-accent: #61DAFB;
-		--color-primary: #FFF;
-		--color-background: #000;
+		--color-primary-accent: rgb(255, 255, 0);
+		--color-secondary-accent: rgb(97, 218, 251);
+		--color-primary: rgb(255, 255, 255);
+		--color-background: rgb(0, 0, 0);
 		--color-inlineCode-fg: var(--color-primary);
-		--color-inlineCode-bg: #222;
+		--color-inlineCode-bg: rgb(34, 34, 34);
+		--values-primary-accent: 255, 255, 0;
 	}
 
-
-  	html, body {
+	html,
+	body {
 		font-size: 18px;
-		font-family: -apple-system, BlinkMacSystemFont, Inter, Roboto, Segoe UI, Oxygen, Ubuntu,
-			Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+		font-family: -apple-system, BlinkMacSystemFont, Inter, Roboto, Segoe UI,
+			Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue,
+			sans-serif;
 		color: var(--color-primary);
 		background-color: var(--color-background);
 		margin: 0;
@@ -76,21 +81,24 @@ const GlobalStyles = createGlobalStyle`
 		min-height: 100%;
 		line-height: 1.6;
 	}
-	
+
 	:not(pre):not(span)::selection {
-		background: var(--color-primary-accent);
-		color: var(--color-background);
+		background: rgba(var(--values-primary-accent), 0.99);
+		color: var(--color-background)
 	}
 
-	h1, h2, h3, h4 {
+	h1,
+	h2,
+	h3,
+	h4 {
 		margin: 0;
 		padding-top: 2rem;
 	}
 
 	a {
-	text-decoration: none;
-	color: var(--color-primary-accent);
-	cursor: pointer;
+		text-decoration: none;
+		color: var(--color-primary-accent);
+		cursor: pointer;
 
 		&:visited {
 			text-decoration: none;
@@ -100,7 +108,8 @@ const GlobalStyles = createGlobalStyle`
 		}
 	}
 
-	code, pre {
+	code,
+	pre {
 		font-family: var(--font-family-code);
 	}
 
@@ -110,7 +119,7 @@ const GlobalStyles = createGlobalStyle`
 		padding: 0.2em;
 		border-radius: 3px;
 		/* prevent our code block from being broken into different sections on linebreak
-		https://developer.mozilla.org/en-US/docs/Web/CSS/box-decoration-break */
+			https://developer.mozilla.org/en-US/docs/Web/CSS/box-decoration-break */
 		box-decoration-break: clone;
 		white-space: nowrap;
 	}
