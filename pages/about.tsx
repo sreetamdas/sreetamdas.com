@@ -18,7 +18,7 @@ const About = () => {
 		<Fragment>
 			<Head>
 				<title>About &mdash; Sreetam Das</title>
-				<META_TAGS />
+				{META_TAGS}
 			</Head>
 			<Layout>
 				<Center>

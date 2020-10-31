@@ -26,7 +26,7 @@ const Page = ({ page, mdxString }: { page: string; mdxString: string }) => {
 					{page.charAt(0).toUpperCase() + page.slice(1)} &mdash;
 					Sreetam Das
 				</title>
-				<META_TAGS />
+				{META_TAGS}
 			</Head>
 			<Layout>
 				<Center>

@@ -11,7 +11,7 @@ const Index = () => {
 		<Fragment>
 			<Head>
 				<title>Home &mdash; Sreetam Das</title>
-				<META_TAGS />
+				{META_TAGS}
 			</Head>
 			<Layout>
 				<Center>

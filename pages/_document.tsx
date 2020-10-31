@@ -128,7 +128,7 @@ function setInitialColorMode() {
 		document.documentElement.setAttribute("data-theme", "dark");
 }
 
-export const META_TAGS = () => (
+export const META_TAGS = (
 	<Fragment>
 		<meta
 			name="description"
