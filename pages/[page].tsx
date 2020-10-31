@@ -1,9 +1,10 @@
 import { GetStaticPaths, GetStaticProps } from "next";
 import dynamic from "next/dynamic";
 import Head from "next/head";
-import { Fragment } from "react";
+import React, { Fragment } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 
+import { META_TAGS } from "pages/_document";
 import { Title } from "styles/blog";
 import {
 	Layout,
@@ -25,6 +26,7 @@ const Page = ({ page, mdxString }: { page: string; mdxString: string }) => {
 					{page.charAt(0).toUpperCase() + page.slice(1)} &mdash;
 					Sreetam Das
 				</title>
+				<META_TAGS />
 			</Head>
 			<Layout>
 				<Center>

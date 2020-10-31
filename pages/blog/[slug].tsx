@@ -23,7 +23,17 @@ const Post = ({ post, mdxString }: { post: TBlogPost; mdxString: string }) => {
 	return (
 		<Fragment>
 			<Head>
-				<title>Blog &mdash; Sreetam Das</title>
+				<title>{post.title} &mdash; Sreetam Das</title>
+				<meta name="description" content={post.summary} />
+				<meta property="og:title" content={post.title} />
+				<meta name="og:description" content={post.summary} />
+				<meta property="og:url" content="https://sreetamdas.com" />
+				<meta property="og:type" content="website" />
+
+				<meta name="twitter:card" content="summary" />
+				<meta name="twitter:site" content="@_SreetamDas" />
+				<meta name="twitter:title" content={post.title} />
+				<meta name="twitter:description" content={post.summary} />
 			</Head>
 			<ReadingProgress />
 			<Layout>

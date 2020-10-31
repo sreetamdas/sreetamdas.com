@@ -1,7 +1,8 @@
 import Head from "next/head";
-import { Fragment } from "react";
+import React, { Fragment } from "react";
 
 import Tooling from "content/tooling.mdx";
+import { META_TAGS } from "pages/_document";
 import { Text, Title, StyledAccentLink, LinkTo } from "styles/blog";
 import { Layout, Center, MDXText, TextGradient, Heavy } from "styles/layouts";
 
@@ -10,6 +11,7 @@ const Index = () => {
 		<Fragment>
 			<Head>
 				<title>Home &mdash; Sreetam Das</title>
+				<META_TAGS />
 			</Head>
 			<Layout>
 				<Center>

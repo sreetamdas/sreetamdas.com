@@ -7,6 +7,7 @@
 		"start": "next start",
 		"export": "next export",
 		"deploy": "yarn build && yarn export",
+		"netlify": "yarn deploy && netlify deploy",
 		"compile": "tsc --watch",
 		"lint": "eslint '{pages,components,typings,styles,utils}/**/*.{js,jsx,ts,tsx}' --cache --fix",
 		"prettier": "prettier --write '{pages,components,typings,styles,utils}/**/*.{js,jsx,ts,tsx}'"

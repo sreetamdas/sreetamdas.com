@@ -3,6 +3,7 @@ import React, { Fragment, useContext } from "react";
 
 import { FoobarContext } from "components/foobar";
 import MDXAbout from "content/about.mdx";
+import { META_TAGS } from "pages/_document";
 import { Title, Text, LinkTo } from "styles/blog";
 import { Layout, Center, RemoveBulletsFromOL } from "styles/layouts";
 
@@ -17,6 +18,7 @@ const About = () => {
 		<Fragment>
 			<Head>
 				<title>About &mdash; Sreetam Das</title>
+				<META_TAGS />
 			</Head>
 			<Layout>
 				<Center>
