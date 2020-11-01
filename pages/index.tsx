@@ -15,7 +15,7 @@ const Index = () => {
 			</Head>
 			<Layout>
 				<Center>
-					<Title>
+					<Title size={2.5}>
 						Hey, I&apos;m Sreetam Das!{" "}
 						<span role="img" aria-label="wave emoji">
 							👋

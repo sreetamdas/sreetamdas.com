@@ -1,14 +1,14 @@
 import { TextGradient, Heavy } from "styles/layouts";
 
 export const meta = {
-	published: true,
-	publishedAt: "2020-05-25",
-	title: "Over-engineering a Blog",
-	summary:
-		"Building this website with Next.js, TypeScript and Styled-components",
+  published: true,
+  publishedAt: "2020-05-25",
+  title: "Over-engineering a Blog",
+  summary:
+    "Building this website with Next.js, TypeScript and Styled-components",
 };
 
-I've always wanted to have a personal blog (and maintain it!) but I was just never able to get around to it. Its 2020 and I didn't want to push this any further.
+I've always wanted to have a personal blog (and maintain it!) but I was just never able to get around to it. It's 2020 and I didn't want to push this any further.
 
 I'd experimented with [Jekyll](https://jekyllrb.com/) before. It's a dead-simple way to host your own blog, but having worked with React over the past couple of years I just didn't feel content with just a markdown blog.
 
@@ -18,8 +18,8 @@ I'd also peeked at [Medium](https://medium.com), but their move to a paywall jus
 
 The easiest solution would have been to run `yarn create react-app my-app` and then going berserk (_I'm a yarn user btw /s_). If I decided to not go the [CRA](https://create-react-app.dev/) route and instead use only the packages that I actually need by building everything from scratch, I did have the following benefits:
 
--   I wouldn't have [over 1500 dependencies](https://news.ycombinator.com/item?id=19195148), some of which I _probably_ don't need for a blog
--   Let's talk about the first point again
+- I wouldn't have [over 1500 dependencies](https://news.ycombinator.com/item?id=19195148), some of which I _probably_ don't need for a blog
+- Let's talk about the first point again
 
 However, using a stock React app also has a one pretty decently sized issue that one notices little by little over time: the dreaded blankness of our HTML while our JavaScript is still being loaded.
 

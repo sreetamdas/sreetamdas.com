@@ -41,7 +41,7 @@ export const BlogPostPreview = ({ post }: { post: TBlogPost }) => {
 };
 
 export const BlogPostTitle = styled.h2`
-	font-size: clamp(4rem, 15vw, 7rem);
+	font-size: clamp(4rem, 15vw, 6rem);
 	line-height: 1.1;
 	margin: 0;
 	padding-top: 30px;
