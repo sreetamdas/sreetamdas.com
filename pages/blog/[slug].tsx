@@ -1,8 +1,9 @@
 import { GetStaticPaths, GetStaticProps } from "next";
 import dynamic from "next/dynamic";
 import Head from "next/head";
-import { Fragment } from "react";
+import React, { Fragment, useRef } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
+import { FaLongArrowAltUp } from "react-icons/fa";
 
 import { ReadingProgress } from "components/Meh";
 import {
@@ -11,6 +12,7 @@ import {
 	Datestamp,
 	PostNotPublishedWarning,
 	PostMetaDataGrid,
+	BackToTopContainer,
 } from "styles/blog";
 import { Layout, TextGradient } from "styles/layouts";
 import { getBlogPostsData } from "utils/blog";
@@ -19,6 +21,11 @@ const Post = ({ post, mdxString }: { post: TBlogPost; mdxString: string }) => {
 	const MDXPost = dynamic(() => import(`content/blog/${post.slug}.mdx`), {
 		loading: () => <div dangerouslySetInnerHTML={{ __html: mdxString }} />,
 	});
+	const topRef = useRef<HTMLDivElement>(null);
+
+	const scrollToTop = () => {
+		if (topRef) topRef.current?.scrollIntoView({ behavior: "smooth" });
+	};
 
 	return (
 		<Fragment>
@@ -36,7 +43,7 @@ const Post = ({ post, mdxString }: { post: TBlogPost; mdxString: string }) => {
 				<meta name="twitter:description" content={post.summary} />
 			</Head>
 			<ReadingProgress />
-			<Layout>
+			<Layout ref={topRef}>
 				<BlogPostTitle>
 					<TextGradient>{post.title}</TextGradient>
 				</BlogPostTitle>
@@ -56,6 +63,10 @@ const Post = ({ post, mdxString }: { post: TBlogPost; mdxString: string }) => {
 				<BlogPostMDXContent>
 					<MDXPost />
 				</BlogPostMDXContent>
+				<BackToTopContainer onClick={scrollToTop}>
+					back to the top{" "}
+					<FaLongArrowAltUp style={{ fontSize: "20px" }} />
+				</BackToTopContainer>
 			</Layout>
 		</Fragment>
 	);

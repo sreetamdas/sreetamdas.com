@@ -270,3 +270,14 @@ export const ReadMorePrompt = styled.p<{ isHovered: boolean }>`
 	color: ${({ isHovered }) =>
 		isHovered ? "var(--color-primary-accent)" : null};
 `;
+
+export const BackToTopContainer = styled.div`
+	padding-top: 15px;
+	display: grid;
+	grid-auto-flow: column;
+	justify-content: end;
+	align-items: bottom;
+	cursor: pointer;
+	font-size: 14px;
+	color: var(--color-primary-accent);
+`;

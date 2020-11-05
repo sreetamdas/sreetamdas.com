@@ -114,7 +114,9 @@ const MDXLinkWrapper = (props: THrefPropsWithChildren) => {
 			{props.href[0] === "/" ? (
 				<Link {...props} />
 			) : (
-				<a {...props}>{props.children}</a>
+				<a {...props} target="_blank" rel="noopener noreferrer">
+					{props.children}
+				</a>
 			)}
 		</MDXLinkStyled>
 	);
