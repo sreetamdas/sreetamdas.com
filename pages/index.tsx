@@ -29,11 +29,11 @@ const Index = () => {
 					Django and Redux.
 				</Text>
 				<Text>
-					I&apos;m currently the Module Lead for the Frontend team at{" "}
-					<StyledAccentLink href="https://www.microland.com">
-						Microland
+					I&apos;m currently a Frontend Engineer at{" "}
+					<StyledAccentLink href="https://remote.com">
+						Remote
 					</StyledAccentLink>{" "}
-					working with{" "}
+					who loves working with{" "}
 					<TextGradient>
 						<Heavy>React + Redux + TypeScript</Heavy>
 					</TextGradient>
