@@ -9,6 +9,9 @@ const withMDX = require("@next/mdx")({
 
 module.exports = withMDX({
 	pageExtensions: ["js", "jsx", "ts", "tsx", "mdx"],
+	env: {
+		SITE_URL: "https://sreetamdas.com",
+	},
 	webpack(config) {
 		config.module.rules.push({
 			test: /\.svg$/,
