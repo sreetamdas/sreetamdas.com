@@ -40,7 +40,7 @@ const Post = ({ post, mdxString }: { post: TBlogPost; mdxString: string }) => {
 				{post.image && <meta name="og:image" content={post.image} />}
 				<meta name="og:image:alt" content={post.title} />
 
-				<meta name="twitter:card" content="summary" />
+				<meta name="twitter:card" content="summary_large_image" />
 				<meta name="twitter:site" content="@_SreetamDas" />
 				<meta name="twitter:title" content={post.title} />
 				<meta name="twitter:description" content={post.summary} />

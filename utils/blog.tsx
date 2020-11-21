@@ -2,7 +2,7 @@ import fs from "fs";
 import path from "path";
 
 export const getBlogPreviewImageURL = ({ slug }: { slug: TBlogPost["slug"] }) =>
-	`/blog/previews/${slug}.png`;
+	`${process.env.SITE_URL}/blog/previews/${slug}.png`;
 
 export const getBlogPostsData = () => {
 	const META = /export\s+const\s+meta\s+=\s+(\{(\n|.)*?\n\})/;
