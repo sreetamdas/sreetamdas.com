@@ -6,13 +6,14 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { FaLongArrowAltUp } from "react-icons/fa";
 
 import { ReadingProgress } from "components/Meh";
+import { ShareLinks } from "components/blog";
 import {
 	BlogPostTitle,
 	BlogPostMDXContent,
 	Datestamp,
 	PostNotPublishedWarning,
 	PostMetaDataGrid,
-	BackToTopContainer,
+	EndLinks,
 } from "styles/blog";
 import { Layout, TextGradient } from "styles/layouts";
 import { getBlogPostsData } from "utils/blog";
@@ -36,11 +37,16 @@ const Post = ({ post, mdxString }: { post: TBlogPost; mdxString: string }) => {
 				<meta name="og:description" content={post.summary} />
 				<meta property="og:url" content="https://sreetamdas.com" />
 				<meta property="og:type" content="website" />
+				{post.image && <meta name="og:image" content={post.image} />}
+				<meta name="og:image:alt" content={post.title} />
 
 				<meta name="twitter:card" content="summary" />
 				<meta name="twitter:site" content="@_SreetamDas" />
 				<meta name="twitter:title" content={post.title} />
 				<meta name="twitter:description" content={post.summary} />
+				{post.image && (
+					<meta name="twitter:image" content={post.image} />
+				)}
 			</Head>
 			<ReadingProgress />
 			<Layout ref={topRef}>
@@ -63,10 +69,18 @@ const Post = ({ post, mdxString }: { post: TBlogPost; mdxString: string }) => {
 				<BlogPostMDXContent>
 					<MDXPost />
 				</BlogPostMDXContent>
-				<BackToTopContainer onClick={scrollToTop}>
-					back to the top{" "}
-					<FaLongArrowAltUp style={{ fontSize: "20px" }} />
-				</BackToTopContainer>
+				<EndLinks>
+					<ShareLinks {...post} />
+					<span
+						onClick={scrollToTop}
+						role="button"
+						tabIndex={0}
+						aria-hidden={true}
+					>
+						back to the top
+						<FaLongArrowAltUp style={{ fontSize: "20px" }} />
+					</span>
+				</EndLinks>
 			</Layout>
 		</Fragment>
 	);

@@ -1,6 +1,9 @@
 import fs from "fs";
 import path from "path";
 
+export const getBlogPreviewImageURL = ({ slug }: { slug: TBlogPost["slug"] }) =>
+	`/blog/previews/${slug}.png`;
+
 export const getBlogPostsData = () => {
 	const META = /export\s+const\s+meta\s+=\s+(\{(\n|.)*?\n\})/;
 	const DIR = path.join(process.cwd(), "content/blog");
@@ -16,10 +19,12 @@ export const getBlogPostsData = () => {
 				throw new Error(`${name} needs to export const meta = {}`);
 
 			const meta = eval("(" + match[1] + ")");
+			const slug = file.replace(/\.mdx?$/, "");
 
 			return {
 				...meta,
-				slug: file.replace(/\.mdx?$/, ""),
+				slug,
+				image: getBlogPreviewImageURL({ slug }),
 			};
 		})
 		.filter(

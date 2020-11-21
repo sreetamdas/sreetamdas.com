@@ -271,13 +271,20 @@ export const ReadMorePrompt = styled.p<{ isHovered: boolean }>`
 		isHovered ? "var(--color-primary-accent)" : null};
 `;
 
-export const BackToTopContainer = styled.div`
+const EndLinksGrid = styled.div`
 	padding-top: 15px;
 	display: grid;
 	grid-auto-flow: column;
-	justify-content: end;
-	align-items: bottom;
-	cursor: pointer;
+	justify-content: space-between;
+	align-items: center;
 	font-size: 14px;
 	color: var(--color-primary-accent);
+
+	& * {
+		cursor: pointer;
+	}
 `;
+
+export const EndLinks = ({ children }: PropsWithChildren<{}>) => (
+	<EndLinksGrid>{children}</EndLinksGrid>
+);
