@@ -39,6 +39,7 @@ export const Newsletter = () => {
 			</NewsletterText>
 			<div>
 				<StyledForm onSubmit={handleFormSubmit}>
+					<StyledLabel htmlFor="bd-email">Email</StyledLabel>
 					<StyledInput
 						type="email"
 						name="email"
@@ -61,7 +62,7 @@ export const Newsletter = () => {
 };
 
 const Grid = styled.div`
-	padding-top: 150px;
+	padding-top: 100px;
 	display: grid;
 	justify-content: stretch;
 	grid-template-columns: 1fr 1fr;
@@ -75,7 +76,9 @@ const StyledForm = styled.form`
 	grid-gap: 1rem;
 `;
 
-const StyledInput = styled.input.attrs({ placeholder: "Your email address" })`
+const StyledInput = styled.input.attrs({
+	placeholder: "sreetam@sreetamdas.com",
+})`
 	font-size: 16px;
 	background-color: var(--color-background);
 	color: var(--color-primary);
@@ -122,4 +125,9 @@ const FormMessageContainer = styled.p<{ success: boolean }>`
 
 const NewsletterText = styled.div`
 	font-size: 14px;
+`;
+
+const StyledLabel = styled.label`
+	font-size: 12px;
+	margin-bottom: -12px;
 `;
