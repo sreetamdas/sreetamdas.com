@@ -7,6 +7,7 @@ import { FaLongArrowAltUp } from "react-icons/fa";
 
 import { ReadingProgress } from "components/Meh";
 import { ShareLinks } from "components/blog";
+import { Newsletter } from "components/blog/Newsletter";
 import {
 	BlogPostTitle,
 	BlogPostMDXContent,
@@ -81,6 +82,7 @@ const Post = ({ post, mdxString }: { post: TBlogPost; mdxString: string }) => {
 						<FaLongArrowAltUp style={{ fontSize: "20px" }} />
 					</span>
 				</EndLinks>
+				<Newsletter />
 			</Layout>
 		</Fragment>
 	);

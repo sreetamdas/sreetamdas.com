@@ -9,7 +9,7 @@ import {
 	useRef,
 	useState,
 } from "react";
-import styled, { keyframes, CSSProperties } from "styled-components";
+import styled, { keyframes, CSSProperties, css } from "styled-components";
 
 const range = (start: number, end?: number, step = 1) => {
 	const output = [];
@@ -325,32 +325,32 @@ export const DriftingSparklesContainer = ({
 	);
 };
 
-const SupportLinkStyled = styled.a`
+export const buttonStylesMixin = css`
 	margin: 0;
 	padding: 0.5rem;
 	width: auto;
 	line-height: 35px;
 	text-decoration: none;
+	border-radius: var(--border-radius);
+	border: 2px solid var(--color-primary-accent);
+	background-color: var(--color-primary-accent);
+	color: var(--color-background);
+	cursor: pointer;
+`;
+
+const SupportLinkStyled = styled.a`
+	${buttonStylesMixin}
+
 	display: grid;
 	grid-template-columns: repeat(auto-fill, minmax(max-content, 1fr));
 	grid-gap: 0.5rem;
 	grid-auto-flow: column;
-	border-radius: var(--border-radius);
-	border: 2px solid var(--color-primary-accent);
-	/* letter-spacing: 0.6px; */
+	align-items: center;
 
 	& img {
 		box-shadow: none;
 		border: none;
 		vertical-align: middle;
-	}
-
-	&:hover,
-	&:active,
-	&:focus {
-		background-color: var(--color-primary-accent);
-		color: var(--color-background);
-		text-decoration: none;
 	}
 `;
 

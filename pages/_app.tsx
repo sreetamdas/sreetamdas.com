@@ -44,6 +44,7 @@ const GlobalStyles = createGlobalStyle`
 	--color-danger-accent-faded: rgba(255, 128, 0, 0.2);
 	--color-info-accent: rgb(0, 191, 255);
 	--color-info-accent-faded: rgba(0, 191, 255, 0.27);
+	--color-error: rgb(255, 0, 0);
 
 	--max-width: 650px;
 	--border-radius: 5px;
