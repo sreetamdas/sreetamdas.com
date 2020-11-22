@@ -11,7 +11,7 @@ export const ShareLinks = (post: TBlogPost) => {
 			target="_blank"
 			rel="noopener noreferrer"
 		>
-			<FaTwitter />
+			<FaTwitter aria-label="Share on Twitter" />
 		</IconContainer>
 	);
 };
