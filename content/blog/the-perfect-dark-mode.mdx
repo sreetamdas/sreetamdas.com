@@ -1,6 +1,697 @@
+import {
+  CustomBlockquote,
+  Highlight,
+  StyledAccentTextLink,
+} from "styles/blog";
+
 export const meta = {
-	published: false,
-	publishedAt: "2020-05-26",
-	title: "The Perfect Dark Mode",
-	summary: "All the goodness",
+  published: true,
+  publishedAt: "2020-11-22",
+  title: "The Perfect Dark Mode",
+  summary:
+    "How hard can implementing the perfect dark mode be? A journey through blocking scripts, IIFEs, CSS variables and much more",
 };
+
+I am a huge fan of [Josh W Comeau](https://joshwcomeau.com)'s website as well as the content that he puts out. He has some very, very interesting articles, but by far the most interesting one is about his [Quest for The Perfect Dark Mode](https://joshwcomeau.com/gatsby/dark-mode).
+
+It is a perfect read, equal parts technical and entertaining and quite frankly, an inspiration for how a technical blog post should be written. I've read it in its entirety more than thrice, and at the end of the third read, I just knew that I had to try it out.
+
+Here's the small problem though: Josh implemented it in [Gatsby](https://gatsbyjs.org). Meanwhile, my blog is built using [Next.js](https://nextjs.org). (Both of these implement static-ish websites with React, I write more about this in my [previous blog post](/blog/over-engineering-a-blog))
+
+If you haven't already, please go through Josh's post first if you want to be able to follow along. Well, into uncharted waters we go!
+
+## The Problem
+
+So what's the big deal? What really is the _perfect_ dark mode?
+
+If you take a look at a website which has support for dark mode like [mdxjs.com](https://mdxjs.com), you'll notice something if you try to refresh the page once you've enabled dark mode.
+
+![gif showing MDXJS' website flicker before toggling dark mode on refresh](/blog/the-perfect-dark-mode/perfect-dark-mode-mdxjs-flicker.gif)
+
+The dreaded flicker of light mode. _ugh_.
+
+So why does this happen?
+
+This is a problem that is not limited to static/hybrid websites but extends to pretty much any website that uses JavaScript to "hydrate" its components. This is because when our page loads up, here's that happens:
+
+- The HTML gets loaded first, which in turn loads the JS and CSS
+- By default, a webpage has a [`transparent` background color](https://developer.mozilla.org/en-US/docs/Web/CSS/background-color#Formal_definition), which means that you'll get a **white** background unless you're using certain extensions
+- The HTML can contain inline CSS to set the background color so that we don't see the "flicker" but currently, [inline CSS doesn't support media queries](https://stackoverflow.com/a/9808297/5283213) so we can't find out _if_ the user even prefers dark mode
+- the JS loaded first needs to be parsed before it starts to "hydrate" the page. If there's any preference for dark mode that has been stored (usually using local storage), it's also loaded by the JS. This means that until all this has been done, our user _still_ sees only what the HTML has described: a **transparent** background.
+
+## The Solution
+
+So what should we do? We need to find a way to be able to run some code and apply the appropriate `background-color` (and by extension, the theme) _before_ the entire page has loaded.
+
+Here's a rough list of what we need to implement:
+
+- if the user has visited our site before, then we use their saved preference
+- if the user hasn't visited our site before or hasn't saved a preference, then we check if their Operating System has a preference and use the same
+- If the above two methods don't return a preference still, then we default to a **light** theme
+- all the above checks need to be run _before_ our page is rendered/shown to the user
+- allow the user to toggle dark mode, and save their preference for future reference
+
+Let's start by putting together a simple Next.js page with a pretty basic dark mode toggle:
+
+```jsx {5}
+// pages/index.js
+import { useState } from "react";
+
+const IndexPage = () => {
+  const [isDarkTheme, setIsDarkTheme] = useState(false);
+
+  const handleToggle = (event) => {
+    setIsDarkTheme(ev.target.checked);
+  };
+  return (
+    <div>
+      <label>
+        <input
+          type="checkbox"
+          checked={isDarkTheme}
+          onChange={handleToggle}
+        />{" "}
+        Dark
+      </label>
+      <h1>Hello there</h1>
+      <p>General Kenobi!</p>
+    </div>
+  );
+};
+
+export default IndexPage;
+```
+
+## Storing (and retrieving) user preference
+
+Let's begin by adding the ability to store and retrieve the preference if the user has already visited our website before. [localStorage](https://javascript.info/localstorage) is a really simple way of accomplishing exactly this, even when a user refreshes the page or closes the browser completely and opens it again at a later time. Although there are concerns over storing sensitive and/or large data in localStorage, it is perfect for storing our user's dark mode preference.
+
+Here's how we can save and load our `theme` preference using `localStorage`:
+
+```js
+window.localStorage.setItem("theme", "dark"); // or "light"
+
+const userPreference = window.localStorage.getItem("theme"); // "dark"
+```
+
+## System-wide preference
+
+[prefers-color-scheme](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-color-scheme) is a CSS media feature that allows us to detect if the user has set any system-wide dark mode preferences, which we can use in case the user hasn't set a preference yet.
+
+All we need to do is run a CSS media query, and the [browser provides us with `matchMedia()`](https://developer.mozilla.org/en-US/docs/Web/API/Window/matchMedia) to do exactly this!
+
+Here's what a media query to check if the user has set any preference looks like:
+
+```js
+const mql = window.matchMedia("(prefers-color-scheme: dark)");
+```
+
+with the output (when the user _has_ set a preference for dark mode):
+
+```json
+{
+  "matches": true,
+  "media": "(prefers-color-scheme: dark)"
+}
+```
+
+Let's add these to our app
+
+```jsx filename=pages/index.js {16,29,44}
+import { useState } from "react";
+
+const IndexPage = () => {
+  const [isDarkTheme, setIsDarkTheme] = useState(false);
+
+  const handleToggle = (event) => {
+    setIsDarkTheme(ev.target.checked);
+  };
+
+  const getMediaQueryPreference = () => {
+    const mediaQuery = "(prefers-color-scheme: dark)";
+    const mql = window.matchMedia(mediaQuery);
+    const hasPreference = typeof mql.matches === "boolean";
+
+    if (hasPreference) {
+      return mql.matches ? "dark" : "light";
+    }
+  };
+
+  const storeUserSetPreference = (pref) => {
+    localStorage.setItem("theme", pref);
+  };
+  const getUserSetPreference = () => {
+    return localStorage.getItem("theme");
+  };
+
+  useEffect(() => {
+    const userSetPreference = getUserSetPreference();
+    if (userSetPreference !== null) {
+      setIsDarkTheme(userSetPreference === "dark");
+    } else {
+      const mediaQueryPreference = getMediaQueryPreference();
+      setIsDarkTheme(mediaQueryPreference === "dark");
+    }
+  }, []);
+  useEffect(() => {
+    if (isDarkTheme !== undefined) {
+      if (isDarkTheme) {
+        storeUserSetPreference("dark");
+      } else {
+        storeUserSetPreference("light");
+      }
+    }
+  }, [isDarkTheme]);
+
+  return (
+    <div>
+      <label>
+        <input
+          type="checkbox"
+          checked={isDarkTheme}
+          onChange={handleToggle}
+        />{" "}
+        Dark
+      </label>
+      <h1>Hello there</h1>
+      <p>General Kenobi!</p>
+    </div>
+  );
+};
+
+export default IndexPage;
+```
+
+- when our page is loaded and our `IndexPage` component has been mounted, we retrieve the user's set preference if they've already set one from their earlier visit
+- the `localStorage.getItem()` call returns `null` if they haven't set one, and we move on to checking their system wide preference is dark mode
+- we default to light mode
+- whenever the user toggles the checkbox to turn dark mode on or off, we save their preference to `localStorage` for future use
+
+Great! We've got a toggle working, and we're also able to store and retrieve the correct state in our page
+
+## Back to Basics
+
+The biggest challenge (surprisingly) was being able to run all these checks _before_ anything is shown to the user. Since we're using Next.js with its [Static Generation](https://nextjs.org/docs/basic-features/data-fetching), there's no way for us to know at code/build time what the user's preference is going to be 🤷‍♂️
+
+Unless...there <Highlight>was</Highlight> a way run some code before all of our page is loaded and rendered to the user!
+
+Take a look at the code below:
+
+```html {2-4}
+<body>
+  <script>
+    alert("No UI for you!");
+  </script>
+  <h1>Page Title</h1>
+</body>
+```
+
+Here's what it looks like:
+
+![gif showing blocking nature of <script> tags in HTML](/blog/the-perfect-dark-mode/perfect-dark-mode-blocking-script.gif)
+
+<CustomBlockquote>
+  If you'd like to try it out for yourself, check out this{" "}
+  <a href="https://codesandbox.io/s/sleepy-cartwright-ufhxs?file=/index.html">
+    sandbox
+  </a>
+</CustomBlockquote>
+
+When we add a `<script>` in our body before our `<h1>` content, the rendering of the actual content is _blocked_ by the script. This means that we can run code that will be guaranteed to run before any content is shown to the user, which is exactly what we wanna do!
+
+## Next.js' Document
+
+From the example above, we know now that we need to add a `<script>` in the `<body>` of our page before the actual content.
+
+Next.js provides a super sweet and easy way of modifying the `<html>` and `<body>` tags in our app by [adding a `_document.tsx` (or `_document.js`) file](https://nextjs.org/docs/advanced-features/custom-document). The `Document` is only rendered in the server, so our script is loaded as we describe it on the client browser.
+
+Using this, here's how we can add our script:
+
+```jsx
+import Document, {
+  Html,
+  Head,
+  Main,
+  NextScript,
+} from "next/document";
+
+export default class MyDocument extends Document {
+  render() {
+    return (
+      <Html>
+        <Head />
+        <body>
+          <script
+            dangerouslySetInnerHTML={{
+              __html: customScript,
+            }}
+          ></script>
+          <Main />
+          <NextScript />
+        </body>
+      </Html>
+    );
+  }
+}
+
+const customScript = `
+		console.log("Our custom script runs!");
+`;
+```
+
+<CustomBlockquote>
+  <code>&lt;Html&gt;</code>, <code>&lt;Head /&gt;</code>,{" "}
+  <code>&lt;Main /&gt;</code> and <code>&lt;NextScript /&gt;</code>{" "}
+  are required for the page to be properly rendered.
+</CustomBlockquote>
+
+## Dangerously set whaa?
+
+The [browser DOM provides us with `innerHTML`](https://developer.mozilla.org/en-US/docs/Web/API/Element/innerHTML) to get or set the HTML contained within an element. Usually, setting HTML from code is risky business because it is easy to inadvertently expose users to a [cross-site scripting (XSS)](https://developer.mozilla.org/en-US/docs/Glossary/Cross-site_scripting) attack. React protects us from this by default, by _sanitising_ the contents before rendering it.
+
+If a user tries to set their name to `<script>I'm dangerous!</script>`, React encodes characters like `<` into `&lt;`. This way, the script has no effect.
+
+React also provides a way to override this behaviour using `dangerouslySetInnerHTML`, reminding us that _it is dangerous_. Well, in our use case, we actually _do_ want to inject and run a script.
+
+<CustomBlockquote>
+  Note how it requires us to pass the <code>innerHTML</code>, our
+  script, as a <code>string</code>
+</CustomBlockquote>
+
+We're _almost_ there!
+
+We now know how to make sure that our script is loaded before the rest of the page (and with the help of Next.js' `Document`, before _any_ page), but we still need a couple more pieces of this puzzle:
+
+- **run** our script as soon as it is loaded.
+- change the `background-color` and other CSS properties based on all the logic we'll add!
+
+## IIFEs
+
+The next piece of our puzzle is figuring out how to run our custom script as soon as possible.
+As a reminder, we're doing this to figure out the correct state of dark mode (activated/deactivated, or more simply, `true`/`false`) to avoid any ungodly "flashes" of toggling when the user loads up our webpage.
+
+Enter [Immediately Invoked Function Expressions](https://developer.mozilla.org/en-US/docs/Glossary/IIFE)! (or **IIFEs** for short)
+
+An IIFE is simply a JavaScript function that is executed as soon as it is defined. Aside from having the benefit of being run Immediately upon definition, IIFEs are also great when one wants to avoid polluting the global namespace &mdash; something that we can definitely use since we have no use for our logic once it has run and set the apt mode.
+
+Here's what an IIFE looks like:
+
+```js
+(function () {
+  var name = "Sreetam Das";
+  console.log(name);
+  // "Sreetam Das"
+})();
+
+// Variable name is not accessible from the outside scope
+
+console.log(name);
+// throws "Uncaught ReferenceError: name is not defined"
+```
+
+Let's add this to our `_document.js`
+
+```jsx {34}
+import Document, {
+  Html,
+  Head,
+  Main,
+  NextScript,
+} from "next/document";
+
+function setInitialColorMode() {
+  function getInitialColorMode() {
+    const preference = window.localStorage.getItem("theme");
+    const hasPreference = typeof preference === "string";
+
+    /**
+     * If the user has explicitly chosen light or dark,
+     * use it. Otherwise, this value will be null.
+     */
+    if (hasPreference) {
+      return preference;
+    }
+
+    // If there is no saved preference, use a media query
+    const mediaQuery = "(prefers-color-scheme: dark)";
+    const mql = window.matchMedia(mediaQuery);
+
+    const hasPreference = typeof mql.matches === "boolean";
+    if (hasPreference) {
+      return mql.matches ? "dark" : "light";
+    }
+
+    // default to 'light'.
+    return "light";
+  }
+
+  const colorMode = getInitialColorMode();
+}
+
+// our function needs to be a string
+const blockingSetInitialColorMode = `(function() {
+		${setInitialColorMode.toString()}
+		setInitialColorMode();
+})()
+`;
+
+export default class MyDocument extends Document {
+  render() {
+    return (
+      <Html>
+        <Head />
+        <body>
+          <script
+            dangerouslySetInnerHTML={{
+              __html: blockingSetInitialColorMode,
+            }}
+          ></script>
+          <Main />
+          <NextScript />
+        </body>
+      </Html>
+    );
+  }
+}
+```
+
+We're now able to correctly retrieve the appropriate state of our dark mode _before_ the page loads completely! Our final hurdle is now being able to pass this on to our page's component so that we can actually apply the preferred dark mode state.
+
+The challenge here is that we need to be able to transfer this piece of information from a pure JS script which is being run before the page and its React components have been loaded completely, and "hydrate" them.
+
+## CSS Variables
+
+The last step is to update our page with the user's preferred theme.
+
+There are multiple ways to go about this:
+
+- we can use CSS classes for different themes, and switch them programmatically
+
+- we can use React's `state` and pass a `.class` as a [template literal](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals)
+
+- we can also use styled-components
+
+_While all of the options seem like possible solutions, they each require a lot more boilerplate to be added_
+
+<Highlight>or we could CSS variables!</Highlight>{" "}
+
+[CSS Custom Properties](https://developer.mozilla.org/en-US/docs/Web/CSS/Using_CSS_custom_properties) (also referred to as CSS Variables) allow us to reuse specific values throughout a document. These can be set using custom property notation and accessed using [the `var()` function](https://developer.mozilla.org/en-US/docs/Web/CSS/var) like so:
+
+```css
+:root {
+  --color-primary-accent: #5b34da;
+}
+```
+
+<CustomBlockquote>
+  A common best practice is to define custom properties on the{" "}
+  <StyledAccentTextLink>
+    <code>:root</code> pseudo-class
+  </StyledAccentTextLink>
+  , so that it can be applied globally across your HTML document
+</CustomBlockquote>
+
+The best part about CSS variables is that they are <Highlight>reactive</Highlight>, they remain live throughout the lifetime of the page, and updating them updates the HTML that references them _instantly_. _And_ they can be updated using JavaScript!
+
+```jsx
+// setting
+const root = document.documentElement;
+root.style.setProperty("--initial-color-mode", "dark");
+
+// getting
+const root = window.document.documentElement;
+const initial = root.style.getPropertyValue("--initial-color-mode");
+// "dark"
+```
+
+CSS variables really shine when you want to have to reuse certain values in your CSS; my website uses a few that you can see [here](https://github.com/sreetamdas/sreetamdas.com/blob/master/pages/_app.tsx)
+
+#### There's more!
+
+We can use [HTML attributes](https://developer.mozilla.org/en-US/docs/Learn/HTML/Howto/Use_data_attributes) and since CSS also has access to these attributes, we can assign different values to CSS variables depending on the `data-theme` attribute that we set, like so:
+
+```css
+:root {
+  --color-primary-accent: #5b34da;
+  --color-primary: #000;
+  --color-background: #fff;
+  --color-secondary-accent: #358ef1;
+}
+
+[data-theme="dark"] {
+  --color-primary-accent: #9d86e9;
+  --color-secondary-accent: #61dafb;
+  --color-primary: #fff;
+  --color-background: #000;
+}
+
+[data-theme="batman"] {
+  --color-primary-accent: #ffff00;
+}
+```
+
+and we can set and remove the attribute pretty easily too:
+
+```jsx
+if (userPreference === "dark")
+  document.documentElement.setAttribute("data-theme", "dark");
+
+// and to remove, setting the "light" mode:
+document.documentElement.removeAttribute("data-theme");
+```
+
+Finally, we're now able to pass on the computed dark mode state from our blocking script to our React component.
+
+### Recap
+
+Before we put together everything we have so far, let's recap:
+
+- as soon as the webpage is being loaded, we inject and run a blocking script using <Highlight>Next.js' Document</Highlight> and <Highlight>IIFEs</Highlight>
+
+- check for user's saved preference from a previous visit using <Highlight>localStorage</Highlight>
+
+- check if the user has a system-wide dark mode preference using a <Highlight>CSS media query</Highlight>
+
+- if both above checks are inconclusive, we default to a light theme
+
+- pass this preference as a <Highlight>CSS variable</Highlight>, which we can read in our toggle component
+
+- the theme can be toggled, and upon toggling we save the preference for future visits
+
+- we should _never_ have the <Highlight>flicker</Highlight> on the first load, even if the user has a preference for the non-default theme
+
+- we should _always_ show the correct state of our toggle, and defer rendering the toggle if the correct state is unknown
+
+Here's what the final result looks like:
+
+```jsx {36,40} filename=pages/_document.js
+import Document, {
+  Html,
+  Head,
+  Main,
+  NextScript,
+} from "next/document";
+
+function setInitialColorMode() {
+  function getInitialColorMode() {
+    const preference = window.localStorage.getItem("theme");
+    const hasPreference = typeof preference === "string";
+
+    /**
+     * If the user has explicitly chosen light or dark,
+     * use it. Otherwise, this value will be null.
+     */
+    if (hasPreference) {
+      return preference;
+    }
+
+    // If there is no saved preference, use a media query
+    const mediaQuery = "(prefers-color-scheme: dark)";
+    const mql = window.matchMedia(mediaQuery);
+
+    const hasPreference = typeof mql.matches === "boolean";
+    if (hasPreference) {
+      return mql.matches ? "dark" : "light";
+    }
+
+    // default to 'light'.
+    return "light";
+  }
+
+  const colorMode = getInitialColorMode();
+  const root = document.documentElement;
+  root.style.setProperty("--initial-color-mode", colorMode);
+
+  // add HTML attribute if dark mode
+  if (colorMode === "dark")
+    document.documentElement.setAttribute("data-theme", "dark");
+}
+
+// our function needs to be a string
+const blockingSetInitialColorMode = `(function() {
+		${setInitialColorMode.toString()}
+		setInitialColorMode();
+})()
+`;
+
+export default class MyDocument extends Document {
+  render() {
+    return (
+      <Html>
+        <Head />
+        <body>
+          <script
+            dangerouslySetInnerHTML={{
+              __html: blockingSetInitialColorMode,
+            }}
+          ></script>
+          <Main />
+          <NextScript />
+        </body>
+      </Html>
+    );
+  }
+}
+```
+
+Note how we use `style.setProperty()` as well as `documentElement.setAttribute()` to pass our data
+
+Let's add our CSS, adding separate values for our CSS variables when dark mode is applied
+
+```css filename=styles.css
+:root {
+  --color-primary-accent: #5b34da;
+  --color-primary: #000;
+  --color-background: #fff;
+}
+
+[data-theme="dark"] {
+  --color-primary-accent: #9d86e9;
+  --color-primary: #fff;
+  --color-background: #000;
+}
+
+body {
+  background-color: var(--color-background);
+  color: var(--color-primary);
+}
+```
+
+Great! Now we need to import these styles into our application.
+
+Since we want these styles to be available throughout our website, we'll need to use the [`App` component](https://nextjs.org/docs/advanced-features/custom-app) that Next.js provides us. This is similar to the `Document` that we saw earlier, in that it's a special component which can be used to control _each_ page in Next.js app as it's used to initialise our pages.
+
+This makes it the correct place for adding our global CSS as well!
+
+```jsx filename=pages/_app.js
+import "../styles.css";
+
+export default function MyApp({ Component, pageProps }) {
+  return <Component {...pageProps} />;
+}
+```
+
+and finally, our React component page:
+
+```jsx filename=pages/index.js {4,37}
+import { useEffect, useState } from "react";
+
+const IndexPage = () => {
+  const [darkTheme, setDarkTheme] = useState(undefined);
+
+  const handleToggle = (event) => {
+    setDarkTheme(event.target.checked);
+  };
+  const storeUserSetPreference = (pref) => {
+    localStorage.setItem("theme", pref);
+  };
+
+  const root = document.documentElement;
+  useEffect(() => {
+    const initialColorValue = root.style.getPropertyValue(
+      "--initial-color-mode"
+    );
+    setDarkTheme(initialColorValue === "dark");
+  }, []);
+  useEffect(() => {
+    if (darkTheme !== undefined) {
+      if (darkTheme) {
+        root.setAttribute("data-theme", "dark");
+        storeUserSetPreference("dark");
+      } else {
+        root.removeAttribute("data-theme");
+        storeUserSetPreference("light");
+      }
+    }
+  }, [darkTheme]);
+
+  return (
+    <div>
+      {darkTheme !== undefined && (
+        <label>
+          <input
+            type="checkbox"
+            checked={darkTheme}
+            onChange={handleToggle}
+          />{" "}
+          Dark
+        </label>
+      )}
+      <h1>Hello there</h1>
+      <p style={{ color: "var(--color-primary-accent)" }}>
+        General Kenobi!
+      </p>
+    </div>
+  );
+};
+
+export default IndexPage;
+```
+
+<CustomBlockquote>
+  One caveat of our approach using vanilla CSS is that during
+  development, we still experience the "flicker", but once the
+  application is compiled and built, we no longer do and everything
+  works as intended
+</CustomBlockquote>
+
+<CustomBlockquote type="success">
+  If you're using{" "}
+  <a href="https://styled-components.com">Styled-components</a>, then
+  this isn't an issue since we can use <code>ServerStyleSheet()</code>{" "}
+  which makes sure that the CSS being imported in <code>App</code> is
+  correctly collected and added to the <code>Document</code> itself,
+  thus preventing the flicker during development as well
+  <br />
+  <br />
+  <a href="https://styled-components.com/docs/advanced#nextjs">
+    Refer the docs
+  </a> or check out <a href="https://github.com/sreetamdas/sreetamdas.com/blob/master/pages/_document.tsx#L10">my implementation</a>
+</CustomBlockquote>
+
+Initialising our `isDarkTheme` state as `undefined` allows us to defer rendering our dark mode toggle, thus preventing showing the wrong toggle state to the user.
+
+## Fin
+
+And that's it!
+
+We've got the perfect dark mode, one without any flickering. As [Josh mentioned](https://joshwcomeau.com/gatsby/dark-mode) this was certainly not an easy task; I definitely didn't expect to work with things like CSS variables and IIFEs and I'm certain you didn't either!
+
+Here's a couple of links for you to check out our finished app:
+
+<CustomBlockquote>
+<p>Live app: <a href="https://nextjs-perfect-dark-mode.netlify.app">nextjs-perfect-dark-mode.netlify.app</a></p>
+
+
+Repository: <a href="https://github.com/sreetamdas/nextjs-perfect-dark-mode-example">github.com/sreetamdas/nextjs-perfect-dark-mode-example</a>
+
+Sandbox: <a href="https://codesandbox.io/s/dreamy-nightingale-ikwks?file=/pages/_document.js">codesandbox.io/s/dreamy-nightingale-ikwks</a>
+
+</CustomBlockquote>
+
+
+Of course, there are [packages which can handle all of this for you](https://github.com/donavon/use-dark-mode#that-flash) including "the flash" which differ only slightly in their implementation (Donavon here uses the `.class` method)
+
+At the end of the day there are more and more people adding dark mode to their websites, and hopefully my journey here is able to help implement the perfect one for your website too.
+
+Notice any typos? Have something to say or improvements to add? Feel free to [reach out to me on Twitter](https://twitter.com/_SreetamDas) and maybe even share this post using the button below :&rpar;
