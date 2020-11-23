@@ -53,6 +53,7 @@ export const TextGradientCSS = css`
 	background-clip: text;
 	-webkit-background-clip: text;
 	-webkit-text-fill-color: transparent;
+	-webkit-box-decoration-break: clone;
 `;
 export const TextGradient = styled.span`
 	${TextGradientCSS}
