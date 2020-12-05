@@ -194,8 +194,8 @@ export const StyledPre = styled.pre`
 `;
 
 export const IconContainer = styled.a`
-	color: var(--color-primary-accent);
 	font-size: 25px;
+	color: var(--color-primary-accent);
 `;
 
 export const LinkedHeaderIconWrapper = styled.a<{ isHovered: boolean }>`

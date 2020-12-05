@@ -38,6 +38,10 @@ const NavbarWithNavs = styled.div`
 	justify-content: center;
 `;
 
+const NavLink = styled(LinkTo)`
+	border: none;
+`;
+
 const Navbar = ({
 	currentTheme,
 }: {
@@ -107,9 +111,9 @@ const Navbar = ({
 					/>
 				</NextIconLink>
 				<NavbarWithNavs>
-					<LinkTo href="/blog">blog</LinkTo>
-					<LinkTo href="/uses">uses</LinkTo>
-					<LinkTo href="/about">about</LinkTo>
+					<NavLink href="/blog">blog</NavLink>
+					<NavLink href="/uses">uses</NavLink>
+					<NavLink href="/about">about</NavLink>
 					<IconContainer
 						href="https://github.com/sreetamdas"
 						target="_blank"
