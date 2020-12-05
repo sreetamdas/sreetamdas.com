@@ -9,8 +9,8 @@
 		"deploy": "yarn build && yarn export",
 		"netlify": "yarn deploy && netlify deploy",
 		"compile": "tsc --watch",
-		"lint": "eslint '{pages,components,typings,styles,utils}/**/*.{js,jsx,ts,tsx}' --cache --fix",
-		"prettier": "prettier --write '{pages,components,typings,styles,utils}/**/*.{js,jsx,ts,tsx}'"
+		"lint": "eslint 'src/{pages,components,typings,styles,utils}/**/*.{js,jsx,ts,tsx}' --cache --fix",
+		"prettier": "prettier --write 'src/{pages,components,typings,styles,utils}/**/*.{js,jsx,ts,tsx}'"
 	},
 	"dependencies": {
 		"@mdx-js/loader": "^1.6.19",
