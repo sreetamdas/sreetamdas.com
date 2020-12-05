@@ -13,8 +13,8 @@ import { FiSun } from "react-icons/fi";
 import { IoMdMoon } from "react-icons/io";
 import styled from "styled-components";
 
+import RoundedSquare from "assets/roundedSquare.svg";
 import { FoobarContext } from "components/foobar";
-import RoundedSquare from "public/roundedSquare.svg";
 import { IconContainer, LinkTo, NextIconLink } from "styles/blog";
 import { Layout } from "styles/layouts";
 import { TGlobalThemeObject } from "typings/styled";

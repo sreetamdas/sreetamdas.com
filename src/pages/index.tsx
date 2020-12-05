@@ -3,7 +3,7 @@ import React, { Fragment } from "react";
 
 import Tooling from "content/tooling.mdx";
 import { META_TAGS } from "pages/_document";
-import { Text, Title, StyledAccentLink, LinkTo } from "styles/blog";
+import { Text, Title, StyledLink, LinkTo } from "styles/blog";
 import { Layout, Center, MDXText, TextGradient, Heavy } from "styles/layouts";
 
 const Index = () => {
@@ -30,9 +30,7 @@ const Index = () => {
 				</Text>
 				<Text>
 					I&apos;m currently a Frontend Engineer at{" "}
-					<StyledAccentLink href="https://remote.com">
-						Remote
-					</StyledAccentLink>{" "}
+					<StyledLink href="https://remote.com">Remote</StyledLink>{" "}
 					who loves working with{" "}
 					<TextGradient>
 						<Heavy>React + Redux + TypeScript</Heavy>

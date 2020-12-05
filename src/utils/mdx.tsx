@@ -96,7 +96,7 @@ const MDXImageWithWrapper = ({ alt, src }: { alt: string; src: string }) => (
 	/>
 );
 
-const MDXLinkStyled = styled.span`
+export const MDXLinkStyled = styled.span`
 	& a {
 		color: var(--color-primary);
 		border-bottom: 0.18em solid var(--color-primary-accent);

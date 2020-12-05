@@ -1,7 +1,9 @@
+/* eslint-disable no-mixed-spaces-and-tabs */
+/* eslint-disable indent */
 import Link, { LinkProps } from "next/link";
-import { forwardRef, PropsWithChildren, PropsWithoutRef, Ref } from "react";
+import { PropsWithChildren, PropsWithoutRef } from "react";
 import { FaArrowRight } from "react-icons/fa";
-import styled, { StyledComponentPropsWithRef, css } from "styled-components";
+import styled, { css } from "styled-components";
 
 import { PaddingListItems, TextGradientCSS } from "styles/layouts";
 import { useHover } from "utils/hooks";
@@ -109,37 +111,18 @@ export const StyledLink = styled.a`
 	text-decoration: none;
 	cursor: pointer;
 	color: var(--color-primary);
+	border-bottom: 0.18em solid var(--color-primary-accent);
 
 	&:visited {
 		text-decoration: none;
 	}
 	&:hover {
+		color: var(--color-primary-accent);
 		text-decoration: none;
 	}
 `;
 
-type TStyledLinkProps = PropsWithoutRef<
-	StyledComponentPropsWithRef<typeof StyledLink>
->;
-export const StyledAccentLink = forwardRef(
-	(
-		{ style, href, onClick, children, ...props }: TStyledLinkProps,
-		ref: Ref<HTMLAnchorElement>
-	) => (
-		<StyledLink
-			{...{ href, onClick, ref, ...props }}
-			style={
-				Object.keys(style ?? {}).length
-					? style
-					: { color: "var(--color-primary-accent)" }
-			}
-		>
-			{children}
-		</StyledLink>
-	)
-);
-
-export const StyledAccentTextLink = styled(StyledAccentLink)`
+export const StyledAccentTextLink = styled(StyledLink)`
 	&:visited {
 		text-decoration: none;
 	}
@@ -184,9 +167,7 @@ export const LinkTo = ({
 }: PropsWithoutRef<LinkProps & React.HTMLProps<HTMLAnchorElement>>) => {
 	return (
 		<Link {...{ href }} passHref>
-			<StyledAccentLink {...{ style, ...props }}>
-				{children}
-			</StyledAccentLink>
+			<StyledLink {...{ style, ...props }}>{children}</StyledLink>
 		</Link>
 	);
 };
