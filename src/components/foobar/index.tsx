@@ -131,7 +131,9 @@ const FoobarWrapper = ({ children }: PropsWithChildren<{}>): JSX.Element => {
 				{foobarData.unlocked && (
 					<Center>
 						<code>
-							<LinkTo href="/foobar">resume /foobar</LinkTo>
+							<LinkTo href="/foobar" style={{ border: "none" }}>
+								resume /foobar
+							</LinkTo>
 						</code>
 						<Space size={10} />
 					</Center>

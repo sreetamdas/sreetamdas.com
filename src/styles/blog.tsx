@@ -269,3 +269,18 @@ const EndLinksGrid = styled.div`
 export const EndLinks = ({ children }: PropsWithChildren<{}>) => (
 	<EndLinksGrid>{children}</EndLinksGrid>
 );
+
+export const Button = styled.button`
+	font-size: 18px;
+	cursor: pointer;
+	background-color: var(--color-background);
+	padding: 10px 15px;
+	border-radius: var(--border-radius);
+	border: 2px solid var(--color-primary-accent);
+	color: var(--color-primary);
+
+	&:hover {
+		background-color: var(--color-primary-accent);
+		color: var(--color-background);
+	}
+`;

@@ -7,7 +7,7 @@ import { ShowCompletedBadges } from "components/foobar/badges";
 import { KonamiWrapper } from "components/foobar/konami";
 import { Terminal } from "components/foobar/terminal";
 import Custom404 from "pages/404";
-import { Title, StyledPre } from "styles/blog";
+import { Title, StyledPre, Button, StyledLink } from "styles/blog";
 import { Layout, Space, Center } from "styles/layouts";
 import { SupportSreetamDas } from "styles/special";
 import { dog } from "utils/console";
@@ -75,20 +75,40 @@ export const Foobar = ({ completedPage }: TFoobarSchrodingerProps) => {
 						You&apos;ve unlocked <code>{completedPage}</code>!
 					</Title>
 				)}
+				<Space size={50} />
+				<Title>Hello Beautiful Nerd!</Title>
+				Here is where you can track all of your completed challenges on
+				my website.
+				<br />
+				Feel free to{" "}
+				<StyledLink
+					href="https://twitter.com/_SreetamDas"
+					target="_blank"
+					rel="noreferrer noopener"
+				>
+					reach out to me
+				</StyledLink>{" "}
+				if you&apos;d like a clue or have any feedback!
 				<Space />
 				Here are your completed challenges:
 				<ShowCompletedBadges />
-				{process.env.NODE_ENV === "development" && (
-					<StyledPre>
-						<Title>DEV</Title>
-						{JSON.stringify(foobarObject, null, 2)}
-					</StyledPre>
-				)}
-				<button onClick={handleClearFoobarData}>Restart</button>
+				<Space size={20} />
+				<Button onClick={handleClearFoobarData}>
+					Clear everything and Restart
+				</Button>
 				<Space />
 				<Center>
 					<SupportSreetamDas />
 				</Center>
+				{process.env.NODE_ENV === "development" && (
+					<Fragment>
+						<Space />
+						<StyledPre>
+							<Title>DEV</Title>
+							{JSON.stringify(foobarObject, null, 2)}
+						</StyledPre>
+					</Fragment>
+				)}
 			</Layout>
 			<Terminal {...{ visible: terminalVisible, toggleTerminal }} />
 			{!terminalVisible && <KonamiWrapper />}
