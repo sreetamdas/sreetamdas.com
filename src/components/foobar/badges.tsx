@@ -99,7 +99,7 @@ export const FOOBAR_BADGES: TFOOBAR_BADGES = {
 	},
 	offline: {
 		icon: (props) => <RiWifiOffLine {...props} />,
-		description: "Go offline while Viewing a /foobar page",
+		description: "Go offline while viewing a /foobar page",
 	},
 	hack: {
 		icon: (props) => <FaSkull {...props} />,
