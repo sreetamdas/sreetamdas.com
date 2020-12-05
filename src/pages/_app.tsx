@@ -159,12 +159,12 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
 				<GlobalStyles />
 				{/* @ts-expect-error */}
 				<MDXProvider components={MDXComponents}>
-					<FoobarWrapper>
-						<Center>
+					<Center style={{ margin: "0 25px" }}>
+						<FoobarWrapper>
 							<Navbar {...{ currentTheme: themeObject.theme }} />
 							<Component {...pageProps} />
-						</Center>
-					</FoobarWrapper>
+						</FoobarWrapper>
+					</Center>
 				</MDXProvider>
 			</ThemeProvider>
 		</Fragment>

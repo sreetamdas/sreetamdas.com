@@ -8,12 +8,12 @@ export const BlogPostsPreviewLayout = styled.div`
 export const Layout = styled.div`
 	max-width: var(--max-width);
 	width: 100%;
-	padding: 0 15px;
+	padding: 0;
 `;
 
 export const Center = styled.div`
 	display: grid;
-	padding: 0 20px;
+	padding: 0;
 	justify-items: center;
 `;
 
