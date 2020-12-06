@@ -1,60 +1,10 @@
 /* eslint-disable no-mixed-spaces-and-tabs */
 /* eslint-disable indent */
-import Link, { LinkProps } from "next/link";
-import { PropsWithChildren, PropsWithoutRef } from "react";
-import { FaArrowRight } from "react-icons/fa";
+import Link from "next/link";
+import { PropsWithChildren } from "react";
 import styled, { css } from "styled-components";
 
-import { PaddingListItems, TextGradientCSS } from "styles/layouts";
-import { useHover } from "utils/hooks";
-
-export const BlogPostPreview = ({ post }: { post: TBlogPost }) => {
-	const [hoverRef, isHovered] = useHover();
-
-	return (
-		<Link href="/blog/[slug]" as={`/blog/${post.slug}`} scroll={false}>
-			<StyledLink href={`/blog/${post.slug}`}>
-				<Card ref={hoverRef}>
-					<BlogPostPreviewTitle {...{ isHovered }}>
-						{post.title}
-					</BlogPostPreviewTitle>
-					<Datestamp>
-						{new Date(post.publishedAt).toLocaleDateString(
-							"en-US",
-							{
-								month: "long",
-								year: "numeric",
-								day: "numeric",
-							}
-						)}
-						{!post.published && <PostNotPublishedWarning />}
-					</Datestamp>
-					<SmallText>{post.summary}</SmallText>
-					<ReadMorePrompt {...{ isHovered }}>
-						Read more{" "}
-						{isHovered && (
-							<FaArrowRight style={{ fontSize: "12px" }} />
-						)}
-					</ReadMorePrompt>
-				</Card>
-			</StyledLink>
-		</Link>
-	);
-};
-
-export const BlogPostTitle = styled.h2`
-	font-size: clamp(4rem, 15vw, 6rem);
-	line-height: 1.1;
-	margin: 0;
-	padding-top: 30px;
-	padding-bottom: 15px;
-`;
-
-export const BlogPostPreviewTitle = styled.h2<{ isHovered: boolean }>`
-	margin: 0;
-	font-size: 2rem;
-	${({ isHovered }) => isHovered && TextGradientCSS}
-`;
+import { PaddingListItems } from "styles/typography";
 
 export const removeListStyleMixin = css`
 	& ul {
@@ -70,65 +20,6 @@ export const BlogPostMDXContent = styled(PaddingListItems)`
 export const Card = styled.div`
 	padding: 10px 0;
 	cursor: pointer;
-`;
-
-export const Datestamp = styled.p`
-	color: var(--color-primary-accent);
-	font-size: 12px;
-	padding: 5px 0;
-	margin: 0;
-`;
-
-export const Title = styled.h1<{ resetLineHeight?: boolean; size?: number }>`
-	padding: 20px 0;
-	font-size: ${({ size }) => (size ? `${size}rem` : "3rem")};
-
-	${({ resetLineHeight }) =>
-		resetLineHeight &&
-		css`
-			line-height: 1;
-		`}
-`;
-
-export const Text = styled.p<{ paddingTop?: boolean | number }>`
-	margin: 0;
-	padding: 10px 0;
-	padding-top: ${({ paddingTop }) =>
-		paddingTop
-			? typeof paddingTop === "number"
-				? `${paddingTop}px`
-				: "150px"
-			: null};
-`;
-
-export const SmallText = styled.p`
-	font-size: 14px;
-	margin: 0;
-	padding-bottom: 10px;
-`;
-
-export const StyledLink = styled.a`
-	text-decoration: none;
-	cursor: pointer;
-	color: var(--color-primary);
-	border-bottom: 0.18em solid var(--color-primary-accent);
-
-	&:visited {
-		text-decoration: none;
-	}
-	&:hover {
-		color: var(--color-primary-accent);
-		text-decoration: none;
-	}
-`;
-
-export const StyledAccentTextLink = styled(StyledLink)`
-	&:visited {
-		text-decoration: none;
-	}
-	&:hover {
-		text-decoration: underline;
-	}
 `;
 
 export const WarningSpan = styled.span`
@@ -156,21 +47,6 @@ export const ProgressBar = styled.div<{ scroll: number }>`
 	transition: 0.2s ease;
 	z-index: 3;
 `;
-
-export const LinkTo = ({
-	children,
-	href,
-	as,
-	replace,
-	style = {},
-	...props
-}: PropsWithoutRef<LinkProps & React.HTMLProps<HTMLAnchorElement>>) => {
-	return (
-		<Link {...{ href }} passHref>
-			<StyledLink {...{ style, ...props }}>{children}</StyledLink>
-		</Link>
-	);
-};
 
 export const PostMetaDataGrid = styled.div`
 	display: grid;

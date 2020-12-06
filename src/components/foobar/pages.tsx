@@ -7,9 +7,10 @@ import { ShowCompletedBadges } from "components/foobar/badges";
 import { KonamiWrapper } from "components/foobar/konami";
 import { Terminal } from "components/foobar/terminal";
 import Custom404 from "pages/404";
-import { Title, StyledPre, Button, StyledLink } from "styles/blog";
+import { StyledPre, Button } from "styles/blog";
 import { Layout, Space, Center } from "styles/layouts";
 import { SupportSreetamDas } from "styles/special";
+import { StyledLink, Title } from "styles/typography";
 import { dog } from "utils/console";
 
 const XMarksTheSpot = (_props: { foobar: string }) => <div />;

@@ -3,8 +3,16 @@ import React, { Fragment } from "react";
 
 import Tooling from "content/tooling.mdx";
 import { META_TAGS } from "pages/_document";
-import { Text, Title, StyledLink, LinkTo } from "styles/blog";
-import { Layout, Center, MDXText, TextGradient, Heavy } from "styles/layouts";
+import { Layout, Center } from "styles/layouts";
+import {
+	TextGradient,
+	Heavy,
+	MDXText,
+	Title,
+	Text,
+	LinkTo,
+	StyledLink,
+} from "styles/typography";
 
 const Index = () => {
 	return (

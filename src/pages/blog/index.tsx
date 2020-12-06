@@ -1,9 +1,10 @@
 import { GetStaticProps } from "next";
 import Head from "next/head";
-import { Fragment } from "react";
+import React, { Fragment } from "react";
 
-import { BlogPostPreview, Title } from "styles/blog";
+import { BlogPostPreview } from "components/blog";
 import { BlogPostsPreviewLayout, Layout } from "styles/layouts";
+import { Title } from "styles/typography";
 import { getBlogPostsData } from "utils/blog";
 
 const Index = ({ postsData }: { postsData: Array<TBlogPost> }) => {

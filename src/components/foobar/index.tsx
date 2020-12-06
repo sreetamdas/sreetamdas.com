@@ -9,8 +9,8 @@ import React, {
 
 import { Footer } from "components/Footer";
 import { FOOBAR_PAGES } from "components/foobar/badges";
-import { LinkTo } from "styles/blog";
 import { Space, Center, WrapperForFooter } from "styles/layouts";
+import { LinkTo } from "styles/typography";
 import {
 	doAsyncThings,
 	loadLocalDataOnMount,

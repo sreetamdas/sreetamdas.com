@@ -9,14 +9,13 @@ import { ReadingProgress } from "components/Meh";
 import { ShareLinks } from "components/blog";
 import { Newsletter } from "components/blog/Newsletter";
 import {
-	BlogPostTitle,
 	BlogPostMDXContent,
-	Datestamp,
 	PostNotPublishedWarning,
 	PostMetaDataGrid,
 	EndLinks,
 } from "styles/blog";
-import { Layout, TextGradient } from "styles/layouts";
+import { Layout } from "styles/layouts";
+import { BlogPostTitle, TextGradient, Datestamp } from "styles/typography";
 import { getBlogPostsData } from "utils/blog";
 
 const Post = ({ post, mdxString }: { post: TBlogPost; mdxString: string }) => {

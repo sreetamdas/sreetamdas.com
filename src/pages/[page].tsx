@@ -5,13 +5,12 @@ import React, { Fragment } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 
 import { META_TAGS } from "pages/_document";
-import { Title } from "styles/blog";
+import { Layout, Center } from "styles/layouts";
 import {
-	Layout,
-	Center,
+	Title,
 	PaddingListItems,
 	RemoveBulletsFromOL,
-} from "styles/layouts";
+} from "styles/typography";
 import { getAboutMDXPagesData } from "utils/blog";
 
 const Page = ({ page, mdxString }: { page: string; mdxString: string }) => {

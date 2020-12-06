@@ -22,7 +22,7 @@ declare type TFoobarData = {
 	completed: Array<TFoobarPages>;
 };
 
-declare type TFoobarContext = Partial<TFoobarData> & {
+declare type TFoobarContext = TFoobarData & {
 	dataLoaded: boolean;
 	updateFoobarDataPartially: (data: Partial<TFoobarData>) => void;
 };

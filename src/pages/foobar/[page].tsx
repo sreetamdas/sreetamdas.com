@@ -20,7 +20,7 @@ const Index = () => {
 
 	// activate offline page only when, well, user is offline
 	if (page === "offline" && navigator.onLine)
-		return <Custom404 message="pssst try going offline" />;
+		return <Custom404 message="pssst...try going offline" />;
 
 	return <FoobarSchrodinger completedPage={page} />;
 };

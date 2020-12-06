@@ -6,8 +6,8 @@ import { createGlobalStyle, ThemeProvider } from "styled-components";
 
 import { Navbar } from "components/Navbar";
 import { FoobarWrapper } from "components/foobar";
-import { Text } from "styles/blog";
 import { Center } from "styles/layouts";
+import { Text } from "styles/typography";
 import { TGlobalThemeObject } from "typings/styled";
 import {
 	MDXCodeBlock,

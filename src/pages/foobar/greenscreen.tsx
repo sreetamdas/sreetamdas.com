@@ -1,5 +1,7 @@
-import { Title, Text } from "styles/blog";
+import React from "react";
+
 import { Center } from "styles/layouts";
+import { Title, Text } from "styles/typography";
 
 const Greenscreen = () => {
 	return (

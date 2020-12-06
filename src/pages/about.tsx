@@ -4,8 +4,8 @@ import React, { Fragment, useContext } from "react";
 import { FoobarContext } from "components/foobar";
 import MDXAbout from "content/about.mdx";
 import { META_TAGS } from "pages/_document";
-import { Title, Text, LinkTo } from "styles/blog";
-import { Layout, Center, RemoveBulletsFromOL } from "styles/layouts";
+import { Layout, Center } from "styles/layouts";
+import { Title, RemoveBulletsFromOL, LinkTo, Text } from "styles/typography";
 
 const About = () => {
 	const { updateFoobarDataPartially, unlocked } = useContext(FoobarContext);

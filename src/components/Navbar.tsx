@@ -15,8 +15,9 @@ import styled from "styled-components";
 
 import RoundedSquare from "assets/roundedSquare.svg";
 import { FoobarContext } from "components/foobar";
-import { IconContainer, LinkTo, NextIconLink } from "styles/blog";
+import { IconContainer, NextIconLink } from "styles/blog";
 import { Layout } from "styles/layouts";
+import { LinkTo } from "styles/typography";
 import { TGlobalThemeObject } from "typings/styled";
 
 const NavbarWithLogo = styled.div`
