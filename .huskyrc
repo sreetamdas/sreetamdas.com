@@ -1,5 +1,6 @@
 {
 	"hooks": {
-		"pre-push": "lint-staged",
+		"pre-commit": "lint-staged",
+		"pre-push": "tsc -p tsconfig.json && eslint --cache --fix",
 	}
 }
