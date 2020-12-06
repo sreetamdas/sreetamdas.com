@@ -40,7 +40,7 @@ const NavbarWithNavs = styled.div`
 `;
 
 const NavLink = styled(LinkTo)`
-	border: none;
+	border: none !important;
 `;
 
 const Navbar = ({
