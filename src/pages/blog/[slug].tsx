@@ -5,9 +5,9 @@ import React, { Fragment, useRef } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { FaLongArrowAltUp } from "react-icons/fa";
 
-import { ReadingProgress } from "components/Meh";
 import { ShareLinks } from "components/blog";
 import { Newsletter } from "components/blog/Newsletter";
+import { ReadingProgress } from "components/blog/ProgressBar";
 import {
 	BlogPostMDXContent,
 	PostNotPublishedWarning,

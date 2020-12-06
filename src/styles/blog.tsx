@@ -34,20 +34,6 @@ export const PostNotPublishedWarning = () => {
 	return <WarningSpan>UNPUBLISHED</WarningSpan>;
 };
 
-export const ProgressBar = styled.div<{ scroll: number }>`
-	position: fixed;
-	left: 0;
-	background: linear-gradient(
-		90deg,
-		var(--color-primary-accent) 0%,
-		var(--color-secondary-accent) 100%
-	);
-	width: ${({ scroll }) => scroll}%;
-	height: 5px;
-	transition: 0.2s ease;
-	z-index: 3;
-`;
-
 export const PostMetaDataGrid = styled.div`
 	display: grid;
 	grid-auto-flow: column;
