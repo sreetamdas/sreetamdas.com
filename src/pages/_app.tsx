@@ -48,7 +48,7 @@ const GlobalStyles = createGlobalStyle`
 
 	--max-width: 650px;
 	--border-radius: 5px;
-}
+	}
 
 	[data-theme="dark"] {
 		--color-primary-accent: rgb(157, 134, 233);
