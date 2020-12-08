@@ -6,7 +6,7 @@ export const getBlogPreviewImageURL = ({ slug }: { slug: TBlogPost["slug"] }) =>
 
 export const getBlogPostsData = () => {
 	const META = /export\s+const\s+meta\s+=\s+(\{(\n|.)*?\n\})/;
-	const DIR = path.join(process.cwd(), "content/blog");
+	const DIR = path.join(process.cwd(), "src", "content/blog");
 	const files = fs.readdirSync(DIR).filter((file) => file.endsWith(".mdx"));
 
 	const postsData: Array<TBlogPost> = files
@@ -52,8 +52,8 @@ export const getAboutMDXPagesData = () => {
 	 * for pages that _dont_ exist already
 	 */
 
-	const DIR = path.join(process.cwd(), "content");
-	const existingPagesDIR = path.join(process.cwd(), "pages");
+	const DIR = path.join(process.cwd(), "src", "content");
+	const existingPagesDIR = path.join(process.cwd(), "src", "pages");
 
 	const files = fs.readdirSync(DIR).filter((file) => file.endsWith(".mdx"));
 	const existingAboutPageFiles = fs
