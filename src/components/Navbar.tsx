@@ -119,6 +119,7 @@ const Navbar = ({
 						href="https://github.com/sreetamdas"
 						target="_blank"
 						rel="noopener noreferrer"
+						$styledOnHover
 					>
 						<FaGithub
 							aria-label="Sreetam's GitHub"
@@ -129,6 +130,7 @@ const Navbar = ({
 						href="https://twitter.com/_SreetamDas"
 						target="_blank"
 						rel="noopener noreferrer"
+						$styledOnHover
 					>
 						<FaTwitter
 							aria-label="Sreetam Das' Twitter"

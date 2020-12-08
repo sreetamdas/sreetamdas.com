@@ -55,9 +55,20 @@ export const StyledPre = styled.pre`
 	font-size: 14px;
 `;
 
-export const IconContainer = styled.a`
+export const IconContainer = styled.a<{ $styledOnHover?: boolean }>`
 	font-size: 25px;
-	color: var(--color-primary-accent);
+
+	${({ $styledOnHover }) =>
+		$styledOnHover
+			? css`
+					color: var(--color-primary);
+					:hover {
+						color: var(--color-primary-accent);
+					}
+			  `
+			: css`
+					color: var(--color-primary-accent);
+			  `}
 `;
 
 export const LinkedHeaderIconWrapper = styled.a<{ isHovered: boolean }>`
