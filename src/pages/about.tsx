@@ -36,6 +36,7 @@ const About = () => {
 							style={{
 								color: "var(--color-background)",
 								alignSelf: "center",
+								border: "none",
 							}}
 						>
 							Ⅹ
