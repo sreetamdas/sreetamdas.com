@@ -119,7 +119,7 @@ export const Highlight = styled.span`
 
 export const ReadMorePrompt = styled.p<{ isHovered: boolean }>`
 	font-weight: bold;
-	font-size: 14px;
+	font-size: 0.8rem;
 	margin: 0;
 	color: ${({ isHovered }) =>
 		isHovered ? "var(--color-primary-accent)" : null};

@@ -8,12 +8,7 @@ import {
 	PostNotPublishedWarning,
 	ReadMorePrompt,
 } from "styles/blog";
-import {
-	BlogPostPreviewTitle,
-	Datestamp,
-	SmallText,
-	StyledLink,
-} from "styles/typography";
+import { BlogPostPreviewTitle, Datestamp, SmallText } from "styles/typography";
 import { useHover } from "utils/hooks";
 
 export const ShareLinks = (post: TBlogPost) => {
@@ -34,32 +29,25 @@ export const BlogPostPreview = ({ post }: { post: TBlogPost }) => {
 	const [hoverRef, isHovered] = useHover();
 
 	return (
-		<Link href="/blog/[slug]" as={`/blog/${post.slug}`} scroll={false}>
-			<StyledLink href={`/blog/${post.slug}`}>
-				<Card ref={hoverRef}>
-					<BlogPostPreviewTitle {...{ isHovered }}>
-						{post.title}
-					</BlogPostPreviewTitle>
-					<Datestamp>
-						{new Date(post.publishedAt).toLocaleDateString(
-							"en-US",
-							{
-								month: "long",
-								year: "numeric",
-								day: "numeric",
-							}
-						)}
-						{!post.published && <PostNotPublishedWarning />}
-					</Datestamp>
-					<SmallText>{post.summary}</SmallText>
-					<ReadMorePrompt {...{ isHovered }}>
-						Read more{" "}
-						{isHovered && (
-							<FaArrowRight style={{ fontSize: "12px" }} />
-						)}
-					</ReadMorePrompt>
-				</Card>
-			</StyledLink>
+		<Link href={`/blog/${post.slug}`} scroll={false}>
+			<Card ref={hoverRef}>
+				<BlogPostPreviewTitle {...{ isHovered }}>
+					{post.title}
+				</BlogPostPreviewTitle>
+				<Datestamp>
+					{new Date(post.publishedAt).toLocaleDateString("en-US", {
+						month: "long",
+						year: "numeric",
+						day: "numeric",
+					})}
+					{!post.published && <PostNotPublishedWarning />}
+				</Datestamp>
+				<SmallText>{post.summary}</SmallText>
+				<ReadMorePrompt {...{ isHovered }}>
+					Read more{" "}
+					{isHovered && <FaArrowRight style={{ fontSize: "12px" }} />}
+				</ReadMorePrompt>
+			</Card>
 		</Link>
 	);
 };

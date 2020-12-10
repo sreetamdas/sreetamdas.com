@@ -6,9 +6,19 @@ export const BlogPostsPreviewLayout = styled.div`
 `;
 
 export const Layout = styled.div`
-	max-width: var(--max-width);
-	width: 100%;
+	/* max-width: var(--max-width);
+	width: 100%; */
+	display: grid;
+	grid-template-columns:
+		1fr
+		min(var(--max-width), calc(100% - 2rem))
+		1fr;
+	grid-gap: 1rem;
 	padding: 0;
+
+	& > * {
+		grid-column: 2;
+	}
 `;
 
 export const Center = styled.div`
@@ -27,4 +37,9 @@ export const WrapperForFooter = styled.div`
 export const Space = styled.div<{ size?: number }>`
 	margin: 0;
 	padding: ${({ size }) => (size ? `${size / 2}px` : "50px")};
+`;
+
+export const FullWidth = styled.div`
+	width: 100%;
+	grid-column: 1 / -1;
 `;

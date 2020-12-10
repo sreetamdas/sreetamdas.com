@@ -5,6 +5,7 @@ import React, {
 	PropsWithChildren,
 	createContext,
 	useCallback,
+	Fragment,
 } from "react";
 
 import { Footer } from "components/Footer";
@@ -127,17 +128,20 @@ const FoobarWrapper = ({ children }: PropsWithChildren<{}>): JSX.Element => {
 				<Center>
 					<Footer />
 					<Space size={10} />
+					{foobarData.unlocked && (
+						<Fragment>
+							<code>
+								<LinkTo
+									href="/foobar"
+									style={{ border: "none" }}
+								>
+									resume /foobar
+								</LinkTo>
+							</code>
+							<Space size={10} />
+						</Fragment>
+					)}
 				</Center>
-				{foobarData.unlocked && (
-					<Center>
-						<code>
-							<LinkTo href="/foobar" style={{ border: "none" }}>
-								resume /foobar
-							</LinkTo>
-						</code>
-						<Space size={10} />
-					</Center>
-				)}
 			</WrapperForFooter>
 		</FoobarContext.Provider>
 	);

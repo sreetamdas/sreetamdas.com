@@ -71,7 +71,7 @@ export const Title = styled.h1<{ resetLineHeight?: boolean; size?: number }>`
 		`}
 `;
 
-export const Text = styled.p<{ paddingTop?: boolean | number }>`
+export const Paragraph = styled.p<{ paddingTop?: boolean | number }>`
 	margin: 0;
 	padding: 10px 0;
 	padding-top: ${({ paddingTop }) =>

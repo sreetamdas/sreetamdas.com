@@ -31,20 +31,23 @@ export const ShowCompletedBadges = () => {
 	};
 
 	return (
-		<AllBadgesContainer>
-			{allBadges?.map((badge) => {
-				// @ts-expect-error
-				const badgeUnlocked = completed?.includes(badge);
-				return (
-					<BadgeBlock key={badge} unlocked={badgeUnlocked}>
-						<FoobarBadge badge={badge} />
-						<FoobarBadgeText>
-							{FOOBAR_BADGES[badge].description}
-						</FoobarBadgeText>
-					</BadgeBlock>
-				);
-			})}
-		</AllBadgesContainer>
+		<div>
+			Here are your completed challenges:
+			<AllBadgesContainer>
+				{allBadges?.map((badge) => {
+					// @ts-expect-error
+					const badgeUnlocked = completed?.includes(badge);
+					return (
+						<BadgeBlock key={badge} unlocked={badgeUnlocked}>
+							<FoobarBadge badge={badge} />
+							<FoobarBadgeText>
+								{FOOBAR_BADGES[badge].description}
+							</FoobarBadgeText>
+						</BadgeBlock>
+					);
+				})}
+			</AllBadgesContainer>
+		</div>
 	);
 };
 

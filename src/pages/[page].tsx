@@ -5,7 +5,7 @@ import React, { Fragment } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 
 import { META_TAGS } from "pages/_document";
-import { Layout, Center } from "styles/layouts";
+import { Center } from "styles/layouts";
 import {
 	Title,
 	PaddingListItems,
@@ -27,16 +27,15 @@ const Page = ({ page, mdxString }: { page: string; mdxString: string }) => {
 				</title>
 				{META_TAGS}
 			</Head>
-			<Layout>
-				<Center>
-					<Title size={5}>/{page}</Title>
-				</Center>
-				<PaddingListItems>
-					<RemoveBulletsFromOL>
-						<MDXPage />
-					</RemoveBulletsFromOL>
-				</PaddingListItems>
-			</Layout>
+
+			<Center>
+				<Title size={5}>/{page}</Title>
+			</Center>
+			<PaddingListItems>
+				<RemoveBulletsFromOL>
+					<MDXPage />
+				</RemoveBulletsFromOL>
+			</PaddingListItems>
 		</Fragment>
 	);
 };

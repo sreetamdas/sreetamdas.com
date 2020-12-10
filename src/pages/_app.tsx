@@ -6,8 +6,8 @@ import { createGlobalStyle, ThemeProvider } from "styled-components";
 
 import { Navbar } from "components/Navbar";
 import { FoobarWrapper } from "components/foobar";
-import { Center } from "styles/layouts";
-import { Text } from "styles/typography";
+import { Layout } from "styles/layouts";
+import { Paragraph } from "styles/typography";
 import { TGlobalThemeObject } from "typings/styled";
 import {
 	MDXCodeBlock,
@@ -17,7 +17,7 @@ import {
 } from "utils/mdx";
 
 const MDXComponents = {
-	p: Text,
+	p: Paragraph,
 	h1: MDXHeadingWrapper.h1,
 	h2: MDXHeadingWrapper.h2,
 	h3: MDXHeadingWrapper.h3,
@@ -159,12 +159,12 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
 				<GlobalStyles />
 				{/* @ts-expect-error */}
 				<MDXProvider components={MDXComponents}>
-					<Center style={{ margin: "0 25px" }}>
-						<FoobarWrapper>
+					<FoobarWrapper>
+						<Layout>
 							<Navbar {...{ currentTheme: themeObject.theme }} />
 							<Component {...pageProps} />
-						</FoobarWrapper>
-					</Center>
+						</Layout>
+					</FoobarWrapper>
 				</MDXProvider>
 			</ThemeProvider>
 		</Fragment>

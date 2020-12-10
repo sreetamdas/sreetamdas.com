@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, Fragment } from "react";
 import {
 	FaGithub,
 	FaTwitter,
@@ -16,7 +16,6 @@ import styled from "styled-components";
 import RoundedSquare from "assets/roundedSquare.svg";
 import { FoobarContext } from "components/foobar";
 import { IconContainer, NextIconLink } from "styles/blog";
-import { Layout } from "styles/layouts";
 import { LinkTo } from "styles/typography";
 import { TGlobalThemeObject } from "typings/styled";
 
@@ -103,7 +102,7 @@ const Navbar = ({
 	}, [darkTheme]);
 
 	return (
-		<Layout>
+		<Fragment>
 			<NavbarWithLogo>
 				<NextIconLink href="/">
 					<RoundedSquare
@@ -154,7 +153,7 @@ const Navbar = ({
 					</IconContainer>
 				</NavbarWithNavs>
 			</NavbarWithLogo>
-		</Layout>
+		</Fragment>
 	);
 };
 

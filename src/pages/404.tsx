@@ -4,7 +4,7 @@ import React, { Fragment, useContext, useEffect } from "react";
 import { FoobarContext } from "components/foobar";
 import { FOOBAR_PAGES } from "components/foobar/badges";
 import { Center, Space } from "styles/layouts";
-import { ReallyBigTitle, Title, Text, LinkTo } from "styles/typography";
+import { ReallyBigTitle, Title, Paragraph, LinkTo } from "styles/typography";
 
 export type T404PageMessage = {
 	message?: string;
@@ -44,7 +44,7 @@ const Custom404 = ({ message }: T404PageMessage) => {
 				<Title size={1.5} resetLineHeight>
 					<LinkTo href="/">Go back home</LinkTo>
 				</Title>
-				<Text style={{ textAlign: "center" }}>
+				<Paragraph style={{ textAlign: "center" }}>
 					or check out{" "}
 					<a
 						href="https://www.theguardian.com/lifeandstyle/gallery/2018/jul/18/dog-photographer-of-the-year-2018-in-pictures"
@@ -55,15 +55,15 @@ const Custom404 = ({ message }: T404PageMessage) => {
 						the winners of Dog Photographer of the Year 2018, from
 						The Guardian
 					</a>
-				</Text>
+				</Paragraph>
 				{message ? (
 					<Fragment>
 						<Space />
-						<Text>
+						<Paragraph>
 							<i style={{ fontWeight: 100, fontSize: "12px" }}>
 								{message}
 							</i>
-						</Text>
+						</Paragraph>
 					</Fragment>
 				) : null}
 			</Center>

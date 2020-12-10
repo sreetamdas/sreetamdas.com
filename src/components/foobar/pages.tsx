@@ -8,12 +8,30 @@ import { KonamiWrapper } from "components/foobar/konami";
 import { Terminal } from "components/foobar/terminal";
 import Custom404 from "pages/404";
 import { StyledPre, Button } from "styles/blog";
-import { Layout, Space, Center } from "styles/layouts";
+import { Space, Center } from "styles/layouts";
 import { SupportSreetamDas } from "styles/special";
-import { StyledLink, Title } from "styles/typography";
+import { Paragraph, StyledLink, Title } from "styles/typography";
 import { dog } from "utils/console";
 
 const XMarksTheSpot = (_props: { foobar: string }) => <div />;
+
+const UnlockedBanner = ({ completedPage }: TFoobarSchrodingerProps) =>
+	completedPage && completedPage !== "/" ? (
+		<Fragment>
+			<Space />
+			<Title size={2}>
+				You&apos;ve unlocked{" "}
+				<span role="img" aria-label="sparkle">
+					✨
+				</span>{" "}
+				<code>{completedPage}</code>{" "}
+				<span role="img" aria-label="sparkle">
+					✨
+				</span>
+			</Title>
+			<Space />
+		</Fragment>
+	) : null;
 
 export const Foobar = ({ completedPage }: TFoobarSchrodingerProps) => {
 	const router = useRouter();
@@ -70,14 +88,10 @@ export const Foobar = ({ completedPage }: TFoobarSchrodingerProps) => {
 			<Head>
 				<title>Foobar &mdash; Sreetam Das</title>
 			</Head>
-			<Layout>
-				{completedPage && completedPage !== "/" && (
-					<Title>
-						You&apos;ve unlocked <code>{completedPage}</code>!
-					</Title>
-				)}
-				<Space size={50} />
-				<Title>Hello Beautiful Nerd!</Title>
+			<Space size={50} />
+			<Title>Hello Beautiful Nerd!</Title>
+			<UnlockedBanner {...{ completedPage }} />
+			<Paragraph>
 				Here is where you can track all of your completed challenges on
 				my website.
 				<br />
@@ -90,27 +104,26 @@ export const Foobar = ({ completedPage }: TFoobarSchrodingerProps) => {
 					reach out to me
 				</StyledLink>{" "}
 				if you&apos;d like a clue or have any feedback!
-				<Space />
-				Here are your completed challenges:
-				<ShowCompletedBadges />
-				<Space size={20} />
-				<Button onClick={handleClearFoobarData}>
-					Clear everything and Restart
-				</Button>
-				<Space />
-				<Center>
-					<SupportSreetamDas />
-				</Center>
-				{process.env.NODE_ENV === "development" && (
-					<Fragment>
-						<Space />
-						<StyledPre>
-							<Title>DEV</Title>
-							{JSON.stringify(foobarObject, null, 2)}
-						</StyledPre>
-					</Fragment>
-				)}
-			</Layout>
+			</Paragraph>
+			<Space />
+			<ShowCompletedBadges />
+			<Space size={20} />
+			<Button onClick={handleClearFoobarData}>
+				Clear everything and Restart
+			</Button>
+			<Space />
+			<Center>
+				<SupportSreetamDas />
+			</Center>
+			{process.env.NODE_ENV === "development" && (
+				<Fragment>
+					<Space />
+					<StyledPre>
+						<Title>DEV</Title>
+						{JSON.stringify(foobarObject, null, 2)}
+					</StyledPre>
+				</Fragment>
+			)}
 			<Terminal {...{ visible: terminalVisible, toggleTerminal }} />
 			{!terminalVisible && <KonamiWrapper />}
 			<XMarksTheSpot foobar={"/foobar/devtools"} />

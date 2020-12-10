@@ -14,7 +14,6 @@ import {
 	PostMetaDataGrid,
 	EndLinks,
 } from "styles/blog";
-import { Layout } from "styles/layouts";
 import { BlogPostTitle, TextGradient, Datestamp } from "styles/typography";
 import { getBlogPostsData } from "utils/blog";
 
@@ -49,40 +48,36 @@ const Post = ({ post, mdxString }: { post: TBlogPost; mdxString: string }) => {
 				)}
 			</Head>
 			<ReadingProgress />
-			<Layout ref={topRef}>
-				<BlogPostTitle>
-					<TextGradient>{post.title}</TextGradient>
-				</BlogPostTitle>
-				<PostMetaDataGrid>
-					<Datestamp>
-						{new Date(post.publishedAt).toLocaleDateString(
-							"en-US",
-							{
-								month: "long",
-								year: "numeric",
-								day: "numeric",
-							}
-						)}
-						{!post.published && <PostNotPublishedWarning />}
-					</Datestamp>
-				</PostMetaDataGrid>
-				<BlogPostMDXContent>
-					<MDXPost />
-				</BlogPostMDXContent>
-				<EndLinks>
-					<ShareLinks {...post} />
-					<span
-						onClick={scrollToTop}
-						role="button"
-						tabIndex={0}
-						aria-hidden={true}
-					>
-						back to the top
-						<FaLongArrowAltUp style={{ fontSize: "20px" }} />
-					</span>
-				</EndLinks>
-				<Newsletter />
-			</Layout>
+			<div ref={topRef} />
+			<BlogPostTitle>
+				<TextGradient>{post.title}</TextGradient>
+			</BlogPostTitle>
+			<PostMetaDataGrid>
+				<Datestamp>
+					{new Date(post.publishedAt).toLocaleDateString("en-US", {
+						month: "long",
+						year: "numeric",
+						day: "numeric",
+					})}
+					{!post.published && <PostNotPublishedWarning />}
+				</Datestamp>
+			</PostMetaDataGrid>
+			<BlogPostMDXContent>
+				<MDXPost />
+			</BlogPostMDXContent>
+			<EndLinks>
+				<ShareLinks {...post} />
+				<span
+					onClick={scrollToTop}
+					role="button"
+					tabIndex={0}
+					aria-hidden={true}
+				>
+					back to the top
+					<FaLongArrowAltUp style={{ fontSize: "20px" }} />
+				</span>
+			</EndLinks>
+			<Newsletter />
 		</Fragment>
 	);
 };
