@@ -3,7 +3,7 @@ import React, { Fragment } from "react";
 
 import Tooling from "content/tooling.mdx";
 import { META_TAGS } from "pages/_document";
-import { Center, Space } from "styles/layouts";
+import { Center } from "styles/layouts";
 import {
 	TextGradient,
 	Heavy,
@@ -54,9 +54,8 @@ const Index = () => {
 					❤️
 				</span>{" "}
 				a lot of other things, in no particular order:
-			</Paragraph>
-			<Space size={50} />
-			<Paragraph>
+				<br />
+				<br />
 				CSGO, Reddit, Mechanical Keyboards, Open Source, GitHub,
 				Factorio, Tactile Switches, Batman and the Internet!
 				<br />
