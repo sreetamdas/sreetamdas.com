@@ -39,7 +39,7 @@ const Custom404 = ({ message }: T404PageMessage) => {
 			</Head>
 			<Center>
 				<ReallyBigTitle>404!</ReallyBigTitle>
-				<Title resetLineHeight>Page not found</Title>
+				<Title resetLineHeight>Page not found :(</Title>
 				<Space size={50} />
 				<Title size={1.5} resetLineHeight>
 					<LinkTo href="/">Go back home</LinkTo>
@@ -52,8 +52,9 @@ const Custom404 = ({ message }: T404PageMessage) => {
 						rel="noopener noreferrer"
 						onClick={handleDogLinkClick}
 					>
-						the winners of Dog Photographer of the Year 2018, from
-						The Guardian
+						the winners of Dog Photographer of the Year 2018
+						<br />
+						from The Guardian
 					</a>
 				</Paragraph>
 				{message ? (

@@ -1,19 +1,54 @@
-import React, { useContext, useEffect, Fragment } from "react";
+import React, { useContext, useEffect } from "react";
 import { ThemeContext } from "styled-components";
 
-import { ReallyBigTitle } from "styles/typography";
+import { Highlighted, Typography } from "components/FancyPants";
+import { FullWidth } from "styles/layouts";
+import { random, useInterval, useTimeout } from "utils/hooks";
 
 const FancyPants = () => {
+	let root: HTMLElement;
 	const { changeThemeVariant } = useContext(ThemeContext);
+
+	const getNewColor = () => {
+		const h = random(1, 360);
+		const s = random(80, 90);
+		const l = random(50, 60);
+
+		return `hsl(${h}, ${s}%, ${l}%)`;
+	};
+
+	const changeColor = () => {
+		const newColor = getNewColor();
+
+		if (root === undefined) root = document?.documentElement;
+		root.style.setProperty("--color-fancy-pants", newColor);
+	};
+
+	useInterval(() => {
+		changeColor();
+	}, 10000);
+
+	// HACK: begin the color transition, adding it in useMount doesn't set off the CSS transition
+	useTimeout(() => {
+		changeColor();
+	}, 0);
 
 	useEffect(() => {
 		changeThemeVariant("dark");
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
+
 	return (
-		<Fragment>
-			<ReallyBigTitle>Sreetam Das</ReallyBigTitle>
-		</Fragment>
+		<FullWidth>
+			<div style={{ padding: "0 25px" }}>
+				<Typography>
+					<Highlighted>Sreetam Das</Highlighted>
+					<br />
+					is a <Highlighted>Frontend Engineer</Highlighted>{" "}
+					<Highlighted>@Remote</Highlighted>
+				</Typography>
+			</div>
+		</FullWidth>
 	);
 };
 

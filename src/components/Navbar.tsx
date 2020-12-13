@@ -1,3 +1,4 @@
+import { useRouter } from "next/router";
 import React, { useState, useEffect, useContext, Fragment } from "react";
 import {
 	FaGithub,
@@ -18,6 +19,7 @@ import { FoobarContext } from "components/foobar";
 import { IconContainer, NextIconLink } from "styles/blog";
 import { LinkTo } from "styles/typography";
 import { TGlobalThemeObject } from "typings/styled";
+import { checkIfNavbarShouldBeHidden } from "utils/misc";
 
 const NavbarWithLogo = styled.div`
 	padding: 20px 0;
@@ -48,13 +50,11 @@ const Navbar = ({
 	currentTheme: TGlobalThemeObject["theme"];
 }) => {
 	const [darkTheme, setDarkTheme] = useState<boolean | undefined>(undefined);
+	const [isNavbarShown, setIsNavbarShown] = useState(true);
 	const { updateFoobarDataPartially, ...foobar } = useContext(
 		FoobarContext
 	) as TFoobarContext;
-	const handleThemeSwitch = (event: React.MouseEvent) => {
-		event.preventDefault();
-		setDarkTheme(!darkTheme);
-	};
+	const { pathname } = useRouter();
 
 	useEffect(() => {
 		const root = window.document.documentElement;
@@ -101,7 +101,16 @@ const Navbar = ({
 		};
 	}, [darkTheme]);
 
-	return (
+	useEffect(() => {
+		setIsNavbarShown(!checkIfNavbarShouldBeHidden(pathname.slice(1)));
+	}, [pathname]);
+
+	const handleThemeSwitch = (event: React.MouseEvent) => {
+		event.preventDefault();
+		setDarkTheme(!darkTheme);
+	};
+
+	return isNavbarShown ? (
 		<Fragment>
 			<NavbarWithLogo>
 				<NextIconLink href="/">
@@ -154,7 +163,7 @@ const Navbar = ({
 				</NavbarWithNavs>
 			</NavbarWithLogo>
 		</Fragment>
-	);
+	) : null;
 };
 
 export { Navbar };
