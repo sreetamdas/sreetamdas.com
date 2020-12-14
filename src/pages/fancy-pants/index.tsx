@@ -44,8 +44,18 @@ const FancyPants = () => {
 				<Typography>
 					<Highlighted>Sreetam Das</Highlighted>
 					<br />
-					is a <Highlighted>Frontend Engineer</Highlighted>{" "}
-					<Highlighted>@Remote</Highlighted>
+					is a <Highlighted>Frontend Engineer</Highlighted>
+					<br />
+					working{" "}
+					<a
+						href="https://remote.com"
+						target="_blank"
+						rel="noreferrer"
+					>
+						<Highlighted link>@Remote</Highlighted>
+					</a>{" "}
+					who loves <Highlighted>React</Highlighted> and{" "}
+					<Highlighted>TypeScript</Highlighted>
 				</Typography>
 			</div>
 		</FullWidth>
