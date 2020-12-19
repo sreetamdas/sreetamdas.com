@@ -1,10 +1,13 @@
+[build]
+  command   = "npm run build"
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"	
+
 [[headers]]
   for = "/foobar"
   [headers.values]
     x-foobar = "/foobar/headers"
-
-[[plugins]]
-  package = "@netlify/plugin-nextjs"	
 
 [dev]
   functions = "out_functions"

@@ -27,6 +27,7 @@
 		"styled-components": "^5.2.1"
 	},
 	"devDependencies": {
+		"@netlify/plugin-nextjs": "^1.0.2",
 		"@svgr/webpack": "^5.5.0",
 		"@types/eslint": "^7.2.6",
 		"@types/node": "^14.14.10",
