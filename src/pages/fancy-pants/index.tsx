@@ -1,7 +1,12 @@
 import React, { useContext, useEffect } from "react";
 import { ThemeContext } from "styled-components";
 
-import { Highlighted, Typography } from "components/FancyPants";
+import {
+	Highlighted,
+	NavigationContainer,
+	Typography,
+	NavLink,
+} from "components/FancyPants";
 import { FullWidth } from "styles/layouts";
 import { random, useInterval, useTimeout } from "utils/hooks";
 
@@ -41,6 +46,10 @@ const FancyPants = () => {
 	return (
 		<FullWidth>
 			<div style={{ padding: "0 25px" }}>
+				<NavigationContainer>
+					<NavLink href="/">Home</NavLink>
+					{/* <NavLink href="/">Home</NavLink> */}
+				</NavigationContainer>
 				<Typography>
 					<Highlighted>Sreetam Das</Highlighted>
 					<br />
@@ -56,7 +65,9 @@ const FancyPants = () => {
 							@Remote
 						</a>{" "}
 					</Highlighted>
-					who loves <Highlighted>React</Highlighted> and{" "}
+					who loves
+					<br />
+					<Highlighted>React</Highlighted> and{" "}
 					<Highlighted>TypeScript</Highlighted>
 				</Typography>
 			</div>

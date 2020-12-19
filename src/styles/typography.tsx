@@ -117,15 +117,6 @@ export const StyledLink = styled.a`
 	}
 `;
 
-export const StyledAccentTextLink = styled(StyledLink)`
-	&:visited {
-		text-decoration: none;
-	}
-	&:hover {
-		text-decoration: underline;
-	}
-`;
-
 export const LinkTo = ({
 	children,
 	href,
