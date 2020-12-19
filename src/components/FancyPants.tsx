@@ -3,24 +3,27 @@ import styled, { css } from "styled-components";
 export const Typography = styled.h2`
 	font-size: 4rem;
 	color: var(--color-primary);
-	line-height: 0.9;
+	line-height: 0.98;
+	font-family: Inter, Roboto;
+`;
+
+const RGBWaveMixin = css`
+	color: var(--color-fancy-pants);
+	transition-property: border, color;
+	transition-duration: 5s;
+	transition-timing-function: linear;
 `;
 
 export const Highlighted = styled.span<{ link?: boolean }>`
 	font-size: clamp(4rem, 15vw, 8rem);
-	color: var(--color-fancy-pants);
-	letter-spacing: -0.3rem;
-	transition-property: border, color;
-	transition-duration: 10s;
-	transition-timing-function: linear;
+	letter-spacing: -0.5rem;
+	${RGBWaveMixin}
 
-	:hover {
-		text-decoration: none;
-	}
-
-	/* ${({ link }) =>
+	${({ link }) =>
 		link &&
 		css`
-			border-bottom: 0.4rem solid var(--color-fancy-pants);
-		`} */
+			& a {
+				${RGBWaveMixin}
+			}
+		`}
 `;

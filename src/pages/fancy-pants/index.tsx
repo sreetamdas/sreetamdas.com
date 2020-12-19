@@ -26,7 +26,7 @@ const FancyPants = () => {
 
 	useInterval(() => {
 		changeColor();
-	}, 10000);
+	}, 5000);
 
 	// HACK: begin the color transition, adding it in useMount doesn't set off the CSS transition
 	useTimeout(() => {
@@ -47,13 +47,15 @@ const FancyPants = () => {
 					is a <Highlighted>Frontend Engineer</Highlighted>
 					<br />
 					working{" "}
-					<a
-						href="https://remote.com"
-						target="_blank"
-						rel="noreferrer"
-					>
-						<Highlighted link>@Remote</Highlighted>
-					</a>{" "}
+					<Highlighted link>
+						<a
+							href="https://remote.com"
+							target="_blank"
+							rel="noreferrer"
+						>
+							@Remote
+						</a>{" "}
+					</Highlighted>
 					who loves <Highlighted>React</Highlighted> and{" "}
 					<Highlighted>TypeScript</Highlighted>
 				</Typography>
