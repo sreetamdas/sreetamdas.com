@@ -57,18 +57,10 @@ export default class MyDocument extends Document {
 						rel="stylesheet"
 					/>
 					{process.env.NODE_ENV === "production" && (
-						<>
-							<script
-								async
-								src="https://unpkg.com/thesemetrics@latest"
-							></script>
-							<script
-								async
-								defer
-								data-domain="sreetamdas.com"
-								src="https://plausible.io/js/plausible.js"
-							></script>
-						</>
+						<script
+							async
+							src="https://unpkg.com/thesemetrics@latest"
+						></script>
 					)}
 				</Head>
 				<body>
