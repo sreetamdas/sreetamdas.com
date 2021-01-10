@@ -9,7 +9,12 @@ export const DarkMode = () => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
-	return <DarkModeWrapper>Lorem Ipsum</DarkModeWrapper>;
+	return (
+		<DarkModeWrapper>
+			Lorem Ipsum
+			<LightOverlay>some more text</LightOverlay>
+		</DarkModeWrapper>
+	);
 };
 
 export default DarkMode;
@@ -17,4 +22,10 @@ export default DarkMode;
 const DarkModeWrapper = styled.div`
 	background-color: black;
 	color: black;
+`;
+
+const LightOverlay = styled.div`
+	background-image: url("/flashlight.png");
+	background-repeat: no-repeat;
+	background-image: 500px 500px;
 `;
