@@ -17,6 +17,7 @@
 		"@next/mdx": "^10.0.3",
 		"framer-motion": "^2.9.1",
 		"localforage": "^1.9.0",
+		"mdx-embed": "^0.0.17",
 		"next": "^10.0.0",
 		"prism-react-renderer": "^1.1.1",
 		"react": "^17.0.1",
