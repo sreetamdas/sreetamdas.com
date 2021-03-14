@@ -25,7 +25,7 @@ const Index = () => {
 			<Center>
 				<Title size={2.5}>
 					Hey, I&apos;m Sreetam Das!{" "}
-					<span role="img" aria-label="wave emoji">
+					<span role="img" aria-label="wave">
 						👋
 					</span>
 				</Title>
@@ -50,7 +50,7 @@ const Index = () => {
 			</MDXText>
 			<Paragraph>
 				I also{" "}
-				<span role="img" aria-label="heart emoji">
+				<span role="img" aria-label="heart">
 					❤️
 				</span>{" "}
 				a lot of other things, in no particular order:
