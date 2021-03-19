@@ -36,13 +36,9 @@ export const GreenScreen = () => {
 			.getUserMedia(constraints)
 			.then((mediaStream) => {
 				video.srcObject = mediaStream;
-				video.onloadedmetadata = () => {
+				video.onloadeddata = () => {
 					video.play();
-
-					// Add an event listener in order to set up canvas to stream the video
-					video?.addEventListener("loadeddata", () => {
-						rapidRefresh(video, canvas);
-					});
+					rapidRefresh(video, canvas);
 				};
 			})
 			.catch((error) => {
