@@ -3,6 +3,7 @@ import { ThemeContext } from "styled-components";
 
 import { GreenScreen } from "components/talks/greenscreen";
 import { FullWidth } from "styles/layouts";
+import { Title } from "styles/typography";
 import { random, useInterval, useTimeout } from "utils/hooks";
 
 const Page = () => {
@@ -41,6 +42,15 @@ const Page = () => {
 	return (
 		<FullWidth>
 			<div style={{ padding: "0 25px" }}>
+				<Title
+					style={{
+						justifySelf: "end",
+						gridColumn: "1 / -1",
+						paddingBottom: "50px",
+					}}
+				>
+					Green Screen using React and HTML Elements
+				</Title>
 				<GreenScreen />
 			</div>
 		</FullWidth>

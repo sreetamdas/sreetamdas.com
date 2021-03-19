@@ -31,16 +31,7 @@ export const GreenScreen = () => {
 				rapidRefresh(video, canvas);
 			}, 0); // rapidly refresh ⚡
 		};
-		// if (canvas !== null && canvas.getContext) {
 
-		// canvasContext.fillStyle = "green";
-
-		/* 
-			0, 0, width and height?
-			*/
-		// canvasContext.fillRect(0, 0, 470, 350);
-		// }
-		// if (video !== null) {
 		navigator.mediaDevices
 			.getUserMedia(constraints)
 			.then((mediaStream) => {
@@ -52,14 +43,12 @@ export const GreenScreen = () => {
 					video?.addEventListener("loadeddata", () => {
 						rapidRefresh(video, canvas);
 					});
-					// canvasContext?.drawImage(video, 0, 0); // only a single snapshot
 				};
 			})
 			.catch((error) => {
 				// eslint-disable-next-line no-console
 				console.error({ error });
 			});
-		// }
 	}, []);
 
 	const processImage = (
@@ -80,11 +69,10 @@ export const GreenScreen = () => {
 		0: pixel's Red value
 		1: pixel's Green value
 		2: pixel's Blue value
-		3: Another 8-bit value
+		3: the alpha value
 		*/
 
 		const numberOfPixels = snapshot.data.length / 4;
-		// 172800 // 640 * 480
 
 		// Now the processing
 		for (let i = 0; i < numberOfPixels; i++) {
@@ -93,11 +81,11 @@ export const GreenScreen = () => {
 			const blue = snapshot.data[i * 4 + 2];
 			// const alpha = snapshot.data[i * 4 + 3];
 
-			const colorToRemove = blue;
-			// if green has higher concentration // and isnt dark
+			const colorToRemove = green;
+			// higher concentration and isnt dark
 			if (
-				colorToRemove > green &&
 				colorToRemove > red &&
+				colorToRemove > blue &&
 				colorToRemove > 100
 			) {
 				snapshot.data[i * 4 + 3] = 0;
@@ -108,31 +96,38 @@ export const GreenScreen = () => {
 	};
 
 	return (
-		<React.Fragment>
-			<div style={{ border: "1px red solid" }}>
+		<div
+			style={{
+				display: "grid",
+				gridTemplateColumns: "1fr 1fr",
+				gridAutoFlow: "column",
+				gridGap: "1rem",
+			}}
+		>
+			<div style={{ border: "5px solid #624de3", width: "max-content" }}>
 				video
+				<br />
 				<video
 					ref={videoRef}
 					style={{
-						border: "4px purple solid",
 						transform: "scaleX(-1)",
-						width: "auto",
+						width: "640px",
 						height: "480px",
 					}}
 				></video>
+			</div>
+			<div style={{ border: "5px solid #624de3", width: "max-content" }}>
 				canvas
+				<br />
 				<canvas
 					ref={canvasRef}
 					width="640"
 					height="480"
 					style={{
-						border: "4px green solid",
 						transform: "scaleX(-1)",
-						width: "auto",
-						height: "480px",
 					}}
 				></canvas>
 			</div>
-		</React.Fragment>
+		</div>
 	);
 };
