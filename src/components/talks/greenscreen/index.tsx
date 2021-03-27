@@ -15,7 +15,7 @@ export const GreenScreen = () => {
 		const canvas = canvasRef.current?.getContext(
 			"2d"
 		) as CanvasRenderingContext2D;
-		const video = videoRef.current as HTMLVideoElement;
+		const video = videoRef.current!;
 		const constraints: MediaStreamConstraints = {
 			audio: false,
 			video: { width: 640, height: 480 },
