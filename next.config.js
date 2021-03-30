@@ -16,9 +16,6 @@ module.exports = withMDX({
 	webpack(config) {
 		config.module.rules.push({
 			test: /\.svg$/,
-			issuer: {
-				test: /\.(js|ts)x?$/,
-			},
 			use: [
 				{
 					loader: "@svgr/webpack",
@@ -31,6 +28,9 @@ module.exports = withMDX({
 		});
 
 		return config;
+	},
+	future: {
+		webpack5: true,
 	},
 	async headers() {
 		return [
