@@ -1,9 +1,7 @@
-import { motion } from "framer-motion";
 import {
 	PropsWithChildren,
 	HTMLAttributes,
 	Key,
-	Fragment,
 	useCallback,
 	useEffect,
 	useRef,
@@ -202,128 +200,6 @@ const ChildWrapper = styled.div`
 `;
 
 export { Sparkles };
-
-const drifting = keyframes`
-	{
-  	0% {
-    transform: translate(0,0);
-  }
-  	100% {
-    transform: translate(10px, 10px) 
-  	}
-}
-`;
-
-const FullscreenWrapper = styled.span`
-	position: absolute;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100vh;
-	overflow: hidden;
-	z-index: 1;
-`;
-
-const DriftingSparkleWrapper = styled(motion.span)`
-	position: absolute;
-	display: block;
-	/* @media (prefers-reduced-motion: no-preference) {
-		animation: ${drifting} 4000ms linear;
-	} */
-`;
-const DriftingSparkleSvg = styled(motion.svg)`
-	display: block;
-	/* @media (prefers-reduced-motion: no-preference) {
-		animation: ${comeInOut} 4000ms linear;
-	} */
-`;
-
-const DriftingSparkle = ({
-	size,
-	color,
-	style,
-}: Pick<TSparkle, "size" | "color" | "style">) => {
-	const path =
-		"M26.5 25.5C19.0043 33.3697 0 34 0 34C0 34 19.1013 35.3684 26.5 43.5C33.234 50.901 34 68 34 68C34 68 36.9884 50.7065 44.5 43.5C51.6431 36.647 68 34 68 34C68 34 51.6947 32.0939 44.5 25.5C36.5605 18.2235 34 0 34 0C34 0 33.6591 17.9837 26.5 25.5Z";
-	return (
-		<DriftingSparkleWrapper
-			style={style}
-			animate={{
-				x: ["-50%", "100%"],
-				y: ["-50%", "100%"],
-			}}
-			transition={{
-				duration: 4,
-				type: "tween",
-				// times: [0, 0.5, 1],
-				loop: Infinity,
-			}}
-		>
-			<DriftingSparkleSvg
-				// viewBox="0 0 68 68"
-				fill={color}
-				animate={{
-					scale: [0, 1, 0],
-					// rotate: [0, 180],
-					// translate: ["-100 -100", "0 0", "100 100"]
-					// borderRadius: ["20%", "20%", "50%", "50%", "20%"]
-				}}
-				transition={{
-					duration: 4,
-					type: "tween",
-					// ease: "linear",
-					// times: [0, 0.5, 1],
-					loop: Infinity,
-				}}
-			>
-				<path width={size} height={size} d={path} fill={color} />
-			</DriftingSparkleSvg>
-		</DriftingSparkleWrapper>
-	);
-};
-
-export const DriftingSparklesContainer = ({
-	color = DEFAULT_COLOR,
-	children,
-	visible,
-	...props
-}: PropsWithChildren<HTMLAttributes<HTMLElement> & { visible?: boolean }>) => {
-	const [sparkles, setSparkles] = useState(() => {
-		return range(10).map(() => generateSparkle(color));
-	});
-	const prefersReducedMotion = usePrefersReducedMotion();
-	useRandomInterval(
-		() => {
-			const sparkle = generateSparkle(color);
-			const now = Date.now();
-			const nextSparkles = sparkles.filter((sp) => {
-				const delta = now - sp.createdAt;
-				return delta <= 2000;
-			});
-			nextSparkles.push(sparkle);
-			setSparkles(nextSparkles);
-		},
-		prefersReducedMotion ? null : 0,
-		prefersReducedMotion ? null : 100
-	);
-	return (
-		<Fragment>
-			{visible ? (
-				<FullscreenWrapper {...props}>
-					{sparkles.map((sparkle) => (
-						<DriftingSparkle
-							key={sparkle.id}
-							color={sparkle.color}
-							size={sparkle.size}
-							style={sparkle.style}
-						/>
-					))}
-				</FullscreenWrapper>
-			) : null}
-			<ChildWrapper>{children}</ChildWrapper>
-		</Fragment>
-	);
-};
 
 export const buttonStylesMixin = css`
 	margin: 0;
