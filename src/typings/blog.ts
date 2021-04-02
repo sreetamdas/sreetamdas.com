@@ -1,4 +1,4 @@
-declare type TBlogPost = {
+export type TBlogPost = {
 	title: string;
 	summary: string;
 	image?: string;

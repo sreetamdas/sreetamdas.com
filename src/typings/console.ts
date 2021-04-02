@@ -1,4 +1,4 @@
-declare const TFOOBAR_PAGES = {
+export const FOOBAR_PAGES = {
 	sourceCode: "source-code",
 	headers: "headers",
 	DNS_TXT: "dns-txt",
@@ -11,22 +11,24 @@ declare const TFOOBAR_PAGES = {
 	hack: "hack",
 	notFound: "error404",
 	dogs: "dogs",
+	localforage: "localforage",
 } as const;
 
-declare type TFoobarPages = typeof TFOOBAR_PAGES[keyof typeof TFOOBAR_PAGES];
+export type TFoobarPages = typeof FOOBAR_PAGES[keyof typeof FOOBAR_PAGES];
 
-declare type TFoobarData = {
+export type TFoobarData = {
 	visitedPages: Array<string>;
 	konami?: boolean;
 	unlocked: boolean;
 	completed: Array<TFoobarPages>;
 };
 
-declare type TFoobarContext = TFoobarData & {
+export type TFoobarContext = TFoobarData & {
 	dataLoaded: boolean;
 	updateFoobarDataPartially: (data: Partial<TFoobarData>) => void;
 };
 
-declare type TFoobarSchrodingerProps = {
+export type TFoobarSchrodingerProps = {
 	completedPage?: TFoobarPages;
+	unlocked?: boolean;
 };
