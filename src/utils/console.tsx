@@ -1,9 +1,14 @@
 import localforage from "localforage";
 
-import { FOOBAR_PAGES } from "components/foobar/badges";
+import {
+	TFoobarData,
+	TFoobarContext,
+	TFoobarPages,
+	FOOBAR_PAGES,
+} from "typings/console";
 
 export const doAsyncThings = async () => {
-	await localforage.setItem("Hello", "there!");
+	await localforage.setItem("foobar", "/foobar/localforage");
 };
 
 export const getDataFromLocalForage = async <T extends unknown>(
@@ -86,10 +91,9 @@ export const mergeLocalDataIntoStateOnMount = (
 		localforageCopy = { ...localforageData };
 	for (const key in localforageData) {
 		if (key === "unlocked" || key === "konami") {
-			// @ts-expect-error
 			result[key] = localforageCopy[key]
-				? localforageCopy[key]
-				: result[key];
+				? localforageCopy[key]!
+				: result[key]!;
 		} else if (key === "completed" || key === "visitedPages") {
 			result[key] = [
 				...new Set([...result[key], ...localforageCopy[key]]),

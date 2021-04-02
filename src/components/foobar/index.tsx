@@ -8,10 +8,9 @@ import React, {
 	Fragment,
 } from "react";
 
-import { Footer } from "components/Footer";
-import { FOOBAR_PAGES } from "components/foobar/badges";
 import { Space, Center, WrapperForFooter } from "styles/layouts";
 import { LinkTo } from "styles/typography";
+import { TFoobarData, TFoobarContext, FOOBAR_PAGES } from "typings/console";
 import {
 	doAsyncThings,
 	loadLocalDataOnMount,
@@ -126,7 +125,6 @@ const FoobarWrapper = ({ children }: PropsWithChildren<{}>): JSX.Element => {
 				{children}
 				<Space />
 				<Center>
-					<Footer />
 					<Space size={10} />
 					{foobarData.unlocked && (
 						<Fragment>

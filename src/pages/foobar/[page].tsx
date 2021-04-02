@@ -1,8 +1,8 @@
 import { useRouter } from "next/router";
 
-import { FOOBAR_PAGES } from "components/foobar/badges";
 import { FoobarSchrodinger } from "components/foobar/pages";
 import Custom404 from "pages/404";
+import { FOOBAR_PAGES, TFoobarPages } from "typings/console";
 
 type TRouterFoobarQuery = {
 	query: {
