@@ -11,6 +11,7 @@ import { StyledPre, Button } from "styles/blog";
 import { Space, Center } from "styles/layouts";
 import { SupportSreetamDas } from "styles/special";
 import { Paragraph, StyledLink, Title } from "styles/typography";
+import { TFoobarSchrodingerProps, TFoobarPages } from "typings/console";
 import { dog } from "utils/console";
 
 const XMarksTheSpot = (_props: { foobar: string }) => <div />;
@@ -33,7 +34,10 @@ const UnlockedBanner = ({ completedPage }: TFoobarSchrodingerProps) =>
 		</Fragment>
 	) : null;
 
-export const Foobar = ({ completedPage }: TFoobarSchrodingerProps) => {
+export const Foobar = ({
+	completedPage,
+	unlocked,
+}: TFoobarSchrodingerProps) => {
 	const router = useRouter();
 	const foobarContextObj = useContext(FoobarContext);
 	const { updateFoobarDataPartially, ...foobarObject } = foobarContextObj;
@@ -83,13 +87,16 @@ export const Foobar = ({ completedPage }: TFoobarSchrodingerProps) => {
 	const toggleTerminal = () => {
 		setTerminalVisible((prev) => !prev);
 	};
+
+	if (!unlocked) return <FoobarButLocked />;
+
 	return (
 		<Fragment>
 			<Head>
 				<title>Foobar &mdash; Sreetam Das</title>
 			</Head>
 			<Space size={50} />
-			<Title>Hello Beautiful Nerd!</Title>
+			{/* <Title>Hello Beautiful Nerd!</Title> */}
 			<UnlockedBanner {...{ completedPage }} />
 			<Paragraph>
 				Here is where you can track all of your completed challenges on
@@ -161,14 +168,12 @@ export const FoobarButLocked = () => (
 export const FoobarSchrodinger = ({
 	completedPage,
 }: TFoobarSchrodingerProps) => {
-	const foobarObject = useContext(FoobarContext);
 	const {
 		unlocked,
 		dataLoaded,
 		updateFoobarDataPartially,
 		completed,
-	} = foobarObject;
-	const [foobarUnlocked, setFoobarUnlocked] = useState(unlocked);
+	} = useContext(FoobarContext);
 
 	useEffect(() => {
 		if (completedPage && !completed?.includes(completedPage)) {
@@ -179,19 +184,10 @@ export const FoobarSchrodinger = ({
 			});
 		}
 	}, [completed, completedPage, updateFoobarDataPartially]);
-	useEffect(() => {
-		setFoobarUnlocked(unlocked);
-	}, [unlocked]);
 
 	return (
 		<Fragment>
-			{dataLoaded ? (
-				foobarUnlocked ? (
-					<Foobar {...{ completedPage }} />
-				) : (
-					<FoobarButLocked />
-				)
-			) : null}
+			{dataLoaded ? <Foobar {...{ completedPage, unlocked }} /> : null}
 		</Fragment>
 	);
 };

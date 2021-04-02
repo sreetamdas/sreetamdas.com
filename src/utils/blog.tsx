@@ -1,6 +1,8 @@
 import fs from "fs";
 import path from "path";
 
+import { TBlogPost } from "typings/blog";
+
 export const getBlogPreviewImageURL = ({ slug }: { slug: TBlogPost["slug"] }) =>
 	`${process.env.SITE_URL}/blog/previews/${slug}.png`;
 

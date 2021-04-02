@@ -15,6 +15,7 @@ import {
 	EndLinks,
 } from "styles/blog";
 import { BlogPostTitle, TextGradient, Datestamp } from "styles/typography";
+import { TBlogPost } from "typings/blog";
 import { getBlogPostsData } from "utils/blog";
 
 const Post = ({ post, mdxString }: { post: TBlogPost; mdxString: string }) => {

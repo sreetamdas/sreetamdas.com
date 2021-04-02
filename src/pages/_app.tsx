@@ -4,6 +4,7 @@ import Head from "next/head";
 import React, { useState, Fragment } from "react";
 import { createGlobalStyle, ThemeProvider } from "styled-components";
 
+import { Footer } from "components/Footer";
 import { Navbar } from "components/Navbar";
 import { FoobarWrapper } from "components/foobar";
 import { Layout } from "styles/layouts";
@@ -15,6 +16,7 @@ import {
 	MDXImageWithWrapper,
 	MDXLinkWrapper,
 } from "utils/mdx";
+import { BASE_FONT_SIZE } from "utils/style";
 
 const MDXComponents = {
 	p: Paragraph,
@@ -72,7 +74,7 @@ const GlobalStyles = createGlobalStyle`
 
 	html,
 	body {
-		font-size: 18px;
+		font-size: ${BASE_FONT_SIZE}px;
 		font-family: -apple-system, BlinkMacSystemFont, Inter, Roboto, Segoe UI,
 			Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue,
 			sans-serif;
@@ -164,6 +166,7 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
 						<Layout>
 							<Navbar {...{ currentTheme: themeObject.theme }} />
 							<Component {...pageProps} />
+							<Footer />
 						</Layout>
 					</FoobarWrapper>
 				</MDXProvider>

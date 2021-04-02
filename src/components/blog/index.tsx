@@ -9,6 +9,7 @@ import {
 	ReadMorePrompt,
 } from "styles/blog";
 import { BlogPostPreviewTitle, Datestamp, SmallText } from "styles/typography";
+import { TBlogPost } from "typings/blog";
 import { useHover } from "utils/hooks";
 
 export const ShareLinks = (post: TBlogPost) => {

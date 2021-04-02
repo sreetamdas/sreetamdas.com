@@ -44,16 +44,14 @@ const NavLink = styled(LinkTo)`
 	border: none !important;
 `;
 
-const Navbar = ({
+export const Navbar = ({
 	currentTheme,
 }: {
 	currentTheme: TGlobalThemeObject["theme"];
 }) => {
 	const [darkTheme, setDarkTheme] = useState<boolean | undefined>(undefined);
 	const [isNavbarShown, setIsNavbarShown] = useState(true);
-	const { updateFoobarDataPartially, ...foobar } = useContext(
-		FoobarContext
-	) as TFoobarContext;
+	const { updateFoobarDataPartially, ...foobar } = useContext(FoobarContext);
 	const { pathname } = useRouter();
 
 	useEffect(() => {
@@ -165,8 +163,6 @@ const Navbar = ({
 		</Fragment>
 	) : null;
 };
-
-export { Navbar };
 
 type TExternalLinksArray = Array<{
 	link: string;

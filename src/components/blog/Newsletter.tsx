@@ -18,7 +18,10 @@ export const Newsletter = () => {
 		const data = new FormData(event.target as HTMLFormElement);
 		const res = await fetch(
 			"https://buttondown.email/api/emails/embed-subscribe/sreetamdas",
-			{ body: data, method: "POST" }
+			{
+				body: data,
+				method: "POST",
+			}
 		);
 		if (!res.ok) setFormError(await res.text());
 		else setFormSuccess(true);
