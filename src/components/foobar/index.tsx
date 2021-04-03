@@ -24,12 +24,20 @@ export const initialFoobarData: TFoobarData = {
 	visitedPages: [],
 	unlocked: false,
 	completed: [],
+	allAchievements: false,
 };
 
 // we're gonna hydrate this just below, and <FoobarWrapper /> wraps the entire usable DOM anyway
 export const FoobarContext = createContext<TFoobarContext>(
 	{} as TFoobarContext
 );
+
+const checkIfAllAchievementsAreDone = ({ completed }: TFoobarData) => {
+	const allPages = Object.values(FOOBAR_PAGES);
+	if (completed.length !== allPages.length) return false;
+
+	return allPages.every((page) => completed.includes(page));
+};
 
 const FoobarWrapper = ({ children }: PropsWithChildren<{}>): JSX.Element => {
 	const router = useRouter();
@@ -82,6 +90,7 @@ const FoobarWrapper = ({ children }: PropsWithChildren<{}>): JSX.Element => {
 		doAsyncThings();
 		logConsoleMessages();
 	}, [updateFoobarDataPartially]);
+
 	useEffect(() => {
 		dataLoaded && updateLocalData(foobarData);
 		// @ts-expect-error
@@ -104,6 +113,8 @@ const FoobarWrapper = ({ children }: PropsWithChildren<{}>): JSX.Element => {
 				visitedPages: [...foobarData.visitedPages, pageName],
 			});
 		}
+
+		// for the `navigator` achievement
 		if (
 			foobarData.visitedPages.length >= 5 &&
 			!foobarData.completed.includes(FOOBAR_PAGES.navigator)
@@ -118,6 +129,15 @@ const FoobarWrapper = ({ children }: PropsWithChildren<{}>): JSX.Element => {
 		router,
 		updateFoobarDataPartially,
 	]);
+
+	useEffect(() => {
+		// for the `completed` achievement
+		if (checkIfAllAchievementsAreDone(foobarData)) {
+			updateFoobarDataPartially({
+				allAchievements: true,
+			});
+		}
+	}, [foobarData, updateFoobarDataPartially]);
 
 	return (
 		<FoobarContext.Provider value={getFoobarContextValue}>

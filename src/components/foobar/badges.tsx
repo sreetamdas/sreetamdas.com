@@ -4,6 +4,7 @@ import { BsEgg } from "react-icons/bs";
 import {
 	FaCode,
 	FaCompass,
+	FaDatabase,
 	FaDog,
 	FaGamepad,
 	FaHeading,
@@ -17,64 +18,63 @@ import { VscDebug, VscTelescope } from "react-icons/vsc";
 import styled, { css } from "styled-components";
 
 import { FoobarContext } from "components/foobar";
+import { TFoobarData, TFoobarPage } from "typings/console";
+import { breakpoint } from "utils/style";
+
+const FoobarBadge = ({ badge }: { badge: TFoobarBadge }) => {
+	const { icon: Icon } = FOOBAR_BADGES[badge];
+	return <Icon aria-label={badge} />;
+};
+
+type TBadgeProps = {
+	badge: TFoobarBadge;
+} & Pick<TFoobarData, "completed" | "allAchievements">;
+const Badge = ({ badge, completed, allAchievements }: TBadgeProps) => {
+	const badgeUnlocked =
+		badge === "completed" ? allAchievements : completed.includes(badge);
+
+	return (
+		<BadgeBlock $unlocked={badgeUnlocked}>
+			<FoobarBadge badge={badge} />
+			<FoobarBadgeText>
+				{FOOBAR_BADGES[badge].description}
+			</FoobarBadgeText>
+		</BadgeBlock>
+	);
+};
+
+const renderBadges = (
+	allBadges: Array<TFoobarBadge>,
+	completed: Array<TFoobarPage>,
+	allAchievements: boolean
+) => {
+	return allBadges.map((badge) => (
+		<Badge key={badge} {...{ badge, completed, allAchievements }} />
+	));
+};
 
 export const ShowCompletedBadges = () => {
-	const foobarContextObj = useContext(FoobarContext);
-	const { completed } = foobarContextObj;
-
-	const allBadges = Object.keys(FOOBAR_BADGES) as Array<TFOOBAR_PAGE_EACH>;
-
-	const FoobarBadge = ({ badge }: { badge: TFOOBAR_PAGE_EACH }) => {
-		const { icon: Icon } = FOOBAR_BADGES[badge];
-
-		return <Icon aria-label={badge} />;
-	};
+	const { completed, allAchievements } = useContext(FoobarContext);
+	const allBadges = Object.keys(FOOBAR_BADGES) as Array<TFoobarBadge>;
 
 	return (
 		<div>
 			Here are your completed challenges:
 			<AllBadgesContainer>
-				{allBadges?.map((badge) => {
-					// @ts-expect-error
-					const badgeUnlocked = completed?.includes(badge);
-					return (
-						<BadgeBlock key={badge} unlocked={badgeUnlocked}>
-							<FoobarBadge badge={badge} />
-							<FoobarBadgeText>
-								{FOOBAR_BADGES[badge].description}
-							</FoobarBadgeText>
-						</BadgeBlock>
-					);
-				})}
+				{renderBadges(allBadges, completed, allAchievements)}
 			</AllBadgesContainer>
 		</div>
 	);
 };
 
-export const FOOBAR_PAGES: typeof TFOOBAR_PAGES = {
-	sourceCode: "source-code",
-	headers: "headers",
-	DNS_TXT: "dns-txt",
-	easterEgg: "easter-egg",
-	index: "/",
-	devtools: "devtools",
-	navigator: "navigator",
-	konami: "konami",
-	offline: "offline",
-	hack: "hack",
-	notFound: "error404",
-	dogs: "dogs",
-};
-
-type TFOOBAR_PAGE_EACH =
-	| typeof TFOOBAR_PAGES[keyof typeof FOOBAR_PAGES]
-	| "completed";
+type TFoobarBadge = TFoobarPage | "completed";
 
 type TFoobarBadgeRecord = {
 	icon: (props: any) => JSX.Element;
 	description: string;
 };
-type TFOOBAR_BADGES = Record<TFOOBAR_PAGE_EACH, TFoobarBadgeRecord>;
+type TFOOBAR_BADGES = Readonly<Record<TFoobarBadge, TFoobarBadgeRecord>>;
+
 export const FOOBAR_BADGES: TFOOBAR_BADGES = {
 	"/": {
 		icon: (props) => <FaRegFlag {...props} />,
@@ -121,44 +121,52 @@ export const FOOBAR_BADGES: TFOOBAR_BADGES = {
 		description: "Visit 5 unique pages",
 	},
 	"easter-egg": { icon: (props) => <BsEgg {...props} />, description: "" },
+	localforage: {
+		icon: (props) => <FaDatabase {...props} />,
+		description: "Check the local storage/indexedDB",
+	},
 	completed: {
 		icon: (props) => <IoIosRocket {...props} />,
 		description: "Complete all the tasks",
 	},
-};
+} as const;
 
 const AllBadgesContainer = styled.div`
 	display: grid;
-	grid-template-columns: 1fr 1fr;
 	grid-gap: 1rem;
 	padding: 50px 0;
+
+	${breakpoint.from.md(css`
+		grid-template-columns: 1fr 1fr;
+	`)}
 `;
 
-const BadgeBlock = styled.div<{ unlocked?: boolean }>`
+const FoobarBadgeText = styled.p`
+	font-size: 16px;
+	margin: 0;
+`;
+
+const BadgeBlock = styled.div<{ $unlocked?: boolean }>`
 	display: grid;
 	grid-template-columns: max-content 1fr;
 	grid-gap: 1rem;
 	padding: 15px;
 	font-size: 50px;
-	border: 3px solid
-		${({ unlocked }) =>
-			unlocked
-				? "var(--color-primary-accent)"
-				: "var(--color-inlineCode-bg)"};
 	border-radius: var(--border-radius);
 	align-items: center;
-	${({ unlocked }) =>
-		unlocked
+
+	${({ $unlocked }) =>
+		$unlocked
 			? css`
+					border: 3px solid var(--color-primary-accent);
 					color: var(--color-primary-accent);
 			  `
 			: css`
+					border: 3px solid var(--color-inlineCode-bg);
 					color: var(--color-inlineCode-bg);
-			  `}
-`;
 
-const FoobarBadgeText = styled.p<{ isHintRevealed?: boolean }>`
-	font-size: 16px;
-	margin: 0;
-	${({ isHintRevealed }) => isHintRevealed && css``}
+					${FoobarBadgeText} {
+						display: none;
+					}
+			  `}
 `;
