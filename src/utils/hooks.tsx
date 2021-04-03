@@ -1,12 +1,9 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, RefObject } from "react";
 
 export const random = (min: number, max: number) =>
 	min + Math.random() * (max - min);
 
-export const useHover: () => [
-	React.RefObject<HTMLDivElement>,
-	boolean
-] = () => {
+export const useHover: () => [RefObject<HTMLDivElement>, boolean] = () => {
 	const [value, setValue] = useState(false);
 	const ref = useRef<HTMLDivElement>(null);
 	const handleMouseOver = () => setValue(true);
@@ -69,4 +66,12 @@ export const useTimeout = (callback: CallbackFn, delay: Delay) => {
 			return () => clearTimeout(id);
 		}
 	}, [delay]);
+};
+
+export const useHasMounted = () => {
+	const [hasMounted, setHasMounted] = useState(false);
+	useEffect(() => {
+		setHasMounted(true);
+	}, []);
+	return hasMounted;
 };

@@ -5,6 +5,7 @@ import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from "next";
 import { FoobarSchrodinger } from "components/foobar/pages";
 import Custom404 from "pages/404";
 import { FOOBAR_PAGES, TFoobarPage } from "typings/console";
+import { useHasMounted } from "utils/hooks";
 
 type TFoobarPageProps = {
 	page: Exclude<TFoobarPage, "/">;
@@ -14,10 +15,11 @@ interface TFoobarPageQuery extends ParsedUrlQuery {
 }
 
 const Index = ({ page }: InferGetStaticPropsType<typeof getStaticProps>) => {
+	const hasMounted = useHasMounted();
 	if (!Object.values(FOOBAR_PAGES).includes(page)) return <Custom404 />;
 
 	// activate offline page only when, well, user is offline
-	if (page === "offline" && navigator.onLine)
+	if (page === "offline" && hasMounted && navigator.onLine)
 		return <Custom404 message="pssst...try going offline" />;
 
 	return <FoobarSchrodinger completedPage={page} />;
