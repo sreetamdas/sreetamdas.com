@@ -3,7 +3,7 @@ import localforage from "localforage";
 import {
 	TFoobarData,
 	TFoobarContext,
-	TFoobarPages,
+	TFoobarPage,
 	FOOBAR_PAGES,
 } from "typings/console";
 
@@ -97,7 +97,7 @@ export const mergeLocalDataIntoStateOnMount = (
 		} else if (key === "completed" || key === "visitedPages") {
 			result[key] = [
 				...new Set([...result[key], ...localforageCopy[key]]),
-			] as Array<TFoobarPages> & Array<string>;
+			] as Array<TFoobarPage> & Array<string>;
 		}
 	}
 	return result;

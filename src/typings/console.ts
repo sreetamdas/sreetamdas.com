@@ -14,13 +14,14 @@ export const FOOBAR_PAGES = {
 	localforage: "localforage",
 } as const;
 
-export type TFoobarPages = typeof FOOBAR_PAGES[keyof typeof FOOBAR_PAGES];
+export type TFoobarPage = typeof FOOBAR_PAGES[keyof typeof FOOBAR_PAGES];
 
 export type TFoobarData = {
 	visitedPages: Array<string>;
 	konami?: boolean;
 	unlocked: boolean;
-	completed: Array<TFoobarPages>;
+	completed: Array<TFoobarPage>;
+	allAchievements: boolean;
 };
 
 export type TFoobarContext = TFoobarData & {
@@ -29,6 +30,6 @@ export type TFoobarContext = TFoobarData & {
 };
 
 export type TFoobarSchrodingerProps = {
-	completedPage?: TFoobarPages;
+	completedPage?: TFoobarPage;
 	unlocked?: boolean;
 };

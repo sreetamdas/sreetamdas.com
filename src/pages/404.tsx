@@ -4,7 +4,7 @@ import React, { Fragment, useContext, useEffect } from "react";
 import { FoobarContext } from "components/foobar";
 import { Center, Space } from "styles/layouts";
 import { ReallyBigTitle, Title, Paragraph, LinkTo } from "styles/typography";
-import { FOOBAR_PAGES, TFoobarPages } from "typings/console";
+import { FOOBAR_PAGES, TFoobarPage } from "typings/console";
 
 export type T404PageMessage = {
 	message?: string;
@@ -13,7 +13,7 @@ const Custom404 = ({ message }: T404PageMessage) => {
 	const { updateFoobarDataPartially, completed } = useContext(FoobarContext);
 
 	useEffect(() => {
-		const updatedPages: Array<TFoobarPages> = [...completed];
+		const updatedPages: Array<TFoobarPage> = [...completed];
 
 		if (!updatedPages.includes(FOOBAR_PAGES.notFound)) {
 			updatedPages.push(FOOBAR_PAGES.notFound);
@@ -24,7 +24,7 @@ const Custom404 = ({ message }: T404PageMessage) => {
 	}, [completed, updateFoobarDataPartially]);
 
 	const handleDogLinkClick = () => {
-		const updatedPages: Array<TFoobarPages> = [...completed];
+		const updatedPages: Array<TFoobarPage> = [...completed];
 		if (!updatedPages.includes(FOOBAR_PAGES.dogs)) {
 			updatedPages.push(FOOBAR_PAGES.dogs);
 			updateFoobarDataPartially({

@@ -1,21 +1,19 @@
-import { useRouter } from "next/router";
+import { ParsedUrlQuery } from "querystring";
+
+import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from "next";
 
 import { FoobarSchrodinger } from "components/foobar/pages";
 import Custom404 from "pages/404";
-import { FOOBAR_PAGES, TFoobarPages } from "typings/console";
+import { FOOBAR_PAGES, TFoobarPage } from "typings/console";
 
-type TRouterFoobarQuery = {
-	query: {
-		page: TFoobarPages;
-	};
+type TFoobarPageProps = {
+	page: Exclude<TFoobarPage, "/">;
 };
+interface TFoobarPageQuery extends ParsedUrlQuery {
+	page: Exclude<TFoobarPage, "/">;
+}
 
-const Index = () => {
-	const router = useRouter();
-	const {
-		query: { page },
-	} = (router as unknown) as TRouterFoobarQuery;
-
+const Index = ({ page }: InferGetStaticPropsType<typeof getStaticProps>) => {
 	if (!Object.values(FOOBAR_PAGES).includes(page)) return <Custom404 />;
 
 	// activate offline page only when, well, user is offline
@@ -25,3 +23,21 @@ const Index = () => {
 	return <FoobarSchrodinger completedPage={page} />;
 };
 export default Index;
+
+export const getStaticProps: GetStaticProps<
+	TFoobarPageProps,
+	TFoobarPageQuery
+> = async ({ params }) => {
+	const { page } = params!;
+	return { props: { page } };
+};
+
+export const getStaticPaths: GetStaticPaths = async () => {
+	const allPages = Object.values(FOOBAR_PAGES);
+	const paths = allPages.map((page) => ({ params: { page } }));
+
+	return {
+		paths,
+		fallback: false,
+	};
+};

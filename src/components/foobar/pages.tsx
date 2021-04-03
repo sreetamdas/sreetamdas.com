@@ -11,7 +11,7 @@ import { StyledPre, Button } from "styles/blog";
 import { Space, Center } from "styles/layouts";
 import { SupportSreetamDas } from "styles/special";
 import { Paragraph, StyledLink, Title } from "styles/typography";
-import { TFoobarSchrodingerProps, TFoobarPages } from "typings/console";
+import { TFoobarSchrodingerProps, TFoobarPage } from "typings/console";
 import { dog } from "utils/console";
 
 const XMarksTheSpot = (_props: { foobar: string }) => <div />;
@@ -66,7 +66,7 @@ export const Foobar = ({
 	};
 
 	const handleUserIsOffline = () => {
-		router.push("foobar/offline");
+		router.push("/foobar/offline");
 	};
 
 	useEffect(() => {
@@ -177,7 +177,7 @@ export const FoobarSchrodinger = ({
 
 	useEffect(() => {
 		if (completedPage && !completed?.includes(completedPage)) {
-			const updatedPages: Array<TFoobarPages> = [...completed];
+			const updatedPages: Array<TFoobarPage> = [...completed];
 			updatedPages.push(completedPage);
 			updateFoobarDataPartially({
 				completed: updatedPages,
