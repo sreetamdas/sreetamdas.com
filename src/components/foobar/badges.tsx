@@ -1,5 +1,5 @@
 /* eslint-disable indent */
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { BsEgg } from "react-icons/bs";
 import {
 	FaCode,
@@ -30,11 +30,16 @@ type TBadgeProps = {
 	badge: TFoobarBadge;
 } & Pick<TFoobarData, "completed" | "allAchievements">;
 const Badge = ({ badge, completed, allAchievements }: TBadgeProps) => {
+	const [clicks, setClicks] = useState(0);
 	const badgeUnlocked =
 		badge === "completed" ? allAchievements : completed.includes(badge);
 
 	return (
-		<BadgeBlock $unlocked={badgeUnlocked}>
+		<BadgeBlock
+			$unlocked={badgeUnlocked}
+			$showHint={clicks >= 5}
+			onClick={() => setClicks(clicks + 1)}
+		>
 			<FoobarBadge badge={badge} />
 			<FoobarBadgeText>
 				{FOOBAR_BADGES[badge].description}
@@ -146,7 +151,7 @@ const FoobarBadgeText = styled.p`
 	margin: 0;
 `;
 
-const BadgeBlock = styled.div<{ $unlocked?: boolean }>`
+const BadgeBlock = styled.div<{ $unlocked?: boolean; $showHint: boolean }>`
 	display: grid;
 	grid-template-columns: max-content 1fr;
 	grid-gap: 1rem;
@@ -155,6 +160,14 @@ const BadgeBlock = styled.div<{ $unlocked?: boolean }>`
 	border-radius: var(--border-radius);
 	align-items: center;
 
+	${({ $unlocked, $showHint }) =>
+		!$unlocked &&
+		!$showHint &&
+		css`
+			${FoobarBadgeText} {
+				display: none;
+			}
+		`}
 	${({ $unlocked }) =>
 		$unlocked
 			? css`
@@ -164,9 +177,5 @@ const BadgeBlock = styled.div<{ $unlocked?: boolean }>`
 			: css`
 					border: 3px solid var(--color-inlineCode-bg);
 					color: var(--color-inlineCode-bg);
-
-					${FoobarBadgeText} {
-						display: none;
-					}
 			  `}
 `;
