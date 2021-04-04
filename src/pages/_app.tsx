@@ -4,7 +4,6 @@ import Head from "next/head";
 import React, { useState, Fragment } from "react";
 import { createGlobalStyle, ThemeProvider } from "styled-components";
 
-import { Footer } from "components/Footer";
 import { Navbar } from "components/Navbar";
 import { FoobarWrapper } from "components/foobar";
 import { Layout } from "styles/layouts";
@@ -163,7 +162,6 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
 						<Layout>
 							<Navbar {...{ currentTheme: themeObject.theme }} />
 							<Component {...pageProps} />
-							<Footer />
 						</Layout>
 					</FoobarWrapper>
 				</MDXProvider>

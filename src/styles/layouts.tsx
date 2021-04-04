@@ -6,8 +6,6 @@ export const BlogPostsPreviewLayout = styled.div`
 `;
 
 export const Layout = styled.div`
-	/* max-width: var(--max-width);
-	width: 100%; */
 	display: grid;
 	grid-template-columns:
 		1fr
