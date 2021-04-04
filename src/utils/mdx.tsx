@@ -43,10 +43,7 @@ const MDXCodeBlock = (props: TMDXProviderCodeblockPassedProps) => {
 			theme={karmaPrismTheme}
 		>
 			{({ className, style, tokens, getLineProps, getTokenProps }) => (
-				<CodePreBlockWithHighlight
-					className={className}
-					style={{ ...style }}
-				>
+				<CodePreBlockWithHighlight className={className} style={{ ...style }}>
 					<CodeBlockLanguageWrapper>
 						{language.toLocaleUpperCase()}
 					</CodeBlockLanguageWrapper>
@@ -57,14 +54,9 @@ const MDXCodeBlock = (props: TMDXProviderCodeblockPassedProps) => {
 						}
 						return (
 							<div {...lineProps} key={i}>
-								<CodeblockLineNumber>
-									{i + 1}
-								</CodeblockLineNumber>
+								<CodeblockLineNumber>{i + 1}</CodeblockLineNumber>
 								{line.map((token, key) => (
-									<span
-										{...getTokenProps({ token, key })}
-										key={key}
-									/>
+									<span {...getTokenProps({ token, key })} key={key} />
 								))}
 							</div>
 						);
@@ -141,12 +133,7 @@ const HandleMDXHeaderElement = (
 			<FiLink aria-label={propsWithoutChildren.id} />
 		</LinkedHeaderIconWrapper>
 	);
-	const ActualHeading = createElement(
-		el,
-		propsWithStyles,
-		LinkIcons,
-		children
-	);
+	const ActualHeading = createElement(el, propsWithStyles, LinkIcons, children);
 
 	return <div ref={hoverRef}>{ActualHeading}</div>;
 };
@@ -202,9 +189,7 @@ const calculateLinesToHighlight = (meta: string) => {
 		return (index: number) => {
 			const lineNumber = index + 1;
 			const inRange = lineNumbers.some(([start, end]) =>
-				end
-					? lineNumber >= start && lineNumber <= end
-					: lineNumber === start
+				end ? lineNumber >= start && lineNumber <= end : lineNumber === start
 			);
 			return inRange;
 		};

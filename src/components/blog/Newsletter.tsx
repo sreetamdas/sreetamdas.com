@@ -32,8 +32,8 @@ export const Newsletter = () => {
 		<Grid>
 			<NewsletterTitle>Sign up for my newsletter</NewsletterTitle>
 			<NewsletterText>
-				I curate links keeping up with the JavaScript, React and
-				Programming community.
+				I curate links keeping up with the JavaScript, React and Programming
+				community.
 				<br />
 				May include Mechanical Keyboards.
 				<br />
@@ -43,17 +43,9 @@ export const Newsletter = () => {
 			<div>
 				<StyledForm onSubmit={handleFormSubmit}>
 					<StyledLabel htmlFor="bd-email">Email</StyledLabel>
-					<StyledInput
-						type="email"
-						name="email"
-						id="bd-email"
-						required
-					/>
+					<StyledInput type="email" name="email" id="bd-email" required />
 					<input type="hidden" value="1" name="embed" />
-					<SubscribeButton
-						value="Subscribe"
-						disabled={isFormBeingSubmitted}
-					/>
+					<SubscribeButton value="Subscribe" disabled={isFormBeingSubmitted} />
 					<FormMessageContainer success={formSuccess}>
 						{formError ? formError : null}
 						{formSuccess ? "Thanks for signing up!" : null}
@@ -116,8 +108,7 @@ const NewsletterTitle = styled.h2`
 
 const FormMessageContainer = styled.p<{ success: boolean }>`
 	color: var(
-		${({ success }) =>
-			success ? "--color-success-accent" : "--color-error"}
+		${({ success }) => (success ? "--color-success-accent" : "--color-error")}
 	);
 	padding: 0;
 	margin: 0;

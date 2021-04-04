@@ -94,10 +94,7 @@ const Terminal = ({ visible = false, toggleTerminal }: TTerminalProps) => {
 	return terminalVisible ? (
 		<TerminalBackdrop onClick={toggleTerminalVisible}>
 			<Center>
-				<TerminalContainer
-					onClick={ignoreClick}
-					onSubmit={handleGoToSubmit}
-				>
+				<TerminalContainer onClick={ignoreClick} onSubmit={handleGoToSubmit}>
 					{/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
 					<label
 						style={{

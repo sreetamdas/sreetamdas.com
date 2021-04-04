@@ -29,13 +29,10 @@ export const getBlogPostsData = () => {
 				image: getBlogPreviewImageURL({ slug }),
 			};
 		})
-		.filter(
-			(meta) => process.env.NODE_ENV === "development" || meta.published
-		)
+		.filter((meta) => process.env.NODE_ENV === "development" || meta.published)
 		.sort((a, b) => {
 			return (
-				new Date(b.publishedAt).getTime() -
-				new Date(a.publishedAt).getTime()
+				new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
 			);
 		});
 

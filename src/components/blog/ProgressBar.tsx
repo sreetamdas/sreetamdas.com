@@ -24,9 +24,7 @@ export const ReadingProgress = () => {
 		const docHeight = getDocHeight();
 
 		const totalDocScrollLength = docHeight - winHeight;
-		const scrollPostion = Math.ceil(
-			(scrollTop / totalDocScrollLength) * 100
-		);
+		const scrollPostion = Math.ceil((scrollTop / totalDocScrollLength) * 100);
 		return scrollPostion;
 	};
 

@@ -83,11 +83,7 @@ export const Navbar = ({
 
 	useEffect(() => {
 		const handleKeyboardDarkModeToggle = (event: KeyboardEvent) => {
-			if (
-				event.key.toLowerCase() === "l" &&
-				event.shiftKey &&
-				event.metaKey
-			) {
+			if (event.key.toLowerCase() === "l" && event.shiftKey && event.metaKey) {
 				event.preventDefault();
 				setDarkTheme(!darkTheme);
 			}
@@ -127,10 +123,7 @@ export const Navbar = ({
 						rel="noopener noreferrer"
 						$styledOnHover
 					>
-						<FaGithub
-							aria-label="Sreetam's GitHub"
-							title="Sreetam's GitHub"
-						/>
+						<FaGithub aria-label="Sreetam's GitHub" title="Sreetam's GitHub" />
 					</IconContainer>
 					<IconContainer
 						href="https://twitter.com/_SreetamDas"

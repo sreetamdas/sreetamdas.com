@@ -57,11 +57,7 @@ const FancyPants = () => {
 					<br />
 					working{" "}
 					<Highlighted link>
-						<a
-							href="https://remote.com"
-							target="_blank"
-							rel="noreferrer"
-						>
+						<a href="https://remote.com" target="_blank" rel="noreferrer">
 							@Remote
 						</a>{" "}
 					</Highlighted>

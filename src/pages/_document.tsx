@@ -42,10 +42,7 @@ export default class MyDocument extends Document {
 					<link rel="shortcut icon" href="/favicon.png" />
 					<meta name="theme-color" content="#9D86E9" />
 					<link rel="apple-touch-icon" href="/logo.png" />
-					<meta
-						name="apple-mobile-web-app-title"
-						content="Sreetam Das' Blog"
-					/>
+					<meta name="apple-mobile-web-app-title" content="Sreetam Das' Blog" />
 					<meta
 						name="apple-mobile-web-app-status-bar-style"
 						content="default"
@@ -57,10 +54,7 @@ export default class MyDocument extends Document {
 						rel="stylesheet"
 					/>
 					{process.env.NODE_ENV === "production" && (
-						<script
-							async
-							src="https://unpkg.com/thesemetrics@latest"
-						></script>
+						<script async src="https://unpkg.com/thesemetrics@latest"></script>
 					)}
 				</Head>
 				<body>
@@ -93,8 +87,7 @@ const blockingSetInitialColorMode = `(function() {
 function setInitialColorMode() {
 	function getInitialColorMode() {
 		const persistedColorPreference = window.localStorage.getItem("theme");
-		const hasPersistedPreference =
-			typeof persistedColorPreference === "string";
+		const hasPersistedPreference = typeof persistedColorPreference === "string";
 		/**
 		 * If the user has explicitly chosen light or dark,
 		 * use it. Otherwise, this value will be null.

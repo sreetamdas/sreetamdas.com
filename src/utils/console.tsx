@@ -91,9 +91,7 @@ export const mergeLocalDataIntoStateOnMount = (
 		localforageCopy = { ...localforageData };
 	for (const key in localforageData) {
 		if (key === "unlocked" || key === "konami") {
-			result[key] = localforageCopy[key]
-				? localforageCopy[key]!
-				: result[key]!;
+			result[key] = localforageCopy[key] ? localforageCopy[key]! : result[key]!;
 		} else if (key === "completed" || key === "visitedPages") {
 			result[key] = [
 				...new Set([...result[key], ...localforageCopy[key]]),

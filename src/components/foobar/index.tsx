@@ -52,10 +52,7 @@ const FoobarWrapper = ({ children }: PropsWithChildren<{}>): JSX.Element => {
 				let final: TFoobarData;
 				const temp = { ...prevState };
 				if (mergeManually)
-					final = mergeLocalDataIntoStateOnMount(
-						temp,
-						data as TFoobarData
-					);
+					final = mergeLocalDataIntoStateOnMount(temp, data as TFoobarData);
 				else final = mergeDeep(temp, data);
 				return final;
 			});
@@ -149,10 +146,7 @@ const FoobarWrapper = ({ children }: PropsWithChildren<{}>): JSX.Element => {
 					{foobarData.unlocked && (
 						<Fragment>
 							<code>
-								<LinkTo
-									href="/foobar"
-									style={{ border: "none" }}
-								>
+								<LinkTo href="/foobar" style={{ border: "none" }}>
 									resume /foobar
 								</LinkTo>
 							</code>

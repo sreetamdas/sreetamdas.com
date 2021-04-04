@@ -44,9 +44,7 @@ const Post = ({ post, mdxString }: { post: TBlogPost; mdxString: string }) => {
 				<meta name="twitter:site" content="@_SreetamDas" />
 				<meta name="twitter:title" content={post.title} />
 				<meta name="twitter:description" content={post.summary} />
-				{post.image && (
-					<meta name="twitter:image" content={post.image} />
-				)}
+				{post.image && <meta name="twitter:image" content={post.image} />}
 			</Head>
 			<ReadingProgress />
 			<div ref={topRef} />

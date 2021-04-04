@@ -79,11 +79,7 @@ export const GreenScreen = () => {
 
 			const colorToRemove = green;
 			// higher concentration and isnt dark
-			if (
-				colorToRemove > red &&
-				colorToRemove > blue &&
-				colorToRemove > 100
-			) {
+			if (colorToRemove > red && colorToRemove > blue && colorToRemove > 100) {
 				snapshot.data[i * 4 + 3] = 0;
 			}
 		}

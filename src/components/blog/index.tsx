@@ -45,8 +45,7 @@ export const BlogPostPreview = ({ post }: { post: TBlogPost }) => {
 				</Datestamp>
 				<SmallText>{post.summary}</SmallText>
 				<ReadMorePrompt {...{ isHovered }}>
-					Read more{" "}
-					{isHovered && <FaArrowRight style={{ fontSize: "12px" }} />}
+					Read more {isHovered && <FaArrowRight style={{ fontSize: "12px" }} />}
 				</ReadMorePrompt>
 			</Card>
 		</Link>

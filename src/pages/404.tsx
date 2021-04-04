@@ -61,9 +61,7 @@ const Custom404 = ({ message }: T404PageMessage) => {
 					<Fragment>
 						<Space />
 						<Paragraph>
-							<i style={{ fontWeight: 100, fontSize: "12px" }}>
-								{message}
-							</i>
+							<i style={{ fontWeight: 100, fontSize: "12px" }}>{message}</i>
 						</Paragraph>
 					</Fragment>
 				) : null}

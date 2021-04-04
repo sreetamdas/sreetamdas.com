@@ -41,9 +41,7 @@ const Badge = ({ badge, completed, allAchievements }: TBadgeProps) => {
 			onClick={() => setClicks(clicks + 1)}
 		>
 			<FoobarBadge badge={badge} />
-			<FoobarBadgeText>
-				{FOOBAR_BADGES[badge].description}
-			</FoobarBadgeText>
+			<FoobarBadgeText>{FOOBAR_BADGES[badge].description}</FoobarBadgeText>
 		</BadgeBlock>
 	);
 };

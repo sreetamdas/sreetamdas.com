@@ -99,8 +99,8 @@ export const Foobar = ({
 			{/* <Title>Hello Beautiful Nerd!</Title> */}
 			<UnlockedBanner {...{ completedPage }} />
 			<Paragraph>
-				Here is where you can track all of your completed challenges on
-				my website.
+				Here is where you can track all of your completed challenges on my
+				website.
 				<br />
 				Feel free to{" "}
 				<StyledLink

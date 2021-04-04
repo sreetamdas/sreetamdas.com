@@ -15,8 +15,7 @@ const Switch = styled.div<{ dark: boolean }>`
 	box-shadow: inset 16px -16px 0 0 #fff;
 	-webkit-transform: scale(1) rotate(-2deg);
 	transform: scale(1) rotate(-2deg);
-	-webkit-transition: box-shadow 0.5s ease 0s,
-		-webkit-transform 0.4s ease 0.1s;
+	-webkit-transition: box-shadow 0.5s ease 0s, -webkit-transform 0.4s ease 0.1s;
 	transition: box-shadow 0.5s ease 0s, -webkit-transform 0.4s ease 0.1s;
 	transition: box-shadow 0.5s ease 0s, transform 0.4s ease 0.1s;
 	transition: box-shadow 0.5s ease 0s, transform 0.4s ease 0.1s,
@@ -59,12 +58,9 @@ const Switch = styled.div<{ dark: boolean }>`
 					transform: scale(0.5) rotate(0deg);
 					-webkit-transition: box-shadow 0.2s ease 0s,
 						-webkit-transform 0.3s ease 0.1s;
-					transition: box-shadow 0.2s ease 0s,
-						-webkit-transform 0.3s ease 0.1s;
-					transition: transform 0.3s ease 0.1s,
-						box-shadow 0.2s ease 0s;
-					transition: transform 0.3s ease 0.1s,
-						box-shadow 0.2s ease 0s,
+					transition: box-shadow 0.2s ease 0s, -webkit-transform 0.3s ease 0.1s;
+					transition: transform 0.3s ease 0.1s, box-shadow 0.2s ease 0s;
+					transition: transform 0.3s ease 0.1s, box-shadow 0.2s ease 0s,
 						-webkit-transform 0.3s ease 0.1s;
 
 					&:before {

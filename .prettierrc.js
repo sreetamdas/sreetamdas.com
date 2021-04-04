@@ -1,7 +1,7 @@
 module.exports = {
 	trailingComma: "es5",
 	useTabs: true,
-	tabWidth: 4,
+	tabWidth: 2,
 	semi: true,
 	singleQuote: false,
 	overrides: [
