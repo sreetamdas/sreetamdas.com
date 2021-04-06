@@ -14,7 +14,6 @@ import { FiSun } from "react-icons/fi";
 import { IoMdMoon } from "react-icons/io";
 import styled from "styled-components";
 
-import RoundedSquare from "assets/roundedSquare.svg";
 import { FoobarContext } from "components/foobar";
 import { IconContainer, NextIconLink } from "styles/blog";
 import { LinkTo } from "styles/typography";
@@ -108,10 +107,7 @@ export const Navbar = ({
 		<Fragment>
 			<NavbarWithLogo>
 				<NextIconLink href="/">
-					<RoundedSquare
-						aria-label="Home &mdash; Sreetam Das"
-						title="Home &mdash; Sreetam Das"
-					/>
+					<img src="/logo.svg" alt="logo" />
 				</NextIconLink>
 				<NavbarWithNavs>
 					<NavLink href="/blog">blog</NavLink>
