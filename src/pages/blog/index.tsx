@@ -3,6 +3,7 @@ import Head from "next/head";
 import React, { Fragment } from "react";
 
 import { BlogPostPreview } from "components/blog";
+import { generateRssFeed } from "components/blog/rss";
 import { BlogPostsPreviewLayout, Center } from "styles/layouts";
 import { Title } from "styles/typography";
 import { TBlogPost } from "typings/blog";
@@ -29,7 +30,7 @@ const Index = ({ postsData }: { postsData: Array<TBlogPost> }) => {
 
 export const getStaticProps: GetStaticProps = async (_context) => {
 	const postsData: Array<TBlogPost> = await getBlogPostsData();
-	// await generateRssFeed();
+	await generateRssFeed();
 
 	return {
 		props: { postsData },
