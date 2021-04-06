@@ -17,7 +17,7 @@ import {
 } from "utils/mdx";
 import { BASE_FONT_SIZE } from "utils/style";
 
-const MDXComponents = {
+export const MDXComponents = {
 	p: Paragraph,
 	h1: MDXHeadingWrapper.h1,
 	h2: MDXHeadingWrapper.h2,
@@ -129,10 +129,14 @@ const GlobalStyles = createGlobalStyle`
 `;
 
 type TThemeObjectInitial = Pick<TGlobalThemeObject, "theme">;
+const initTheme = {
+	theme: undefined,
+};
+
 const MyApp = ({ Component, pageProps }: AppProps) => {
-	const [themeObject, setThemeObject] = useState<TThemeObjectInitial>({
-		theme: undefined,
-	});
+	const [themeObject, setThemeObject] = useState<TThemeObjectInitial>(
+		initTheme
+	);
 	const getCSSVarValue = (variable: string) => {
 		if (typeof window !== "undefined")
 			return getComputedStyle(document.body).getPropertyValue(variable);

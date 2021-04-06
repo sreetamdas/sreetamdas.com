@@ -1,8 +1,7 @@
 import { GetStaticPaths, GetStaticProps } from "next";
 import dynamic from "next/dynamic";
 import Head from "next/head";
-import React, { Fragment, useRef } from "react";
-import { renderToStaticMarkup } from "react-dom/server";
+import { Fragment, useRef } from "react";
 import { FaLongArrowAltUp } from "react-icons/fa";
 
 import { ShareLinks } from "components/blog";
@@ -18,9 +17,9 @@ import { BlogPostTitle, TextGradient, Datestamp } from "styles/typography";
 import { TBlogPost } from "typings/blog";
 import { getBlogPostsData } from "utils/blog";
 
-const Post = ({ post, mdxString }: { post: TBlogPost; mdxString: string }) => {
+const Post = ({ post }: { post: TBlogPost }) => {
 	const MDXPost = dynamic(() => import(`content/blog/${post.slug}.mdx`), {
-		loading: () => <div dangerouslySetInnerHTML={{ __html: mdxString }} />,
+		loading: () => <div dangerouslySetInnerHTML={{ __html: post.content }} />,
 	});
 	const topRef = useRef<HTMLDivElement>(null);
 
@@ -82,7 +81,7 @@ const Post = ({ post, mdxString }: { post: TBlogPost; mdxString: string }) => {
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {
-	const postsData: Array<TBlogPost> = getBlogPostsData();
+	const postsData: Array<TBlogPost> = await getBlogPostsData();
 
 	const paths = postsData.map((post) => ({
 		params: { slug: post.slug },
@@ -93,14 +92,10 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
 	if (!params) return { props: {} };
-	const postsData = getBlogPostsData();
+	const postsData = await getBlogPostsData();
+	const post = postsData.find((postData) => postData.slug === params.slug)!;
 
-	const post = postsData.find((postData) => postData.slug === params.slug);
-	const { default: MDXContent } = await import(
-		`content/blog/${post?.slug}.mdx`
-	);
-	const mdxString = renderToStaticMarkup(<MDXContent />);
-	return { props: { post, mdxString } };
+	return { props: { post } };
 };
 
 export default Post;

@@ -1,18 +1,25 @@
 import fs from "fs";
 import path from "path";
 
+import { MDXProvider } from "@mdx-js/react";
+import { renderToStaticMarkup } from "react-dom/server";
+
+import { MDXComponents } from "pages/_app";
 import { TBlogPost } from "typings/blog";
 
 export const getBlogPreviewImageURL = ({ slug }: { slug: TBlogPost["slug"] }) =>
 	`${process.env.SITE_URL}/blog/previews/${slug}.png`;
 
-export const getBlogPostsData = () => {
+export const getBlogPostsData = async () => {
 	const META = /export\s+const\s+meta\s+=\s+(\{(\n|.)*?\n\})/;
-	const DIR = path.join(process.cwd(), "src", "content/blog");
+	const DIR = path.join(process.cwd(), "src", "content", "blog");
 	const files = fs.readdirSync(DIR).filter((file) => file.endsWith(".mdx"));
+	const entries = await Promise.all(
+		files.map((file) => import(`content/blog/${file}`))
+	);
 
 	const postsData: Array<TBlogPost> = files
-		.map((file) => {
+		.map((file, index) => {
 			const name = path.join(DIR, file);
 			const contents = fs.readFileSync(name, "utf8");
 			const match = META.exec(contents);
@@ -22,11 +29,13 @@ export const getBlogPostsData = () => {
 
 			const meta = eval("(" + match[1] + ")");
 			const slug = file.replace(/\.mdx?$/, "");
+			const MDXContent = entries[index].default;
 
 			return {
 				...meta,
 				slug,
 				image: getBlogPreviewImageURL({ slug }),
+				content: getMdxString(<MDXContent />),
 			};
 		})
 		.filter((meta) => process.env.NODE_ENV === "development" || meta.published)
@@ -60,9 +69,7 @@ export const getAboutMDXPagesData = () => {
 		.filter((file) => file.endsWith(".tsx"))
 		.map((file) => file.replace(/\.tsx?$/, ""));
 
-	const pagesData: Array<{
-		page: string;
-	}> = files
+	const pagesData: Array<{ page: string }> = files
 		.map((file) => {
 			return {
 				page: file.replace(/\.mdx?$/, ""),
@@ -71,4 +78,11 @@ export const getAboutMDXPagesData = () => {
 		.filter(({ page }) => existingAboutPageFiles.indexOf(page) === -1);
 
 	return pagesData;
+};
+
+export const getMdxString = (content: JSX.Element) => {
+	return renderToStaticMarkup(
+		// @ts-expect-error
+		<MDXProvider components={MDXComponents}>{content}</MDXProvider>
+	);
 };

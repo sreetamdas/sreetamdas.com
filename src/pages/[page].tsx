@@ -2,7 +2,6 @@ import { GetStaticPaths, GetStaticProps } from "next";
 import dynamic from "next/dynamic";
 import Head from "next/head";
 import React, { Fragment } from "react";
-import { renderToStaticMarkup } from "react-dom/server";
 
 import { META_TAGS } from "pages/_document";
 import { Center } from "styles/layouts";
@@ -11,7 +10,7 @@ import {
 	PaddingListItems,
 	RemoveBulletsFromOL,
 } from "styles/typography";
-import { getAboutMDXPagesData } from "utils/blog";
+import { getAboutMDXPagesData, getMdxString } from "utils/blog";
 
 const Page = ({ page, mdxString }: { page: string; mdxString: string }) => {
 	const MDXPage = dynamic(() => import(`content/${page}.mdx`), {
@@ -54,7 +53,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 	const postsData = getAboutMDXPagesData();
 	const post = postsData.find((postData) => postData.page === params.page);
 	const { default: MDXContent } = await import(`content/${post?.page}.mdx`);
-	const mdxString = renderToStaticMarkup(<MDXContent />);
+	const mdxString = getMdxString(MDXContent);
 
 	return { props: { page: post?.page, mdxString } };
 };

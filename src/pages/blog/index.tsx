@@ -28,7 +28,8 @@ const Index = ({ postsData }: { postsData: Array<TBlogPost> }) => {
 };
 
 export const getStaticProps: GetStaticProps = async (_context) => {
-	const postsData: Array<TBlogPost> = getBlogPostsData();
+	const postsData: Array<TBlogPost> = await getBlogPostsData();
+	// await generateRssFeed();
 
 	return {
 		props: { postsData },

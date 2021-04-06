@@ -5,4 +5,5 @@ export type TBlogPost = {
 	publishedAt: string;
 	published: boolean;
 	slug: string;
+	content: string;
 };
