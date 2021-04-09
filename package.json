@@ -6,6 +6,7 @@
 		"build": "next build",
 		"start": "next start",
 		"export": "next build && next export",
+		"preview": "yarn export && netlify deploy",
 		"compile": "tsc --watch",
 		"lint": "eslint 'src/{pages,components,typings,styles,utils}/**/*.{js,jsx,ts,tsx}' --cache --fix",
 		"prettier": "prettier --write 'src/{pages,components,typings,styles,utils}/**/*.{js,jsx,ts,tsx}'",

@@ -10,7 +10,6 @@ import {
 	MDXText,
 	Title,
 	Paragraph,
-	LinkTo,
 	StyledLink,
 } from "styles/typography";
 
@@ -57,10 +56,6 @@ const Index = () => {
 				<br />
 				CSGO, Reddit, Mechanical Keyboards, Open Source, GitHub, Factorio,
 				Tactile Switches, Batman and the Internet!
-				<br />
-				{process.env.NODE_ENV === "development" && (
-					<LinkTo href="/fancy-pants">McFancyPants</LinkTo>
-				)}
 			</Paragraph>
 		</Fragment>
 	);
