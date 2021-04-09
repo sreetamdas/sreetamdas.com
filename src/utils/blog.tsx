@@ -48,7 +48,7 @@ export const getBlogPostsData = async () => {
 	return postsData;
 };
 
-export const getAboutMDXPagesData = () => {
+export const getAboutMDXPagesData = async () => {
 	/**
 	 * so Next.js (correctly) prevents us from building a website wherein we're
 	 * trying to dynamically trying to create a page that _already_ exists
@@ -76,8 +76,19 @@ export const getAboutMDXPagesData = () => {
 			};
 		})
 		.filter(({ page }) => existingAboutPageFiles.indexOf(page) === -1);
+	const entries = await Promise.all(
+		pagesData.map(({ page }) => import(`content/${page}.mdx`))
+	);
+	const pagesDataWithContent = pagesData.map((data, index) => {
+		const MDXContent = entries[index].default;
 
-	return pagesData;
+		return {
+			...data,
+			content: getMdxString(<MDXContent />),
+		};
+	});
+
+	return pagesDataWithContent;
 };
 
 export const getMdxString = (content: JSX.Element) => {

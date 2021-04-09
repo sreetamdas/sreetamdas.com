@@ -10,11 +10,12 @@ import {
 	PaddingListItems,
 	RemoveBulletsFromOL,
 } from "styles/typography";
-import { getAboutMDXPagesData, getMdxString } from "utils/blog";
+import { getAboutMDXPagesData } from "utils/blog";
 
-const Page = ({ page, mdxString }: { page: string; mdxString: string }) => {
+const Page = ({ post }: { post: { page: string; content: string } }) => {
+	const { page, content } = post;
 	const MDXPage = dynamic(() => import(`content/${page}.mdx`), {
-		loading: () => <div dangerouslySetInnerHTML={{ __html: mdxString }} />,
+		loading: () => <div dangerouslySetInnerHTML={{ __html: content }} />,
 	});
 
 	return (
@@ -39,7 +40,7 @@ const Page = ({ page, mdxString }: { page: string; mdxString: string }) => {
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {
-	const postsData: Array<{ page: string }> = getAboutMDXPagesData();
+	const postsData: Array<{ page: string }> = await getAboutMDXPagesData();
 	const paths = postsData.map((post) => ({
 		params: { page: post.page },
 	}));
@@ -50,12 +51,10 @@ export const getStaticPaths: GetStaticPaths = async () => {
 export const getStaticProps: GetStaticProps = async ({ params }) => {
 	if (!params) return { props: {} };
 
-	const postsData = getAboutMDXPagesData();
+	const postsData = await getAboutMDXPagesData();
 	const post = postsData.find((postData) => postData.page === params.page);
-	const { default: MDXContent } = await import(`content/${post?.page}.mdx`);
-	const mdxString = getMdxString(MDXContent);
 
-	return { props: { page: post?.page, mdxString } };
+	return { props: { post } };
 };
 
 export default Page;

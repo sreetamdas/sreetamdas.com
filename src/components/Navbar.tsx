@@ -1,5 +1,11 @@
 import { useRouter } from "next/router";
-import React, { useState, useEffect, useContext, Fragment } from "react";
+import React, {
+	useState,
+	useEffect,
+	useContext,
+	Fragment,
+	cloneElement,
+} from "react";
 import {
 	FaGithub,
 	FaTwitter,
@@ -9,6 +15,7 @@ import {
 	FaSteam,
 	FaRedditAlien,
 	FaSpotify,
+	FaDiscord,
 } from "react-icons/fa";
 import { FiSun } from "react-icons/fi";
 import { IoMdMoon } from "react-icons/io";
@@ -200,19 +207,32 @@ export const ExternalLinksOverlay = () => {
 			title: "Sreetam Das' Spotify",
 			icon: <FaSpotify />,
 		},
+		{
+			link: "https://discord.gg/HGZc5G7CeR",
+			title: "Join Sreetam Das' Discord server",
+			icon: <FaDiscord title={"asd"} />,
+		},
 	];
+
+	const IconWithProps = ({
+		icon,
+		title,
+	}: {
+		icon: JSX.Element;
+		title: string;
+	}) => cloneElement(icon, { title });
 
 	return (
 		<NavbarWithNavs>
-			{externalLinks.map((linkObject) => (
+			{externalLinks.map(({ link, title, icon }) => (
 				<IconContainer
-					href={linkObject.link}
-					title={linkObject.title}
-					key={linkObject.title}
+					href={link}
+					title={title}
+					key={title}
 					target="_blank"
 					rel="noopener noreferrer"
 				>
-					{linkObject.icon}
+					<IconWithProps {...{ icon, title }} />
 				</IconContainer>
 			))}
 		</NavbarWithNavs>

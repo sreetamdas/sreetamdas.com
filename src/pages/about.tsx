@@ -1,6 +1,7 @@
 import Head from "next/head";
 import React, { Fragment, useContext } from "react";
 
+import { Newsletter } from "components/blog/Newsletter";
 import { FoobarContext } from "components/foobar";
 import MDXAbout from "content/about.mdx";
 import { META_TAGS } from "pages/_document";
@@ -24,9 +25,12 @@ const About = () => {
 			<Center>
 				<Title size={5}>/about</Title>
 			</Center>
+
 			<RemoveBulletsFromOL>
 				<MDXAbout />
 			</RemoveBulletsFromOL>
+			<Newsletter />
+
 			<Center>
 				<LinkTo
 					href="/foobar"
