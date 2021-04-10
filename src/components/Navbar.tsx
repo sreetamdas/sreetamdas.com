@@ -17,7 +17,7 @@ import {
 	FaSpotify,
 	FaDiscord,
 } from "react-icons/fa";
-import { FiSun } from "react-icons/fi";
+import { FiRss, FiSun } from "react-icons/fi";
 import { IoMdMoon } from "react-icons/io";
 import styled from "styled-components";
 
@@ -138,6 +138,12 @@ export const Navbar = ({
 							aria-label="Sreetam Das' Twitter"
 							title="Sreetam Das' Twitter"
 						/>
+					</IconContainer>
+					<IconContainer
+						href="https://sreetamdas.com/rss/feed.xml"
+						$styledOnHover
+					>
+						<FiRss aria-label="Blog RSS feed" title="Blog RSS feed" />
 					</IconContainer>
 					<IconContainer onClick={handleThemeSwitch} href="#">
 						{darkTheme === undefined ? (
