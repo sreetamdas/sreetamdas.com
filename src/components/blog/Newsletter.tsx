@@ -45,7 +45,7 @@ export const Newsletter = () => {
 					view previous issues
 				</a>
 				, and{" "}
-				<a href="https://buttondown.email/sreetamdas/rss">subscribe via RSS</a>.
+				<a href="https://buttondown.email/sreetamdas/rss">subscribe via RSS</a>!
 			</NewsletterText>
 			<div>
 				<StyledForm onSubmit={handleFormSubmit}>
