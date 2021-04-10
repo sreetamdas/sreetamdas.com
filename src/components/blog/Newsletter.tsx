@@ -32,13 +32,20 @@ export const Newsletter = () => {
 		<Grid>
 			<NewsletterTitle>Sign up for my newsletter</NewsletterTitle>
 			<NewsletterText>
-				I curate links keeping up with the JavaScript, React and Programming
-				community.
+				I curate links keeping up with the JavaScript, React and web
+				development.
 				<br />
 				May include Mechanical Keyboards.
 				<br />
 				<br />
 				No spam, unsubscribe anytime :)
+				<br />
+				You can also{" "}
+				<a href="https://buttondown.email/sreetamdas/archive">
+					view previous issues
+				</a>
+				, and{" "}
+				<a href="https://buttondown.email/sreetamdas/rss">subscribe via RSS</a>.
 			</NewsletterText>
 			<div>
 				<StyledForm onSubmit={handleFormSubmit}>
