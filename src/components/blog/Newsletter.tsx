@@ -32,8 +32,7 @@ export const Newsletter = () => {
 		<Grid>
 			<NewsletterTitle>Sign up for my newsletter</NewsletterTitle>
 			<NewsletterText>
-				I curate links keeping up with the JavaScript, React and web
-				development.
+				I curate links keeping up with the JavaScript, React and webdev world.
 				<br />
 				May include Mechanical Keyboards.
 				<br />
