@@ -3,7 +3,7 @@ import styled, { css } from "styled-components";
 import { LinkTo } from "styles/typography";
 
 export const Typography = styled.h2`
-	font-size: 4rem;
+	font-size: clamp(3rem, 5vw, 5vw);
 	color: var(--color-primary);
 	line-height: 0.98;
 	font-family: Inter, Roboto;
