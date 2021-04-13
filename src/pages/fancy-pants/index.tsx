@@ -1,4 +1,5 @@
-import React, { useContext, useEffect } from "react";
+import Head from "next/head";
+import React, { Fragment, useContext, useEffect } from "react";
 import { ThemeContext } from "styled-components";
 
 import {
@@ -44,30 +45,34 @@ const FancyPants = () => {
 	}, []);
 
 	return (
-		<FullWidth>
-			<div style={{ padding: "0 25px" }}>
-				<NavigationContainer>
-					<NavLink href="/">Home</NavLink>
-					{/* <NavLink href="/">Home</NavLink> */}
-				</NavigationContainer>
-				<Typography>
-					<Highlighted>Sreetam Das</Highlighted>
-					<br />
-					is a <Highlighted>Frontend Engineer</Highlighted>
-					<br />
-					working{" "}
-					<Highlighted link>
-						<a href="https://remote.com" target="_blank" rel="noreferrer">
-							@Remote
-						</a>{" "}
-					</Highlighted>
-					who loves
-					<br />
-					<Highlighted>React</Highlighted> and{" "}
-					<Highlighted>TypeScript</Highlighted>
-				</Typography>
-			</div>
-		</FullWidth>
+		<Fragment>
+			<Head>
+				<title>Fancy Pants — Sreetam Das</title>
+			</Head>
+			<FullWidth>
+				<div style={{ padding: "0 25px" }}>
+					<NavigationContainer>
+						<NavLink href="/">Home</NavLink>
+					</NavigationContainer>
+					<Typography>
+						<Highlighted>Sreetam Das</Highlighted>
+						<br />
+						is a <Highlighted>Frontend Engineer</Highlighted>
+						<br />
+						working{" "}
+						<Highlighted link>
+							<a href="https://remote.com" target="_blank" rel="noreferrer">
+								@Remote
+							</a>{" "}
+						</Highlighted>
+						who loves
+						<br />
+						<Highlighted>React</Highlighted> and{" "}
+						<Highlighted>TypeScript</Highlighted>
+					</Typography>
+				</div>
+			</FullWidth>
+		</Fragment>
 	);
 };
 
