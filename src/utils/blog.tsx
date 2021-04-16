@@ -8,7 +8,7 @@ import { MDXComponents } from "pages/_app";
 import { TBlogPost } from "typings/blog";
 
 export const getBlogPreviewImageURL = ({ slug }: { slug: TBlogPost["slug"] }) =>
-	`${process.env.SITE_URL}/blog/previews/${slug}.png`;
+	`${process.env.SITE_URL}/blog/${slug}/preview.png`;
 
 export const getBlogPostsData = async () => {
 	const META = /export\s+const\s+meta\s+=\s+(\{(\n|.)*?\n\})/;
