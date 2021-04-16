@@ -77,16 +77,38 @@ const CodeBlockLanguageWrapper = styled.span`
 	border-bottom-right-radius: var(--border-radius);
 `;
 
-const MDXImageWithWrapper = ({ alt, src }: { alt: string; src: string }) => (
-	<img
-		{...{ alt, src }}
-		style={{
-			maxWidth: "var(--max-width)",
-			width: "100%",
-			borderRadius: "var(--border-radius)",
-		}}
-	/>
-);
+const MDXImageWithWrapper = ({ alt, src }: { alt: string; src: string }) => {
+	const type = src.slice(-3);
+
+	if (type === "mp4") {
+		return (
+			<video
+				autoPlay
+				loop
+				muted
+				controls
+				style={{
+					maxWidth: "var(--max-width)",
+					width: "100%",
+					borderRadius: "var(--border-radius)",
+				}}
+			>
+				<source {...{ src }} />
+				{alt}
+			</video>
+		);
+	}
+	return (
+		<img
+			{...{ alt, src }}
+			style={{
+				maxWidth: "var(--max-width)",
+				width: "100%",
+				borderRadius: "var(--border-radius)",
+			}}
+		/>
+	);
+};
 
 export const MDXLinkStyled = styled.span`
 	& a {
