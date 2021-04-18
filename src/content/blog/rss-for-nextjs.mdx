@@ -7,7 +7,7 @@ export const meta = {
 
 RSS feeds are a way for people to notify their readers that they've published new content. Instead of having to actively go and visit the websites to check if there are any new posts, the RSS alerts you when a website has been updated.
 
-Here's how to add a RSS feed to a Next.js site:
+Here's how you can add a RSS feed to a Next.js site:
 
 - Install the `Feed` package
 - Get all our posts' data
@@ -19,14 +19,19 @@ Here's how to add a RSS feed to a Next.js site:
 ```shell
 yarn add feed
 
-# or if you're using npm
+# if you're using npm
 npm i feed
 ```
 
 ### Get posts' data
 
+This step will vary depeinding on how/where you're storing your content — you may be using MDX like I am or a CMS like [Sanity](https://www.sanity.io).
+
+In my case, I manage _most_ of my content using MDX, each with a `meta` variable with metadata about the post.
+
 ```jsx
 export const getBlogPostsData = async () => {
+  const META = /export\s+const\s+meta\s+=\s+(\{(\n|.)*?\n\})/;
   // path where the MDX files are
   const DIR = path.join(process.cwd(), "src", "content", "blog");
   const files = fs
@@ -34,10 +39,19 @@ export const getBlogPostsData = async () => {
     .filter((file) => file.endsWith(".mdx"));
 
   const postsData = files.map((file) => {
-    // remove the ".mdx" from the file name
+    // grab the metadata
+    const name = path.join(DIR, file);
+    const contents = fs.readFileSync(name, "utf8");
+    const match = META.exec(contents);
+    if (!match || typeof match[1] !== "string")
+      throw new Error(`${name} needs to export const meta = {}`);
+    const meta = eval("(" + match[1] + ")");
+
+    // remove the ".mdx" from the filename
     const slug = file.replace(/\.mdx?$/, "");
 
     return {
+      ...meta,
       slug,
     };
   });
@@ -46,50 +60,77 @@ export const getBlogPostsData = async () => {
 };
 ```
 
+Again, you will need to modify this particular method as per your own preference, so please keep that in mind!
+
 ### Create an RSS feed
 
+Thanks to the `Feed` package, this part is greatly simplified; you can check out the [docs](https://github.com/jpmonette/feed#example), and here's what your function to create your RSS feed will look like:
+
 ```jsx
-const posts = await getBlogPostsData();
-const siteURL = process.env.SITE_URL;
-const date = new Date();
-const author = {
-  name: "Sreetam Das",
-  email: "sreetam@sreetamdas.com",
-  link: "https://twitter.com/_SreetamDas",
-};
+import fs from "fs";
+import { Feed } from "feed";
+import { getBlogPostsData } from "utils/blog";
 
-const feed = new Feed({
-  title: "Sreetam Das' blog",
-  description: "",
-  id: siteURL,
-  link: siteURL,
-  image: `${siteURL}/logo.svg`,
-  favicon: `${siteURL}/favicon.png`,
-  copyright: `All rights reserved ${date.getFullYear()}, Sreetam Das`,
-  updated: date,
-  generator: "Feed for Node.js",
-  feedLinks: {
-    rss2: `${siteURL}/rss/feed.xml`,
-    json: `${siteURL}/rss/feed.json`,
-    atom: `${siteURL}/rss/atom.xml`,
-  },
-  author,
-});
+const generateRssFeed = async () => {
+  const posts = await getBlogPostsData();
+  const siteURL = process.env.SITE_URL;
+  const date = new Date();
+  const author = {
+    name: "Sreetam Das",
+    email: "sreetam@sreetamdas.com",
+    link: "https://twitter.com/_SreetamDas",
+  };
 
-posts.forEach((post) => {
-  const url = `${siteURL}/blog/${post.slug}`;
-
-  feed.addItem({
-    title: post.title,
-    id: url,
-    link: url,
-    description: post.summary,
-    content: post.summary,
-    author: [author],
-    contributor: [author],
-    date: new Date(post.publishedAt),
+  const feed = new Feed({
+    title: "Sreetam Das' blog",
+    description: "",
+    id: siteURL,
+    link: siteURL,
+    image: `${siteURL}/logo.svg`,
+    favicon: `${siteURL}/favicon.png`,
+    copyright: `All rights reserved ${date.getFullYear()}, Sreetam Das`,
+    updated: date,
+    generator: "Feed for Node.js",
+    feedLinks: {
+      rss2: `${siteURL}/rss/feed.xml`,
+      json: `${siteURL}/rss/feed.json`,
+      atom: `${siteURL}/rss/atom.xml`,
+    },
+    author,
   });
-});
+
+  posts.forEach((post) => {
+    const url = `${siteURL}/blog/${post.slug}`;
+
+    feed.addItem({
+      title: post.title,
+      id: url,
+      link: url,
+      description: post.summary,
+      content: post.summary,
+      author: [author],
+      contributor: [author],
+      date: new Date(post.publishedAt),
+    });
+  });
+
+  fs.mkdirSync("./public/rss", { recursive: true });
+  fs.writeFileSync("./public/rss/feed.xml", feed.rss2());
+  fs.writeFileSync("./public/rss/atom.xml", feed.atom1());
+  fs.writeFileSync("./public/rss/feed.json", feed.json1());
+};
 ```
 
 ### Run our function inside `getStaticProps`
+
+Sweet! now that we have everything ready, we just need to make sure that our function is run at build time — so you can call it in the `getStaticProps` function of one of your pages, like `index.jsx`:
+
+```jsx
+export const getStaticProps = async (_context) => {
+  await generateRssFeed();
+
+  return {
+    // ...
+  };
+};
+```
