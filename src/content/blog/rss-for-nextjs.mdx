@@ -1,0 +1,95 @@
+export const meta = {
+  published: false,
+  publishedAt: "2021-04-10",
+  title: "RSS Feed in a Next.js site",
+  summary: "",
+};
+
+RSS feeds are a way for people to notify their readers that they've published new content. Instead of having to actively go and visit the websites to check if there are any new posts, the RSS alerts you when a website has been updated.
+
+Here's how to add a RSS feed to a Next.js site:
+
+- Install the `Feed` package
+- Get all our posts' data
+- Create our RSS feed
+- Call our function inside of `getStaticProps`
+
+### Install packages
+
+```shell
+yarn add feed
+
+# or if you're using npm
+npm i feed
+```
+
+### Get posts' data
+
+```jsx
+export const getBlogPostsData = async () => {
+  // path where the MDX files are
+  const DIR = path.join(process.cwd(), "src", "content", "blog");
+  const files = fs
+    .readdirSync(DIR)
+    .filter((file) => file.endsWith(".mdx"));
+
+  const postsData = files.map((file) => {
+    // remove the ".mdx" from the file name
+    const slug = file.replace(/\.mdx?$/, "");
+
+    return {
+      slug,
+    };
+  });
+
+  return postsData;
+};
+```
+
+### Create an RSS feed
+
+```jsx
+const posts = await getBlogPostsData();
+const siteURL = process.env.SITE_URL;
+const date = new Date();
+const author = {
+  name: "Sreetam Das",
+  email: "sreetam@sreetamdas.com",
+  link: "https://twitter.com/_SreetamDas",
+};
+
+const feed = new Feed({
+  title: "Sreetam Das' blog",
+  description: "",
+  id: siteURL,
+  link: siteURL,
+  image: `${siteURL}/logo.svg`,
+  favicon: `${siteURL}/favicon.png`,
+  copyright: `All rights reserved ${date.getFullYear()}, Sreetam Das`,
+  updated: date,
+  generator: "Feed for Node.js",
+  feedLinks: {
+    rss2: `${siteURL}/rss/feed.xml`,
+    json: `${siteURL}/rss/feed.json`,
+    atom: `${siteURL}/rss/atom.xml`,
+  },
+  author,
+});
+
+posts.forEach((post) => {
+  const url = `${siteURL}/blog/${post.slug}`;
+
+  feed.addItem({
+    title: post.title,
+    id: url,
+    link: url,
+    description: post.summary,
+    content: post.summary,
+    author: [author],
+    contributor: [author],
+    date: new Date(post.publishedAt),
+  });
+});
+```
+
+### Run our function inside `getStaticProps`

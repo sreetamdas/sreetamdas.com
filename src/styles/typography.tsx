@@ -88,7 +88,7 @@ export const SmallText = styled.p`
 	padding-bottom: 10px;
 `;
 
-export const BlogPostTitle = styled.h2`
+export const BlogPostTitle = styled.h1`
 	font-size: clamp(4rem, 15vw, 6rem);
 	line-height: 1.1;
 	margin: 0;

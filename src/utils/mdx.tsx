@@ -169,6 +169,7 @@ const MDXHeadingWrapper = {
 
 const CodePreBlockWithHighlight = styled.pre`
 	padding: 15px;
+	margin: 16px -15px;
 	border-radius: var(--border-radius);
 	/* font-size: ${pixelToRem(16)}; */
 	overflow-x: scroll;
