@@ -15,7 +15,7 @@ import {
 	MDXImageWithWrapper,
 	MDXLinkWrapper,
 } from "utils/mdx";
-import { BASE_FONT_SIZE } from "utils/style";
+import { BASE_FONT_SIZE, pixelToRem } from "utils/style";
 
 export const MDXComponents = {
 	p: Paragraph,
@@ -38,7 +38,7 @@ const GlobalStyles = createGlobalStyle`
 	--color-secondary-accent: rgb(53, 142, 241);
 	--values-primary-accent: 91, 52, 218;
 
-	--font-family-code: SFMono-Regular, Consolas, Roboto Mono, Menlo, Monaco,
+	--font-family-code: Iosevka, SFMono-Regular, Consolas, Roboto Mono, Menlo, Monaco,
 		Liberation Mono, Lucida Console, monospace;
 	--color-success-accent: rgb(0, 255, 127);
 	--color-success-accent-faded: rgba(0, 255, 127, 0.19);
@@ -114,11 +114,11 @@ const GlobalStyles = createGlobalStyle`
 	code,
 	pre {
 		font-family: var(--font-family-code);
+		font-size: ${pixelToRem(16)};
 	}
 
 	code {
 		background-color: var(--color-inlineCode-bg);
-		font-size: 75%;
 		padding: 0.2em;
 		border-radius: 3px;
 		/* prevent our code block from being broken into different sections on linebreak

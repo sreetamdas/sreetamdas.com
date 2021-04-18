@@ -114,7 +114,7 @@ export const Navbar = ({
 		<Fragment>
 			<NavbarWithLogo>
 				<NextIconLink href="/">
-					<img src="/logo.svg" alt="logo" />
+					<img src="/logo.svg" alt="logo" height="25px" width="25px" />
 				</NextIconLink>
 				<NavbarWithNavs>
 					<NavLink href="/blog">blog</NavLink>

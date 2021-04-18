@@ -7,6 +7,7 @@ import styled from "styled-components";
 
 import { LinkedHeaderIconWrapper } from "styles/blog";
 import { useHover } from "utils/hooks";
+import { pixelToRem } from "utils/style";
 
 type TMDXProviderCodeblockPassedProps = {
 	children: {
@@ -169,7 +170,7 @@ const MDXHeadingWrapper = {
 const CodePreBlockWithHighlight = styled.pre`
 	padding: 15px;
 	border-radius: var(--border-radius);
-	font-size: 14px;
+	/* font-size: ${pixelToRem(16)}; */
 	overflow-x: scroll;
 	white-space: pre-wrap;
 	word-wrap: break-word;
