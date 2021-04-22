@@ -157,3 +157,9 @@ export const Button = styled.button`
 		color: var(--color-background);
 	}
 `;
+
+export const ButtonUnstyled = styled.button`
+	background-color: transparent;
+	border: none;
+	color: inherit;
+`;

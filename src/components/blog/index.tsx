@@ -1,8 +1,9 @@
 import Link from "next/link";
-import React from "react";
-import { FaArrowRight, FaTwitter } from "react-icons/fa";
+import React, { RefObject } from "react";
+import { FaArrowRight, FaLongArrowAltUp, FaTwitter } from "react-icons/fa";
 
 import {
+	ButtonUnstyled,
 	Card,
 	IconContainer,
 	PostNotPublishedWarning,
@@ -23,6 +24,22 @@ export const ShareLinks = (post: TBlogPost) => {
 		>
 			<FaTwitter aria-label="Share on Twitter" />
 		</IconContainer>
+	);
+};
+
+export const ScrollToTop = ({
+	topRef,
+}: {
+	topRef: RefObject<HTMLDivElement>;
+}) => {
+	const scrollToTop = () => {
+		if (topRef) topRef.current?.scrollIntoView({ behavior: "smooth" });
+	};
+	return (
+		<ButtonUnstyled onClick={scrollToTop}>
+			back to the top
+			<FaLongArrowAltUp style={{ fontSize: "20px" }} />
+		</ButtonUnstyled>
 	);
 };
 

@@ -2,9 +2,8 @@ import { GetStaticPaths, GetStaticProps } from "next";
 import dynamic from "next/dynamic";
 import Head from "next/head";
 import { Fragment, useRef } from "react";
-import { FaLongArrowAltUp } from "react-icons/fa";
 
-import { ShareLinks } from "components/blog";
+import { ScrollToTop, ShareLinks } from "components/blog";
 import { Newsletter } from "components/blog/Newsletter";
 import { ReadingProgress } from "components/blog/ProgressBar";
 import {
@@ -22,10 +21,6 @@ const Post = ({ post }: { post: TBlogPost }) => {
 		loading: () => <div dangerouslySetInnerHTML={{ __html: post.content }} />,
 	});
 	const topRef = useRef<HTMLDivElement>(null);
-
-	const scrollToTop = () => {
-		if (topRef) topRef.current?.scrollIntoView({ behavior: "smooth" });
-	};
 
 	return (
 		<Fragment>
@@ -65,15 +60,7 @@ const Post = ({ post }: { post: TBlogPost }) => {
 			</BlogPostMDXContent>
 			<EndLinks>
 				<ShareLinks {...post} />
-				<span
-					onClick={scrollToTop}
-					role="button"
-					tabIndex={0}
-					aria-hidden={true}
-				>
-					back to the top
-					<FaLongArrowAltUp style={{ fontSize: "20px" }} />
-				</span>
+				<ScrollToTop topRef={topRef} />
 			</EndLinks>
 			<Newsletter />
 		</Fragment>

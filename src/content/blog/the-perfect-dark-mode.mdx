@@ -402,7 +402,11 @@ _While all of the options seem like possible solutions, they each require a lot 
 
 <CustomBlockquote>
   A common best practice is to define custom properties on the{" "}
-  <StyledAccentTextLink>
+  <StyledAccentTextLink
+    href="https://developer.mozilla.org/en-US/docs/Web/CSS/:root"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
     <code>:root</code> pseudo-class
   </StyledAccentTextLink>
   , so that it can be applied globally across your HTML document
@@ -421,9 +425,9 @@ const initial = root.style.getPropertyValue("--initial-color-mode");
 // "dark"
 ```
 
-CSS variables really shine when you want to have to reuse certain values in your CSS; my website uses a few that you can see [here](https://github.com/sreetamdas/sreetamdas.com/blob/master/pages/_app.tsx)
+CSS variables really shine when you want to have to reuse certain values in your CSS; [my website uses a few that you can check out](https://github.com/sreetamdas/sreetamdas.com/blob/master/pages/_app.tsx)
 
-#### There's more!
+### There's more!
 
 We can use [HTML attributes](https://developer.mozilla.org/en-US/docs/Learn/HTML/Howto/Use_data_attributes) and since CSS also has access to these attributes, we can assign different values to CSS variables depending on the `data-theme` attribute that we set, like so:
 
