@@ -63,8 +63,8 @@ const FancyPants = () => {
 						<Highlighted link>
 							<a href="https://remote.com" target="_blank" rel="noreferrer">
 								@Remote
-							</a>{" "}
-						</Highlighted>
+							</a>
+						</Highlighted>{" "}
 						who loves
 						<br />
 						<Highlighted>React</Highlighted> and{" "}
