@@ -10,8 +10,7 @@
 		"compile": "tsc --watch",
 		"typecheck": "tsc -p tsconfig.json",
 		"lint": "eslint 'src/{pages,components,typings,styles,utils}/**/*.{js,jsx,ts,tsx}' --cache --fix",
-		"prettier": "prettier --write 'src/{pages,components,typings,styles,utils}/**/*.{js,jsx,ts,tsx}'",
-		"prepare": "husky install"
+		"prettier": "prettier --write 'src/{pages,components,typings,styles,utils}/**/*.{js,jsx,ts,tsx}'"
 	},
 	"dependencies": {
 		"@mdx-js/loader": "^1.6.22",
