@@ -44,7 +44,7 @@ const MDXCodeBlock = (props: TMDXProviderCodeblockPassedProps) => {
 			theme={karmaPrismTheme}
 		>
 			{({ className, style, tokens, getLineProps, getTokenProps }) => (
-				<CodePreBlockWithHighlight className={className} style={{ ...style }}>
+				<CodePreBlockWithHighlight {...{ style, className }}>
 					<CodeBlockLanguageWrapper>
 						{language.toLocaleUpperCase()}
 					</CodeBlockLanguageWrapper>

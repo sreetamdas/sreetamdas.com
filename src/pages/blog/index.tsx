@@ -1,9 +1,9 @@
 import { GetStaticProps } from "next";
-import Head from "next/head";
 import React, { Fragment } from "react";
 
 import { BlogPostPreview } from "components/blog";
 import { generateRssFeed } from "components/blog/rss";
+import { DocumentHead } from "components/shared/seo";
 import { BlogPostsPreviewLayout, Center } from "styles/layouts";
 import { Title } from "styles/typography";
 import { TBlogPost } from "typings/blog";
@@ -12,9 +12,7 @@ import { getBlogPostsData } from "utils/blog";
 const Index = ({ postsData }: { postsData: Array<TBlogPost> }) => {
 	return (
 		<Fragment>
-			<Head>
-				<title>Blog &mdash; Sreetam Das</title>
-			</Head>
+			<DocumentHead title="Blog" />
 			<Center>
 				<Title size={5}>/blog</Title>
 			</Center>

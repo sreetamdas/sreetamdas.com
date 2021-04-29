@@ -1,7 +1,7 @@
-import Head from "next/head";
 import React, { Fragment, useContext, useEffect } from "react";
 
 import { FoobarContext } from "components/foobar";
+import { DocumentHead } from "components/shared/seo";
 import { Center, Space } from "styles/layouts";
 import { ReallyBigTitle, Title, Paragraph, LinkTo } from "styles/typography";
 import { FOOBAR_PAGES, TFoobarPage } from "typings/console";
@@ -34,9 +34,7 @@ const Custom404 = ({ message }: T404PageMessage) => {
 	};
 	return (
 		<Fragment>
-			<Head>
-				<title>404!</title>
-			</Head>
+			<DocumentHead title="404!" />
 			<Center>
 				<ReallyBigTitle>404!</ReallyBigTitle>
 				<Title resetLineHeight>Page not found :(</Title>

@@ -1,14 +1,12 @@
-import Head from "next/head";
 import { Fragment } from "react";
 
 import { Newsletter } from "components/blog/Newsletter";
+import { DocumentHead } from "components/shared/seo";
 
 const Index = () => {
 	return (
 		<Fragment>
-			<Head>
-				<title>Newsletter &mdash; Sreetam Das</title>
-			</Head>
+			<DocumentHead title="Newsletter" />
 			<Newsletter />
 		</Fragment>
 	);

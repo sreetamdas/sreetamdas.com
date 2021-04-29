@@ -1,4 +1,3 @@
-import Head from "next/head";
 import React, { Fragment, useContext, useEffect } from "react";
 import { ThemeContext } from "styled-components";
 
@@ -8,6 +7,7 @@ import {
 	Typography,
 	NavLink,
 } from "components/FancyPants";
+import { DocumentHead } from "components/shared/seo";
 import { FullWidth } from "styles/layouts";
 import { random, useInterval, useTimeout } from "utils/hooks";
 
@@ -46,9 +46,7 @@ const FancyPants = () => {
 
 	return (
 		<Fragment>
-			<Head>
-				<title>Fancy Pants — Sreetam Das</title>
-			</Head>
+			<DocumentHead title="Fancy Pants" />
 			<FullWidth>
 				<div style={{ padding: "0 25px" }}>
 					<NavigationContainer>

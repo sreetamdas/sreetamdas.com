@@ -1,10 +1,9 @@
-import Head from "next/head";
 import React, { Fragment, useContext } from "react";
 
 import { Newsletter } from "components/blog/Newsletter";
 import { FoobarContext } from "components/foobar";
+import { DocumentHead } from "components/shared/seo";
 import MDXAbout from "content/about.mdx";
-import { META_TAGS } from "pages/_document";
 import { Center } from "styles/layouts";
 import { Title, RemoveBulletsFromOL, LinkTo } from "styles/typography";
 
@@ -17,10 +16,7 @@ const About = () => {
 
 	return (
 		<Fragment>
-			<Head>
-				<title>About &mdash; Sreetam Das</title>
-				{META_TAGS}
-			</Head>
+			<DocumentHead title="About" />
 
 			<Center>
 				<Title size={5}>/about</Title>

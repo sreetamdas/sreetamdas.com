@@ -5,7 +5,6 @@ import Document, {
 	Main,
 	NextScript,
 } from "next/document";
-import { Fragment } from "react";
 import { ServerStyleSheet } from "styled-components";
 
 export default class MyDocument extends Document {
@@ -121,36 +120,6 @@ function setInitialColorMode() {
 	if (colorMode === "dark")
 		document.documentElement.setAttribute("data-theme", "dark");
 }
-
-export const META_TAGS = (
-	<Fragment>
-		<meta
-			name="description"
-			content="Self-taught React developer currently working as the Module Lead for the Frontend Team at Microland"
-		/>
-		<meta property="og:title" content="Sreetam Das" />
-		<meta
-			name="og:description"
-			content="Software Developer from India. Will never shame Googling."
-		/>
-		<meta name="og:image" content="https://sreetamdas.com/SreetamDas.jpg" />
-		<meta name="og:image:alt" content="Image of Sreetam Das" />
-		<meta property="og:url" content="https://sreetamdas.com" />
-		<meta property="og:type" content="website" />
-
-		<meta name="twitter:card" content="summary" />
-		<meta name="twitter:site" content="@_SreetamDas" />
-		<meta name="twitter:title" content="Sreetam Das" />
-		<meta
-			name="twitter:description"
-			content="Software Developer from India. Will never shame Googling."
-		/>
-		<meta
-			name="twitter:image"
-			content="https://sreetamdas.com/SreetamDas.jpg"
-		/>
-	</Fragment>
-);
 
 const TS_SOURCE_COMMENT = `
 

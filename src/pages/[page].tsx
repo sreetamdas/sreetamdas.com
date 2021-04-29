@@ -1,9 +1,8 @@
 import { GetStaticPaths, GetStaticProps } from "next";
 import dynamic from "next/dynamic";
-import Head from "next/head";
 import React, { Fragment } from "react";
 
-import { META_TAGS } from "pages/_document";
+import { DocumentHead } from "components/shared/seo";
 import { Center } from "styles/layouts";
 import {
 	Title,
@@ -20,12 +19,7 @@ const Page = ({ post }: { post: { page: string; content: string } }) => {
 
 	return (
 		<Fragment>
-			<Head>
-				<title>
-					{page.charAt(0).toUpperCase() + page.slice(1)} &mdash; Sreetam Das
-				</title>
-				{META_TAGS}
-			</Head>
+			<DocumentHead title={page.charAt(0).toUpperCase() + page.slice(1)} />
 
 			<Center>
 				<Title size={5}>/{page}</Title>

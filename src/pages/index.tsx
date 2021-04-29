@@ -1,8 +1,7 @@
-import Head from "next/head";
 import React, { Fragment } from "react";
 
+import { DocumentHead } from "components/shared/seo";
 import Tooling from "content/tooling.mdx";
-import { META_TAGS } from "pages/_document";
 import { Center } from "styles/layouts";
 import {
 	TextGradient,
@@ -16,10 +15,7 @@ import {
 const Index = () => {
 	return (
 		<Fragment>
-			<Head>
-				<title>Home &mdash; Sreetam Das</title>
-				{META_TAGS}
-			</Head>
+			<DocumentHead title="Home" />
 
 			<Center>
 				<Title size={2.5}>
