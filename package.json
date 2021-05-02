@@ -30,7 +30,7 @@
 		"styled-components": "5.2.3"
 	},
 	"devDependencies": {
-		"@netlify/plugin-nextjs": "^3.1.0",
+		"@netlify/plugin-nextjs": "^3.2.0",
 		"@svgr/webpack": "^5.5.0",
 		"@types/eslint": "^7.2.10",
 		"@types/node": "^15.0.1",

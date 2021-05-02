@@ -2209,10 +2209,10 @@
   resolved "https://registry.npmjs.org/@mdx-js/util/-/util-1.6.22.tgz"
   integrity sha512-H1rQc1ZOHANWBvPcW+JpGwr+juXSxM8Q8YCkm3GhZd8REu1fHR3z99CErO1p9pkcfcxZnMdIZdIsXkOHY0NilA==
 
-"@netlify/plugin-nextjs@^3.1.0":
-  version "3.1.0"
-  resolved "https://registry.yarnpkg.com/@netlify/plugin-nextjs/-/plugin-nextjs-3.1.0.tgz#93f81c4bc6201584f42e74dc86b25cfadeb2639f"
-  integrity sha512-UJ3I69fx5j2/ZIw+ODnOGZd4GLv1ogfGBQdIticrmysbx+hHb5UjaFyy2JL8pXYyE37oDjEZJWi/PyTyTbx4lQ==
+"@netlify/plugin-nextjs@^3.2.0":
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/@netlify/plugin-nextjs/-/plugin-nextjs-3.2.0.tgz#9ea7a5c42531cc0b1aa5caefdba91fa0e1d2ed8a"
+  integrity sha512-OkC+n2wQkfg7torHdy6scWzw4EOhUkvQzdPQxhx2HVd18mVnOndPuBC1/hfXED5J1pr1H7R5RXHjVspe7BxG/Q==
   dependencies:
     "@sls-next/lambda-at-edge" "^1.5.2"
     adm-zip "^0.5.4"
