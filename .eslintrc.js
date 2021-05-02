@@ -38,6 +38,7 @@ module.exports = {
 		"react/react-in-jsx-scope": "off",
 		"react/jsx-no-undef": "off",
 		"react/display-name": "off",
+		"react/jsx-uses-react": "off",
 		"import/order": [
 			"error",
 			{

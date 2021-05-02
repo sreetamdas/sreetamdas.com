@@ -186,7 +186,7 @@ const SparkleWrapper = styled.span`
 const SparkleSvg = styled.svg`
 	display: block;
 	@media (prefers-reduced-motion: no-preference) {
-		animation: ${spin} 1000ms linear;
+		animation: ${spin} 700ms linear;
 	}
 `;
 const ChildWrapper = styled.span`
