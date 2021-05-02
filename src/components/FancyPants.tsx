@@ -1,6 +1,41 @@
+import { PropsWithChildren } from "react";
 import styled, { css } from "styled-components";
 
 import { LinkTo } from "styles/typography";
+import { random, useInterval, useTimeout } from "utils/hooks";
+
+export const ChromaHighlight = ({
+	children,
+	link,
+}: PropsWithChildren<{ link?: boolean }>) => {
+	let root: HTMLElement;
+
+	const getNewColor = () => {
+		const h = random(1, 360);
+		const s = random(80, 90);
+		const l = random(50, 60);
+
+		return `hsl(${h}, ${s}%, ${l}%)`;
+	};
+
+	const changeColor = () => {
+		const newColor = getNewColor();
+
+		if (root === undefined) root = document?.documentElement;
+		root.style.setProperty("--color-fancy-pants", newColor);
+	};
+
+	useInterval(() => {
+		changeColor();
+	}, 5000);
+
+	// HACK: begin the color transition, adding it in useMount doesn't set off the CSS transition
+	useTimeout(() => {
+		changeColor();
+	}, 0);
+
+	return <Highlighted {...{ link }}>{children}</Highlighted>;
+};
 
 export const Typography = styled.h2`
 	font-size: clamp(3rem, 5vw, 5vw);
@@ -18,7 +53,7 @@ const RGBWaveMixin = css`
 
 export const Highlighted = styled.span<{ link?: boolean }>`
 	font-size: clamp(4rem, 10vw, 10vw);
-	letter-spacing: -0.5rem;
+	letter-spacing: -0.3rem;
 	${RGBWaveMixin}
 
 	${({ link }) =>
