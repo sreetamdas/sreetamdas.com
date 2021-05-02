@@ -5,6 +5,7 @@ import React, { createElement, CSSProperties, PropsWithChildren } from "react";
 import { FiLink } from "react-icons/fi";
 import styled from "styled-components";
 
+import { KARMA_PRISM_THEME } from "pages/karma";
 import { LinkedHeaderIconWrapper } from "styles/blog";
 import { useHover } from "utils/hooks";
 import { pixelToRem } from "utils/style";
@@ -41,7 +42,7 @@ const MDXCodeBlock = (props: TMDXProviderCodeblockPassedProps) => {
 			{...defaultProps}
 			code={children.trim()}
 			language={language as Language}
-			theme={karmaPrismTheme}
+			theme={KARMA_PRISM_THEME}
 		>
 			{({ className, style, tokens, getLineProps, getTokenProps }) => (
 				<CodePreBlockWithHighlight {...{ style, className }}>
@@ -218,85 +219,4 @@ const calculateLinesToHighlight = (meta: string) => {
 			return inRange;
 		};
 	}
-};
-
-/**
- * many thanks to @NikkitaFTW and @_philpl for prism.dotenv.dev!
- */
-const karmaPrismTheme = {
-	plain: {
-		color: "#f7f1ff",
-		backgroundColor: "#0a0e14",
-	},
-	styles: [
-		{
-			types: ["comment"],
-			style: {
-				color: "#444",
-				fontStyle: "italic" as const,
-			},
-		},
-		{
-			types: ["constant", "number", "builtin", "char"],
-			style: {
-				color: "#AF98E6",
-			},
-		},
-		{
-			types: ["symbol"],
-			style: {
-				color: "#FD9353",
-			},
-		},
-		{
-			types: ["class-name"],
-			style: {
-				color: "#51C7DA",
-			},
-		},
-		{
-			types: ["function", "inserted"],
-			style: {
-				color: "#7BD88F",
-			},
-		},
-		{
-			types: ["tag", "keyword", "operator", "deleted", "changed"],
-			style: {
-				color: "#FC618D",
-			},
-		},
-		{
-			types: ["attr-name"],
-			style: {
-				color: "#51C7DA",
-				fontStyle: "italic" as const,
-			},
-		},
-		{
-			types: ["punctuation"],
-			style: {
-				color: "#88898F",
-			},
-		},
-		{
-			types: ["string"],
-			style: {
-				color: "#E3CF65",
-			},
-		},
-		{
-			types: ["property"],
-			style: {
-				color: "#D7D7D7",
-			},
-		},
-		{
-			types: ["variable"],
-			style: {
-				color: "#FD9353",
-				fontStyle: "italic" as const,
-			},
-		},
-	],
 };
