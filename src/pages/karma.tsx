@@ -35,22 +35,30 @@ const Index = () => {
 				<LinkTo href="https://github.com/sreetamdas/karma">View source</LinkTo>
 			</LinksContainer>
 			<WideImagesContainer>
-				<Title size={2.5}>React + TypeScript</Title>
+				<Title size={2.5} as="h2" id="react">
+					React + TypeScript
+				</Title>
 				<FullScreenImage
 					src="/karma/react.webp"
 					alt="Karma theme screenshot for React"
 				/>
-				<Title size={2.5}>CSS</Title>
+				<Title size={2.5} as="h2" id="css">
+					CSS
+				</Title>
 				<FullScreenImage
 					src="/karma/css.webp"
 					alt="Karma theme screenshot for CSS"
 				/>
-				<Title size={2.5}>Elixir</Title>
+				<Title size={2.5} as="h2" id="elixir">
+					Elixir
+				</Title>
 				<FullScreenImage
 					src="/karma/elixir.webp"
 					alt="Karma theme screenshot for Elixir"
 				/>
-				<Title size={2.5}>Python</Title>
+				<Title size={2.5} as="h2" id="python">
+					Python
+				</Title>
 				<FullScreenImage
 					src="/karma/python.webp"
 					alt="Karma theme screenshot for Python"
