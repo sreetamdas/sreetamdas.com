@@ -1,4 +1,5 @@
 import { Highlight } from "styles/blog";
+import { Heavy } from "styles/typography";
 import { Sparkles } from "styles/special";
 import { ChromaHighlight } from "components/FancyPants";
 
@@ -17,6 +18,16 @@ Here's how I did it.
 
 Let's take a look again at what we're trying to build here:
 
-<h3>
+<Heavy>
   <ChromaHighlight>Hello there!</ChromaHighlight>
-</h3>
+</Heavy>
+
+## Bonus round! A link's underline
+
+<Heavy>
+  <ChromaHighlight link>
+    Hi there!
+    <br />
+    <a href="#">This is a link</a>.
+  </ChromaHighlight>
+</Heavy>
