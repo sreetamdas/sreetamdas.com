@@ -37,7 +37,7 @@ export const PostNotPublishedWarning = () => {
 export const PostMetaDataGrid = styled.div`
 	display: grid;
 	grid-auto-flow: column;
-	grid-gap: 0.5rem;
+	gap: 0.5rem;
 	justify-content: start;
 	align-items: center;
 `;

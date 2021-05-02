@@ -214,7 +214,7 @@ const SupportLinkStyled = styled.a`
 
 	display: grid;
 	grid-template-columns: repeat(auto-fill, minmax(max-content, 1fr));
-	grid-gap: 0.5rem;
+	gap: 0.5rem;
 	grid-auto-flow: column;
 	align-items: center;
 

@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 export const BlogPostsPreviewLayout = styled.div`
 	display: grid;
-	grid-gap: 1rem;
+	gap: 1rem;
 `;
 
 export const Layout = styled.div`
@@ -11,7 +11,7 @@ export const Layout = styled.div`
 		1fr
 		min(var(--max-width), calc(100% - 2rem))
 		1fr;
-	grid-gap: 1rem;
+	gap: 1rem;
 	padding: 0;
 
 	& > * {

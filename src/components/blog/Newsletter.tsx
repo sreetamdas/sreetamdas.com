@@ -67,14 +67,14 @@ const Grid = styled.div`
 	display: grid;
 	justify-content: stretch;
 	grid-template-columns: 1fr 1fr;
-	grid-gap: 1rem;
+	gap: 1rem;
 `;
 
 const StyledForm = styled.form`
 	width: 100%;
 	display: grid;
 	grid-template-columns: 1fr 2fr;
-	grid-gap: 1rem;
+	gap: 1rem;
 `;
 
 const StyledInput = styled.input.attrs({

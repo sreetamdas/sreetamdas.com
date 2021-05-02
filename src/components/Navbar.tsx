@@ -32,7 +32,7 @@ const NavbarWithLogo = styled.div`
 	display: grid;
 	grid-template-columns: repeat(2, auto);
 	align-content: center;
-	grid-gap: 1rem;
+	gap: 1rem;
 `;
 
 const NavbarWithNavs = styled.div`

@@ -136,7 +136,7 @@ export const FOOBAR_BADGES: TFOOBAR_BADGES = {
 
 const AllBadgesContainer = styled.div`
 	display: grid;
-	grid-gap: 1rem;
+	gap: 1rem;
 	padding: 50px 0;
 
 	${breakpoint.from.md(css`
@@ -152,7 +152,7 @@ const FoobarBadgeText = styled.p`
 const BadgeBlock = styled.div<{ $unlocked?: boolean; $showHint: boolean }>`
 	display: grid;
 	grid-template-columns: max-content 1fr;
-	grid-gap: 1rem;
+	gap: 1rem;
 	padding: 15px;
 	font-size: 50px;
 	border-radius: var(--border-radius);
