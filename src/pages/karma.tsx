@@ -18,7 +18,11 @@ type TKarmaColors = typeof KARMA_COLOR_PALETTE[number];
 const Index = () => {
 	return (
 		<Fragment>
-			<DocumentHead title="Karma" />
+			<DocumentHead
+				title="Karma"
+				imageURL="/karma/karma-card.jpg"
+				description="A colorful VSCode theme by Sreetam Das"
+			/>
 			<Title>Karma — a VSCode theme</Title>
 			<ColorPaletteWrapper>
 				{KARMA_COLOR_PALETTE.map((color) => (
