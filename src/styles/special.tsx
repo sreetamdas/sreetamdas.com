@@ -189,7 +189,7 @@ const SparkleSvg = styled.svg`
 		animation: ${spin} 1000ms linear;
 	}
 `;
-const ChildWrapper = styled.div`
+const ChildWrapper = styled.span`
 	position: relative;
 	z-index: 2;
 `;

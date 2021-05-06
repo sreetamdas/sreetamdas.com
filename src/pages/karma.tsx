@@ -127,7 +127,7 @@ export const KARMA_PRISM_THEME = {
 		{
 			types: ["comment"],
 			style: {
-				color: "#444",
+				color: "#696969",
 				fontStyle: "italic" as const,
 			},
 		},
@@ -144,7 +144,7 @@ export const KARMA_PRISM_THEME = {
 			},
 		},
 		{
-			types: ["class-name", "class", "plain"],
+			types: ["class-name"],
 			style: {
 				color: "#51C7DA",
 			},
