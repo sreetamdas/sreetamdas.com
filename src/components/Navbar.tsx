@@ -126,7 +126,10 @@ export const Navbar = ({
 						rel="noopener noreferrer"
 						$styledOnHover
 					>
-						<FaGithub aria-label="Sreetam's GitHub" title="Sreetam's GitHub" />
+						<FaGithub
+							aria-label="Sreetam's GitHub"
+							title="Sreetam Das' GitHub"
+						/>
 					</IconContainer>
 					<IconContainer
 						href="https://twitter.com/_SreetamDas"
@@ -195,7 +198,7 @@ export const ExternalLinksOverlay = () => {
 		},
 		{
 			link: "mailto:sreetam@sreetamdas.com",
-			title: "Send Mail to Sreetam Das",
+			title: "Send email to Sreetam Das",
 			icon: <FaEnvelope />,
 		},
 		{
@@ -216,7 +219,7 @@ export const ExternalLinksOverlay = () => {
 		{
 			link: "https://discord.gg/HGZc5G7CeR",
 			title: "Join Sreetam Das' Discord server",
-			icon: <FaDiscord title={"asd"} />,
+			icon: <FaDiscord />,
 		},
 	];
 
