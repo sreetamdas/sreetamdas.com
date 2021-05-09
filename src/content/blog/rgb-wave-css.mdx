@@ -2,11 +2,12 @@ import { Highlight } from "styles/blog";
 import { Heavy } from "styles/typography";
 import { Sparkles } from "styles/special";
 import { ChromaHighlight } from "components/FancyPants";
+import { HighlightWithUseEffect } from "components/blog/rgb-text";
 
 export const meta = {
   published: false,
   publishedAt: "2021-04-10",
-  title: "RGB Wave Text with CSS",
+  title: 'How to "chameleon" your text',
   summary: "",
 };
 
@@ -64,7 +65,7 @@ const Highlight = ({ children }) => {
   return <Wave>{children}</Wave>;
 };
 
-// import { css } from "styled-components";
+// import styled, { css } from "styled-components";
 const WaveMixin = css`
   transition-property: border, color;
   transition-duration: 5s;
@@ -78,16 +79,36 @@ const Wave = styled.span`
 
 And now we change the color once the component has mounted:
 
-```jsx
-// usage
+```jsx {3-11,14-19,21-23}
 <Highlight>Hi there!</Highlight>;
 
+let root: HTMLElement;
+
+const getNewColor = () => {
+  const h = random(1, 360);
+  const s = random(80, 90);
+  const l = random(50, 60);
+
+  return `hsl(${h}, ${s}%, ${l}%)`;
+};
+
 const Highlight = ({ children }) => {
+  const changeColor = () => {
+    const newColor = getNewColor();
+
+    if (root === undefined) root = document?.documentElement;
+    root.style.setProperty("--color-chameleon", newColor);
+  };
+
+  useEffect(() => {
+    changeColor();
+  }, []);
+
   return <Wave>{children}</Wave>;
 };
 
-// import { css } from "styled-components";
 const WaveMixin = css`
+  color: var(--color-chameleon);
   transition-property: border, color;
   transition-duration: 5s;
   transition-timing-function: linear;
@@ -97,6 +118,10 @@ const Wave = styled.span`
   ${WaveMixin}
 `;
 ```
+
+<Heavy>
+  <HighlightWithUseEffect>Hi there!</HighlightWithUseEffect>
+</Heavy>
 
 ---
 
