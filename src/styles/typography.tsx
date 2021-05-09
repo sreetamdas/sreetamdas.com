@@ -8,7 +8,7 @@ export const ReallyBigTitle = styled.h1`
 `;
 
 export const TextGradientCSS = css`
-	background: linear-gradient(
+	background-image: linear-gradient(
 		90deg,
 		var(--color-primary-accent) 0%,
 		var(--color-secondary-accent) 90%
@@ -17,6 +17,7 @@ export const TextGradientCSS = css`
 	background-clip: text;
 	-webkit-background-clip: text;
 	-webkit-text-fill-color: transparent;
+	box-decoration-break: slice;
 	-webkit-box-decoration-break: clone;
 `;
 export const TextGradient = styled.span`

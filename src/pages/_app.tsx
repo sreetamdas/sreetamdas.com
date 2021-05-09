@@ -34,7 +34,7 @@ const GlobalStyles = createGlobalStyle`
 	--color-inlineCode-fg: var(--color-primary);
 	--color-inlineCode-bg: rgb(220, 220, 220);
 	--color-primary-accent: rgb(91, 52, 218);
-	--color-fancy-pants: rgb(91, 52, 218);
+	--color-fancy-pants: var(--color-primary-accent);
 	--color-secondary-accent: rgb(53, 142, 241);
 	--values-primary-accent: 91, 52, 218;
 

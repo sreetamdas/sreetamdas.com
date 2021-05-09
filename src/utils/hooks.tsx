@@ -28,6 +28,7 @@ export const useHover: () => [RefObject<HTMLDivElement>, boolean] = () => {
 
 type Delay = number | null;
 type CallbackFn = (...args: any[]) => void;
+
 /**
  * Provides a declarative useInterval
  *
@@ -51,6 +52,12 @@ export const useInterval = (callback: CallbackFn, delay: Delay) => {
 	}, [delay]);
 };
 
+/**
+ * Provides a declarative useTimeout
+ *
+ * @param callback - Function that will be called after `delay` ms.
+ * @param delay - Number representing the delay in ms.
+ */
 export const useTimeout = (callback: CallbackFn, delay: Delay) => {
 	const savedCallback = useRef<CallbackFn>();
 
