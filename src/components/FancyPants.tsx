@@ -51,7 +51,7 @@ const RGBWaveMixin = css`
 `;
 
 export const Highlighted = styled.span<{ link?: boolean }>`
-	font-size: clamp(4rem, 10vw, 10vw);
+	font-size: clamp(4rem, 15vw, 6rem);
 	letter-spacing: -0.3rem;
 	${RGBWaveMixin}
 
