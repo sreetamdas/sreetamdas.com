@@ -2,7 +2,10 @@ import { Highlight } from "styles/blog";
 import { Heavy } from "styles/typography";
 import { Sparkles } from "styles/special";
 import { ChromaHighlight } from "components/FancyPants";
-import { HighlightWithUseEffect } from "components/blog/rgb-text";
+import {
+  HighlightWithUseEffect,
+  HighlightWithUseInterval,
+} from "components/blog/rgb-text";
 
 export const meta = {
   published: false,
@@ -59,7 +62,7 @@ Let's start writing our little wrapper component for this:
 
 ```jsx
 // usage
-<Highlight>Hi there!</Highlight>;
+<Highlight>Hello there!</Highlight>;
 
 const Highlight = ({ children }) => {
   return <Wave>{children}</Wave>;
@@ -80,7 +83,7 @@ const Wave = styled.span`
 And now we change the color once the component has mounted:
 
 ```jsx {3-11,14-19,21-23}
-<Highlight>Hi there!</Highlight>;
+<Highlight>Hello there!</Highlight>;
 
 let root: HTMLElement;
 
@@ -120,7 +123,59 @@ const Wave = styled.span`
 ```
 
 <Heavy>
-  <HighlightWithUseEffect>Hi there!</HighlightWithUseEffect>
+  <HighlightWithUseEffect>Hello there!</HighlightWithUseEffect>
+</Heavy>
+
+Huh, that didn't seem to work out 🤔 but that's because the transition already ran since the above live example was already "mounted" by the time you scrolled down to it.
+
+No w'll work out how to keep changing the color after a pre-defined interval. For this, we'll be defining our very own `useInterval` custom hook!
+
+```jsx
+const useInterval = (callback, delay) => {
+  const savedCallback = useRef();
+
+  useEffect(() => {
+    savedCallback.current = callback;
+  }, [callback]);
+
+  useEffect(() => {
+    const handler = (...args) => savedCallback.current(...args);
+
+    if (delay !== null) {
+      const intervalId = setInterval(handler, delay);
+      return () => clearInterval(intervalId);
+    }
+  }, [delay]);
+};
+```
+
+Let's now use this hook to change the color of our text just as it completes its transition.
+
+```jsx {1,15-17}
+import { useInterval } from "utils/hooks";
+
+const Highlight = ({ children }) => {
+  const changeColor = () => {
+    const newColor = getNewColor();
+
+    if (root === undefined) root = document?.documentElement;
+    root.style.setProperty("--color-chameleon", newColor);
+  };
+
+  useEffect(() => {
+    changeColor();
+  }, []);
+
+  useInterval(() => {
+    changeColor();
+  }, 5000);
+
+  return <Wave>{children}</Wave>;
+};
+```
+
+<Heavy>
+  <HighlightWithUseInterval>Hello there!</HighlightWithUseInterval>
 </Heavy>
 
 ---
@@ -129,7 +184,7 @@ const Wave = styled.span`
 
 <Heavy>
   <ChromaHighlight link>
-    Hi there!
+    Hello there!
     <br />
     <a href="#">This is a link</a>.
   </ChromaHighlight>
