@@ -4,20 +4,19 @@ import styled, { css } from "styled-components";
 import { LinkTo } from "styles/typography";
 import { random, useInterval, useTimeout } from "utils/hooks";
 
+let root: HTMLElement;
+
+const getNewColor = () => {
+	const h = random(1, 360);
+	const s = random(80, 90);
+	const l = random(50, 60);
+
+	return `hsl(${h}, ${s}%, ${l}%)`;
+};
 export const ChromaHighlight = ({
 	children,
 	link,
 }: PropsWithChildren<{ link?: boolean }>) => {
-	let root: HTMLElement;
-
-	const getNewColor = () => {
-		const h = random(1, 360);
-		const s = random(80, 90);
-		const l = random(50, 60);
-
-		return `hsl(${h}, ${s}%, ${l}%)`;
-	};
-
 	const changeColor = () => {
 		const newColor = getNewColor();
 
