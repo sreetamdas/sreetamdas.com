@@ -1,8 +1,8 @@
-import { PropsWithChildren } from "react";
+import { PropsWithChildren, useEffect } from "react";
 import styled, { css } from "styled-components";
 
 import { LinkTo } from "styles/typography";
-import { random, useInterval, useTimeout } from "utils/hooks";
+import { random, useInterval } from "utils/hooks";
 
 let root: HTMLElement;
 
@@ -13,6 +13,7 @@ const getNewColor = () => {
 
 	return `hsl(${h}, ${s}%, ${l}%)`;
 };
+
 export const ChromaHighlight = ({
 	children,
 	link,
@@ -28,20 +29,12 @@ export const ChromaHighlight = ({
 		changeColor();
 	}, 5000);
 
-	// HACK: begin the color transition, adding it in useMount doesn't set off the CSS transition
-	useTimeout(() => {
+	useEffect(() => {
 		changeColor();
-	}, 0);
+	}, []);
 
 	return <Highlighted {...{ link }}>{children}</Highlighted>;
 };
-
-export const Typography = styled.h2`
-	font-size: clamp(3rem, 5vw, 5vw);
-	color: var(--color-primary);
-	line-height: 0.98;
-	font-family: Inter, Roboto;
-`;
 
 const RGBWaveMixin = css`
 	color: var(--color-fancy-pants);
@@ -66,6 +59,21 @@ export const Highlighted = styled.span<{ link?: boolean }>`
 					color: var(--color-fancy-pants);
 					text-decoration: underline;
 				}
+			}
+		`}
+`;
+
+export const Typography = styled.h2<{ $large?: boolean }>`
+	font-size: clamp(3rem, 5vw, 5vw);
+	color: var(--color-primary);
+	line-height: 0.98;
+	font-family: Inter, Roboto;
+
+	${({ $large }) =>
+		$large &&
+		css`
+			${Highlighted} {
+				font-size: clamp(4rem, 10rem, 10vw);
 			}
 		`}
 `;

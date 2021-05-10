@@ -7,7 +7,7 @@ import {
 	ChromaHighlight,
 } from "components/FancyPants";
 import { DocumentHead } from "components/shared/seo";
-import { FullWidth } from "styles/layouts";
+import { FullWidth, Space } from "styles/layouts";
 
 const FancyPants = () => {
 	return (
@@ -18,7 +18,8 @@ const FancyPants = () => {
 					<NavigationContainer>
 						<NavLink href="/">Home</NavLink>
 					</NavigationContainer>
-					<Typography>
+					<Typography $large>
+						<Space />
 						<ChromaHighlight>Sreetam Das</ChromaHighlight>
 						<br />
 						is a <ChromaHighlight>Frontend Engineer</ChromaHighlight>
