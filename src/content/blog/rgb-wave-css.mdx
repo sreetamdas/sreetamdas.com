@@ -46,11 +46,11 @@ transition: color 5s linear;
 
 And since I'm using `styled-components`, we can put this in a re-usable CSS string:
 
-```js
+```jsx
 import { css } from "styled-components";
 
 const WaveMixin = css`
-  transition-property: border, color;
+  transition-property: color;
   transition-duration: 5s;
   transition-timing-function: linear;
 `;
@@ -70,7 +70,7 @@ const Highlight = ({ children }) => {
 
 // import styled, { css } from "styled-components";
 const WaveMixin = css`
-  transition-property: border, color;
+  transition-property: color;
   transition-duration: 5s;
   transition-timing-function: linear;
 `;
@@ -112,7 +112,7 @@ const Highlight = ({ children }) => {
 
 const WaveMixin = css`
   color: var(--color-chameleon);
-  transition-property: border, color;
+  transition-property: color;
   transition-duration: 5s;
   transition-timing-function: linear;
 `;
@@ -128,7 +128,9 @@ const Wave = styled.span`
 
 Huh, that didn't seem to work out 🤔 but that's because the transition already ran since the above live example was already "mounted" by the time you scrolled down to it.
 
-No w'll work out how to keep changing the color after a pre-defined interval. For this, we'll be defining our very own `useInterval` custom hook!
+## A wild custom hook appeared!
+
+To keep changing the color after a pre-defined interval, we'll be defining our very own `useInterval` custom hook:
 
 ```jsx
 const useInterval = (callback, delay) => {
@@ -178,14 +180,19 @@ const Highlight = ({ children }) => {
   <HighlightWithUseInterval>Hello there!</HighlightWithUseInterval>
 </Heavy>
 
----
+Voila! ✨
 
-## Bonus round! A link's underline
+There we go. What's great is that you can also use this to highlight link, like so:
 
 <Heavy>
   <ChromaHighlight link>
-    Hello there!
-    <br />
     <a href="#">This is a link</a>.
   </ChromaHighlight>
 </Heavy>
+
+## Wrapping up
+
+I'm really glad with how the effect turned out, and it was also easier to accomplish because I was using CSS-in-JS. It's great to see how powerful tools like [styled-components](https://styled-components.com) can be!
+You can [check the effect out in action](/fancy-pants) and see it in all its glory 😄
+
+Have a good one 👋

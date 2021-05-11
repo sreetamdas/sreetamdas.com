@@ -53,10 +53,9 @@ export const Highlighted = styled.span<{ link?: boolean }>`
 		css`
 			& a {
 				${RGBWaveMixin}
-				border-bottom: unset;
 
 				&:hover {
-					color: var(--color-fancy-pants);
+					border: none;
 					text-decoration: underline;
 				}
 			}
