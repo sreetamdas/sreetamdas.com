@@ -90,12 +90,29 @@ const GlobalStyles = createGlobalStyle`
 		color: var(--color-background)
 	}
 
+	:focus:not(:focus-visible) {
+		outline: 0;
+	}
+
+	:focus-visible {
+		box-shadow: 0 0 0.1rem 0.1rem var(--color-primary-accent);
+		opacity: 1;
+		outline: 0;
+	}
+
 	h1,
 	h2,
 	h3,
 	h4 {
 		margin: 0;
 		padding-top: 2rem;
+	}
+
+	h2 {
+		font-size: 2rem;
+	}
+	h3 {
+		font-size: 1.5rem;
 	}
 
 	a {
