@@ -106,14 +106,13 @@ export const BlogPostPreviewTitle = styled.h2<{ isHovered: boolean }>`
 export const StyledLink = styled.a`
 	text-decoration: none;
 	cursor: pointer;
-	color: var(--color-primary);
-	border-bottom: 0.18em solid var(--color-primary-accent);
+	color: var(--color-primary-accent);
 
 	&:visited {
 		text-decoration: none;
 	}
 	&:hover {
-		color: var(--color-primary-accent);
+		border-bottom: 0.18em solid var(--color-primary-accent);
 		text-decoration: none;
 	}
 `;

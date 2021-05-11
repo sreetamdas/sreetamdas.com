@@ -48,6 +48,11 @@ const NavbarWithNavs = styled.div`
 
 const NavLink = styled(LinkTo)`
 	border: none !important;
+	color: var(--color-primary);
+
+	&:hover {
+		color: var(--color-primary-accent);
+	}
 `;
 
 export const Navbar = ({

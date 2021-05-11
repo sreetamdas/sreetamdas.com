@@ -71,10 +71,10 @@ const MDXCodeBlock = (props: TMDXProviderCodeblockPassedProps) => {
 
 const CodeBlockLanguageWrapper = styled.span`
 	float: right;
-	background-color: rgba(256, 256, 256, 0.09);
-	color: rgba(256, 256, 256, 0.6);
+	background-color: #2c2c2c;
+	color: #bbbbbb;
 	margin-top: -15px;
-	padding: 5px;
+	padding: 7.5px 5px;
 	border-bottom-left-radius: var(--border-radius);
 	border-bottom-right-radius: var(--border-radius);
 `;
@@ -114,11 +114,10 @@ const MDXImageWithWrapper = ({ alt, src }: { alt: string; src: string }) => {
 
 export const MDXLinkStyled = styled.span`
 	& a {
-		color: var(--color-primary);
-		border-bottom: 0.18em solid var(--color-primary-accent);
+		color: var(--color-primary-accent);
 
 		:hover {
-			color: var(--color-primary-accent);
+			border-bottom: 0.18em solid var(--color-primary-accent);
 			text-decoration: none;
 		}
 	}
