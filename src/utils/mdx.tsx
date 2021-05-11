@@ -8,7 +8,6 @@ import styled from "styled-components";
 import { KARMA_PRISM_THEME } from "pages/karma";
 import { LinkedHeaderIconWrapper } from "styles/blog";
 import { useHover } from "utils/hooks";
-import { pixelToRem } from "utils/style";
 
 type TMDXProviderCodeblockPassedProps = {
 	children: {
@@ -171,7 +170,6 @@ const CodePreBlockWithHighlight = styled.pre`
 	padding: 15px;
 	margin: 16px -15px;
 	border-radius: var(--border-radius);
-	/* font-size: ${pixelToRem(16)}; */
 	overflow-x: scroll;
 	white-space: pre-wrap;
 	word-wrap: break-word;
@@ -190,7 +188,7 @@ const CodePreBlockWithHighlight = styled.pre`
 const CodeblockLineNumber = styled.span`
 	display: inline-block;
 	padding-right: 0.6em;
-	width: 1rem;
+	min-width: 1rem;
 	user-select: none;
 	opacity: 0.25;
 	text-align: center;

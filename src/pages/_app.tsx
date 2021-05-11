@@ -38,7 +38,7 @@ const GlobalStyles = createGlobalStyle`
 	--color-secondary-accent: rgb(53, 142, 241);
 	--values-primary-accent: 91, 52, 218;
 
-	--font-family-code: Iosevka, SFMono-Regular, Consolas, Roboto Mono, Menlo, Monaco,
+	--font-family-code: Iosevka Web, SFMono-Regular, Consolas, Roboto Mono, Menlo, Monaco,
 		Liberation Mono, Lucida Console, monospace;
 	--color-success-accent: rgb(0, 255, 127);
 	--color-success-accent-faded: rgba(0, 255, 127, 0.19);
