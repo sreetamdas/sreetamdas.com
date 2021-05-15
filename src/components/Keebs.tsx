@@ -7,7 +7,6 @@ import {
 import React from "react";
 import styled from "styled-components";
 
-import { RemoveBulletsFromList } from "styles/typography";
 import { ImageWrapper } from "utils/mdx";
 
 export type TKeebInfo = {
@@ -32,21 +31,21 @@ const Keebs = ({ keebInfo }: TKeebInfo) => {
 	});
 
 	return (
-		<RemoveBulletsFromList>
-			<ul>
-				{keebDetails.map(({ name, image, tags }) => (
-					<li key={name.toLowerCase().replace(" ", "-")}>
-						<KeebWrapper>
-							<h3>{name}</h3>
+		<div>
+			{keebDetails.map(({ name, image, tags }) => (
+				<KeebWrapper key={name.toLowerCase().replace(" ", "-")}>
+					<Info>
+						<h3>{name}</h3>
+						<Tags>
 							{tags.map((tag) => (
 								<span key={tag.name}>{tag.name}</span>
 							))}
-							{image ? <ImageWrapper src={image} alt={name} /> : null}
-						</KeebWrapper>
-					</li>
-				))}
-			</ul>
-		</RemoveBulletsFromList>
+						</Tags>
+					</Info>
+					{image ? <ImageWrapper src={image} alt={name} /> : null}
+				</KeebWrapper>
+			))}
+		</div>
 	);
 };
 
@@ -55,4 +54,32 @@ export { Keebs };
 const KeebWrapper = styled.div`
 	display: grid;
 	gap: 1rem;
+	padding-top: 3rem;
+`;
+
+const Info = styled.div`
+	display: grid;
+	gap: 2rem;
+	grid-auto-flow: column;
+	align-items: center;
+	justify-content: space-between;
+
+	& h3 {
+		padding-top: 0;
+	}
+`;
+
+const Tags = styled.div`
+	display: grid;
+	gap: 0.5rem;
+	grid-auto-flow: column;
+
+	& span {
+		font-size: 85%;
+		font-family: var(--font-family-code);
+		background-color: var(--color-primary-accent);
+		color: var(--color-background);
+		padding: 0px 10px;
+		border-radius: var(--border-radius);
+	}
 `;
