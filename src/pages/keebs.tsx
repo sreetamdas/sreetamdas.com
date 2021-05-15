@@ -31,7 +31,13 @@ export const getStaticProps: GetStaticProps = async () => {
 
 	const response = await notion.databases.query({
 		database_id: KEEBS_DATABASE_ID,
-		filter: { property: "Bought", checkbox: { equals: true } },
+		filter: {
+			and: [
+				{ property: "Bought", checkbox: { equals: true } },
+				// @ts-expect-error
+				{ property: "Type", multi_select: { does_not_contain: "Switches" } },
+			],
+		},
 	});
 
 	return {
