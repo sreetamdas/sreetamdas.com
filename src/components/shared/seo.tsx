@@ -6,6 +6,8 @@ type TDocumentHeadProps = {
 	description?: string;
 };
 
+const siteURL = process.env.SITE_URL!;
+
 export const DocumentHead = ({
 	title,
 	imageURL: relativeImageURL,
@@ -13,6 +15,7 @@ export const DocumentHead = ({
 }: TDocumentHeadProps) => {
 	const pageTitle = `${title} — Sreetam Das`;
 	const imageURL = getAbsoluteURL(relativeImageURL ?? "/SreetamDas.jpg");
+
 	return (
 		<Head>
 			<title>{pageTitle}</title>
@@ -21,7 +24,7 @@ export const DocumentHead = ({
 			<meta name="og:description" content={description} />
 			<meta name="og:image" content={imageURL} />
 			<meta name="og:image:alt" content={pageTitle} />
-			<meta property="og:url" content={process.env.SITE_URL} />
+			<meta property="og:url" content={siteURL} />
 			<meta property="og:type" content="website" />
 
 			<meta name="twitter:card" content="summary_large_image" />
@@ -39,4 +42,11 @@ export const DocumentHead = ({
 	);
 };
 
-export const getAbsoluteURL = (url: string) => `${process.env.SITE_URL}${url}`;
+export const getAbsoluteURL = (url: string) => {
+	const hasSiteURL = url.startsWith(siteURL);
+	const startsWithSlash = url[0] === "/";
+
+	if (hasSiteURL) return url;
+	if (startsWithSlash) return `${siteURL}${url}`;
+	return `${siteURL}/${url}`;
+};
