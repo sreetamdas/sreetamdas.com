@@ -5,7 +5,7 @@ import { FoobarContext } from "components/foobar";
 import { DocumentHead } from "components/shared/seo";
 import MDXAbout from "content/about.mdx";
 import { Center } from "styles/layouts";
-import { Title, RemoveBulletsFromOL, LinkTo } from "styles/typography";
+import { Title, RemoveBulletsFromList, LinkTo } from "styles/typography";
 
 const About = () => {
 	const { updateFoobarDataPartially, unlocked } = useContext(FoobarContext);
@@ -22,9 +22,9 @@ const About = () => {
 				<Title size={5}>/about</Title>
 			</Center>
 
-			<RemoveBulletsFromOL>
+			<RemoveBulletsFromList>
 				<MDXAbout />
-			</RemoveBulletsFromOL>
+			</RemoveBulletsFromList>
 			<Newsletter />
 
 			<Center>

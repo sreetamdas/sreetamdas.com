@@ -24,7 +24,7 @@ type TMDXProviderCodeblockPassedProps = {
 	};
 };
 
-export { MDXCodeBlock, MDXImageWithWrapper, MDXHeadingWrapper, MDXLinkWrapper };
+export { MDXCodeBlock, ImageWrapper, MDXHeadingWrapper, MDXLinkWrapper };
 
 const MDXCodeBlock = (props: TMDXProviderCodeblockPassedProps) => {
 	const {
@@ -78,7 +78,7 @@ const CodeBlockLanguageWrapper = styled.span`
 	border-bottom-right-radius: var(--border-radius);
 `;
 
-const MDXImageWithWrapper = ({ alt, src }: { alt: string; src: string }) => {
+const ImageWrapper = ({ alt, src }: { alt: string; src: string }) => {
 	const type = src.slice(-3);
 
 	if (type === "mp4") {

@@ -12,7 +12,7 @@ import { TGlobalThemeObject } from "typings/styled";
 import {
 	MDXCodeBlock,
 	MDXHeadingWrapper,
-	MDXImageWithWrapper,
+	ImageWrapper,
 	MDXLinkWrapper,
 } from "utils/mdx";
 import { BASE_FONT_SIZE, pixelToRem } from "utils/style";
@@ -23,7 +23,7 @@ export const MDXComponents = {
 	h2: MDXHeadingWrapper.h2,
 	h3: MDXHeadingWrapper.h3,
 	pre: MDXCodeBlock,
-	img: MDXImageWithWrapper,
+	img: ImageWrapper,
 	a: MDXLinkWrapper,
 };
 
@@ -151,9 +151,8 @@ const initTheme = {
 };
 
 const MyApp = ({ Component, pageProps }: AppProps) => {
-	const [themeObject, setThemeObject] = useState<TThemeObjectInitial>(
-		initTheme
-	);
+	const [themeObject, setThemeObject] =
+		useState<TThemeObjectInitial>(initTheme);
 	const getCSSVarValue = (variable: string) => {
 		if (typeof window !== "undefined")
 			return getComputedStyle(document.body).getPropertyValue(variable);

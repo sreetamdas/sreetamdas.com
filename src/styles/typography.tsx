@@ -33,7 +33,7 @@ export const Monospace = styled.span`
 		Liberation Mono, Lucida FoobarWrapper, monospace;
 `;
 
-export const RemoveBulletsFromOL = styled.div`
+export const RemoveBulletsFromList = styled.div`
 	& ul {
 		list-style: none;
 		padding-left: 30px;

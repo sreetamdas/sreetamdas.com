@@ -7,7 +7,7 @@ import { Center } from "styles/layouts";
 import {
 	Title,
 	PaddingListItems,
-	RemoveBulletsFromOL,
+	RemoveBulletsFromList,
 } from "styles/typography";
 import { getAboutMDXPagesData } from "utils/blog";
 
@@ -25,9 +25,9 @@ const Page = ({ post }: { post: { page: string; content: string } }) => {
 				<Title size={5}>/{page}</Title>
 			</Center>
 			<PaddingListItems>
-				<RemoveBulletsFromOL>
+				<RemoveBulletsFromList>
 					<MDXPage />
-				</RemoveBulletsFromOL>
+				</RemoveBulletsFromList>
 			</PaddingListItems>
 		</Fragment>
 	);
