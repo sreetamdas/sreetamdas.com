@@ -14,9 +14,7 @@ export const DocumentHead = ({
 	description,
 }: TDocumentHeadProps) => {
 	const pageTitle = `${title} — Sreetam Das`;
-	const imageURL = getAbsoluteURL(
-		relativeImageURL ?? "/sreetamdas-share-card.jpg"
-	);
+	const imageURL = getAbsoluteURL(relativeImageURL ?? "/share-card.jpg");
 
 	return (
 		<Head>
