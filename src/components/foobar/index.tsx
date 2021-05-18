@@ -43,9 +43,8 @@ const checkIfAllAchievementsAreDone = ({ completed }: TFoobarData) => {
 const FoobarWrapper = ({ children }: PropsWithChildren<{}>): JSX.Element => {
 	const router = useRouter();
 	const [dataLoaded, setDataLoaded] = useState(false);
-	const [foobarData, setFoobarData] = useState<typeof initialFoobarData>(
-		initialFoobarData
-	);
+	const [foobarData, setFoobarData] =
+		useState<typeof initialFoobarData>(initialFoobarData);
 
 	const updateFoobarDataPartially = useCallback(
 		(data: Partial<TFoobarData>, mergeManually = false) => {
@@ -90,7 +89,7 @@ const FoobarWrapper = ({ children }: PropsWithChildren<{}>): JSX.Element => {
 	}, [updateFoobarDataPartially]);
 
 	useEffect(() => {
-		dataLoaded && updateLocalData(foobarData);
+		if (dataLoaded) updateLocalData(foobarData);
 		// @ts-expect-error
 		window.logStatus = () => {
 			// eslint-disable-next-line no-console

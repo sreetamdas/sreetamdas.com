@@ -11,7 +11,7 @@ const siteURL = process.env.SITE_URL!;
 export const DocumentHead = ({
 	title,
 	imageURL: relativeImageURL,
-	description,
+	description = "Software Developer from India. 💜 React, TypeScript and Mechanical Keyboards!",
 }: TDocumentHeadProps) => {
 	const pageTitle = `${title} — Sreetam Das`;
 	const imageURL = getAbsoluteURL(relativeImageURL ?? "/og-default.webp");
@@ -30,13 +30,7 @@ export const DocumentHead = ({
 			<meta name="twitter:card" content="summary_large_image" />
 			<meta name="twitter:site" content="@_SreetamDas" />
 			<meta name="twitter:title" content={pageTitle} />
-			<meta
-				name="twitter:description"
-				content={
-					description ??
-					"Software Developer from India. 💜 React, TypeScript and Mechanical Keyboards!"
-				}
-			/>
+			<meta name="twitter:description" content={description} />
 			<meta name="twitter:image" content={imageURL} />
 		</Head>
 	);
