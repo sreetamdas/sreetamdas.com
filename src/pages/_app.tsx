@@ -33,10 +33,10 @@ const GlobalStyles = createGlobalStyle`
 	--color-background: rgb(255, 255, 255);
 	--color-inlineCode-fg: var(--color-primary);
 	--color-inlineCode-bg: rgb(220, 220, 220);
-	--color-primary-accent: rgb(91, 52, 218);
-	--color-fancy-pants: var(--color-primary-accent);
-	--color-secondary-accent: rgb(53, 142, 241);
 	--values-primary-accent: 91, 52, 218;
+	--color-primary-accent: rgb(91, 52, 218);
+	--color-secondary-accent: rgb(53, 142, 241);
+	--color-fancy-pants: var(--color-primary-accent);
 
 	--font-family-code: Iosevka Web, SFMono-Regular, Consolas, Roboto Mono, Menlo, Monaco,
 		Liberation Mono, Lucida Console, monospace;
@@ -54,12 +54,12 @@ const GlobalStyles = createGlobalStyle`
 
 	[data-theme="dark"] {
 		--color-primary-accent: rgb(157, 134, 233);
+		--values-primary-accent: 157, 134, 233;
 		--color-secondary-accent: rgb(97, 218, 251);
 		--color-primary: rgb(255, 255, 255);
 		--color-background: rgb(0, 0, 0);
 		--color-inlineCode-fg: var(--color-primary);
 		--color-inlineCode-bg: rgb(51, 51, 51);
-		--values-primary-accent: 157, 134, 233;
 	}
 	[data-theme="batman"] {
 		--color-primary-accent: rgb(255, 255, 0);

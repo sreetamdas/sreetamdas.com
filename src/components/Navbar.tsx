@@ -27,34 +27,6 @@ import { LinkTo } from "styles/typography";
 import { TGlobalThemeObject } from "typings/styled";
 import { checkIfNavbarShouldBeHidden } from "utils/misc";
 
-const NavbarWithLogo = styled.div`
-	padding: 20px 0;
-	display: grid;
-	grid-template-columns: repeat(2, auto);
-	align-content: center;
-	gap: 1rem;
-`;
-
-const NavbarWithNavs = styled.div`
-	display: grid;
-	grid-auto-flow: column;
-	grid-template-columns: repeat(auto-fill, minmax(min-content, 1fr));
-	grid-column-gap: 1rem;
-	white-space: nowrap;
-	justify-self: end;
-	place-items: center;
-	justify-content: center;
-`;
-
-const NavLink = styled(LinkTo)`
-	border: none !important;
-	color: var(--color-primary);
-
-	&:hover {
-		color: var(--color-primary-accent);
-	}
-`;
-
 export const Navbar = ({
 	currentTheme,
 }: {
@@ -119,7 +91,15 @@ export const Navbar = ({
 		<Fragment>
 			<NavbarWithLogo>
 				<NextIconLink href="/">
-					<img src="/logo.svg" alt="logo" height="25px" width="25px" />
+					<NavbarLogo
+						width="25"
+						height="25"
+						viewBox="0 0 25 25"
+						fill="none"
+						xmlns="http://www.w3.org/2000/svg"
+					>
+						<rect width="25" height="25" rx="6" fill="currentColor" />
+					</NavbarLogo>
 				</NextIconLink>
 				<NavbarWithNavs>
 					<NavLink href="/blog">blog</NavLink>
@@ -252,3 +232,36 @@ export const ExternalLinksOverlay = () => {
 		</NavbarWithNavs>
 	);
 };
+
+const NavbarWithLogo = styled.div`
+	padding: 20px 0;
+	display: grid;
+	grid-template-columns: max-content auto;
+	align-content: center;
+	gap: 2rem;
+`;
+
+const NavbarWithNavs = styled.div`
+	display: grid;
+	grid-auto-flow: column;
+	grid-template-columns: repeat(auto-fill, minmax(min-content, 1fr));
+	grid-column-gap: 1rem;
+	white-space: nowrap;
+	justify-self: end;
+	place-items: center;
+	justify-content: center;
+`;
+
+const NavLink = styled(LinkTo)`
+	border: none !important;
+	color: var(--color-primary);
+
+	&:hover {
+		color: var(--color-primary-accent);
+	}
+`;
+
+const NavbarLogo = styled.svg`
+	color: var(--color-primary-accent);
+	fill: var(--color-primary-accent);
+`;
