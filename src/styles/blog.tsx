@@ -96,7 +96,7 @@ export const NextIconLink = ({
 
 export const CustomBlockquote = styled.aside<{ type?: string }>`
 	padding: 20px;
-	margin: 20px 0;
+	margin: 20px -20px 20px -25px;
 	border-radius: var(--border-radius);
 
 	${({ type }) =>

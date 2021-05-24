@@ -168,8 +168,8 @@ const MDXHeadingWrapper = {
 };
 
 const CodePreBlockWithHighlight = styled.pre`
-	padding: 15px;
-	margin: 16px -15px;
+	padding: 20px;
+	margin: 1rem -20px;
 	border-radius: var(--border-radius);
 	overflow-x: scroll;
 	white-space: pre-wrap;
