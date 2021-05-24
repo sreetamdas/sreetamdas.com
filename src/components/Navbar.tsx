@@ -19,7 +19,7 @@ import {
 } from "react-icons/fa";
 import { FiRss, FiSun } from "react-icons/fi";
 import { IoMdMoon } from "react-icons/io";
-import styled from "styled-components";
+import styled, { ThemeContext } from "styled-components";
 
 import { FoobarContext } from "components/foobar";
 import { IconContainer, NextIconLink } from "styles/blog";
@@ -33,6 +33,7 @@ export const Navbar = ({
 	currentTheme: TGlobalThemeObject["theme"];
 }) => {
 	const [darkTheme, setDarkTheme] = useState<boolean | undefined>(undefined);
+	const { changeThemeVariant } = useContext(ThemeContext);
 	const [isNavbarShown, setIsNavbarShown] = useState(true);
 	const { updateFoobarDataPartially, ...foobar } = useContext(FoobarContext);
 	const { pathname } = useRouter();
@@ -52,12 +53,15 @@ export const Navbar = ({
 					"data-theme",
 					foobar.konami ? "batman" : "dark"
 				);
+				changeThemeVariant("dark");
 				window.localStorage.setItem("theme", "dark");
 			} else {
 				document.documentElement.removeAttribute("data-theme");
+				changeThemeVariant("light");
 				window.localStorage.setItem("theme", "light");
 			}
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [darkTheme, foobar.konami]);
 
 	useEffect(() => {
