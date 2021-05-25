@@ -6,7 +6,12 @@ import { Title } from "styles/typography";
 const Playground = () => {
 	return (
 		<Fragment>
-			<Title>Playground</Title>
+			<Title size={5}>
+				Playground{" "}
+				<span role="img" aria-label="partying-face">
+					🥳
+				</span>
+			</Title>
 
 			<LiveCode />
 		</Fragment>
