@@ -34,7 +34,6 @@ export const getStaticProps: GetStaticProps = async () => {
 		filter: {
 			and: [
 				{ property: "Bought", checkbox: { equals: true } },
-				// @ts-expect-error
 				{ property: "Type", multi_select: { does_not_contain: "Switches" } },
 			],
 		},

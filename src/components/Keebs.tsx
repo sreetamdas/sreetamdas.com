@@ -19,13 +19,11 @@ const Keebs = ({ keebInfo }: TKeebInfo) => {
 			properties["Image"] as FilesPropertyValue
 		).files[0]?.name;
 		const tags = (
-			(properties["Type"] as MultiSelectPropertyValue)
-				.multi_select as unknown as Array<
-				MultiSelectPropertyValue["multi_select"]
-			>
-		).map(({ name, color }) => ({ name, color }));
-
-		// console.log(name, image, tags);
+			properties["Type"] as MultiSelectPropertyValue
+		).multi_select.map(({ name, color }) => ({
+			name,
+			color,
+		}));
 
 		return { name, image, tags };
 	});
