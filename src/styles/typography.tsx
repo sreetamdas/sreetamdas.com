@@ -112,7 +112,7 @@ export const StyledLink = styled.a`
 		text-decoration: none;
 	}
 	&:hover {
-		border-bottom: 0.18em solid var(--color-primary-accent);
+		border-bottom: 2px solid var(--color-primary-accent);
 		text-decoration: none;
 	}
 `;

@@ -117,7 +117,7 @@ export const MDXLinkStyled = styled.span`
 		color: var(--color-primary-accent);
 
 		:hover {
-			border-bottom: 0.18em solid var(--color-primary-accent);
+			border-bottom: 2px solid var(--color-primary-accent);
 			text-decoration: none;
 		}
 	}
