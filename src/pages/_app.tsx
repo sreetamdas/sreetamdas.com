@@ -153,6 +153,7 @@ const initTheme = {
 const MyApp = ({ Component, pageProps }: AppProps) => {
 	const [themeObject, setThemeObject] =
 		useState<TThemeObjectInitial>(initTheme);
+
 	const getCSSVarValue = (variable: string) => {
 		if (typeof window !== "undefined")
 			return getComputedStyle(document.body).getPropertyValue(variable);

@@ -1,4 +1,5 @@
 // import Playground from "@agney/playground";
+import { useMemo } from "react";
 import { LiveProvider, LiveEditor, LiveError, LivePreview } from "react-live";
 import styled from "styled-components";
 
@@ -30,30 +31,34 @@ const LiveCode = () => {
 	const code = formatCodeString(JSX_STRING);
 	const scope = { TextGradient };
 
-	return (
-		<FullWidth>
-			<Wrapper>
-				<LiveProvider {...{ code, scope }}>
-					<LiveEditor
-						style={{
-							fontFamily: "var(--font-family-code)",
-							backgroundColor: "#0a0e14",
-							borderRadius: "var(--border-radius)",
-						}}
-						theme={KARMA_PRISM_THEME}
-					/>
-					<StyledPreview />
-					<StyledError />
-				</LiveProvider>
-			</Wrapper>
-			{/* <Playground
+	return useMemo(
+		() => (
+			<FullWidth>
+				<Wrapper>
+					<LiveProvider {...{ code, scope }}>
+						<LiveEditor
+							style={{
+								fontFamily: "var(--font-family-code)",
+								backgroundColor: "#0a0e14",
+								borderRadius: "var(--border-radius)",
+							}}
+							theme={KARMA_PRISM_THEME}
+						/>
+						<StyledPreview />
+						<StyledError />
+					</LiveProvider>
+				</Wrapper>
+				{/* <Playground
 				id="example"
 				initialSnippet={snippet}
 				defaultEditorTab="javascript"
 				transformJs
 				mode={theme.theme!}
 			/> */}
-		</FullWidth>
+			</FullWidth>
+		),
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+		[]
 	);
 };
 export { LiveCode };
