@@ -28,6 +28,10 @@ export const Heavy = styled.span`
 	font-weight: bold;
 `;
 
+export const Accent = styled.span`
+	color: var(--color-primary-accent);
+`;
+
 export const Monospace = styled.span`
 	font-family: SFMono-Regular, Consolas, Roboto Mono, Menlo, Monaco,
 		Liberation Mono, Lucida FoobarWrapper, monospace;

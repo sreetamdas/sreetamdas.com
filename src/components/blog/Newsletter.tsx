@@ -3,8 +3,12 @@ import { FormEvent, useState } from "react";
 import styled, { css } from "styled-components";
 
 import { buttonStylesMixin } from "styles/special";
+import { Accent } from "styles/typography";
 
-export const Newsletter = () => {
+export type TNewsletterProps = {
+	subscriberCount: number;
+};
+export const Newsletter = ({ subscriberCount }: TNewsletterProps) => {
 	const [formSuccess, setFormSuccess] = useState(false);
 	const [isFormBeingSubmitted, setIsFormBeingSubmitted] = useState(false);
 	const [formError, setFormError] = useState<string>();
@@ -33,11 +37,12 @@ export const Newsletter = () => {
 			<NewsletterTitle>Sign up for my newsletter</NewsletterTitle>
 			<NewsletterText>
 				I curate links keeping up with the JavaScript, React and webdev world.
+				Join <Accent>{subscriberCount}</Accent> others!
 				<br />
 				May include Mechanical Keyboards.
 				<br />
 				<br />
-				No spam, unsubscribe anytime :)
+				No spam, unsubscribe anytime :&#41;
 				<br />
 				You can also{" "}
 				<a href="https://buttondown.email/sreetamdas/archive">
