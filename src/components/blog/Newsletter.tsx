@@ -4,6 +4,7 @@ import styled, { css } from "styled-components";
 
 import { buttonStylesMixin } from "styles/special";
 import { Accent } from "styles/typography";
+import { breakpoint } from "utils/style";
 
 export type TNewsletterProps = {
 	subscriberCount: number;
@@ -71,8 +72,12 @@ const Grid = styled.div`
 	padding-top: 100px;
 	display: grid;
 	justify-content: stretch;
-	grid-template-columns: 1fr 1fr;
+	grid-template-columns: 1fr;
 	gap: 1rem;
+
+	${breakpoint.from.md(css`
+		grid-template-columns: 1fr 1fr;
+	`)}
 `;
 
 const StyledForm = styled.form`
@@ -114,7 +119,7 @@ const SubscribeButton = styled.input.attrs({ type: "submit" })<{
 const NewsletterTitle = styled.h2`
 	padding: 0;
 	font-size: 2rem;
-	grid-column: 1 / span 2;
+	grid-column: 1 / -1;
 `;
 
 const FormMessageContainer = styled.p<{ success: boolean }>`
