@@ -1,7 +1,7 @@
 /* eslint-disable no-mixed-spaces-and-tabs */
 /* eslint-disable indent */
 import Link from "next/link";
-import { PropsWithChildren } from "react";
+import { PropsWithChildren, ReactNode } from "react";
 import styled, { css } from "styled-components";
 
 import { PaddingListItems } from "styles/typography";
@@ -142,7 +142,7 @@ const EndLinksGrid = styled.div`
 	}
 `;
 
-export const EndLinks = ({ children }: PropsWithChildren<{}>) => (
+export const EndLinks = ({ children }: PropsWithChildren<ReactNode>) => (
 	<EndLinksGrid>{children}</EndLinksGrid>
 );
 

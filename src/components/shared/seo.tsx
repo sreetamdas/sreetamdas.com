@@ -6,7 +6,7 @@ type TDocumentHeadProps = {
 	description?: string;
 };
 
-const siteURL = process.env.SITE_URL!;
+const siteURL = process.env.SITE_URL ?? "https://sreetamdas.com";
 
 export const DocumentHead = ({
 	title,

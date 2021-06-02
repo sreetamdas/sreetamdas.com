@@ -30,6 +30,7 @@ export const getStaticProps: GetStaticProps<
 	TFoobarPageProps,
 	TFoobarPageQuery
 > = async ({ params }) => {
+	// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 	const { page } = params!;
 	return { props: { page } };
 };

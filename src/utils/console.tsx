@@ -93,7 +93,7 @@ export const mergeLocalDataIntoStateOnMount = (
 		localforageCopy = { ...localforageData };
 	for (const key in localforageData) {
 		if (key === "unlocked" || key === "konami") {
-			result[key] = localforageCopy[key] ? localforageCopy[key]! : result[key]!;
+			result[key] = localforageCopy[key] ? localforageCopy[key] : result[key];
 		} else if (key === "completed" || key === "visitedPages") {
 			result[key] = [
 				...new Set([...result[key], ...localforageCopy[key]]),
@@ -103,7 +103,7 @@ export const mergeLocalDataIntoStateOnMount = (
 	return result;
 };
 
-export const isObject = (item: object): boolean => {
+export const isObject = (item: Record<string, unknown>): boolean => {
 	return item && typeof item === "object" && !Array.isArray(item);
 };
 

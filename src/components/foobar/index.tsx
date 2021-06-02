@@ -6,6 +6,7 @@ import React, {
 	createContext,
 	useCallback,
 	Fragment,
+	ReactNode,
 } from "react";
 
 import { Footer } from "components/Footer";
@@ -24,6 +25,7 @@ import {
 
 export const initialFoobarData: TFoobarData = {
 	visitedPages: [],
+	konami: false,
 	unlocked: false,
 	completed: [],
 	allAchievements: false,
@@ -41,7 +43,9 @@ const checkIfAllAchievementsAreDone = ({ completed }: TFoobarData) => {
 	return allPages.every((page) => completed.includes(page));
 };
 
-const FoobarWrapper = ({ children }: PropsWithChildren<{}>): JSX.Element => {
+const FoobarWrapper = ({
+	children,
+}: PropsWithChildren<ReactNode>): JSX.Element => {
 	const router = useRouter();
 	const [dataLoaded, setDataLoaded] = useState(false);
 	const [foobarData, setFoobarData] =
@@ -79,7 +83,7 @@ const FoobarWrapper = ({ children }: PropsWithChildren<{}>): JSX.Element => {
 		};
 		onMountAsync();
 
-		// @ts-expect-error
+		// @ts-expect-error add custom function
 		window.hack = () => {
 			// eslint-disable-next-line no-console
 			console.warn("/foobar/hack");
@@ -91,7 +95,7 @@ const FoobarWrapper = ({ children }: PropsWithChildren<{}>): JSX.Element => {
 
 	useEffect(() => {
 		if (dataLoaded) updateLocalData(foobarData);
-		// @ts-expect-error
+		// @ts-expect-error add custom fn
 		window.logStatus = () => {
 			// eslint-disable-next-line no-console
 			console.log(

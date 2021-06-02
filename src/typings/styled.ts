@@ -5,7 +5,3 @@ export type TGlobalThemeObject = {
 	getCSSVarValue: (variable: string) => string | undefined;
 	changeThemeVariant: (type: TGlobalThemeObject["theme"]) => void;
 };
-
-declare module "styled-components" {
-	export interface DefaultTheme extends TGlobalThemeObject {}
-}

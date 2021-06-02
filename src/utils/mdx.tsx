@@ -34,7 +34,7 @@ const MDXCodeBlock = (props: TMDXProviderCodeblockPassedProps) => {
 	} = props;
 
 	const language = className.replace(/language-/, "");
-	const shouldHighlightLine = calculateLinesToHighlight(metastring!);
+	const shouldHighlightLine = calculateLinesToHighlight(metastring);
 
 	return (
 		<Highlight
@@ -122,8 +122,8 @@ export const MDXLinkStyled = styled.span`
 		}
 	}
 `;
-type THrefPropsWithChildren = PropsWithChildren<{ href: string }>;
-const MDXLinkWrapper = (props: THrefPropsWithChildren) => {
+
+const MDXLinkWrapper = (props: PropsWithChildren<{ href: string }>) => {
 	return (
 		<MDXLinkStyled>
 			{props.href[0] === "/" ? (
@@ -201,7 +201,7 @@ const CodeblockLineNumber = styled.span`
  * ```lang {2, 4-5}
  */
 const RE_LINE_HIGHLIGHT = /{([\d,-]+)}/;
-const calculateLinesToHighlight = (meta: string) => {
+const calculateLinesToHighlight = (meta = "") => {
 	const regExpExecArray = RE_LINE_HIGHLIGHT.exec(meta);
 	if (!RE_LINE_HIGHLIGHT.test(meta) || regExpExecArray === null) {
 		return () => false;

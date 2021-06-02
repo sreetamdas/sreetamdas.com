@@ -177,7 +177,7 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
 			</Head>
 			<ThemeProvider theme={themeForContext}>
 				<GlobalStyles />
-				{/* @ts-expect-error */}
+				{/* @ts-expect-error MDX shut up */}
 				<MDXProvider components={MDXComponents}>
 					<FoobarWrapper>
 						<Layout>

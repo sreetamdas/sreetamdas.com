@@ -93,7 +93,7 @@ export const getAboutMDXPagesData = async () => {
 
 export const getMdxString = (content: JSX.Element) => {
 	return renderToStaticMarkup(
-		// @ts-expect-error
+		// @ts-expect-error MDX shut up
 		<MDXProvider components={MDXComponents}>{content}</MDXProvider>
 	);
 };
