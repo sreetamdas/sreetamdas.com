@@ -2,7 +2,7 @@ import { css, FlattenSimpleInterpolation } from "styled-components";
 
 export const BASE_FONT_SIZE = 18;
 
-type TBreakpoint = keyof typeof BREAKPOINTS;
+export type TBreakpoint = keyof typeof BREAKPOINTS;
 export const BREAKPOINTS = {
 	xs: 320,
 	sm: 400,

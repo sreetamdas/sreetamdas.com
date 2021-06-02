@@ -1,5 +1,7 @@
 import { useState, useRef, useEffect, RefObject } from "react";
 
+import { BREAKPOINTS, TBreakpoint } from "utils/style";
+
 export const random = (min: number, max: number) =>
 	min + Math.random() * (max - min);
 
@@ -81,4 +83,56 @@ export const useHasMounted = () => {
 		setHasMounted(true);
 	}, []);
 	return hasMounted;
+};
+
+const getBreakpointOrSize = (breakpoint: TBreakpoint | number) => {
+	if (typeof breakpoint === "string") {
+		return BREAKPOINTS[breakpoint];
+	}
+	return breakpoint;
+};
+
+type TUseBreakpointProps = (
+	{ from, to }: { from?: TBreakpoint | number; to: TBreakpoint | number },
+	{ onEnter, onLeave }: { onEnter: () => void; onLeave: () => void }
+) => void;
+
+/**
+ * Detect viewport size and handle -changes
+ * @param viewportSize the viewport range to be tracked
+ * @param callbackFn handler functions to be executed when the viewport is entering/leaving that size
+ */
+export const useBreakpointRange: TUseBreakpointProps = (
+	{ from = 0, to },
+	{ onEnter, onLeave }
+) => {
+	const [currentState, setCurrentState] = useState("");
+	const fromSize = getBreakpointOrSize(from);
+	const toSize = getBreakpointOrSize(to);
+
+	useEffect(() => {
+		function handleResize() {
+			const screenWidth = window.innerWidth;
+			const withinFrom = screenWidth > fromSize;
+			const withinTo = !toSize || screenWidth < toSize;
+			const newState = `${withinFrom}-${withinTo}`;
+
+			// Ensures it runs once on enter and once on leave
+			if (currentState !== newState) {
+				setCurrentState(newState);
+
+				if (withinFrom && withinTo && onEnter) {
+					onEnter();
+				} else if (onLeave) {
+					onLeave();
+				}
+			}
+		}
+
+		handleResize();
+
+		window.addEventListener("resize", handleResize);
+
+		return () => window.removeEventListener("resize", handleResize);
+	}, [fromSize, toSize, onEnter, onLeave, currentState, setCurrentState]);
 };
