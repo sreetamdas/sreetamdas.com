@@ -80,8 +80,6 @@ const GlobalStyles = createGlobalStyle`
 		color: var(--color-primary);
 		background-color: var(--color-background);
 		margin: 0;
-		height: 100%;
-		min-height: 100%;
 		line-height: 1.6;
 	}
 
@@ -181,7 +179,7 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
 				<MDXProvider components={MDXComponents}>
 					<FoobarWrapper>
 						<Layout>
-							<Navbar {...{ currentTheme: themeObject.theme }} />
+							<Navbar {...{ theme: themeObject.theme }} />
 							<Component {...pageProps} />
 						</Layout>
 					</FoobarWrapper>
