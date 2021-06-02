@@ -15,8 +15,14 @@ import {
 import { BlogPostTitle, TextGradient, Datestamp } from "styles/typography";
 import { TBlogPost } from "typings/blog";
 import { getBlogPostsData } from "utils/blog";
+import { getButtondownSubscriberCount } from "utils/misc";
 
-const Post = ({ post }: { post: TBlogPost }) => {
+type TBlogPostPageProps = {
+	post: TBlogPost;
+	subscriberCount: number;
+};
+
+const Post = ({ post, subscriberCount }: TBlogPostPageProps) => {
 	const MDXPost = dynamic(() => import(`content/blog/${post.slug}.mdx`), {
 		loading: () => <div dangerouslySetInnerHTML={{ __html: post.content }} />,
 	});
@@ -51,7 +57,7 @@ const Post = ({ post }: { post: TBlogPost }) => {
 				<ShareLinks {...post} />
 				<ScrollToTop topRef={topRef} />
 			</EndLinks>
-			<Newsletter />
+			<Newsletter {...{ subscriberCount }} />
 		</Fragment>
 	);
 };
@@ -66,12 +72,16 @@ export const getStaticPaths: GetStaticPaths = async () => {
 	return { paths, fallback: false };
 };
 
-export const getStaticProps: GetStaticProps = async ({ params }) => {
-	if (!params) return { props: {} };
+export const getStaticProps: GetStaticProps<
+	TBlogPostPageProps,
+	{ slug: string }
+> = async ({ params }) => {
+	const subscriberCount = await getButtondownSubscriberCount();
 	const postsData = await getBlogPostsData();
-	const post = postsData.find((postData) => postData.slug === params.slug)!;
+	// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+	const post = postsData.find((postData) => postData.slug === params?.slug)!;
 
-	return { props: { post } };
+	return { props: { post, subscriberCount } };
 };
 
 export default Post;

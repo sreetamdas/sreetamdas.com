@@ -1,6 +1,5 @@
 import { Client } from "@notionhq/client";
-import { DatabasesQueryResponse } from "@notionhq/client/build/src/api-endpoints";
-import { GetStaticProps } from "next";
+import { GetStaticProps, InferGetStaticPropsType } from "next";
 import { Fragment } from "react";
 
 import { Keebs } from "components/Keebs";
@@ -10,7 +9,9 @@ import { Title } from "styles/typography";
 
 const KEEBS_DATABASE_ID = "3539f182858f424f9cc2563c07dc300d";
 
-const Index = ({ response }: { response: DatabasesQueryResponse }) => {
+const Index = ({
+	response,
+}: InferGetStaticPropsType<typeof getStaticProps>) => {
 	return (
 		<Fragment>
 			<DocumentHead title="Keebs" />

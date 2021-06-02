@@ -1,4 +1,4 @@
-import { GetStaticPaths, GetStaticProps } from "next";
+import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from "next";
 import dynamic from "next/dynamic";
 import React, { Fragment } from "react";
 
@@ -11,7 +11,7 @@ import {
 } from "styles/typography";
 import { getAboutMDXPagesData } from "utils/blog";
 
-const Page = ({ post }: { post: { page: string; content: string } }) => {
+const Page = ({ post }: InferGetStaticPropsType<typeof getStaticProps>) => {
 	const { page, content } = post;
 	const MDXPage = dynamic(() => import(`content/${page}.mdx`), {
 		loading: () => <div dangerouslySetInnerHTML={{ __html: content }} />,
