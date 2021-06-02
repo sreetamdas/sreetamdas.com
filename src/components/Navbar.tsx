@@ -17,7 +17,7 @@ import {
 	FaSpotify,
 	FaDiscord,
 } from "react-icons/fa";
-import { FiRss, FiSun } from "react-icons/fi";
+import { FiRss, FiSun, FiMenu } from "react-icons/fi";
 import { IoMdMoon } from "react-icons/io";
 import styled, { ThemeContext } from "styled-components";
 
@@ -25,6 +25,7 @@ import { FoobarContext } from "components/foobar";
 import { IconContainer, NextIconLink } from "styles/blog";
 import { LinkTo } from "styles/typography";
 import { TGlobalThemeObject } from "typings/styled";
+import { useBreakpointRange } from "utils/hooks";
 import { checkIfNavbarShouldBeHidden } from "utils/misc";
 
 export const Navbar = ({
@@ -37,6 +38,19 @@ export const Navbar = ({
 	const [isNavbarShown, setIsNavbarShown] = useState(true);
 	const { updateFoobarDataPartially, ...foobar } = useContext(FoobarContext);
 	const { pathname } = useRouter();
+
+	function handleMobileOnEnter() {
+		console.log("enter");
+	}
+
+	function handleMobileOnLeave() {
+		console.log("leave");
+	}
+
+	useBreakpointRange(
+		{ to: "md" },
+		{ onEnter: handleMobileOnEnter, onLeave: handleMobileOnLeave }
+	);
 
 	useEffect(() => {
 		const root = window.document.documentElement;
@@ -152,6 +166,9 @@ export const Navbar = ({
 							/>
 						)}
 					</IconContainer>
+					<MobileMenuToggle onClick={handleThemeSwitch}>
+						<FiMenu />
+					</MobileMenuToggle>
 				</NavbarWithNavs>
 			</NavbarWithLogo>
 		</Fragment>
@@ -269,3 +286,5 @@ const NavbarLogo = styled.svg`
 	color: var(--color-primary-accent);
 	fill: var(--color-primary-accent);
 `;
+
+const MobileMenuToggle = styled(IconContainer).attrs({ as: "button" })``;
