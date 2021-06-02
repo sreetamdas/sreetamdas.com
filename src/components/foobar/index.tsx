@@ -19,6 +19,7 @@ import {
 	updateLocalData,
 	mergeLocalDataIntoStateOnMount,
 	mergeDeep,
+	IS_DEV,
 } from "utils/console";
 
 export const initialFoobarData: TFoobarData = {
@@ -85,7 +86,7 @@ const FoobarWrapper = ({ children }: PropsWithChildren<{}>): JSX.Element => {
 		};
 
 		doAsyncThings();
-		logConsoleMessages();
+		!IS_DEV && logConsoleMessages();
 	}, [updateFoobarDataPartially]);
 
 	useEffect(() => {

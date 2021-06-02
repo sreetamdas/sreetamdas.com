@@ -7,6 +7,8 @@ import {
 	FOOBAR_PAGES,
 } from "typings/console";
 
+export const IS_DEV = process.env.NODE_ENV === "development";
+
 export const doAsyncThings = async () => {
 	await localforage.setItem("foobar", "/foobar/localforage");
 };
@@ -164,7 +166,7 @@ export const logConsoleMessages = () => {
  * @param messages to be logged only during dev
  */
 export const dog = (...messages: Array<any>) => {
-	process.env.NODE_ENV === "development" &&
+	IS_DEV &&
 		// eslint-disable-next-line no-console
 		console.log(
 			"%cdev%c🐶",
