@@ -28,24 +28,22 @@ import { TGlobalThemeObject } from "typings/styled";
 import { useBreakpointRange } from "utils/hooks";
 import { checkIfNavbarShouldBeHidden } from "utils/misc";
 
-export const Navbar = ({
-	currentTheme,
-}: {
-	currentTheme: TGlobalThemeObject["theme"];
-}) => {
+export const Navbar = ({ theme }: { theme: TGlobalThemeObject["theme"] }) => {
 	const [darkTheme, setDarkTheme] = useState<boolean | undefined>(undefined);
 	const { changeThemeVariant } = useContext(ThemeContext);
 	const [isNavbarShown, setIsNavbarShown] = useState(true);
-	const { updateFoobarDataPartially, ...foobar } = useContext(FoobarContext);
+	const { konami } = useContext(FoobarContext);
 	const { pathname } = useRouter();
 
-	function handleMobileOnEnter() {
+	const handleMobileOnEnter = () => {
+		// eslint-disable-next-line no-console
 		console.log("enter");
-	}
+	};
 
-	function handleMobileOnLeave() {
+	const handleMobileOnLeave = () => {
+		// eslint-disable-next-line no-console
 		console.log("leave");
-	}
+	};
 
 	useBreakpointRange(
 		{ to: "md" },
@@ -65,7 +63,7 @@ export const Navbar = ({
 			if (darkTheme) {
 				document.documentElement.setAttribute(
 					"data-theme",
-					foobar.konami ? "batman" : "dark"
+					konami ? "batman" : "dark"
 				);
 				changeThemeVariant("dark");
 				window.localStorage.setItem("theme", "dark");
@@ -76,11 +74,11 @@ export const Navbar = ({
 			}
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [darkTheme, foobar.konami]);
+	}, [darkTheme, konami]);
 
 	useEffect(() => {
-		if (currentTheme) setDarkTheme(currentTheme === "dark");
-	}, [currentTheme]);
+		if (theme) setDarkTheme(theme === "dark");
+	}, [theme]);
 
 	useEffect(() => {
 		const handleKeyboardDarkModeToggle = (event: KeyboardEvent) => {
