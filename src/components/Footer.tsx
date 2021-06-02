@@ -13,4 +13,6 @@ export const Footer = () => {
 
 const FooterContent = styled.div`
 	font-size: 0.8rem;
+	padding: 0 1rem;
+	text-align: center;
 `;
