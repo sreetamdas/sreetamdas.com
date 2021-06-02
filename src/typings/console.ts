@@ -18,7 +18,7 @@ export type TFoobarPage = typeof FOOBAR_PAGES[keyof typeof FOOBAR_PAGES];
 
 export type TFoobarData = {
 	visitedPages: Array<string>;
-	konami?: boolean;
+	konami: boolean;
 	unlocked: boolean;
 	completed: Array<TFoobarPage>;
 	allAchievements: boolean;

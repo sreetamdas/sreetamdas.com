@@ -1,13 +1,7 @@
-import {
-	PropsWithChildren,
-	HTMLAttributes,
-	Key,
-	useCallback,
-	useEffect,
-	useRef,
-	useState,
-} from "react";
+import { PropsWithChildren, HTMLAttributes, Key, useState } from "react";
 import styled, { keyframes, CSSProperties, css } from "styled-components";
+
+import { usePrefersReducedMotion, useRandomInterval } from "utils/hooks";
 
 const range = (start: number, end?: number, step = 1) => {
 	const output = [];
@@ -22,61 +16,6 @@ const range = (start: number, end?: number, step = 1) => {
 };
 const random = (min: number, max: number) =>
 	Math.floor(Math.random() * (max - min)) + min;
-const QUERY = "(prefers-reduced-motion: no-preference)";
-const isRenderingOnServer = typeof window === "undefined";
-const getInitialState = () => {
-	// For our initial server render, we won't know if the user
-	// prefers reduced motion, but it doesn't matter. This value
-	// will be overwritten on the client, before any animations
-	// occur.
-	return isRenderingOnServer ? true : !window.matchMedia(QUERY).matches;
-};
-function usePrefersReducedMotion() {
-	const [prefersReducedMotion, setPrefersReducedMotion] = useState(
-		getInitialState
-	);
-	useEffect(() => {
-		const mediaQueryList = window.matchMedia(QUERY);
-		const listener = (event: MediaQueryListEvent) => {
-			setPrefersReducedMotion(!event.matches);
-		};
-
-		mediaQueryList.addListener(listener);
-		return () => {
-			mediaQueryList.removeListener(listener);
-		};
-	}, []);
-	return prefersReducedMotion;
-}
-const useRandomInterval = (
-	callback: () => void,
-	minDelay: null | number,
-	maxDelay: null | number
-) => {
-	const timeoutId = useRef<any>(null);
-	const savedCallback = useRef(callback);
-	useEffect(() => {
-		savedCallback.current = callback;
-	});
-	useEffect(() => {
-		if (typeof minDelay === "number" && typeof maxDelay === "number") {
-			const handleTick = () => {
-				const nextTickAt = random(minDelay, maxDelay);
-				timeoutId.current = window.setTimeout(() => {
-					savedCallback.current();
-					handleTick();
-				}, nextTickAt);
-			};
-			handleTick();
-		}
-
-		return () => window.clearTimeout(timeoutId.current);
-	}, [minDelay, maxDelay]);
-	const cancel = useCallback(function () {
-		window.clearTimeout(timeoutId.current);
-	}, []);
-	return cancel;
-};
 
 type TSparkle = {
 	id: string;

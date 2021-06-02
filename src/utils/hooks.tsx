@@ -1,6 +1,17 @@
-import { useState, useRef, useEffect, RefObject } from "react";
+import {
+	useState,
+	useRef,
+	useEffect,
+	RefObject,
+	createContext,
+	PropsWithChildren,
+	useCallback,
+	ReactNode,
+} from "react";
 
 import { BREAKPOINTS, TBreakpoint } from "utils/style";
+
+export const viewportContext = createContext({});
 
 export const random = (min: number, max: number) =>
 	min + Math.random() * (max - min);
@@ -45,7 +56,7 @@ export const useInterval = (callback: CallbackFn, delay: Delay) => {
 	}, [callback]);
 
 	useEffect(() => {
-		const handler = (...args: any[]) => savedCallback.current!(...args);
+		const handler = (...args: any[]) => savedCallback.current?.(...args);
 
 		if (delay !== null) {
 			const intervalId = setInterval(handler, delay);
@@ -68,7 +79,7 @@ export const useTimeout = (callback: CallbackFn, delay: Delay) => {
 	}, [callback]);
 
 	useEffect(() => {
-		const handler = (...args: any[]) => savedCallback.current!(...args);
+		const handler = (...args: any[]) => savedCallback.current?.(...args);
 
 		if (delay !== null) {
 			const id = setTimeout(handler, delay);
@@ -83,6 +94,86 @@ export const useHasMounted = () => {
 		setHasMounted(true);
 	}, []);
 	return hasMounted;
+};
+
+const QUERY = "(prefers-reduced-motion: no-preference)";
+const isRenderingOnServer = typeof window === "undefined";
+const getInitialState = () => {
+	// For our initial server render, we won't know if the user
+	// prefers reduced motion, but it doesn't matter. This value
+	// will be overwritten on the client, before any animations
+	// occur.
+	return isRenderingOnServer ? true : !window.matchMedia(QUERY).matches;
+};
+
+export const usePrefersReducedMotion = () => {
+	const [prefersReducedMotion, setPrefersReducedMotion] =
+		useState(getInitialState);
+
+	useEffect(() => {
+		const mediaQueryList = window.matchMedia(QUERY);
+		const listener = (event: MediaQueryListEvent) => {
+			setPrefersReducedMotion(!event.matches);
+		};
+
+		mediaQueryList.addListener(listener);
+		return () => {
+			mediaQueryList.removeListener(listener);
+		};
+	}, []);
+
+	return prefersReducedMotion;
+};
+
+export const useRandomInterval = (
+	callback: () => void,
+	minDelay: null | number,
+	maxDelay: null | number
+) => {
+	const timeoutId = useRef<any>(null);
+	const savedCallback = useRef(callback);
+	useEffect(() => {
+		savedCallback.current = callback;
+	});
+	useEffect(() => {
+		if (typeof minDelay === "number" && typeof maxDelay === "number") {
+			const handleTick = () => {
+				const nextTickAt = random(minDelay, maxDelay);
+				timeoutId.current = window.setTimeout(() => {
+					savedCallback.current();
+					handleTick();
+				}, nextTickAt);
+			};
+			handleTick();
+		}
+
+		return () => window.clearTimeout(timeoutId.current);
+	}, [minDelay, maxDelay]);
+	const cancel = useCallback(function () {
+		window.clearTimeout(timeoutId.current);
+	}, []);
+	return cancel;
+};
+
+export const ViewportProvider = ({
+	children,
+}: PropsWithChildren<ReactNode>) => {
+	const [width, setWidth] = useState(window?.innerWidth);
+	const handleWindowResize = () => {
+		setWidth(window.innerWidth);
+	};
+
+	useEffect(() => {
+		window.addEventListener("resize", handleWindowResize);
+
+		return () => window.removeEventListener("resize", handleWindowResize);
+	}, []);
+
+	return (
+		<viewportContext.Provider value={{ width }}>
+			{children}
+		</viewportContext.Provider>
+	);
 };
 
 const getBreakpointOrSize = (breakpoint: TBreakpoint | number) => {
@@ -111,7 +202,7 @@ export const useBreakpointRange: TUseBreakpointProps = (
 	const toSize = getBreakpointOrSize(to);
 
 	useEffect(() => {
-		function handleResize() {
+		const handleResize = () => {
 			const screenWidth = window.innerWidth;
 			const withinFrom = screenWidth > fromSize;
 			const withinTo = !toSize || screenWidth < toSize;
@@ -127,7 +218,7 @@ export const useBreakpointRange: TUseBreakpointProps = (
 					onLeave();
 				}
 			}
-		}
+		};
 
 		handleResize();
 
