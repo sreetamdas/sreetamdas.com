@@ -137,7 +137,7 @@ export const Navbar = ({
 					>
 						<FiRss aria-label="Blog RSS feed" title="Blog RSS feed" />
 					</IconContainer>
-					<IconContainer onClick={handleThemeSwitch} href="#">
+					<IconContainer as="button" onClick={handleThemeSwitch}>
 						{darkTheme === undefined ? (
 							<div style={{ width: "25px" }} />
 						) : darkTheme ? (
@@ -249,7 +249,7 @@ const NavbarWithNavs = styled.div`
 	display: grid;
 	grid-auto-flow: column;
 	grid-template-columns: repeat(auto-fill, minmax(min-content, 1fr));
-	grid-column-gap: 1rem;
+	gap: 1rem;
 	white-space: nowrap;
 	justify-self: end;
 	place-items: center;

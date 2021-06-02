@@ -57,6 +57,9 @@ export const StyledPre = styled.pre`
 
 export const IconContainer = styled.a<{ $styledOnHover?: boolean }>`
 	font-size: 25px;
+	background-color: transparent;
+	border: none;
+	cursor: pointer;
 
 	${({ $styledOnHover }) =>
 		$styledOnHover
