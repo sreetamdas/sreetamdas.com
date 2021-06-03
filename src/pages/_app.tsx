@@ -179,7 +179,7 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
 				<MDXProvider components={MDXComponents}>
 					<FoobarWrapper>
 						<Layout>
-							<Navbar {...{ theme: themeObject.theme }} />
+							<Navbar />
 							<Component {...pageProps} />
 						</Layout>
 					</FoobarWrapper>

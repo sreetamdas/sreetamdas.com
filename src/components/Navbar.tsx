@@ -1,3 +1,4 @@
+import { AnimatePresence } from "framer-motion";
 import { useRouter } from "next/router";
 import React, {
 	useState,
@@ -24,25 +25,54 @@ import styled, { ThemeContext } from "styled-components";
 import { FoobarContext } from "components/foobar";
 import { IconContainer, NextIconLink } from "styles/blog";
 import { LinkTo } from "styles/typography";
-import { TGlobalThemeObject } from "typings/styled";
 import { useBreakpointRange } from "utils/hooks";
 import { checkIfNavbarShouldBeHidden } from "utils/misc";
 
-export const Navbar = ({ theme }: { theme: TGlobalThemeObject["theme"] }) => {
-	const [darkTheme, setDarkTheme] = useState<boolean | undefined>(undefined);
-	const { changeThemeVariant } = useContext(ThemeContext);
+export const Navbar = () => {
 	const [isNavbarShown, setIsNavbarShown] = useState(true);
-	const { konami } = useContext(FoobarContext);
 	const { pathname } = useRouter();
+
+	useEffect(() => {
+		setIsNavbarShown(!checkIfNavbarShouldBeHidden(pathname.slice(1)));
+	}, [pathname]);
+
+	return isNavbarShown ? (
+		<Fragment>
+			<NavbarWithLogo>
+				<NextIconLink href="/">
+					<NavbarLogo
+						width="25"
+						height="25"
+						viewBox="0 0 25 25"
+						fill="none"
+						xmlns="http://www.w3.org/2000/svg"
+					>
+						<rect width="25" height="25" rx="6" fill="currentColor" />
+					</NavbarLogo>
+				</NextIconLink>
+				<NavbarMenu />
+			</NavbarWithLogo>
+		</Fragment>
+	) : null;
+};
+
+const NavbarMenu = () => {
+	const [darkTheme, setDarkTheme] = useState<boolean | undefined>(undefined);
+	const { theme, changeThemeVariant } = useContext(ThemeContext);
+	const { konami } = useContext(FoobarContext);
+	const [isMobileLayout, setIsMobileLayout] =
+		useState<boolean | undefined>(undefined);
 
 	const handleMobileOnEnter = () => {
 		// eslint-disable-next-line no-console
 		console.log("enter");
+		setIsMobileLayout(true);
 	};
 
 	const handleMobileOnLeave = () => {
 		// eslint-disable-next-line no-console
 		console.log("leave");
+		setIsMobileLayout(false);
 	};
 
 	useBreakpointRange(
@@ -94,83 +124,63 @@ export const Navbar = ({ theme }: { theme: TGlobalThemeObject["theme"] }) => {
 		};
 	}, [darkTheme]);
 
-	useEffect(() => {
-		setIsNavbarShown(!checkIfNavbarShouldBeHidden(pathname.slice(1)));
-	}, [pathname]);
-
 	const handleThemeSwitch = (event: React.MouseEvent) => {
 		event.preventDefault();
 		setDarkTheme(!darkTheme);
 	};
 
-	return isNavbarShown ? (
-		<Fragment>
-			<NavbarWithLogo>
-				<NextIconLink href="/">
-					<NavbarLogo
-						width="25"
-						height="25"
-						viewBox="0 0 25 25"
-						fill="none"
-						xmlns="http://www.w3.org/2000/svg"
-					>
-						<rect width="25" height="25" rx="6" fill="currentColor" />
-					</NavbarLogo>
-				</NextIconLink>
-				<NavbarWithNavs>
-					<NavLink href="/blog">blog</NavLink>
-					<NavLink href="/uses">uses</NavLink>
-					<NavLink href="/about">about</NavLink>
-					<IconContainer
-						href="https://github.com/sreetamdas"
-						target="_blank"
-						rel="noopener noreferrer"
-						$styledOnHover
-					>
-						<FaGithub
-							aria-label="Sreetam's GitHub"
-							title="Sreetam Das' GitHub"
+	return (
+		<AnimatePresence>
+			<NavbarWithNavs>
+				<NavLink href="/blog">blog</NavLink>
+				<NavLink href="/uses">uses</NavLink>
+				<NavLink href="/about">about</NavLink>
+				<IconContainer
+					href="https://github.com/sreetamdas"
+					target="_blank"
+					rel="noopener noreferrer"
+					$styledOnHover
+				>
+					<FaGithub aria-label="Sreetam's GitHub" title="Sreetam Das' GitHub" />
+				</IconContainer>
+				<IconContainer
+					href="https://twitter.com/_SreetamDas"
+					target="_blank"
+					rel="noopener noreferrer"
+					$styledOnHover
+				>
+					<FaTwitter
+						aria-label="Sreetam Das' Twitter"
+						title="Sreetam Das' Twitter"
+					/>
+				</IconContainer>
+				<IconContainer
+					href="https://sreetamdas.com/rss/feed.xml"
+					$styledOnHover
+				>
+					<FiRss aria-label="Blog RSS feed" title="Blog RSS feed" />
+				</IconContainer>
+				<IconContainer as="button" onClick={handleThemeSwitch}>
+					{darkTheme === undefined ? (
+						<div style={{ width: "25px" }} />
+					) : darkTheme ? (
+						<IoMdMoon
+							aria-label="Switch to Light Mode"
+							title="Switch to Light Mode"
 						/>
-					</IconContainer>
-					<IconContainer
-						href="https://twitter.com/_SreetamDas"
-						target="_blank"
-						rel="noopener noreferrer"
-						$styledOnHover
-					>
-						<FaTwitter
-							aria-label="Sreetam Das' Twitter"
-							title="Sreetam Das' Twitter"
+					) : (
+						<FiSun
+							aria-label="Switch to Dark Mode"
+							title="Switch to Dark Mode"
 						/>
-					</IconContainer>
-					<IconContainer
-						href="https://sreetamdas.com/rss/feed.xml"
-						$styledOnHover
-					>
-						<FiRss aria-label="Blog RSS feed" title="Blog RSS feed" />
-					</IconContainer>
-					<IconContainer as="button" onClick={handleThemeSwitch}>
-						{darkTheme === undefined ? (
-							<div style={{ width: "25px" }} />
-						) : darkTheme ? (
-							<IoMdMoon
-								aria-label="Switch to Light Mode"
-								title="Switch to Light Mode"
-							/>
-						) : (
-							<FiSun
-								aria-label="Switch to Dark Mode"
-								title="Switch to Dark Mode"
-							/>
-						)}
-					</IconContainer>
-					<MobileMenuToggle onClick={handleThemeSwitch}>
-						<FiMenu />
-					</MobileMenuToggle>
-				</NavbarWithNavs>
-			</NavbarWithLogo>
-		</Fragment>
-	) : null;
+					)}
+				</IconContainer>
+				<MobileMenuToggle onClick={handleThemeSwitch} isMobile={isMobileLayout}>
+					<FiMenu />
+				</MobileMenuToggle>
+			</NavbarWithNavs>
+		</AnimatePresence>
+	);
 };
 
 type TExternalLinksArray = Array<{
@@ -285,4 +295,9 @@ const NavbarLogo = styled.svg`
 	fill: var(--color-primary-accent);
 `;
 
-const MobileMenuToggle = styled(IconContainer).attrs({ as: "button" })``;
+const MobileMenuToggle = styled(IconContainer).attrs({ as: "button" })<{
+	isMobile?: boolean;
+}>`
+	color: ${({ isMobile }) =>
+		isMobile ? "var(--color-primary-accent)" : "var(--color-secondary-accent)"};
+`;
