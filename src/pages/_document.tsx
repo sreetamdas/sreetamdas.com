@@ -69,6 +69,8 @@ export default class MyDocument extends Document {
 const blockingSetInitialColorMode = `(function() {
 	${setInitialColorMode.toString()}
 	setInitialColorMode();
+	${setIsMobileLayout.toString()}
+	setIsMobileLayout();
 })()
 
 // IIFE!
@@ -108,6 +110,27 @@ function setInitialColorMode() {
 	root.style.setProperty("--initial-color-mode", colorMode);
 
 	if (colorMode === "dark") document.documentElement.setAttribute("data-theme", "dark");
+}
+
+function setIsMobileLayout() {
+	function getIsMobileLayout() {
+		/**
+		 * check whether we're rendering on a "mobile layout" device or not
+		 */
+		const mql = window.matchMedia(`(min-width: ${768}px)`);
+		const hasResult = typeof mql.matches === "boolean";
+
+		if (hasResult) {
+			return mql.matches ? "false" : "true";
+		}
+
+		// default to "desktop layout", and handle it with JS on mount
+		return "false";
+	}
+
+	const isMobileLayout = getIsMobileLayout();
+	const root = document.documentElement;
+	root.style.setProperty("--is-mobile-layout", isMobileLayout);
 }
 
 const TS_SOURCE_COMMENT = `
