@@ -1,12 +1,6 @@
-import { AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { useRouter } from "next/router";
-import React, {
-	useState,
-	useEffect,
-	useContext,
-	Fragment,
-	cloneElement,
-} from "react";
+import React, { useState, useEffect, useContext, Fragment, cloneElement } from "react";
 import {
 	FaGithub,
 	FaTwitter,
@@ -20,13 +14,14 @@ import {
 } from "react-icons/fa";
 import { FiRss, FiSun, FiMenu } from "react-icons/fi";
 import { IoMdMoon } from "react-icons/io";
-import styled, { ThemeContext } from "styled-components";
+import styled, { css, ThemeContext } from "styled-components";
 
 import { FoobarContext } from "components/foobar";
 import { IconContainer, NextIconLink } from "styles/blog";
 import { LinkTo } from "styles/typography";
 import { useBreakpointRange } from "utils/hooks";
 import { checkIfNavbarShouldBeHidden } from "utils/misc";
+import { breakpoint } from "utils/style";
 
 export const Navbar = () => {
 	const [isNavbarShown, setIsNavbarShown] = useState(true);
@@ -38,7 +33,7 @@ export const Navbar = () => {
 
 	return isNavbarShown ? (
 		<Fragment>
-			<NavbarWithLogo>
+			<Nav>
 				<NextIconLink href="/">
 					<NavbarLogo
 						width="25"
@@ -51,7 +46,7 @@ export const Navbar = () => {
 					</NavbarLogo>
 				</NextIconLink>
 				<NavbarMenu />
-			</NavbarWithLogo>
+			</Nav>
 		</Fragment>
 	) : null;
 };
@@ -60,25 +55,19 @@ const NavbarMenu = () => {
 	const [darkTheme, setDarkTheme] = useState<boolean | undefined>(undefined);
 	const { theme, changeThemeVariant } = useContext(ThemeContext);
 	const { konami } = useContext(FoobarContext);
-	const [isMobileLayout, setIsMobileLayout] =
-		useState<boolean | undefined>(undefined);
+	const [showDrawer, setShowDrawer] = useState(false);
 
 	const handleMobileOnEnter = () => {
 		// eslint-disable-next-line no-console
 		console.log("enter");
-		setIsMobileLayout(true);
 	};
 
 	const handleMobileOnLeave = () => {
 		// eslint-disable-next-line no-console
 		console.log("leave");
-		setIsMobileLayout(false);
 	};
 
-	useBreakpointRange(
-		{ to: "md" },
-		{ onEnter: handleMobileOnEnter, onLeave: handleMobileOnLeave }
-	);
+	useBreakpointRange({ to: "md" }, { onEnter: handleMobileOnEnter, onLeave: handleMobileOnLeave });
 
 	useEffect(() => {
 		const root = window.document.documentElement;
@@ -91,10 +80,7 @@ const NavbarMenu = () => {
 	useEffect(() => {
 		if (darkTheme !== undefined) {
 			if (darkTheme) {
-				document.documentElement.setAttribute(
-					"data-theme",
-					konami ? "batman" : "dark"
-				);
+				document.documentElement.setAttribute("data-theme", konami ? "batman" : "dark");
 				changeThemeVariant("dark");
 				window.localStorage.setItem("theme", "dark");
 			} else {
@@ -131,54 +117,58 @@ const NavbarMenu = () => {
 
 	return (
 		<AnimatePresence>
-			<NavbarWithNavs>
-				<NavLink href="/blog">blog</NavLink>
-				<NavLink href="/uses">uses</NavLink>
-				<NavLink href="/about">about</NavLink>
-				<IconContainer
-					href="https://github.com/sreetamdas"
-					target="_blank"
-					rel="noopener noreferrer"
-					$styledOnHover
-				>
-					<FaGithub aria-label="Sreetam's GitHub" title="Sreetam Das' GitHub" />
-				</IconContainer>
-				<IconContainer
-					href="https://twitter.com/_SreetamDas"
-					target="_blank"
-					rel="noopener noreferrer"
-					$styledOnHover
-				>
-					<FaTwitter
-						aria-label="Sreetam Das' Twitter"
-						title="Sreetam Das' Twitter"
-					/>
-				</IconContainer>
-				<IconContainer
-					href="https://sreetamdas.com/rss/feed.xml"
-					$styledOnHover
-				>
-					<FiRss aria-label="Blog RSS feed" title="Blog RSS feed" />
-				</IconContainer>
-				<IconContainer as="button" onClick={handleThemeSwitch}>
+			<NavContainer $showDrawer={showDrawer}>
+				<PageLinks>
+					<li>
+						<NavLink href="/blog">blog</NavLink>
+					</li>
+					<li>
+						<NavLink href="/uses">uses</NavLink>
+					</li>
+					<li>
+						<NavLink href="/about">about</NavLink>
+					</li>
+				</PageLinks>
+				<IconLinks>
+					<li>
+						<IconContainer
+							href="https://github.com/sreetamdas"
+							target="_blank"
+							rel="noopener noreferrer"
+							$styledOnHover
+						>
+							<FaGithub aria-label="Sreetam's GitHub" title="Sreetam Das' GitHub" />
+						</IconContainer>
+					</li>
+					<li>
+						<IconContainer
+							href="https://twitter.com/_SreetamDas"
+							target="_blank"
+							rel="noopener noreferrer"
+							$styledOnHover
+						>
+							<FaTwitter aria-label="Sreetam Das' Twitter" title="Sreetam Das' Twitter" />
+						</IconContainer>
+					</li>
+					<li>
+						<IconContainer href="https://sreetamdas.com/rss/feed.xml" $styledOnHover>
+							<FiRss aria-label="Blog RSS feed" title="Blog RSS feed" />
+						</IconContainer>
+					</li>
+				</IconLinks>
+				<ThemeSwitch onClick={handleThemeSwitch}>
 					{darkTheme === undefined ? (
 						<div style={{ width: "25px" }} />
 					) : darkTheme ? (
-						<IoMdMoon
-							aria-label="Switch to Light Mode"
-							title="Switch to Light Mode"
-						/>
+						<IoMdMoon aria-label="Switch to Light Mode" title="Switch to Light Mode" />
 					) : (
-						<FiSun
-							aria-label="Switch to Dark Mode"
-							title="Switch to Dark Mode"
-						/>
+						<FiSun aria-label="Switch to Dark Mode" title="Switch to Dark Mode" />
 					)}
-				</IconContainer>
-				<MobileMenuToggle onClick={handleThemeSwitch} isMobile={isMobileLayout}>
+				</ThemeSwitch>
+				<MobileMenuToggle onClick={handleThemeSwitch}>
 					<FiMenu />
 				</MobileMenuToggle>
-			</NavbarWithNavs>
+			</NavContainer>
 		</AnimatePresence>
 	);
 };
@@ -237,16 +227,11 @@ export const ExternalLinksOverlay = () => {
 		},
 	];
 
-	const IconWithProps = ({
-		icon,
-		title,
-	}: {
-		icon: JSX.Element;
-		title: string;
-	}) => cloneElement(icon, { title });
+	const IconWithProps = ({ icon, title }: { icon: JSX.Element; title: string }) =>
+		cloneElement(icon, { title });
 
 	return (
-		<NavbarWithNavs>
+		<Container>
 			{externalLinks.map(({ link, title, icon }) => (
 				<IconContainer
 					href={link}
@@ -258,11 +243,11 @@ export const ExternalLinksOverlay = () => {
 					<IconWithProps {...{ icon, title }} />
 				</IconContainer>
 			))}
-		</NavbarWithNavs>
+		</Container>
 	);
 };
 
-const NavbarWithLogo = styled.div`
+const Nav = styled.nav`
 	padding: 20px 0;
 	display: grid;
 	grid-template-columns: max-content auto;
@@ -270,7 +255,7 @@ const NavbarWithLogo = styled.div`
 	gap: 2rem;
 `;
 
-const NavbarWithNavs = styled.div`
+const Container = styled.div`
 	display: grid;
 	grid-auto-flow: column;
 	grid-template-columns: repeat(auto-fill, minmax(min-content, 1fr));
@@ -295,9 +280,27 @@ const NavbarLogo = styled.svg`
 	fill: var(--color-primary-accent);
 `;
 
-const MobileMenuToggle = styled(IconContainer).attrs({ as: "button" })<{
-	isMobile?: boolean;
-}>`
-	color: ${({ isMobile }) =>
-		isMobile ? "var(--color-primary-accent)" : "var(--color-secondary-accent)"};
+const ThemeSwitch = styled(IconContainer).attrs({ as: "button" })``;
+
+const MobileMenuToggle = styled(IconContainer).attrs({ as: "button" })`
+	color: var(--color-primary-accent);
+
+	${breakpoint.from.md(css`
+		color: var(--color-secondary-accent);
+	`)}
 `;
+
+const navLinksMixin = css`
+	display: contents;
+	list-style: none;
+`;
+
+const PageLinks = styled.ul`
+	${navLinksMixin}
+`;
+
+const IconLinks = styled.ul`
+	${navLinksMixin}
+`;
+
+const NavContainer = styled(motion(Container))<{ $showDrawer: boolean }>``;
