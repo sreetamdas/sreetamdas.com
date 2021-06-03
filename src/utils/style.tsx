@@ -16,8 +16,14 @@ const breakpointSides = ["until", "from"] as const;
 
 export const pixelToRem = (fontSize: number) => `${fontSize / BASE_FONT_SIZE}rem`;
 
-export const getIsMobileLayout = () =>
-	typeof window !== "undefined" && window.innerWidth < BREAKPOINTS.md;
+export const getIsMobileLayout = () => {
+	if (typeof window === "undefined") return false;
+
+	const root = window.document.documentElement;
+	const isMobileLayout = root.style.getPropertyValue("--is-mobile-layout") === "true";
+
+	return isMobileLayout;
+};
 
 type TBreakpointFn = {
 	[side in TBreakpointSide]: {
