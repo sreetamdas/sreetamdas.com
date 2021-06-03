@@ -1,12 +1,5 @@
 import { useRouter } from "next/router";
-import {
-	useState,
-	useEffect,
-	MouseEvent,
-	useContext,
-	ChangeEvent,
-	FormEvent,
-} from "react";
+import { useState, useEffect, MouseEvent, useContext, ChangeEvent, FormEvent } from "react";
 import styled from "styled-components";
 
 import { FoobarContext } from "components/foobar";
@@ -39,8 +32,7 @@ const TerminalContainer = styled.form`
 const TerminalInput = styled.input<{ isButton?: boolean; konami?: boolean }>`
 	padding: 10px 10px 10px ${({ isButton }) => (isButton ? "10px" : "0")};
 	font-size: 24px;
-	background-color: ${({ isButton }) =>
-		isButton ? "var(--color-primary-accent)" : "transparent"};
+	background-color: ${({ isButton }) => (isButton ? "var(--color-primary-accent)" : "transparent")};
 	color: ${({ konami }) => (konami ? "var(--color-background)" : "var(--color-primary)")};
 	border: none;
 	font-family: var(--font-family-code);
@@ -65,9 +57,7 @@ const Terminal = ({ visible = false, toggleTerminal }: TTerminalProps) => {
 		setTerminalVisible((prev) => !prev);
 		toggleTerminal();
 	};
-	const handleGoToSubmit = (
-		event: FormEvent<HTMLFormElement> | MouseEvent<HTMLInputElement>
-	) => {
+	const handleGoToSubmit = (event: FormEvent<HTMLFormElement> | MouseEvent<HTMLInputElement>) => {
 		event.stopPropagation();
 		event.preventDefault();
 

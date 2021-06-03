@@ -8,9 +8,7 @@ export const doAsyncThings = async () => {
 	await localforage.setItem("foobar", "/foobar/localforage");
 };
 
-export const getDataFromLocalForage = async <T extends unknown>(
-	key: string
-): Promise<T | null> => {
+export const getDataFromLocalForage = async <T extends unknown>(key: string): Promise<T | null> => {
 	try {
 		return await localforage.getItem(key);
 	} catch (error) {
@@ -90,9 +88,8 @@ export const mergeLocalDataIntoStateOnMount = (
 		if (key === "unlocked" || key === "konami") {
 			result[key] = localforageCopy[key] ? localforageCopy[key] : result[key];
 		} else if (key === "completed" || key === "visitedPages") {
-			result[key] = [
-				...new Set([...result[key], ...localforageCopy[key]]),
-			] as Array<TFoobarPage> & Array<string>;
+			result[key] = [...new Set([...result[key], ...localforageCopy[key]])] as Array<TFoobarPage> &
+				Array<string>;
 		}
 	}
 	return result;

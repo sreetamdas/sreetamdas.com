@@ -50,17 +50,11 @@ const Index = () => {
 				<Title size={2.5} as="h2" id="elixir">
 					Elixir
 				</Title>
-				<FullScreenImage
-					src="/karma/elixir.webp"
-					alt="Karma theme screenshot for Elixir"
-				/>
+				<FullScreenImage src="/karma/elixir.webp" alt="Karma theme screenshot for Elixir" />
 				<Title size={2.5} as="h2" id="python">
 					Python
 				</Title>
-				<FullScreenImage
-					src="/karma/python.webp"
-					alt="Karma theme screenshot for Python"
-				/>
+				<FullScreenImage src="/karma/python.webp" alt="Karma theme screenshot for Python" />
 			</WideImagesContainer>
 		</Fragment>
 	);

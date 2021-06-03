@@ -45,9 +45,7 @@ const MDXCodeBlock = (props: TMDXProviderCodeblockPassedProps) => {
 		>
 			{({ className, style, tokens, getLineProps, getTokenProps }) => (
 				<CodePreBlockWithHighlight {...{ style, className }}>
-					<CodeBlockLanguageWrapper>
-						{language.toLocaleUpperCase()}
-					</CodeBlockLanguageWrapper>
+					<CodeBlockLanguageWrapper>{language.toLocaleUpperCase()}</CodeBlockLanguageWrapper>
 					{tokens.map((line, i) => {
 						const lineProps = getLineProps({ line, key: i });
 						if (shouldHighlightLine(i)) {
@@ -149,10 +147,7 @@ const HandleMDXHeaderElement = (
 	};
 	const propsWithStyles = { ...propsWithoutChildren, style: headerStyles };
 	const LinkIcons = (
-		<LinkedHeaderIconWrapper
-			href={`#${propsWithoutChildren.id ?? ""}`}
-			isHovered={isHovered}
-		>
+		<LinkedHeaderIconWrapper href={`#${propsWithoutChildren.id ?? ""}`} isHovered={isHovered}>
 			<FiLink aria-label={propsWithoutChildren.id} />
 		</LinkedHeaderIconWrapper>
 	);

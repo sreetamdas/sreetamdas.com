@@ -1,11 +1,6 @@
 import { Fragment } from "react";
 
-import {
-	NavigationContainer,
-	Typography,
-	NavLink,
-	ChromaHighlight,
-} from "components/FancyPants";
+import { NavigationContainer, Typography, NavLink, ChromaHighlight } from "components/FancyPants";
 import { DocumentHead } from "components/shared/seo";
 import { FullWidth, Space } from "styles/layouts";
 

@@ -14,10 +14,7 @@ const getNewColor = () => {
 	return `hsl(${h}, ${s}%, ${l}%)`;
 };
 
-export const ChromaHighlight = ({
-	children,
-	link,
-}: PropsWithChildren<{ link?: boolean }>) => {
+export const ChromaHighlight = ({ children, link }: PropsWithChildren<{ link?: boolean }>) => {
 	const changeColor = () => {
 		const newColor = getNewColor();
 

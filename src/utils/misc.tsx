@@ -7,8 +7,7 @@ const BUTTONDOWN_API_KEY = process.env.BUTTONDOWN_API_KEY;
 /**
  * @param path page pathname without initial slash
  */
-export const checkIfNavbarShouldBeHidden = (path: string) =>
-	HIDE_NAVBAR_PAGES.includes(path);
+export const checkIfNavbarShouldBeHidden = (path: string) => HIDE_NAVBAR_PAGES.includes(path);
 
 type TButtondownSubscribersAPIResponseObject = {
 	count: number;

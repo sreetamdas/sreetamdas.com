@@ -154,8 +154,7 @@ export const FoobarButLocked = () => (
  * @param completedPage foobar page that is being currently accessed
  */
 export const FoobarSchrodinger = ({ completedPage }: TFoobarSchrodingerProps) => {
-	const { unlocked, dataLoaded, updateFoobarDataPartially, completed } =
-		useContext(FoobarContext);
+	const { unlocked, dataLoaded, updateFoobarDataPartially, completed } = useContext(FoobarContext);
 
 	useEffect(() => {
 		if (completedPage && !completed?.includes(completedPage)) {
@@ -167,7 +166,5 @@ export const FoobarSchrodinger = ({ completedPage }: TFoobarSchrodingerProps) =>
 		}
 	}, [completed, completedPage, updateFoobarDataPartially]);
 
-	return (
-		<Fragment>{dataLoaded ? <Foobar {...{ completedPage, unlocked }} /> : null}</Fragment>
-	);
+	return <Fragment>{dataLoaded ? <Foobar {...{ completedPage, unlocked }} /> : null}</Fragment>;
 };

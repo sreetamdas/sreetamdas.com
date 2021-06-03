@@ -165,9 +165,7 @@ export const ViewportProvider = ({ children }: PropsWithChildren<ReactNode>) => 
 		return () => window.removeEventListener("resize", handleWindowResize);
 	}, []);
 
-	return (
-		<viewportContext.Provider value={{ width }}>{children}</viewportContext.Provider>
-	);
+	return <viewportContext.Provider value={{ width }}>{children}</viewportContext.Provider>;
 };
 
 const getBreakpointOrSize = (breakpoint: TBreakpoint | number) => {
@@ -187,10 +185,7 @@ type TUseBreakpointProps = (
  * @param viewportSize the viewport range to be tracked
  * @param callbackFn handler functions to be executed when the viewport is entering/leaving that size
  */
-export const useBreakpointRange: TUseBreakpointProps = (
-	{ from = 0, to },
-	{ onEnter, onLeave }
-) => {
+export const useBreakpointRange: TUseBreakpointProps = ({ from = 0, to }, { onEnter, onLeave }) => {
 	const [currentState, setCurrentState] = useState("");
 	const fromSize = getBreakpointOrSize(from);
 	const toSize = getBreakpointOrSize(to);

@@ -21,13 +21,10 @@ export const Newsletter = ({ subscriberCount }: TNewsletterProps) => {
 		event.preventDefault();
 
 		const data = new FormData(event.target as HTMLFormElement);
-		const res = await fetch(
-			"https://buttondown.email/api/emails/embed-subscribe/sreetamdas",
-			{
-				body: data,
-				method: "POST",
-			}
-		);
+		const res = await fetch("https://buttondown.email/api/emails/embed-subscribe/sreetamdas", {
+			body: data,
+			method: "POST",
+		});
 		if (!res.ok) setFormError(await res.text());
 		else setFormSuccess(true);
 
@@ -45,8 +42,7 @@ export const Newsletter = ({ subscriberCount }: TNewsletterProps) => {
 				<br />
 				No spam, unsubscribe anytime :&#41;
 				<br />
-				You can also{" "}
-				<a href="https://buttondown.email/sreetamdas/archive">view previous issues</a>,
+				You can also <a href="https://buttondown.email/sreetamdas/archive">view previous issues</a>,
 				and <a href="https://buttondown.email/sreetamdas/rss">subscribe via RSS</a>!
 			</NewsletterText>
 			<div>

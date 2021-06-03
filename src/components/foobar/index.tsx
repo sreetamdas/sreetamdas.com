@@ -44,16 +44,14 @@ const checkIfAllAchievementsAreDone = ({ completed }: TFoobarData) => {
 const FoobarWrapper = ({ children }: PropsWithChildren<ReactNode>): JSX.Element => {
 	const router = useRouter();
 	const [dataLoaded, setDataLoaded] = useState(false);
-	const [foobarData, setFoobarData] =
-		useState<typeof initialFoobarData>(initialFoobarData);
+	const [foobarData, setFoobarData] = useState<typeof initialFoobarData>(initialFoobarData);
 
 	const updateFoobarDataPartially = useCallback(
 		(data: Partial<TFoobarData>, mergeManually = false) => {
 			setFoobarData((prevState) => {
 				let final: TFoobarData;
 				const temp = { ...prevState };
-				if (mergeManually)
-					final = mergeLocalDataIntoStateOnMount(temp, data as TFoobarData);
+				if (mergeManually) final = mergeLocalDataIntoStateOnMount(temp, data as TFoobarData);
 				else final = mergeDeep(temp, data);
 				return final;
 			});

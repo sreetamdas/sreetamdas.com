@@ -14,8 +14,7 @@ const range = (start: number, end?: number, step = 1) => {
 	}
 	return output;
 };
-const random = (min: number, max: number) =>
-	Math.floor(Math.random() * (max - min)) + min;
+const random = (min: number, max: number) => Math.floor(Math.random() * (max - min)) + min;
 
 type TSparkle = {
 	id: string;
@@ -65,12 +64,7 @@ const Sparkles = ({
 	return (
 		<Wrapper {...props}>
 			{sparkles.map((sparkle) => (
-				<Sparkle
-					key={sparkle.id}
-					color={sparkle.color}
-					size={sparkle.size}
-					style={sparkle.style}
-				/>
+				<Sparkle key={sparkle.id} color={sparkle.color} size={sparkle.size} style={sparkle.style} />
 			))}
 			<ChildWrapper>{children}</ChildWrapper>
 		</Wrapper>

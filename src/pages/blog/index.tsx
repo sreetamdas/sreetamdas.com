@@ -11,10 +11,7 @@ import { TBlogPost } from "typings/blog";
 import { getBlogPostsData } from "utils/blog";
 import { getButtondownSubscriberCount } from "utils/misc";
 
-const Index = ({
-	postsData,
-	subscriberCount,
-}: InferGetStaticPropsType<typeof getStaticProps>) => {
+const Index = ({ postsData, subscriberCount }: InferGetStaticPropsType<typeof getStaticProps>) => {
 	return (
 		<Fragment>
 			<DocumentHead title="Blog" />

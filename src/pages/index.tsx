@@ -3,14 +3,7 @@ import React, { Fragment } from "react";
 import { DocumentHead } from "components/shared/seo";
 import Tooling from "content/tooling.mdx";
 import { Center } from "styles/layouts";
-import {
-	TextGradient,
-	Heavy,
-	MDXText,
-	Title,
-	Paragraph,
-	StyledLink,
-} from "styles/typography";
+import { TextGradient, Heavy, MDXText, Title, Paragraph, StyledLink } from "styles/typography";
 
 const Index = () => {
 	return (
@@ -26,9 +19,9 @@ const Index = () => {
 				</Title>
 			</Center>
 			<Paragraph>
-				I&apos;m a developer from India in love with all things React. I&apos;ve also
-				worked with different languages like Python, JavaScript, TypeScript and C++, as
-				well as Node, Django and Redux.
+				I&apos;m a developer from India in love with all things React. I&apos;ve also worked with
+				different languages like Python, JavaScript, TypeScript and C++, as well as Node, Django and
+				Redux.
 			</Paragraph>
 			<Paragraph>
 				I&apos;m currently a Frontend Engineer at{" "}
@@ -49,8 +42,8 @@ const Index = () => {
 				a lot of other things, in no particular order:
 				<br />
 				<br />
-				CSGO, Reddit, Mechanical Keyboards, Open Source, GitHub, Factorio, Tactile
-				Switches, Batman and the Internet!
+				CSGO, Reddit, Mechanical Keyboards, Open Source, GitHub, Factorio, Tactile Switches, Batman
+				and the Internet!
 			</Paragraph>
 		</Fragment>
 	);

@@ -72,9 +72,7 @@ export const getAboutMDXPagesData = async () => {
 			};
 		})
 		.filter(({ page }) => existingAboutPageFiles.indexOf(page) === -1);
-	const entries = await Promise.all(
-		pagesData.map(({ page }) => import(`content/${page}.mdx`))
-	);
+	const entries = await Promise.all(pagesData.map(({ page }) => import(`content/${page}.mdx`)));
 	const pagesDataWithContent = pagesData.map((data, index) => {
 		const MDXContent = entries[index].default;
 
