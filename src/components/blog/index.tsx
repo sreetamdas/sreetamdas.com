@@ -17,21 +17,13 @@ export const ShareLinks = (post: TBlogPost) => {
 	const tweetShareURL = `https://twitter.com/intent/tweet?text=Check out: ${post.title}&url=${process.env.SITE_URL}/blog/${post.slug}%0D%0A&via=_SreetamDas`;
 
 	return (
-		<IconContainer
-			href={tweetShareURL}
-			target="_blank"
-			rel="noopener noreferrer"
-		>
+		<IconContainer href={tweetShareURL} target="_blank" rel="noopener noreferrer">
 			<FaTwitter aria-label="Share on Twitter" />
 		</IconContainer>
 	);
 };
 
-export const ScrollToTop = ({
-	topRef,
-}: {
-	topRef: RefObject<HTMLDivElement>;
-}) => {
+export const ScrollToTop = ({ topRef }: { topRef: RefObject<HTMLDivElement> }) => {
 	const scrollToTop = () => {
 		if (topRef) topRef.current?.scrollIntoView({ behavior: "smooth" });
 	};
@@ -49,9 +41,7 @@ export const BlogPostPreview = ({ post }: { post: TBlogPost }) => {
 	return (
 		<Link href={`/blog/${post.slug}`} scroll={false}>
 			<Card ref={hoverRef}>
-				<BlogPostPreviewTitle {...{ isHovered }}>
-					{post.title}
-				</BlogPostPreviewTitle>
+				<BlogPostPreviewTitle {...{ isHovered }}>{post.title}</BlogPostPreviewTitle>
 				<Datestamp>
 					{new Date(post.publishedAt).toLocaleDateString("en-US", {
 						month: "long",

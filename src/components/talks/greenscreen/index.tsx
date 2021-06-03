@@ -12,18 +12,13 @@ export const GreenScreen = () => {
 	const videoRef = useRef<HTMLVideoElement>(null);
 
 	useEffect(() => {
-		const canvas = canvasRef.current?.getContext(
-			"2d"
-		) as CanvasRenderingContext2D;
+		const canvas = canvasRef.current?.getContext("2d") as CanvasRenderingContext2D;
 		const video = videoRef.current;
 		const constraints: MediaStreamConstraints = {
 			audio: false,
 			video: { width: 640, height: 480 },
 		};
-		const rapidRefresh = (
-			video: HTMLVideoElement,
-			canvas: CanvasRenderingContext2D
-		) => {
+		const rapidRefresh = (video: HTMLVideoElement, canvas: CanvasRenderingContext2D) => {
 			canvas.drawImage(video, 0, 0);
 			processImage(canvas, canvasRef);
 

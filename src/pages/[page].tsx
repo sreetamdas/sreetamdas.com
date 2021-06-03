@@ -4,11 +4,7 @@ import React, { Fragment } from "react";
 
 import { DocumentHead } from "components/shared/seo";
 import { Center } from "styles/layouts";
-import {
-	Title,
-	PaddingListItems,
-	RemoveBulletsFromList,
-} from "styles/typography";
+import { Title, PaddingListItems, RemoveBulletsFromList } from "styles/typography";
 import { getAboutMDXPagesData } from "utils/blog";
 
 const Page = ({ post }: InferGetStaticPropsType<typeof getStaticProps>) => {

@@ -72,16 +72,14 @@ export const getStaticPaths: GetStaticPaths = async () => {
 	return { paths, fallback: false };
 };
 
-export const getStaticProps: GetStaticProps<
-	TBlogPostPageProps,
-	{ slug: string }
-> = async ({ params }) => {
-	const subscriberCount = await getButtondownSubscriberCount();
-	const postsData = await getBlogPostsData();
-	// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-	const post = postsData.find((postData) => postData.slug === params?.slug)!;
+export const getStaticProps: GetStaticProps<TBlogPostPageProps, { slug: string }> =
+	async ({ params }) => {
+		const subscriberCount = await getButtondownSubscriberCount();
+		const postsData = await getBlogPostsData();
+		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+		const post = postsData.find((postData) => postData.slug === params?.slug)!;
 
-	return { props: { post, subscriberCount } };
-};
+		return { props: { post, subscriberCount } };
+	};
 
 export default Post;

@@ -32,9 +32,7 @@ export const initialFoobarData: TFoobarData = {
 };
 
 // we're gonna hydrate this just below, and <FoobarWrapper /> wraps the entire usable DOM anyway
-export const FoobarContext = createContext<TFoobarContext>(
-	{} as TFoobarContext
-);
+export const FoobarContext = createContext<TFoobarContext>({} as TFoobarContext);
 
 const checkIfAllAchievementsAreDone = ({ completed }: TFoobarData) => {
 	const allPages = Object.values(FOOBAR_PAGES);
@@ -43,9 +41,7 @@ const checkIfAllAchievementsAreDone = ({ completed }: TFoobarData) => {
 	return allPages.every((page) => completed.includes(page));
 };
 
-const FoobarWrapper = ({
-	children,
-}: PropsWithChildren<ReactNode>): JSX.Element => {
+const FoobarWrapper = ({ children }: PropsWithChildren<ReactNode>): JSX.Element => {
 	const router = useRouter();
 	const [dataLoaded, setDataLoaded] = useState(false);
 	const [foobarData, setFoobarData] =
@@ -98,10 +94,7 @@ const FoobarWrapper = ({
 		// @ts-expect-error add custom fn
 		window.logStatus = () => {
 			// eslint-disable-next-line no-console
-			console.log(
-				"🐶 here's your data:",
-				`\n\n${JSON.stringify(foobarData, null, 2)}`
-			);
+			console.log("🐶 here's your data:", `\n\n${JSON.stringify(foobarData, null, 2)}`);
 		};
 	}, [foobarData, dataLoaded]);
 
@@ -125,12 +118,7 @@ const FoobarWrapper = ({
 				completed: [...foobarData.completed, FOOBAR_PAGES.navigator],
 			});
 		}
-	}, [
-		foobarData.completed,
-		foobarData.visitedPages,
-		router,
-		updateFoobarDataPartially,
-	]);
+	}, [foobarData.completed, foobarData.visitedPages, router, updateFoobarDataPartially]);
 
 	useEffect(() => {
 		// for the `completed` achievement

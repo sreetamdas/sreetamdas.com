@@ -15,15 +15,14 @@ export type TKeebInfo = {
 const Keebs = ({ keebInfo }: TKeebInfo) => {
 	const keebDetails = keebInfo.map(({ properties }) => {
 		const name = (properties["Name"] as TitlePropertyValue).title[0].plain_text;
-		const image: string | undefined = (
-			properties["Image"] as FilesPropertyValue
-		).files[0]?.name;
-		const tags = (
-			properties["Type"] as MultiSelectPropertyValue
-		).multi_select.map(({ name, color }) => ({
-			name,
-			color,
-		}));
+		const image: string | undefined = (properties["Image"] as FilesPropertyValue).files[0]
+			?.name;
+		const tags = (properties["Type"] as MultiSelectPropertyValue).multi_select.map(
+			({ name, color }) => ({
+				name,
+				color,
+			})
+		);
 
 		return { name, image, tags };
 	});

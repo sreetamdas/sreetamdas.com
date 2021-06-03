@@ -1,10 +1,4 @@
-import Document, {
-	DocumentContext,
-	Html,
-	Head,
-	Main,
-	NextScript,
-} from "next/document";
+import Document, { DocumentContext, Html, Head, Main, NextScript } from "next/document";
 import { ServerStyleSheet } from "styled-components";
 
 export default class MyDocument extends Document {
@@ -15,8 +9,7 @@ export default class MyDocument extends Document {
 		try {
 			ctx.renderPage = () =>
 				originalRenderPage({
-					enhanceApp: (App) => (props) =>
-						sheet.collectStyles(<App {...props} />),
+					enhanceApp: (App) => (props) => sheet.collectStyles(<App {...props} />),
 				});
 
 			const initialProps = await Document.getInitialProps(ctx);
@@ -42,10 +35,7 @@ export default class MyDocument extends Document {
 					<meta name="theme-color" content="#9D86E9" />
 					<link rel="apple-touch-icon" href="/logo.png" />
 					<meta name="apple-mobile-web-app-title" content="Sreetam Das' Blog" />
-					<meta
-						name="apple-mobile-web-app-status-bar-style"
-						content="default"
-					/>
+					<meta name="apple-mobile-web-app-status-bar-style" content="default" />
 					<meta name="apple-mobile-web-app-capable" content="yes" />
 					<meta name="mobile-web-app-capable" content="yes" />
 					<link
@@ -117,8 +107,7 @@ function setInitialColorMode() {
 	const root = document.documentElement;
 	root.style.setProperty("--initial-color-mode", colorMode);
 
-	if (colorMode === "dark")
-		document.documentElement.setAttribute("data-theme", "dark");
+	if (colorMode === "dark") document.documentElement.setAttribute("data-theme", "dark");
 }
 
 const TS_SOURCE_COMMENT = `

@@ -16,10 +16,7 @@ const ProgressBar = styled(motion.div)`
 
 export const ReadingProgress = () => {
 	const { scrollYProgress } = useViewportScroll();
-	const progressValue = useTransform(
-		scrollYProgress,
-		(value) => `${value * 100}%`
-	);
+	const progressValue = useTransform(scrollYProgress, (value) => `${value * 100}%`);
 
 	return <ProgressBar style={{ width: progressValue }} />;
 };

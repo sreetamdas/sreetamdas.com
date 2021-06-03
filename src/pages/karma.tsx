@@ -42,17 +42,11 @@ const Index = () => {
 				<Title size={2.5} as="h2" id="react">
 					React + TypeScript
 				</Title>
-				<FullScreenImage
-					src="/karma/react.webp"
-					alt="Karma theme screenshot for React"
-				/>
+				<FullScreenImage src="/karma/react.webp" alt="Karma theme screenshot for React" />
 				<Title size={2.5} as="h2" id="css">
 					CSS
 				</Title>
-				<FullScreenImage
-					src="/karma/css.webp"
-					alt="Karma theme screenshot for CSS"
-				/>
+				<FullScreenImage src="/karma/css.webp" alt="Karma theme screenshot for CSS" />
 				<Title size={2.5} as="h2" id="elixir">
 					Elixir
 				</Title>

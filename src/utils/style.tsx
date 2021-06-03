@@ -14,8 +14,7 @@ export const BREAKPOINTS = {
 type TBreakpointSide = typeof breakpointSides[number];
 const breakpointSides = ["until", "from"] as const;
 
-export const pixelToRem = (fontSize: number) =>
-	`${fontSize / BASE_FONT_SIZE}rem`;
+export const pixelToRem = (fontSize: number) => `${fontSize / BASE_FONT_SIZE}rem`;
 
 export const getIsMobileLayout = () =>
 	typeof window !== "undefined" && window.innerWidth < BREAKPOINTS.md;

@@ -1,11 +1,6 @@
 import localforage from "localforage";
 
-import {
-	TFoobarData,
-	TFoobarContext,
-	TFoobarPage,
-	FOOBAR_PAGES,
-} from "typings/console";
+import { TFoobarData, TFoobarContext, TFoobarPage, FOOBAR_PAGES } from "typings/console";
 
 export const IS_DEV = process.env.NODE_ENV === "development";
 
@@ -146,10 +141,7 @@ export const logConsoleMessages = () => {
 		"font-size: 1.5em; font-family: monospace; font-weight: bold;"
 	);
 	// eslint-disable-next-line no-console
-	console.log(
-		`%c${CONSOLE_MESSAGE}`,
-		"font-size: 1.1em; font-family: monospace"
-	);
+	console.log(`%c${CONSOLE_MESSAGE}`, "font-size: 1.1em; font-family: monospace");
 
 	// eslint-disable-next-line no-console
 	console.groupCollapsed("need a hint?");

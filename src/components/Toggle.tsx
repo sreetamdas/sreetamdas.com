@@ -41,9 +41,9 @@ const Switch = styled.div<{ dark: boolean }>`
 		position: absolute;
 		top: 50%;
 		left: 50%;
-		box-shadow: 0 -23px 0 #5628ee, 0 23px 0 #5628ee, 23px 0 0 #5628ee,
-			-23px 0 0 #5628ee, 15px 15px 0 #5628ee, -15px 15px 0 #5628ee,
-			15px -15px 0 #5628ee, -15px -15px 0 #5628ee;
+		box-shadow: 0 -23px 0 #5628ee, 0 23px 0 #5628ee, 23px 0 0 #5628ee, -23px 0 0 #5628ee,
+			15px 15px 0 #5628ee, -15px 15px 0 #5628ee, 15px -15px 0 #5628ee,
+			-15px -15px 0 #5628ee;
 		-webkit-transform: scale(0);
 		transform: scale(0);
 		-webkit-transition: all 0.3s ease;
@@ -56,8 +56,7 @@ const Switch = styled.div<{ dark: boolean }>`
 					box-shadow: inset 32px -32px 0 0 #fff;
 					-webkit-transform: scale(0.5) rotate(0deg);
 					transform: scale(0.5) rotate(0deg);
-					-webkit-transition: box-shadow 0.2s ease 0s,
-						-webkit-transform 0.3s ease 0.1s;
+					-webkit-transition: box-shadow 0.2s ease 0s, -webkit-transform 0.3s ease 0.1s;
 					transition: box-shadow 0.2s ease 0s, -webkit-transform 0.3s ease 0.1s;
 					transition: transform 0.3s ease 0.1s, box-shadow 0.2s ease 0s;
 					transition: transform 0.3s ease 0.1s, box-shadow 0.2s ease 0s,
@@ -74,8 +73,7 @@ const Switch = styled.div<{ dark: boolean }>`
 						-webkit-transition: -webkit-transform 0.5s ease 0.15s;
 						transition: -webkit-transform 0.5s ease 0.15s;
 						transition: transform 0.5s ease 0.15s;
-						transition: transform 0.5s ease 0.15s,
-							-webkit-transform 0.5s ease 0.15s;
+						transition: transform 0.5s ease 0.15s, -webkit-transform 0.5s ease 0.15s;
 					}
 			  `
 			: null}

@@ -41,8 +41,7 @@ const TerminalInput = styled.input<{ isButton?: boolean; konami?: boolean }>`
 	font-size: 24px;
 	background-color: ${({ isButton }) =>
 		isButton ? "var(--color-primary-accent)" : "transparent"};
-	color: ${({ konami }) =>
-		konami ? "var(--color-background)" : "var(--color-primary)"};
+	color: ${({ konami }) => (konami ? "var(--color-background)" : "var(--color-primary)")};
 	border: none;
 	font-family: var(--font-family-code);
 

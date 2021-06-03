@@ -13,8 +13,7 @@ import { BREAKPOINTS, TBreakpoint } from "utils/style";
 
 export const viewportContext = createContext({});
 
-export const random = (min: number, max: number) =>
-	min + Math.random() * (max - min);
+export const random = (min: number, max: number) => min + Math.random() * (max - min);
 
 export const useHover: () => [RefObject<HTMLDivElement>, boolean] = () => {
 	const [value, setValue] = useState(false);
@@ -107,8 +106,7 @@ const getInitialState = () => {
 };
 
 export const usePrefersReducedMotion = () => {
-	const [prefersReducedMotion, setPrefersReducedMotion] =
-		useState(getInitialState);
+	const [prefersReducedMotion, setPrefersReducedMotion] = useState(getInitialState);
 
 	useEffect(() => {
 		const mediaQueryList = window.matchMedia(QUERY);
@@ -155,9 +153,7 @@ export const useRandomInterval = (
 	return cancel;
 };
 
-export const ViewportProvider = ({
-	children,
-}: PropsWithChildren<ReactNode>) => {
+export const ViewportProvider = ({ children }: PropsWithChildren<ReactNode>) => {
 	const [width, setWidth] = useState(window?.innerWidth);
 	const handleWindowResize = () => {
 		setWidth(window.innerWidth);
@@ -170,9 +166,7 @@ export const ViewportProvider = ({
 	}, []);
 
 	return (
-		<viewportContext.Provider value={{ width }}>
-			{children}
-		</viewportContext.Provider>
+		<viewportContext.Provider value={{ width }}>{children}</viewportContext.Provider>
 	);
 };
 

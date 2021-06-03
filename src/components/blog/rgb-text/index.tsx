@@ -71,6 +71,5 @@ const Highlighted = styled.span<{ color?: string }>`
 	letter-spacing: -0.3rem;
 	${WaveMixin}
 
-	color: ${({ color }) =>
-		`var(--color-chameleon-${color}, var(--color-primary-accent))`}
+	color: ${({ color }) => `var(--color-chameleon-${color}, var(--color-primary-accent))`}
 `;

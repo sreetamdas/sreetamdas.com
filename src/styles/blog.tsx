@@ -84,10 +84,7 @@ export const LinkedHeaderIconWrapper = styled.a<{ isHovered: boolean }>`
 	transition: opacity 200ms ease;
 `;
 
-export const NextIconLink = ({
-	children,
-	href,
-}: PropsWithChildren<{ href: string }>) => {
+export const NextIconLink = ({ children, href }: PropsWithChildren<{ href: string }>) => {
 	return (
 		<Link href={href} passHref>
 			<IconContainer href={href} tabIndex={0}>
@@ -124,8 +121,7 @@ export const ReadMorePrompt = styled.p<{ isHovered: boolean }>`
 	font-weight: bold;
 	font-size: 0.8rem;
 	margin: 0;
-	color: ${({ isHovered }) =>
-		isHovered ? "var(--color-primary-accent)" : null};
+	color: ${({ isHovered }) => (isHovered ? "var(--color-primary-accent)" : null)};
 `;
 
 const EndLinksGrid = styled.div`

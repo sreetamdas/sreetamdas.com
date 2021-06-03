@@ -37,8 +37,8 @@ export const Newsletter = ({ subscriberCount }: TNewsletterProps) => {
 		<Grid>
 			<NewsletterTitle>Sign up for my newsletter</NewsletterTitle>
 			<NewsletterText>
-				I curate links keeping up with the JavaScript, React and webdev world.
-				Join <Accent>{subscriberCount}</Accent> others!
+				I curate links keeping up with the JavaScript, React and webdev world. Join{" "}
+				<Accent>{subscriberCount}</Accent> others!
 				<br />
 				May include Mechanical Keyboards.
 				<br />
@@ -46,11 +46,8 @@ export const Newsletter = ({ subscriberCount }: TNewsletterProps) => {
 				No spam, unsubscribe anytime :&#41;
 				<br />
 				You can also{" "}
-				<a href="https://buttondown.email/sreetamdas/archive">
-					view previous issues
-				</a>
-				, and{" "}
-				<a href="https://buttondown.email/sreetamdas/rss">subscribe via RSS</a>!
+				<a href="https://buttondown.email/sreetamdas/archive">view previous issues</a>,
+				and <a href="https://buttondown.email/sreetamdas/rss">subscribe via RSS</a>!
 			</NewsletterText>
 			<div>
 				<StyledForm onSubmit={handleFormSubmit}>
@@ -123,9 +120,7 @@ const NewsletterTitle = styled.h2`
 `;
 
 const FormMessageContainer = styled.p<{ success: boolean }>`
-	color: var(
-		${({ success }) => (success ? "--color-success-accent" : "--color-error")}
-	);
+	color: var(${({ success }) => (success ? "--color-success-accent" : "--color-error")});
 	padding: 0;
 	margin: 0;
 	font-size: 14px;

@@ -9,12 +9,7 @@ import { FoobarWrapper } from "components/foobar";
 import { Layout } from "styles/layouts";
 import { Paragraph } from "styles/typography";
 import { TGlobalThemeObject } from "typings/styled";
-import {
-	MDXCodeBlock,
-	MDXHeadingWrapper,
-	ImageWrapper,
-	MDXLinkWrapper,
-} from "utils/mdx";
+import { MDXCodeBlock, MDXHeadingWrapper, ImageWrapper, MDXLinkWrapper } from "utils/mdx";
 import { BASE_FONT_SIZE, pixelToRem } from "utils/style";
 
 export const MDXComponents = {
@@ -149,17 +144,14 @@ const initTheme = {
 };
 
 const MyApp = ({ Component, pageProps }: AppProps) => {
-	const [themeObject, setThemeObject] =
-		useState<TThemeObjectInitial>(initTheme);
+	const [themeObject, setThemeObject] = useState<TThemeObjectInitial>(initTheme);
 
 	const getCSSVarValue = (variable: string) => {
 		if (typeof window !== "undefined")
 			return getComputedStyle(document.body).getPropertyValue(variable);
 		return undefined;
 	};
-	const changeThemeVariant: TGlobalThemeObject["changeThemeVariant"] = (
-		theme
-	) => {
+	const changeThemeVariant: TGlobalThemeObject["changeThemeVariant"] = (theme) => {
 		setThemeObject({ theme });
 	};
 	const themeForContext: TGlobalThemeObject = {
