@@ -76,8 +76,12 @@ const Grid = styled.div`
 const StyledForm = styled.form`
 	width: 100%;
 	display: grid;
-	grid-template-columns: 1fr 2fr;
+	grid-template-columns: 2fr 1fr;
 	gap: 1rem;
+
+	${breakpoint.from.md(css`
+		grid-template-columns: 1fr 2fr;
+	`)}
 `;
 
 const StyledInput = styled.input.attrs({
@@ -98,8 +102,12 @@ const SubscribeButton = styled.input.attrs({ type: "submit" })<{
 	${buttonStylesMixin}
 	font-size: 16px;
 	padding: 0;
-	grid-column: 1;
 	align-self: baseline;
+	grid-column: 2;
+
+	${breakpoint.from.md(css`
+		grid-column: 1;
+	`)}
 
 	${({ disabled }) =>
 		disabled &&
@@ -122,6 +130,11 @@ const FormMessageContainer = styled.p<{ success: boolean }>`
 	font-size: 14px;
 	display: grid;
 	align-content: center;
+	grid-column: 1;
+
+	${breakpoint.from.md(css`
+		grid-column: 2;
+	`)}
 `;
 
 const NewsletterText = styled.div`
