@@ -1,4 +1,3 @@
-/* eslint-disable indent */
 import { FormEvent, useState } from "react";
 import styled, { css } from "styled-components";
 

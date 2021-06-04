@@ -1,6 +1,7 @@
 import { AnimatePresence, motion, Variants } from "framer-motion";
+import Link from "next/link";
 import { useRouter } from "next/router";
-import React, { useState, useEffect, useContext, Fragment, cloneElement } from "react";
+import React, { useState, useEffect, useContext, cloneElement } from "react";
 import {
 	FaGithub,
 	FaTwitter,
@@ -17,7 +18,7 @@ import { IoMdMoon } from "react-icons/io";
 import styled, { css, ThemeContext } from "styled-components";
 
 import { FoobarContext } from "components/foobar";
-import { IconContainer, NextIconLink } from "styles/blog";
+import { IconContainer } from "styles/blog";
 import { LinkTo } from "styles/typography";
 import { useBreakpointRange } from "utils/hooks";
 import { checkIfNavbarShouldBeHidden } from "utils/misc";
@@ -32,25 +33,24 @@ export const Navbar = () => {
 	}, [pathname]);
 
 	return isNavbarShown ? (
-		<Nav>
-			<NextIconLink href="/">
-				<NavbarLogo
-					width="25"
-					height="25"
-					viewBox="0 0 25 25"
-					fill="none"
-					xmlns="http://www.w3.org/2000/svg"
-				>
-					<rect width="25" height="25" rx="6" fill="currentColor" />
-				</NavbarLogo>
-			</NextIconLink>
-			<NavbarMenu />
-		</Nav>
+		<Header>
+			<HeaderInner>
+				<Link href="/" passHref>
+					<IconContainer tabIndex={0}>
+						<LogoSVG aria-label="Home">
+							<title>Home</title>
+							<rect width="25" height="25" rx="6" fill="currentColor" />
+						</LogoSVG>
+					</IconContainer>
+				</Link>
+				<NavbarMenu />
+			</HeaderInner>
+		</Header>
 	) : null;
 };
 
 const NavLinks = () => (
-	<Fragment>
+	<Nav>
 		<PageLinks>
 			<li>
 				<NavLink href="/blog">blog</NavLink>
@@ -89,7 +89,7 @@ const NavLinks = () => (
 				</IconContainer>
 			</li>
 		</IconLinks>
-	</Fragment>
+	</Nav>
 );
 
 const variants: Variants = {
@@ -197,8 +197,14 @@ const NavbarMenu = () => {
 						<FiSun aria-label="Switch to Dark Mode" title="Switch to Dark Mode" />
 					)}
 				</ThemeSwitch>
-				<MobileMenuToggle onClick={handleToggleDrawer}>
-					<FiMenu />
+				<MobileMenuToggle
+					onClick={handleToggleDrawer}
+					aria-label={showDrawer ? "Close menu" : "Open menu"}
+				>
+					<FiMenu
+						aria-label={showDrawer ? "Close menu" : "Open menu"}
+						title={showDrawer ? "Close menu" : "Open menu"}
+					/>
 				</MobileMenuToggle>
 			</NavContainer>
 			<FullScreenWrapper
@@ -206,6 +212,7 @@ const NavbarMenu = () => {
 				variants={variants}
 				initial="closed"
 				animate={showDrawer ? "open" : "closed"}
+				// transition={{ type: "" }}
 			>
 				<NavLinks />
 			</FullScreenWrapper>
@@ -239,7 +246,13 @@ const NavLink = styled(LinkTo)`
 	}
 `;
 
-const NavbarLogo = styled.svg`
+const LogoSVG = styled.svg.attrs({
+	width: "25",
+	height: "25",
+	viewBox: "0 0 25 25",
+	fill: "none",
+	xmlns: "http://www.w3.org/2000/svg",
+})`
 	color: var(--color-primary-accent);
 	fill: var(--color-primary-accent);
 `;
@@ -250,20 +263,36 @@ const MobileMenuToggle = styled(IconContainer).attrs({ as: "button" })`
 	color: var(--color-primary-accent);
 
 	${breakpoint.from.md(css`
-		color: var(--color-secondary-accent);
+		display: none;
 	`)}
 `;
 
-const Nav = styled.nav`
-	padding: 20px 1rem;
-	display: grid;
-	grid-template-columns: max-content auto;
-	align-content: center;
-	gap: 2rem;
+const Header = styled.header`
+	position: sticky;
+	top: 0;
+	width: 100%;
+
+	background-color: var(--color-background);
 
 	${IconContainer}, ${ThemeSwitch}, ${MobileMenuToggle} {
 		z-index: 10;
 	}
+`;
+
+const HeaderInner = styled.div`
+	padding: 20px 1rem;
+	margin: 0 auto;
+	width: 100%;
+	max-width: var(--max-width);
+
+	display: grid;
+	grid-template-columns: max-content auto;
+	align-content: center;
+	gap: 2rem;
+`;
+
+const Nav = styled.nav`
+	display: contents;
 `;
 
 const navLinksMixin = css`
@@ -288,9 +317,11 @@ const NavLinksDesktop = styled.div`
 
 const FullScreenWrapper = styled(motion.div)`
 	height: 100vh;
-	width: 100%;
-	margin: -20px -1rem;
+	width: 100vw;
+
 	position: absolute;
+	top: 0;
+	left: 0;
 
 	${breakpoint.from.md(css`
 		display: none;

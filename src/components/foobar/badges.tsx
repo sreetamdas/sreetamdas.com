@@ -1,4 +1,3 @@
-/* eslint-disable indent */
 import { useContext, useState } from "react";
 import { BsEgg } from "react-icons/bs";
 import {

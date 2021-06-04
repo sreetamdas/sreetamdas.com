@@ -1,6 +1,3 @@
-/* eslint-disable no-mixed-spaces-and-tabs */
-/* eslint-disable indent */
-import Link from "next/link";
 import { PropsWithChildren, ReactNode } from "react";
 import styled, { css } from "styled-components";
 
@@ -88,16 +85,6 @@ export const LinkedHeaderIconWrapper = styled.a<{ isHovered: boolean }>`
 		display: none;
 	`)}
 `;
-
-export const NextIconLink = ({ children, href }: PropsWithChildren<{ href: string }>) => {
-	return (
-		<Link href={href} passHref>
-			<IconContainer href={href} tabIndex={0}>
-				{children}
-			</IconContainer>
-		</Link>
-	);
-};
 
 export const CustomBlockquote = styled.aside<{ type?: string }>`
 	padding: 20px;
