@@ -1,4 +1,4 @@
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion, Variants } from "framer-motion";
 import { useRouter } from "next/router";
 import React, { useState, useEffect, useContext, Fragment, cloneElement } from "react";
 import {
@@ -18,6 +18,7 @@ import styled, { css, ThemeContext } from "styled-components";
 
 import { FoobarContext } from "components/foobar";
 import { IconContainer, NextIconLink } from "styles/blog";
+import { FullWidth } from "styles/layouts";
 import { LinkTo } from "styles/typography";
 import { useBreakpointRange } from "utils/hooks";
 import { checkIfNavbarShouldBeHidden } from "utils/misc";
@@ -49,6 +50,54 @@ export const Navbar = () => {
 			</Nav>
 		</Fragment>
 	) : null;
+};
+
+const NavLinks = () => (
+	<Fragment>
+		<PageLinks>
+			<li>
+				<NavLink href="/blog">blog</NavLink>
+			</li>
+			<li>
+				<NavLink href="/uses">uses</NavLink>
+			</li>
+			<li>
+				<NavLink href="/about">about</NavLink>
+			</li>
+		</PageLinks>
+		<IconLinks>
+			<li>
+				<IconContainer
+					href="https://github.com/sreetamdas"
+					target="_blank"
+					rel="noopener noreferrer"
+					$styledOnHover
+				>
+					<FaGithub aria-label="Sreetam's GitHub" title="Sreetam Das' GitHub" />
+				</IconContainer>
+			</li>
+			<li>
+				<IconContainer
+					href="https://twitter.com/_SreetamDas"
+					target="_blank"
+					rel="noopener noreferrer"
+					$styledOnHover
+				>
+					<FaTwitter aria-label="Sreetam Das' Twitter" title="Sreetam Das' Twitter" />
+				</IconContainer>
+			</li>
+			<li>
+				<IconContainer href="https://sreetamdas.com/rss/feed.xml" $styledOnHover>
+					<FiRss aria-label="Blog RSS feed" title="Blog RSS feed" />
+				</IconContainer>
+			</li>
+		</IconLinks>
+	</Fragment>
+);
+
+const variants: Variants = {
+	open: { x: 0 },
+	closed: { x: "-100%" },
 };
 
 const NavbarMenu = () => {
@@ -115,47 +164,16 @@ const NavbarMenu = () => {
 		setDarkTheme(!darkTheme);
 	};
 
+	const handleToggleDrawer = () => {
+		setShowDrawer((showDrawer) => !showDrawer);
+	};
+
 	return (
 		<AnimatePresence>
 			<NavContainer $showDrawer={showDrawer}>
-				<PageLinks>
-					<li>
-						<NavLink href="/blog">blog</NavLink>
-					</li>
-					<li>
-						<NavLink href="/uses">uses</NavLink>
-					</li>
-					<li>
-						<NavLink href="/about">about</NavLink>
-					</li>
-				</PageLinks>
-				<IconLinks>
-					<li>
-						<IconContainer
-							href="https://github.com/sreetamdas"
-							target="_blank"
-							rel="noopener noreferrer"
-							$styledOnHover
-						>
-							<FaGithub aria-label="Sreetam's GitHub" title="Sreetam Das' GitHub" />
-						</IconContainer>
-					</li>
-					<li>
-						<IconContainer
-							href="https://twitter.com/_SreetamDas"
-							target="_blank"
-							rel="noopener noreferrer"
-							$styledOnHover
-						>
-							<FaTwitter aria-label="Sreetam Das' Twitter" title="Sreetam Das' Twitter" />
-						</IconContainer>
-					</li>
-					<li>
-						<IconContainer href="https://sreetamdas.com/rss/feed.xml" $styledOnHover>
-							<FiRss aria-label="Blog RSS feed" title="Blog RSS feed" />
-						</IconContainer>
-					</li>
-				</IconLinks>
+				<NavLinksDesktop>
+					<NavLinks />
+				</NavLinksDesktop>
 				<ThemeSwitch onClick={handleThemeSwitch}>
 					{darkTheme === undefined ? (
 						<div style={{ width: "25px" }} />
@@ -165,13 +183,101 @@ const NavbarMenu = () => {
 						<FiSun aria-label="Switch to Dark Mode" title="Switch to Dark Mode" />
 					)}
 				</ThemeSwitch>
-				<MobileMenuToggle onClick={handleThemeSwitch}>
+				<MobileMenuToggle onClick={handleToggleDrawer}>
 					<FiMenu />
 				</MobileMenuToggle>
 			</NavContainer>
+			<FullScreenWrapper
+				variants={variants}
+				initial="closed"
+				animate={showDrawer ? "open" : "closed"}
+			>
+				<NavLinks />
+			</FullScreenWrapper>
 		</AnimatePresence>
 	);
 };
+
+const Nav = styled.nav`
+	padding: 20px 0;
+	display: grid;
+	grid-template-columns: max-content auto;
+	align-content: center;
+	gap: 2rem;
+`;
+
+const Container = styled.div`
+	display: grid;
+	grid-auto-flow: column;
+	gap: 1rem;
+	justify-self: end;
+	place-items: center;
+	justify-content: center;
+`;
+
+const PlatformLinksContainer = styled(Container)`
+	${breakpoint.until.md(css`
+		display: flex;
+		flex-wrap: wrap;
+		padding: 0 3rem;
+	`)}
+`;
+
+const NavLink = styled(LinkTo)`
+	border: none !important;
+	color: var(--color-primary);
+
+	&:hover {
+		color: var(--color-primary-accent);
+	}
+`;
+
+const NavbarLogo = styled.svg`
+	color: var(--color-primary-accent);
+	fill: var(--color-primary-accent);
+`;
+
+const ThemeSwitch = styled(IconContainer).attrs({ as: "button" })``;
+
+const MobileMenuToggle = styled(IconContainer).attrs({ as: "button" })`
+	z-index: 10;
+	color: var(--color-primary-accent);
+
+	${breakpoint.from.md(css`
+		color: var(--color-secondary-accent);
+	`)}
+`;
+
+const navLinksMixin = css`
+	display: contents;
+	list-style: none;
+`;
+
+const PageLinks = styled.ul`
+	${navLinksMixin}
+`;
+
+const IconLinks = styled.ul`
+	${navLinksMixin}
+`;
+
+const NavLinksDesktop = styled.div`
+	display: none;
+	${breakpoint.from.md(css`
+		display: contents;
+	`)}
+`;
+
+const FullScreenWrapper = styled(motion(FullWidth))`
+	height: 100vh;
+	position: absolute;
+
+	${breakpoint.from.md(css`
+		display: none;
+	`)}
+`;
+
+const NavContainer = styled(motion(Container))<{ $showDrawer: boolean }>``;
 
 type TExternalLinksArray = Array<{
 	link: string;
@@ -231,7 +337,7 @@ export const ExternalLinksOverlay = () => {
 		cloneElement(icon, { title });
 
 	return (
-		<Container>
+		<PlatformLinksContainer>
 			{externalLinks.map(({ link, title, icon }) => (
 				<IconContainer
 					href={link}
@@ -243,64 +349,6 @@ export const ExternalLinksOverlay = () => {
 					<IconWithProps {...{ icon, title }} />
 				</IconContainer>
 			))}
-		</Container>
+		</PlatformLinksContainer>
 	);
 };
-
-const Nav = styled.nav`
-	padding: 20px 0;
-	display: grid;
-	grid-template-columns: max-content auto;
-	align-content: center;
-	gap: 2rem;
-`;
-
-const Container = styled.div`
-	display: grid;
-	grid-auto-flow: column;
-	grid-template-columns: repeat(auto-fill, minmax(min-content, 1fr));
-	gap: 1rem;
-	white-space: nowrap;
-	justify-self: end;
-	place-items: center;
-	justify-content: center;
-`;
-
-const NavLink = styled(LinkTo)`
-	border: none !important;
-	color: var(--color-primary);
-
-	&:hover {
-		color: var(--color-primary-accent);
-	}
-`;
-
-const NavbarLogo = styled.svg`
-	color: var(--color-primary-accent);
-	fill: var(--color-primary-accent);
-`;
-
-const ThemeSwitch = styled(IconContainer).attrs({ as: "button" })``;
-
-const MobileMenuToggle = styled(IconContainer).attrs({ as: "button" })`
-	color: var(--color-primary-accent);
-
-	${breakpoint.from.md(css`
-		color: var(--color-secondary-accent);
-	`)}
-`;
-
-const navLinksMixin = css`
-	display: contents;
-	list-style: none;
-`;
-
-const PageLinks = styled.ul`
-	${navLinksMixin}
-`;
-
-const IconLinks = styled.ul`
-	${navLinksMixin}
-`;
-
-const NavContainer = styled(motion(Container))<{ $showDrawer: boolean }>``;
