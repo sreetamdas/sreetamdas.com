@@ -18,7 +18,6 @@ import styled, { css, ThemeContext } from "styled-components";
 
 import { FoobarContext } from "components/foobar";
 import { IconContainer, NextIconLink } from "styles/blog";
-import { FullWidth } from "styles/layouts";
 import { LinkTo } from "styles/typography";
 import { useBreakpointRange } from "utils/hooks";
 import { checkIfNavbarShouldBeHidden } from "utils/misc";
@@ -33,22 +32,20 @@ export const Navbar = () => {
 	}, [pathname]);
 
 	return isNavbarShown ? (
-		<Fragment>
-			<Nav>
-				<NextIconLink href="/">
-					<NavbarLogo
-						width="25"
-						height="25"
-						viewBox="0 0 25 25"
-						fill="none"
-						xmlns="http://www.w3.org/2000/svg"
-					>
-						<rect width="25" height="25" rx="6" fill="currentColor" />
-					</NavbarLogo>
-				</NextIconLink>
-				<NavbarMenu />
-			</Nav>
-		</Fragment>
+		<Nav>
+			<NextIconLink href="/">
+				<NavbarLogo
+					width="25"
+					height="25"
+					viewBox="0 0 25 25"
+					fill="none"
+					xmlns="http://www.w3.org/2000/svg"
+				>
+					<rect width="25" height="25" rx="6" fill="currentColor" />
+				</NavbarLogo>
+			</NextIconLink>
+			<NavbarMenu />
+		</Nav>
 	) : null;
 };
 
@@ -96,8 +93,8 @@ const NavLinks = () => (
 );
 
 const variants: Variants = {
-	open: { x: 0 },
-	closed: { x: "-100%" },
+	open: { x: 0, backgroundColor: "var(--color-bg-blurred)", opacity: 1 },
+	closed: { x: "-100%", backgroundColor: "transparent", opacity: 0 },
 };
 
 const NavbarMenu = () => {
@@ -105,6 +102,7 @@ const NavbarMenu = () => {
 	const { theme, changeThemeVariant } = useContext(ThemeContext);
 	const { konami } = useContext(FoobarContext);
 	const [showDrawer, setShowDrawer] = useState(false);
+	const { asPath } = useRouter();
 
 	const handleMobileOnEnter = () => {
 		// eslint-disable-next-line no-console
@@ -159,18 +157,34 @@ const NavbarMenu = () => {
 		};
 	}, [darkTheme]);
 
+	useEffect(() => {
+		setShowDrawer(false);
+		document.body.style.removeProperty("overflow");
+	}, [asPath]);
+
 	const handleThemeSwitch = (event: React.MouseEvent) => {
 		event.preventDefault();
 		setDarkTheme(!darkTheme);
 	};
 
 	const handleToggleDrawer = () => {
-		setShowDrawer((showDrawer) => !showDrawer);
+		setShowDrawer((showDrawer) => {
+			const nextState = !showDrawer;
+
+			if (nextState === true) {
+				document.body.style.overflow = "hidden";
+			} else {
+				// Re-enable scrolling once menu is closed
+				document.body.style.removeProperty("overflow");
+			}
+
+			return nextState;
+		});
 	};
 
 	return (
 		<AnimatePresence>
-			<NavContainer $showDrawer={showDrawer}>
+			<NavContainer $showDrawer={showDrawer} key="main-nav">
 				<NavLinksDesktop>
 					<NavLinks />
 				</NavLinksDesktop>
@@ -188,6 +202,7 @@ const NavbarMenu = () => {
 				</MobileMenuToggle>
 			</NavContainer>
 			<FullScreenWrapper
+				key="nav-links-container"
 				variants={variants}
 				initial="closed"
 				animate={showDrawer ? "open" : "closed"}
@@ -197,14 +212,6 @@ const NavbarMenu = () => {
 		</AnimatePresence>
 	);
 };
-
-const Nav = styled.nav`
-	padding: 20px 0;
-	display: grid;
-	grid-template-columns: max-content auto;
-	align-content: center;
-	gap: 2rem;
-`;
 
 const Container = styled.div`
 	display: grid;
@@ -240,12 +247,23 @@ const NavbarLogo = styled.svg`
 const ThemeSwitch = styled(IconContainer).attrs({ as: "button" })``;
 
 const MobileMenuToggle = styled(IconContainer).attrs({ as: "button" })`
-	z-index: 10;
 	color: var(--color-primary-accent);
 
 	${breakpoint.from.md(css`
 		color: var(--color-secondary-accent);
 	`)}
+`;
+
+const Nav = styled.nav`
+	padding: 20px 1rem;
+	display: grid;
+	grid-template-columns: max-content auto;
+	align-content: center;
+	gap: 2rem;
+
+	${IconContainer}, ${ThemeSwitch}, ${MobileMenuToggle} {
+		z-index: 10;
+	}
 `;
 
 const navLinksMixin = css`
@@ -268,8 +286,10 @@ const NavLinksDesktop = styled.div`
 	`)}
 `;
 
-const FullScreenWrapper = styled(motion(FullWidth))`
+const FullScreenWrapper = styled(motion.div)`
 	height: 100vh;
+	width: 100%;
+	margin: -20px -1rem;
 	position: absolute;
 
 	${breakpoint.from.md(css`
