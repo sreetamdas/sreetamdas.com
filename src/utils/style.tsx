@@ -11,9 +11,6 @@ export const BREAKPOINTS = {
 	xl: 1440,
 };
 
-type TBreakpointSide = typeof breakpointSides[number];
-const breakpointSides = ["until", "from"] as const;
-
 export const pixelToRem = (fontSize: number) => `${fontSize / BASE_FONT_SIZE}rem`;
 
 export const getIsMobileLayout = () => {
@@ -25,6 +22,8 @@ export const getIsMobileLayout = () => {
 	return isMobileLayout;
 };
 
+type TBreakpointSide = typeof breakpointSides[number];
+const breakpointSides = ["until", "from"] as const;
 type TBreakpointFn = {
 	[side in TBreakpointSide]: {
 		[key in TBreakpoint]: (styles: FlattenSimpleInterpolation) => string;

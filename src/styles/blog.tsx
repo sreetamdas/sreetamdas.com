@@ -5,6 +5,7 @@ import { PropsWithChildren, ReactNode } from "react";
 import styled, { css } from "styled-components";
 
 import { PaddingListItems } from "styles/typography";
+import { breakpoint } from "utils/style";
 
 export const removeListStyleMixin = css`
 	& ul {
@@ -82,6 +83,10 @@ export const LinkedHeaderIconWrapper = styled.a<{ isHovered: boolean }>`
 
 	opacity: ${({ isHovered }) => (isHovered ? 0.75 : 0)};
 	transition: opacity 200ms ease;
+
+	${breakpoint.until.md(css`
+		display: none;
+	`)}
 `;
 
 export const NextIconLink = ({ children, href }: PropsWithChildren<{ href: string }>) => {

@@ -80,6 +80,10 @@ const GlobalStyles = createGlobalStyle`
 		line-height: 1.6;
 	}
 
+	*, *:before, *:after {
+		box-sizing: border-box;
+	}
+
 	:not(pre):not(span)::selection {
 		background: rgba(var(--values-primary-accent), 0.99);
 		color: var(--color-background)
