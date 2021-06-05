@@ -20,5 +20,5 @@
 		"downlevelIteration": true
 	},
 	"exclude": ["node_modules", "public"],
-	"include": ["next-env.d.ts", "src/**/*"]
+	"include": ["next-env.d.ts", "src/**/*.ts", "src/**/*.tsx"]
 }
