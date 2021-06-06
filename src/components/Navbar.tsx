@@ -54,53 +54,60 @@ const variants: Variants = {
 	closed: { opacity: 0 },
 };
 
-const textLinkVariants: Variants = {
+const textLinksVariants: Variants = {
 	open: { x: 0, opacity: 1 },
 	closed: { x: "-100%", opacity: 0 },
 };
 
-const NavLinks = () => (
-	<Nav>
-		<PageLinks>
-			<motion.li variants={textLinkVariants}>
-				<NavLink href="/blog">blog</NavLink>
-			</motion.li>
-			<motion.li variants={textLinkVariants}>
-				<NavLink href="/uses">uses</NavLink>
-			</motion.li>
-			<motion.li variants={textLinkVariants}>
-				<NavLink href="/about">about</NavLink>
-			</motion.li>
-		</PageLinks>
-		<IconLinks>
-			<motion.li>
-				<IconContainer
-					href="https://github.com/sreetamdas"
-					target="_blank"
-					rel="noopener noreferrer"
-					$styledOnHover
-				>
-					<FaGithub aria-label="Sreetam's GitHub" title="Sreetam Das' GitHub" />
-				</IconContainer>
-			</motion.li>
-			<motion.li>
-				<IconContainer
-					href="https://twitter.com/_SreetamDas"
-					target="_blank"
-					rel="noopener noreferrer"
-					$styledOnHover
-				>
-					<FaTwitter aria-label="Sreetam Das' Twitter" title="Sreetam Das' Twitter" />
-				</IconContainer>
-			</motion.li>
-			<motion.li>
-				<IconContainer href="https://sreetamdas.com/rss/feed.xml" $styledOnHover>
-					<FiRss aria-label="Blog RSS feed" title="Blog RSS feed" />
-				</IconContainer>
-			</motion.li>
-		</IconLinks>
-	</Nav>
-);
+const iconLinksVariants: Variants = {
+	open: { opacity: 1 },
+	closed: { opacity: 0 },
+};
+
+const NavLinks = () => {
+	return (
+		<Nav>
+			<PageLinks>
+				<motion.li variants={textLinksVariants}>
+					<NavLink href="/blog">blog</NavLink>
+				</motion.li>
+				<motion.li variants={textLinksVariants}>
+					<NavLink href="/uses">uses</NavLink>
+				</motion.li>
+				<motion.li variants={textLinksVariants}>
+					<NavLink href="/about">about</NavLink>
+				</motion.li>
+			</PageLinks>
+			<IconLinks>
+				<motion.li variants={iconLinksVariants}>
+					<IconContainer
+						href="https://github.com/sreetamdas"
+						target="_blank"
+						rel="noopener noreferrer"
+						$styledOnHover
+					>
+						<FaGithub aria-label="Sreetam's GitHub" title="Sreetam Das' GitHub" />
+					</IconContainer>
+				</motion.li>
+				<motion.li variants={iconLinksVariants}>
+					<IconContainer
+						href="https://twitter.com/_SreetamDas"
+						target="_blank"
+						rel="noopener noreferrer"
+						$styledOnHover
+					>
+						<FaTwitter aria-label="Sreetam Das' Twitter" title="Sreetam Das' Twitter" />
+					</IconContainer>
+				</motion.li>
+				<motion.li variants={iconLinksVariants}>
+					<IconContainer href="https://sreetamdas.com/rss/feed.xml" $styledOnHover>
+						<FiRss aria-label="Blog RSS feed" title="Blog RSS feed" />
+					</IconContainer>
+				</motion.li>
+			</IconLinks>
+		</Nav>
+	);
+};
 
 const NavbarMenu = () => {
 	const [darkTheme, setDarkTheme] = useState<boolean | undefined>(undefined);
