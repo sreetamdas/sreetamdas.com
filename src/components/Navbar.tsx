@@ -102,16 +102,19 @@ const NavbarMenu = () => {
 	const { theme, changeThemeVariant } = useContext(ThemeContext);
 	const { konami } = useContext(FoobarContext);
 	const [showDrawer, setShowDrawer] = useState(false);
+	const [isMobileLayout, setIsMobileLayout] = useState<boolean | undefined>(undefined);
 	const { asPath } = useRouter();
 
 	const handleMobileOnEnter = () => {
 		// eslint-disable-next-line no-console
 		console.log("enter");
+		setIsMobileLayout(true);
 	};
 
 	const handleMobileOnLeave = () => {
 		// eslint-disable-next-line no-console
 		console.log("leave");
+		setIsMobileLayout(false);
 	};
 
 	useBreakpointRange({ to: "md" }, { onEnter: handleMobileOnEnter, onLeave: handleMobileOnLeave });
@@ -188,7 +191,7 @@ const NavbarMenu = () => {
 				<NavLinksDesktop>
 					<NavLinks />
 				</NavLinksDesktop>
-				{showDrawer ? null : (
+				{showDrawer && isMobileLayout ? null : (
 					// hide when drawer is open, changing theme onOpen doesn't update var(--color-bg-blurred)
 					<ThemeSwitch onClick={handleThemeSwitch}>
 						{darkTheme === undefined ? (
@@ -295,6 +298,8 @@ const HeaderInner = styled.div`
 
 const Nav = styled.nav`
 	display: contents;
+	padding-right: 2rem;
+	width: min-content;
 `;
 
 const navLinksMixin = css`
