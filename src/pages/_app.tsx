@@ -42,7 +42,7 @@ const GlobalStyles = createGlobalStyle`
 	--color-info-accent: rgb(0, 191, 255);
 	--color-info-accent-faded: rgba(0, 191, 255, 0.27);
 	--color-error: rgb(255, 0, 0);
-	--color-bg-blurred: rgba(255,255,255,0.85);
+	--color-bg-blurred: rgba(255,255,255,0.93);
 
 	--max-width: 650px;
 	--border-radius: 5px;
@@ -56,7 +56,7 @@ const GlobalStyles = createGlobalStyle`
 		--color-background: rgb(0, 0, 0);
 		--color-inlineCode-fg: var(--color-primary);
 		--color-inlineCode-bg: rgb(51, 51, 51);
-		--color-bg-blurred: rgba(15,10,35,0.77);
+		--color-bg-blurred: rgba(15,10,35,0.9);
 	}
 	[data-theme="batman"] {
 		--color-primary-accent: rgb(255, 255, 0);

@@ -94,7 +94,7 @@ const NavLinks = () => (
 
 const variants: Variants = {
 	open: { x: 0, backgroundColor: "var(--color-bg-blurred)", opacity: 1 },
-	closed: { x: "-100%", backgroundColor: "transparent", opacity: 0 },
+	closed: { x: "-100%", backgroundColor: "rgba(0,0,0,0)", opacity: 0 },
 };
 
 const NavbarMenu = () => {
@@ -188,15 +188,18 @@ const NavbarMenu = () => {
 				<NavLinksDesktop>
 					<NavLinks />
 				</NavLinksDesktop>
-				<ThemeSwitch onClick={handleThemeSwitch}>
-					{darkTheme === undefined ? (
-						<div style={{ width: "25px" }} />
-					) : darkTheme ? (
-						<IoMdMoon aria-label="Switch to Light Mode" title="Switch to Light Mode" />
-					) : (
-						<FiSun aria-label="Switch to Dark Mode" title="Switch to Dark Mode" />
-					)}
-				</ThemeSwitch>
+				{showDrawer ? null : (
+					// hide when drawer is open, changing theme onOpen doesn't update var(--color-bg-blurred)
+					<ThemeSwitch onClick={handleThemeSwitch}>
+						{darkTheme === undefined ? (
+							<div style={{ width: "25px" }} />
+						) : darkTheme ? (
+							<IoMdMoon aria-label="Switch to Light Mode" title="Switch to Light Mode" />
+						) : (
+							<FiSun aria-label="Switch to Dark Mode" title="Switch to Dark Mode" />
+						)}
+					</ThemeSwitch>
+				)}
 				<MobileMenuToggle
 					onClick={handleToggleDrawer}
 					aria-label={showDrawer ? "Close menu" : "Open menu"}
@@ -212,7 +215,7 @@ const NavbarMenu = () => {
 				variants={variants}
 				initial="closed"
 				animate={showDrawer ? "open" : "closed"}
-				// transition={{ type: "" }}
+				transition={{ type: "spring", stiffness: 180, damping: 20 }}
 			>
 				<NavLinks />
 			</FullScreenWrapper>
@@ -250,7 +253,6 @@ const LogoSVG = styled.svg.attrs({
 	width: "25",
 	height: "25",
 	viewBox: "0 0 25 25",
-	fill: "none",
 	xmlns: "http://www.w3.org/2000/svg",
 })`
 	color: var(--color-primary-accent);
@@ -349,6 +351,7 @@ const FullScreenWrapper = styled(motion.div)`
 		& > ${PageLinks}, ${IconLinks} {
 			padding-left: 3rem;
 			font-size: 1.5rem;
+			width: min-content;
 		}
 
 		& > ${PageLinks} > li {

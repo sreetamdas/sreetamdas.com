@@ -3,11 +3,12 @@ import Link from "next/link";
 import Highlight, { defaultProps, Language } from "prism-react-renderer";
 import React, { createElement, CSSProperties, PropsWithChildren } from "react";
 import { FiLink } from "react-icons/fi";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 import { KARMA_PRISM_THEME } from "pages/karma";
 import { LinkedHeaderIconWrapper } from "styles/blog";
 import { useHover } from "utils/hooks";
+import { breakpoint } from "utils/style";
 
 type TMDXProviderCodeblockPassedProps = {
 	children: {
@@ -189,6 +190,10 @@ const CodeblockLineNumber = styled.span`
 	opacity: 0.25;
 	text-align: center;
 	position: relative;
+
+	${breakpoint.until.md(css`
+		display: none;
+	`)}
 `;
 
 /**
