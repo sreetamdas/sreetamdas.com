@@ -13,7 +13,7 @@ import {
 	FaSpotify,
 	FaDiscord,
 } from "react-icons/fa";
-import { FiRss, FiSun, FiMenu } from "react-icons/fi";
+import { FiRss, FiSun, FiMenu, FiX } from "react-icons/fi";
 import { IoMdMoon } from "react-icons/io";
 import styled, { css, ThemeContext } from "styled-components";
 
@@ -49,21 +49,31 @@ export const Navbar = () => {
 	) : null;
 };
 
+const variants: Variants = {
+	open: { opacity: 1, transition: { staggerChildren: 0.1 } },
+	closed: { opacity: 0 },
+};
+
+const textLinkVariants: Variants = {
+	open: { x: 0, opacity: 1 },
+	closed: { x: "-100%", opacity: 0 },
+};
+
 const NavLinks = () => (
 	<Nav>
 		<PageLinks>
-			<li>
+			<motion.li variants={textLinkVariants}>
 				<NavLink href="/blog">blog</NavLink>
-			</li>
-			<li>
+			</motion.li>
+			<motion.li variants={textLinkVariants}>
 				<NavLink href="/uses">uses</NavLink>
-			</li>
-			<li>
+			</motion.li>
+			<motion.li variants={textLinkVariants}>
 				<NavLink href="/about">about</NavLink>
-			</li>
+			</motion.li>
 		</PageLinks>
 		<IconLinks>
-			<li>
+			<motion.li>
 				<IconContainer
 					href="https://github.com/sreetamdas"
 					target="_blank"
@@ -72,8 +82,8 @@ const NavLinks = () => (
 				>
 					<FaGithub aria-label="Sreetam's GitHub" title="Sreetam Das' GitHub" />
 				</IconContainer>
-			</li>
-			<li>
+			</motion.li>
+			<motion.li>
 				<IconContainer
 					href="https://twitter.com/_SreetamDas"
 					target="_blank"
@@ -82,20 +92,15 @@ const NavLinks = () => (
 				>
 					<FaTwitter aria-label="Sreetam Das' Twitter" title="Sreetam Das' Twitter" />
 				</IconContainer>
-			</li>
-			<li>
+			</motion.li>
+			<motion.li>
 				<IconContainer href="https://sreetamdas.com/rss/feed.xml" $styledOnHover>
 					<FiRss aria-label="Blog RSS feed" title="Blog RSS feed" />
 				</IconContainer>
-			</li>
+			</motion.li>
 		</IconLinks>
 	</Nav>
 );
-
-const variants: Variants = {
-	open: { x: 0, backgroundColor: "var(--color-bg-blurred)", opacity: 1 },
-	closed: { x: "-100%", backgroundColor: "rgba(0,0,0,0)", opacity: 0 },
-};
 
 const NavbarMenu = () => {
 	const [darkTheme, setDarkTheme] = useState<boolean | undefined>(undefined);
@@ -187,7 +192,7 @@ const NavbarMenu = () => {
 
 	return (
 		<AnimatePresence>
-			<NavContainer $showDrawer={showDrawer} key="main-nav">
+			<NavContainer $showDrawer={showDrawer} key="navigation">
 				<NavLinksDesktop>
 					<NavLinks />
 				</NavLinksDesktop>
@@ -207,14 +212,17 @@ const NavbarMenu = () => {
 					onClick={handleToggleDrawer}
 					aria-label={showDrawer ? "Close menu" : "Open menu"}
 				>
-					<FiMenu
-						aria-label={showDrawer ? "Close menu" : "Open menu"}
-						title={showDrawer ? "Close menu" : "Open menu"}
-					/>
+					{showDrawer ? (
+						<FiX aria-label="Open menu" title="Open menu" />
+					) : (
+						<FiMenu aria-label="Open menu" title="Open menu" />
+					)}
 				</MobileMenuToggle>
 			</NavContainer>
 			<FullScreenWrapper
-				key="nav-links-container"
+				key="mobile-navigation"
+				aria-label="mobile-navigation"
+				visible={showDrawer}
 				variants={variants}
 				initial="closed"
 				animate={showDrawer ? "open" : "closed"}
@@ -338,9 +346,10 @@ const NavLinksDesktop = styled.div`
 	`)}
 `;
 
-const FullScreenWrapper = styled(motion.div)`
+const FullScreenWrapper = styled(motion.div)<{ visible: boolean }>`
 	height: 100vh;
 	width: 100vw;
+	background-color: var(--color-bg-blurred);
 
 	position: absolute;
 	top: 0;
@@ -348,6 +357,15 @@ const FullScreenWrapper = styled(motion.div)`
 
 	display: grid;
 	align-content: center;
+
+	${({ visible }) =>
+		visible
+			? css`
+					pointer-events: auto;
+			  `
+			: css`
+					pointer-events: none;
+			  `}
 
 	${Nav} {
 		display: grid;
