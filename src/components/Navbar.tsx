@@ -296,8 +296,12 @@ const Nav = styled.nav`
 `;
 
 const navLinksMixin = css`
-	display: contents;
+	display: grid;
 	list-style: none;
+
+	${breakpoint.from.md(css`
+		display: contents;
+	`)}
 `;
 
 const PageLinks = styled.ul`
@@ -306,10 +310,22 @@ const PageLinks = styled.ul`
 
 const IconLinks = styled.ul`
 	${navLinksMixin}
+
+	${breakpoint.until.md(css`
+		grid-auto-flow: column;
+		gap: 2rem;
+		/* padding: 0.5rem 1rem; */
+		width: min-content;
+	`)}
+
+	& > li {
+		padding: 0;
+	}
 `;
 
 const NavLinksDesktop = styled.div`
 	display: none;
+
 	${breakpoint.from.md(css`
 		display: contents;
 	`)}
@@ -322,6 +338,23 @@ const FullScreenWrapper = styled(motion.div)`
 	position: absolute;
 	top: 0;
 	left: 0;
+
+	display: grid;
+	align-content: center;
+
+	${Nav} {
+		display: grid;
+		gap: 2rem;
+
+		& > ${PageLinks}, ${IconLinks} {
+			padding-left: 3rem;
+			font-size: 1.5rem;
+		}
+
+		& > ${PageLinks} > li {
+			padding: 0.5rem 0;
+		}
+	}
 
 	${breakpoint.from.md(css`
 		display: none;
