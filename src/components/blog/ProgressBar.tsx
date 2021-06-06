@@ -4,6 +4,7 @@ import styled from "styled-components";
 const ProgressBar = styled(motion.div)`
 	position: fixed;
 	left: 0;
+	top: 0;
 	background: linear-gradient(
 		90deg,
 		var(--color-primary-accent) 0%,
