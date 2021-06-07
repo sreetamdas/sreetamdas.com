@@ -1,10 +1,14 @@
-/* eslint-disable indent */
 import { FormEvent, useState } from "react";
 import styled, { css } from "styled-components";
 
 import { buttonStylesMixin } from "styles/special";
+import { Accent } from "styles/typography";
+import { breakpoint } from "utils/style";
 
-export const Newsletter = () => {
+export type TNewsletterProps = {
+	subscriberCount: number;
+};
+export const Newsletter = ({ subscriberCount }: TNewsletterProps) => {
 	const [formSuccess, setFormSuccess] = useState(false);
 	const [isFormBeingSubmitted, setIsFormBeingSubmitted] = useState(false);
 	const [formError, setFormError] = useState<string>();
@@ -16,13 +20,10 @@ export const Newsletter = () => {
 		event.preventDefault();
 
 		const data = new FormData(event.target as HTMLFormElement);
-		const res = await fetch(
-			"https://buttondown.email/api/emails/embed-subscribe/sreetamdas",
-			{
-				body: data,
-				method: "POST",
-			}
-		);
+		const res = await fetch("https://buttondown.email/api/emails/embed-subscribe/sreetamdas", {
+			body: data,
+			method: "POST",
+		});
 		if (!res.ok) setFormError(await res.text());
 		else setFormSuccess(true);
 
@@ -32,19 +33,16 @@ export const Newsletter = () => {
 		<Grid>
 			<NewsletterTitle>Sign up for my newsletter</NewsletterTitle>
 			<NewsletterText>
-				I curate links keeping up with the JavaScript, React and webdev world.
+				I curate links keeping up with the JavaScript, React and webdev world. Join{" "}
+				<Accent>{subscriberCount}</Accent> others!
 				<br />
 				May include Mechanical Keyboards.
 				<br />
 				<br />
-				No spam, unsubscribe anytime :)
+				No spam, unsubscribe anytime :&#41;
 				<br />
-				You can also{" "}
-				<a href="https://buttondown.email/sreetamdas/archive">
-					view previous issues
-				</a>
-				, and{" "}
-				<a href="https://buttondown.email/sreetamdas/rss">subscribe via RSS</a>!
+				You can also <a href="https://buttondown.email/sreetamdas/archive">view previous issues</a>,
+				and <a href="https://buttondown.email/sreetamdas/rss">subscribe via RSS</a>!
 			</NewsletterText>
 			<div>
 				<StyledForm onSubmit={handleFormSubmit}>
@@ -66,15 +64,23 @@ const Grid = styled.div`
 	padding-top: 100px;
 	display: grid;
 	justify-content: stretch;
-	grid-template-columns: 1fr 1fr;
+	grid-template-columns: 1fr;
 	gap: 1rem;
+
+	${breakpoint.from.md(css`
+		grid-template-columns: 1fr 1fr;
+	`)}
 `;
 
 const StyledForm = styled.form`
 	width: 100%;
 	display: grid;
-	grid-template-columns: 1fr 2fr;
+	grid-template-columns: 2fr 1fr;
 	gap: 1rem;
+
+	${breakpoint.from.md(css`
+		grid-template-columns: 1fr 2fr;
+	`)}
 `;
 
 const StyledInput = styled.input.attrs({
@@ -95,8 +101,12 @@ const SubscribeButton = styled.input.attrs({ type: "submit" })<{
 	${buttonStylesMixin}
 	font-size: 16px;
 	padding: 0;
-	grid-column: 1;
 	align-self: baseline;
+	grid-column: 2;
+
+	${breakpoint.from.md(css`
+		grid-column: 1;
+	`)}
 
 	${({ disabled }) =>
 		disabled &&
@@ -109,18 +119,21 @@ const SubscribeButton = styled.input.attrs({ type: "submit" })<{
 const NewsletterTitle = styled.h2`
 	padding: 0;
 	font-size: 2rem;
-	grid-column: 1 / span 2;
+	grid-column: 1 / -1;
 `;
 
 const FormMessageContainer = styled.p<{ success: boolean }>`
-	color: var(
-		${({ success }) => (success ? "--color-success-accent" : "--color-error")}
-	);
+	color: var(${({ success }) => (success ? "--color-success-accent" : "--color-error")});
 	padding: 0;
 	margin: 0;
 	font-size: 14px;
 	display: grid;
 	align-content: center;
+	grid-column: 1;
+
+	${breakpoint.from.md(css`
+		grid-column: 2;
+	`)}
 `;
 
 const NewsletterText = styled.div`

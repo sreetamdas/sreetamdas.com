@@ -1,15 +1,25 @@
+import { GetStaticProps } from "next";
 import { Fragment } from "react";
 
-import { Newsletter } from "components/blog/Newsletter";
+import { Newsletter, TNewsletterProps } from "components/blog/Newsletter";
 import { DocumentHead } from "components/shared/seo";
+import { getButtondownSubscriberCount } from "utils/misc";
 
-const Index = () => {
+const Index = ({ subscriberCount }: TNewsletterProps) => {
 	return (
 		<Fragment>
 			<DocumentHead title="Newsletter" />
-			<Newsletter />
+			<Newsletter {...{ subscriberCount }} />
 		</Fragment>
 	);
 };
 
 export default Index;
+
+export const getStaticProps: GetStaticProps = async () => {
+	const subscriberCount = await getButtondownSubscriberCount();
+
+	return {
+		props: { subscriberCount },
+	};
+};

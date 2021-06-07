@@ -12,18 +12,13 @@ export const GreenScreen = () => {
 	const videoRef = useRef<HTMLVideoElement>(null);
 
 	useEffect(() => {
-		const canvas = canvasRef.current?.getContext(
-			"2d"
-		) as CanvasRenderingContext2D;
-		const video = videoRef.current!;
+		const canvas = canvasRef.current?.getContext("2d") as CanvasRenderingContext2D;
+		const video = videoRef.current;
 		const constraints: MediaStreamConstraints = {
 			audio: false,
 			video: { width: 640, height: 480 },
 		};
-		const rapidRefresh = (
-			video: HTMLVideoElement,
-			canvas: CanvasRenderingContext2D
-		) => {
+		const rapidRefresh = (video: HTMLVideoElement, canvas: CanvasRenderingContext2D) => {
 			canvas.drawImage(video, 0, 0);
 			processImage(canvas, canvasRef);
 
@@ -32,30 +27,34 @@ export const GreenScreen = () => {
 			}, 0); // rapidly refresh ⚡
 		};
 
-		navigator.mediaDevices
-			.getUserMedia(constraints)
-			.then((mediaStream) => {
-				video.srcObject = mediaStream;
-				video.onloadeddata = () => {
-					video.play();
-					rapidRefresh(video, canvas);
-				};
-			})
-			.catch((error) => {
-				// eslint-disable-next-line no-console
-				console.error({ error });
-			});
+		if (video !== null) {
+			navigator.mediaDevices
+				.getUserMedia(constraints)
+				.then((mediaStream) => {
+					video.srcObject = mediaStream;
+					video.onloadeddata = () => {
+						video.play();
+						rapidRefresh(video, canvas);
+					};
+				})
+				.catch((error) => {
+					// eslint-disable-next-line no-console
+					console.error({ error });
+				});
+		}
 	}, []);
 
 	const processImage = (
 		canvas: CanvasRenderingContext2D,
 		canvasRef: RefObject<HTMLCanvasElement>
 	) => {
+		if (canvasRef.current === null) return;
+
 		const snapshot: TImageSnapshot = canvas.getImageData(
 			0,
 			0,
-			canvasRef.current?.width!,
-			canvasRef.current?.height!
+			canvasRef.current.width,
+			canvasRef.current.height
 		);
 
 		// console.log({ snapshot });

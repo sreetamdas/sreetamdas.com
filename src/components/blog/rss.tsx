@@ -9,7 +9,7 @@ export const generateRssFeed = async () => {
 		return;
 	}
 	const posts = await getBlogPostsData();
-	const siteURL = process.env.SITE_URL;
+	const siteURL = process.env.SITE_URL ?? "https://sreetamdas.com";
 	const date = new Date();
 	const author = {
 		name: "Sreetam Das",
@@ -21,7 +21,7 @@ export const generateRssFeed = async () => {
 		title: "Sreetam Das' blog",
 		description:
 			"Beginner friendly developer content, with a focus on React, TypeScript, Next.js and Styled-components",
-		id: siteURL!,
+		id: siteURL,
 		link: siteURL,
 		image: `${siteURL}/logo.svg`,
 		favicon: `${siteURL}/favicon.png`,

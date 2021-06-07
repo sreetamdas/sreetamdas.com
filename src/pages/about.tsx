@@ -1,13 +1,15 @@
+import { GetStaticProps } from "next";
 import React, { Fragment, useContext } from "react";
 
-import { Newsletter } from "components/blog/Newsletter";
+import { Newsletter, TNewsletterProps } from "components/blog/Newsletter";
 import { FoobarContext } from "components/foobar";
 import { DocumentHead } from "components/shared/seo";
 import MDXAbout from "content/about.mdx";
 import { Center } from "styles/layouts";
 import { Title, RemoveBulletsFromList, LinkTo } from "styles/typography";
+import { getButtondownSubscriberCount } from "utils/misc";
 
-const About = () => {
+const About = ({ subscriberCount }: TNewsletterProps) => {
 	const { updateFoobarDataPartially, unlocked } = useContext(FoobarContext);
 
 	const handleXDiscovery = () => {
@@ -25,7 +27,7 @@ const About = () => {
 			<RemoveBulletsFromList>
 				<MDXAbout />
 			</RemoveBulletsFromList>
-			<Newsletter />
+			<Newsletter {...{ subscriberCount }} />
 
 			<Center>
 				<LinkTo
@@ -52,3 +54,11 @@ const About = () => {
  */
 
 export default About;
+
+export const getStaticProps: GetStaticProps = async () => {
+	const subscriberCount = await getButtondownSubscriberCount();
+
+	return {
+		props: { subscriberCount },
+	};
+};

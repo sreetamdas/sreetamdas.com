@@ -14,9 +14,7 @@ export const getBlogPostsData = async () => {
 	const META = /export\s+const\s+meta\s+=\s+(\{(\n|.)*?\n\})/;
 	const DIR = path.join(process.cwd(), "src", "content", "blog");
 	const files = fs.readdirSync(DIR).filter((file) => file.endsWith(".mdx"));
-	const entries = await Promise.all(
-		files.map((file) => import(`content/blog/${file}`))
-	);
+	const entries = await Promise.all(files.map((file) => import(`content/blog/${file}`)));
 
 	const postsData: Array<TBlogPost> = files
 		.map((file, index) => {
@@ -40,9 +38,7 @@ export const getBlogPostsData = async () => {
 		})
 		.filter((meta) => process.env.NODE_ENV === "development" || meta.published)
 		.sort((a, b) => {
-			return (
-				new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
-			);
+			return new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime();
 		});
 
 	return postsData;
@@ -76,9 +72,7 @@ export const getAboutMDXPagesData = async () => {
 			};
 		})
 		.filter(({ page }) => existingAboutPageFiles.indexOf(page) === -1);
-	const entries = await Promise.all(
-		pagesData.map(({ page }) => import(`content/${page}.mdx`))
-	);
+	const entries = await Promise.all(pagesData.map(({ page }) => import(`content/${page}.mdx`)));
 	const pagesDataWithContent = pagesData.map((data, index) => {
 		const MDXContent = entries[index].default;
 
@@ -93,7 +87,7 @@ export const getAboutMDXPagesData = async () => {
 
 export const getMdxString = (content: JSX.Element) => {
 	return renderToStaticMarkup(
-		// @ts-expect-error
+		// @ts-expect-error MDX shut up
 		<MDXProvider components={MDXComponents}>{content}</MDXProvider>
 	);
 };

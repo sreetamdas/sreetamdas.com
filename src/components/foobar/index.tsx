@@ -6,6 +6,7 @@ import React, {
 	createContext,
 	useCallback,
 	Fragment,
+	ReactNode,
 } from "react";
 
 import { Footer } from "components/Footer";
@@ -19,19 +20,19 @@ import {
 	updateLocalData,
 	mergeLocalDataIntoStateOnMount,
 	mergeDeep,
+	IS_DEV,
 } from "utils/console";
 
 export const initialFoobarData: TFoobarData = {
 	visitedPages: [],
+	konami: false,
 	unlocked: false,
 	completed: [],
 	allAchievements: false,
 };
 
 // we're gonna hydrate this just below, and <FoobarWrapper /> wraps the entire usable DOM anyway
-export const FoobarContext = createContext<TFoobarContext>(
-	{} as TFoobarContext
-);
+export const FoobarContext = createContext<TFoobarContext>({} as TFoobarContext);
 
 const checkIfAllAchievementsAreDone = ({ completed }: TFoobarData) => {
 	const allPages = Object.values(FOOBAR_PAGES);
@@ -40,19 +41,17 @@ const checkIfAllAchievementsAreDone = ({ completed }: TFoobarData) => {
 	return allPages.every((page) => completed.includes(page));
 };
 
-const FoobarWrapper = ({ children }: PropsWithChildren<{}>): JSX.Element => {
+const FoobarWrapper = ({ children }: PropsWithChildren<ReactNode>): JSX.Element => {
 	const router = useRouter();
 	const [dataLoaded, setDataLoaded] = useState(false);
-	const [foobarData, setFoobarData] =
-		useState<typeof initialFoobarData>(initialFoobarData);
+	const [foobarData, setFoobarData] = useState<typeof initialFoobarData>(initialFoobarData);
 
 	const updateFoobarDataPartially = useCallback(
 		(data: Partial<TFoobarData>, mergeManually = false) => {
 			setFoobarData((prevState) => {
 				let final: TFoobarData;
 				const temp = { ...prevState };
-				if (mergeManually)
-					final = mergeLocalDataIntoStateOnMount(temp, data as TFoobarData);
+				if (mergeManually) final = mergeLocalDataIntoStateOnMount(temp, data as TFoobarData);
 				else final = mergeDeep(temp, data);
 				return final;
 			});
@@ -78,25 +77,22 @@ const FoobarWrapper = ({ children }: PropsWithChildren<{}>): JSX.Element => {
 		};
 		onMountAsync();
 
-		// @ts-expect-error
+		// @ts-expect-error add custom function
 		window.hack = () => {
 			// eslint-disable-next-line no-console
 			console.warn("/foobar/hack");
 		};
 
 		doAsyncThings();
-		logConsoleMessages();
+		!IS_DEV && logConsoleMessages();
 	}, [updateFoobarDataPartially]);
 
 	useEffect(() => {
 		if (dataLoaded) updateLocalData(foobarData);
-		// @ts-expect-error
+		// @ts-expect-error add custom fn
 		window.logStatus = () => {
 			// eslint-disable-next-line no-console
-			console.log(
-				"🐶 here's your data:",
-				`\n\n${JSON.stringify(foobarData, null, 2)}`
-			);
+			console.log("🐶 here's your data:", `\n\n${JSON.stringify(foobarData, null, 2)}`);
 		};
 	}, [foobarData, dataLoaded]);
 
@@ -120,12 +116,7 @@ const FoobarWrapper = ({ children }: PropsWithChildren<{}>): JSX.Element => {
 				completed: [...foobarData.completed, FOOBAR_PAGES.navigator],
 			});
 		}
-	}, [
-		foobarData.completed,
-		foobarData.visitedPages,
-		router,
-		updateFoobarDataPartially,
-	]);
+	}, [foobarData.completed, foobarData.visitedPages, router, updateFoobarDataPartially]);
 
 	useEffect(() => {
 		// for the `completed` achievement

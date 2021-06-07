@@ -1,4 +1,3 @@
-/* eslint-disable indent */
 import { useContext, useState } from "react";
 import { BsEgg } from "react-icons/bs";
 import {
@@ -31,8 +30,7 @@ type TBadgeProps = {
 } & Pick<TFoobarData, "completed" | "allAchievements">;
 const Badge = ({ badge, completed, allAchievements }: TBadgeProps) => {
 	const [clicks, setClicks] = useState(0);
-	const badgeUnlocked =
-		badge === "completed" ? allAchievements : completed.includes(badge);
+	const badgeUnlocked = badge === "completed" ? allAchievements : completed.includes(badge);
 
 	return (
 		<BadgeBlock
@@ -51,9 +49,7 @@ const renderBadges = (
 	completed: Array<TFoobarPage>,
 	allAchievements: boolean
 ) => {
-	return allBadges.map((badge) => (
-		<Badge key={badge} {...{ badge, completed, allAchievements }} />
-	));
+	return allBadges.map((badge) => <Badge key={badge} {...{ badge, completed, allAchievements }} />);
 };
 
 export const ShowCompletedBadges = () => {
@@ -63,9 +59,7 @@ export const ShowCompletedBadges = () => {
 	return (
 		<div>
 			Here are your completed challenges:
-			<AllBadgesContainer>
-				{renderBadges(allBadges, completed, allAchievements)}
-			</AllBadgesContainer>
+			<AllBadgesContainer>{renderBadges(allBadges, completed, allAchievements)}</AllBadgesContainer>
 		</div>
 	);
 };

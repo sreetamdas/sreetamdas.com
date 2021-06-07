@@ -34,10 +34,7 @@ const UnlockedBanner = ({ completedPage }: TFoobarSchrodingerProps) =>
 		</Fragment>
 	) : null;
 
-export const Foobar = ({
-	completedPage,
-	unlocked,
-}: TFoobarSchrodingerProps) => {
+export const Foobar = ({ completedPage, unlocked }: TFoobarSchrodingerProps) => {
 	const router = useRouter();
 	const foobarContextObj = useContext(FoobarContext);
 	const { updateFoobarDataPartially, ...foobarObject } = foobarContextObj;
@@ -54,11 +51,7 @@ export const Foobar = ({
 			event.preventDefault();
 			setTerminalVisible(true);
 		}
-		if (
-			process.env.NODE_ENV === "development" &&
-			event.key === "g" &&
-			event.metaKey
-		) {
+		if (process.env.NODE_ENV === "development" && event.key === "g" && event.metaKey) {
 			event.preventDefault();
 			dog("dev mode, going to offline-only page");
 			handleUserIsOffline();
@@ -97,8 +90,7 @@ export const Foobar = ({
 			{/* <Title>Hello Beautiful Nerd!</Title> */}
 			<UnlockedBanner {...{ completedPage }} />
 			<Paragraph>
-				Here is where you can track all of your completed challenges on my
-				website.
+				Here is where you can track all of your completed challenges on my website.
 				<br />
 				Feel free to{" "}
 				<StyledLink
@@ -113,9 +105,7 @@ export const Foobar = ({
 			<Space />
 			<ShowCompletedBadges />
 			<Space size={20} />
-			<Button onClick={handleClearFoobarData}>
-				Clear everything and Restart
-			</Button>
+			<Button onClick={handleClearFoobarData}>Clear everything and Restart</Button>
 			<Space />
 			<Center>
 				<SupportSreetamDas />
@@ -163,15 +153,8 @@ export const FoobarButLocked = () => (
  * Foobar page, that is only shown once foobar is unlocked
  * @param completedPage foobar page that is being currently accessed
  */
-export const FoobarSchrodinger = ({
-	completedPage,
-}: TFoobarSchrodingerProps) => {
-	const {
-		unlocked,
-		dataLoaded,
-		updateFoobarDataPartially,
-		completed,
-	} = useContext(FoobarContext);
+export const FoobarSchrodinger = ({ completedPage }: TFoobarSchrodingerProps) => {
+	const { unlocked, dataLoaded, updateFoobarDataPartially, completed } = useContext(FoobarContext);
 
 	useEffect(() => {
 		if (completedPage && !completed?.includes(completedPage)) {
@@ -183,9 +166,5 @@ export const FoobarSchrodinger = ({
 		}
 	}, [completed, completedPage, updateFoobarDataPartially]);
 
-	return (
-		<Fragment>
-			{dataLoaded ? <Foobar {...{ completedPage, unlocked }} /> : null}
-		</Fragment>
-	);
+	return <Fragment>{dataLoaded ? <Foobar {...{ completedPage, unlocked }} /> : null}</Fragment>;
 };

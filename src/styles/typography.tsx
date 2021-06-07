@@ -28,9 +28,13 @@ export const Heavy = styled.span`
 	font-weight: bold;
 `;
 
+export const Accent = styled.span`
+	color: var(--color-primary-accent);
+`;
+
 export const Monospace = styled.span`
-	font-family: SFMono-Regular, Consolas, Roboto Mono, Menlo, Monaco,
-		Liberation Mono, Lucida FoobarWrapper, monospace;
+	font-family: SFMono-Regular, Consolas, Roboto Mono, Menlo, Monaco, Liberation Mono,
+		Lucida FoobarWrapper, monospace;
 `;
 
 export const RemoveBulletsFromList = styled.div`
@@ -76,11 +80,7 @@ export const Paragraph = styled.p<{ paddingTop?: boolean | number }>`
 	margin: 0;
 	padding: 10px 0;
 	padding-top: ${({ paddingTop }) =>
-		paddingTop
-			? typeof paddingTop === "number"
-				? `${paddingTop}px`
-				: "150px"
-			: null};
+		paddingTop ? (typeof paddingTop === "number" ? `${paddingTop}px` : "150px") : null};
 `;
 
 export const SmallText = styled.p`
@@ -135,7 +135,7 @@ export const LinkTo = ({
 	...props
 }: PropsWithoutRef<LinkProps & React.HTMLProps<HTMLAnchorElement>>) => {
 	return (
-		<Link {...{ href }} passHref>
+		<Link {...{ href, as, replace }} passHref>
 			<StyledLink {...{ style, ...props }}>{children}</StyledLink>
 		</Link>
 	);

@@ -1,10 +1,8 @@
-/* eslint-disable no-mixed-spaces-and-tabs */
-/* eslint-disable indent */
-import Link from "next/link";
-import { PropsWithChildren } from "react";
+import { PropsWithChildren, ReactNode } from "react";
 import styled, { css } from "styled-components";
 
 import { PaddingListItems } from "styles/typography";
+import { breakpoint } from "utils/style";
 
 export const removeListStyleMixin = css`
 	& ul {
@@ -57,6 +55,9 @@ export const StyledPre = styled.pre`
 
 export const IconContainer = styled.a<{ $styledOnHover?: boolean }>`
 	font-size: 25px;
+	background-color: transparent;
+	border: none;
+	cursor: pointer;
 
 	${({ $styledOnHover }) =>
 		$styledOnHover
@@ -79,20 +80,11 @@ export const LinkedHeaderIconWrapper = styled.a<{ isHovered: boolean }>`
 
 	opacity: ${({ isHovered }) => (isHovered ? 0.75 : 0)};
 	transition: opacity 200ms ease;
-`;
 
-export const NextIconLink = ({
-	children,
-	href,
-}: PropsWithChildren<{ href: string }>) => {
-	return (
-		<Link href={href} passHref>
-			<IconContainer href={href} tabIndex={0}>
-				{children}
-			</IconContainer>
-		</Link>
-	);
-};
+	${breakpoint.until.md(css`
+		display: none;
+	`)}
+`;
 
 export const CustomBlockquote = styled.aside<{ type?: string }>`
 	padding: 20px;
@@ -121,8 +113,7 @@ export const ReadMorePrompt = styled.p<{ isHovered: boolean }>`
 	font-weight: bold;
 	font-size: 0.8rem;
 	margin: 0;
-	color: ${({ isHovered }) =>
-		isHovered ? "var(--color-primary-accent)" : null};
+	color: ${({ isHovered }) => (isHovered ? "var(--color-primary-accent)" : null)};
 `;
 
 const EndLinksGrid = styled.div`
@@ -139,7 +130,7 @@ const EndLinksGrid = styled.div`
 	}
 `;
 
-export const EndLinks = ({ children }: PropsWithChildren<{}>) => (
+export const EndLinks = ({ children }: PropsWithChildren<ReactNode>) => (
 	<EndLinksGrid>{children}</EndLinksGrid>
 );
 
