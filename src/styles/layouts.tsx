@@ -7,10 +7,7 @@ export const BlogPostsPreviewLayout = styled.div`
 
 export const Layout = styled.div`
 	display: grid;
-	grid-template-columns:
-		1fr
-		min(var(--max-width), calc(100% - 2rem))
-		1fr;
+	grid-template-columns: 1fr min(var(--max-width), calc(100% - 2rem)) 1fr;
 	gap: 1rem;
 	padding: 0;
 
