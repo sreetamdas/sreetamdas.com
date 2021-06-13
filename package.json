@@ -6,7 +6,7 @@
 		"build": "next build",
 		"start": "next start",
 		"export": "next build && next export",
-		"deploy": "yarn export && netlify deploy",
+		"deploy": "yarn build && netlify deploy",
 		"compile": "tsc --watch",
 		"typecheck": "tsc -p tsconfig.json",
 		"lint": "eslint 'src/{pages,components,typings,styles,utils}/**/*.{js,jsx,ts,tsx}' --cache --fix",
