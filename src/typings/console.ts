@@ -12,6 +12,7 @@ export const FOOBAR_PAGES = {
 	notFound: "error404",
 	dogs: "dogs",
 	localforage: "localforage",
+	teapot: "teapot",
 } as const;
 
 export type TFoobarPage = typeof FOOBAR_PAGES[keyof typeof FOOBAR_PAGES];

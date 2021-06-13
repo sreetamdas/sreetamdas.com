@@ -429,7 +429,7 @@ export const ExternalLinksOverlay = () => {
 			icon: <FaEnvelope />,
 		},
 		{
-			link: "https://steamcommunity.com/id/sreetamdas",
+			link: "https://steamcommunity.com/id/karmanaut007",
 			title: "Sreetam Das' Steam",
 			icon: <FaSteam />,
 		},

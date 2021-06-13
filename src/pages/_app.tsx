@@ -10,7 +10,7 @@ import { Layout } from "styles/layouts";
 import { Paragraph } from "styles/typography";
 import { TGlobalThemeObject } from "typings/styled";
 import { MDXCodeBlock, MDXHeadingWrapper, ImageWrapper, MDXLinkWrapper } from "utils/mdx";
-import { BASE_FONT_SIZE, pixelToRem } from "utils/style";
+import { BASE_FONT_SIZE } from "utils/style";
 
 export const MDXComponents = {
 	p: Paragraph,
@@ -130,7 +130,7 @@ const GlobalStyles = createGlobalStyle`
 	code,
 	pre {
 		font-family: var(--font-family-code);
-		font-size: ${pixelToRem(16)};
+		font-size: 0.85em;
 	}
 
 	code {
