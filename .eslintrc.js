@@ -24,6 +24,7 @@ module.exports = {
 		"plugin:import/typescript",
 		"plugin:jsx-a11y/recommended",
 		"prettier",
+		"plugin:@next/next/recommended",
 	],
 	globals: {
 		Atomics: "readonly",

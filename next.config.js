@@ -29,9 +29,6 @@ module.exports = withMDX({
 
 		return config;
 	},
-	future: {
-		webpack5: true,
-	},
 	async headers() {
 		return [
 			{
