@@ -174,6 +174,7 @@ const HelperBlock = styled.div`
 	& > p > span {
 		font-size: 0.75rem;
 		font-style: italic;
+		opacity: 0.5;
 	}
 `;
 

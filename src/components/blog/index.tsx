@@ -3,6 +3,7 @@ import React, { RefObject } from "react";
 import { FaArrowRight, FaLongArrowAltUp, FaTwitter } from "react-icons/fa";
 
 import {
+	AnchorUnstyled,
 	ButtonUnstyled,
 	Card,
 	IconContainer,
@@ -39,22 +40,26 @@ export const BlogPostPreview = ({ post }: { post: TBlogPost }) => {
 	const [hoverRef, isHovered] = useHover();
 
 	return (
-		<Link href={`/blog/${post.slug}`} scroll={false}>
-			<Card ref={hoverRef}>
-				<BlogPostPreviewTitle {...{ isHovered }}>{post.title}</BlogPostPreviewTitle>
-				<Datestamp>
-					{new Date(post.publishedAt).toLocaleDateString("en-US", {
-						month: "long",
-						year: "numeric",
-						day: "numeric",
-					})}
-					{!post.published && <PostNotPublishedWarning />}
-				</Datestamp>
-				<SmallText>{post.summary}</SmallText>
-				<ReadMorePrompt {...{ isHovered }}>
-					Read more {isHovered && <FaArrowRight style={{ fontSize: "12px" }} />}
-				</ReadMorePrompt>
-			</Card>
-		</Link>
+		<article>
+			<Link href={`/blog/${post.slug}`} scroll={false} passHref>
+				<AnchorUnstyled href={`/blog/${post.slug}`}>
+					<Card ref={hoverRef}>
+						<BlogPostPreviewTitle {...{ isHovered }}>{post.title}</BlogPostPreviewTitle>
+						<Datestamp>
+							{new Date(post.publishedAt).toLocaleDateString("en-US", {
+								month: "long",
+								year: "numeric",
+								day: "numeric",
+							})}
+							{!post.published && <PostNotPublishedWarning />}
+						</Datestamp>
+						<SmallText>{post.summary}</SmallText>
+						<ReadMorePrompt {...{ isHovered }}>
+							Read more {isHovered && <FaArrowRight style={{ fontSize: "12px" }} />}
+						</ReadMorePrompt>
+					</Card>
+				</AnchorUnstyled>
+			</Link>
+		</article>
 	);
 };

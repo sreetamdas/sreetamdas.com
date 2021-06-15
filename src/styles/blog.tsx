@@ -154,3 +154,11 @@ export const ButtonUnstyled = styled.button`
 	border: none;
 	color: inherit;
 `;
+
+export const AnchorUnstyled = styled.a`
+	color: unset;
+
+	&:hover {
+		text-decoration: unset;
+	}
+`;
