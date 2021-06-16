@@ -1,4 +1,5 @@
 import Document, { DocumentContext, Html, Head, Main, NextScript } from "next/document";
+import Script from "next/script";
 import { ServerStyleSheet } from "styled-components";
 
 export default class MyDocument extends Document {
@@ -44,12 +45,12 @@ export default class MyDocument extends Document {
 					/>
 					{process.env.NODE_ENV === "production" && (
 						<>
-							<script async src="https://unpkg.com/thesemetrics@latest"></script>
-							<script
+							<Script async src="https://unpkg.com/thesemetrics@latest"></Script>
+							<Script
 								defer
 								data-domain="sreetamdas.com"
 								src="https://plausible.io/js/plausible.js"
-							></script>
+							></Script>
 						</>
 					)}
 				</Head>
