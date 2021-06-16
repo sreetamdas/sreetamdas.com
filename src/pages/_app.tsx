@@ -12,6 +12,8 @@ import { TGlobalThemeObject } from "typings/styled";
 import { MDXCodeBlock, MDXHeadingWrapper, ImageWrapper, MDXLinkWrapper } from "utils/mdx";
 import { BASE_FONT_SIZE } from "utils/style";
 
+import "assets/fonts/iosevka/iosevka.css";
+
 export const MDXComponents = {
 	p: Paragraph,
 	h1: MDXHeadingWrapper.h1,
