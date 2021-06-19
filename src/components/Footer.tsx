@@ -5,10 +5,10 @@ import { breakpoint } from "utils/style";
 export const Footer = () => {
 	return (
 		<FooterContent>
-			Made with <a href="https://nextjs.org">Next.js</a> &bull; Hosted on{" "}
-			<a href="https://netlify.com">Netlify</a> <span>&bull;</span> <br />
-			View source on <a href="https://github.com/sreetamdas/sreetamdas.com">Github</a> &bull; Find
-			me on <a href="https://twitter.com/_SreetamDas">Twitter</a>
+			Made with <a href="https://nextjs.org">Next.js</a> &bull; View source on{" "}
+			<a href="https://github.com/sreetamdas/sreetamdas.com">Github</a>
+			<span>&bull;</span> <br />
+			Find me on <a href="https://twitter.com/_SreetamDas">Twitter</a>
 		</FooterContent>
 	);
 };
