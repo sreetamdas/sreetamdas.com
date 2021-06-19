@@ -1,6 +1,11 @@
+import Image, { ImageProps } from "next/image";
 import React, { Fragment } from "react";
 import styled from "styled-components";
 
+import ImageCSS from "@/public/karma/css.webp";
+import ImageElixir from "@/public/karma/elixir.webp";
+import ImagePython from "@/public/karma/python.webp";
+import ImageReact from "@/public/karma/react.webp";
 import { DocumentHead } from "components/shared/seo";
 import { FullWidth } from "styles/layouts";
 import { LinkTo, Title } from "styles/typography";
@@ -42,19 +47,19 @@ const Index = () => {
 				<Title size={2.5} as="h2" id="react">
 					React + TypeScript
 				</Title>
-				<FullScreenImage src="/karma/react.webp" alt="Karma theme screenshot for React" />
+				<StyledImage src={ImageReact} alt="Karma theme screenshot for React" />
 				<Title size={2.5} as="h2" id="css">
 					CSS
 				</Title>
-				<FullScreenImage src="/karma/css.webp" alt="Karma theme screenshot for CSS" />
+				<StyledImage src={ImageCSS} alt="Karma theme screenshot for CSS" />
 				<Title size={2.5} as="h2" id="elixir">
 					Elixir
 				</Title>
-				<FullScreenImage src="/karma/elixir.webp" alt="Karma theme screenshot for Elixir" />
+				<StyledImage src={ImageElixir} alt="Karma theme screenshot for Elixir" />
 				<Title size={2.5} as="h2" id="python">
 					Python
 				</Title>
-				<FullScreenImage src="/karma/python.webp" alt="Karma theme screenshot for Python" />
+				<StyledImage src={ImagePython} alt="Karma theme screenshot for Python" />
 			</WideImagesContainer>
 		</Fragment>
 	);
@@ -62,12 +67,7 @@ const Index = () => {
 
 export default Index;
 
-const WideImagesContainer = styled(FullWidth)`
-	display: grid;
-	justify-items: center;
-`;
-
-const FullScreenImage = styled.img.attrs({ tabIndex: 0 })`
+const FullScreenImage = styled.div`
 	margin-top: -40px;
 	max-width: 95vw;
 	justify-self: center;
@@ -75,9 +75,23 @@ const FullScreenImage = styled.img.attrs({ tabIndex: 0 })`
 	border-radius: var(--border-radius);
 `;
 
-const ColorPaletteWrapper = styled.div`
+const StyledImage = (props: ImageProps) => (
+	<FullScreenImage>
+		{/* @ts-expect-error Need to find a way to let <Image /> know that the `src` is a StaticImport */}
+		<Image {...props} quality={100} placeholder={"blur"} />
+	</FullScreenImage>
+);
+
+const WideImagesContainer = styled(FullWidth)`
 	display: grid;
-	grid-auto-flow: column;
+	justify-items: center;
+`;
+
+const ColorPaletteWrapper = styled.div`
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	align-items: center;
 	gap: 1rem;
 `;
 

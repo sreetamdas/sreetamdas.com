@@ -444,7 +444,7 @@ export const ExternalLinksOverlay = () => {
 			icon: <FaSpotify />,
 		},
 		{
-			link: "https://discord.gg/HGZc5G7CeR",
+			link: "https://srtm.fyi/ds",
 			title: "Join Sreetam Das' Discord server",
 			icon: <FaDiscord />,
 		},

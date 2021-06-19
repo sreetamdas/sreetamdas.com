@@ -107,6 +107,7 @@ export const StyledLink = styled.a`
 	text-decoration: none;
 	cursor: pointer;
 	color: var(--color-primary-accent);
+	border-bottom: 2px solid transparent;
 
 	&:visited {
 		text-decoration: none;
