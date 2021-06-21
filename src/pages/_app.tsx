@@ -79,7 +79,7 @@ const GlobalStyles = createGlobalStyle`
 		color: var(--color-primary);
 		background-color: var(--color-background);
 		margin: 0;
-		line-height: 1.6;
+		line-height: 1.4;
 	}
 
 	*, *:before, *:after {

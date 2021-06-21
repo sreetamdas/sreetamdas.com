@@ -118,6 +118,11 @@ export const StyledLink = styled.a`
 	}
 `;
 
+export const ExternalLink = styled(StyledLink).attrs({
+	target: "_blank",
+	rel: "noopener noreferrer",
+})``;
+
 export const StyledAccentTextLink = styled(StyledLink)`
 	&:visited {
 		text-decoration: none;
