@@ -20,17 +20,20 @@ import styled, { css, ThemeContext } from "styled-components";
 import { FoobarContext } from "components/foobar";
 import { IconContainer } from "styles/blog";
 import { LinkTo } from "styles/typography";
-import { useBreakpointRange } from "utils/hooks";
+import { useBreakpointRange, useHasMounted } from "utils/hooks";
 import { checkIfNavbarShouldBeHidden } from "utils/misc";
 import { breakpoint } from "utils/style";
 
 export const Navbar = () => {
 	const [isNavbarShown, setIsNavbarShown] = useState(true);
+	const hasMounted = useHasMounted();
 	const { pathname } = useRouter();
 
 	useEffect(() => {
 		setIsNavbarShown(!checkIfNavbarShouldBeHidden(pathname.slice(1)));
 	}, [pathname]);
+
+	if (!hasMounted) return <Header />;
 
 	return isNavbarShown ? (
 		<Header>
@@ -291,6 +294,8 @@ const Header = styled.header`
 	position: sticky;
 	top: 0;
 	width: 100%;
+	height: calc(40px + 2rem);
+	padding: 0 1rem;
 
 	background-color: var(--color-background);
 
@@ -300,7 +305,7 @@ const Header = styled.header`
 `;
 
 const HeaderInner = styled.div`
-	padding: 20px 1rem;
+	padding: 1rem 0;
 	margin: 0 auto;
 	width: 100%;
 	max-width: var(--max-width);
