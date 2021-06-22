@@ -29,7 +29,7 @@ const Index = () => {
 						that I&apos;d purchased to test out before buying my{" "}
 						<ExternalLink href="https://srtm.fyi/keeb">custom mechanical keyboard</ExternalLink>. If
 						you&apos;re interested, you can check them out (and order some for yourself!) on{" "}
-						<ExternalLink>Rectangles.store</ExternalLink> :)
+						<ExternalLink href="https://rectangles.store">Rectangles.store</ExternalLink> :)
 					</StyledDetailAnswer>
 				</StyledDetails>
 				<StyledDetails>
