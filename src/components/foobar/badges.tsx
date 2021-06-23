@@ -18,7 +18,7 @@ import { VscDebug, VscTelescope } from "react-icons/vsc";
 import styled, { css } from "styled-components";
 
 import { FoobarContext } from "components/foobar";
-import { StyledLink } from "styles/typography";
+import { ExternalLink } from "styles/typography";
 import { TFoobarData, TFoobarPage } from "typings/console";
 import { breakpoint } from "utils/style";
 
@@ -65,13 +65,9 @@ export const ShowCompletedBadges = () => {
 				Here are badges for all the challenges that you&apos;ve completed so far.
 				<br />
 				Feel free to{" "}
-				<StyledLink
-					href="https://twitter.com/_SreetamDas"
-					target="_blank"
-					rel="noreferrer noopener"
-				>
+				<ExternalLink href="https://twitter.com/messages/compose?recipient_id=520276345">
 					reach out to me
-				</StyledLink>{" "}
+				</ExternalLink>{" "}
 				if you&apos;d like a clue or have any feedback!
 				<br />
 				<span>

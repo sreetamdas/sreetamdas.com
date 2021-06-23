@@ -14,7 +14,13 @@ const Index = () => {
 			<Center>
 				<Title size={5}>/faq</Title>
 			</Center>
-			<Paragraph>Frequently Asked Questions</Paragraph>
+			<Paragraph>
+				Frequently Asked Questions. Have a question that isn&apos;t answered here? Feel free to{" "}
+				<ExternalLink href="https://twitter.com/messages/compose?recipient_id=520276345">
+					DM me on Twitter
+				</ExternalLink>{" "}
+				:)
+			</Paragraph>
 
 			<Space size={20} />
 
@@ -39,6 +45,16 @@ const Index = () => {
 						<ExternalLink href="https://srtm.fyi/keeb">the tweet about it</ExternalLink>.
 					</StyledDetailAnswer>
 				</StyledDetails>
+				<StyledDetails>
+					<StyledSummary>Cool website! How&apos;d you build it?</StyledSummary>
+					<StyledDetailAnswer>
+						Thanks! You can check out the{" "}
+						<ExternalLink href="https://github.com/sreetamdas/sreetamdas.com">
+							source code on GitHub
+						</ExternalLink>
+						.
+					</StyledDetailAnswer>
+				</StyledDetails>
 			</FAQGrid>
 		</Fragment>
 	);
@@ -48,5 +64,6 @@ export default Index;
 
 const FAQGrid = styled.div`
 	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
 	gap: 2rem;
 `;
