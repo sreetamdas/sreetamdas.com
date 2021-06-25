@@ -121,14 +121,10 @@ const NavbarMenu = () => {
 	const { asPath } = useRouter();
 
 	const handleMobileOnEnter = () => {
-		// eslint-disable-next-line no-console
-		console.log("enter");
 		setIsMobileLayout(true);
 	};
 
 	const handleMobileOnLeave = () => {
-		// eslint-disable-next-line no-console
-		console.log("leave");
 		setIsMobileLayout(false);
 	};
 
