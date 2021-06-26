@@ -7,7 +7,7 @@ import {
 import React from "react";
 import styled from "styled-components";
 
-import { ImageWrapper } from "utils/mdx";
+import { ImageWrapper } from "components/mdx";
 
 export type TKeebInfo = {
 	keebInfo: Array<Page>;

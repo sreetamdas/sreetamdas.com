@@ -2,9 +2,10 @@ import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from "next";
 import dynamic from "next/dynamic";
 import React, { Fragment } from "react";
 
+import { MDXWrapper } from "components/mdx";
 import { DocumentHead } from "components/shared/seo";
 import { Center } from "styles/layouts";
-import { Title, PaddingListItems, RemoveBulletsFromList } from "styles/typography";
+import { Title, PaddingListItems } from "styles/typography";
 import { getAboutMDXPagesData } from "utils/blog";
 
 const Page = ({ post }: InferGetStaticPropsType<typeof getStaticProps>) => {
@@ -21,9 +22,9 @@ const Page = ({ post }: InferGetStaticPropsType<typeof getStaticProps>) => {
 				<Title size={5}>/{page}</Title>
 			</Center>
 			<PaddingListItems>
-				<RemoveBulletsFromList>
+				<MDXWrapper>
 					<MDXPage />
-				</RemoveBulletsFromList>
+				</MDXWrapper>
 			</PaddingListItems>
 		</Fragment>
 	);

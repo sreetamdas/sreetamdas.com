@@ -1,28 +1,14 @@
-import { MDXProvider } from "@mdx-js/react";
 import { AppProps } from "next/app";
-import Head from "next/head";
-import React, { useState, Fragment } from "react";
+import React, { useState } from "react";
 import { createGlobalStyle, ThemeProvider } from "styled-components";
 
 import { Navbar } from "components/Navbar";
 import { FoobarWrapper } from "components/foobar";
 import { Layout } from "styles/layouts";
-import { Paragraph } from "styles/typography";
 import { TGlobalThemeObject } from "typings/styled";
-import { MDXCodeBlock, MDXHeadingWrapper, ImageWrapper, MDXLinkWrapper } from "utils/mdx";
 import { BASE_FONT_SIZE } from "utils/style";
 
 import "assets/fonts/iosevka/iosevka.css";
-
-export const MDXComponents = {
-	p: Paragraph,
-	h1: MDXHeadingWrapper.h1,
-	h2: MDXHeadingWrapper.h2,
-	h3: MDXHeadingWrapper.h3,
-	pre: MDXCodeBlock,
-	img: ImageWrapper,
-	a: MDXLinkWrapper,
-};
 
 const GlobalStyles = createGlobalStyle`
 	:root {
@@ -79,7 +65,7 @@ const GlobalStyles = createGlobalStyle`
 		color: var(--color-primary);
 		background-color: var(--color-background);
 		margin: 0;
-		line-height: 1.4;
+		line-height: 1.5;
 	}
 
 	*, *:before, *:after {
@@ -169,23 +155,15 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
 	};
 
 	return (
-		<Fragment>
-			<Head>
-				<meta name="viewport" content="initial-scale=1.0, width=device-width" />
-			</Head>
-			<ThemeProvider theme={themeForContext}>
-				<GlobalStyles />
-				{/* @ts-expect-error MDX shut up */}
-				<MDXProvider components={MDXComponents}>
-					<FoobarWrapper>
-						<Navbar />
-						<Layout>
-							<Component {...pageProps} />
-						</Layout>
-					</FoobarWrapper>
-				</MDXProvider>
-			</ThemeProvider>
-		</Fragment>
+		<ThemeProvider theme={themeForContext}>
+			<GlobalStyles />
+			<FoobarWrapper>
+				<Navbar />
+				<Layout>
+					<Component {...pageProps} />
+				</Layout>
+			</FoobarWrapper>
+		</ThemeProvider>
 	);
 };
 
