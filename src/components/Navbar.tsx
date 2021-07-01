@@ -114,7 +114,7 @@ const NavLinks = () => {
 
 const NavbarMenu = () => {
 	const [darkTheme, setDarkTheme] = useState<boolean | undefined>(undefined);
-	const { theme, changeThemeVariant } = useContext(ThemeContext);
+	const { theme } = useContext(ThemeContext);
 	const { konami } = useContext(FoobarContext);
 	const [showDrawer, setShowDrawer] = useState(false);
 	const [isMobileLayout, setIsMobileLayout] = useState<boolean | undefined>(undefined);
@@ -142,11 +142,9 @@ const NavbarMenu = () => {
 		if (darkTheme !== undefined) {
 			if (darkTheme) {
 				document.documentElement.setAttribute("data-theme", konami ? "batman" : "dark");
-				changeThemeVariant("dark");
 				window.localStorage.setItem("theme", "dark");
 			} else {
 				document.documentElement.removeAttribute("data-theme");
-				changeThemeVariant("light");
 				window.localStorage.setItem("theme", "light");
 			}
 		}
