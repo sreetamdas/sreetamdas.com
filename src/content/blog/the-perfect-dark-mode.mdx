@@ -319,13 +319,13 @@ import Document, {
 function setInitialColorMode() {
   function getInitialColorMode() {
     const preference = window.localStorage.getItem("theme");
-    const hasPreference = typeof preference === "string";
+    const hasExplicitPreference = typeof preference === "string";
 
     /**
      * If the user has explicitly chosen light or dark,
      * use it. Otherwise, this value will be null.
      */
-    if (hasPreference) {
+    if (hasExplicitPreference) {
       return preference;
     }
 
@@ -333,8 +333,8 @@ function setInitialColorMode() {
     const mediaQuery = "(prefers-color-scheme: dark)";
     const mql = window.matchMedia(mediaQuery);
 
-    const hasPreference = typeof mql.matches === "boolean";
-    if (hasPreference) {
+    const hasImplicitPreference = typeof mql.matches === "boolean";
+    if (hasImplicitPreference) {
       return mql.matches ? "dark" : "light";
     }
 
@@ -496,13 +496,13 @@ import Document, {
 function setInitialColorMode() {
   function getInitialColorMode() {
     const preference = window.localStorage.getItem("theme");
-    const hasPreference = typeof preference === "string";
+    const hasExplicitPreference = typeof preference === "string";
 
     /**
      * If the user has explicitly chosen light or dark,
      * use it. Otherwise, this value will be null.
      */
-    if (hasPreference) {
+    if (hasExplicitPreference) {
       return preference;
     }
 
@@ -510,8 +510,8 @@ function setInitialColorMode() {
     const mediaQuery = "(prefers-color-scheme: dark)";
     const mql = window.matchMedia(mediaQuery);
 
-    const hasPreference = typeof mql.matches === "boolean";
-    if (hasPreference) {
+    const hasImplicitPreference = typeof mql.matches === "boolean";
+    if (hasImplicitPreference) {
       return mql.matches ? "dark" : "light";
     }
 
