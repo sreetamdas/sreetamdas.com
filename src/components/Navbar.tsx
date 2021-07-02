@@ -19,6 +19,7 @@ import styled, { css, ThemeContext } from "styled-components";
 
 import { FoobarContext } from "components/foobar";
 import { IconContainer } from "styles/blog";
+import { sharedTransition } from "styles/components";
 import { LinkTo } from "styles/typography";
 import { useBreakpointRange, useHasMounted } from "utils/hooks";
 import { checkIfNavbarShouldBeHidden } from "utils/misc";
@@ -292,6 +293,8 @@ const Header = styled.header`
 	padding: 0 1rem;
 
 	background-color: var(--color-background);
+
+	${sharedTransition}
 
 	${IconContainer}, ${ThemeSwitch}, ${MobileMenuToggle} {
 		z-index: 10;

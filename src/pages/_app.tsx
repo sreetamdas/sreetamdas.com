@@ -4,6 +4,7 @@ import { createGlobalStyle, ThemeProvider } from "styled-components";
 
 import { Navbar } from "components/Navbar";
 import { FoobarWrapper } from "components/foobar";
+import { sharedTransition } from "styles/components";
 import { Layout } from "styles/layouts";
 import { TGlobalThemeObject } from "typings/styled";
 import { BASE_FONT_SIZE } from "utils/style";
@@ -34,6 +35,7 @@ const GlobalStyles = createGlobalStyle`
 
 	--max-width: 650px;
 	--border-radius: 5px;
+	--transition-duration: 0.1s;
 	}
 
 	[data-theme="dark"] {
@@ -66,6 +68,8 @@ const GlobalStyles = createGlobalStyle`
 		background-color: var(--color-background);
 		margin: 0;
 		line-height: 1.5;
+
+		${sharedTransition}
 	}
 
 	*, *:before, *:after {
@@ -129,6 +133,8 @@ const GlobalStyles = createGlobalStyle`
 			https://developer.mozilla.org/en-US/docs/Web/CSS/box-decoration-break */
 		box-decoration-break: clone;
 		white-space: nowrap;
+
+		${sharedTransition}
 	}
 `;
 

@@ -1,6 +1,7 @@
 import { FormEvent, useState } from "react";
 import styled, { css } from "styled-components";
 
+import { sharedTransition } from "styles/components";
 import { buttonStylesMixin } from "styles/special";
 import { Accent } from "styles/typography";
 import { breakpoint } from "utils/style";
@@ -93,6 +94,8 @@ const StyledInput = styled.input.attrs({
 	border: 2px solid var(--color-primary-accent);
 	border-radius: var(--border-radius);
 	grid-column: 1 / span 2;
+
+	${sharedTransition}
 `;
 
 const SubscribeButton = styled.input.attrs({ type: "submit" })<{

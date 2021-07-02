@@ -1,6 +1,7 @@
 import { PropsWithChildren, ReactNode } from "react";
 import styled, { css } from "styled-components";
 
+import { sharedTransition } from "styles/components";
 import { PaddingListItems } from "styles/typography";
 import { breakpoint } from "utils/style";
 
@@ -142,6 +143,8 @@ export const Button = styled.button`
 	border-radius: var(--border-radius);
 	border: 2px solid var(--color-primary-accent);
 	color: var(--color-primary);
+
+	${sharedTransition}
 
 	&:hover {
 		background-color: var(--color-primary-accent);

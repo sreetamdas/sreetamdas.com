@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 export const StyledSummary = styled.summary`
 	cursor: pointer;
@@ -11,3 +11,9 @@ export const StyledDetails = styled.details`
 	}
 `;
 export const StyledDetailAnswer = styled.div``;
+
+export const sharedTransition = css`
+	transition-duration: var(--transition-duration);
+	transition-property: color, background-color;
+	transition-timing-function: linear;
+`;

@@ -1,6 +1,7 @@
 import { PropsWithChildren, HTMLAttributes, Key, useState } from "react";
 import styled, { keyframes, CSSProperties, css } from "styled-components";
 
+import { sharedTransition } from "styles/components";
 import { usePrefersReducedMotion, useRandomInterval } from "utils/hooks";
 
 const range = (start: number, end?: number, step = 1) => {
@@ -136,6 +137,8 @@ export const buttonStylesMixin = css`
 	background-color: var(--color-primary-accent);
 	color: var(--color-background);
 	cursor: pointer;
+
+	${sharedTransition}
 `;
 
 const SupportLinkStyled = styled.a`

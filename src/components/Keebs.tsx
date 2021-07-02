@@ -8,6 +8,7 @@ import React from "react";
 import styled from "styled-components";
 
 import { ImageWrapper } from "components/mdx";
+import { sharedTransition } from "styles/components";
 
 export type TKeebInfo = {
 	keebInfo: Array<Page>;
@@ -77,5 +78,7 @@ const Tags = styled.div`
 		color: var(--color-background);
 		padding: 0px 10px;
 		border-radius: var(--border-radius);
+
+		${sharedTransition}
 	}
 `;
