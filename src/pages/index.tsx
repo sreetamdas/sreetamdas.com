@@ -20,16 +20,16 @@ const Index = () => {
 			</Center>
 			<Paragraph>
 				I&apos;m a developer from India in love with all things React. I&apos;ve also worked with
-				different languages like Python, JavaScript, TypeScript and C++, as well as Node, Django and
-				Redux.
+				different languages like Python, JavaScript, Elixir, TypeScript and C++, as well as Node,
+				Django and Redux.
 			</Paragraph>
 			<Paragraph>
 				I&apos;m currently a Frontend Engineer at{" "}
 				<StyledLink href="https://remote.com">Remote</StyledLink> who loves working with{" "}
 				<TextGradient>
-					<Heavy>React + Redux + TypeScript</Heavy>
+					<Heavy>React + TypeScript</Heavy>
 				</TextGradient>
-				, the <em>sweetest</em> combination in my opinion.
+				.
 			</Paragraph>
 			<MDXText>
 				<Tooling />
