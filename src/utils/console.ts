@@ -18,14 +18,14 @@ export const getDataFromLocalForage = async <T extends unknown>(key: string): Pr
 	}
 };
 
-export const saveToLocalForage = async (data: any) => {
+export const saveToLocalForage = async <T extends Record<string, unknown>>(data: T) => {
 	try {
 		await localforage.setItem("foobar-data", data);
 	} catch (error) {
 		throw new Error(error);
 	}
 };
-export const updateLocalData = async (data: any) => {
+export const updateLocalData = async (data: Record<string, unknown>) => {
 	await saveToLocalForage(data);
 };
 
@@ -104,6 +104,7 @@ export const isObject = (item: Record<string, unknown>): boolean => {
  * @param target
  * @param ...sources
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const mergeDeep = (target: any, ...sources: any): any => {
 	if (!sources.length) return target;
 	const source = sources.shift();
@@ -154,7 +155,8 @@ export const logConsoleMessages = () => {
  * `dog`: development-only `console.log`
  * @param messages to be logged only during dev
  */
-export const dog = (...messages: Array<any>) => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const dog = (...messages: Array<any>): void => {
 	IS_DEV &&
 		// eslint-disable-next-line no-console
 		console.log(

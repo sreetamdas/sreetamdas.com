@@ -44,7 +44,7 @@ module.exports = {
 		"react/display-name": "off",
 		"react/jsx-uses-react": "off",
 		"@typescript-eslint/explicit-module-boundary-types": "off",
-		"@typescript-eslint/no-explicit-any": "off",
+		// "@typescript-eslint/no-explicit-any": "off",
 		"@typescript-eslint/no-unused-vars": ["error", { argsIgnorePattern: "^_" }],
 		"import/order": [
 			"error",

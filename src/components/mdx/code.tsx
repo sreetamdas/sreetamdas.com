@@ -16,8 +16,8 @@ type TMDXProviderCodeblockPassedProps = {
 			parentName: string;
 			metastring?: string;
 			mdxType: string;
-			[key: string]: any;
 			filename?: string;
+			[key: string]: unknown;
 		};
 	};
 };

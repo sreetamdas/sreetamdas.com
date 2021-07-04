@@ -1,12 +1,12 @@
 declare module "*.svg" {
-	const value: any;
+	const value: unknown;
 	export default value;
 }
 declare module "*.jpg" {
-	const value: any;
+	const value: unknown;
 	export default value;
 }
 declare module "*.mdx" {
-	let MDXComponent: (props: any) => JSX.Element;
+	let MDXComponent: (props: unknown) => JSX.Element;
 	export default MDXComponent;
 }

@@ -1,4 +1,5 @@
 import { Fragment, useContext, useState } from "react";
+import { IconBaseProps } from "react-icons";
 import { BsEgg } from "react-icons/bs";
 import {
 	FaCode,
@@ -82,7 +83,7 @@ export const ShowCompletedBadges = () => {
 type TFoobarBadge = TFoobarPage | "completed";
 
 type TFoobarBadgeRecord = {
-	icon: (props: any) => JSX.Element;
+	icon: (props: IconBaseProps) => JSX.Element;
 	description: string | JSX.Element;
 };
 type TFOOBAR_BADGES = Readonly<Record<TFoobarBadge, TFoobarBadgeRecord>>;
