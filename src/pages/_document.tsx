@@ -37,7 +37,6 @@ export default class MyDocument extends Document {
 					<meta name="theme-color" content="#5B34DA" media="(prefers-color-scheme: light)" />
 					{/* @ts-expect-error media isn't expected yet */}
 					<meta name="theme-color" content="#9D86E9" media="(prefers-color-scheme: dark)" />
-					<meta name="viewport" content="initial-scale=1.0, width=device-width" />
 					<link rel="apple-touch-icon" href="/logo.png" />
 					<meta name="apple-mobile-web-app-title" content="Sreetam Das' Blog" />
 					<meta name="apple-mobile-web-app-status-bar-style" content="default" />

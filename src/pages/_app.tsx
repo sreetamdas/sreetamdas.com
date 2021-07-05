@@ -1,5 +1,6 @@
 import { AppProps } from "next/app";
-import React, { useState } from "react";
+import Head from "next/head";
+import React, { Fragment, useState } from "react";
 import { createGlobalStyle, ThemeProvider } from "styled-components";
 
 import { Navbar } from "components/Navbar";
@@ -44,18 +45,16 @@ const GlobalStyles = createGlobalStyle`
 		--color-secondary-accent: rgb(97, 218, 251);
 		--color-primary: rgb(255, 255, 255);
 		--color-background: rgb(0, 0, 0);
-		--color-inlineCode-fg: var(--color-primary);
 		--color-inlineCode-bg: rgb(51, 51, 51);
 		--color-bg-blurred: rgba(15,10,35,0.9);
 	}
 	[data-theme="batman"] {
 		--color-primary-accent: rgb(255, 255, 0);
+		--values-primary-accent: 255, 255, 0;
 		--color-secondary-accent: rgb(97, 218, 251);
 		--color-primary: rgb(255, 255, 255);
 		--color-background: rgb(0, 0, 0);
-		--color-inlineCode-fg: var(--color-primary);
 		--color-inlineCode-bg: rgb(34, 34, 34);
-		--values-primary-accent: 255, 255, 0;
 	}
 
 	html,
@@ -161,15 +160,20 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
 	};
 
 	return (
-		<ThemeProvider theme={themeForContext}>
-			<GlobalStyles />
-			<FoobarWrapper>
-				<Navbar />
-				<Layout>
-					<Component {...pageProps} />
-				</Layout>
-			</FoobarWrapper>
-		</ThemeProvider>
+		<Fragment>
+			<Head>
+				<meta name="viewport" content="initial-scale=1.0, width=device-width" />
+			</Head>
+			<ThemeProvider theme={themeForContext}>
+				<GlobalStyles />
+				<FoobarWrapper>
+					<Navbar />
+					<Layout>
+						<Component {...pageProps} />
+					</Layout>
+				</FoobarWrapper>
+			</ThemeProvider>
+		</Fragment>
 	);
 };
 
