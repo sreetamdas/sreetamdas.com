@@ -48,12 +48,12 @@ const MDXCodeBlock = (props: TMDXProviderCodeblockPassedProps) => {
 							lineProps.className = `${lineProps.className} highlight-line`;
 						}
 						return (
-							<div {...lineProps} key={i}>
+							<CodeblockLineWrapper {...lineProps} key={i}>
 								<CodeblockLineNumber>{i + 1}</CodeblockLineNumber>
 								{line.map((token, key) => (
 									<span {...getTokenProps({ token, key })} key={key} />
 								))}
-							</div>
+							</CodeblockLineWrapper>
 						);
 					})}
 				</CodePreBlockWithHighlight>
@@ -96,13 +96,17 @@ const CodeblockLineNumber = styled.span`
 	padding-right: 0.6em;
 	min-width: 1rem;
 	user-select: none;
-	opacity: 0.25;
 	text-align: center;
-	position: relative;
 
 	${breakpoint.until.md(css`
 		display: none;
 	`)}
+`;
+
+const CodeblockLineWrapper = styled.div`
+	& > ${CodeblockLineNumber} {
+		color: #424242;
+	}
 `;
 
 /**
