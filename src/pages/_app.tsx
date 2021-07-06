@@ -67,8 +67,6 @@ const GlobalStyles = createGlobalStyle`
 		background-color: var(--color-background);
 		margin: 0;
 		line-height: 1.5;
-
-		${sharedTransition}
 	}
 
 	*, *:before, *:after {
