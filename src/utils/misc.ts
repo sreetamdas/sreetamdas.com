@@ -33,11 +33,17 @@ type TButtondownSubscribersAPIResponseObject = {
 export const getButtondownSubscriberCount = async () => {
 	const BUTTONDOWN_AUTH_TOKEN = `Token ${BUTTONDOWN_API_KEY}`;
 
-	return (
-		(
-			await axios.get(BUTTONDOWN_URL, {
-				headers: { Authorization: BUTTONDOWN_AUTH_TOKEN },
-			})
-		).data as TButtondownSubscribersAPIResponseObject
-	).count;
+	try {
+		return (
+			(
+				await axios.get(BUTTONDOWN_URL, {
+					headers: { Authorization: BUTTONDOWN_AUTH_TOKEN },
+				})
+			).data as TButtondownSubscribersAPIResponseObject
+		).count;
+	} catch (error) {
+		// eslint-disable-next-line no-console
+		console.error({ error });
+		return 0;
+	}
 };

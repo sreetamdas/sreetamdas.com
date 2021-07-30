@@ -121,7 +121,7 @@ const SparkleSvg = styled.svg`
 `;
 const ChildWrapper = styled.span`
 	position: relative;
-	z-index: 2;
+	z-index: 1;
 `;
 
 export { Sparkles };
