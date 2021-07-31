@@ -1,5 +1,5 @@
 import { AppProps } from "next/app";
-import Head from "next/head";
+import Script from "next/script";
 import React, { Fragment, useState } from "react";
 import { createGlobalStyle, ThemeProvider } from "styled-components";
 
@@ -159,9 +159,16 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
 
 	return (
 		<Fragment>
-			<Head>
-				<meta name="viewport" content="initial-scale=1.0, width=device-width" />
-			</Head>
+			{process.env.NODE_ENV === "production" && (
+				<>
+					<Script async src="https://unpkg.com/thesemetrics@latest"></Script>
+					<Script
+						defer
+						data-domain="sreetamdas.com"
+						src="https://plausible.io/js/plausible.js"
+					></Script>
+				</>
+			)}
 			<ThemeProvider theme={themeForContext}>
 				<GlobalStyles />
 				<FoobarWrapper>
