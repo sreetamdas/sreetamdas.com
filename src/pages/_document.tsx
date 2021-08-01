@@ -41,7 +41,6 @@ export default class MyDocument extends Document {
 					<meta name="apple-mobile-web-app-status-bar-style" content="default" />
 					<meta name="apple-mobile-web-app-capable" content="yes" />
 					<meta name="mobile-web-app-capable" content="yes" />
-					<meta name="viewport" content="initial-scale=1.0, width=device-width" />
 
 					<link
 						href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,700;1,400&display=swap"

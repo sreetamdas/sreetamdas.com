@@ -1,4 +1,5 @@
 import { AppProps } from "next/app";
+import Head from "next/head";
 import Script from "next/script";
 import React, { Fragment, useState } from "react";
 import { createGlobalStyle, ThemeProvider } from "styled-components";
@@ -169,6 +170,9 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
 					></Script>
 				</>
 			)}
+			<Head>
+				<meta name="viewport" content="initial-scale=1.0, width=device-width" />
+			</Head>
 			<ThemeProvider theme={themeForContext}>
 				<GlobalStyles />
 				<FoobarWrapper>
