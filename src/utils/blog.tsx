@@ -1,43 +1,71 @@
 import fs from "fs";
 import path from "path";
 
-import matter from "gray-matter";
+import { bundleMDX } from "mdx-bundler";
 
 import { getMdxString } from "components/mdx";
 import { TBlogPost } from "typings/blog";
+
+export const POSTS_PATH = path.join(process.cwd(), "src");
+export function getSourceOfFile(fileName: string) {
+	return fs.readFileSync(path.join(POSTS_PATH, "content", "blog", fileName), "utf-8");
+}
 
 export const getBlogPreviewImageURL = ({ slug }: { slug: TBlogPost["slug"] }) =>
 	`${process.env.SITE_URL}/blog/${slug}/preview.png`;
 
 export const getBlogPostsData = async () => {
+	// const META = /export\s+const\s+meta\s+=\s+(\{(\n|.)*?\n\})/;
 	const DIR = path.join(process.cwd(), "src", "content", "blog");
 	const files = fs.readdirSync(DIR).filter((file) => file.endsWith(".mdx"));
-	const entries = await Promise.all(files.map((file) => import(`content/blog/${file}`)));
+	// const entries = await Promise.all(files.map((file) => import(`content/blog/${file}`)));
 
-	const postsData: Array<TBlogPost> = files
-		.map((file, index) => {
-			const name = path.join(DIR, file);
-			const contents = fs.readFileSync(name, "utf8");
-			// @ts-expect-error provide a valid type for the return type
-			const { data: meta }: TBlogPost = matter(contents);
+	const postsData: Array<TBlogPost> = files.map((file, index) => {
+		// const name = path.join(DIR, file);
+		// const contents = fs.readFileSync(name, "utf8");
+		// const match = META.exec(contents);
 
-			const slug = file.replace(/\.mdx?$/, "");
-			const MDXContent = entries[index].default;
+		// if (!match || typeof match[1] !== "string")
+		// 	throw new Error(`${name} needs to export const meta = {}`);
 
-			return {
-				...meta,
-				slug,
-				image: getBlogPreviewImageURL({ slug }),
-				content: getMdxString(<MDXContent />),
-			};
-		})
-		.filter((meta) => process.env.NODE_ENV === "development" || meta.published)
-		.sort((a, b) => {
-			return new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime();
-		});
+		// const meta = eval("(" + match[1] + ")");
+		const slug = file.replace(/\.mdx?$/, "");
+		// const MDXContent = entries[index].default;
+
+		return {
+			// ...meta,
+			slug,
+			// image: getBlogPreviewImageURL({ slug }),
+			// content: getMdxString(<MDXContent />),
+		};
+	});
+	// .filter((meta) => process.env.NODE_ENV === "development" || meta.published)
+	// .sort((a, b) => {
+	// 	return new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime();
+	// });
 
 	return postsData;
 };
+
+export async function getBlogPostData(slug: string) {
+	const source = getSourceOfFile(`${slug}.mdx`);
+	// console.log({ POSTS_PATH, source });
+
+	const { code, frontmatter } = await bundleMDX(source, {
+		cwd: POSTS_PATH,
+		esbuildOptions(options) {
+			options.target = ["esnext"];
+			options.platform = "node";
+
+			return options;
+		},
+	});
+
+	return {
+		frontmatter,
+		code,
+	};
+}
 
 export const getAboutMDXPagesData = async () => {
 	/**
@@ -67,13 +95,13 @@ export const getAboutMDXPagesData = async () => {
 			};
 		})
 		.filter(({ page }) => existingAboutPageFiles.indexOf(page) === -1);
-	const entries = await Promise.all(pagesData.map(({ page }) => import(`content/${page}.mdx`)));
+	// const entries = await Promise.all(pagesData.map(({ page }) => import(`content/${page}.mdx`)));
 	const pagesDataWithContent = pagesData.map((data, index) => {
-		const MDXContent = entries[index].default;
+		// const MDXContent = entries[index].default;
 
 		return {
 			...data,
-			content: getMdxString(<MDXContent />),
+			// content: getMdxString(<MDXContent />),
 		};
 	});
 

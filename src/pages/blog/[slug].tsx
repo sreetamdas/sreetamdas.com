@@ -1,21 +1,24 @@
+import { getMDXComponent } from "mdx-bundler/client";
 import { GetStaticPaths, GetStaticProps } from "next";
-import dynamic from "next/dynamic";
-import React, { Fragment, useRef } from "react";
+// import dynamic from "next/dynamic";
+import React, { Fragment, useMemo, useRef } from "react";
 
-import { ScrollToTop, ShareLinks } from "components/blog";
-import { Newsletter } from "components/blog/Newsletter";
-import { ReadingProgress } from "components/blog/ProgressBar";
-import { MDXWrapper } from "components/mdx";
-import { DocumentHead } from "components/shared/seo";
-import {
-	BlogPostMDXContent,
-	PostNotPublishedWarning,
-	PostMetaDataGrid,
-	EndLinks,
-} from "styles/blog";
-import { BlogPostTitle, TextGradient, Datestamp } from "styles/typography";
+import { MDXComponents } from "components/mdx";
+
+// import { ScrollToTop, ShareLinks } from "components/blog";
+// import { Newsletter } from "components/blog/Newsletter";
+// import { ReadingProgress } from "components/blog/ProgressBar";
+// import { MDXWrapper } from "components/mdx";
+// import { DocumentHead } from "components/shared/seo";
+// import {
+// 	BlogPostMDXContent,
+// 	PostNotPublishedWarning,
+// 	PostMetaDataGrid,
+// 	EndLinks,
+// } from "styles/blog";
+// import { BlogPostTitle, TextGradient, Datestamp } from "styles/typography";
 import { TBlogPost } from "typings/blog";
-import { getBlogPostsData } from "utils/blog";
+import { getBlogPostData, getBlogPostsData } from "utils/blog";
 import { getButtondownSubscriberCount } from "utils/misc";
 
 type TBlogPostPageProps = {
@@ -23,15 +26,18 @@ type TBlogPostPageProps = {
 	subscriberCount: number;
 };
 
-const Post = ({ post, subscriberCount }: TBlogPostPageProps) => {
-	const MDXPost = dynamic(() => import(`content/blog/${post.slug}.mdx`), {
-		loading: () => <div dangerouslySetInnerHTML={{ __html: post.content }} />,
-	});
-	const topRef = useRef<HTMLDivElement>(null);
+const Post = ({ code }: TBlogPostPageProps) => {
+	// const topRef = useRef<HTMLDivElement>(null);
+	// const MDXPost = dynamic(() => import(`content/blog/${post.slug}.mdx`), {
+	// 	loading: () => <div dangerouslySetInnerHTML={{ __html: post.content }} />,
+	// });
+
+	const Component = useMemo(() => getMDXComponent(code), [code]);
 
 	return (
 		<Fragment>
-			<DocumentHead title={post.title} imageURL={post?.image} description={post.summary} />
+			<Component />
+			{/* <DocumentHead title={post.title} imageURL={post?.image} description={post.summary} />
 			<ReadingProgress />
 			<div ref={topRef} />
 			<BlogPostTitle>
@@ -56,7 +62,7 @@ const Post = ({ post, subscriberCount }: TBlogPostPageProps) => {
 				<ShareLinks {...post} />
 				<ScrollToTop topRef={topRef} />
 			</EndLinks>
-			<Newsletter {...{ subscriberCount }} />
+			<Newsletter {...{ subscriberCount }} /> */}
 		</Fragment>
 	);
 };
@@ -74,12 +80,14 @@ export const getStaticPaths: GetStaticPaths = async () => {
 export const getStaticProps: GetStaticProps<TBlogPostPageProps, { slug: string }> = async ({
 	params,
 }) => {
-	const subscriberCount = await getButtondownSubscriberCount();
-	const postsData = await getBlogPostsData();
+	// const subscriberCount = await getButtondownSubscriberCount();
+	// const postsData = await getBlogPostsData();
 	// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-	const post = postsData.find((postData) => postData.slug === params?.slug)!;
+	// const post = postsData.find((postData) => postData.slug === params?.slug)!;
+	const { code } = await getBlogPostData(params?.slug);
+	console.log({ code });
 
-	return { props: { post, subscriberCount } };
+	return { props: { code } };
 };
 
 export default Post;
