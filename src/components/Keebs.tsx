@@ -28,7 +28,7 @@ const Keebs = ({ keebInfo }: TKeebInfo) => {
 	});
 
 	return (
-		<div>
+		<KeebsContainer>
 			{keebDetails.map(({ name, image, tags }) => (
 				<KeebWrapper key={name.toLowerCase().replace(" ", "-")}>
 					<Info>
@@ -42,16 +42,20 @@ const Keebs = ({ keebInfo }: TKeebInfo) => {
 					{image ? <ImageWrapper src={image} alt={name} /> : null}
 				</KeebWrapper>
 			))}
-		</div>
+		</KeebsContainer>
 	);
 };
 
 export { Keebs };
 
+const KeebsContainer = styled.section`
+	display: grid;
+	gap: 4rem;
+`;
+
 const KeebWrapper = styled.div`
 	display: grid;
 	gap: 1rem;
-	padding-top: 3rem;
 `;
 
 const Info = styled.div`
