@@ -161,14 +161,11 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
 	return (
 		<Fragment>
 			{process.env.NODE_ENV === "production" && (
-				<>
-					<Script async src="https://unpkg.com/thesemetrics@latest"></Script>
-					<Script
-						defer
-						data-domain="sreetamdas.com"
-						src="https://plausible.io/js/plausible.js"
-					></Script>
-				</>
+				<Script
+					defer
+					data-domain="sreetamdas.com"
+					src="https://plausible.io/js/plausible.js"
+				></Script>
 			)}
 			<Head>
 				<meta name="viewport" content="initial-scale=1.0, width=device-width" />
