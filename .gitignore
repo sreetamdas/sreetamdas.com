@@ -42,3 +42,5 @@ pages/foobar/spec.md
 /out_functions/
 
 public/rss/
+public/sitemap.xml
+public/robots.txt
