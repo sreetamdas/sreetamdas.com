@@ -89,7 +89,7 @@ export const Foobar = ({ completedPage, unlocked }: TFoobarSchrodingerProps) => 
 
 	return (
 		<Fragment>
-			<DocumentHead title="Foobar" />
+			<DocumentHead title="Foobar" noIndex />
 			<Space size={50} />
 			{/* <Title>Hello Beautiful Nerd!</Title> */}
 			<UnlockedBanner {...{ completedPage }} />
