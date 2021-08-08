@@ -1,0 +1,10 @@
+# *
+User-agent: *
+Disallow: /foobar
+Disallow: /foobar/
+
+# Host
+Host: https://sreetamdas.com
+
+# Sitemaps
+Sitemap: https://sreetamdas.com/sitemap.xml

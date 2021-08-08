@@ -1,6 +1,5 @@
 module.exports = {
 	siteUrl: process.env.SITE_URL || "https://sreetamdas.com",
-	generateRobotsTxt: true,
 	transform: async (config, path) => {
 		if (path.startsWith("/foobar")) {
 			return null;
