@@ -34,7 +34,7 @@ const Custom404 = ({ message }: T404PageMessage) => {
 	};
 	return (
 		<Fragment>
-			<DocumentHead title="404!" />
+			<DocumentHead title="404!" description="Ugh, you're in the wrong place :/" />
 			<Center>
 				<ReallyBigTitle>404!</ReallyBigTitle>
 				<Title resetLineHeight>Page not found :(</Title>

@@ -9,7 +9,7 @@ import { ExternalLink, Paragraph, Title } from "styles/typography";
 const Index = () => {
 	return (
 		<Fragment>
-			<DocumentHead title="FAQ" />
+			<DocumentHead title="FAQ" description="Questions that you may have, answered" />
 
 			<Center>
 				<Title size={5}>/faq</Title>

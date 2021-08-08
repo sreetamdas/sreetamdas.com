@@ -7,7 +7,7 @@ import { Title } from "styles/typography";
 const Playground = () => {
 	return (
 		<Fragment>
-			<DocumentHead title="Playground 🥳" />
+			<DocumentHead title="Playground 🥳" description="A live React playground" />
 
 			<Title size={5}>
 				Playground{" "}

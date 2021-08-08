@@ -12,7 +12,10 @@ const KEEBS_DATABASE_ID = "3539f182858f424f9cc2563c07dc300d";
 const Index = ({ response }: InferGetStaticPropsType<typeof getStaticProps>) => {
 	return (
 		<Fragment>
-			<DocumentHead title="Keebs" />
+			<DocumentHead
+				title="Keebs"
+				description="Mechanical keyboards and their components that I own"
+			/>
 
 			<Center>
 				<Title size={5}>/keebs</Title>

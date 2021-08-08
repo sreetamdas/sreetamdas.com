@@ -11,9 +11,9 @@ const siteURL = process.env.SITE_URL ?? "https://sreetamdas.com";
 export const DocumentHead = ({
 	title,
 	imageURL: relativeImageURL,
-	description = "Software Developer from India. 💜 React, TypeScript and Mechanical Keyboards!",
+	description = "Software Tinkerer and Developer from India. 💜 React and TypeScript, CS:GO and Mechanical Keyboards!",
 }: TDocumentHeadProps) => {
-	const pageTitle = `${title} — Sreetam Das`;
+	const pageTitle = `${title} | Sreetam Das`;
 	const imageURL = getAbsoluteURL(relativeImageURL ?? "/og-default.webp");
 
 	return (

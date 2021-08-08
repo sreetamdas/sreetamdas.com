@@ -8,7 +8,10 @@ import { getButtondownSubscriberCount } from "utils/misc";
 const Index = ({ subscriberCount }: TNewsletterProps) => {
 	return (
 		<Fragment>
-			<DocumentHead title="Newsletter" />
+			<DocumentHead
+				title="Newsletter"
+				description="Curate links keeping up with the JavaScript, React and webdev world. And mechanical keyboards!"
+			/>
 			<Newsletter {...{ subscriberCount }} />
 		</Fragment>
 	);

@@ -7,7 +7,7 @@ import { FullWidth, Space } from "styles/layouts";
 const FancyPants = () => {
 	return (
 		<Fragment>
-			<DocumentHead title="Fancy Pants" />
+			<DocumentHead title="Fancy Pants" description="Sreetam's fancy-shmancy landing page" />
 			<FullWidth>
 				<div style={{ padding: "0 25px" }}>
 					<NavigationContainer>
