@@ -10,7 +10,7 @@ const Index = ({ subscriberCount }: TNewsletterProps) => {
 		<Fragment>
 			<DocumentHead
 				title="Newsletter"
-				description="Curate links keeping up with the JavaScript, React and webdev world. And mechanical keyboards!"
+				description="Curated links keeping up with the JavaScript, React and webdev world. And mechanical keyboards!"
 			/>
 			<Newsletter {...{ subscriberCount }} />
 		</Fragment>
