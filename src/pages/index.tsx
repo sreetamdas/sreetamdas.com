@@ -1,11 +1,14 @@
+import { InferGetStaticPropsType } from "next";
 import React, { Fragment } from "react";
 
+import { Newsletter } from "components/blog/Newsletter";
 import { DocumentHead } from "components/shared/seo";
 import Tooling from "content/tooling.mdx";
 import { Center } from "styles/layouts";
 import { TextGradient, Heavy, MDXText, Title, Paragraph, StyledLink } from "styles/typography";
+import { getButtondownSubscriberCount } from "utils/misc";
 
-const Index = () => {
+const Index = ({ subscriberCount }: InferGetStaticPropsType<typeof getStaticProps>) => {
 	return (
 		<Fragment>
 			<DocumentHead title="Home" />
@@ -45,8 +48,18 @@ const Index = () => {
 				CSGO, Reddit, Mechanical Keyboards, Open Source, GitHub, Factorio, Tactile Switches, Batman
 				and the Internet!
 			</Paragraph>
+
+			<Newsletter {...{ subscriberCount }} />
 		</Fragment>
 	);
 };
 
 export default Index;
+
+export const getStaticProps = async () => {
+	const subscriberCount = await getButtondownSubscriberCount();
+
+	return {
+		props: { subscriberCount },
+	};
+};
