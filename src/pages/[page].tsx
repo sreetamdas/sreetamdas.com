@@ -6,7 +6,7 @@ import { Newsletter } from "components/blog/Newsletter";
 import { MDXWrapper } from "components/mdx";
 import { DocumentHead } from "components/shared/seo";
 import { Center } from "styles/layouts";
-import { Title, PaddingListItems } from "styles/typography";
+import { Title, PaddingListItems, RemoveBulletsFromList } from "styles/typography";
 import { getAboutMDXPagesData } from "utils/blog";
 import { getButtondownSubscriberCount } from "utils/misc";
 
@@ -24,9 +24,11 @@ const Page = ({ post, subscriberCount }: InferGetStaticPropsType<typeof getStati
 				<Title size={5}>/{page}</Title>
 			</Center>
 			<PaddingListItems>
-				<MDXWrapper>
-					<MDXPage />
-				</MDXWrapper>
+				<RemoveBulletsFromList>
+					<MDXWrapper>
+						<MDXPage />
+					</MDXWrapper>
+				</RemoveBulletsFromList>
 			</PaddingListItems>
 			<Newsletter {...{ subscriberCount }} />
 		</Fragment>
