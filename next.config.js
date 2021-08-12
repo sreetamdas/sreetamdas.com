@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import remarkSlug from "remark-slug";
-
+const remarkSlug = require("remark-slug");
+// eslint-disable-next-line import/order
 const withMDX = require("@next/mdx")({
 	extension: /\.mdx?$/,
 	options: {
@@ -9,7 +9,7 @@ const withMDX = require("@next/mdx")({
 });
 
 module.exports = withMDX({
-	target: "serverless",
+	experimental: { esmExternals: true },
 	pageExtensions: ["js", "jsx", "ts", "tsx", "mdx"],
 	env: {
 		SITE_URL: "https://sreetamdas.com",
