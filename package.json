@@ -10,8 +10,8 @@
 		"deploy": "yarn build && netlify deploy",
 		"compile": "tsc --watch",
 		"typecheck": "tsc -p tsconfig.json",
-		"lint": "eslint 'src/{pages,components,typings,styles,utils}/**/*.{js,jsx,ts,tsx}' --cache --fix",
-		"prettier": "prettier --write 'src/{pages,components,typings,styles,utils}/**/*.{js,jsx,ts,tsx}'",
+		"lint": "eslint 'src/**/*.{js,jsx,ts,tsx}' --cache --fix",
+		"prettier": "prettier --write 'src/**/*.{js,jsx,ts,tsx}'",
 		"prepare": "husky install"
 	},
 	"dependencies": {

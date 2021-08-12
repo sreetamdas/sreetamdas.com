@@ -77,7 +77,6 @@ const FullScreenImage = styled.div`
 
 const StyledImage = (props: ImageProps) => (
 	<FullScreenImage>
-		{/* @ts-expect-error Need to find a way to let <Image /> know that the `src` is a StaticImport */}
 		<Image {...props} quality={100} placeholder={"blur"} />
 	</FullScreenImage>
 );
