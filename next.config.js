@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-const remarkSlug = require("remark-slug");
-// eslint-disable-next-line import/order
+import remarkSlug from "remark-slug";
+
 const withMDX = require("@next/mdx")({
 	extension: /\.mdx?$/,
 	options: {
