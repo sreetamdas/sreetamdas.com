@@ -22,6 +22,10 @@ The website is pretty minimal, and should hopefully provide a seamless experienc
 
 If you don't know what I am referring to, that's great! You haven't discovered the mini-game yet. If you'd like to check it out, please open up the browser console on [sreetamdas.com](https://sreetamdas.com). 😉
 
+You can check out some more details below ⬇️
+
+---
+
 <details>
 	<summary><strong>❗❗ HERE BE SPOILERS ❗❗</strong></summary>
 
@@ -30,6 +34,8 @@ Well, the cat's out of the bag: there's a mini-game on <a href="https://sreetamd
 Pretty much wherever the mini-game is present in the repo, it's placed under a <code>foobar</code> subfolder (eg. in <code>components</code>) so you'll know when you're about to come across mini-game related code. 😄
 
 </details>
+
+---
 
 ## Development
 
