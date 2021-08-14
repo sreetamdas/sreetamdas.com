@@ -18,7 +18,7 @@ import { MDXComponents } from "components/mdx";
 // } from "styles/blog";
 // import { BlogPostTitle, TextGradient, Datestamp } from "styles/typography";
 import { TBlogPost } from "typings/blog";
-import { getBlogPostData, getBlogPostsData } from "utils/blog";
+import { getBlogPostData, getBlogPostsData, getBlogPostsSlugs } from "utils/blog";
 import { getButtondownSubscriberCount } from "utils/misc";
 
 type TBlogPostPageProps = {
@@ -68,26 +68,26 @@ const Post = ({ code }: TBlogPostPageProps) => {
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {
-	const postsData: Array<TBlogPost> = await getBlogPostsData();
+	const postsSlugs = await getBlogPostsSlugs();
+	console.log({ postsSlugs });
 
-	const paths = postsData.map((post) => ({
-		params: { slug: post.slug },
+	const paths = postsSlugs.map((slug) => ({
+		params: { slug },
 	}));
 
 	return { paths, fallback: false };
 };
 
-export const getStaticProps: GetStaticProps<TBlogPostPageProps, { slug: string }> = async ({
-	params,
-}) => {
+export const getStaticProps: GetStaticProps = async ({ params }) => {
 	// const subscriberCount = await getButtondownSubscriberCount();
 	// const postsData = await getBlogPostsData();
 	// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 	// const post = postsData.find((postData) => postData.slug === params?.slug)!;
-	const { code } = await getBlogPostData(params?.slug);
-	console.log({ code });
+	const result = await getBlogPostData(params?.slug);
 
-	return { props: { code } };
+	console.log({ result });
+
+	return { props: { ...result } };
 };
 
 export default Post;

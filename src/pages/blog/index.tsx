@@ -33,6 +33,8 @@ const Index = ({ postsData, subscriberCount }: InferGetStaticPropsType<typeof ge
 export const getStaticProps = async () => {
 	const subscriberCount = await getButtondownSubscriberCount();
 	const postsData: Array<TBlogPost> = await getBlogPostsData();
+	console.log({ postsData });
+
 	await generateRssFeed();
 
 	return {

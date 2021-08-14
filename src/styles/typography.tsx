@@ -76,6 +76,11 @@ export const Title = styled.h1<{ resetLineHeight?: boolean; size?: number }>`
 		`}
 `;
 
+export const MDXTitle = styled.h1<{ color?: string }>`
+	font-size: 2rem;
+	color: ${({ color }) => (color ? color : "red")};
+`;
+
 export const Paragraph = styled.p<{ paddingTop?: boolean | number }>`
 	margin: 0;
 	padding: 10px 0;
