@@ -23,7 +23,7 @@ The website is pretty minimal, and should hopefully provide a seamless experienc
 If you don't know what I am referring to, that's great! You haven't discovered the mini-game yet. If you'd like to check it out, please open up the browser console on [sreetamdas.com](https://sreetamdas.com). 😉
 
 <details>
-	<summary><strong>HERE BE SPOILERS</strong></summary>
+	<summary><strong>❗❗ HERE BE SPOILERS ❗❗</strong></summary>
 
 Well, the cat's out of the bag: there's a mini-game on <a href="https://sreetamdas.com">sreetamdas.com</a>! If you're forking this repository for yourself, be aware that you will be forking that as well. 😅 It isn't a "module" as such that you can just remove from the website — though the game lies in the <code>/foobar</code> subdirectory.
 
