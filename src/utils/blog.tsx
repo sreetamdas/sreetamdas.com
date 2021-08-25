@@ -1,6 +1,8 @@
 import fs from "fs";
 import path from "path";
 
+import matter from "gray-matter";
+
 import { getMdxString } from "components/mdx";
 import { TBlogPost } from "typings/blog";
 
@@ -8,7 +10,6 @@ export const getBlogPreviewImageURL = ({ slug }: { slug: TBlogPost["slug"] }) =>
 	`${process.env.SITE_URL}/blog/${slug}/preview.png`;
 
 export const getBlogPostsData = async () => {
-	const META = /export\s+const\s+meta\s+=\s+(\{(\n|.)*?\n\})/;
 	const DIR = path.join(process.cwd(), "src", "content", "blog");
 	const files = fs.readdirSync(DIR).filter((file) => file.endsWith(".mdx"));
 	const entries = await Promise.all(files.map((file) => import(`content/blog/${file}`)));
@@ -17,12 +18,9 @@ export const getBlogPostsData = async () => {
 		.map((file, index) => {
 			const name = path.join(DIR, file);
 			const contents = fs.readFileSync(name, "utf8");
-			const match = META.exec(contents);
+			// @ts-expect-error provide a valid type for the return type
+			const { data: meta }: TBlogPost = matter(contents);
 
-			if (!match || typeof match[1] !== "string")
-				throw new Error(`${name} needs to export const meta = {}`);
-
-			const meta = eval("(" + match[1] + ")");
 			const slug = file.replace(/\.mdx?$/, "");
 			const MDXContent = entries[index].default;
 
