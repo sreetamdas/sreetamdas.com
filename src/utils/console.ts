@@ -22,7 +22,7 @@ export const saveToLocalForage = async <T extends Record<string, unknown>>(data:
 	try {
 		await localforage.setItem("foobar-data", data);
 	} catch (error) {
-		throw new Error(error);
+		throw new Error(error as string);
 	}
 };
 export const updateLocalData = async (data: Record<string, unknown>) => {
