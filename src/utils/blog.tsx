@@ -17,20 +17,22 @@ export const getBlogPostsData = async () => {
 	const postsData: Array<TBlogPost> = await Promise.all(
 		files.map(async (file) => {
 			const name = path.resolve(DIR, file);
-			const mdxSource = await fs.readFile(name, "utf8");
+			const mdxSource = await fs.readFile(
+				"/Users/sreetamdas/dev/projects/sreetamdas.com/src/content/blog/test-mdx-bundler.mdx",
+				"utf8"
+			);
 			const result = await bundleMDX(mdxSource, {
 				cwd: path.dirname(name),
 				esbuildOptions(options) {
 					options.platform = "node";
+					options.target = "esnext";
 
 					return options;
 				},
 			});
-
 			const slug = file.replace(/\.mdx?$/, "");
-			// const MDXContent = entries[index].default;
 
-			return result;
+			return { ...result, slug };
 		})
 	);
 	// .filter((meta) => process.env.NODE_ENV === "development" || meta.published)
@@ -38,7 +40,7 @@ export const getBlogPostsData = async () => {
 	// 	return new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime();
 	// });
 
-	console.log(postsData);
+	console.log(">>>>>>>");
 
 	return postsData;
 };
@@ -53,11 +55,16 @@ export async function getBlogPostsSlugs() {
 export async function getBlogPostData(file: string) {
 	const name = path.resolve(DIR, `${file}.mdx`);
 	const mdxSource = await fs.readFile(name, "utf8");
-	console.log(file, name);
 
-	const result = await bundleMDX(mdxSource);
+	const result = await bundleMDX(mdxSource, {
+		cwd: path.dirname(name),
+		esbuildOptions(options) {
+			options.platform = "node";
+			options.target = "esnext";
 
-	console.log(result);
+			return options;
+		},
+	});
 
 	return result;
 }

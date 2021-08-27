@@ -36,13 +36,13 @@ export const ScrollToTop = ({ topRef }: { topRef: RefObject<HTMLDivElement> }) =
 	);
 };
 
-export const BlogPostPreview = ({ post }: { post: TBlogPost }) => {
+export const BlogPostPreview = ({ post, slug }: { post: TBlogPost }) => {
 	const [hoverRef, isHovered] = useHover();
 
 	return (
 		<article>
-			<Link href={`/blog/${post.slug}`} scroll={false} passHref>
-				<AnchorUnstyled href={`/blog/${post.slug}`}>
+			<Link href={`/blog/${slug}`} scroll={false} passHref>
+				<AnchorUnstyled href={`/blog/${slug}`}>
 					<Card ref={hoverRef}>
 						<BlogPostPreviewTitle {...{ isHovered }}>{post.title}</BlogPostPreviewTitle>
 						<Datestamp>

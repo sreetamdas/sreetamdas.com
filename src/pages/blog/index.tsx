@@ -12,6 +12,8 @@ import { getBlogPostsData } from "utils/blog";
 import { getButtondownSubscriberCount } from "utils/misc";
 
 const Index = ({ postsData, subscriberCount }: InferGetStaticPropsType<typeof getStaticProps>) => {
+	console.log(postsData);
+
 	return (
 		<Fragment>
 			<DocumentHead title="Blog" />
@@ -20,8 +22,8 @@ const Index = ({ postsData, subscriberCount }: InferGetStaticPropsType<typeof ge
 			</Center>
 
 			<BlogPostsPreviewLayout>
-				{postsData?.map((post, index) => (
-					<BlogPostPreview {...{ post }} key={index} />
+				{postsData?.map(({ frontmatter: post, slug }, index) => (
+					<BlogPostPreview {...{ post, slug }} key={index} />
 				))}
 			</BlogPostsPreviewLayout>
 
@@ -33,7 +35,6 @@ const Index = ({ postsData, subscriberCount }: InferGetStaticPropsType<typeof ge
 export const getStaticProps = async () => {
 	const subscriberCount = await getButtondownSubscriberCount();
 	const postsData: Array<TBlogPost> = await getBlogPostsData();
-	console.log({ postsData });
 
 	await generateRssFeed();
 

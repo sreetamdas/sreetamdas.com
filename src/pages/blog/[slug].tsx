@@ -32,7 +32,7 @@ const Post = ({ code }: TBlogPostPageProps) => {
 	// 	loading: () => <div dangerouslySetInnerHTML={{ __html: post.content }} />,
 	// });
 
-	const Component = useMemo(() => getMDXComponent(code), [code]);
+	const Component = getMDXComponent(code);
 
 	return (
 		<Fragment>
