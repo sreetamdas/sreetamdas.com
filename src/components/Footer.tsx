@@ -1,4 +1,6 @@
-import { useEffect, useState } from "react";
+import { FaRegStar } from "react-icons/fa";
+import { VscRepoForked } from "react-icons/vsc";
+import { useQuery } from "react-query";
 import styled, { css } from "styled-components";
 
 import { breakpoint } from "utils/style";
@@ -13,6 +15,9 @@ type StatsQuery = {
 	repo: string;
 };
 
+/**
+ * Fetch GitHub stats from /api/github/stats
+ */
 const getGitHubStats = async (body: StatsQuery) => {
 	const response = await (
 		await fetch("/api/github/stats", {
@@ -27,37 +32,34 @@ const getGitHubStats = async (body: StatsQuery) => {
 	return response;
 };
 
-/**
- * Fetch GitHub stats from /api/github/stats
- */
 const GitHubStats = () => {
-	const [stats, setStats] = useState<StatsResult>({
-		stars: 0,
-		forks: 0,
-	});
-
-	useEffect(() => {
-		getGitHubStats({
-			owner: "sreetamdas",
-			repo: "sreetamdas.com",
-		}).then((stats) => setStats(stats));
-	}, []);
-
-	if (!stats) return null;
+	const { data } = useQuery<StatsResult>(
+		["api", "github", "stats"],
+		async () =>
+			await getGitHubStats({
+				owner: "sreetamdas",
+				repo: "sreetamdas.com",
+			}),
+		{
+			staleTime: Infinity,
+		}
+	);
 
 	return (
-		<Container>
-			<Stats>
-				<Stat>
-					<StatLabel>Stars</StatLabel>
-					<StatValue>{stats.stars}</StatValue>
-				</Stat>
-				<Stat>
-					<StatLabel>Forks</StatLabel>
-					<StatValue>{stats.forks}</StatValue>
-				</Stat>
-			</Stats>
-		</Container>
+		<Stats>
+			<Stat href="https://github.com/sreetamdas/sreetamdas.com/stargazers">
+				<StatIcon>
+					<FaRegStar />
+				</StatIcon>
+				<StatValue>{data?.stars ?? "—"}</StatValue>
+			</Stat>
+			<Stat href="https://github.com/sreetamdas/sreetamdas.com/network/members">
+				<StatIcon>
+					<VscRepoForked />
+				</StatIcon>
+				<StatValue>{data?.forks ?? "—"}</StatValue>
+			</Stat>
+		</Stats>
 	);
 };
 
@@ -91,34 +93,39 @@ const FooterContent = styled.div`
 	}
 `;
 
-const Stat = styled.div`
+const Stat = styled.a.attrs({
+	target: "_blank",
+	rel: "noopener noreferrer",
+})`
+	width: max-content;
 	display: flex;
-	flex-direction: column;
 	align-items: center;
-	margin-bottom: 1rem;
+	gap: 0.25rem;
+	color: var(--color-primary);
+
+	&:hover {
+		color: var(--color-primary-accent);
+		text-decoration: none;
+	}
 `;
 
 const Stats = styled.div`
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	margin-bottom: 1rem;
-`;
-
-const StatLabel = styled.div`
-	font-size: 0.8rem;
-	margin-bottom: 0.5rem;
-`;
-
-const StatValue = styled.div`
-	font-size: 1.2rem;
-	font-weight: bold;
-`;
-
-const Container = styled.div`
-	display: flex;
+	display: grid;
+	grid-template-columns: max-content max-content;
 	justify-content: center;
+	justify-items: center;
 	align-items: center;
-	padding: 1rem;
-	/* background-color: #fafafa; */
+	gap: 1rem;
+	padding: 0.8rem 0;
 `;
+
+const StatIcon = styled.span`
+	font-size: 1rem;
+	line-height: 1rem;
+	svg {
+		height: 1rem;
+		width: 1rem;
+	}
+`;
+
+const StatValue = styled.span``;

@@ -44,10 +44,10 @@ const GlobalStyles = createGlobalStyle`
 	}
 
 	[data-theme="dark"] {
+		--color-primary: rgb(255, 255, 255);
 		--color-primary-accent: rgb(157, 134, 233);
 		--values-primary-accent: 157, 134, 233;
 		--color-secondary-accent: rgb(97, 218, 251);
-		--color-primary: rgb(255, 255, 255);
 		--color-background: rgb(0, 0, 0);
 		--color-inlineCode-bg: rgb(51, 51, 51);
 		--color-bg-blurred: rgba(15,10,35,0.9);
