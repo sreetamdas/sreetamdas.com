@@ -41,6 +41,7 @@
 		"@netlify/plugin-nextjs": "^3.8.0",
 		"@next/eslint-plugin-next": "^11.1.0",
 		"@svgr/webpack": "^5.5.0",
+		"@types/eslint": "^7.28.0",
 		"@types/mdx-js__react": "^1.5.4",
 		"@types/node": "^16.7.2",
 		"@types/prettier": "^2.3.2",
