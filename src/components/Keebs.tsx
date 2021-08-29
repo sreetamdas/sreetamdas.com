@@ -83,6 +83,6 @@ const Tags = styled.div`
 		padding: 0px 10px;
 		border-radius: var(--border-radius);
 
-		${sharedTransition}
+		${sharedTransition("color, background-color")}
 	}
 `;

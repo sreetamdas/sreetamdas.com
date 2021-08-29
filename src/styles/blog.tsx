@@ -144,7 +144,7 @@ export const Button = styled.button`
 	border: 2px solid var(--color-primary-accent);
 	color: var(--color-primary);
 
-	${sharedTransition}
+	${sharedTransition("color, background-color")}
 
 	&:hover {
 		background-color: var(--color-primary-accent);

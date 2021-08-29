@@ -12,8 +12,10 @@ export const StyledDetails = styled.details`
 `;
 export const StyledDetailAnswer = styled.div``;
 
-export const sharedTransition = css`
-	transition-duration: var(--transition-duration);
-	transition-property: color, background-color;
-	transition-timing-function: linear;
-`;
+export function sharedTransition(properties: string) {
+	return css`
+		transition-duration: var(--transition-duration);
+		transition-timing-function: linear;
+		transition-property: ${properties};
+	`;
+}

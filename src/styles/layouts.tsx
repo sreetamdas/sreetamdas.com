@@ -33,7 +33,7 @@ export const WrapperForFooter = styled.div`
 	color: var(--color-primary);
 	background-color: var(--color-background);
 
-	${sharedTransition}
+	${sharedTransition("color, background-color")}
 `;
 
 export const Space = styled.div<{ size?: number }>`

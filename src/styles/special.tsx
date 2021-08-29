@@ -138,7 +138,7 @@ export const buttonStylesMixin = css`
 	color: var(--color-background);
 	cursor: pointer;
 
-	${sharedTransition}
+	${sharedTransition("color, background-color")}
 `;
 
 const SupportLinkStyled = styled.a`

@@ -95,7 +95,7 @@ const StyledInput = styled.input.attrs({
 	border-radius: var(--border-radius);
 	grid-column: 1 / span 2;
 
-	${sharedTransition}
+	${sharedTransition("color, background-color")}
 `;
 
 const SubscribeButton = styled.input.attrs({ type: "submit" })<{

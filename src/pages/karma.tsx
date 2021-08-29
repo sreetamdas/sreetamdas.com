@@ -7,7 +7,7 @@ import ImageElixir from "@/public/karma/elixir.webp";
 import ImagePython from "@/public/karma/python.webp";
 import ImageReact from "@/public/karma/react.webp";
 import { DocumentHead } from "components/shared/seo";
-import { FullWidth } from "styles/layouts";
+import { FullWidth, Space } from "styles/layouts";
 import { LinkTo, Title } from "styles/typography";
 
 const KARMA_COLOR_PALETTE = [
@@ -28,6 +28,7 @@ const Index = () => {
 				imageURL="/karma/karma-card.jpg"
 				description="A colorful VSCode theme by Sreetam Das"
 			/>
+			<Space />
 			<Title>Karma — a VSCode theme</Title>
 			<ColorPaletteWrapper>
 				{KARMA_COLOR_PALETTE.map((color) => (
@@ -43,19 +44,23 @@ const Index = () => {
 
 				<LinkTo href="https://github.com/sreetamdas/karma">View source</LinkTo>
 			</LinksContainer>
+			<Space />
 			<WideImagesContainer>
 				<Title size={2.5} as="h2" id="react">
 					React + TypeScript
 				</Title>
 				<StyledImage src={ImageReact} alt="Karma theme screenshot for React" />
+
 				<Title size={2.5} as="h2" id="css">
 					CSS
 				</Title>
 				<StyledImage src={ImageCSS} alt="Karma theme screenshot for CSS" />
+
 				<Title size={2.5} as="h2" id="elixir">
 					Elixir
 				</Title>
 				<StyledImage src={ImageElixir} alt="Karma theme screenshot for Elixir" />
+
 				<Title size={2.5} as="h2" id="python">
 					Python
 				</Title>
@@ -68,7 +73,7 @@ const Index = () => {
 export default Index;
 
 const FullScreenImage = styled.div`
-	margin-top: -40px;
+	margin-top: -1.5rem;
 	max-width: 95vw;
 	justify-self: center;
 	width: 100%;
@@ -110,7 +115,7 @@ const ColorPaletteBlock = styled.div<{ color: TKarmaColors }>`
 
 const LinksContainer = styled.div`
 	display: grid;
-	gap: 1rem;
+	gap: 5rem;
 	justify-content: center;
 	grid-auto-flow: column;
 	padding: 40px 0;

@@ -132,7 +132,7 @@ const GlobalStyles = createGlobalStyle`
 		box-decoration-break: clone;
 		white-space: nowrap;
 
-		${sharedTransition}
+		${sharedTransition("color, background-color")}
 	}
 `;
 
