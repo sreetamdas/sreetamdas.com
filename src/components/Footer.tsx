@@ -3,6 +3,7 @@ import { VscRepoForked } from "react-icons/vsc";
 import { useQuery } from "react-query";
 import styled, { css } from "styled-components";
 
+import { sharedTransition } from "styles/components";
 import { breakpoint } from "utils/style";
 
 type StatsResult = {
@@ -103,6 +104,8 @@ const Stat = styled.a.attrs({
 	gap: 0.25rem;
 	color: var(--color-primary);
 
+	${sharedTransition("color, background-color")}
+
 	&:hover {
 		color: var(--color-primary-accent);
 		text-decoration: none;
@@ -122,6 +125,7 @@ const Stats = styled.div`
 const StatIcon = styled.span`
 	font-size: 1rem;
 	line-height: 1rem;
+
 	svg {
 		height: 1rem;
 		width: 1rem;
