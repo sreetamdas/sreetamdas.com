@@ -1,7 +1,6 @@
 import { PropsWithChildren, HTMLAttributes, Key, useState } from "react";
-import styled, { keyframes, CSSProperties, css } from "styled-components";
+import styled, { keyframes, CSSProperties } from "styled-components";
 
-import { sharedTransition } from "styles/components";
 import { usePrefersReducedMotion, useRandomInterval } from "utils/hooks";
 
 const range = (start: number, end?: number, step = 1) => {
@@ -125,57 +124,3 @@ const ChildWrapper = styled.span`
 `;
 
 export { Sparkles };
-
-export const buttonStylesMixin = css`
-	margin: 0;
-	padding: 0.5rem;
-	width: auto;
-	line-height: 35px;
-	text-decoration: none;
-	border-radius: var(--border-radius);
-	border: 2px solid var(--color-primary-accent);
-	background-color: var(--color-primary-accent);
-	color: var(--color-background);
-	cursor: pointer;
-
-	${sharedTransition("color, background-color")}
-`;
-
-const SupportLinkStyled = styled.a`
-	${buttonStylesMixin}
-
-	display: grid;
-	grid-template-columns: repeat(auto-fill, minmax(max-content, 1fr));
-	gap: 0.5rem;
-	grid-auto-flow: column;
-	align-items: center;
-
-	& img {
-		box-shadow: none;
-		border: none;
-		vertical-align: middle;
-	}
-`;
-
-const SupportLinkWrapper = styled.div`
-	display: grid;
-	width: max-content;
-`;
-
-export const SupportSreetamDas = () => {
-	return (
-		<SupportLinkWrapper>
-			<SupportLinkStyled
-				href="https://buymeacoff.ee/sreetamdas"
-				target="_blank"
-				rel="noopener noreferrer"
-			>
-				<img
-					src="https://cdn.buymeacoffee.com/buttons/bmc-new-btn-logo.svg"
-					alt="Buy Sreetam Das a coffee"
-				/>
-				Buy me a coffee
-			</SupportLinkStyled>
-		</SupportLinkWrapper>
-	);
-};

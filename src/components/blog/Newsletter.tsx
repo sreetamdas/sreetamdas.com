@@ -1,8 +1,8 @@
 import { FormEvent, useState } from "react";
 import styled, { css } from "styled-components";
 
+import { buttonStylesMixin } from "components/foobar/styled";
 import { sharedTransition } from "styles/components";
-import { buttonStylesMixin } from "styles/special";
 import { Accent } from "styles/typography";
 import { breakpoint } from "utils/style";
 
