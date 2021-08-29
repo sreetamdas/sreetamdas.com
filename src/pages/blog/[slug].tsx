@@ -1,10 +1,11 @@
 import { GetStaticPaths, GetStaticProps } from "next";
 import dynamic from "next/dynamic";
-import { Fragment, useRef } from "react";
+import React, { Fragment, useRef } from "react";
 
 import { ScrollToTop, ShareLinks } from "components/blog";
 import { Newsletter } from "components/blog/Newsletter";
 import { ReadingProgress } from "components/blog/ProgressBar";
+import { MDXWrapper } from "components/mdx";
 import { DocumentHead } from "components/shared/seo";
 import {
 	BlogPostMDXContent,
@@ -47,7 +48,9 @@ const Post = ({ post, subscriberCount }: TBlogPostPageProps) => {
 				</Datestamp>
 			</PostMetaDataGrid>
 			<BlogPostMDXContent>
-				<MDXPost />
+				<MDXWrapper>
+					<MDXPost />
+				</MDXWrapper>
 			</BlogPostMDXContent>
 			<EndLinks>
 				<ShareLinks {...post} />

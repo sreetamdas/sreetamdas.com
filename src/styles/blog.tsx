@@ -1,6 +1,7 @@
 import { PropsWithChildren, ReactNode } from "react";
 import styled, { css } from "styled-components";
 
+import { sharedTransition } from "styles/components";
 import { PaddingListItems } from "styles/typography";
 import { breakpoint } from "utils/style";
 
@@ -143,6 +144,8 @@ export const Button = styled.button`
 	border: 2px solid var(--color-primary-accent);
 	color: var(--color-primary);
 
+	${sharedTransition("color, background-color")}
+
 	&:hover {
 		background-color: var(--color-primary-accent);
 		color: var(--color-background);
@@ -153,4 +156,12 @@ export const ButtonUnstyled = styled.button`
 	background-color: transparent;
 	border: none;
 	color: inherit;
+`;
+
+export const AnchorUnstyled = styled.a`
+	color: unset;
+
+	&:hover {
+		text-decoration: unset;
+	}
 `;

@@ -3,10 +3,11 @@ import React, { Fragment, useContext } from "react";
 
 import { Newsletter, TNewsletterProps } from "components/blog/Newsletter";
 import { FoobarContext } from "components/foobar";
+import { MDXWrapper } from "components/mdx";
 import { DocumentHead } from "components/shared/seo";
 import MDXAbout from "content/about.mdx";
 import { Center } from "styles/layouts";
-import { Title, RemoveBulletsFromList, LinkTo } from "styles/typography";
+import { Title, LinkTo, RemoveBulletsFromList } from "styles/typography";
 import { getButtondownSubscriberCount } from "utils/misc";
 
 const About = ({ subscriberCount }: TNewsletterProps) => {
@@ -25,8 +26,11 @@ const About = ({ subscriberCount }: TNewsletterProps) => {
 			</Center>
 
 			<RemoveBulletsFromList>
-				<MDXAbout />
+				<MDXWrapper>
+					<MDXAbout />
+				</MDXWrapper>
 			</RemoveBulletsFromList>
+
 			<Newsletter {...{ subscriberCount }} />
 
 			<Center>

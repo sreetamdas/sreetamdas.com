@@ -48,13 +48,6 @@ const LiveCode = () => {
 						<StyledError />
 					</LiveProvider>
 				</Wrapper>
-				{/* <Playground
-				id="example"
-				initialSnippet={snippet}
-				defaultEditorTab="javascript"
-				transformJs
-				mode={theme.theme!}
-			/> */}
 			</FullWidth>
 		),
 		// eslint-disable-next-line react-hooks/exhaustive-deps

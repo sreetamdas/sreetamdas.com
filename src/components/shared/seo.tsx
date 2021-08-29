@@ -4,6 +4,7 @@ type TDocumentHeadProps = {
 	title: string;
 	imageURL?: string;
 	description?: string;
+	noIndex?: boolean;
 };
 
 const siteURL = process.env.SITE_URL ?? "https://sreetamdas.com";
@@ -11,15 +12,18 @@ const siteURL = process.env.SITE_URL ?? "https://sreetamdas.com";
 export const DocumentHead = ({
 	title,
 	imageURL: relativeImageURL,
-	description = "Software Developer from India. 💜 React, TypeScript and Mechanical Keyboards!",
+	description = "Software Tinkerer and Developer from India. 💜 React and TypeScript, CS:GO and Mechanical Keyboards!",
+	noIndex = false,
 }: TDocumentHeadProps) => {
-	const pageTitle = `${title} — Sreetam Das`;
+	const pageTitle = `${title} | Sreetam Das`;
 	const imageURL = getAbsoluteURL(relativeImageURL ?? "/og-default.webp");
 
 	return (
 		<Head>
 			<title>{pageTitle}</title>
 			<meta name="description" content={description} />
+			{noIndex ? <meta name="robots" content="noindex" /> : null}
+
 			<meta property="og:title" content={pageTitle} />
 			<meta name="og:description" content={description} />
 			<meta name="og:image" content={imageURL} />

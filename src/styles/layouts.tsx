@@ -1,5 +1,7 @@
 import styled from "styled-components";
 
+import { sharedTransition } from "styles/components";
+
 export const BlogPostsPreviewLayout = styled.div`
 	display: grid;
 	gap: 1rem;
@@ -27,6 +29,11 @@ export const WrapperForFooter = styled.div`
 	grid-template-rows: auto 1fr auto;
 	min-height: 100vh;
 	align-items: start;
+
+	color: var(--color-primary);
+	background-color: var(--color-background);
+
+	${sharedTransition("color, background-color")}
 `;
 
 export const Space = styled.div<{ size?: number }>`

@@ -1,26 +1,20 @@
-import { MDXProvider } from "@mdx-js/react";
 import { AppProps } from "next/app";
 import Head from "next/head";
-import React, { useState, Fragment } from "react";
+import Script from "next/script";
+import React, { Fragment, useState } from "react";
+import { QueryClient, QueryClientProvider } from "react-query";
+import { ReactQueryDevtools } from "react-query/devtools";
+import { Hydrate } from "react-query/hydration";
 import { createGlobalStyle, ThemeProvider } from "styled-components";
 
 import { Navbar } from "components/Navbar";
 import { FoobarWrapper } from "components/foobar";
+import { sharedTransition } from "styles/components";
 import { Layout } from "styles/layouts";
-import { Paragraph } from "styles/typography";
 import { TGlobalThemeObject } from "typings/styled";
-import { MDXCodeBlock, MDXHeadingWrapper, ImageWrapper, MDXLinkWrapper } from "utils/mdx";
-import { BASE_FONT_SIZE, pixelToRem } from "utils/style";
+import { BASE_FONT_SIZE } from "utils/style";
 
-export const MDXComponents = {
-	p: Paragraph,
-	h1: MDXHeadingWrapper.h1,
-	h2: MDXHeadingWrapper.h2,
-	h3: MDXHeadingWrapper.h3,
-	pre: MDXCodeBlock,
-	img: ImageWrapper,
-	a: MDXLinkWrapper,
-};
+import "assets/fonts/iosevka/iosevka.css";
 
 const GlobalStyles = createGlobalStyle`
 	:root {
@@ -46,26 +40,25 @@ const GlobalStyles = createGlobalStyle`
 
 	--max-width: 650px;
 	--border-radius: 5px;
+	--transition-duration: 0.1s;
 	}
 
 	[data-theme="dark"] {
+		--color-primary: rgb(255, 255, 255);
 		--color-primary-accent: rgb(157, 134, 233);
 		--values-primary-accent: 157, 134, 233;
 		--color-secondary-accent: rgb(97, 218, 251);
-		--color-primary: rgb(255, 255, 255);
 		--color-background: rgb(0, 0, 0);
-		--color-inlineCode-fg: var(--color-primary);
 		--color-inlineCode-bg: rgb(51, 51, 51);
 		--color-bg-blurred: rgba(15,10,35,0.9);
 	}
 	[data-theme="batman"] {
 		--color-primary-accent: rgb(255, 255, 0);
+		--values-primary-accent: 255, 255, 0;
 		--color-secondary-accent: rgb(97, 218, 251);
 		--color-primary: rgb(255, 255, 255);
 		--color-background: rgb(0, 0, 0);
-		--color-inlineCode-fg: var(--color-primary);
 		--color-inlineCode-bg: rgb(34, 34, 34);
-		--values-primary-accent: 255, 255, 0;
 	}
 
 	html,
@@ -77,7 +70,7 @@ const GlobalStyles = createGlobalStyle`
 		color: var(--color-primary);
 		background-color: var(--color-background);
 		margin: 0;
-		line-height: 1.6;
+		line-height: 1.5;
 	}
 
 	*, *:before, *:after {
@@ -130,7 +123,7 @@ const GlobalStyles = createGlobalStyle`
 	code,
 	pre {
 		font-family: var(--font-family-code);
-		font-size: ${pixelToRem(16)};
+		font-size: 0.85em;
 	}
 
 	code {
@@ -141,6 +134,8 @@ const GlobalStyles = createGlobalStyle`
 			https://developer.mozilla.org/en-US/docs/Web/CSS/box-decoration-break */
 		box-decoration-break: clone;
 		white-space: nowrap;
+
+		${sharedTransition("color, background-color")}
 	}
 `;
 
@@ -150,6 +145,7 @@ const initTheme = {
 };
 
 const MyApp = ({ Component, pageProps }: AppProps) => {
+	const reactQueryClient = new QueryClient();
 	const [themeObject, setThemeObject] = useState<TThemeObjectInitial>(initTheme);
 
 	const getCSSVarValue = (variable: string) => {
@@ -168,21 +164,30 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
 
 	return (
 		<Fragment>
+			{process.env.NODE_ENV === "production" && (
+				<Script
+					defer
+					data-domain="sreetamdas.com"
+					src="https://plausible.io/js/plausible.js"
+				></Script>
+			)}
 			<Head>
 				<meta name="viewport" content="initial-scale=1.0, width=device-width" />
 			</Head>
-			<ThemeProvider theme={themeForContext}>
-				<GlobalStyles />
-				{/* @ts-expect-error MDX shut up */}
-				<MDXProvider components={MDXComponents}>
-					<FoobarWrapper>
-						<Navbar />
-						<Layout>
-							<Component {...pageProps} />
-						</Layout>
-					</FoobarWrapper>
-				</MDXProvider>
-			</ThemeProvider>
+			<QueryClientProvider client={reactQueryClient}>
+				<Hydrate state={pageProps.dehydratedState}>
+					<ThemeProvider theme={themeForContext}>
+						<GlobalStyles />
+						<FoobarWrapper>
+							<Navbar />
+							<Layout>
+								<Component {...pageProps} />
+							</Layout>
+						</FoobarWrapper>
+					</ThemeProvider>
+				</Hydrate>
+				<ReactQueryDevtools />
+			</QueryClientProvider>
 		</Fragment>
 	);
 };

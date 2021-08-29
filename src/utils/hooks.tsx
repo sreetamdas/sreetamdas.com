@@ -39,7 +39,7 @@ export const useHover: () => [RefObject<HTMLDivElement>, boolean] = () => {
 };
 
 type Delay = number | null;
-type CallbackFn = (...args: any[]) => void;
+type CallbackFn = (...args: unknown[]) => void;
 
 /**
  * Provides a declarative useInterval
@@ -55,7 +55,7 @@ export const useInterval = (callback: CallbackFn, delay: Delay) => {
 	}, [callback]);
 
 	useEffect(() => {
-		const handler = (...args: any[]) => savedCallback.current?.(...args);
+		const handler: CallbackFn = (...args) => savedCallback.current?.(...args);
 
 		if (delay !== null) {
 			const intervalId = setInterval(handler, delay);
@@ -78,7 +78,7 @@ export const useTimeout = (callback: CallbackFn, delay: Delay) => {
 	}, [callback]);
 
 	useEffect(() => {
-		const handler = (...args: any[]) => savedCallback.current?.(...args);
+		const handler: CallbackFn = (...args) => savedCallback.current?.(...args);
 
 		if (delay !== null) {
 			const id = setTimeout(handler, delay);
@@ -128,7 +128,7 @@ export const useRandomInterval = (
 	minDelay: null | number,
 	maxDelay: null | number
 ) => {
-	const timeoutId = useRef<any>(null);
+	const timeoutId = useRef<number | undefined>();
 	const savedCallback = useRef(callback);
 	useEffect(() => {
 		savedCallback.current = callback;

@@ -1,10 +1,7 @@
 import fs from "fs";
 import path from "path";
 
-import { MDXProvider } from "@mdx-js/react";
-import { renderToStaticMarkup } from "react-dom/server";
-
-import { MDXComponents } from "pages/_app";
+import { getMdxString } from "components/mdx";
 import { TBlogPost } from "typings/blog";
 
 export const getBlogPreviewImageURL = ({ slug }: { slug: TBlogPost["slug"] }) =>
@@ -83,11 +80,4 @@ export const getAboutMDXPagesData = async () => {
 	});
 
 	return pagesDataWithContent;
-};
-
-export const getMdxString = (content: JSX.Element) => {
-	return renderToStaticMarkup(
-		// @ts-expect-error MDX shut up
-		<MDXProvider components={MDXComponents}>{content}</MDXProvider>
-	);
 };

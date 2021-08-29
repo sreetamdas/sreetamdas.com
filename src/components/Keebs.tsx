@@ -7,7 +7,8 @@ import {
 import React from "react";
 import styled from "styled-components";
 
-import { ImageWrapper } from "utils/mdx";
+import { ImageWrapper } from "components/mdx";
+import { sharedTransition } from "styles/components";
 
 export type TKeebInfo = {
 	keebInfo: Array<Page>;
@@ -27,7 +28,7 @@ const Keebs = ({ keebInfo }: TKeebInfo) => {
 	});
 
 	return (
-		<div>
+		<KeebsContainer>
 			{keebDetails.map(({ name, image, tags }) => (
 				<KeebWrapper key={name.toLowerCase().replace(" ", "-")}>
 					<Info>
@@ -41,16 +42,20 @@ const Keebs = ({ keebInfo }: TKeebInfo) => {
 					{image ? <ImageWrapper src={image} alt={name} /> : null}
 				</KeebWrapper>
 			))}
-		</div>
+		</KeebsContainer>
 	);
 };
 
 export { Keebs };
 
+const KeebsContainer = styled.section`
+	display: grid;
+	gap: 4rem;
+`;
+
 const KeebWrapper = styled.div`
 	display: grid;
 	gap: 1rem;
-	padding-top: 3rem;
 `;
 
 const Info = styled.div`
@@ -77,5 +82,7 @@ const Tags = styled.div`
 		color: var(--color-background);
 		padding: 0px 10px;
 		border-radius: var(--border-radius);
+
+		${sharedTransition("color, background-color")}
 	}
 `;

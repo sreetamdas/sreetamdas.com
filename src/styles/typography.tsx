@@ -107,6 +107,7 @@ export const StyledLink = styled.a`
 	text-decoration: none;
 	cursor: pointer;
 	color: var(--color-primary-accent);
+	border-bottom: 2px solid transparent;
 
 	&:visited {
 		text-decoration: none;
@@ -116,6 +117,11 @@ export const StyledLink = styled.a`
 		text-decoration: none;
 	}
 `;
+
+export const ExternalLink = styled(StyledLink).attrs({
+	target: "_blank",
+	rel: "noopener noreferrer",
+})``;
 
 export const StyledAccentTextLink = styled(StyledLink)`
 	&:visited {

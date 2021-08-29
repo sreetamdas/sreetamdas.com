@@ -1,16 +1,17 @@
 import { useRouter } from "next/router";
 import React, { useContext, useState, useEffect, Fragment } from "react";
+import styled from "styled-components";
 
 import { FoobarContext, initialFoobarData } from "components/foobar";
 import { ShowCompletedBadges } from "components/foobar/badges";
 import { KonamiWrapper } from "components/foobar/konami";
+import { SupportSreetamDas } from "components/foobar/styled";
 import { Terminal } from "components/foobar/terminal";
 import { DocumentHead } from "components/shared/seo";
 import Custom404 from "pages/404";
 import { StyledPre, Button } from "styles/blog";
 import { Space, Center } from "styles/layouts";
-import { SupportSreetamDas } from "styles/special";
-import { Paragraph, StyledLink, Title } from "styles/typography";
+import { Title } from "styles/typography";
 import { TFoobarSchrodingerProps, TFoobarPage } from "typings/console";
 import { dog } from "utils/console";
 
@@ -18,21 +19,24 @@ const XMarksTheSpot = (_props: { foobar: string }) => <div />;
 
 const UnlockedBanner = ({ completedPage }: TFoobarSchrodingerProps) =>
 	completedPage && completedPage !== "/" ? (
-		<Fragment>
-			<Space />
-			<Title size={2}>
-				You&apos;ve unlocked{" "}
+		<CenterUnlockedPage size={3.5}>
+			— You&apos;ve unlocked —
+			<br />
+			<code>
 				<span role="img" aria-label="sparkle">
 					✨
 				</span>{" "}
-				<code>{completedPage}</code>{" "}
+				{completedPage}{" "}
 				<span role="img" aria-label="sparkle">
 					✨
 				</span>
-			</Title>
-			<Space />
-		</Fragment>
+			</code>
+		</CenterUnlockedPage>
 	) : null;
+
+const CenterUnlockedPage = styled(Title)`
+	text-align: center;
+`;
 
 export const Foobar = ({ completedPage, unlocked }: TFoobarSchrodingerProps) => {
 	const router = useRouter();
@@ -85,24 +89,10 @@ export const Foobar = ({ completedPage, unlocked }: TFoobarSchrodingerProps) => 
 
 	return (
 		<Fragment>
-			<DocumentHead title="Foobar" />
+			<DocumentHead title="Foobar" noIndex />
 			<Space size={50} />
 			{/* <Title>Hello Beautiful Nerd!</Title> */}
 			<UnlockedBanner {...{ completedPage }} />
-			<Paragraph>
-				Here is where you can track all of your completed challenges on my website.
-				<br />
-				Feel free to{" "}
-				<StyledLink
-					href="https://twitter.com/_SreetamDas"
-					target="_blank"
-					rel="noreferrer noopener"
-				>
-					reach out to me
-				</StyledLink>{" "}
-				if you&apos;d like a clue or have any feedback!
-			</Paragraph>
-			<Space />
 			<ShowCompletedBadges />
 			<Space size={20} />
 			<Button onClick={handleClearFoobarData}>Clear everything and Restart</Button>

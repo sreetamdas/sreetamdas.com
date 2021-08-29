@@ -17,7 +17,10 @@
 		"isolatedModules": true,
 		"jsx": "preserve",
 		"baseUrl": "src",
-		"downlevelIteration": true
+		"downlevelIteration": true,
+		"paths": {
+			"@/public/*": ["../public/*"]
+		}
 	},
 	"exclude": ["node_modules", "public"],
 	"include": ["next-env.d.ts", "src/**/*.ts", "src/**/*.tsx"]

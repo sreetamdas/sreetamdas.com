@@ -24,6 +24,7 @@ module.exports = {
 		"plugin:import/typescript",
 		"plugin:jsx-a11y/recommended",
 		"prettier",
+		"plugin:@next/next/recommended",
 	],
 	globals: {
 		Atomics: "readonly",
@@ -43,7 +44,7 @@ module.exports = {
 		"react/display-name": "off",
 		"react/jsx-uses-react": "off",
 		"@typescript-eslint/explicit-module-boundary-types": "off",
-		"@typescript-eslint/no-explicit-any": "off",
+		// "@typescript-eslint/no-explicit-any": "off",
 		"@typescript-eslint/no-unused-vars": ["error", { argsIgnorePattern: "^_" }],
 		"import/order": [
 			"error",

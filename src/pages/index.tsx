@@ -1,11 +1,14 @@
+import { InferGetStaticPropsType } from "next";
 import React, { Fragment } from "react";
 
+import { Newsletter } from "components/blog/Newsletter";
 import { DocumentHead } from "components/shared/seo";
 import Tooling from "content/tooling.mdx";
 import { Center } from "styles/layouts";
 import { TextGradient, Heavy, MDXText, Title, Paragraph, StyledLink } from "styles/typography";
+import { getButtondownSubscriberCount } from "utils/misc";
 
-const Index = () => {
+const Index = ({ subscriberCount }: InferGetStaticPropsType<typeof getStaticProps>) => {
 	return (
 		<Fragment>
 			<DocumentHead title="Home" />
@@ -20,16 +23,16 @@ const Index = () => {
 			</Center>
 			<Paragraph>
 				I&apos;m a developer from India in love with all things React. I&apos;ve also worked with
-				different languages like Python, JavaScript, TypeScript and C++, as well as Node, Django and
-				Redux.
+				different languages like Python, JavaScript, Elixir, TypeScript and C++, as well as Node,
+				Django and Redux.
 			</Paragraph>
 			<Paragraph>
 				I&apos;m currently a Frontend Engineer at{" "}
 				<StyledLink href="https://remote.com">Remote</StyledLink> who loves working with{" "}
 				<TextGradient>
-					<Heavy>React + Redux + TypeScript</Heavy>
+					<Heavy>React + TypeScript</Heavy>
 				</TextGradient>
-				, the <em>sweetest</em> combination in my opinion.
+				.
 			</Paragraph>
 			<MDXText>
 				<Tooling />
@@ -45,8 +48,18 @@ const Index = () => {
 				CSGO, Reddit, Mechanical Keyboards, Open Source, GitHub, Factorio, Tactile Switches, Batman
 				and the Internet!
 			</Paragraph>
+
+			<Newsletter {...{ subscriberCount }} />
 		</Fragment>
 	);
 };
 
 export default Index;
+
+export const getStaticProps = async () => {
+	const subscriberCount = await getButtondownSubscriberCount();
+
+	return {
+		props: { subscriberCount },
+	};
+};

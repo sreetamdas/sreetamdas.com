@@ -1,8 +1,13 @@
+import Image, { ImageProps } from "next/image";
 import React, { Fragment } from "react";
 import styled from "styled-components";
 
+import ImageCSS from "@/public/karma/css.webp";
+import ImageElixir from "@/public/karma/elixir.webp";
+import ImagePython from "@/public/karma/python.webp";
+import ImageReact from "@/public/karma/react.webp";
 import { DocumentHead } from "components/shared/seo";
-import { FullWidth } from "styles/layouts";
+import { FullWidth, Space } from "styles/layouts";
 import { LinkTo, Title } from "styles/typography";
 
 const KARMA_COLOR_PALETTE = [
@@ -23,6 +28,7 @@ const Index = () => {
 				imageURL="/karma/karma-card.jpg"
 				description="A colorful VSCode theme by Sreetam Das"
 			/>
+			<Space />
 			<Title>Karma — a VSCode theme</Title>
 			<ColorPaletteWrapper>
 				{KARMA_COLOR_PALETTE.map((color) => (
@@ -38,23 +44,27 @@ const Index = () => {
 
 				<LinkTo href="https://github.com/sreetamdas/karma">View source</LinkTo>
 			</LinksContainer>
+			<Space />
 			<WideImagesContainer>
 				<Title size={2.5} as="h2" id="react">
 					React + TypeScript
 				</Title>
-				<FullScreenImage src="/karma/react.webp" alt="Karma theme screenshot for React" />
+				<StyledImage src={ImageReact} alt="Karma theme screenshot for React" />
+
 				<Title size={2.5} as="h2" id="css">
 					CSS
 				</Title>
-				<FullScreenImage src="/karma/css.webp" alt="Karma theme screenshot for CSS" />
+				<StyledImage src={ImageCSS} alt="Karma theme screenshot for CSS" />
+
 				<Title size={2.5} as="h2" id="elixir">
 					Elixir
 				</Title>
-				<FullScreenImage src="/karma/elixir.webp" alt="Karma theme screenshot for Elixir" />
+				<StyledImage src={ImageElixir} alt="Karma theme screenshot for Elixir" />
+
 				<Title size={2.5} as="h2" id="python">
 					Python
 				</Title>
-				<FullScreenImage src="/karma/python.webp" alt="Karma theme screenshot for Python" />
+				<StyledImage src={ImagePython} alt="Karma theme screenshot for Python" />
 			</WideImagesContainer>
 		</Fragment>
 	);
@@ -62,22 +72,30 @@ const Index = () => {
 
 export default Index;
 
-const WideImagesContainer = styled(FullWidth)`
-	display: grid;
-	justify-items: center;
-`;
-
-const FullScreenImage = styled.img.attrs({ tabIndex: 0 })`
-	margin-top: -40px;
+const FullScreenImage = styled.div`
+	margin-top: -1.5rem;
 	max-width: 95vw;
 	justify-self: center;
 	width: 100%;
 	border-radius: var(--border-radius);
 `;
 
-const ColorPaletteWrapper = styled.div`
+const StyledImage = (props: ImageProps) => (
+	<FullScreenImage>
+		<Image {...props} quality={100} placeholder={"blur"} />
+	</FullScreenImage>
+);
+
+const WideImagesContainer = styled(FullWidth)`
 	display: grid;
-	grid-auto-flow: column;
+	justify-items: center;
+`;
+
+const ColorPaletteWrapper = styled.div`
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	align-items: center;
 	gap: 1rem;
 `;
 
@@ -97,7 +115,7 @@ const ColorPaletteBlock = styled.div<{ color: TKarmaColors }>`
 
 const LinksContainer = styled.div`
 	display: grid;
-	gap: 1rem;
+	gap: 5rem;
 	justify-content: center;
 	grid-auto-flow: column;
 	padding: 40px 0;

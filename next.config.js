@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 const remarkSlug = require("remark-slug");
 // eslint-disable-next-line import/order
 const withMDX = require("@next/mdx")({
@@ -8,7 +9,6 @@ const withMDX = require("@next/mdx")({
 });
 
 module.exports = withMDX({
-	target: "serverless",
 	pageExtensions: ["js", "jsx", "ts", "tsx", "mdx"],
 	env: {
 		SITE_URL: "https://sreetamdas.com",
@@ -28,9 +28,6 @@ module.exports = withMDX({
 		});
 
 		return config;
-	},
-	future: {
-		webpack5: true,
 	},
 	async headers() {
 		return [
