@@ -1,3 +1,4 @@
+import axios from "axios";
 import { FaRegStar } from "react-icons/fa";
 import { VscRepoForked } from "react-icons/vsc";
 import { useQuery } from "react-query";
@@ -20,17 +21,24 @@ type StatsQuery = {
  * Fetch GitHub stats from /api/github/stats
  */
 const getGitHubStats = async (body: StatsQuery) => {
-	const response = await (
-		await fetch("/api/github/stats", {
-			body: JSON.stringify(body),
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-			},
-		})
-	).json();
+	try {
+		const response = (
+			await axios({
+				url: "/api/github/stats",
+				method: "POST",
+				data: body,
+				headers: {
+					"Content-Type": "application/json",
+				},
+			})
+		).data;
 
-	return response;
+		return response;
+	} catch (error) {
+		// eslint-disable-next-line no-console
+		console.error(error);
+		return;
+	}
 };
 
 const GitHubStats = () => {

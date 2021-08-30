@@ -14,11 +14,11 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 		});
 
 		if (error) {
-			res.status(501).send(error);
+			res.status(500).send(error);
 		} else {
 			res.status(200).send({ views });
 		}
 	} else {
-		res.status(400).send("POST a request, please :)");
+		res.status(400).send("Bad request");
 	}
 };
