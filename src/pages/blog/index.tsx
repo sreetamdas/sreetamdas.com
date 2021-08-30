@@ -56,7 +56,7 @@ export default Index;
  */
 const getAllPostsDetails = async () => {
 	const { data: postsDetails, error } = await supabase
-		.from<PostDetails>("post-details")
+		.from<PostDetails>("page_details")
 		.select("*");
 
 	return { postsDetails, error };
