@@ -47,3 +47,15 @@ export const getButtondownSubscriberCount = async () => {
 		return 0;
 	}
 };
+
+/**
+ * Update and get page views using /api/page/add-view
+ * @param pageSlug
+ */
+export async function updateAndGetViewCount(path: string) {
+	return (
+		await axios.post<{ views: number }>("/api/page/add-view", {
+			page_slug: path,
+		})
+	).data;
+}

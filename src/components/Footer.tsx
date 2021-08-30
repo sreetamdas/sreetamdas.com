@@ -20,26 +20,17 @@ type StatsQuery = {
 /**
  * Fetch GitHub stats from /api/github/stats
  */
-const getGitHubStats = async (body: StatsQuery) => {
-	try {
-		const response = (
-			await axios({
-				url: "/api/github/stats",
-				method: "POST",
-				data: body,
-				headers: {
-					"Content-Type": "application/json",
-				},
-			})
-		).data;
+async function getGitHubStats(body: StatsQuery) {
+	const response = (
+		await axios.post<StatsResult>("/api/github/stats", body, {
+			headers: {
+				"Content-Type": "application/json",
+			},
+		})
+	).data;
 
-		return response;
-	} catch (error) {
-		// eslint-disable-next-line no-console
-		console.error(error);
-		return;
-	}
-};
+	return response;
+}
 
 const GitHubStats = () => {
 	const { data } = useQuery<StatsResult>(
