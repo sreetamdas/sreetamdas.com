@@ -16,7 +16,7 @@ export const DocumentHead = ({
 	noIndex = false,
 }: TDocumentHeadProps) => {
 	const pageTitle = `${title} | Sreetam Das`;
-	const imageURL = getAbsoluteURL(relativeImageURL ?? "/og-default.webp");
+	const imageURL = getAbsoluteURL(relativeImageURL ?? "/og-image.png");
 
 	return (
 		<Head>
