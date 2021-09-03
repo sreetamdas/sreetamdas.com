@@ -32,7 +32,7 @@ const Index = () => {
 			<Title>Karma — a VSCode theme</Title>
 			<ColorPaletteWrapper>
 				{KARMA_COLOR_PALETTE.map((color) => (
-					<ColorPaletteBlock color={color} key={color}>
+					<ColorPaletteBlock $color={color} key={color}>
 						{color}
 					</ColorPaletteBlock>
 				))}
@@ -99,12 +99,12 @@ const ColorPaletteWrapper = styled.div`
 	gap: 1rem;
 `;
 
-const ColorPaletteBlock = styled.div<{ color: TKarmaColors }>`
+const ColorPaletteBlock = styled.div<{ $color: TKarmaColors }>`
 	display: grid;
 	place-content: center;
 
 	color: #000;
-	background-color: ${({ color }) => color};
+	background-color: ${({ $color }) => $color};
 
 	font-family: var(--font-family-code);
 
