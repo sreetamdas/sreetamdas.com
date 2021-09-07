@@ -9,7 +9,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 	if (req.method === "POST") {
 		const { page_slug } = req.body;
 
-		const { data: views, error } = await supabase.rpc("increment_page_view", {
+		const { data: views, error } = await supabase.rpc("upsert_page_view", {
 			page_slug,
 		});
 
