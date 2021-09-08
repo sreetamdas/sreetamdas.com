@@ -1,3 +1,5 @@
+![Sreetam Das, Frontend Engineer @ Remote](/public/og-clean-image.png)
+
 # [sreetamdas.com](https://sreetamdas.com)
 
 Thanks for checking out my personal website and blog! Here's the source code for it :)
