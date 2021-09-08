@@ -37,6 +37,15 @@ const Post = ({ post, subscriberCount }: TBlogPostPageProps) => {
 			<BlogPostTitle>
 				<TextGradient>{post.title}</TextGradient>
 			</BlogPostTitle>
+			<BlogPostMDXContent>
+				<MDXWrapper>
+					<MDXPost />
+				</MDXWrapper>
+			</BlogPostMDXContent>
+			<EndLinks>
+				<ShareLinks {...post} />
+				<ScrollToTop topRef={topRef} />
+			</EndLinks>
 			<PostMetaDataGrid>
 				<Datestamp>
 					{new Date(post.publishedAt).toLocaleDateString("en-US", {
@@ -47,15 +56,6 @@ const Post = ({ post, subscriberCount }: TBlogPostPageProps) => {
 					{!post.published && <PostNotPublishedWarning />}
 				</Datestamp>
 			</PostMetaDataGrid>
-			<BlogPostMDXContent>
-				<MDXWrapper>
-					<MDXPost />
-				</MDXWrapper>
-			</BlogPostMDXContent>
-			<EndLinks>
-				<ShareLinks {...post} />
-				<ScrollToTop topRef={topRef} />
-			</EndLinks>
 			<Newsletter {...{ subscriberCount }} />
 		</Fragment>
 	);
