@@ -4,7 +4,7 @@ import { PostDetails } from "typings/blog";
 import { supabase } from "utils/supabaseClient";
 
 /**
- * @api {post} /api/page/add-view Add view to page using Supabase client
+ * @api {post} /api/page/add-view Get views for page using Supabase client
  */
 export default async (req: NextApiRequest, res: NextApiResponse) => {
 	if (req.method === "GET") {
