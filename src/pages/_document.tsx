@@ -44,6 +44,8 @@ export default class MyDocument extends Document {
 						href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,700;1,400&display=swap"
 						rel="stylesheet"
 					/>
+					{/* eslint-disable-next-line @next/next/no-css-tags */}
+					<link href="/fonts/iosevka/iosevka.css" rel="stylesheet" />
 				</Head>
 				<body>
 					<script
