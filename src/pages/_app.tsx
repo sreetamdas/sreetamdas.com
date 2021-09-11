@@ -14,8 +14,6 @@ import { Layout } from "styles/layouts";
 import { TGlobalThemeObject } from "typings/styled";
 import { BASE_FONT_SIZE } from "utils/style";
 
-import "assets/fonts/iosevka/iosevka.css";
-
 const GlobalStyles = createGlobalStyle`
 	:root {
 	--color-primary: rgb(0, 0, 0);
