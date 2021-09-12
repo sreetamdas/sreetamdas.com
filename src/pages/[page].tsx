@@ -1,40 +1,28 @@
 import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from "next";
 import dynamic from "next/dynamic";
-import { useRouter } from "next/router";
 import React, { Fragment } from "react";
-import { useQuery } from "react-query";
 
+import { ViewsCounter } from "components/ViewsCounter";
 import { Newsletter } from "components/blog/Newsletter";
 import { MDXWrapper } from "components/mdx";
 import { DocumentHead } from "components/shared/seo";
 import { Center } from "styles/layouts";
 import { Title, PaddingListItems, RemoveBulletsFromList } from "styles/typography";
 import { getAboutMDXPagesData } from "utils/blog";
-import { getButtondownSubscriberCount, updateAndGetViewCount } from "utils/misc";
+import { getButtondownSubscriberCount } from "utils/misc";
 
 const Page = ({ post, subscriberCount }: InferGetStaticPropsType<typeof getStaticProps>) => {
-	const { asPath } = useRouter();
 	const { page, content } = post;
 	const MDXPage = dynamic(() => import(`content/${page}.mdx`), {
 		loading: () => <div dangerouslySetInnerHTML={{ __html: content }} />,
 	});
-
-	const { data } = useQuery<{ views: number }>(
-		["page-details", "view", asPath],
-		async () => await updateAndGetViewCount(asPath),
-		{
-			staleTime: Infinity,
-		}
-	);
 
 	return (
 		<Fragment>
 			<DocumentHead title={page.charAt(0).toUpperCase() + page.slice(1)} />
 
 			<Center>
-				<Title size={5}>
-					/{page} — {data?.views} views
-				</Title>
+				<Title size={5}>/{page}</Title>
 			</Center>
 			<PaddingListItems>
 				<RemoveBulletsFromList>
@@ -43,6 +31,7 @@ const Page = ({ post, subscriberCount }: InferGetStaticPropsType<typeof getStati
 					</MDXWrapper>
 				</RemoveBulletsFromList>
 			</PaddingListItems>
+			<ViewsCounter />
 			<Newsletter {...{ subscriberCount }} />
 		</Fragment>
 	);
