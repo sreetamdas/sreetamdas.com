@@ -1,5 +1,7 @@
 import axios from "axios";
 
+import { PostDetails } from "typings/blog";
+
 export const HIDE_NAVBAR_PAGES = ["fancy-pants"];
 const BUTTONDOWN_URL = "https://api.buttondown.email/v1/subscribers";
 const BUTTONDOWN_API_KEY = process.env.BUTTONDOWN_API_KEY;
@@ -55,7 +57,7 @@ export const getButtondownSubscriberCount = async () => {
  */
 export async function updateAndGetViewCount(path: string) {
 	return (
-		await axios.post<{ views: number }>("/api/page/add-view", {
+		await axios.post<Pick<PostDetails, "view_count">>("/api/page/add-view", {
 			page_slug: path,
 		})
 	).data;

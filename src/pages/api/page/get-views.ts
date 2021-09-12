@@ -4,7 +4,7 @@ import { PostDetails } from "typings/blog";
 import { supabase } from "utils/supabaseClient";
 
 /**
- * @api {post} /api/page/add-view Get views for page using Supabase client
+ * @api {post} /api/page/add-view Get view_count for page using Supabase client
  */
 export default async (req: NextApiRequest, res: NextApiResponse) => {
 	if (req.method === "GET") {
@@ -18,10 +18,10 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 			.single();
 
 		if (error) {
-			res.status(200).send({ views: 0 });
+			res.status(200).send({ view_count: 0 });
 		} else {
-			const { view_count: views } = data ?? { view_count: 0 };
-			res.status(200).send({ views });
+			const { view_count } = data ?? { view_count: 0 };
+			res.status(200).send({ view_count });
 		}
 	} else {
 		res.status(400).send("Bad request");
