@@ -1,6 +1,7 @@
 import { InferGetStaticPropsType } from "next";
 import React, { Fragment } from "react";
 
+import { ViewsCounter } from "components/ViewsCounter";
 import { Newsletter } from "components/blog/Newsletter";
 import { DocumentHead } from "components/shared/seo";
 import Tooling from "content/tooling.mdx";
@@ -51,6 +52,7 @@ const Index = ({ subscriberCount }: InferGetStaticPropsType<typeof getStaticProp
 				and the Internet!
 			</Paragraph>
 
+			<ViewsCounter hidden />
 			<Newsletter {...{ subscriberCount }} />
 		</Fragment>
 	);

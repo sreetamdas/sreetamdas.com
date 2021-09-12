@@ -1,11 +1,11 @@
 import { useRouter } from "next/router";
 import { useQuery } from "react-query";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 import { PostDetails } from "typings/blog";
-import { updateAndGetViewCount } from "utils/misc";
+import { getViewCount, updateAndGetViewCount } from "utils/misc";
 
-const ViewsWrapper = styled.div`
+const ViewsWrapper = styled.div<{ $hidden: TViewsCounterProps["hidden"] }>`
 	display: flex;
 	flex-direction: row;
 	gap: 0.4rem;
@@ -20,6 +20,12 @@ const ViewsWrapper = styled.div`
 		margin: 0;
 		font-size: 0.7rem;
 	}
+
+	${({ $hidden }) =>
+		$hidden &&
+		css`
+			display: none;
+		`}
 `;
 
 const ViewCount = styled.span`
@@ -31,10 +37,6 @@ const ViewCount = styled.span`
 	background-color: var(--color-background);
 	border: 2px solid var(--color-primary-accent);
 `;
-
-type TViewsCounterProps = {
-	pageType?: "post" | "page";
-};
 
 function getViewCountCopy(view_count: number, pageType: TViewsCounterProps["pageType"]) {
 	switch (view_count) {
@@ -89,19 +91,32 @@ function getViewCountCopy(view_count: number, pageType: TViewsCounterProps["page
 	}
 }
 
-export const ViewsCounter = ({ pageType = "page" }: TViewsCounterProps) => {
-	const { asPath } = useRouter();
+type TViewsCounterProps = {
+	pageType?: "post" | "page";
+	hidden?: boolean;
+	disabled?: boolean;
+};
+
+export const ViewsCounter = ({
+	pageType = "page",
+	// Keep track of page views, but we don't display it
+	hidden = false,
+	// Essentially unmount the component, e.g. during development
+	disabled = false,
+}: TViewsCounterProps) => {
+	const { asPath: path } = useRouter();
 
 	const { data } = useQuery<Pick<PostDetails, "view_count">>(
-		["page-details", "view", asPath],
-		async () => await updateAndGetViewCount(asPath),
+		["page-details", "view", path],
+		// don't update the view count if in development mode
+		async () => await (disabled ? getViewCount(path) : updateAndGetViewCount(path)),
 		{
 			staleTime: Infinity,
 		}
 	);
 
 	return (
-		<ViewsWrapper>
+		<ViewsWrapper $hidden={hidden}>
 			<span role="img" aria-label="eyes">
 				👀
 			</span>
