@@ -1,3 +1,4 @@
+-- Only for reference, function is stored in Supabase/Postgres itself
 -- Function to increment the page view count for a given page
 CREATE
 OR REPLACE FUNCTION upsert_page_view(page_slug TEXT) RETURNS integer LANGUAGE plpgsql AS $$

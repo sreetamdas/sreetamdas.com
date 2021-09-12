@@ -11,7 +11,7 @@ const ViewsWrapper = styled.div`
 	gap: 0.4rem;
 	align-items: center;
 	justify-content: center;
-	margin: 20px auto 00;
+	margin: 20px auto 0;
 
 	width: fit-content;
 	padding: 5px 20px;
