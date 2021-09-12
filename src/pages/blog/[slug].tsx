@@ -49,6 +49,7 @@ const Post = ({ post, subscriberCount }: TBlogPostPageProps) => {
 			</EndLinks>
 			<PostMetaDataGrid>
 				<Datestamp>
+					Published:{" "}
 					{new Date(post.publishedAt).toLocaleDateString("en-US", {
 						month: "long",
 						year: "numeric",

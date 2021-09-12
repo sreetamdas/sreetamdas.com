@@ -37,7 +37,7 @@ export const PostMetaDataGrid = styled.div`
 	display: grid;
 	grid-auto-flow: column;
 	gap: 0.5rem;
-	justify-content: start;
+	justify-content: center;
 	align-items: center;
 `;
 
