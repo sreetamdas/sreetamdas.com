@@ -7,19 +7,11 @@ import { generateRssFeed } from "components/blog/rss";
 import { DocumentHead } from "components/shared/seo";
 import { BlogPostsPreviewLayout, Center } from "styles/layouts";
 import { Title } from "styles/typography";
-import { PostDetails, TBlogPost } from "typings/blog";
+import { TBlogPost } from "typings/blog";
 import { getBlogPostsData } from "utils/blog";
 import { getButtondownSubscriberCount } from "utils/misc";
-import { supabase } from "utils/supabaseClient";
 
-const Index = ({
-	postsData,
-	postsDetails,
-	subscriberCount,
-}: InferGetStaticPropsType<typeof getStaticProps>) => {
-	// eslint-disable-next-line no-console
-	console.log({ postsDetails });
-
+const Index = ({ postsData, subscriberCount }: InferGetStaticPropsType<typeof getStaticProps>) => {
 	return (
 		<Fragment>
 			<DocumentHead title="Blog" />
@@ -42,22 +34,10 @@ export const getStaticProps = async () => {
 	const subscriberCount = await getButtondownSubscriberCount();
 	const postsData: Array<TBlogPost> = await getBlogPostsData();
 	await generateRssFeed();
-	const { postsDetails } = await getAllPostsDetails();
 
 	return {
-		props: { postsData, postsDetails, subscriberCount },
+		props: { postsData, subscriberCount },
 	};
 };
 
 export default Index;
-
-/**
- * Get post details from supabase
- */
-const getAllPostsDetails = async () => {
-	const { data: postsDetails, error } = await supabase
-		.from<PostDetails>("page_details")
-		.select("*");
-
-	return { postsDetails, error };
-};
