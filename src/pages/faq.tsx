@@ -1,6 +1,7 @@
 import React, { Fragment } from "react";
 import styled from "styled-components";
 
+import { ViewsCounter } from "components/ViewsCounter";
 import { DocumentHead } from "components/shared/seo";
 import { StyledDetails, StyledSummary, StyledDetailAnswer } from "styles/components";
 import { Center, Space } from "styles/layouts";
@@ -19,7 +20,7 @@ const Index = () => {
 				<ExternalLink href="https://twitter.com/messages/compose?recipient_id=520276345">
 					DM me on Twitter
 				</ExternalLink>{" "}
-				:)
+				😄
 			</Paragraph>
 
 			<Space size={20} />
@@ -35,7 +36,7 @@ const Index = () => {
 						that I&apos;d purchased to test out before buying my{" "}
 						<ExternalLink href="https://srtm.fyi/keeb">custom mechanical keyboard</ExternalLink>. If
 						you&apos;re interested, you can check them out (and order some for yourself!) on{" "}
-						<ExternalLink href="https://rectangles.store">Rectangles.store</ExternalLink> :)
+						<ExternalLink href="https://rectangles.store">Rectangles.store</ExternalLink> 😄
 					</StyledDetailAnswer>
 				</StyledDetails>
 				<StyledDetails>
@@ -56,6 +57,8 @@ const Index = () => {
 					</StyledDetailAnswer>
 				</StyledDetails>
 			</FAQGrid>
+
+			<ViewsCounter />
 		</Fragment>
 	);
 };
@@ -65,5 +68,6 @@ export default Index;
 const FAQGrid = styled.div`
 	display: grid;
 	grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-	gap: 2rem;
+	column-gap: 2rem;
+	row-gap: 4rem;
 `;

@@ -2,6 +2,7 @@ import { GetStaticPaths, GetStaticProps } from "next";
 import dynamic from "next/dynamic";
 import React, { Fragment, useRef } from "react";
 
+import { ViewsCounter } from "components/ViewsCounter";
 import { ScrollToTop, ShareLinks } from "components/blog";
 import { Newsletter } from "components/blog/Newsletter";
 import { ReadingProgress } from "components/blog/ProgressBar";
@@ -56,6 +57,7 @@ const Post = ({ post, subscriberCount }: TBlogPostPageProps) => {
 					{!post.published && <PostNotPublishedWarning />}
 				</Datestamp>
 			</PostMetaDataGrid>
+			<ViewsCounter />
 			<Newsletter {...{ subscriberCount }} />
 		</Fragment>
 	);
