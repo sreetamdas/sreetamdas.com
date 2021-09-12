@@ -70,8 +70,8 @@ export async function updateAndGetViewCount(path: string) {
  */
 export async function getViewCount(path: string) {
 	return (
-		await axios.get<{ views: number }>("/api/page/get-views", {
-			params: { page_slug: path },
+		await axios.get<Pick<PostDetails, "view_count">>("/api/page/get-views", {
+			params: { slug: path },
 		})
 	).data;
 }
