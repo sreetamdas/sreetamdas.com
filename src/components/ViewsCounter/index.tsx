@@ -32,7 +32,11 @@ const ViewCount = styled.span`
 	border: 2px solid var(--color-primary-accent);
 `;
 
-function getViewCountCopy(view_count: number) {
+type TViewsCounterProps = {
+	pageType?: "post" | "page";
+};
+
+function getViewCountCopy(view_count: number, pageType: TViewsCounterProps["pageType"]) {
 	switch (view_count) {
 		case 0:
 			return "No views yet. Wait what, How? 🤔";
@@ -41,15 +45,15 @@ function getViewCountCopy(view_count: number) {
 		case 69:
 			return (
 				<>
-					This page has been viewed <ViewCount>{view_count.toLocaleString()}</ViewCount> times.
-					Nice.
+					This {pageType} has been viewed <ViewCount>{view_count.toLocaleString()}</ViewCount>{" "}
+					times. Nice.
 				</>
 			);
 		case 420:
 			return (
 				<>
-					This page has been viewed <ViewCount>{view_count.toLocaleString()}</ViewCount> times.
-					Hehe.
+					This {pageType} has been viewed <ViewCount>{view_count.toLocaleString()}</ViewCount>{" "}
+					times. Hehe.
 				</>
 			);
 
@@ -57,35 +61,35 @@ function getViewCountCopy(view_count: number) {
 			if (view_count > 100) {
 				return (
 					<>
-						This page has been viewed <ViewCount>{view_count.toLocaleString()}</ViewCount> times.
-						Wow.
+						This {pageType} has been viewed <ViewCount>{view_count.toLocaleString()}</ViewCount>{" "}
+						times. Wow.
 					</>
 				);
 			} else if (view_count > 1000) {
 				return (
 					<>
-						This page has been viewed <ViewCount>{view_count.toLocaleString()}</ViewCount> times.
-						Holy crap. 🤯
+						This {pageType} has been viewed <ViewCount>{view_count.toLocaleString()}</ViewCount>{" "}
+						times. Holy crap. 🤯
 					</>
 				);
 			} else if (view_count > 10000) {
 				return (
 					<>
-						This page has been viewed <ViewCount>{view_count.toLocaleString()}</ViewCount> times.
-						Holy crap.
+						This {pageType} has been viewed <ViewCount>{view_count.toLocaleString()}</ViewCount>{" "}
+						times. Holy crap.
 					</>
 				);
 			}
 			return (
 				<>
-					This page has been viewed <ViewCount>{view_count.toLocaleString()}</ViewCount> times
+					This {pageType} has been viewed <ViewCount>{view_count.toLocaleString()}</ViewCount> times
 				</>
 			);
 		}
 	}
 }
 
-export const ViewsCounter = () => {
+export const ViewsCounter = ({ pageType = "page" }: TViewsCounterProps) => {
 	const { asPath } = useRouter();
 
 	const { data } = useQuery<Pick<PostDetails, "view_count">>(
@@ -101,7 +105,7 @@ export const ViewsCounter = () => {
 			<span role="img" aria-label="eyes">
 				👀
 			</span>
-			<p>{getViewCountCopy(data?.view_count ?? 0)}</p>
+			<p>{getViewCountCopy(data?.view_count ?? 0, pageType)}</p>
 		</ViewsWrapper>
 	);
 };

@@ -57,7 +57,7 @@ const Post = ({ post, subscriberCount }: TBlogPostPageProps) => {
 					{!post.published && <PostNotPublishedWarning />}
 				</Datestamp>
 			</PostMetaDataGrid>
-			<ViewsCounter />
+			<ViewsCounter pageType="post" />
 			<Newsletter {...{ subscriberCount }} />
 		</Fragment>
 	);
