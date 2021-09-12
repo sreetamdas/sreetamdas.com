@@ -2,6 +2,7 @@ import { GetStaticPaths, GetStaticProps } from "next";
 import dynamic from "next/dynamic";
 import React, { Fragment, useRef } from "react";
 
+import { ViewsCounter } from "components/ViewsCounter";
 import { ScrollToTop, ShareLinks } from "components/blog";
 import { Newsletter } from "components/blog/Newsletter";
 import { ReadingProgress } from "components/blog/ProgressBar";
@@ -37,16 +38,6 @@ const Post = ({ post, subscriberCount }: TBlogPostPageProps) => {
 			<BlogPostTitle>
 				<TextGradient>{post.title}</TextGradient>
 			</BlogPostTitle>
-			<PostMetaDataGrid>
-				<Datestamp>
-					{new Date(post.publishedAt).toLocaleDateString("en-US", {
-						month: "long",
-						year: "numeric",
-						day: "numeric",
-					})}
-					{!post.published && <PostNotPublishedWarning />}
-				</Datestamp>
-			</PostMetaDataGrid>
 			<BlogPostMDXContent>
 				<MDXWrapper>
 					<MDXPost />
@@ -56,6 +47,18 @@ const Post = ({ post, subscriberCount }: TBlogPostPageProps) => {
 				<ShareLinks {...post} />
 				<ScrollToTop topRef={topRef} />
 			</EndLinks>
+			<PostMetaDataGrid>
+				<Datestamp>
+					Published:{" "}
+					{new Date(post.publishedAt).toLocaleDateString("en-US", {
+						month: "long",
+						year: "numeric",
+						day: "numeric",
+					})}
+					{!post.published && <PostNotPublishedWarning />}
+				</Datestamp>
+			</PostMetaDataGrid>
+			<ViewsCounter pageType="post" />
 			<Newsletter {...{ subscriberCount }} />
 		</Fragment>
 	);

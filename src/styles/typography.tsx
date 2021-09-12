@@ -60,9 +60,11 @@ export const MDXText = styled.div`
 
 export const Datestamp = styled.p`
 	color: var(--color-primary-accent);
-	font-size: 12px;
+	font-weight: bold;
+	font-style: italic;
+	font-size: 1rem;
 	padding: 5px 0;
-	margin: 0;
+	margin: 1rem 0 0;
 `;
 
 export const Title = styled.h1<{ resetLineHeight?: boolean; size?: number }>`

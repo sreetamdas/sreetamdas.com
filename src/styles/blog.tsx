@@ -37,7 +37,7 @@ export const PostMetaDataGrid = styled.div`
 	display: grid;
 	grid-auto-flow: column;
 	gap: 0.5rem;
-	justify-content: start;
+	justify-content: center;
 	align-items: center;
 `;
 
@@ -60,6 +60,10 @@ export const IconContainer = styled.a<{ $styledOnHover?: boolean }>`
 	border: none;
 	cursor: pointer;
 
+	display: flex;
+	align-items: center;
+	gap: 0.3rem;
+
 	${({ $styledOnHover }) =>
 		$styledOnHover
 			? css`
@@ -71,6 +75,13 @@ export const IconContainer = styled.a<{ $styledOnHover?: boolean }>`
 			: css`
 					color: var(--color-primary-accent);
 			  `}
+
+	& > span {
+		display: inline-block;
+		vertical-align: middle;
+		font-size: 0.7rem;
+		line-height: 1rem;
+	}
 `;
 
 export const LinkedHeaderIconWrapper = styled.a<{ isHovered: boolean }>`
@@ -156,6 +167,9 @@ export const ButtonUnstyled = styled.button`
 	background-color: transparent;
 	border: none;
 	color: inherit;
+
+	display: flex;
+	align-items: center;
 `;
 
 export const AnchorUnstyled = styled.a`

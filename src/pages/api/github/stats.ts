@@ -1,3 +1,4 @@
+import axios from "axios";
 import { NextApiRequest, NextApiResponse } from "next";
 
 /**
@@ -8,8 +9,9 @@ export default async (
 	res: NextApiResponse<{ stars: number; forks: number }>
 ) => {
 	const { owner, repo } = req.body;
-	const response = await (await fetch(`https://api.github.com/repos/${owner}/${repo}`)).json();
+	const { stargazers_count: stars = 0, forks = 0 } = (
+		await axios.get(`https://api.github.com/repos/${owner}/${repo}`)
+	).data;
 
-	const { stargazers_count: stars = 0, forks = 0 } = response;
 	res.status(200).send({ stars, forks });
 };

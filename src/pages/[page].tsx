@@ -2,6 +2,7 @@ import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from "next";
 import dynamic from "next/dynamic";
 import React, { Fragment } from "react";
 
+import { ViewsCounter } from "components/ViewsCounter";
 import { Newsletter } from "components/blog/Newsletter";
 import { MDXWrapper } from "components/mdx";
 import { DocumentHead } from "components/shared/seo";
@@ -30,6 +31,7 @@ const Page = ({ post, subscriberCount }: InferGetStaticPropsType<typeof getStati
 					</MDXWrapper>
 				</RemoveBulletsFromList>
 			</PaddingListItems>
+			<ViewsCounter />
 			<Newsletter {...{ subscriberCount }} />
 		</Fragment>
 	);

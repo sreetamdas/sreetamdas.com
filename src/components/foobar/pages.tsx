@@ -2,6 +2,7 @@ import { useRouter } from "next/router";
 import React, { useContext, useState, useEffect, Fragment } from "react";
 import styled from "styled-components";
 
+import { ViewsCounter } from "components/ViewsCounter";
 import { FoobarContext, initialFoobarData } from "components/foobar";
 import { ShowCompletedBadges } from "components/foobar/badges";
 import { KonamiWrapper } from "components/foobar/konami";
@@ -112,6 +113,7 @@ export const Foobar = ({ completedPage, unlocked }: TFoobarSchrodingerProps) => 
 			<Terminal {...{ visible: terminalVisible, toggleTerminal }} />
 			{!terminalVisible && <KonamiWrapper />}
 			<XMarksTheSpot foobar={"/foobar/devtools"} />
+			<ViewsCounter />
 		</Fragment>
 	);
 };

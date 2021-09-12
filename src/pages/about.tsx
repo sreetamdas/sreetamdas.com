@@ -1,6 +1,7 @@
 import { GetStaticProps } from "next";
 import React, { Fragment, useContext } from "react";
 
+import { ViewsCounter } from "components/ViewsCounter";
 import { Newsletter, TNewsletterProps } from "components/blog/Newsletter";
 import { FoobarContext } from "components/foobar";
 import { MDXWrapper } from "components/mdx";
@@ -30,6 +31,8 @@ const About = ({ subscriberCount }: TNewsletterProps) => {
 					<MDXAbout />
 				</MDXWrapper>
 			</RemoveBulletsFromList>
+
+			<ViewsCounter />
 
 			<Newsletter {...{ subscriberCount }} />
 
