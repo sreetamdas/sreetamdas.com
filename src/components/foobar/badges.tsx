@@ -134,7 +134,10 @@ export const FOOBAR_BADGES: TFOOBAR_BADGES = {
 		icon: (props) => <FaCompass {...props} />,
 		description: "Visit 5 unique pages",
 	},
-	"easter-egg": { icon: (props) => <BsEgg {...props} />, description: "" },
+	"easter-egg": {
+		icon: (props) => <BsEgg {...props} />,
+		description: "Hmm, what could this one be?",
+	},
 	localforage: {
 		icon: (props) => <FaDatabase {...props} />,
 		description: "Check the local storage/indexedDB",
