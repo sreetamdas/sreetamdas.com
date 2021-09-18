@@ -43,8 +43,18 @@ const Post = ({ code }: TBlogPostPageProps) => {
 			<BlogPostTitle>
 				<TextGradient>{post.title}</TextGradient>
 			</BlogPostTitle>
+			<BlogPostMDXContent>
+				<MDXWrapper>
+					<MDXPost />
+				</MDXWrapper>
+			</BlogPostMDXContent>
+			<EndLinks>
+				<ShareLinks {...post} />
+				<ScrollToTop topRef={topRef} />
+			</EndLinks>
 			<PostMetaDataGrid>
 				<Datestamp>
+					Published:{" "}
 					{new Date(post.publishedAt).toLocaleDateString("en-US", {
 						month: "long",
 						year: "numeric",
@@ -62,6 +72,7 @@ const Post = ({ code }: TBlogPostPageProps) => {
 				<ShareLinks {...post} />
 				<ScrollToTop topRef={topRef} />
 			</EndLinks>
+			<ViewsCounter pageType="post" />
 			<Newsletter {...{ subscriberCount }} /> */}
 		</Fragment>
 	);

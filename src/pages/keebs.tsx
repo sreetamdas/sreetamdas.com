@@ -3,6 +3,7 @@ import { GetStaticProps, InferGetStaticPropsType } from "next";
 import { Fragment } from "react";
 
 import { Keebs } from "components/Keebs";
+import { ViewsCounter } from "components/ViewsCounter";
 import { DocumentHead } from "components/shared/seo";
 import { Center } from "styles/layouts";
 import { Title } from "styles/typography";
@@ -22,6 +23,8 @@ const Index = ({ response }: InferGetStaticPropsType<typeof getStaticProps>) => 
 			</Center>
 
 			<Keebs keebInfo={response.results} />
+
+			<ViewsCounter />
 		</Fragment>
 	);
 };

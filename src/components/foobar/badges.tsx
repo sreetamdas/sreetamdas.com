@@ -19,6 +19,7 @@ import { VscDebug, VscTelescope } from "react-icons/vsc";
 import styled, { css } from "styled-components";
 
 import { FoobarContext } from "components/foobar";
+import { sharedTransition } from "styles/components";
 import { ExternalLink } from "styles/typography";
 import { TFoobarData, TFoobarPage } from "typings/console";
 import { breakpoint } from "utils/style";
@@ -133,7 +134,10 @@ export const FOOBAR_BADGES: TFOOBAR_BADGES = {
 		icon: (props) => <FaCompass {...props} />,
 		description: "Visit 5 unique pages",
 	},
-	"easter-egg": { icon: (props) => <BsEgg {...props} />, description: "" },
+	"easter-egg": {
+		icon: (props) => <BsEgg {...props} />,
+		description: "Hmm, what could this one be?",
+	},
 	localforage: {
 		icon: (props) => <FaDatabase {...props} />,
 		description: "Check the local storage/indexedDB",
@@ -184,6 +188,8 @@ const BadgeBlock = styled.div<{ $unlocked?: boolean; $showHint: boolean }>`
 	border-radius: var(--border-radius);
 	align-items: center;
 
+	${sharedTransition("color, background-color, border-color")}
+
 	${({ $unlocked, $showHint }) =>
 		!$unlocked &&
 		!$showHint &&
@@ -201,5 +207,9 @@ const BadgeBlock = styled.div<{ $unlocked?: boolean; $showHint: boolean }>`
 			: css`
 					border: 3px solid var(--color-inlineCode-bg);
 					color: var(--color-inlineCode-bg);
+
+					code {
+						color: var(--color-background);
+					}
 			  `}
 `;

@@ -20,6 +20,7 @@ export const ShareLinks = (post: TBlogPost) => {
 	return (
 		<IconContainer href={tweetShareURL} target="_blank" rel="noopener noreferrer">
 			<FaTwitter aria-label="Share on Twitter" />
+			<span>Share via Twitter</span>
 		</IconContainer>
 	);
 };
@@ -30,8 +31,8 @@ export const ScrollToTop = ({ topRef }: { topRef: RefObject<HTMLDivElement> }) =
 	};
 	return (
 		<ButtonUnstyled onClick={scrollToTop}>
-			back to the top
 			<FaLongArrowAltUp style={{ fontSize: "20px" }} />
+			Back to the top
 		</ButtonUnstyled>
 	);
 };

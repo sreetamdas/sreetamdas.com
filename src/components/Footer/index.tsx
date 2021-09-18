@@ -1,10 +1,12 @@
 import styled, { css } from "styled-components";
 
+import { GitHubStats } from "components/Footer/GitHubStats";
 import { breakpoint } from "utils/style";
 
 export const Footer = () => {
 	return (
 		<FooterContent>
+			<GitHubStats />
 			Made with <a href="https://nextjs.org">Next.js</a> &bull; View source on{" "}
 			<a href="https://github.com/sreetamdas/sreetamdas.com">Github</a>
 			<span>&bull;</span> <br />

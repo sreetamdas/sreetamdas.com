@@ -2,7 +2,7 @@ import { PropsWithChildren, ReactNode } from "react";
 import styled, { css } from "styled-components";
 
 import { sharedTransition } from "styles/components";
-import { PaddingListItems } from "styles/typography";
+import { Datestamp, PaddingListItems } from "styles/typography";
 import { breakpoint } from "utils/style";
 
 export const removeListStyleMixin = css`
@@ -19,6 +19,11 @@ export const BlogPostMDXContent = styled(PaddingListItems)`
 export const Card = styled.div`
 	padding: 10px 0;
 	cursor: pointer;
+
+	& > ${Datestamp} {
+		font-size: 0.8rem;
+		font-style: unset;
+	}
 `;
 
 export const WarningSpan = styled.span`
@@ -37,7 +42,7 @@ export const PostMetaDataGrid = styled.div`
 	display: grid;
 	grid-auto-flow: column;
 	gap: 0.5rem;
-	justify-content: start;
+	justify-content: center;
 	align-items: center;
 `;
 
@@ -60,6 +65,10 @@ export const IconContainer = styled.a<{ $styledOnHover?: boolean }>`
 	border: none;
 	cursor: pointer;
 
+	display: flex;
+	align-items: center;
+	gap: 0.3rem;
+
 	${({ $styledOnHover }) =>
 		$styledOnHover
 			? css`
@@ -71,6 +80,13 @@ export const IconContainer = styled.a<{ $styledOnHover?: boolean }>`
 			: css`
 					color: var(--color-primary-accent);
 			  `}
+
+	& > span {
+		display: inline-block;
+		vertical-align: middle;
+		font-size: 0.7rem;
+		line-height: 1rem;
+	}
 `;
 
 export const LinkedHeaderIconWrapper = styled.a<{ isHovered: boolean }>`
@@ -144,7 +160,7 @@ export const Button = styled.button`
 	border: 2px solid var(--color-primary-accent);
 	color: var(--color-primary);
 
-	${sharedTransition}
+	${sharedTransition("color, background-color")}
 
 	&:hover {
 		background-color: var(--color-primary-accent);
@@ -156,6 +172,9 @@ export const ButtonUnstyled = styled.button`
 	background-color: transparent;
 	border: none;
 	color: inherit;
+
+	display: flex;
+	align-items: center;
 `;
 
 export const AnchorUnstyled = styled.a`

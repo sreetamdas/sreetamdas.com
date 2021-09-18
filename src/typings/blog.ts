@@ -7,3 +7,12 @@ export type TBlogPost = {
 	slug: string;
 	content: string;
 };
+
+export type PostDetails = {
+	id: number;
+	slug: string;
+	inserted_at: string;
+	updated_at: string;
+	view_count: number;
+	likes: number;
+};

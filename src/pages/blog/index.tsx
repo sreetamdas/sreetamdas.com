@@ -1,6 +1,7 @@
 import { InferGetStaticPropsType } from "next";
 import React, { Fragment } from "react";
 
+import { ViewsCounter } from "components/ViewsCounter";
 import { BlogPostPreview } from "components/blog";
 import { Newsletter } from "components/blog/Newsletter";
 import { generateRssFeed } from "components/blog/rss";
@@ -27,6 +28,7 @@ const Index = ({ postsData, subscriberCount }: InferGetStaticPropsType<typeof ge
 				))}
 			</BlogPostsPreviewLayout>
 
+			<ViewsCounter hidden />
 			<Newsletter {...{ subscriberCount }} />
 		</Fragment>
 	);

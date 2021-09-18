@@ -2,6 +2,9 @@ import { AppProps } from "next/app";
 import Head from "next/head";
 import Script from "next/script";
 import React, { Fragment, useState } from "react";
+import { QueryClient, QueryClientProvider } from "react-query";
+import { ReactQueryDevtools } from "react-query/devtools";
+import { Hydrate } from "react-query/hydration";
 import { createGlobalStyle, ThemeProvider } from "styled-components";
 
 import { Navbar } from "components/Navbar";
@@ -41,10 +44,10 @@ const GlobalStyles = createGlobalStyle`
 	}
 
 	[data-theme="dark"] {
+		--color-primary: rgb(255, 255, 255);
 		--color-primary-accent: rgb(157, 134, 233);
 		--values-primary-accent: 157, 134, 233;
 		--color-secondary-accent: rgb(97, 218, 251);
-		--color-primary: rgb(255, 255, 255);
 		--color-background: rgb(0, 0, 0);
 		--color-inlineCode-bg: rgb(51, 51, 51);
 		--color-bg-blurred: rgba(15,10,35,0.9);
@@ -132,7 +135,7 @@ const GlobalStyles = createGlobalStyle`
 		box-decoration-break: clone;
 		white-space: nowrap;
 
-		${sharedTransition}
+		${sharedTransition("color, background-color")}
 	}
 `;
 
@@ -142,6 +145,7 @@ const initTheme = {
 };
 
 const MyApp = ({ Component, pageProps }: AppProps) => {
+	const reactQueryClient = new QueryClient();
 	const [themeObject, setThemeObject] = useState<TThemeObjectInitial>(initTheme);
 
 	const getCSSVarValue = (variable: string) => {
@@ -170,15 +174,20 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
 			<Head>
 				<meta name="viewport" content="initial-scale=1.0, width=device-width" />
 			</Head>
-			<ThemeProvider theme={themeForContext}>
-				<GlobalStyles />
-				<FoobarWrapper>
-					<Navbar />
-					<Layout>
-						<Component {...pageProps} />
-					</Layout>
-				</FoobarWrapper>
-			</ThemeProvider>
+			<QueryClientProvider client={reactQueryClient}>
+				<Hydrate state={pageProps.dehydratedState}>
+					<ThemeProvider theme={themeForContext}>
+						<GlobalStyles />
+						<FoobarWrapper>
+							<Navbar />
+							<Layout>
+								<Component {...pageProps} />
+							</Layout>
+						</FoobarWrapper>
+					</ThemeProvider>
+				</Hydrate>
+				<ReactQueryDevtools />
+			</QueryClientProvider>
 		</Fragment>
 	);
 };

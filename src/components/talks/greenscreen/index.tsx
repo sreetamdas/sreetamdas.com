@@ -57,8 +57,6 @@ export const GreenScreen = () => {
 			canvasRef.current.height
 		);
 
-		// console.log({ snapshot });
-
 		/* 
 		format of snapshot's data:Uint8ClampedArray =>
 		0: pixel's Red value

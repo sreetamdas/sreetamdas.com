@@ -1,8 +1,8 @@
 import { FormEvent, useState } from "react";
 import styled, { css } from "styled-components";
 
+import { buttonStylesMixin } from "components/foobar/styled";
 import { sharedTransition } from "styles/components";
-import { buttonStylesMixin } from "styles/special";
 import { Accent } from "styles/typography";
 import { breakpoint } from "utils/style";
 
@@ -32,7 +32,7 @@ export const Newsletter = ({ subscriberCount }: TNewsletterProps) => {
 	};
 	return (
 		<Grid>
-			<NewsletterTitle>Sign up for my newsletter</NewsletterTitle>
+			<NewsletterTitle>Sign up for my newsletter!</NewsletterTitle>
 			<NewsletterText>
 				I curate links keeping up with the JavaScript, React and webdev world. Join{" "}
 				<Accent>{subscriberCount}</Accent> others!
@@ -95,7 +95,7 @@ const StyledInput = styled.input.attrs({
 	border-radius: var(--border-radius);
 	grid-column: 1 / span 2;
 
-	${sharedTransition}
+	${sharedTransition("color, background-color")}
 `;
 
 const SubscribeButton = styled.input.attrs({ type: "submit" })<{

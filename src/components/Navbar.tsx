@@ -294,7 +294,7 @@ const Header = styled.header`
 
 	background-color: var(--color-background);
 
-	${sharedTransition}
+	${sharedTransition("color, background-color")}
 
 	${IconContainer}, ${ThemeSwitch}, ${MobileMenuToggle} {
 		z-index: 10;

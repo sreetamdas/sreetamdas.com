@@ -1,6 +1,7 @@
 import React, { useContext, useEffect } from "react";
 import { ThemeContext } from "styled-components";
 
+import { ViewsCounter } from "components/ViewsCounter";
 import { GreenScreen } from "components/talks/greenscreen";
 import { FullWidth } from "styles/layouts";
 import { Title } from "styles/typography";
@@ -14,20 +15,23 @@ const Page = () => {
 	}, []);
 
 	return (
-		<FullWidth>
-			<div style={{ padding: "0 25px" }}>
-				<Title
-					style={{
-						justifySelf: "end",
-						gridColumn: "1 / -1",
-						paddingBottom: "50px",
-					}}
-				>
-					Green Screen using React and HTML Elements
-				</Title>
-				<GreenScreen />
-			</div>
-		</FullWidth>
+		<>
+			<FullWidth>
+				<div style={{ padding: "0 25px" }}>
+					<Title
+						style={{
+							justifySelf: "end",
+							gridColumn: "1 / -1",
+							paddingBottom: "50px",
+						}}
+					>
+						Green Screen using React and HTML Elements
+					</Title>
+					<GreenScreen />
+				</div>
+			</FullWidth>
+			<ViewsCounter />
+		</>
 	);
 };
 
