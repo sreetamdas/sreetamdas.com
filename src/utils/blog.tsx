@@ -58,9 +58,10 @@ export async function getBlogPostData(file: string) {
 
 	const result = await bundleMDX(mdxSource, {
 		cwd: path.dirname(name),
+		globals: { "next/link": "_nextLink" },
 		esbuildOptions(options) {
 			options.platform = "node";
-			options.target = "esnext";
+			// options.target = "esnext";
 
 			return options;
 		},

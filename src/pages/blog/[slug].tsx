@@ -1,6 +1,7 @@
 import { getMDXComponent } from "mdx-bundler/client";
 import { GetStaticPaths, GetStaticProps } from "next";
 // import dynamic from "next/dynamic";
+import NextLink from "next/link";
 import React, { Fragment, useMemo, useRef } from "react";
 
 import { MDXComponents } from "components/mdx";
@@ -17,6 +18,7 @@ import { MDXComponents } from "components/mdx";
 // 	EndLinks,
 // } from "styles/blog";
 // import { BlogPostTitle, TextGradient, Datestamp } from "styles/typography";
+import { MDXLink } from "styles/components";
 import { TBlogPost } from "typings/blog";
 import { getBlogPostData, getBlogPostsData, getBlogPostsSlugs } from "utils/blog";
 import { getButtondownSubscriberCount } from "utils/misc";
@@ -32,11 +34,12 @@ const Post = ({ code }: TBlogPostPageProps) => {
 	// 	loading: () => <div dangerouslySetInnerHTML={{ __html: post.content }} />,
 	// });
 
-	const Component = getMDXComponent(code);
+	const Component = useMemo(() => getMDXComponent(code, { _nextLink: NextLink }), [code]);
 
 	return (
 		<Fragment>
 			<Component />
+
 			{/* <DocumentHead title={post.title} imageURL={post?.image} description={post.summary} />
 			<ReadingProgress />
 			<div ref={topRef} />
@@ -80,7 +83,6 @@ const Post = ({ code }: TBlogPostPageProps) => {
 
 export const getStaticPaths: GetStaticPaths = async () => {
 	const postsSlugs = await getBlogPostsSlugs();
-	console.log({ postsSlugs });
 
 	const paths = postsSlugs.map((slug) => ({
 		params: { slug },
@@ -95,8 +97,6 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 	// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 	// const post = postsData.find((postData) => postData.slug === params?.slug)!;
 	const result = await getBlogPostData(params?.slug);
-
-	console.log({ result });
 
 	return { props: { ...result } };
 };
