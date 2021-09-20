@@ -64,7 +64,7 @@ export const Datestamp = styled.p`
 	font-style: italic;
 	font-size: 1rem;
 	padding: 5px 0;
-	margin: 1rem 0 0;
+	margin: 0.5rem 0;
 `;
 
 export const Title = styled.h1<{ resetLineHeight?: boolean; size?: number }>`

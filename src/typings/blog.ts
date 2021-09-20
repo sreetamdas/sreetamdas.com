@@ -1,11 +1,12 @@
-export type TBlogPost = {
+import { bundleMDX } from "mdx-bundler";
+
+export type TBlogPostFrontmatter = {
 	title: string;
 	summary: string;
 	image?: string;
 	publishedAt: string;
 	published: boolean;
 	slug: string;
-	content: string;
 };
 
 export type PostDetails = {
@@ -15,4 +16,13 @@ export type PostDetails = {
 	updated_at: string;
 	view_count: number;
 	likes: number;
+};
+
+export type PromiseResolvedType<T> = T extends Promise<infer R> ? R : never;
+
+export type TBlogPostPageProps = Omit<
+	PromiseResolvedType<ReturnType<typeof bundleMDX>>,
+	"frontmatter"
+> & {
+	frontmatter: TBlogPostFrontmatter;
 };

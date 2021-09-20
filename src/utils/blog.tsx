@@ -2,30 +2,38 @@ import { promises as fs } from "fs";
 import path from "path";
 
 import { bundleMDX } from "mdx-bundler";
+import remarkSlug from "remark-slug";
 
-import { TBlogPost } from "typings/blog";
+import { TBlogPostFrontmatter, TBlogPostPageProps } from "typings/blog";
 
 const PATH = path.resolve(process.cwd(), "src");
 const DIR = path.resolve(PATH, "content", "blog");
 
-export const getBlogPreviewImageURL = ({ slug }: { slug: TBlogPost["slug"] }) =>
+export const getBlogPreviewImageURL = ({ slug }: { slug: TBlogPostFrontmatter["slug"] }) =>
 	`${process.env.SITE_URL}/blog/${slug}/preview.png`;
 
-export const getBlogPostsData = async () => {
+export const getAllBlogPostsData = async () => {
 	const files = (await fs.readdir(DIR)).filter((file) => file.endsWith(".mdx"));
 
-	const postsData: Array<TBlogPost> = await Promise.all(
+	const postsData = await Promise.all(
 		files.map(async (file) => {
 			const name = path.resolve(DIR, file);
-			const mdxSource = await fs.readFile(
-				"/Users/sreetamdas/dev/projects/sreetamdas.com/src/content/blog/test-mdx-bundler.mdx",
-				"utf8"
-			);
+			const mdxSource = await fs.readFile(name, "utf8");
 			const result = await bundleMDX(mdxSource, {
 				cwd: path.dirname(name),
+				// globals: { "next/link": "_nextLink" },
+				xdmOptions(options) {
+					// this is the recommended way to add custom remark/rehype plugins:
+					// The syntax might look weird, but it protects you in case we add/remove
+					// plugins in the future.
+					options.remarkPlugins = [...(options.remarkPlugins ?? []), remarkSlug];
+					options.rehypePlugins = [...(options.rehypePlugins ?? [])];
+
+					return options;
+				},
 				esbuildOptions(options) {
 					options.platform = "node";
-					options.target = "esnext";
+					// options.target = "esnext";
 
 					return options;
 				},
@@ -33,14 +41,12 @@ export const getBlogPostsData = async () => {
 			const slug = file.replace(/\.mdx?$/, "");
 
 			return { ...result, slug };
-		})
+		}) as unknown as Array<TBlogPostPageProps>
 	);
 	// .filter((meta) => process.env.NODE_ENV === "development" || meta.published)
 	// .sort((a, b) => {
 	// 	return new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime();
 	// });
-
-	console.log(">>>>>>>");
 
 	return postsData;
 };
@@ -58,7 +64,16 @@ export async function getBlogPostData(file: string) {
 
 	const result = await bundleMDX(mdxSource, {
 		cwd: path.dirname(name),
-		globals: { "next/link": "_nextLink" },
+		// globals: { "next/link": "_nextLink" },
+		xdmOptions(options) {
+			// this is the recommended way to add custom remark/rehype plugins:
+			// The syntax might look weird, but it protects you in case we add/remove
+			// plugins in the future.
+			options.remarkPlugins = [...(options.remarkPlugins ?? []), remarkSlug];
+			options.rehypePlugins = [...(options.rehypePlugins ?? [])];
+
+			return options;
+		},
 		esbuildOptions(options) {
 			options.platform = "node";
 			// options.target = "esnext";

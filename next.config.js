@@ -1,14 +1,5 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
-const remarkSlug = require("remark-slug");
-// eslint-disable-next-line import/order
-const withMDX = require("@next/mdx")({
-	extension: /\.mdx?$/,
-	options: {
-		remarkPlugins: [remarkSlug],
-	},
-});
-
-module.exports = withMDX({
+module.exports = {
+	experimental: { esmExternals: true },
 	pageExtensions: ["js", "jsx", "ts", "tsx", "mdx"],
 	env: {
 		SITE_URL: "https://sreetamdas.com",
@@ -42,4 +33,4 @@ module.exports = withMDX({
 			},
 		];
 	},
-});
+};

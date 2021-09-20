@@ -11,10 +11,10 @@ import {
 	ReadMorePrompt,
 } from "styles/blog";
 import { BlogPostPreviewTitle, Datestamp, SmallText } from "styles/typography";
-import { TBlogPost } from "typings/blog";
+import { TBlogPostFrontmatter } from "typings/blog";
 import { useHover } from "utils/hooks";
 
-export const ShareLinks = (post: TBlogPost) => {
+export const ShareLinks = (post: TBlogPostFrontmatter) => {
 	const tweetShareURL = `https://twitter.com/intent/tweet?text=Check out: ${post.title}&url=${process.env.SITE_URL}/blog/${post.slug}%0D%0A&via=_SreetamDas`;
 
 	return (
@@ -37,24 +37,27 @@ export const ScrollToTop = ({ topRef }: { topRef: RefObject<HTMLDivElement> }) =
 	);
 };
 
-export const BlogPostPreview = ({ post, slug }: { post: TBlogPost }) => {
+type TBlogPostPreviewProps = {
+	frontmatter: TBlogPostFrontmatter;
+};
+export const BlogPostPreview = ({ frontmatter }: TBlogPostPreviewProps) => {
 	const [hoverRef, isHovered] = useHover();
 
 	return (
 		<article>
-			<Link href={`/blog/${slug}`} scroll={false} passHref>
-				<AnchorUnstyled href={`/blog/${slug}`}>
+			<Link href={`/blog/${frontmatter.slug}`} scroll={false} passHref>
+				<AnchorUnstyled href={`/blog/${frontmatter.slug}`}>
 					<Card ref={hoverRef}>
-						<BlogPostPreviewTitle {...{ isHovered }}>{post.title}</BlogPostPreviewTitle>
+						<BlogPostPreviewTitle {...{ isHovered }}>{frontmatter.title}</BlogPostPreviewTitle>
 						<Datestamp>
-							{new Date(post.publishedAt).toLocaleDateString("en-US", {
+							{new Date(frontmatter.publishedAt).toLocaleDateString("en-US", {
 								month: "long",
 								year: "numeric",
 								day: "numeric",
 							})}
-							{!post.published && <PostNotPublishedWarning />}
+							{!frontmatter.published && <PostNotPublishedWarning />}
 						</Datestamp>
-						<SmallText>{post.summary}</SmallText>
+						<SmallText>{frontmatter.summary}</SmallText>
 						<ReadMorePrompt {...{ isHovered }}>
 							Read more {isHovered && <FaArrowRight style={{ fontSize: "12px" }} />}
 						</ReadMorePrompt>

@@ -1,82 +1,93 @@
 import { getMDXComponent } from "mdx-bundler/client";
 import { GetStaticPaths, GetStaticProps } from "next";
-// import dynamic from "next/dynamic";
-import NextLink from "next/link";
 import React, { Fragment, useMemo, useRef } from "react";
 
-import { MDXComponents } from "components/mdx";
-
-// import { ScrollToTop, ShareLinks } from "components/blog";
-// import { Newsletter } from "components/blog/Newsletter";
-// import { ReadingProgress } from "components/blog/ProgressBar";
-// import { MDXWrapper } from "components/mdx";
-// import { DocumentHead } from "components/shared/seo";
-// import {
-// 	BlogPostMDXContent,
-// 	PostNotPublishedWarning,
-// 	PostMetaDataGrid,
-// 	EndLinks,
-// } from "styles/blog";
-// import { BlogPostTitle, TextGradient, Datestamp } from "styles/typography";
-import { MDXLink } from "styles/components";
-import { TBlogPost } from "typings/blog";
-import { getBlogPostData, getBlogPostsData, getBlogPostsSlugs } from "utils/blog";
+import { ChromaHighlight } from "components/FancyPants";
+import { ViewsCounter } from "components/ViewsCounter";
+import { ScrollToTop, ShareLinks } from "components/blog";
+import { Newsletter } from "components/blog/Newsletter";
+import { ReadingProgress } from "components/blog/ProgressBar";
+import { HighlightWithUseEffect, HighlightWithUseInterval } from "components/blog/rgb-text";
+import { MDXComponents, MDXWrapper } from "components/mdx";
+import { DocumentHead } from "components/shared/seo";
+import {
+	BlogPostMDXContent,
+	PostNotPublishedWarning,
+	PostMetaDataGrid,
+	EndLinks,
+	Highlight,
+	CustomBlockquote,
+} from "styles/blog";
+import { MDXLink, MDXTitle } from "styles/components";
+import { Sparkles } from "styles/special";
+import {
+	BlogPostTitle,
+	Datestamp,
+	TextGradient,
+	Heavy,
+	StyledAccentTextLink,
+} from "styles/typography";
+import { TBlogPostPageProps } from "typings/blog";
+import { getBlogPostData, getBlogPostsSlugs } from "utils/blog";
 import { getButtondownSubscriberCount } from "utils/misc";
 
-type TBlogPostPageProps = {
-	post: TBlogPost;
+type TProps = TBlogPostPageProps & {
 	subscriberCount: number;
 };
-
-const Post = ({ code }: TBlogPostPageProps) => {
-	// const topRef = useRef<HTMLDivElement>(null);
-	// const MDXPost = dynamic(() => import(`content/blog/${post.slug}.mdx`), {
-	// 	loading: () => <div dangerouslySetInnerHTML={{ __html: post.content }} />,
-	// });
-
-	const Component = useMemo(() => getMDXComponent(code, { _nextLink: NextLink }), [code]);
+const Post = ({ code, frontmatter, subscriberCount }: TProps) => {
+	const topRef = useRef<HTMLDivElement>(null);
+	const Component = useMemo(() => getMDXComponent(code), [code]);
 
 	return (
 		<Fragment>
-			<Component />
-
-			{/* <DocumentHead title={post.title} imageURL={post?.image} description={post.summary} />
+			<DocumentHead
+				title={frontmatter.title}
+				imageURL={frontmatter?.image}
+				description={frontmatter.summary}
+			/>
 			<ReadingProgress />
 			<div ref={topRef} />
 			<BlogPostTitle>
-				<TextGradient>{post.title}</TextGradient>
+				<TextGradient>{frontmatter.title}</TextGradient>
 			</BlogPostTitle>
 			<BlogPostMDXContent>
 				<MDXWrapper>
-					<MDXPost />
+					<Component
+						// @ts-expect-error ugh, MDX
+						components={{
+							MDXLink,
+							MDXTitle,
+							Sparkles,
+							ChromaHighlight,
+							HighlightWithUseEffect,
+							HighlightWithUseInterval,
+							Highlight,
+							CustomBlockquote,
+							TextGradient,
+							Heavy,
+							StyledAccentTextLink,
+							...MDXComponents,
+						}}
+					/>
 				</MDXWrapper>
 			</BlogPostMDXContent>
 			<EndLinks>
-				<ShareLinks {...post} />
+				<ShareLinks {...frontmatter} />
 				<ScrollToTop topRef={topRef} />
 			</EndLinks>
 			<PostMetaDataGrid>
 				<Datestamp>
 					Published:{" "}
-					{new Date(post.publishedAt).toLocaleDateString("en-US", {
+					{new Date(frontmatter.publishedAt).toLocaleDateString("en-US", {
 						month: "long",
 						year: "numeric",
 						day: "numeric",
 					})}
-					{!post.published && <PostNotPublishedWarning />}
+					{!frontmatter.published && <PostNotPublishedWarning />}
 				</Datestamp>
 			</PostMetaDataGrid>
-			<BlogPostMDXContent>
-				<MDXWrapper>
-					<MDXPost />
-				</MDXWrapper>
-			</BlogPostMDXContent>
-			<EndLinks>
-				<ShareLinks {...post} />
-				<ScrollToTop topRef={topRef} />
-			</EndLinks>
 			<ViewsCounter pageType="post" />
-			<Newsletter {...{ subscriberCount }} /> */}
+			<Newsletter {...{ subscriberCount }} />
 		</Fragment>
 	);
 };
@@ -92,13 +103,17 @@ export const getStaticPaths: GetStaticPaths = async () => {
 };
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
-	// const subscriberCount = await getButtondownSubscriberCount();
-	// const postsData = await getBlogPostsData();
-	// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-	// const post = postsData.find((postData) => postData.slug === params?.slug)!;
+	const subscriberCount = await getButtondownSubscriberCount();
+	if (typeof params?.slug === "undefined" || Array.isArray(params?.slug)) {
+		return {
+			props: {
+				subscriberCount,
+			},
+		};
+	}
 	const result = await getBlogPostData(params?.slug);
 
-	return { props: { ...result } };
+	return { props: { ...result, subscriberCount } };
 };
 
 export default Post;
