@@ -35,7 +35,7 @@
 		"react-is": "^17.0.2",
 		"react-live": "^2.3.0",
 		"react-query": "^3.23.2",
-		"remark-slug": "^6.1.0",
+		"remark-slug": "^7.0.0",
 		"styled-components": "^5.3.1"
 	},
 	"devDependencies": {
