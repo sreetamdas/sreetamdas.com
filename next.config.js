@@ -1,36 +1,48 @@
-module.exports = {
-	experimental: { esmExternals: true },
-	pageExtensions: ["js", "jsx", "ts", "tsx", "mdx"],
-	env: {
-		SITE_URL: "https://sreetamdas.com",
+/* eslint-disable @typescript-eslint/no-var-requires */
+const { withPlausibleProxy } = require("next-plausible");
+const remarkSlug = require("remark-slug");
+// eslint-disable-next-line import/order
+const withMDX = require("@next/mdx")({
+	extension: /\.mdx?$/,
+	options: {
+		remarkPlugins: [remarkSlug],
 	},
-	webpack(config) {
-		config.module.rules.push({
-			test: /\.svg$/,
-			use: [
-				{
-					loader: "@svgr/webpack",
-					options: {
-						icon: true,
-						titleProp: true,
-					},
-				},
-			],
-		});
+});
 
-		return config;
-	},
-	async headers() {
-		return [
-			{
-				source: "/foobar",
-				headers: [
+module.exports = withPlausibleProxy()(
+	withMDX({
+		pageExtensions: ["js", "jsx", "ts", "tsx", "mdx"],
+		env: {
+			SITE_URL: "https://sreetamdas.com",
+		},
+		webpack(config) {
+			config.module.rules.push({
+				test: /\.svg$/,
+				use: [
 					{
-						key: "x-foobar",
-						value: "/foobar/headers", // Matched parameters can be used in the value
+						loader: "@svgr/webpack",
+						options: {
+							icon: true,
+							titleProp: true,
+						},
 					},
 				],
-			},
-		];
-	},
-};
+			});
+
+			return config;
+		},
+		async headers() {
+			return [
+				{
+					source: "/foobar",
+					headers: [
+						{
+							key: "x-foobar",
+							value: "/foobar/headers", // Matched parameters can be used in the value
+						},
+					],
+				},
+			];
+		},
+	})
+);

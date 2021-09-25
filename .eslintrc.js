@@ -37,6 +37,7 @@ module.exports = {
 		semi: ["error", "always"],
 		"no-console": "error",
 		"no-unused-vars": "off",
+		"react/prop-types": "off",
 		"react-hooks/rules-of-hooks": "error",
 		"react/prop-types": "off",
 		"react-hooks/exhaustive-deps": "warn",
