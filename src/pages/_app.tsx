@@ -167,10 +167,14 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
 			<Head>
 				<meta name="viewport" content="initial-scale=1.0, width=device-width" />
 			</Head>
-			<PlausibleProvider domain="sreetamdas.com" customDomain="sreetamdas.com" trackOutboundLinks>
-				<QueryClientProvider client={reactQueryClient}>
-					<Hydrate state={pageProps.dehydratedState}>
-						<ThemeProvider theme={themeForContext}>
+			<QueryClientProvider client={reactQueryClient}>
+				<Hydrate state={pageProps.dehydratedState}>
+					<ThemeProvider theme={themeForContext}>
+						<PlausibleProvider
+							domain="sreetamdas.com"
+							customDomain="sreetamdas.com"
+							trackOutboundLinks
+						>
 							<GlobalStyles />
 							<FoobarWrapper>
 								<Navbar />
@@ -178,11 +182,11 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
 									<Component {...pageProps} />
 								</Layout>
 							</FoobarWrapper>
-						</ThemeProvider>
-					</Hydrate>
-					<ReactQueryDevtools />
-				</QueryClientProvider>
-			</PlausibleProvider>
+						</PlausibleProvider>
+					</ThemeProvider>
+				</Hydrate>
+				<ReactQueryDevtools />
+			</QueryClientProvider>
 		</Fragment>
 	);
 };

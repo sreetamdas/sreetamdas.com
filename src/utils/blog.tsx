@@ -7,17 +7,17 @@ import remarkSlug from "remark-slug";
 import { TBlogPostFrontmatter, TBlogPostPageProps } from "typings/blog";
 
 const PATH = path.resolve(process.cwd(), "src");
-const DIR = path.resolve(PATH, "content", "blog");
+const BLOG_DIR = path.resolve(PATH, "content", "blog");
 
 export const getBlogPreviewImageURL = ({ slug }: { slug: TBlogPostFrontmatter["slug"] }) =>
 	`${process.env.SITE_URL}/blog/${slug}/preview.png`;
 
 export const getAllBlogPostsData = async () => {
-	const files = (await fs.readdir(DIR)).filter((file) => file.endsWith(".mdx"));
+	const files = (await fs.readdir(BLOG_DIR)).filter((file) => file.endsWith(".mdx"));
 
 	const postsData = await Promise.all(
 		files.map(async (file) => {
-			const name = path.resolve(DIR, file);
+			const name = path.resolve(BLOG_DIR, file);
 			const mdxSource = await fs.readFile(name, "utf8");
 			const result = await bundleMDX(mdxSource, {
 				cwd: path.dirname(name),
@@ -52,19 +52,23 @@ export const getAllBlogPostsData = async () => {
 };
 
 export async function getBlogPostsSlugs() {
-	const postsSlugs = (await fs.readdir(DIR))
+	const postsSlugs = (await fs.readdir(BLOG_DIR))
 		.filter((file) => file.endsWith(".mdx"))
 		.map((slug) => slug.replace(/\.mdx?$/, ""));
 	return postsSlugs;
 }
 
-export async function getBlogPostData(file: string) {
-	const name = path.resolve(DIR, `${file}.mdx`);
+type TGetMDXFileDataOptions = {
+	cwd: string;
+};
+export async function getMDXFileData(filePath: string, options?: TGetMDXFileDataOptions) {
+	const DIR = path.resolve(PATH, ...(options?.cwd ?? "content/blog").split("/"));
+
+	const name = path.resolve(DIR ?? BLOG_DIR, `${filePath}.mdx`);
 	const mdxSource = await fs.readFile(name, "utf8");
 
 	const result = await bundleMDX(mdxSource, {
 		cwd: path.dirname(name),
-		// globals: { "next/link": "_nextLink" },
 		xdmOptions(options) {
 			// this is the recommended way to add custom remark/rehype plugins:
 			// The syntax might look weird, but it protects you in case we add/remove
@@ -85,7 +89,7 @@ export async function getBlogPostData(file: string) {
 	return result;
 }
 
-export const getAboutMDXPagesData = async () => {
+export async function getRootPagesData() {
 	/**
 	 * so Next.js (correctly) prevents us from building a website wherein we're
 	 * trying to dynamically trying to create a page that _already_ exists
@@ -97,11 +101,11 @@ export const getAboutMDXPagesData = async () => {
 	 * for pages that _dont_ exist already
 	 */
 
-	const DIR = path.resolve(process.cwd(), "src", "content");
-	const existingPagesDIR = path.resolve(process.cwd(), "src", "pages");
+	const MAIN_DIR = path.resolve(process.cwd(), "src", "content");
+	const ROOT_PAGES_DIR = path.resolve(process.cwd(), "src", "pages");
 
-	const files = (await fs.readdir(DIR)).filter((file) => file.endsWith(".mdx"));
-	const existingAboutPageFiles = (await fs.readdir(existingPagesDIR))
+	const files = (await fs.readdir(MAIN_DIR)).filter((file) => file.endsWith(".mdx"));
+	const existingRootPageFiles = (await fs.readdir(ROOT_PAGES_DIR))
 		.filter((file) => file.endsWith(".tsx"))
 		.map((file) => file.replace(/\.tsx?$/, ""));
 
@@ -111,7 +115,7 @@ export const getAboutMDXPagesData = async () => {
 				page: file.replace(/\.mdx?$/, ""),
 			};
 		})
-		.filter(({ page }) => existingAboutPageFiles.indexOf(page) === -1);
+		.filter(({ page }) => existingRootPageFiles.indexOf(page) === -1);
 
 	const pagesDataWithContent = pagesData.map((data) => {
 		return {
@@ -120,4 +124,4 @@ export const getAboutMDXPagesData = async () => {
 	});
 
 	return pagesDataWithContent;
-};
+}

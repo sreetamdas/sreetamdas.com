@@ -28,7 +28,7 @@ import {
 	StyledAccentTextLink,
 } from "styles/typography";
 import { TBlogPostPageProps } from "typings/blog";
-import { getBlogPostData, getBlogPostsSlugs } from "utils/blog";
+import { getMDXFileData, getBlogPostsSlugs } from "utils/blog";
 import { getButtondownSubscriberCount } from "utils/misc";
 
 type TProps = TBlogPostPageProps & {
@@ -111,7 +111,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 			},
 		};
 	}
-	const result = await getBlogPostData(params?.slug);
+	const result = await getMDXFileData(params?.slug);
 
 	return { props: { ...result, subscriberCount } };
 };

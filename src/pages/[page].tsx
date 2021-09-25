@@ -1,33 +1,75 @@
-import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from "next";
-import dynamic from "next/dynamic";
-import React, { Fragment } from "react";
+import { getMDXComponent } from "mdx-bundler/client";
+import { GetStaticPaths, GetStaticProps } from "next";
+import React, { Fragment, useMemo } from "react";
+import { BsTerminalFill } from "react-icons/bs";
+import { FaFont, FaPodcast } from "react-icons/fa";
+import { SiOculus } from "react-icons/si";
 
+import { ChromaHighlight } from "components/FancyPants";
 import { ViewsCounter } from "components/ViewsCounter";
 import { Newsletter } from "components/blog/Newsletter";
-import { MDXWrapper } from "components/mdx";
+import { HighlightWithUseEffect, HighlightWithUseInterval } from "components/blog/rgb-text";
+import { MDXComponents, MDXWrapper } from "components/mdx";
 import { DocumentHead } from "components/shared/seo";
+import { Highlight, CustomBlockquote } from "styles/blog";
+import { MDXLink } from "styles/components";
 import { Center } from "styles/layouts";
-import { Title, PaddingListItems, RemoveBulletsFromList } from "styles/typography";
-import { getAboutMDXPagesData } from "utils/blog";
+import { Sparkles } from "styles/special";
+import {
+	Title,
+	PaddingListItems,
+	RemoveBulletsFromList,
+	Heavy,
+	MDXTitle,
+	StyledAccentTextLink,
+	TextGradient,
+} from "styles/typography";
+import { TBlogPostPageProps } from "typings/blog";
+import { getMDXFileData, getRootPagesData } from "utils/blog";
 import { getButtondownSubscriberCount } from "utils/misc";
 
-const Page = ({ post, subscriberCount }: InferGetStaticPropsType<typeof getStaticProps>) => {
-	const { page, content } = post;
-	const MDXPage = dynamic(() => import(`content/${page}.mdx`), {
-		loading: () => <div dangerouslySetInnerHTML={{ __html: content }} />,
-	});
+type TProps = TBlogPostPageProps & {
+	subscriberCount: number;
+};
+const Page = ({ code, frontmatter, subscriberCount }: TProps) => {
+	const Component = useMemo(() => getMDXComponent(code), [code]);
 
 	return (
 		<Fragment>
-			<DocumentHead title={page.charAt(0).toUpperCase() + page.slice(1)} />
+			<DocumentHead
+				title={frontmatter.title}
+				imageURL={frontmatter?.image}
+				description={frontmatter.summary}
+			/>
 
 			<Center>
-				<Title size={5}>/{page}</Title>
+				<Title size={5}>/{frontmatter.title.toLowerCase()}</Title>
 			</Center>
 			<PaddingListItems>
 				<RemoveBulletsFromList>
 					<MDXWrapper>
-						<MDXPage />
+						<Component
+							// @ts-expect-error ugh, MDX
+							components={{
+								MDXLink,
+								MDXTitle,
+								Sparkles,
+								ChromaHighlight,
+								HighlightWithUseEffect,
+								HighlightWithUseInterval,
+								Highlight,
+								CustomBlockquote,
+								TextGradient,
+								Heavy,
+								StyledAccentTextLink,
+
+								BsTerminalFill,
+								FaFont,
+								FaPodcast,
+								SiOculus,
+								...MDXComponents,
+							}}
+						/>
 					</MDXWrapper>
 				</RemoveBulletsFromList>
 			</PaddingListItems>
@@ -38,7 +80,8 @@ const Page = ({ post, subscriberCount }: InferGetStaticPropsType<typeof getStati
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {
-	const postsData: Array<{ page: string }> = await getAboutMDXPagesData();
+	const postsData: Array<{ page: string }> = await getRootPagesData();
+
 	const paths = postsData.map((post) => ({
 		params: { page: post.page },
 	}));
@@ -47,13 +90,17 @@ export const getStaticPaths: GetStaticPaths = async () => {
 };
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
-	if (!params) return { props: {} };
-
-	const postsData = await getAboutMDXPagesData();
-	const post = postsData.find((postData) => postData.page === params.page);
 	const subscriberCount = await getButtondownSubscriberCount();
+	if (typeof params?.page === "undefined" || Array.isArray(params?.page)) {
+		return {
+			props: {
+				subscriberCount,
+			},
+		};
+	}
+	const result = await getMDXFileData(params?.page, { cwd: "content" });
 
-	return { props: { post, subscriberCount } };
+	return { props: { ...result, subscriberCount } };
 };
 
 export default Page;

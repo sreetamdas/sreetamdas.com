@@ -1,17 +1,24 @@
+import { getMDXComponent } from "mdx-bundler/client";
 import { GetStaticProps } from "next";
-import React, { Fragment, useContext } from "react";
+import React, { Fragment, useContext, useMemo } from "react";
 
+import { ExternalLinksOverlay } from "components/Navbar";
 import { ViewsCounter } from "components/ViewsCounter";
-import { Newsletter, TNewsletterProps } from "components/blog/Newsletter";
+import { Newsletter } from "components/blog/Newsletter";
 import { FoobarContext } from "components/foobar";
-import { MDXWrapper } from "components/mdx";
+import { MDXComponents, MDXWrapper } from "components/mdx";
 import { DocumentHead } from "components/shared/seo";
-import MDXAbout from "content/about.mdx";
 import { Center } from "styles/layouts";
 import { Title, LinkTo, RemoveBulletsFromList } from "styles/typography";
+import { TBlogPostPageProps } from "typings/blog";
+import { getMDXFileData } from "utils/blog";
 import { getButtondownSubscriberCount } from "utils/misc";
 
-const About = ({ subscriberCount }: TNewsletterProps) => {
+type TProps = TBlogPostPageProps & { subscriberCount: number };
+
+const About = ({ code, frontmatter: _, subscriberCount }: TProps) => {
+	const Component = useMemo(() => getMDXComponent(code), [code]);
+
 	const { updateFoobarDataPartially, unlocked } = useContext(FoobarContext);
 
 	const handleXDiscovery = () => {
@@ -28,7 +35,13 @@ const About = ({ subscriberCount }: TNewsletterProps) => {
 
 			<RemoveBulletsFromList>
 				<MDXWrapper>
-					<MDXAbout />
+					<Component
+						// @ts-expect-error MDX
+						components={{
+							ExternalLinksOverlay,
+							...MDXComponents,
+						}}
+					/>
 				</MDXWrapper>
 			</RemoveBulletsFromList>
 
@@ -64,8 +77,9 @@ export default About;
 
 export const getStaticProps: GetStaticProps = async () => {
 	const subscriberCount = await getButtondownSubscriberCount();
+	const result = await getMDXFileData("about", { cwd: "content" });
 
 	return {
-		props: { subscriberCount },
+		props: { ...result, subscriberCount },
 	};
 };
