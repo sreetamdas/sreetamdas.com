@@ -1,6 +1,6 @@
+import PlausibleProvider from "next-plausible";
 import { AppProps } from "next/app";
 import Head from "next/head";
-import Script from "next/script";
 import React, { Fragment, useState } from "react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { ReactQueryDevtools } from "react-query/devtools";
@@ -164,30 +164,25 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
 
 	return (
 		<Fragment>
-			{process.env.NODE_ENV === "production" && (
-				<Script
-					defer
-					data-domain="sreetamdas.com"
-					src="https://plausible.io/js/plausible.js"
-				></Script>
-			)}
 			<Head>
 				<meta name="viewport" content="initial-scale=1.0, width=device-width" />
 			</Head>
-			<QueryClientProvider client={reactQueryClient}>
-				<Hydrate state={pageProps.dehydratedState}>
-					<ThemeProvider theme={themeForContext}>
-						<GlobalStyles />
-						<FoobarWrapper>
-							<Navbar />
-							<Layout>
-								<Component {...pageProps} />
-							</Layout>
-						</FoobarWrapper>
-					</ThemeProvider>
-				</Hydrate>
-				<ReactQueryDevtools />
-			</QueryClientProvider>
+			<PlausibleProvider domain="sreetamdas.com" customDomain="sreetamdas.com" trackOutboundLinks>
+				<QueryClientProvider client={reactQueryClient}>
+					<Hydrate state={pageProps.dehydratedState}>
+						<ThemeProvider theme={themeForContext}>
+							<GlobalStyles />
+							<FoobarWrapper>
+								<Navbar />
+								<Layout>
+									<Component {...pageProps} />
+								</Layout>
+							</FoobarWrapper>
+						</ThemeProvider>
+					</Hydrate>
+					<ReactQueryDevtools />
+				</QueryClientProvider>
+			</PlausibleProvider>
 		</Fragment>
 	);
 };
