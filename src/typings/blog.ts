@@ -6,7 +6,6 @@ export type TBlogPostFrontmatter = {
 	image?: string;
 	publishedAt: string;
 	published: boolean;
-	slug: string;
 };
 
 export type PostDetails = {
@@ -25,4 +24,5 @@ export type TBlogPostPageProps = Omit<
 	"frontmatter"
 > & {
 	frontmatter: TBlogPostFrontmatter;
+	slug: string;
 };

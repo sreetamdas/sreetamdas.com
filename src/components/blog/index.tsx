@@ -11,11 +11,12 @@ import {
 	ReadMorePrompt,
 } from "styles/blog";
 import { BlogPostPreviewTitle, Datestamp, SmallText } from "styles/typography";
-import { TBlogPostFrontmatter } from "typings/blog";
+import { TBlogPostFrontmatter, TBlogPostPageProps } from "typings/blog";
 import { useHover } from "utils/hooks";
 
-export const ShareLinks = (post: TBlogPostFrontmatter) => {
-	const tweetShareURL = `https://twitter.com/intent/tweet?text=Check out: ${post.title}&url=${process.env.SITE_URL}/blog/${post.slug}%0D%0A&via=_SreetamDas`;
+type TShareLinksProps = Pick<TBlogPostPageProps, "slug"> & Pick<TBlogPostFrontmatter, "title">;
+export const ShareLinks = ({ title, slug }: TShareLinksProps) => {
+	const tweetShareURL = `https://twitter.com/intent/tweet?text=Check out: ${title}&url=${process.env.SITE_URL}/blog/${slug}%0D%0A&via=_SreetamDas`;
 
 	return (
 		<IconContainer href={tweetShareURL} target="_blank" rel="noopener noreferrer">
@@ -37,16 +38,14 @@ export const ScrollToTop = ({ topRef }: { topRef: RefObject<HTMLDivElement> }) =
 	);
 };
 
-type TBlogPostPreviewProps = {
-	frontmatter: TBlogPostFrontmatter;
-};
-export const BlogPostPreview = ({ frontmatter }: TBlogPostPreviewProps) => {
+type TBlogPostPreviewProps = Pick<TBlogPostPageProps, "frontmatter" | "slug">;
+export const BlogPostPreview = ({ frontmatter, slug }: TBlogPostPreviewProps) => {
 	const [hoverRef, isHovered] = useHover();
 
 	return (
 		<article>
-			<Link href={`/blog/${frontmatter.slug}`} scroll={false} passHref>
-				<AnchorUnstyled href={`/blog/${frontmatter.slug}`}>
+			<Link href={`/blog/${slug}`} scroll={false} passHref>
+				<AnchorUnstyled href={`/blog/${slug}`}>
 					<Card ref={hoverRef}>
 						<BlogPostPreviewTitle {...{ isHovered }}>{frontmatter.title}</BlogPostPreviewTitle>
 						<Datestamp>

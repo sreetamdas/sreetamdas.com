@@ -36,8 +36,8 @@ export const generateRssFeed = async () => {
 		author,
 	});
 
-	posts.forEach(({ frontmatter }) => {
-		const url = `${siteURL}/blog/${frontmatter.slug}`;
+	posts.forEach(({ frontmatter, slug }) => {
+		const url = `${siteURL}/blog/${slug}`;
 
 		feed.addItem({
 			title: frontmatter.title,

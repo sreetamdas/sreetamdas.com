@@ -20,8 +20,8 @@ const Index = ({ postsData, subscriberCount }: InferGetStaticPropsType<typeof ge
 			</Center>
 
 			<BlogPostsPreviewLayout>
-				{postsData?.map(({ frontmatter }, index) => (
-					<BlogPostPreview {...{ frontmatter }} key={index} />
+				{postsData?.map(({ frontmatter, slug }, index) => (
+					<BlogPostPreview {...{ frontmatter, slug }} key={index} />
 				))}
 			</BlogPostsPreviewLayout>
 

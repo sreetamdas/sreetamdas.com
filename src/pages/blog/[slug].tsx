@@ -34,7 +34,7 @@ import { getButtondownSubscriberCount } from "utils/misc";
 type TProps = TBlogPostPageProps & {
 	subscriberCount: number;
 };
-const Post = ({ code, frontmatter, subscriberCount }: TProps) => {
+const Post = ({ code, frontmatter, slug, subscriberCount }: TProps) => {
 	const topRef = useRef<HTMLDivElement>(null);
 	const Component = useMemo(() => getMDXComponent(code), [code]);
 
@@ -72,7 +72,7 @@ const Post = ({ code, frontmatter, subscriberCount }: TProps) => {
 				</MDXWrapper>
 			</BlogPostMDXContent>
 			<EndLinks>
-				<ShareLinks {...frontmatter} />
+				<ShareLinks title={frontmatter.title} slug={slug} />
 				<ScrollToTop topRef={topRef} />
 			</EndLinks>
 			<PostMetaDataGrid>

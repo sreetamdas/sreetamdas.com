@@ -4,14 +4,10 @@ import path from "path";
 import { bundleMDX } from "mdx-bundler";
 import remarkSlug from "remark-slug";
 
-import { TBlogPostFrontmatter, TBlogPostPageProps } from "typings/blog";
+import { TBlogPostPageProps } from "typings/blog";
 
 const PATH = path.resolve(process.cwd(), "src");
 const BLOG_DIR = path.resolve(PATH, "content", "blog");
-
-export function getBlogPreviewImageURL({ slug }: { slug: TBlogPostFrontmatter["slug"] }) {
-	return `${process.env.SITE_URL}/blog/${slug}/preview.png`;
-}
 
 export async function getBlogPostsSlugs() {
 	const postsSlugs = (await fs.readdir(BLOG_DIR))
@@ -44,26 +40,31 @@ export async function getMDXFileData(fileSlug: string, options?: TGetMDXFileData
 		},
 	});
 
-	return result;
+	return { ...result, slug: fileSlug };
 }
 
 export async function getAllBlogPostsData() {
 	const files = (await fs.readdir(BLOG_DIR)).filter((file) => file.endsWith(".mdx"));
 
-	const postsData = await Promise.all(
-		files.map(async (file) => {
-			const slug = file.replace(/\.mdx?$/, "");
-			const result = (await getMDXFileData(slug, {
-				cwd: "content/blog",
-			})) as unknown as TBlogPostPageProps;
+	const postsData = (
+		await Promise.all(
+			files.map(async (file) => {
+				const slug = file.replace(/\.mdx?$/, "");
+				const result = await getMDXFileData(slug, {
+					cwd: "content/blog",
+				});
 
-			return { ...result, slug };
-		})
-	);
-	// .filter((meta) => process.env.NODE_ENV === "development" || meta.published)
-	// .sort((a, b) => {
-	// 	return new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime();
-	// });
+				return { ...result, slug } as unknown as TBlogPostPageProps;
+			})
+		)
+	)
+		.filter(({ frontmatter: { published } }) => process.env.NODE_ENV === "development" || published)
+		.sort((a, b) => {
+			return (
+				new Date(b.frontmatter.publishedAt).getTime() -
+				new Date(a.frontmatter.publishedAt).getTime()
+			);
+		});
 	return postsData;
 }
 
