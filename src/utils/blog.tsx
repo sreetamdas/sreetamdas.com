@@ -1,9 +1,7 @@
 import { promises as fs } from "fs";
 import path from "path";
 
-import { bundleMDX } from "mdx-bundler";
-import remarkSlug from "remark-slug";
-
+import { bundleMDXWithOptions } from "components/mdx";
 import { TBlogPostPageProps } from "typings/blog";
 
 const PATH = path.resolve(process.cwd(), "src");
@@ -21,24 +19,8 @@ type TGetMDXFileDataOptions = {
 };
 export async function getMDXFileData(fileSlug: string, options?: TGetMDXFileDataOptions) {
 	const DIR = path.resolve(PATH, ...(options?.cwd ?? "content").split("/"));
-
 	const name = path.resolve(DIR ?? BLOG_DIR, `${fileSlug}.mdx`);
-	const mdxSource = await fs.readFile(name, "utf8");
-
-	const result = await bundleMDX(mdxSource, {
-		cwd: path.dirname(name),
-		xdmOptions(options) {
-			options.remarkPlugins = [...(options.remarkPlugins ?? []), remarkSlug];
-			options.rehypePlugins = [...(options.rehypePlugins ?? [])];
-
-			return options;
-		},
-		esbuildOptions(options) {
-			options.platform = "node";
-
-			return options;
-		},
-	});
+	const result = await bundleMDXWithOptions(name);
 
 	return { ...result, slug: fileSlug };
 }

@@ -1,4 +1,9 @@
+import { promises as fs } from "fs";
+import path from "path";
+
 import { MDXProvider } from "@mdx-js/react";
+import { bundleMDX } from "mdx-bundler";
+import Image from "next/image";
 import Link from "next/link";
 import React, {
 	createElement,
@@ -7,14 +12,33 @@ import React, {
 	ReactHTML,
 	ReactNode,
 } from "react";
-import { renderToStaticMarkup } from "react-dom/server";
 import { FiLink } from "react-icons/fi";
+import remarkSlug from "remark-slug";
 import styled from "styled-components";
 
 import { MDXCodeBlock } from "components/mdx/code";
 import { LinkedHeaderIconWrapper } from "styles/blog";
 import { Paragraph } from "styles/typography";
 import { useHover } from "utils/hooks";
+
+export async function bundleMDXWithOptions(filename: string) {
+	const mdxSource = await fs.readFile(filename, "utf8");
+
+	return bundleMDX(mdxSource, {
+		cwd: path.dirname(filename),
+		xdmOptions(options) {
+			options.remarkPlugins = [...(options.remarkPlugins ?? []), remarkSlug];
+			options.rehypePlugins = [...(options.rehypePlugins ?? [])];
+
+			return options;
+		},
+		esbuildOptions(options) {
+			options.platform = "node";
+
+			return options;
+		},
+	});
+}
 
 export const ImageWrapper = ({ alt, src }: { alt: string; src: string }) => {
 	const type = src.slice(-3);
@@ -38,14 +62,14 @@ export const ImageWrapper = ({ alt, src }: { alt: string; src: string }) => {
 		);
 	}
 	return (
-		<img
+		<Image
 			{...{ alt, src }}
 			loading="lazy"
-			style={{
-				maxWidth: "var(--max-width)",
-				width: "100%",
-				borderRadius: "var(--border-radius)",
-			}}
+			// style={{
+			// 	maxWidth: "var(--max-width)",
+			// 	width: "100%",
+			// 	borderRadius: "var(--border-radius)",
+			// }}
 		/>
 	);
 };
@@ -115,7 +139,3 @@ export const MDXComponents = {
 export const MDXWrapper = ({ children }: PropsWithChildren<ReactNode>) => (
 	<MDXProvider components={MDXComponents}>{children}</MDXProvider>
 );
-
-export const getMdxString = (content: JSX.Element) => {
-	return renderToStaticMarkup(<MDXWrapper>{content}</MDXWrapper>);
-};
