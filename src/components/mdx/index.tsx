@@ -21,6 +21,23 @@ import { LinkedHeaderIconWrapper } from "styles/blog";
 import { Paragraph } from "styles/typography";
 import { useHover } from "utils/hooks";
 
+if (process.platform === "win32") {
+	process.env.ESBUILD_BINARY_PATH = path.join(
+		process.cwd(),
+		"node_modules",
+		"esbuild",
+		"esbuild.exe"
+	);
+} else {
+	process.env.ESBUILD_BINARY_PATH = path.join(
+		process.cwd(),
+		"node_modules",
+		"esbuild",
+		"bin",
+		"esbuild"
+	);
+}
+
 export async function bundleMDXWithOptions(filename: string) {
 	const mdxSource = await fs.readFile(filename, "utf8");
 
