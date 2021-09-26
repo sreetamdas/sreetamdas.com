@@ -111,7 +111,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 			},
 		};
 	}
-	const result = await getMDXFileData(params?.slug);
+	const result = await getMDXFileData(params?.slug, { cwd: "content/blog" });
 
 	return { props: { ...result, subscriberCount } };
 };

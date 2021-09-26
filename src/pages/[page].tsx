@@ -25,7 +25,7 @@ import {
 	TextGradient,
 } from "styles/typography";
 import { TBlogPostPageProps } from "typings/blog";
-import { getMDXFileData, getRootPagesData } from "utils/blog";
+import { getMDXFileData, getRootPagesSlugs } from "utils/blog";
 import { getButtondownSubscriberCount } from "utils/misc";
 
 type TProps = TBlogPostPageProps & {
@@ -80,7 +80,7 @@ const Page = ({ code, frontmatter, subscriberCount }: TProps) => {
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {
-	const postsData: Array<{ page: string }> = await getRootPagesData();
+	const postsData: Array<{ page: string }> = await getRootPagesSlugs();
 
 	const paths = postsData.map((post) => ({
 		params: { page: post.page },
@@ -98,7 +98,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 			},
 		};
 	}
-	const result = await getMDXFileData(params?.page, { cwd: "content" });
+	const result = await getMDXFileData(params?.page);
 
 	return { props: { ...result, subscriberCount } };
 };
