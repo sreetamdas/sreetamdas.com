@@ -6,6 +6,23 @@ import remarkSlug from "remark-slug";
 
 import { TBlogPostPageProps } from "typings/blog";
 
+if (process.platform === "win32") {
+	process.env.ESBUILD_BINARY_PATH = path.join(
+		process.cwd(),
+		"node_modules",
+		"esbuild",
+		"esbuild.exe"
+	);
+} else {
+	process.env.ESBUILD_BINARY_PATH = path.join(
+		process.cwd(),
+		"node_modules",
+		"esbuild",
+		"bin",
+		"esbuild"
+	);
+}
+
 const PATH = path.resolve(process.cwd(), "src");
 const BLOG_DIR = path.resolve(PATH, "content", "blog");
 
@@ -15,7 +32,6 @@ export async function getBlogPostsSlugs() {
 		.map((slug) => slug.replace(/\.mdx?$/, ""));
 	return postsSlugs;
 }
-
 
 export async function bundleMDXWithOptions(filename: string) {
 	const mdxSource = await fs.readFile(filename, "utf8");
@@ -36,7 +52,6 @@ export async function bundleMDXWithOptions(filename: string) {
 	});
 	return result;
 }
-
 
 type TGetMDXFileDataOptions = {
 	cwd: string;
