@@ -1,61 +1,87 @@
+import { getMDXComponent } from "mdx-bundler/client";
 import { GetStaticPaths, GetStaticProps } from "next";
-import dynamic from "next/dynamic";
-import React, { Fragment, useRef } from "react";
+import React, { Fragment, useMemo, useRef } from "react";
 
+import { ChromaHighlight } from "components/FancyPants";
 import { ViewsCounter } from "components/ViewsCounter";
 import { ScrollToTop, ShareLinks } from "components/blog";
 import { Newsletter } from "components/blog/Newsletter";
 import { ReadingProgress } from "components/blog/ProgressBar";
-import { MDXWrapper } from "components/mdx";
+import { HighlightWithUseEffect, HighlightWithUseInterval } from "components/blog/rgb-text";
+import { MDXComponents } from "components/mdx";
 import { DocumentHead } from "components/shared/seo";
 import {
 	BlogPostMDXContent,
 	PostNotPublishedWarning,
 	PostMetaDataGrid,
 	EndLinks,
+	Highlight,
+	CustomBlockquote,
 } from "styles/blog";
-import { BlogPostTitle, TextGradient, Datestamp } from "styles/typography";
-import { TBlogPost } from "typings/blog";
-import { getBlogPostsData } from "utils/blog";
+import { MDXLink, MDXTitle } from "styles/components";
+import { Sparkles } from "styles/special";
+import {
+	BlogPostTitle,
+	Datestamp,
+	TextGradient,
+	Heavy,
+	StyledAccentTextLink,
+} from "styles/typography";
+import { TBlogPostPageProps } from "typings/blog";
+import { getMDXFileData, getBlogPostsSlugs } from "utils/blog";
 import { getButtondownSubscriberCount } from "utils/misc";
 
-type TBlogPostPageProps = {
-	post: TBlogPost;
+type TProps = TBlogPostPageProps & {
 	subscriberCount: number;
 };
-
-const Post = ({ post, subscriberCount }: TBlogPostPageProps) => {
-	const MDXPost = dynamic(() => import(`content/blog/${post.slug}.mdx`), {
-		loading: () => <div dangerouslySetInnerHTML={{ __html: post.content }} />,
-	});
+const Post = ({ code, frontmatter, slug, subscriberCount }: TProps) => {
 	const topRef = useRef<HTMLDivElement>(null);
+	const Component = useMemo(() => getMDXComponent(code), [code]);
 
 	return (
 		<Fragment>
-			<DocumentHead title={post.title} imageURL={post?.image} description={post.summary} />
+			<DocumentHead
+				title={frontmatter.title}
+				imageURL={frontmatter?.image}
+				description={frontmatter.summary}
+			/>
 			<ReadingProgress />
 			<div ref={topRef} />
 			<BlogPostTitle>
-				<TextGradient>{post.title}</TextGradient>
+				<TextGradient>{frontmatter.title}</TextGradient>
 			</BlogPostTitle>
 			<BlogPostMDXContent>
-				<MDXWrapper>
-					<MDXPost />
-				</MDXWrapper>
+				<Component
+					// @ts-expect-error ugh, MDX
+					components={{
+						MDXLink,
+						MDXTitle,
+						Sparkles,
+						ChromaHighlight,
+						HighlightWithUseEffect,
+						HighlightWithUseInterval,
+						Highlight,
+						CustomBlockquote,
+						TextGradient,
+						Heavy,
+						StyledAccentTextLink,
+						...MDXComponents,
+					}}
+				/>
 			</BlogPostMDXContent>
 			<EndLinks>
-				<ShareLinks {...post} />
+				<ShareLinks title={frontmatter.title} slug={slug} />
 				<ScrollToTop topRef={topRef} />
 			</EndLinks>
 			<PostMetaDataGrid>
 				<Datestamp>
 					Published:{" "}
-					{new Date(post.publishedAt).toLocaleDateString("en-US", {
+					{new Date(frontmatter.publishedAt).toLocaleDateString("en-US", {
 						month: "long",
 						year: "numeric",
 						day: "numeric",
 					})}
-					{!post.published && <PostNotPublishedWarning />}
+					{!frontmatter.published && <PostNotPublishedWarning />}
 				</Datestamp>
 			</PostMetaDataGrid>
 			<ViewsCounter pageType="post" />
@@ -65,24 +91,27 @@ const Post = ({ post, subscriberCount }: TBlogPostPageProps) => {
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {
-	const postsData: Array<TBlogPost> = await getBlogPostsData();
+	const postsSlugs = await getBlogPostsSlugs();
 
-	const paths = postsData.map((post) => ({
-		params: { slug: post.slug },
+	const paths = postsSlugs.map((slug) => ({
+		params: { slug },
 	}));
 
 	return { paths, fallback: false };
 };
 
-export const getStaticProps: GetStaticProps<TBlogPostPageProps, { slug: string }> = async ({
-	params,
-}) => {
+export const getStaticProps: GetStaticProps = async ({ params }) => {
 	const subscriberCount = await getButtondownSubscriberCount();
-	const postsData = await getBlogPostsData();
-	// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-	const post = postsData.find((postData) => postData.slug === params?.slug)!;
+	if (typeof params?.slug === "undefined" || Array.isArray(params?.slug)) {
+		return {
+			props: {
+				subscriberCount,
+			},
+		};
+	}
+	const result = await getMDXFileData(params?.slug, { cwd: "content/blog" });
 
-	return { props: { post, subscriberCount } };
+	return { props: { ...result, subscriberCount } };
 };
 
 export default Post;

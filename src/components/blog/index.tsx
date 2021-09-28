@@ -11,11 +11,12 @@ import {
 	ReadMorePrompt,
 } from "styles/blog";
 import { BlogPostPreviewTitle, Datestamp, SmallText } from "styles/typography";
-import { TBlogPost } from "typings/blog";
+import { TBlogPostFrontmatter, TBlogPostPageProps } from "typings/blog";
 import { useHover } from "utils/hooks";
 
-export const ShareLinks = (post: TBlogPost) => {
-	const tweetShareURL = `https://twitter.com/intent/tweet?text=Check out: ${post.title}&url=${process.env.SITE_URL}/blog/${post.slug}%0D%0A&via=_SreetamDas`;
+type TShareLinksProps = Pick<TBlogPostPageProps, "slug"> & Pick<TBlogPostFrontmatter, "title">;
+export const ShareLinks = ({ title, slug }: TShareLinksProps) => {
+	const tweetShareURL = `https://twitter.com/intent/tweet?text=Check out: ${title}&url=${process.env.SITE_URL}/blog/${slug}%0D%0A&via=_SreetamDas`;
 
 	return (
 		<IconContainer href={tweetShareURL} target="_blank" rel="noopener noreferrer">
@@ -37,24 +38,25 @@ export const ScrollToTop = ({ topRef }: { topRef: RefObject<HTMLDivElement> }) =
 	);
 };
 
-export const BlogPostPreview = ({ post }: { post: TBlogPost }) => {
+type TBlogPostPreviewProps = Pick<TBlogPostPageProps, "frontmatter" | "slug">;
+export const BlogPostPreview = ({ frontmatter, slug }: TBlogPostPreviewProps) => {
 	const [hoverRef, isHovered] = useHover();
 
 	return (
 		<article>
-			<Link href={`/blog/${post.slug}`} scroll={false} passHref>
-				<AnchorUnstyled href={`/blog/${post.slug}`}>
+			<Link href={`/blog/${slug}`} scroll={false} passHref>
+				<AnchorUnstyled href={`/blog/${slug}`}>
 					<Card ref={hoverRef}>
-						<BlogPostPreviewTitle {...{ isHovered }}>{post.title}</BlogPostPreviewTitle>
+						<BlogPostPreviewTitle {...{ isHovered }}>{frontmatter.title}</BlogPostPreviewTitle>
 						<Datestamp>
-							{new Date(post.publishedAt).toLocaleDateString("en-US", {
+							{new Date(frontmatter.publishedAt).toLocaleDateString("en-US", {
 								month: "long",
 								year: "numeric",
 								day: "numeric",
 							})}
-							{!post.published && <PostNotPublishedWarning />}
+							{!frontmatter.published && <PostNotPublishedWarning />}
 						</Datestamp>
-						<SmallText>{post.summary}</SmallText>
+						<SmallText>{frontmatter.summary}</SmallText>
 						<ReadMorePrompt {...{ isHovered }}>
 							Read more {isHovered && <FaArrowRight style={{ fontSize: "12px" }} />}
 						</ReadMorePrompt>

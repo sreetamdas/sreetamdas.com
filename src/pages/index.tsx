@@ -1,15 +1,19 @@
+import { getMDXComponent } from "mdx-bundler/client";
 import { InferGetStaticPropsType } from "next";
-import React, { Fragment } from "react";
+import React, { Fragment, useMemo } from "react";
 
 import { ViewsCounter } from "components/ViewsCounter";
 import { Newsletter } from "components/blog/Newsletter";
+import { MDXComponents } from "components/mdx";
 import { DocumentHead } from "components/shared/seo";
-import Tooling from "content/tooling.mdx";
 import { Center, Space } from "styles/layouts";
 import { TextGradient, Heavy, MDXText, Title, Paragraph, StyledLink } from "styles/typography";
+import { getMDXFileData } from "utils/blog";
 import { getButtondownSubscriberCount } from "utils/misc";
 
-const Index = ({ subscriberCount }: InferGetStaticPropsType<typeof getStaticProps>) => {
+const Index = ({ code, subscriberCount }: InferGetStaticPropsType<typeof getStaticProps>) => {
+	const Component = useMemo(() => getMDXComponent(code), [code]);
+
 	return (
 		<Fragment>
 			<DocumentHead title="Home" />
@@ -38,7 +42,12 @@ const Index = ({ subscriberCount }: InferGetStaticPropsType<typeof getStaticProp
 				.
 			</Paragraph>
 			<MDXText>
-				<Tooling />
+				<Component
+					// @ts-expect-error MDX
+					components={{
+						...MDXComponents,
+					}}
+				/>
 			</MDXText>
 			<Paragraph>
 				I also{" "}
@@ -62,8 +71,9 @@ export default Index;
 
 export const getStaticProps = async () => {
 	const subscriberCount = await getButtondownSubscriberCount();
+	const result = await getMDXFileData("tooling", { cwd: "content" });
 
 	return {
-		props: { subscriberCount },
+		props: { ...result, subscriberCount },
 	};
 };

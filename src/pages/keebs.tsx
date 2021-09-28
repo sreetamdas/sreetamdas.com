@@ -1,5 +1,5 @@
 import { Client } from "@notionhq/client";
-import { GetStaticProps, InferGetStaticPropsType } from "next";
+import { InferGetStaticPropsType } from "next";
 import { Fragment } from "react";
 
 import { Keebs } from "components/Keebs";
@@ -29,7 +29,7 @@ const Index = ({ response }: InferGetStaticPropsType<typeof getStaticProps>) => 
 	);
 };
 
-export const getStaticProps: GetStaticProps = async () => {
+export const getStaticProps = async () => {
 	const notion = new Client({
 		auth: process.env.NOTION_TOKEN,
 	});

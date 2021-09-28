@@ -1,13 +1,5 @@
-import { MDXProvider } from "@mdx-js/react";
 import Link from "next/link";
-import React, {
-	createElement,
-	CSSProperties,
-	PropsWithChildren,
-	ReactHTML,
-	ReactNode,
-} from "react";
-import { renderToStaticMarkup } from "react-dom/server";
+import React, { createElement, CSSProperties, PropsWithChildren, ReactHTML } from "react";
 import { FiLink } from "react-icons/fi";
 import styled from "styled-components";
 
@@ -110,12 +102,4 @@ export const MDXComponents = {
 	pre: MDXCodeBlock,
 	img: ImageWrapper,
 	a: MDXLinkWrapper,
-};
-
-export const MDXWrapper = ({ children }: PropsWithChildren<ReactNode>) => (
-	<MDXProvider components={MDXComponents}>{children}</MDXProvider>
-);
-
-export const getMdxString = (content: JSX.Element) => {
-	return renderToStaticMarkup(<MDXWrapper>{content}</MDXWrapper>);
 };

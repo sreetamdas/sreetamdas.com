@@ -1,13 +1,9 @@
-import { CustomBlockquote, Highlight } from "styles/blog";
-import { StyledAccentTextLink } from "styles/typography";
-
-export const meta = {
-  published: true,
-  publishedAt: "2020-11-22",
-  title: "The Perfect Dark Mode",
-  summary:
-    "How hard can implementing the perfect dark mode be? A journey through blocking scripts, IIFEs, CSS variables and much more",
-};
+---
+published: true
+publishedAt: "2020-11-22"
+title: The Perfect Dark Mode
+summary: How hard can implementing the perfect dark mode be? A journey through blocking scripts, IIFEs, CSS variables and much more
+---
 
 I am a huge fan of [Josh W Comeau](https://joshwcomeau.com)'s website as well as the content that he puts out. He has some very, very interesting articles, but by far the most interesting one is about his [Quest for The Perfect Dark Mode](https://joshwcomeau.com/gatsby/dark-mode).
 
@@ -205,7 +201,7 @@ Take a look at the code below:
 
 Here's what it looks like:
 
-![Blocking nature of <script> tags in HTML](/blog/the-perfect-dark-mode/perfect-dark-mode-blocking-script.mp4)
+![Blocking nature of `<script>` tags in HTML](/blog/the-perfect-dark-mode/perfect-dark-mode-blocking-script.mp4)
 
 <CustomBlockquote>
   If you'd like to try it out for yourself, check out this{" "}
@@ -657,35 +653,13 @@ export default IndexPage;
 </CustomBlockquote>
 
 <CustomBlockquote type="success">
-  If you're using{" "}
-  <a href="https://styled-components.com">Styled-components</a>, then
-  this isn't an issue since we can use <code>ServerStyleSheet()</code>{" "}
-  which makes sure that the CSS being imported in <code>App</code> is
-  correctly collected and added to the <code>Document</code> itself,
-  thus preventing the flicker during development as well
-  <br />
-  <br />
-  <a href="https://styled-components.com/docs/advanced#nextjs">
-    Refer the docs
-  </a> or check out <a href="https://github.com/sreetamdas/sreetamdas.com/blob/master/pages/_document.tsx#L10">my implementation</a>
-</CustomBlockquote>
+If you're using [Styled-components](https://styled-components.com), then this isn't an
+issue since we can use `ServerStyleSheet()` which makes sure that the CSS being
+imported in `App` is correctly collected and added to the `Document` itself,
+thus preventing the flicker during development as well.
 
-Initialising our `isDarkTheme` state as `undefined` allows us to defer rendering our dark mode toggle, thus preventing showing the wrong toggle state to the user.
-
-## Fin
-
-And that's it!
-
-We've got the perfect dark mode, one without any flickering. As [Josh mentioned](https://joshwcomeau.com/gatsby/dark-mode) this was certainly not an easy task; I definitely didn't expect to work with things like CSS variables and IIFEs and I'm certain you didn't either!
-
-Here's a couple of links for you to check out our finished app:
-
-<CustomBlockquote>
-<p>Live app: <a href="https://nextjs-perfect-dark-mode.netlify.app">nextjs-perfect-dark-mode.netlify.app</a></p>
-
-Repository: <a href="https://github.com/sreetamdas/nextjs-perfect-dark-mode-example">github.com/sreetamdas/nextjs-perfect-dark-mode-example</a>
-
-Sandbox: <a href="https://codesandbox.io/s/dreamy-nightingale-ikwks?file=/pages/_document.js">codesandbox.io/s/dreamy-nightingale-ikwks</a>
+You can [refer to the official docs](https://styled-components.com/docs/advanced#nextjs) or
+check out [my implementation]("https://github.com/sreetamdas/sreetamdas.com/blob/master/pages/_document.tsx#L10)
 
 </CustomBlockquote>
 

@@ -2,13 +2,13 @@ import fs from "fs";
 
 import { Feed } from "feed";
 
-import { getBlogPostsData } from "utils/blog";
+import { getAllBlogPostsData } from "utils/blog";
 
 export const generateRssFeed = async () => {
 	if (process.env.NODE_ENV === "development") {
 		return;
 	}
-	const posts = await getBlogPostsData();
+	const posts = await getAllBlogPostsData();
 	const siteURL = process.env.SITE_URL ?? "https://sreetamdas.com";
 	const date = new Date();
 	const author = {
@@ -36,18 +36,18 @@ export const generateRssFeed = async () => {
 		author,
 	});
 
-	posts.forEach((post) => {
-		const url = `${siteURL}/blog/${post.slug}`;
+	posts.forEach(({ frontmatter, slug }) => {
+		const url = `${siteURL}/blog/${slug}`;
 
 		feed.addItem({
-			title: post.title,
+			title: frontmatter.title,
 			id: url,
 			link: url,
-			description: post.summary,
-			content: post.summary,
+			description: frontmatter.summary,
+			content: frontmatter.summary,
 			author: [author],
 			contributor: [author],
-			date: new Date(post.publishedAt),
+			date: new Date(frontmatter.publishedAt),
 		});
 	});
 

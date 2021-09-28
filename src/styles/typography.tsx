@@ -64,7 +64,7 @@ export const Datestamp = styled.p`
 	font-style: italic;
 	font-size: 1rem;
 	padding: 5px 0;
-	margin: 1rem 0 0;
+	margin: 0.5rem 0;
 `;
 
 export const Title = styled.h1<{ resetLineHeight?: boolean; size?: number }>`
@@ -76,6 +76,11 @@ export const Title = styled.h1<{ resetLineHeight?: boolean; size?: number }>`
 		css`
 			line-height: 1;
 		`}
+`;
+
+export const MDXTitle = styled.h1<{ color?: string }>`
+	font-size: 2rem;
+	color: ${({ color }) => (color ? color : "red")};
 `;
 
 export const Paragraph = styled.p<{ paddingTop?: boolean | number }>`

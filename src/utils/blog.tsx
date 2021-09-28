@@ -1,47 +1,78 @@
-import fs from "fs";
+import { promises as fs } from "fs";
 import path from "path";
 
-import { getMdxString } from "components/mdx";
-import { TBlogPost } from "typings/blog";
+import { bundleMDX } from "mdx-bundler";
+import remarkSlug from "remark-slug";
 
-export const getBlogPreviewImageURL = ({ slug }: { slug: TBlogPost["slug"] }) =>
-	`${process.env.SITE_URL}/blog/${slug}/preview.png`;
+import { TBlogPostPageProps } from "typings/blog";
 
-export const getBlogPostsData = async () => {
-	const META = /export\s+const\s+meta\s+=\s+(\{(\n|.)*?\n\})/;
-	const DIR = path.join(process.cwd(), "src", "content", "blog");
-	const files = fs.readdirSync(DIR).filter((file) => file.endsWith(".mdx"));
-	const entries = await Promise.all(files.map((file) => import(`content/blog/${file}`)));
+const PATH = path.resolve(process.cwd(), "src");
+const BLOG_DIR = path.resolve(PATH, "content", "blog");
 
-	const postsData: Array<TBlogPost> = files
-		.map((file, index) => {
-			const name = path.join(DIR, file);
-			const contents = fs.readFileSync(name, "utf8");
-			const match = META.exec(contents);
+export async function getBlogPostsSlugs() {
+	const postsSlugs = (await fs.readdir(BLOG_DIR))
+		.filter((file) => file.endsWith(".mdx"))
+		.map((slug) => slug.replace(/\.mdx?$/, ""));
+	return postsSlugs;
+}
 
-			if (!match || typeof match[1] !== "string")
-				throw new Error(`${name} needs to export const meta = {}`);
+export async function bundleMDXWithOptions(filename: string) {
+	const mdxSource = await fs.readFile(filename, "utf8");
 
-			const meta = eval("(" + match[1] + ")");
-			const slug = file.replace(/\.mdx?$/, "");
-			const MDXContent = entries[index].default;
+	const result = await bundleMDX(mdxSource, {
+		cwd: path.dirname(filename),
+		xdmOptions(options) {
+			options.remarkPlugins = [...(options.remarkPlugins ?? []), remarkSlug];
+			options.rehypePlugins = [...(options.rehypePlugins ?? [])];
 
-			return {
-				...meta,
-				slug,
-				image: getBlogPreviewImageURL({ slug }),
-				content: getMdxString(<MDXContent />),
-			};
-		})
-		.filter((meta) => process.env.NODE_ENV === "development" || meta.published)
-		.sort((a, b) => {
-			return new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime();
-		});
+			return options;
+		},
+		esbuildOptions(options) {
+			options.platform = "node";
 
-	return postsData;
+			return options;
+		},
+	});
+	return result;
+}
+
+type TGetMDXFileDataOptions = {
+	cwd: string;
 };
+export async function getMDXFileData(fileSlug: string, options?: TGetMDXFileDataOptions) {
+	const DIR = path.resolve(PATH, ...(options?.cwd ?? "content").split("/"));
+	const name = path.resolve(DIR ?? BLOG_DIR, `${fileSlug}.mdx`);
+	const result = await bundleMDXWithOptions(name);
 
-export const getAboutMDXPagesData = async () => {
+	return { ...result, slug: fileSlug };
+}
+
+export async function getAllBlogPostsData() {
+	const files = (await fs.readdir(BLOG_DIR)).filter((file) => file.endsWith(".mdx"));
+
+	const postsData = (
+		await Promise.all(
+			files.map(async (file) => {
+				const slug = file.replace(/\.mdx?$/, "");
+				const result = await getMDXFileData(slug, {
+					cwd: "content/blog",
+				});
+
+				return { ...result, slug } as unknown as TBlogPostPageProps;
+			})
+		)
+	)
+		.filter(({ frontmatter: { published } }) => process.env.NODE_ENV === "development" || published)
+		.sort((a, b) => {
+			return (
+				new Date(b.frontmatter.publishedAt).getTime() -
+				new Date(a.frontmatter.publishedAt).getTime()
+			);
+		});
+	return postsData;
+}
+
+export async function getRootPagesSlugs() {
 	/**
 	 * so Next.js (correctly) prevents us from building a website wherein we're
 	 * trying to dynamically trying to create a page that _already_ exists
@@ -53,12 +84,11 @@ export const getAboutMDXPagesData = async () => {
 	 * for pages that _dont_ exist already
 	 */
 
-	const DIR = path.join(process.cwd(), "src", "content");
-	const existingPagesDIR = path.join(process.cwd(), "src", "pages");
+	const MAIN_DIR = path.resolve(process.cwd(), "src", "content");
+	const ROOT_PAGES_DIR = path.resolve(process.cwd(), "src", "pages");
 
-	const files = fs.readdirSync(DIR).filter((file) => file.endsWith(".mdx"));
-	const existingAboutPageFiles = fs
-		.readdirSync(existingPagesDIR)
+	const files = (await fs.readdir(MAIN_DIR)).filter((file) => file.endsWith(".mdx"));
+	const existingRootPageFiles = (await fs.readdir(ROOT_PAGES_DIR))
 		.filter((file) => file.endsWith(".tsx"))
 		.map((file) => file.replace(/\.tsx?$/, ""));
 
@@ -68,16 +98,13 @@ export const getAboutMDXPagesData = async () => {
 				page: file.replace(/\.mdx?$/, ""),
 			};
 		})
-		.filter(({ page }) => existingAboutPageFiles.indexOf(page) === -1);
-	const entries = await Promise.all(pagesData.map(({ page }) => import(`content/${page}.mdx`)));
-	const pagesDataWithContent = pagesData.map((data, index) => {
-		const MDXContent = entries[index].default;
+		.filter(({ page }) => existingRootPageFiles.indexOf(page) === -1);
 
+	const pagesDataWithContent = pagesData.map((data) => {
 		return {
 			...data,
-			content: getMdxString(<MDXContent />),
 		};
 	});
 
 	return pagesDataWithContent;
-};
+}

@@ -1,30 +1,37 @@
-import {
-	FilesPropertyValue,
-	MultiSelectPropertyValue,
-	Page,
-	TitlePropertyValue,
-} from "@notionhq/client/build/src/api-types";
+import { QueryDatabaseResponse } from "@notionhq/client/build/src/api-endpoints";
 import React from "react";
 import styled from "styled-components";
 
 import { ImageWrapper } from "components/mdx";
 import { sharedTransition } from "styles/components";
 
+type TkeebDetails = {
+	name: string;
+	image?: string;
+	tags: Array<{ name: string; color: string }>;
+};
 export type TKeebInfo = {
-	keebInfo: Array<Page>;
+	keebInfo: QueryDatabaseResponse["results"];
 };
 const Keebs = ({ keebInfo }: TKeebInfo) => {
 	const keebDetails = keebInfo.map(({ properties }) => {
-		const name = (properties["Name"] as TitlePropertyValue).title[0].plain_text;
-		const image: string | undefined = (properties["Image"] as FilesPropertyValue).files[0]?.name;
-		const tags = (properties["Type"] as MultiSelectPropertyValue).multi_select.map(
-			({ name, color }) => ({
+		const details = {} as TkeebDetails;
+		const { Name: nameField, Image: imageField, Type: typeField } = properties;
+
+		if (nameField.type === "title") {
+			details.name = nameField.title[0].plain_text;
+		}
+		if (imageField.type === "files") {
+			details.image = imageField.files[0]?.name;
+		}
+		if (typeField.type === "multi_select") {
+			details.tags = typeField.multi_select.map(({ name, color }) => ({
 				name,
 				color,
-			})
-		);
+			}));
+		}
 
-		return { name, image, tags };
+		return details;
 	});
 
 	return (

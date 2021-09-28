@@ -39,6 +39,7 @@ module.exports = {
 		"no-unused-vars": "off",
 		"react/prop-types": "off",
 		"react-hooks/rules-of-hooks": "error",
+		"react/prop-types": "off",
 		"react-hooks/exhaustive-deps": "warn",
 		"react/react-in-jsx-scope": "off",
 		"react/jsx-no-undef": "off",

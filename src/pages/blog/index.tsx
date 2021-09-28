@@ -8,8 +8,7 @@ import { generateRssFeed } from "components/blog/rss";
 import { DocumentHead } from "components/shared/seo";
 import { BlogPostsPreviewLayout, Center } from "styles/layouts";
 import { Title } from "styles/typography";
-import { TBlogPost } from "typings/blog";
-import { getBlogPostsData } from "utils/blog";
+import { getAllBlogPostsData } from "utils/blog";
 import { getButtondownSubscriberCount } from "utils/misc";
 
 const Index = ({ postsData, subscriberCount }: InferGetStaticPropsType<typeof getStaticProps>) => {
@@ -21,8 +20,8 @@ const Index = ({ postsData, subscriberCount }: InferGetStaticPropsType<typeof ge
 			</Center>
 
 			<BlogPostsPreviewLayout>
-				{postsData?.map((post, index) => (
-					<BlogPostPreview {...{ post }} key={index} />
+				{postsData?.map(({ frontmatter, slug }, index) => (
+					<BlogPostPreview {...{ frontmatter, slug }} key={index} />
 				))}
 			</BlogPostsPreviewLayout>
 
@@ -34,7 +33,8 @@ const Index = ({ postsData, subscriberCount }: InferGetStaticPropsType<typeof ge
 
 export const getStaticProps = async () => {
 	const subscriberCount = await getButtondownSubscriberCount();
-	const postsData: Array<TBlogPost> = await getBlogPostsData();
+	const postsData = await getAllBlogPostsData();
+
 	await generateRssFeed();
 
 	return {
