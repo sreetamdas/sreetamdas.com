@@ -1,12 +1,5 @@
-import { MDXProvider } from "@mdx-js/react";
 import Link from "next/link";
-import React, {
-	createElement,
-	CSSProperties,
-	PropsWithChildren,
-	ReactHTML,
-	ReactNode,
-} from "react";
+import React, { createElement, CSSProperties, PropsWithChildren, ReactHTML } from "react";
 import { FiLink } from "react-icons/fi";
 import styled from "styled-components";
 
@@ -110,7 +103,3 @@ export const MDXComponents = {
 	img: ImageWrapper,
 	a: MDXLinkWrapper,
 };
-
-export const MDXWrapper = ({ children }: PropsWithChildren<ReactNode>) => (
-	<MDXProvider components={MDXComponents}>{children}</MDXProvider>
-);

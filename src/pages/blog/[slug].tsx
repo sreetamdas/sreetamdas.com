@@ -8,7 +8,7 @@ import { ScrollToTop, ShareLinks } from "components/blog";
 import { Newsletter } from "components/blog/Newsletter";
 import { ReadingProgress } from "components/blog/ProgressBar";
 import { HighlightWithUseEffect, HighlightWithUseInterval } from "components/blog/rgb-text";
-import { MDXComponents, MDXWrapper } from "components/mdx";
+import { MDXComponents } from "components/mdx";
 import { DocumentHead } from "components/shared/seo";
 import {
 	BlogPostMDXContent,
@@ -51,25 +51,23 @@ const Post = ({ code, frontmatter, slug, subscriberCount }: TProps) => {
 				<TextGradient>{frontmatter.title}</TextGradient>
 			</BlogPostTitle>
 			<BlogPostMDXContent>
-				<MDXWrapper>
-					<Component
-						// @ts-expect-error ugh, MDX
-						components={{
-							MDXLink,
-							MDXTitle,
-							Sparkles,
-							ChromaHighlight,
-							HighlightWithUseEffect,
-							HighlightWithUseInterval,
-							Highlight,
-							CustomBlockquote,
-							TextGradient,
-							Heavy,
-							StyledAccentTextLink,
-							...MDXComponents,
-						}}
-					/>
-				</MDXWrapper>
+				<Component
+					// @ts-expect-error ugh, MDX
+					components={{
+						MDXLink,
+						MDXTitle,
+						Sparkles,
+						ChromaHighlight,
+						HighlightWithUseEffect,
+						HighlightWithUseInterval,
+						Highlight,
+						CustomBlockquote,
+						TextGradient,
+						Heavy,
+						StyledAccentTextLink,
+						...MDXComponents,
+					}}
+				/>
 			</BlogPostMDXContent>
 			<EndLinks>
 				<ShareLinks title={frontmatter.title} slug={slug} />

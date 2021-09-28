@@ -9,7 +9,7 @@ import { ChromaHighlight } from "components/FancyPants";
 import { ViewsCounter } from "components/ViewsCounter";
 import { Newsletter } from "components/blog/Newsletter";
 import { HighlightWithUseEffect, HighlightWithUseInterval } from "components/blog/rgb-text";
-import { MDXComponents, MDXWrapper } from "components/mdx";
+import { MDXComponents } from "components/mdx";
 import { DocumentHead } from "components/shared/seo";
 import { Highlight, CustomBlockquote } from "styles/blog";
 import { MDXLink } from "styles/components";
@@ -47,30 +47,28 @@ const Page = ({ code, frontmatter, subscriberCount }: TProps) => {
 			</Center>
 			<PaddingListItems>
 				<RemoveBulletsFromList>
-					<MDXWrapper>
-						<Component
-							// @ts-expect-error ugh, MDX
-							components={{
-								MDXLink,
-								MDXTitle,
-								Sparkles,
-								ChromaHighlight,
-								HighlightWithUseEffect,
-								HighlightWithUseInterval,
-								Highlight,
-								CustomBlockquote,
-								TextGradient,
-								Heavy,
-								StyledAccentTextLink,
+					<Component
+						// @ts-expect-error ugh, MDX
+						components={{
+							MDXLink,
+							MDXTitle,
+							Sparkles,
+							ChromaHighlight,
+							HighlightWithUseEffect,
+							HighlightWithUseInterval,
+							Highlight,
+							CustomBlockquote,
+							TextGradient,
+							Heavy,
+							StyledAccentTextLink,
 
-								BsTerminalFill,
-								FaFont,
-								FaPodcast,
-								SiOculus,
-								...MDXComponents,
-							}}
-						/>
-					</MDXWrapper>
+							BsTerminalFill,
+							FaFont,
+							FaPodcast,
+							SiOculus,
+							...MDXComponents,
+						}}
+					/>
 				</RemoveBulletsFromList>
 			</PaddingListItems>
 			<ViewsCounter />

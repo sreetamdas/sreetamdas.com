@@ -6,7 +6,7 @@ import { ExternalLinksOverlay } from "components/Navbar";
 import { ViewsCounter } from "components/ViewsCounter";
 import { Newsletter } from "components/blog/Newsletter";
 import { FoobarContext } from "components/foobar";
-import { MDXComponents, MDXWrapper } from "components/mdx";
+import { MDXComponents } from "components/mdx";
 import { DocumentHead } from "components/shared/seo";
 import { Center } from "styles/layouts";
 import { Title, LinkTo, RemoveBulletsFromList } from "styles/typography";
@@ -34,15 +34,13 @@ const About = ({ code, frontmatter: _, subscriberCount }: TProps) => {
 			</Center>
 
 			<RemoveBulletsFromList>
-				<MDXWrapper>
-					<Component
-						// @ts-expect-error MDX
-						components={{
-							ExternalLinksOverlay,
-							...MDXComponents,
-						}}
-					/>
-				</MDXWrapper>
+				<Component
+					// @ts-expect-error MDX
+					components={{
+						ExternalLinksOverlay,
+						...MDXComponents,
+					}}
+				/>
 			</RemoveBulletsFromList>
 
 			<ViewsCounter />
