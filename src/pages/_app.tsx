@@ -170,11 +170,7 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
 			<QueryClientProvider client={reactQueryClient}>
 				<Hydrate state={pageProps.dehydratedState}>
 					<ThemeProvider theme={themeForContext}>
-						<PlausibleProvider
-							domain="sreetamdas.com"
-							customDomain="sreetamdas.com"
-							trackOutboundLinks
-						>
+						<PlausibleProvider domain="sreetamdas.com" customDomain="sreetamdas.com">
 							<GlobalStyles />
 							<FoobarWrapper>
 								<Navbar />
