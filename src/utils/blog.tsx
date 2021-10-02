@@ -4,7 +4,7 @@ import path from "path";
 import { bundleMDX } from "mdx-bundler";
 import remarkSlug from "remark-slug";
 
-import { TBlogPostPageProps } from "typings/blog";
+import { TBlogPostPageProps } from "@/typings/blog";
 
 const PATH = path.resolve(process.cwd(), "src");
 const BLOG_DIR = path.resolve(PATH, "content", "blog");

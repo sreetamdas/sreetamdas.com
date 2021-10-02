@@ -5,16 +5,16 @@ import { BsTerminalFill } from "react-icons/bs";
 import { FaFont, FaPodcast } from "react-icons/fa";
 import { SiOculus } from "react-icons/si";
 
-import { ChromaHighlight } from "components/FancyPants";
-import { ViewsCounter } from "components/ViewsCounter";
-import { Newsletter } from "components/blog/Newsletter";
-import { HighlightWithUseEffect, HighlightWithUseInterval } from "components/blog/rgb-text";
-import { MDXComponents } from "components/mdx";
-import { DocumentHead } from "components/shared/seo";
-import { Highlight, CustomBlockquote } from "styles/blog";
-import { MDXLink } from "styles/components";
-import { Center } from "styles/layouts";
-import { Sparkles } from "styles/special";
+import { ChromaHighlight } from "@/components/FancyPants";
+import { ViewsCounter } from "@/components/ViewsCounter";
+import { Newsletter } from "@/components/blog/Newsletter";
+import { HighlightWithUseEffect, HighlightWithUseInterval } from "@/components/blog/rgb-text";
+import { MDXComponents } from "@/components/mdx";
+import { DocumentHead } from "@/components/shared/seo";
+import { Highlight, CustomBlockquote } from "@/styles/blog";
+import { MDXLink } from "@/styles/components";
+import { Center } from "@/styles/layouts";
+import { Sparkles } from "@/styles/special";
 import {
 	Title,
 	PaddingListItems,
@@ -23,10 +23,10 @@ import {
 	MDXTitle,
 	StyledAccentTextLink,
 	TextGradient,
-} from "styles/typography";
-import { TBlogPostPageProps } from "typings/blog";
-import { getMDXFileData, getRootPagesSlugs } from "utils/blog";
-import { getButtondownSubscriberCount } from "utils/misc";
+} from "@/styles/typography";
+import { TBlogPostPageProps } from "@/typings/blog";
+import { getMDXFileData, getRootPagesSlugs } from "@/utils/blog";
+import { getButtondownSubscriberCount } from "@/utils/misc";
 
 type TProps = TBlogPostPageProps & {
 	subscriberCount: number;

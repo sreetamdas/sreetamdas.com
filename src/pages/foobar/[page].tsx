@@ -2,10 +2,10 @@ import { ParsedUrlQuery } from "querystring";
 
 import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from "next";
 
-import { FoobarSchrodinger } from "components/foobar/pages";
-import Custom404 from "pages/404";
-import { FOOBAR_PAGES, TFoobarPage } from "typings/console";
-import { useHasMounted } from "utils/hooks";
+import { FoobarSchrodinger } from "@/components/foobar/pages";
+import Custom404 from "@/pages/404";
+import { FOOBAR_PAGES, TFoobarPage } from "@/typings/console";
+import { useHasMounted } from "@/utils/hooks";
 
 type TFoobarPageProps = {
 	page: Exclude<TFoobarPage, "/">;

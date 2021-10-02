@@ -1,6 +1,6 @@
 import localforage from "localforage";
 
-import { TFoobarData, TFoobarContext, TFoobarPage, FOOBAR_PAGES } from "typings/console";
+import { TFoobarData, TFoobarContext, TFoobarPage, FOOBAR_PAGES } from "@/typings/console";
 
 export const IS_DEV = process.env.NODE_ENV === "development";
 

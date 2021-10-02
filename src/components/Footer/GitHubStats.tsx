@@ -4,7 +4,7 @@ import { VscRepoForked } from "react-icons/vsc";
 import { useQuery } from "react-query";
 import styled from "styled-components";
 
-import { sharedTransition } from "styles/components";
+import { sharedTransition } from "@/styles/components";
 
 export const Stats = styled.div`
 	display: grid;

@@ -3,10 +3,10 @@ import React, { createElement, CSSProperties, PropsWithChildren, ReactHTML } fro
 import { FiLink } from "react-icons/fi";
 import styled from "styled-components";
 
-import { MDXCodeBlock } from "components/mdx/code";
-import { LinkedHeaderIconWrapper } from "styles/blog";
-import { Paragraph } from "styles/typography";
-import { useHover } from "utils/hooks";
+import { MDXCodeBlock } from "@/components/mdx/code";
+import { LinkedHeaderIconWrapper } from "@/styles/blog";
+import { Paragraph } from "@/styles/typography";
+import { useHover } from "@/utils/hooks";
 
 export const ImageWrapper = ({ alt, src }: { alt: string; src: string }) => {
 	const type = src.slice(-3);

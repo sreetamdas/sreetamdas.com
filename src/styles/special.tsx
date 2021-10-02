@@ -1,7 +1,7 @@
 import { PropsWithChildren, HTMLAttributes, Key, useState } from "react";
 import styled, { keyframes, CSSProperties } from "styled-components";
 
-import { usePrefersReducedMotion, useRandomInterval } from "utils/hooks";
+import { usePrefersReducedMotion, useRandomInterval } from "@/utils/hooks";
 
 const range = (start: number, end?: number, step = 1) => {
 	const output = [];

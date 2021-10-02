@@ -1,4 +1,4 @@
-import { FoobarSchrodinger } from "components/foobar/pages";
+import { FoobarSchrodinger } from "@/components/foobar/pages";
 
 /**
  * this page is only "activated" once `X` has been discovered

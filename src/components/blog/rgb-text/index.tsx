@@ -1,7 +1,7 @@
 import { PropsWithChildren, useEffect } from "react";
 import styled, { css } from "styled-components";
 
-import { random, useInterval } from "utils/hooks";
+import { random, useInterval } from "@/utils/hooks";
 
 let root: HTMLElement;
 

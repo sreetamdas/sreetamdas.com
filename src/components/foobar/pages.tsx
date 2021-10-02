@@ -2,19 +2,19 @@ import { useRouter } from "next/router";
 import React, { useContext, useState, useEffect, Fragment } from "react";
 import styled from "styled-components";
 
-import { ViewsCounter } from "components/ViewsCounter";
-import { FoobarContext, initialFoobarData } from "components/foobar";
-import { ShowCompletedBadges } from "components/foobar/badges";
-import { KonamiWrapper } from "components/foobar/konami";
-import { SupportSreetamDas } from "components/foobar/styled";
-import { Terminal } from "components/foobar/terminal";
-import { DocumentHead } from "components/shared/seo";
-import Custom404 from "pages/404";
-import { StyledPre, Button } from "styles/blog";
-import { Space, Center } from "styles/layouts";
-import { Title } from "styles/typography";
-import { TFoobarSchrodingerProps, TFoobarPage } from "typings/console";
-import { dog } from "utils/console";
+import { ViewsCounter } from "@/components/ViewsCounter";
+import { FoobarContext, initialFoobarData } from "@/components/foobar";
+import { ShowCompletedBadges } from "@/components/foobar/badges";
+import { KonamiWrapper } from "@/components/foobar/konami";
+import { SupportSreetamDas } from "@/components/foobar/styled";
+import { Terminal } from "@/components/foobar/terminal";
+import { DocumentHead } from "@/components/shared/seo";
+import Custom404 from "@/pages/404";
+import { StyledPre, Button } from "@/styles/blog";
+import { Space, Center } from "@/styles/layouts";
+import { Title } from "@/styles/typography";
+import { TFoobarSchrodingerProps, TFoobarPage } from "@/typings/console";
+import { dog } from "@/utils/console";
 
 const XMarksTheSpot = (_props: { foobar: string }) => <div />;
 

@@ -9,10 +9,10 @@ import {
 	IconContainer,
 	PostNotPublishedWarning,
 	ReadMorePrompt,
-} from "styles/blog";
-import { BlogPostPreviewTitle, Datestamp, SmallText } from "styles/typography";
-import { TBlogPostFrontmatter, TBlogPostPageProps } from "typings/blog";
-import { useHover } from "utils/hooks";
+} from "@/styles/blog";
+import { BlogPostPreviewTitle, Datestamp, SmallText } from "@/styles/typography";
+import { TBlogPostFrontmatter, TBlogPostPageProps } from "@/typings/blog";
+import { useHover } from "@/utils/hooks";
 
 type TShareLinksProps = Pick<TBlogPostPageProps, "slug"> & Pick<TBlogPostFrontmatter, "title">;
 export const ShareLinks = ({ title, slug }: TShareLinksProps) => {

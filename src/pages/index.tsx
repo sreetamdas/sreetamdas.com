@@ -2,14 +2,14 @@ import { getMDXComponent } from "mdx-bundler/client";
 import { InferGetStaticPropsType } from "next";
 import React, { Fragment, useMemo } from "react";
 
-import { ViewsCounter } from "components/ViewsCounter";
-import { Newsletter } from "components/blog/Newsletter";
-import { MDXComponents } from "components/mdx";
-import { DocumentHead } from "components/shared/seo";
-import { Center, Space } from "styles/layouts";
-import { TextGradient, Heavy, MDXText, Title, Paragraph, StyledLink } from "styles/typography";
-import { getMDXFileData } from "utils/blog";
-import { getButtondownSubscriberCount } from "utils/misc";
+import { ViewsCounter } from "@/components/ViewsCounter";
+import { Newsletter } from "@/components/blog/Newsletter";
+import { MDXComponents } from "@/components/mdx";
+import { DocumentHead } from "@/components/shared/seo";
+import { Center, Space } from "@/styles/layouts";
+import { TextGradient, Heavy, MDXText, Title, Paragraph, StyledLink } from "@/styles/typography";
+import { getMDXFileData } from "@/utils/blog";
+import { getButtondownSubscriberCount } from "@/utils/misc";
 
 const Index = ({ code, subscriberCount }: InferGetStaticPropsType<typeof getStaticProps>) => {
 	const Component = useMemo(() => getMDXComponent(code), [code]);

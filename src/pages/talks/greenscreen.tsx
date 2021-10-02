@@ -1,10 +1,10 @@
 import React, { useContext, useEffect } from "react";
 import { ThemeContext } from "styled-components";
 
-import { ViewsCounter } from "components/ViewsCounter";
-import { GreenScreen } from "components/talks/greenscreen";
-import { FullWidth } from "styles/layouts";
-import { Title } from "styles/typography";
+import { ViewsCounter } from "@/components/ViewsCounter";
+import { GreenScreen } from "@/components/talks/greenscreen";
+import { FullWidth } from "@/styles/layouts";
+import { Title } from "@/styles/typography";
 
 const Page = () => {
 	const { changeThemeVariant } = useContext(ThemeContext);

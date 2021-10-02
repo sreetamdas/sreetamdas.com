@@ -1,8 +1,8 @@
 import { PropsWithChildren, useEffect } from "react";
 import styled, { css } from "styled-components";
 
-import { LinkTo } from "styles/typography";
-import { random, useInterval } from "utils/hooks";
+import { LinkTo } from "@/styles/typography";
+import { random, useInterval } from "@/utils/hooks";
 
 let root: HTMLElement;
 

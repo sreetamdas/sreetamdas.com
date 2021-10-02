@@ -2,17 +2,17 @@ import { getMDXComponent } from "mdx-bundler/client";
 import { GetStaticProps } from "next";
 import React, { Fragment, useContext, useMemo } from "react";
 
-import { ExternalLinksOverlay } from "components/Navbar";
-import { ViewsCounter } from "components/ViewsCounter";
-import { Newsletter } from "components/blog/Newsletter";
-import { FoobarContext } from "components/foobar";
-import { MDXComponents } from "components/mdx";
-import { DocumentHead } from "components/shared/seo";
-import { Center } from "styles/layouts";
-import { Title, LinkTo, RemoveBulletsFromList } from "styles/typography";
-import { TBlogPostPageProps } from "typings/blog";
-import { getMDXFileData } from "utils/blog";
-import { getButtondownSubscriberCount } from "utils/misc";
+import { ExternalLinksOverlay } from "@/components/Navbar";
+import { ViewsCounter } from "@/components/ViewsCounter";
+import { Newsletter } from "@/components/blog/Newsletter";
+import { FoobarContext } from "@/components/foobar";
+import { MDXComponents } from "@/components/mdx";
+import { DocumentHead } from "@/components/shared/seo";
+import { Center } from "@/styles/layouts";
+import { Title, LinkTo, RemoveBulletsFromList } from "@/styles/typography";
+import { TBlogPostPageProps } from "@/typings/blog";
+import { getMDXFileData } from "@/utils/blog";
+import { getButtondownSubscriberCount } from "@/utils/misc";
 
 type TProps = TBlogPostPageProps & { subscriberCount: number };
 

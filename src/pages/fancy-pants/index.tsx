@@ -1,9 +1,9 @@
 import { Fragment } from "react";
 
-import { NavigationContainer, Typography, NavLink, ChromaHighlight } from "components/FancyPants";
-import { ViewsCounter } from "components/ViewsCounter";
-import { DocumentHead } from "components/shared/seo";
-import { FullWidth, Space } from "styles/layouts";
+import { NavigationContainer, Typography, NavLink, ChromaHighlight } from "@/components/FancyPants";
+import { ViewsCounter } from "@/components/ViewsCounter";
+import { DocumentHead } from "@/components/shared/seo";
+import { FullWidth, Space } from "@/styles/layouts";
 
 const FancyPants = () => {
 	return (

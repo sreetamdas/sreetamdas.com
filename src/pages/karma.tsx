@@ -6,10 +6,10 @@ import ImageCSS from "@/public/karma/css.webp";
 import ImageElixir from "@/public/karma/elixir.webp";
 import ImagePython from "@/public/karma/python.webp";
 import ImageReact from "@/public/karma/react.webp";
-import { ViewsCounter } from "components/ViewsCounter";
-import { DocumentHead } from "components/shared/seo";
-import { FullWidth, Space } from "styles/layouts";
-import { LinkTo, Title } from "styles/typography";
+import { ViewsCounter } from "@/components/ViewsCounter";
+import { DocumentHead } from "@/components/shared/seo";
+import { FullWidth, Space } from "@/styles/layouts";
+import { LinkTo, Title } from "@/styles/typography";
 
 const KARMA_COLOR_PALETTE = [
 	"#FC618D",

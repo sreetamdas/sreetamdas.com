@@ -3,9 +3,9 @@ import { useMemo } from "react";
 import { LiveProvider, LiveEditor, LiveError, LivePreview } from "react-live";
 import styled from "styled-components";
 
-import { KARMA_PRISM_THEME } from "pages/karma";
-import { FullWidth } from "styles/layouts";
-import { TextGradient } from "styles/typography";
+import { KARMA_PRISM_THEME } from "@/pages/karma";
+import { FullWidth } from "@/styles/layouts";
+import { TextGradient } from "@/styles/typography";
 
 /* Why is there a tabs import? https://github.com/agneym/playground#why-is-there-a-reacttabs-import*/
 // import "@reach/tabs/styles.css";

@@ -9,10 +9,10 @@ import React, {
 	ReactNode,
 } from "react";
 
-import { Footer } from "components/Footer";
-import { Space, Center, WrapperForFooter } from "styles/layouts";
-import { LinkTo } from "styles/typography";
-import { TFoobarData, TFoobarContext, FOOBAR_PAGES } from "typings/console";
+import { Footer } from "@/components/Footer";
+import { Space, Center, WrapperForFooter } from "@/styles/layouts";
+import { LinkTo } from "@/styles/typography";
+import { TFoobarData, TFoobarContext, FOOBAR_PAGES } from "@/typings/console";
 import {
 	doAsyncThings,
 	loadLocalDataOnMount,
@@ -21,7 +21,7 @@ import {
 	mergeLocalDataIntoStateOnMount,
 	mergeDeep,
 	IS_DEV,
-} from "utils/console";
+} from "@/utils/console";
 
 export const initialFoobarData: TFoobarData = {
 	visitedPages: [],

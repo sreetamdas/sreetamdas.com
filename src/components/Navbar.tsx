@@ -17,13 +17,13 @@ import { FiRss, FiSun, FiMenu, FiX } from "react-icons/fi";
 import { IoMdMoon } from "react-icons/io";
 import styled, { css, ThemeContext } from "styled-components";
 
-import { FoobarContext } from "components/foobar";
-import { IconContainer } from "styles/blog";
-import { sharedTransition } from "styles/components";
-import { LinkTo } from "styles/typography";
-import { useBreakpointRange, useHasMounted } from "utils/hooks";
-import { checkIfNavbarShouldBeHidden } from "utils/misc";
-import { breakpoint } from "utils/style";
+import { FoobarContext } from "@/components/foobar";
+import { IconContainer } from "@/styles/blog";
+import { sharedTransition } from "@/styles/components";
+import { LinkTo } from "@/styles/typography";
+import { useBreakpointRange, useHasMounted } from "@/utils/hooks";
+import { checkIfNavbarShouldBeHidden } from "@/utils/misc";
+import { breakpoint } from "@/utils/style";
 
 export const Navbar = () => {
 	const [isNavbarShown, setIsNavbarShown] = useState(true);

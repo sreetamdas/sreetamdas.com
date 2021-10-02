@@ -1,6 +1,6 @@
 import axios from "axios";
 
-import { PostDetails } from "typings/blog";
+import { PostDetails } from "@/typings/blog";
 
 export const HIDE_NAVBAR_PAGES = ["fancy-pants"];
 const BUTTONDOWN_URL = "https://api.buttondown.email/v1/subscribers";

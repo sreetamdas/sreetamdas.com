@@ -2,7 +2,7 @@ import fs from "fs";
 
 import { Feed } from "feed";
 
-import { getAllBlogPostsData } from "utils/blog";
+import { getAllBlogPostsData } from "@/utils/blog";
 
 export const generateRssFeed = async () => {
 	if (process.env.NODE_ENV === "development") {

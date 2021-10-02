@@ -1,10 +1,10 @@
 import { FormEvent, useState } from "react";
 import styled, { css } from "styled-components";
 
-import { buttonStylesMixin } from "components/foobar/styled";
-import { sharedTransition } from "styles/components";
-import { Accent } from "styles/typography";
-import { breakpoint } from "utils/style";
+import { buttonStylesMixin } from "@/components/foobar/styled";
+import { sharedTransition } from "@/styles/components";
+import { Accent } from "@/styles/typography";
+import { breakpoint } from "@/utils/style";
 
 export type TNewsletterProps = {
 	subscriberCount: number;

@@ -7,14 +7,14 @@ import { ReactQueryDevtools } from "react-query/devtools";
 import { Hydrate } from "react-query/hydration";
 import { createGlobalStyle, ThemeProvider } from "styled-components";
 
-import { Navbar } from "components/Navbar";
-import { FoobarWrapper } from "components/foobar";
-import { sharedTransition } from "styles/components";
-import { Layout } from "styles/layouts";
-import { TGlobalThemeObject } from "typings/styled";
-import { BASE_FONT_SIZE } from "utils/style";
+import { Navbar } from "@/components/Navbar";
+import { FoobarWrapper } from "@/components/foobar";
+import { sharedTransition } from "@/styles/components";
+import { Layout } from "@/styles/layouts";
+import { TGlobalThemeObject } from "@/typings/styled";
+import { BASE_FONT_SIZE } from "@/utils/style";
 
-import "assets/fonts/iosevka/iosevka.css";
+import "@/assets/fonts/iosevka/iosevka.css";
 
 const GlobalStyles = createGlobalStyle`
 	:root {

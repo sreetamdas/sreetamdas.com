@@ -2,8 +2,8 @@ import Highlight, { defaultProps, Language } from "prism-react-renderer";
 import React from "react";
 import styled, { css } from "styled-components";
 
-import { KARMA_PRISM_THEME } from "pages/karma";
-import { breakpoint } from "utils/style";
+import { KARMA_PRISM_THEME } from "@/pages/karma";
+import { breakpoint } from "@/utils/style";
 
 export { MDXCodeBlock };
 

@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-import { sharedTransition } from "styles/components";
+import { sharedTransition } from "@/styles/components";
 
 export const BlogPostsPreviewLayout = styled.div`
 	display: grid;

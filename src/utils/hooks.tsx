@@ -9,7 +9,7 @@ import {
 	ReactNode,
 } from "react";
 
-import { BREAKPOINTS, TBreakpoint } from "utils/style";
+import { BREAKPOINTS, TBreakpoint } from "@/utils/style";
 
 export const viewportContext = createContext({});
 
