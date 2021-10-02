@@ -16,10 +16,11 @@
 		"resolveJsonModule": true,
 		"isolatedModules": true,
 		"jsx": "preserve",
-		"baseUrl": "src",
+		"baseUrl": "./",
 		"downlevelIteration": true,
 		"paths": {
-			"@/public/*": ["../public/*"]
+			"@/*":["./src/*"],
+			"@/public/*": ["./public/*"]
 		}
 	},
 	"exclude": ["node_modules", "public"],
