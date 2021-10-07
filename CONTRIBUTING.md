@@ -18,7 +18,7 @@ If you spot any typos, feel free to send a pull request! 🙂
 
 This project utilizes a _bunch_ of APIs for all kinds of different things: [Buttondown.email API](https://api.buttondown.email) for my newsletter statistics, [Supabase](https://supabase.io) for page view counts, etc.
 
-In order to provide a more seamless experience, I've set up [Mock Servicce Worker](https://mswjs.io) which allows us to intercept and mock such requests at the network level. Pretty neat stuff!
+In order to provide a more seamless experience, I've set up [Mock Service Worker](https://mswjs.io) which allows us to intercept and mock such requests at the network level. Pretty neat stuff!
 
 ### Default local setup
 
