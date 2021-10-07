@@ -108,7 +108,6 @@ export const ViewsCounter = ({
 
 	const { data } = useQuery<Pick<PostDetails, "view_count">>(
 		["page-details", "view", path],
-		// don't update the view count if in development mode
 		async () => await (disabled ? getViewCount(path) : updateAndGetViewCount(path)),
 		{
 			staleTime: Infinity,
