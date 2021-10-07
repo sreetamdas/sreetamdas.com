@@ -16,6 +16,10 @@ import { BASE_FONT_SIZE } from "utils/style";
 
 import "assets/fonts/iosevka/iosevka.css";
 
+if (process.env.NEXT_PUBLIC_API_MOCKING_ENABLED === "true") {
+	require("mocks");
+}
+
 const GlobalStyles = createGlobalStyle`
 	:root {
 	--color-primary: rgb(0, 0, 0);
