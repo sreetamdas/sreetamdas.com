@@ -39,14 +39,9 @@ Pretty much wherever the mini-game is present in the repo, it's placed under a <
 
 ---
 
-## Development
+## Development/Contributing
 
-```sh
-$ git clone https://github.com/sreetamdas/sreetamdas.com.git
-$ cd sreetamdas.com
-$ npm i
-$ npm run dev
-```
+Please check out the [Contributing guide](CONTRIBUTING.md)
 
 ### Newsletter
 
