@@ -22,7 +22,7 @@ In order to provide a more seamless experience, I've set up [Mock Service Worker
 
 ### Default local setup
 
-By default, mocking is enabled via the `NEXT_PUBLIC_API_MOCKING_ENABLED` environment variable set to `true` in `.env.example`. What this means is that you _should_ be able to clone the repo, run `npm i`, and start working without any additional setup!
+By default, mocking is enabled via the `NEXT_PUBLIC_API_MOCKING_ENABLED` environment variable set to `true` in `.env.example`. What this means is that you _should_ be able to clone the repo, run `npm i`, and start working without any additional setup! Make sure you rename `.env.example` to `.env`.
 
 #### Node version
 
