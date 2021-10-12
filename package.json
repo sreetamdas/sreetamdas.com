@@ -16,6 +16,7 @@
 	},
 	"dependencies": {
 		"@notionhq/client": "^0.4.0",
+		"@sreetamdas/karma": "^2.3.4",
 		"@supabase/supabase-js": "^1.23.0",
 		"axios": "^0.21.4",
 		"esbuild": "^0.12.19",
