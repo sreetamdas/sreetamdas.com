@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { loadTheme, getHighlighter } from "shiki";
 import { IRawThemeSetting } from "vscode-textmate";
 
@@ -115,13 +116,14 @@ export function renderToHtml(lines: IThemedToken[][], options: HtmlRendererOptio
 
 		l.forEach((token) => {
 			const cssDeclarations = [`color: ${token.color || options.fg}`];
-			if (token.fontStyle & FontStyle.Italic) {
+
+			if (token.fontStyle ?? 0 & FontStyle.Italic) {
 				cssDeclarations.push("font-style: italic");
 			}
-			if (token.fontStyle & FontStyle.Bold) {
+			if (token.fontStyle ?? 0 & FontStyle.Bold) {
 				cssDeclarations.push("font-weight: bold");
 			}
-			if (token.fontStyle & FontStyle.Underline) {
+			if (token.fontStyle ?? 0 & FontStyle.Underline) {
 				cssDeclarations.push("text-decoration: underline");
 			}
 			html += `<span style="${cssDeclarations.join("; ")}">${escapeHtml(token.content)}</span>`;
@@ -129,7 +131,7 @@ export function renderToHtml(lines: IThemedToken[][], options: HtmlRendererOptio
 		html += "</span>\n";
 	});
 	html = html.replace(/\n*$/, ""); // Get rid of final new lines
-	html += "</code></pre>1";
+	html += "</code></pre>";
 
 	return html;
 }
@@ -147,8 +149,14 @@ function escapeHtml(html: string) {
 	return html.replace(/[&<>"']/g, (chr) => htmlEscapes[chr as keyof typeof htmlEscapes]);
 }
 
-const ShikiExample = ({ tokens, asString }) => {
-	console.log({ tokens, asString });
+type TShikiProps = {
+	tokens: IThemedToken[][];
+	asString: string;
+};
+const ShikiExample = ({ tokens, asString }: TShikiProps) => {
+	useEffect(() => {
+		console.log({ tokens, asString });
+	}, [asString, tokens]);
 
 	return (
 		<div>
