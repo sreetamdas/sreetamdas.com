@@ -155,6 +155,7 @@ type TShikiProps = {
 };
 const ShikiExample = ({ tokens, asString }: TShikiProps) => {
 	useEffect(() => {
+		// eslint-disable-next-line no-console
 		console.log({ tokens, asString });
 	}, [asString, tokens]);
 
