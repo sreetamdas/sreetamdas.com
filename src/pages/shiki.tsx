@@ -70,7 +70,8 @@ function renderTokens(lines: IThemedToken[][], options?: HtmlRendererOptions) {
 				<div className="line" key={line.join("")}>
 					{line.map((token) => (
 						<span key={token.content} style={{ ...getTokenStyles(token, options) }}>
-							{token.content}
+							{/* replace tabs with space */}
+							{token.content.replace(/\t/g, "  ")}
 						</span>
 					))}
 				</div>
@@ -81,7 +82,6 @@ function renderTokens(lines: IThemedToken[][], options?: HtmlRendererOptions) {
 
 type TShikiProps = {
 	tokens: IThemedToken[][];
-	asString: string;
 };
 const ShikiExample = ({ tokens }: TShikiProps) => {
 	return (
@@ -97,38 +97,41 @@ export default ShikiExample;
 export async function getStaticProps() {
 	const theme = await loadTheme("../@sreetamdas/karma/themes/Karma-color-theme.json");
 	const highlighter = await getHighlighter({ theme });
-	const tokens = highlighter.codeToThemedTokens(CODE_SNIPPET, "js");
+	const tokens = highlighter.codeToThemedTokens(CODE_SNIPPET, "tsx");
 
 	return {
 		props: { tokens },
 	};
 }
 
-const CODE_SNIPPET = `export const getBlogPostsData = async () => {
-  // path where the MDX files are
-  const DIR = path.join(process.cwd(), "src", "content", "blog");
-  const files = fs
-    .readdirSync(DIR)
-    .filter((file) => file.endsWith(".mdx"));
+const CODE_SNIPPET = `
+export const useRandomInterval = (
+	callback: () => void,
+	minDelay: null | number,
+	maxDelay: null | number
+) => {
+	const timeoutId = useRef<number | undefined>();
+	const savedCallback = useRef(callback);
+	useEffect(() => {
+		savedCallback.current = callback;
+	});
+	useEffect(() => {
+		if (typeof minDelay === "number" && typeof maxDelay === "number") {
+			const handleTick = () => {
+				const nextTickAt = random(minDelay, maxDelay);
+				timeoutId.current = window.setTimeout(() => {
+					savedCallback.current();
+					handleTick();
+				}, nextTickAt);
+			};
+			handleTick();
+		}
 
-  const META = /export\\s+const\\s+meta\\s+=\\s+(\\{(\\n|.)*?\\n\\})/;
-  const postsData = files.map((file) => {
-    // grab the metadata
-    const name = path.join(DIR, file);
-    const contents = fs.readFileSync(name, "utf8");
-    const match = META.exec(contents);
-    if (!match || typeof match[1] !== "string")
-      throw new Error(\`\${name} needs to export const meta = {}\`);
-    const meta = eval("(" + match[1] + ")");
-
-    // remove the ".mdx" from the filename
-    const slug = file.replace(/\\.mdx?$/, "");
-
-    return {
-      ...meta,
-      slug,
-    };
-  });
-
-  return postsData;
-};`;
+		return () => window.clearTimeout(timeoutId.current);
+	}, [minDelay, maxDelay]);
+	const cancel = useCallback(function () {
+		window.clearTimeout(timeoutId.current);
+	}, []);
+	return cancel;
+};
+`;
