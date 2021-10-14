@@ -21,56 +21,6 @@ export interface IThemedTokenExplanation {
 
 /**
  * A single token with color, and optionally with explanation.
- *
- * For example:
- *
- * {
- *   "content": "shiki",
- *   "color": "#D8DEE9",
- *   "explanation": [
- *     {
- *       "content": "shiki",
- *       "scopes": [
- *         {
- *           "scopeName": "source.js",
- *           "themeMatches": []
- *         },
- *         {
- *           "scopeName": "meta.objectliteral.js",
- *           "themeMatches": []
- *         },
- *         {
- *           "scopeName": "meta.object.member.js",
- *           "themeMatches": []
- *         },
- *         {
- *           "scopeName": "meta.array.literal.js",
- *           "themeMatches": []
- *         },
- *         {
- *           "scopeName": "variable.other.object.js",
- *           "themeMatches": [
- *             {
- *               "name": "Variable",
- *               "scope": "variable.other",
- *               "settings": {
- *                 "foreground": "#D8DEE9"
- *               }
- *             },
- *             {
- *               "name": "[JavaScript] Variable Other Object",
- *               "scope": "source.js variable.other.object",
- *               "settings": {
- *                 "foreground": "#D8DEE9"
- *               }
- *             }
- *           ]
- *         }
- *       ]
- *     }
- *   ]
- * }
- *
  */
 export interface IThemedToken {
 	/**
@@ -173,7 +123,7 @@ export async function getStaticProps() {
 	// const themePath = require.resolve("@/@sreetamdas/karma/themes/Karma-color-theme.json");
 	const theme = await loadTheme("../@sreetamdas/karma/themes/Karma-color-theme.json");
 	const highlighter = await getHighlighter({ theme });
-	const tokens = highlighter.codeToThemedTokens("console.log('shiki');", "ts");
+	const tokens = highlighter.codeToThemedTokens(CODE_SNIPPET, "js");
 	// return generateHTMLFromTokens(tokens);
 
 	const asString = (
@@ -186,3 +136,32 @@ export async function getStaticProps() {
 		props: { tokens, asString },
 	};
 }
+
+const CODE_SNIPPET = `export const getBlogPostsData = async () => {
+  // path where the MDX files are
+  const DIR = path.join(process.cwd(), "src", "content", "blog");
+  const files = fs
+    .readdirSync(DIR)
+    .filter((file) => file.endsWith(".mdx"));
+
+  const META = /export\\s+const\\s+meta\\s+=\\s+(\\{(\\n|.)*?\\n\\})/;
+  const postsData = files.map((file) => {
+    // grab the metadata
+    const name = path.join(DIR, file);
+    const contents = fs.readFileSync(name, "utf8");
+    const match = META.exec(contents);
+    if (!match || typeof match[1] !== "string")
+      throw new Error(\`\${name} needs to export const meta = {}\`);
+    const meta = eval("(" + match[1] + ")");
+
+    // remove the ".mdx" from the filename
+    const slug = file.replace(/\\.mdx?$/, "");
+
+    return {
+      ...meta,
+      slug,
+    };
+  });
+
+  return postsData;
+};`;
