@@ -72,7 +72,7 @@ const CodeBlockLanguageWrapper = styled.span`
 	border-bottom-right-radius: var(--border-radius);
 `;
 
-const CodePreBlockWithHighlight = styled.pre`
+export const CodePreBlockWithHighlight = styled.pre`
 	padding: 20px;
 	margin: 1rem -20px;
 	border-radius: var(--border-radius);

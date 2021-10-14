@@ -1,20 +1,22 @@
-import { useEffect } from "react";
+import type { CSSProperties } from "react";
 import { loadTheme, getHighlighter } from "shiki";
 import { IRawThemeSetting } from "vscode-textmate";
 
-export enum FontStyle {
+import { CodePreBlockWithHighlight } from "components/mdx/code";
+
+enum FontStyle {
 	NotSet = -1,
 	None = 0,
 	Italic = 1,
 	Bold = 2,
 	Underline = 4,
 }
-export interface IThemedTokenScopeExplanation {
+interface IThemedTokenScopeExplanation {
 	scopeName: string;
 	themeMatches: IRawThemeSetting[];
 }
 
-export interface IThemedTokenExplanation {
+interface IThemedTokenExplanation {
 	content: string;
 	scopes: IThemedTokenScopeExplanation[];
 }
@@ -22,7 +24,7 @@ export interface IThemedTokenExplanation {
 /**
  * A single token with color, and optionally with explanation.
  */
-export interface IThemedToken {
+interface IThemedToken {
 	/**
 	 * The content of the token
 	 */
@@ -43,76 +45,49 @@ export interface IThemedToken {
 	 */
 	explanation?: IThemedTokenExplanation[];
 }
-export interface HtmlRendererOptions {
+
+interface HtmlRendererOptions {
 	langId?: string;
 	fg?: string;
 	bg?: string;
 }
 
-export function renderToHtml(lines: IThemedToken[][], options: HtmlRendererOptions = {}) {
-	const bg = options.bg || "#0a0e14";
-
-	let html = "";
-
-	html += `<pre class="shiki" style="background-color: ${bg}">`;
-	if (options.langId) {
-		html += `<div class="language-id">${options.langId}</div>`;
-	}
-	html += "<code>";
-
-	lines.forEach((l: IThemedToken[]) => {
-		// eslint-disable-next-line quotes
-		html += '<span class="line">';
-
-		l.forEach((token) => {
-			const cssDeclarations = [`color: ${token.color || options.fg}`];
-
-			if (token.fontStyle ?? 0 & FontStyle.Italic) {
-				cssDeclarations.push("font-style: italic");
-			}
-			if (token.fontStyle ?? 0 & FontStyle.Bold) {
-				cssDeclarations.push("font-weight: bold");
-			}
-			if (token.fontStyle ?? 0 & FontStyle.Underline) {
-				cssDeclarations.push("text-decoration: underline");
-			}
-			html += `<span style="${cssDeclarations.join("; ")}">${escapeHtml(token.content)}</span>`;
-		});
-		html += "</span>\n";
-	});
-	html = html.replace(/\n*$/, ""); // Get rid of final new lines
-	html += "</code></pre>";
-
-	return html;
+function getTokenStyles(token: IThemedToken, options?: HtmlRendererOptions): CSSProperties {
+	return {
+		color: token.color || options?.fg,
+		fontStyle: token.fontStyle === FontStyle.Italic ? "italic" : undefined,
+		fontWeight: token.fontStyle === FontStyle.Bold ? "bold" : undefined,
+		textDecoration: token.fontStyle === FontStyle.Underline ? "underline" : undefined,
+	};
 }
 
-const htmlEscapes = {
-	"&": "&amp;",
-	"<": "&lt;",
-	">": "&gt;",
-	// eslint-disable-next-line quotes
-	'"': "&quot;",
-	"'": "&#39;",
-} as const;
+function renderTokens(lines: IThemedToken[][], options?: HtmlRendererOptions) {
+	const bgColor = options?.bg ?? "#0a0e14";
 
-function escapeHtml(html: string) {
-	return html.replace(/[&<>"']/g, (chr) => htmlEscapes[chr as keyof typeof htmlEscapes]);
+	return (
+		<CodePreBlockWithHighlight className="shiki" style={{ backgroundColor: bgColor }}>
+			{lines.map((line) => (
+				<div className="line" key={line.join("")}>
+					{line.map((token) => (
+						<span key={token.content} style={{ ...getTokenStyles(token, options) }}>
+							{token.content}
+						</span>
+					))}
+				</div>
+			))}
+		</CodePreBlockWithHighlight>
+	);
 }
 
 type TShikiProps = {
 	tokens: IThemedToken[][];
 	asString: string;
 };
-const ShikiExample = ({ tokens, asString }: TShikiProps) => {
-	useEffect(() => {
-		// eslint-disable-next-line no-console
-		console.log({ tokens, asString });
-	}, [asString, tokens]);
-
+const ShikiExample = ({ tokens }: TShikiProps) => {
 	return (
 		<div>
 			Shiki example
-			<div dangerouslySetInnerHTML={{ __html: renderToHtml(tokens) }} />
+			{renderTokens(tokens)}
 		</div>
 	);
 };
@@ -120,20 +95,12 @@ const ShikiExample = ({ tokens, asString }: TShikiProps) => {
 export default ShikiExample;
 
 export async function getStaticProps() {
-	// const themePath = require.resolve("@/@sreetamdas/karma/themes/Karma-color-theme.json");
 	const theme = await loadTheme("../@sreetamdas/karma/themes/Karma-color-theme.json");
 	const highlighter = await getHighlighter({ theme });
 	const tokens = highlighter.codeToThemedTokens(CODE_SNIPPET, "js");
-	// return generateHTMLFromTokens(tokens);
-
-	const asString = (
-		await getHighlighter({
-			theme: "dracula",
-		})
-	).codeToHtml("console.log('shiki');", "ts");
 
 	return {
-		props: { tokens, asString },
+		props: { tokens },
 	};
 }
 
