@@ -46,7 +46,7 @@ Here's a rough list of what we need to implement:
 
 Let's start by putting together a simple Next.js page with a pretty basic dark mode toggle:
 
-```jsx {5}
+```jsx highlight="5"
 // pages/index.js
 import { useState } from "react";
 
@@ -110,7 +110,7 @@ with the output (when the user _has_ set a preference for dark mode):
 
 Let's add these to our app
 
-```jsx filename=pages/index.js {16,29,44}
+```jsx filename="pages/index.js" highlight="16,29,44"
 import { useState } from "react";
 
 const IndexPage = () => {
@@ -190,7 +190,7 @@ Unless...there <Highlight>was</Highlight> a way run some code before all of our 
 
 Take a look at the code below:
 
-```html {2-4}
+```html highlight="2-4"
 <body>
   <script>
     alert("No UI for you!");
@@ -304,7 +304,7 @@ console.log(name);
 
 Let's add this to our `_document.js`
 
-```jsx {34}
+```jsx highlight="34"
 import Document, {
   Html,
   Head,
@@ -481,7 +481,7 @@ Before we put together everything we have so far, let's recap:
 
 Here's what the final result looks like:
 
-```jsx {36,40} filename=pages/_document.js
+```jsx highlight="36,40" filename="pages/_document.js"
 import Document, {
   Html,
   Head,
@@ -555,7 +555,7 @@ Note how we use `style.setProperty()` as well as `documentElement.setAttribute()
 
 Let's add our CSS, adding separate values for our CSS variables when dark mode is applied
 
-```css filename=styles.css
+```css filename="styles.css"
 :root {
   --color-primary-accent: #5b34da;
   --color-primary: #000;
@@ -580,7 +580,7 @@ Since we want these styles to be available throughout our website, we'll need to
 
 This makes it the correct place for adding our global CSS as well!
 
-```jsx filename=pages/_app.js
+```jsx filename="pages/_app.js"
 import "../styles.css";
 
 export default function MyApp({ Component, pageProps }) {
@@ -590,7 +590,7 @@ export default function MyApp({ Component, pageProps }) {
 
 and finally, our React component page:
 
-```jsx filename=pages/index.js {4,37}
+```jsx filename="pages/index.js" highlight="4,37"
 import { useEffect, useState } from "react";
 
 const IndexPage = () => {

@@ -73,7 +73,7 @@ const Wave = styled.span`
 
 And now we change the color once the component has mounted:
 
-```jsx {3-11,14-19,21-23}
+```jsx highlight="3-11,14-19,21-23"
 <Highlight>Hello there!</Highlight>;
 
 let root: HTMLElement;
@@ -144,7 +144,7 @@ const useInterval = (callback, delay) => {
 
 Let's now use this hook to change the color of our text just as it completes its transition.
 
-```jsx {1,15-17}
+```jsx highlight="1,15-17"
 import { useInterval } from "utils/hooks";
 
 const Highlight = ({ children }) => {
