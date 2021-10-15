@@ -13,8 +13,6 @@ import { GlobalStyles } from "styles";
 import { Layout } from "styles/layouts";
 import { TGlobalThemeObject } from "typings/styled";
 
-import "assets/fonts/iosevka/iosevka.css";
-
 if (process.env.NEXT_PUBLIC_API_MOCKING_ENABLED === "true") {
 	require("mocks");
 }
