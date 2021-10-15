@@ -14,3 +14,21 @@ This is a [link](https://www.google.com):
 <MDXTitle color="yellow">Colors!</MDXTitle>
 
 <MDXLink href="/">This is a link!</MDXLink>
+
+```ts highlight="1,3-4"
+const htmlEscapes = {
+  "&": "&amp;",
+  "<": "&lt;",
+  ">": "&gt;",
+  // eslint-disable-next-line quotes
+  '"': "&quot;",
+  "'": "&#39;",
+} as const;
+
+function escapeHtml(html: string) {
+  return html.replace(
+    /[&<>"']/g,
+    (chr) => htmlEscapes[chr as keyof typeof htmlEscapes]
+  );
+}
+```
