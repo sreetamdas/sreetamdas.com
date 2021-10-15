@@ -8,6 +8,7 @@ import { breakpoint } from "utils/style";
 export { MDXCodeBlock };
 
 type TMDXProviderCodeblockPassedProps = {
+	highlight?: string;
 	children: {
 		props: {
 			children: string;
@@ -24,13 +25,14 @@ type TMDXProviderCodeblockPassedProps = {
 
 const MDXCodeBlock = (props: TMDXProviderCodeblockPassedProps) => {
 	const {
+		highlight,
 		children: {
-			props: { children, className, metastring },
+			props: { children, className },
 		},
 	} = props;
 
 	const language = className.replace(/language-/, "");
-	const shouldHighlightLine = calculateLinesToHighlight(metastring);
+	const shouldHighlightLine = calculateLinesToHighlight(highlight);
 
 	return (
 		<Highlight
@@ -113,7 +115,7 @@ const CodeblockLineWrapper = styled.div`
  * pattern for highlighting lines in code blocks for future reference:
  * ```lang {2, 4-5}
  */
-const RE_LINE_HIGHLIGHT = /{([\d,-]+)}/;
+const RE_LINE_HIGHLIGHT = /([\d,-]+)/;
 const calculateLinesToHighlight = (meta = "") => {
 	const regExpExecArray = RE_LINE_HIGHLIGHT.exec(meta);
 	if (!RE_LINE_HIGHLIGHT.test(meta) || regExpExecArray === null) {

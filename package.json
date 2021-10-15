@@ -34,6 +34,7 @@
 		"react-is": "^17.0.2",
 		"react-live": "^2.3.0",
 		"react-query": "^3.24.4",
+		"remark-mdx-code-meta": "^1.0.0",
 		"remark-slug": "^7.0.0",
 		"shiki": "^0.9.11",
 		"styled-components": "^5.3.1"

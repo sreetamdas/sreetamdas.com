@@ -2,6 +2,7 @@ import { promises as fs } from "fs";
 import path from "path";
 
 import { bundleMDX } from "mdx-bundler";
+import { remarkMdxCodeMeta } from "remark-mdx-code-meta";
 import remarkSlug from "remark-slug";
 
 import { TBlogPostPageProps } from "typings/blog";
@@ -22,7 +23,7 @@ export async function bundleMDXWithOptions(filename: string) {
 	const result = await bundleMDX(mdxSource, {
 		cwd: path.dirname(filename),
 		xdmOptions(options) {
-			options.remarkPlugins = [...(options.remarkPlugins ?? []), remarkSlug];
+			options.remarkPlugins = [...(options.remarkPlugins ?? []), remarkMdxCodeMeta, remarkSlug];
 			options.rehypePlugins = [...(options.rehypePlugins ?? [])];
 
 			return options;
