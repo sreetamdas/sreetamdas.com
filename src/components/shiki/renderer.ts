@@ -57,11 +57,9 @@ export function renderToHTML(
 
 	let html = "";
 
-	html += `<pre class="shiki" style="background-color: ${bg}" ${metaProps ? metaProps : ""}>`;
-	if (options.langId) {
-		html += `<div class="language-id">${options.langId}</div>`;
-	}
-	html += "<code>";
+	html += `<pre class="shiki" style="background-color: ${bg}" ${metaProps ? metaProps : ""} ${
+		options.langId ? `language="${options.langId}"` : ""
+	}>`;
 
 	lines.forEach((l: IThemedToken[]) => {
 		// eslint-disable-next-line quotes
@@ -77,7 +75,7 @@ export function renderToHTML(
 		html += "</span>\n";
 	});
 	html = html.replace(/\n*$/, ""); // Get rid of final new lines
-	html += "</code></pre>";
+	html += "</pre>";
 
 	return html;
 }

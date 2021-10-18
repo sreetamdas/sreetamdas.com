@@ -1,7 +1,6 @@
 import Highlight, { defaultProps, Language } from "prism-react-renderer";
-import React, { CSSProperties } from "react";
+import React from "react";
 import styled, { css } from "styled-components";
-import { IRawThemeSetting } from "vscode-textmate";
 
 import { KARMA_PRISM_THEME } from "pages/karma";
 import { breakpoint } from "utils/style";
