@@ -1,13 +1,13 @@
 import { promises as fs } from "fs";
 import path from "path";
 
-import remarkShiki from "@stefanprobst/remark-shiki";
 import { bundleMDX } from "mdx-bundler";
 import rehypeRaw from "rehype-raw";
-import { remarkMdxCodeMeta } from "remark-mdx-code-meta";
 import remarkSlug from "remark-slug";
 import { loadTheme, getHighlighter } from "shiki";
 
+import { remarkShiki } from "components/shiki";
+import { renderToHTML } from "components/shiki/renderer";
 import { TBlogPostPageProps } from "typings/blog";
 
 const PATH = path.resolve(process.cwd(), "src");
@@ -30,8 +30,7 @@ export async function bundleMDXWithOptions(filename: string) {
 		xdmOptions(options) {
 			options.remarkPlugins = [
 				...(options.remarkPlugins ?? []),
-				[remarkShiki, { highlighter }],
-				remarkMdxCodeMeta,
+				[remarkShiki, { highlighter, renderToHTML }],
 				remarkSlug,
 			];
 			options.rehypePlugins = [
