@@ -89,16 +89,23 @@ export const CodeBlock = (
 	return (
 		<CodePreBlockWithHighlight {...{ style }}>
 			<CodeBlockLanguageWrapper>{language.toLocaleUpperCase()}</CodeBlockLanguageWrapper>
-			{(children as ReactNodeArray)
-				.filter((line) => line !== "\n")
-				.map((line, i) => {
-					return (
-						<CodeblockLineWrapper key={i} $highlight={shouldHighlightLine(i)}>
-							<CodeblockLineNumber>{i + 1}</CodeblockLineNumber>
-							{line}
-						</CodeblockLineWrapper>
-					);
-				})}
+			{Array.isArray(children) ? (
+				(children as ReactNodeArray)
+					?.filter((line) => line !== "\n")
+					.map((line, i) => {
+						return (
+							<CodeblockLineWrapper key={i} $highlight={shouldHighlightLine(i)}>
+								<CodeblockLineNumber>{i + 1}</CodeblockLineNumber>
+								{line}
+							</CodeblockLineWrapper>
+						);
+					})
+			) : (
+				<CodeblockLineWrapper>
+					<CodeblockLineNumber>1</CodeblockLineNumber>
+					{children}
+				</CodeblockLineWrapper>
+			)}
 		</CodePreBlockWithHighlight>
 	);
 };
