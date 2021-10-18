@@ -3,7 +3,6 @@ import React, { createElement, CSSProperties, PropsWithChildren, ReactHTML } fro
 import { FiLink } from "react-icons/fi";
 import styled from "styled-components";
 
-import { CodeBlock } from "components/mdx/code";
 import { LinkedHeaderIconWrapper } from "styles/blog";
 import { Paragraph } from "styles/typography";
 import { useHover } from "utils/hooks";
@@ -99,7 +98,7 @@ export const MDXComponents = {
 	h1: MDXHeadingWrapper.h1,
 	h2: MDXHeadingWrapper.h2,
 	h3: MDXHeadingWrapper.h3,
-	pre: CodeBlock,
+	// pre: CodeBlock,
 	img: ImageWrapper,
 	a: MDXLinkWrapper,
 };
