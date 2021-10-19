@@ -41,12 +41,14 @@ const CodeblockLineNumber = styled.span`
 `;
 
 const CodeblockLineWrapper = styled.div<{ $highlight?: boolean }>`
+	height: calc(0.85rem * 1.5);
+
 	${({ $highlight }) =>
 		$highlight &&
 		css`
 			background-color: rgb(255, 255, 255, 0.07);
 			display: block;
-			margin-right: -1em;
+			margin-right: -1.3em;
 			margin-left: -1.3em;
 			padding-right: 1em;
 			padding-left: 1em;
