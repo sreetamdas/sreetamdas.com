@@ -16,7 +16,7 @@ Here's how we can add a RSS feed to a Next.js site:
 
 As I'll mention later, these above steps are what I used for my particular so your blog might require a slightly implementation, though the overall process remains the same!
 
-### Install packages
+## Install packages
 
 ```shell
 yarn add feed
@@ -25,7 +25,7 @@ yarn add feed
 npm i feed
 ```
 
-### Get posts' data
+## Get posts' data
 
 This step will vary depending on how/where you're storing your content — you may be using MDX like I am, or a CMS like [Sanity](https://www.sanity.io).
 
@@ -64,7 +64,7 @@ export const getBlogPostsData = async () => {
 
 Again, you will need to modify this particular method as per your own preference, so please keep that in mind!
 
-### Create an RSS feed
+## Create an RSS feed
 
 Thanks to the `Feed` package, this part is greatly simplified; you can check out the [docs](https://github.com/jpmonette/feed#example), and here's what your function to create your RSS feed will look like:
 
@@ -174,7 +174,7 @@ const generateRssFeed = async () => {
 };
 ```
 
-### Run our function inside `getStaticProps`
+## Run our function inside `getStaticProps`
 
 Sweet! now that we have everything ready, we just need to make sure that our function is run at build time — so you can call it in the `getStaticProps` function of one of your pages, like `index.jsx`:
 
@@ -188,4 +188,4 @@ export const getStaticProps = async (_context) => {
 };
 ```
 
-and that's it! whenever our site is built and deployed, our RSS feed will be created and updated as well. You can check out the result live [here](https://sreetamdas.com/rss/feed.xml)!
+and that's it! whenever our site is built and deployed, our RSS feed will be created and updated as well. You can check out [the result live](https://sreetamdas.com/rss/feed.xml)!
