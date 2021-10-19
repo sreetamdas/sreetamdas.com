@@ -2,9 +2,12 @@ import { promises as fs } from "fs";
 import path from "path";
 
 import { bundleMDX } from "mdx-bundler";
-import { remarkMdxCodeMeta } from "remark-mdx-code-meta";
+import rehypeRaw from "rehype-raw";
 import remarkSlug from "remark-slug";
+import { loadTheme, getHighlighter } from "shiki";
 
+import { remarkShiki } from "components/shiki";
+import { renderToHTML } from "components/shiki/renderer";
 import { TBlogPostPageProps } from "typings/blog";
 
 const PATH = path.resolve(process.cwd(), "src");
@@ -19,12 +22,32 @@ export async function getBlogPostsSlugs() {
 
 export async function bundleMDXWithOptions(filename: string) {
 	const mdxSource = await fs.readFile(filename, "utf8");
+	const theme = await loadTheme("../@sreetamdas/karma/themes/Karma-color-theme.json");
+	const highlighter = await getHighlighter({ theme });
 
 	const result = await bundleMDX(mdxSource, {
 		cwd: path.dirname(filename),
 		xdmOptions(options) {
-			options.remarkPlugins = [...(options.remarkPlugins ?? []), remarkMdxCodeMeta, remarkSlug];
-			options.rehypePlugins = [...(options.rehypePlugins ?? [])];
+			options.remarkPlugins = [
+				...(options.remarkPlugins ?? []),
+				[remarkShiki, { highlighter, renderToHTML }],
+				remarkSlug,
+			];
+			options.rehypePlugins = [
+				...(options.rehypePlugins ?? []),
+				[
+					rehypeRaw,
+					{
+						passThrough: [
+							"mdxFlowExpression",
+							"mdxJsxFlowElement",
+							"mdxJsxTextElement",
+							"mdxTextExpression",
+							"mdxjsEsm",
+						],
+					},
+				],
+			];
 
 			return options;
 		},
