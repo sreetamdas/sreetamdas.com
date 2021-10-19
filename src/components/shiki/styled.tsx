@@ -11,6 +11,10 @@ const CodePreBlockWithHighlight = styled.pre`
 	overflow-x: scroll;
 	white-space: pre-wrap;
 	word-wrap: break-word;
+
+	${breakpoint.until.md(css`
+		margin-left: -20px;
+	`)}
 `;
 
 const CodeBlockLanguageWrapper = styled.span`
