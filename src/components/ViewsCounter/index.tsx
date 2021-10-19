@@ -107,11 +107,11 @@ export const ViewsCounter = ({
 	const { asPath: path } = useRouter();
 
 	const { data } = useQuery<Pick<PostDetails, "view_count">>(
-		["page-details", "view", path],
+		["page-details", "view", path.split(/[?#]/)[0]],
 		async () =>
 			await (disabled
-				? getViewCount(window.location.pathname)
-				: updateAndGetViewCount(window.location.pathname)),
+				? getViewCount(path.split(/[?#]/)[0])
+				: updateAndGetViewCount(path.split(/[?#]/)[0])),
 		{
 			staleTime: Infinity,
 		}
