@@ -343,8 +343,8 @@ function setInitialColorMode() {
 
 // our function needs to be a string
 const blockingSetInitialColorMode = `(function() {
-		${setInitialColorMode.toString()}
-		setInitialColorMode();
+    ${setInitialColorMode.toString()}
+    setInitialColorMode();
 })()
 `;
 
@@ -659,7 +659,7 @@ imported in `App` is correctly collected and added to the `Document` itself,
 thus preventing the flicker during development as well.
 
 You can [refer to the official docs](https://styled-components.com/docs/advanced#nextjs) or
-check out [my implementation]("https://github.com/sreetamdas/sreetamdas.com/blob/master/pages/_document.tsx#L10)
+check out [my implementation](https://github.com/sreetamdas/sreetamdas.com/blob/master/pages/_document.tsx#L10)
 
 </CustomBlockquote>
 
