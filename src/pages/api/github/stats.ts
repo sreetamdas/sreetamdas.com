@@ -10,7 +10,9 @@ export default async (
 ) => {
 	const { owner, repo } = req.body;
 	const { stargazers_count: stars = 0, forks = 0 } = (
-		await axios.get(`https://api.github.com/repos/${owner}/${repo}`)
+		await axios.get<{ stargazers_count: number; forks: number }>(
+			`https://api.github.com/repos/${owner}/${repo}`
+		)
 	).data;
 
 	res.status(200).send({ stars, forks });
