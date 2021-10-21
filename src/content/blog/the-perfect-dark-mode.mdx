@@ -204,10 +204,7 @@ Here's what it looks like:
 ![Blocking nature of `<script>` tags in HTML](/blog/the-perfect-dark-mode/perfect-dark-mode-blocking-script.mp4)
 
 <CustomBlockquote>
-  If you'd like to try it out for yourself, check out this{" "}
-  <a href="https://codesandbox.io/s/sleepy-cartwright-ufhxs?file=/index.html">
-    sandbox
-  </a>
+If you'd like to try it out for yourself, [check out this sandbox](https://codesandbox.io/s/sleepy-cartwright-ufhxs?file=/index.html).
 </CustomBlockquote>
 
 When we add a `<script>` in our body before our `<h1>` content, the rendering of the actual content is _blocked_ by the script. This means that we can run code that will be guaranteed to run before any content is shown to the user, which is exactly what we wanna do!
@@ -397,15 +394,7 @@ _While all of the options seem like possible solutions, they each require a lot 
 ```
 
 <CustomBlockquote>
-  A common best practice is to define custom properties on the{" "}
-  <StyledAccentTextLink
-    href="https://developer.mozilla.org/en-US/docs/Web/CSS/:root"
-    target="_blank"
-    rel="noopener noreferrer"
-  >
-    <code>:root</code> pseudo-class
-  </StyledAccentTextLink>
-  , so that it can be applied globally across your HTML document
+A common best practice is to define custom properties on the [`:root` pseudo-class](https://developer.mozilla.org/en-US/docs/Web/CSS/:root), so that it can be applied globally across your HTML document
 </CustomBlockquote>
 
 The best part about CSS variables is that they are <Highlight>reactive</Highlight>, they remain live throughout the lifetime of the page, and updating them updates the HTML that references them _instantly_. _And_ they can be updated using JavaScript!
