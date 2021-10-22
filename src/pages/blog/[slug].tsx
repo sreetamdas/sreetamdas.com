@@ -41,7 +41,7 @@ const Post = ({ code, frontmatter, slug, subscriberCount }: TProps) => {
 	return (
 		<Fragment>
 			<DocumentHead
-				title={frontmatter.title}
+				title={frontmatter.seoTitle ?? frontmatter.title}
 				imageURL={frontmatter?.image}
 				description={frontmatter.summary}
 			/>
