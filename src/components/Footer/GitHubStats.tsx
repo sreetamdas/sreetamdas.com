@@ -88,13 +88,13 @@ export const GitHubStats = () => {
 		<Stats>
 			<Stat href="https://github.com/sreetamdas/sreetamdas.com/stargazers">
 				<StatIcon>
-					<FaRegStar />
+					<FaRegStar title="star" aria-label="star"/>
 				</StatIcon>
 				<StatValue>{data?.stars ?? "—"}</StatValue>
 			</Stat>
 			<Stat href="https://github.com/sreetamdas/sreetamdas.com/network/members">
 				<StatIcon>
-					<VscRepoForked />
+					<VscRepoForked title="fork" aria-label="fork"/>
 				</StatIcon>
 				<StatValue>{data?.forks ?? "—"}</StatValue>
 			</Stat>
