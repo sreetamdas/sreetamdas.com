@@ -107,6 +107,7 @@ export const BlogPostTitle = styled.h1`
 export const BlogPostPreviewTitle = styled.h2<{ isHovered: boolean }>`
 	margin: 0;
 	font-size: 2rem;
+	color: var(--color-primary-accent);
 	${({ isHovered }) => isHovered && TextGradientCSS}
 `;
 
