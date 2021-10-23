@@ -37,22 +37,6 @@ export const Monospace = styled.span`
 		Lucida FoobarWrapper, monospace;
 `;
 
-export const RemoveBulletsFromList = styled.div`
-	& ul {
-		list-style: none;
-		padding-left: 30px;
-	}
-	& ul li {
-		padding: 5px;
-	}
-`;
-
-export const PaddingListItems = styled.div`
-	& ul li {
-		padding: 5px;
-	}
-`;
-
 export const MDXText = styled.div`
 	margin: 0; /* thanks @mxstbr! */
 	padding: 15px 0;

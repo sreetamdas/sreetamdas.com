@@ -2,7 +2,7 @@ import { PropsWithChildren, ReactNode } from "react";
 import styled, { css } from "styled-components";
 
 import { sharedTransition } from "styles/components";
-import { Datestamp, PaddingListItems } from "styles/typography";
+import { Datestamp } from "styles/typography";
 import { breakpoint } from "utils/style";
 
 export const removeListStyleMixin = css`
@@ -12,7 +12,7 @@ export const removeListStyleMixin = css`
 	}
 `;
 
-export const BlogPostMDXContent = styled(PaddingListItems)`
+export const BlogPostMDXContent = styled.div`
 	padding: 30px 0;
 `;
 
