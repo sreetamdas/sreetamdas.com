@@ -6,7 +6,7 @@ export const ListItem = ({ children, ...props }: PropsWithChildren<Record<string
 	return (
 		<li {...props}>
 			<UnorderedListBullet />
-			{children}
+			<span>{children}</span>
 		</li>
 	);
 };
