@@ -5,14 +5,7 @@ import { sharedTransition } from "styles/components";
 import { Datestamp } from "styles/typography";
 import { breakpoint } from "utils/style";
 
-export const removeListStyleMixin = css`
-	& ul {
-		list-style: none;
-		padding-left: 30px;
-	}
-`;
-
-export const BlogPostMDXContent = styled.div`
+export const BlogPostContentWrapper = styled.div`
 	padding: 30px 0;
 `;
 

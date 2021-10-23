@@ -11,7 +11,7 @@ import { HighlightWithUseEffect, HighlightWithUseInterval } from "components/blo
 import { MDXComponents } from "components/mdx";
 import { DocumentHead } from "components/shared/seo";
 import {
-	BlogPostMDXContent,
+	BlogPostContentWrapper,
 	PostNotPublishedWarning,
 	PostMetaDataGrid,
 	EndLinks,
@@ -50,7 +50,7 @@ const Post = ({ code, frontmatter, slug, subscriberCount }: TProps) => {
 			<BlogPostTitle>
 				<TextGradient>{frontmatter.title}</TextGradient>
 			</BlogPostTitle>
-			<BlogPostMDXContent>
+			<BlogPostContentWrapper>
 				<Component
 					// @ts-expect-error ugh, MDX
 					components={{
@@ -68,7 +68,7 @@ const Post = ({ code, frontmatter, slug, subscriberCount }: TProps) => {
 						...MDXComponents,
 					}}
 				/>
-			</BlogPostMDXContent>
+			</BlogPostContentWrapper>
 			<EndLinks>
 				<ShareLinks title={frontmatter.title} slug={slug} />
 				<ScrollToTop topRef={topRef} />
