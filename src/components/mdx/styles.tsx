@@ -1,7 +1,9 @@
 import { FaLongArrowAltRight } from "react-icons/fa";
 import styled from "styled-components";
 
-export const UnorderedListBullet = styled(FaLongArrowAltRight)`
+export const UnorderedListBullet = styled(FaLongArrowAltRight).attrs({
+	"aria-label": "marker",
+})`
 	color: var(--color-primary-accent);
 	margin-right: 10px;
 `;
