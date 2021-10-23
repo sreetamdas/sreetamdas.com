@@ -9,7 +9,7 @@ import { FoobarContext } from "components/foobar";
 import { MDXComponents } from "components/mdx";
 import { DocumentHead } from "components/shared/seo";
 import { Center } from "styles/layouts";
-import { Title, LinkTo, RemoveBulletsFromList } from "styles/typography";
+import { Title, LinkTo } from "styles/typography";
 import { TBlogPostPageProps } from "typings/blog";
 import { getMDXFileData } from "utils/blog";
 import { getButtondownSubscriberCount } from "utils/misc";
@@ -33,15 +33,13 @@ const About = ({ code, frontmatter: _, subscriberCount }: TProps) => {
 				<Title size={5}>/about</Title>
 			</Center>
 
-			<RemoveBulletsFromList>
-				<Component
-					// @ts-expect-error MDX
-					components={{
-						ExternalLinksOverlay,
-						...MDXComponents,
-					}}
-				/>
-			</RemoveBulletsFromList>
+			<Component
+				// @ts-expect-error MDX
+				components={{
+					ExternalLinksOverlay,
+					...MDXComponents,
+				}}
+			/>
 
 			<ViewsCounter />
 

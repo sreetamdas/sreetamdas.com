@@ -58,6 +58,7 @@ export const GlobalStyles = createGlobalStyle`
 		background-color: var(--color-background);
 		margin: 0;
 		line-height: 1.5;
+		scroll-padding-top: calc(40px + 2rem);
 	}
 
 	*, *:before, *:after {

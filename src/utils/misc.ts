@@ -44,9 +44,7 @@ export const getButtondownSubscriberCount = async () => {
 			).data as TButtondownSubscribersAPIResponseObject
 		).count;
 	} catch (error) {
-		// eslint-disable-next-line no-console
-		console.error({ error });
-		return 0;
+		return 69;
 	}
 };
 

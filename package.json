@@ -35,6 +35,7 @@
 		"react-query": "^3.27.0",
 		"rehype-raw": "^6.1.0",
 		"remark-slug": "^7.0.0",
+		"remark-toc": "^8.0.0",
 		"shiki": "^0.9.12",
 		"styled-components": "^5.3.3",
 		"unist-util-visit": "^4.1.0"

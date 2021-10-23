@@ -2,6 +2,7 @@ import { bundleMDX } from "mdx-bundler";
 
 export type TBlogPostFrontmatter = {
 	title: string;
+	seoTitle?: string;
 	subtitle?: string;
 	summary: string;
 	image?: string;

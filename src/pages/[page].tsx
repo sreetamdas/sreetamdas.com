@@ -15,15 +15,7 @@ import { Highlight, CustomBlockquote } from "styles/blog";
 import { MDXLink } from "styles/components";
 import { Center } from "styles/layouts";
 import { Sparkles } from "styles/special";
-import {
-	Title,
-	PaddingListItems,
-	RemoveBulletsFromList,
-	Heavy,
-	MDXTitle,
-	StyledAccentTextLink,
-	TextGradient,
-} from "styles/typography";
+import { Title, Heavy, MDXTitle, StyledAccentTextLink, TextGradient } from "styles/typography";
 import { TBlogPostPageProps } from "typings/blog";
 import { getMDXFileData, getRootPagesSlugs } from "utils/blog";
 import { getButtondownSubscriberCount } from "utils/misc";
@@ -45,32 +37,29 @@ const Page = ({ code, frontmatter, subscriberCount }: TProps) => {
 			<Center>
 				<Title size={5}>/{frontmatter.title.toLowerCase()}</Title>
 			</Center>
-			<PaddingListItems>
-				<RemoveBulletsFromList>
-					<Component
-						// @ts-expect-error ugh, MDX
-						components={{
-							MDXLink,
-							MDXTitle,
-							Sparkles,
-							ChromaHighlight,
-							HighlightWithUseEffect,
-							HighlightWithUseInterval,
-							Highlight,
-							CustomBlockquote,
-							TextGradient,
-							Heavy,
-							StyledAccentTextLink,
+			<Component
+				// @ts-expect-error ugh, MDX
+				components={{
+					MDXLink,
+					MDXTitle,
+					Sparkles,
+					ChromaHighlight,
+					HighlightWithUseEffect,
+					HighlightWithUseInterval,
+					Highlight,
+					CustomBlockquote,
+					TextGradient,
+					Heavy,
+					StyledAccentTextLink,
 
-							BsTerminalFill,
-							FaFont,
-							FaPodcast,
-							SiOculus,
-							...MDXComponents,
-						}}
-					/>
-				</RemoveBulletsFromList>
-			</PaddingListItems>
+					BsTerminalFill,
+					FaFont,
+					FaPodcast,
+					SiOculus,
+					...MDXComponents,
+				}}
+			/>
+
 			<ViewsCounter />
 			<Newsletter {...{ subscriberCount }} />
 		</Fragment>

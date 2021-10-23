@@ -3,6 +3,7 @@ import React, { createElement, CSSProperties, PropsWithChildren, ReactHTML } fro
 import { FiLink } from "react-icons/fi";
 import styled from "styled-components";
 
+import { OrderedList, UnorderedList } from "components/mdx/lists";
 import { CodeBlock } from "components/shiki/styled";
 import { LinkedHeaderIconWrapper } from "styles/blog";
 import { Paragraph } from "styles/typography";
@@ -42,7 +43,7 @@ export const ImageWrapper = ({ alt, src }: { alt: string; src: string }) => {
 	);
 };
 
-export const MDXLinkStyled = styled.span`
+export const MDXLinkStyledWrapper = styled.span`
 	& a {
 		color: var(--color-primary-accent);
 
@@ -55,15 +56,18 @@ export const MDXLinkStyled = styled.span`
 
 const MDXLinkWrapper = (props: PropsWithChildren<{ href: string }>) => {
 	return (
-		<MDXLinkStyled>
-			{props.href[0] === "/" ? (
-				<Link {...props} />
-			) : (
-				<a {...props} target="_blank" rel="noopener noreferrer">
-					{props.children}
-				</a>
-			)}
-		</MDXLinkStyled>
+		<MDXLinkStyledWrapper>
+			{
+				// link to internal page or skip link
+				"/#".includes(props.href[0]) ? (
+					<Link {...props} />
+				) : (
+					<a {...props} target="_blank" rel="noopener noreferrer">
+						{props.children}
+					</a>
+				)
+			}
+		</MDXLinkStyledWrapper>
 	);
 };
 
@@ -102,4 +106,6 @@ export const MDXComponents = {
 	pre: CodeBlock,
 	img: ImageWrapper,
 	a: MDXLinkWrapper,
+	ul: UnorderedList,
+	ol: OrderedList,
 };

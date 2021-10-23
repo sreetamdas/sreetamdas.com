@@ -4,6 +4,7 @@ import path from "path";
 import { bundleMDX } from "mdx-bundler";
 import rehypeRaw from "rehype-raw";
 import remarkSlug from "remark-slug";
+import remarkToc from "remark-toc";
 import { loadTheme, getHighlighter } from "shiki";
 
 import { remarkShiki } from "components/shiki";
@@ -32,6 +33,7 @@ export async function bundleMDXWithOptions(filename: string) {
 				...(options.remarkPlugins ?? []),
 				[remarkShiki, { highlighter, renderToHTML }],
 				remarkSlug,
+				[remarkToc, { tight: true }],
 			];
 			options.rehypePlugins = [
 				...(options.rehypePlugins ?? []),
