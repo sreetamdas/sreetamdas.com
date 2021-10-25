@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import React, { createElement, CSSProperties, PropsWithChildren, ReactHTML } from "react";
 import { FiLink } from "react-icons/fi";
@@ -9,7 +10,17 @@ import { LinkedHeaderIconWrapper } from "styles/blog";
 import { Paragraph } from "styles/typography";
 import { useHover } from "utils/hooks";
 
-export const ImageWrapper = ({ alt, src }: { alt: string; src: string }) => {
+export const ImageWrapper = ({
+	alt,
+	src,
+	height,
+	width,
+}: {
+	alt: string;
+	src: string;
+	height: string;
+	width: string;
+}) => {
 	const type = src.slice(-3);
 
 	if (type === "mp4") {
@@ -30,17 +41,7 @@ export const ImageWrapper = ({ alt, src }: { alt: string; src: string }) => {
 			</video>
 		);
 	}
-	return (
-		<img
-			{...{ alt, src }}
-			loading="lazy"
-			style={{
-				maxWidth: "var(--max-width)",
-				width: "100%",
-				borderRadius: "var(--border-radius)",
-			}}
-		/>
-	);
+	return <Image {...{ alt, src, height, width }} loading="lazy" />;
 };
 
 export const MDXLinkStyledWrapper = styled.span`
