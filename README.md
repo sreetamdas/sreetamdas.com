@@ -1,4 +1,4 @@
-![Sreetam Das, Frontend Engineer @ Remote](/public/og-clean-image.png)
+![Sreetam Das, Front-end Engineer @ Remote](/public/og-clean-image.png)
 
 # [sreetamdas.com](https://sreetamdas.com)
 

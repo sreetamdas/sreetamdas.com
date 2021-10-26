@@ -34,7 +34,7 @@ const Index = ({ code, subscriberCount }: InferGetStaticPropsType<typeof getStat
 				Django and Redux.
 			</Paragraph>
 			<Paragraph>
-				I&apos;m currently a Frontend Engineer at{" "}
+				I&apos;m currently a front-end Engineer at{" "}
 				<StyledLink href="https://remote.com">Remote</StyledLink> who loves working with{" "}
 				<TextGradient>
 					<Heavy>React + TypeScript</Heavy>

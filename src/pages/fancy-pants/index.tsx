@@ -18,7 +18,7 @@ const FancyPants = () => {
 						<Space />
 						<ChromaHighlight>Sreetam Das</ChromaHighlight>
 						<br />
-						is a <ChromaHighlight>Frontend Engineer</ChromaHighlight>
+						is a <ChromaHighlight>Front-end Engineer</ChromaHighlight>
 						<br />
 						working{" "}
 						<ChromaHighlight link>
