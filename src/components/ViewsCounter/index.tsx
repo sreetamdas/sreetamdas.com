@@ -102,7 +102,7 @@ export const ViewsCounter = ({
 	// Keep track of page views, but we don't display it
 	hidden = false,
 	// Essentially unmount the component, e.g. during development
-	disabled = false,
+	disabled = process.env.NODE_ENV === "development",
 }: TViewsCounterProps) => {
 	const { asPath: path } = useRouter();
 
