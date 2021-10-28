@@ -227,7 +227,7 @@ const NavbarMenu = () => {
 			<FullScreenWrapper
 				key="mobile-navigation"
 				aria-label="mobile-navigation"
-				visible={showDrawer}
+				$visible={showDrawer}
 				variants={variants}
 				initial="closed"
 				animate={showDrawer ? "open" : "closed"}
@@ -299,6 +299,7 @@ const Header = styled.header`
 	width: 100%;
 	height: calc(40px + 2rem);
 	padding: 0 1rem;
+	z-index: 2;
 
 	background-color: var(--color-background);
 
@@ -363,7 +364,7 @@ const NavLinksDesktop = styled.div`
 	`)}
 `;
 
-const FullScreenWrapper = styled(motion.div)<{ visible: boolean }>`
+const FullScreenWrapper = styled(motion.div)<{ $visible: boolean }>`
 	height: 100vh;
 	width: 100vw;
 	background-color: var(--color-bg-blurred);
@@ -375,8 +376,8 @@ const FullScreenWrapper = styled(motion.div)<{ visible: boolean }>`
 	display: grid;
 	align-content: center;
 
-	${({ visible }) =>
-		visible
+	${({ $visible }) =>
+		$visible
 			? css`
 					pointer-events: auto;
 			  `
