@@ -242,17 +242,25 @@ const NavbarMenu = () => {
 const Container = styled.div`
 	display: grid;
 	grid-auto-flow: column;
-	gap: 1rem;
+	column-gap: 1rem;
 	justify-self: end;
 	place-items: center;
 	justify-content: center;
 `;
 
-const PlatformLinksContainer = styled(Container)`
+const PlatformLinksContainer = styled.div`
+	display: grid;
+	grid-auto-flow: column;
+	column-gap: 1rem;
+	place-items: center;
+	justify-content: center;
+	padding: 1rem 0;
+
 	${breakpoint.until.md(css`
 		display: flex;
 		flex-wrap: wrap;
-		padding: 0 3rem;
+		row-gap: 1rem;
+		padding: 1rem 3rem;
 	`)}
 `;
 
