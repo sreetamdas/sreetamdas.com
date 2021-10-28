@@ -18,8 +18,8 @@ export const ImageWrapper = ({
 }: {
 	alt: string;
 	src: string;
-	height: string;
-	width: string;
+	height?: string;
+	width?: string;
 }) => {
 	const type = src.slice(-3);
 
