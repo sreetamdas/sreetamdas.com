@@ -2,7 +2,7 @@ import { QueryDatabaseResponse } from "@notionhq/client/build/src/api-endpoints"
 import React from "react";
 import styled from "styled-components";
 
-import { ImageWrapper } from "components/mdx";
+import { CustomImage } from "components/mdx/images";
 import { sharedTransition } from "styles/components";
 
 type TkeebDetails = {
@@ -46,7 +46,7 @@ const Keebs = ({ keebInfo }: TKeebInfo) => {
 							))}
 						</Tags>
 					</Info>
-					{image ? <ImageWrapper src={image} alt={name} /> : null}
+					{image ? <CustomImage src={image} alt={name} /> : null}
 				</KeebWrapper>
 			))}
 		</KeebsContainer>
