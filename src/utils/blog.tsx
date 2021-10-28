@@ -7,6 +7,7 @@ import remarkSlug from "remark-slug";
 import remarkToc from "remark-toc";
 import { loadTheme, getHighlighter } from "shiki";
 
+import { rehypeImgSize } from "components/mdx/images/plugins";
 import { remarkShiki } from "components/shiki";
 import { renderToHTML } from "components/shiki/renderer";
 import { TBlogPostPageProps } from "typings/blog";
@@ -49,6 +50,7 @@ export async function bundleMDXWithOptions(filename: string) {
 						],
 					},
 				],
+				[rehypeImgSize, { dir: "public" }],
 			];
 
 			return options;

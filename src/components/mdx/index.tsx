@@ -3,45 +3,13 @@ import React, { createElement, CSSProperties, PropsWithChildren, ReactHTML } fro
 import { FiLink } from "react-icons/fi";
 import styled from "styled-components";
 
-import { OrderedList, UnorderedList } from "components/mdx/lists";
+import { CustomImage } from "./images";
+import { OrderedList, UnorderedList } from "./lists";
+
 import { CodeBlock } from "components/shiki/styled";
 import { LinkedHeaderIconWrapper } from "styles/blog";
 import { Paragraph } from "styles/typography";
 import { useHover } from "utils/hooks";
-
-export const ImageWrapper = ({ alt, src }: { alt: string; src: string }) => {
-	const type = src.slice(-3);
-
-	if (type === "mp4") {
-		return (
-			<video
-				autoPlay
-				loop
-				muted
-				controls
-				style={{
-					maxWidth: "var(--max-width)",
-					width: "100%",
-					borderRadius: "var(--border-radius)",
-				}}
-			>
-				<source {...{ src }} />
-				{alt}
-			</video>
-		);
-	}
-	return (
-		<img
-			{...{ alt, src }}
-			loading="lazy"
-			style={{
-				maxWidth: "var(--max-width)",
-				width: "100%",
-				borderRadius: "var(--border-radius)",
-			}}
-		/>
-	);
-};
 
 export const MDXLinkStyledWrapper = styled.span`
 	& a {
@@ -104,7 +72,7 @@ export const MDXComponents = {
 	h2: MDXHeadingWrapper.h2,
 	h3: MDXHeadingWrapper.h3,
 	pre: CodeBlock,
-	img: ImageWrapper,
+	img: CustomImage,
 	a: MDXLinkWrapper,
 	ul: UnorderedList,
 	ol: OrderedList,
