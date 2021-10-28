@@ -2,7 +2,9 @@ import NextImage from "next/image";
 import styled from "styled-components";
 
 const ImageWrapper = styled.span`
-	& > span > img {
+	& img {
+		max-width: var(--max-width);
+		width: 100%;
 		border-radius: var(--border-radius);
 	}
 `;
@@ -33,14 +35,24 @@ export const CustomImage = ({
 					borderRadius: "var(--border-radius)",
 				}}
 			>
-				<source {...{ src }} />
+				<source src={src} />
 				{alt}
 			</video>
 		);
 	}
+	if (src[0] === "/") {
+		return (
+			<ImageWrapper>
+				<NextImage {...{ alt, src, height, width }} quality="100" />
+			</ImageWrapper>
+		);
+	}
+
 	return (
 		<ImageWrapper>
-			<NextImage {...{ alt, src, height, width }} quality="100" />
+			{/* for external images */}
+			{/* eslint-disable-next-line @next/next/no-img-element */}
+			<img src={src} alt={alt} loading="lazy" />
 		</ImageWrapper>
 	);
 };
