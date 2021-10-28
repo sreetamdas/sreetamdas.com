@@ -47,19 +47,9 @@ export const Foobar = ({ completedPage, unlocked }: TFoobarSchrodingerProps) => 
 
 	const handleGotoToggle = (event: KeyboardEvent) => {
 		if (event.key === "Escape") setTerminalVisible(false);
-		if (event.key === "/") {
-			setTerminalVisible(true);
-			event.stopPropagation();
-			event.preventDefault();
-		}
-		if (event.key === "p" && event.metaKey) {
+		if (event.metaKey && event.key === "k") {
 			event.preventDefault();
 			setTerminalVisible(true);
-		}
-		if (process.env.NODE_ENV === "development" && event.key === "g" && event.metaKey) {
-			event.preventDefault();
-			dog("dev mode, going to offline-only page");
-			handleUserIsOffline();
 		}
 	};
 
