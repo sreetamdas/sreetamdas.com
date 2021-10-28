@@ -2,12 +2,12 @@ import { promises as fs } from "fs";
 import path from "path";
 
 import { bundleMDX } from "mdx-bundler";
-import imageSize from "rehype-img-size";
 import rehypeRaw from "rehype-raw";
 import remarkSlug from "remark-slug";
 import remarkToc from "remark-toc";
 import { loadTheme, getHighlighter } from "shiki";
 
+import { rehypeImgSize } from "components/mdx/images";
 import { remarkShiki } from "components/shiki";
 import { renderToHTML } from "components/shiki/renderer";
 import { TBlogPostPageProps } from "typings/blog";
@@ -50,7 +50,7 @@ export async function bundleMDXWithOptions(filename: string) {
 						],
 					},
 				],
-				[imageSize, { dir: "public" }],
+				[rehypeImgSize, { dir: "public" }],
 			];
 
 			return options;
