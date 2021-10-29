@@ -28,6 +28,7 @@ export const GlobalStyles = createGlobalStyle`
 	--max-width: 650px;
 	--border-radius: 5px;
 	--transition-duration: 0.1s;
+	--list-item-spacing: 15px;
 	}
 
 	[data-theme="dark"] {

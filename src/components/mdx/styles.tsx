@@ -8,8 +8,6 @@ export const UnorderedListBullet = styled(FaLongArrowAltRight).attrs({
 	margin-right: 10px;
 `;
 export const UnorderedListStyled = styled.ul`
-	--list-item-spacing: 15px;
-
 	padding-left: 0;
 
 	li {
@@ -45,8 +43,16 @@ export const OrderedListStyled = styled.ol`
 		display: flex;
 		align-items: center;
 		list-style: outside none none;
-		padding: 5px;
 		counter-increment: var(--counter-name);
+		padding: 0;
+		margin-bottom: var(--list-item-spacing);
+
+		&:last-child {
+			margin-bottom: 0;
+		}
+		&:only-child {
+			margin-top: var(--list-item-spacing);
+		}
 
 		&::before {
 			color: var(--color-primary-accent);
