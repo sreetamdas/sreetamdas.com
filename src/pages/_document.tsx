@@ -32,8 +32,6 @@ export default class MyDocument extends Document {
 			<Html lang="en">
 				<Head>
 					<link rel="shortcut icon" href="/favicon.png" />
-					<meta name="theme-color" content="#5B34DA" media="(prefers-color-scheme: light)" />
-					<meta name="theme-color" content="#9D86E9" media="(prefers-color-scheme: dark)" />
 					<link rel="apple-touch-icon" href="/logo.png" />
 					<meta name="apple-mobile-web-app-title" content="Sreetam Das' Blog" />
 					<meta name="apple-mobile-web-app-status-bar-style" content="default" />
