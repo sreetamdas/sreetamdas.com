@@ -22,7 +22,7 @@ import { FoobarContext } from "components/foobar";
 import { IconContainer } from "styles/blog";
 import { sharedTransition } from "styles/components";
 import { LinkTo } from "styles/typography";
-import { useBreakpointRange, useHasMounted } from "utils/hooks";
+import { useHasMounted } from "utils/hooks";
 import { checkIfNavbarShouldBeHidden } from "utils/misc";
 import { breakpoint } from "utils/style";
 
@@ -119,18 +119,7 @@ const NavbarMenu = () => {
 	const { theme } = useContext(ThemeContext);
 	const { konami } = useContext(FoobarContext);
 	const [showDrawer, setShowDrawer] = useState(false);
-	const [isMobileLayout, setIsMobileLayout] = useState<boolean | undefined>(undefined);
 	const { asPath } = useRouter();
-
-	const handleMobileOnEnter = () => {
-		setIsMobileLayout(true);
-	};
-
-	const handleMobileOnLeave = () => {
-		setIsMobileLayout(false);
-	};
-
-	useBreakpointRange({ to: "md" }, { onEnter: handleMobileOnEnter, onLeave: handleMobileOnLeave });
 
 	useEffect(() => {
 		const root = window.document.documentElement;
@@ -206,18 +195,15 @@ const NavbarMenu = () => {
 					<NavLinksDesktop>
 						<NavLinks />
 					</NavLinksDesktop>
-					{showDrawer && isMobileLayout ? null : (
-						// hide when drawer is open, changing theme onOpen doesn't update var(--color-bg-blurred)
-						<ThemeSwitch onClick={handleThemeSwitch}>
-							{darkTheme === undefined ? (
-								<div style={{ width: "25px" }} />
-							) : darkTheme ? (
-								<IoMdMoon aria-label="Switch to Light Mode" title="Switch to Light Mode" />
-							) : (
-								<FiSun aria-label="Switch to Dark Mode" title="Switch to Dark Mode" />
-							)}
-						</ThemeSwitch>
-					)}
+					<ThemeSwitch onClick={handleThemeSwitch}>
+						{darkTheme === undefined ? (
+							<span style={{ width: "25px" }} />
+						) : darkTheme ? (
+							<IoMdMoon aria-label="Switch to Light Mode" title="Switch to Light Mode" />
+						) : (
+							<FiSun aria-label="Switch to Dark Mode" title="Switch to Dark Mode" />
+						)}
+					</ThemeSwitch>
 					<MobileMenuToggle
 						onClick={handleToggleDrawer}
 						aria-label={showDrawer ? "Close menu" : "Open menu"}
