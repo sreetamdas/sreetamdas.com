@@ -1,4 +1,5 @@
 import { AnimatePresence, motion, Variants } from "framer-motion";
+import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useState, useEffect, useContext, cloneElement } from "react";
@@ -196,46 +197,51 @@ const NavbarMenu = () => {
 	};
 
 	return (
-		<AnimatePresence>
-			<NavContainer $showDrawer={showDrawer} key="navigation">
-				<NavLinksDesktop>
-					<NavLinks />
-				</NavLinksDesktop>
-				{showDrawer && isMobileLayout ? null : (
-					// hide when drawer is open, changing theme onOpen doesn't update var(--color-bg-blurred)
-					<ThemeSwitch onClick={handleThemeSwitch}>
-						{darkTheme === undefined ? (
-							<div style={{ width: "25px" }} />
-						) : darkTheme ? (
-							<IoMdMoon aria-label="Switch to Light Mode" title="Switch to Light Mode" />
-						) : (
-							<FiSun aria-label="Switch to Dark Mode" title="Switch to Dark Mode" />
-						)}
-					</ThemeSwitch>
-				)}
-				<MobileMenuToggle
-					onClick={handleToggleDrawer}
-					aria-label={showDrawer ? "Close menu" : "Open menu"}
-				>
-					{showDrawer ? (
-						<FiX aria-label="Open menu" title="Open menu" />
-					) : (
-						<FiMenu aria-label="Open menu" title="Open menu" />
+		<>
+			<Head>
+				<meta name="theme-color" content={darkTheme ? "#9D86E9" : "#5B34DA"} />
+			</Head>
+			<AnimatePresence>
+				<NavContainer $showDrawer={showDrawer} key="navigation">
+					<NavLinksDesktop>
+						<NavLinks />
+					</NavLinksDesktop>
+					{showDrawer && isMobileLayout ? null : (
+						// hide when drawer is open, changing theme onOpen doesn't update var(--color-bg-blurred)
+						<ThemeSwitch onClick={handleThemeSwitch}>
+							{darkTheme === undefined ? (
+								<div style={{ width: "25px" }} />
+							) : darkTheme ? (
+								<IoMdMoon aria-label="Switch to Light Mode" title="Switch to Light Mode" />
+							) : (
+								<FiSun aria-label="Switch to Dark Mode" title="Switch to Dark Mode" />
+							)}
+						</ThemeSwitch>
 					)}
-				</MobileMenuToggle>
-			</NavContainer>
-			<FullScreenWrapper
-				key="mobile-navigation"
-				aria-label="mobile-navigation"
-				$visible={showDrawer}
-				variants={variants}
-				initial="closed"
-				animate={showDrawer ? "open" : "closed"}
-				transition={{ type: "spring", stiffness: 180, damping: 20 }}
-			>
-				<NavLinks />
-			</FullScreenWrapper>
-		</AnimatePresence>
+					<MobileMenuToggle
+						onClick={handleToggleDrawer}
+						aria-label={showDrawer ? "Close menu" : "Open menu"}
+					>
+						{showDrawer ? (
+							<FiX aria-label="Open menu" title="Open menu" />
+						) : (
+							<FiMenu aria-label="Open menu" title="Open menu" />
+						)}
+					</MobileMenuToggle>
+				</NavContainer>
+				<FullScreenWrapper
+					key="mobile-navigation"
+					aria-label="mobile-navigation"
+					$visible={showDrawer}
+					variants={variants}
+					initial="closed"
+					animate={showDrawer ? "open" : "closed"}
+					transition={{ type: "spring", stiffness: 180, damping: 20 }}
+				>
+					<NavLinks />
+				</FullScreenWrapper>
+			</AnimatePresence>
+		</>
 	);
 };
 
