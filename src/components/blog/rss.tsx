@@ -2,13 +2,13 @@ import fs from "fs";
 
 import { Feed } from "feed";
 
-import { getAllBlogPostsData } from "utils/blog";
+import { getAllBlogPostsPreviewData } from "utils/blog";
 
 export const generateRssFeed = async () => {
 	if (process.env.NODE_ENV === "development") {
 		return;
 	}
-	const posts = await getAllBlogPostsData();
+	const posts = await getAllBlogPostsPreviewData();
 	const siteURL = process.env.SITE_URL ?? "https://sreetamdas.com";
 	const date = new Date();
 	const author = {

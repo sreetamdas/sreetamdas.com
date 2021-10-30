@@ -75,7 +75,7 @@ export async function getMDXFileData(fileSlug: string, options?: TGetMDXFileData
 	return { ...result, slug: fileSlug };
 }
 
-export async function getAllBlogPostsData() {
+export async function getAllBlogPostsPreviewData() {
 	const files = (await fs.readdir(BLOG_DIR)).filter((file) => file.endsWith(".mdx"));
 
 	const postsData = (
@@ -86,7 +86,10 @@ export async function getAllBlogPostsData() {
 					cwd: "content/blog",
 				});
 
-				return { ...result, slug } as unknown as TBlogPostPageProps;
+				return {
+					slug: result.slug,
+					frontmatter: result.frontmatter,
+				} as Pick<TBlogPostPageProps, "frontmatter" | "slug">;
 			})
 		)
 	)
