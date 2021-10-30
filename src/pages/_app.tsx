@@ -10,6 +10,7 @@ import { Hydrate } from "react-query/hydration";
 import { ThemeProvider } from "styled-components";
 
 import { DefaultLayout } from "layouts/Default";
+import { GlobalStyles } from "styles";
 import { TGlobalThemeObject } from "typings/styled";
 
 if (process.env.NEXT_PUBLIC_API_MOCKING_ENABLED === "true") {
@@ -57,6 +58,7 @@ const MyApp = ({ Component, pageProps }: AppPropsWithLayout) => {
 				<Hydrate state={pageProps.dehydratedState}>
 					<PlausibleProvider domain="sreetamdas.com" customDomain="sreetamdas.com">
 						<ThemeProvider theme={themeForContext}>
+							<GlobalStyles />
 							<ComponentLayout>
 								<Component {...pageProps} />
 							</ComponentLayout>
