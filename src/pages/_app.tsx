@@ -1,30 +1,39 @@
+import type { NextPage } from "next";
 import PlausibleProvider from "next-plausible";
-import { AppProps } from "next/app";
+import type { AppProps } from "next/app";
 import Head from "next/head";
 import React, { Fragment, useState } from "react";
+import type { PropsWithChildren } from "react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { ReactQueryDevtools } from "react-query/devtools";
 import { Hydrate } from "react-query/hydration";
 import { ThemeProvider } from "styled-components";
 
-import { Navbar } from "components/Navbar";
-import { FoobarWrapper } from "components/foobar";
+import { DefaultLayout } from "layouts/Default";
 import { GlobalStyles } from "styles";
-import { Layout } from "styles/layouts";
 import { TGlobalThemeObject } from "typings/styled";
 
 if (process.env.NEXT_PUBLIC_API_MOCKING_ENABLED === "true") {
 	require("mocks");
 }
 
+type NextPageWithLayout = NextPage & {
+	Layout?: ({ children }: PropsWithChildren<unknown>) => JSX.Element;
+};
+
+type AppPropsWithLayout = AppProps & {
+	Component: NextPageWithLayout;
+};
+
 type TThemeObjectInitial = Pick<TGlobalThemeObject, "theme">;
 const initTheme = {
 	theme: undefined,
 };
 
-const MyApp = ({ Component, pageProps }: AppProps) => {
+const MyApp = ({ Component, pageProps }: AppPropsWithLayout) => {
 	const reactQueryClient = new QueryClient();
 	const [themeObject, setThemeObject] = useState<TThemeObjectInitial>(initTheme);
+	const ComponentLayout = Component.Layout ?? DefaultLayout;
 
 	const getCSSVarValue = (variable: string) => {
 		if (typeof window !== "undefined")
@@ -47,17 +56,14 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
 			</Head>
 			<QueryClientProvider client={reactQueryClient}>
 				<Hydrate state={pageProps.dehydratedState}>
-					<ThemeProvider theme={themeForContext}>
-						<PlausibleProvider domain="sreetamdas.com" customDomain="sreetamdas.com">
+					<PlausibleProvider domain="sreetamdas.com" customDomain="sreetamdas.com">
+						<ThemeProvider theme={themeForContext}>
 							<GlobalStyles />
-							<FoobarWrapper>
-								<Navbar />
-								<Layout>
-									<Component {...pageProps} />
-								</Layout>
-							</FoobarWrapper>
-						</PlausibleProvider>
-					</ThemeProvider>
+							<ComponentLayout>
+								<Component {...pageProps} />
+							</ComponentLayout>
+						</ThemeProvider>
+					</PlausibleProvider>
 				</Hydrate>
 				<ReactQueryDevtools />
 			</QueryClientProvider>

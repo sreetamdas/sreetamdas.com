@@ -23,21 +23,14 @@ import { IconContainer } from "styles/blog";
 import { sharedTransition } from "styles/components";
 import { LinkTo } from "styles/typography";
 import { useHasMounted } from "utils/hooks";
-import { checkIfNavbarShouldBeHidden } from "utils/misc";
 import { breakpoint } from "utils/style";
 
 export const Navbar = () => {
-	const [isNavbarShown, setIsNavbarShown] = useState(true);
 	const hasMounted = useHasMounted();
-	const { pathname } = useRouter();
-
-	useEffect(() => {
-		setIsNavbarShown(!checkIfNavbarShouldBeHidden(pathname.slice(1)));
-	}, [pathname]);
 
 	if (!hasMounted) return <Header />;
 
-	return isNavbarShown ? (
+	return (
 		<Header>
 			<HeaderInner>
 				<Link href="/" passHref>
@@ -51,7 +44,7 @@ export const Navbar = () => {
 				<NavbarMenu />
 			</HeaderInner>
 		</Header>
-	) : null;
+	);
 };
 
 const variants: Variants = {

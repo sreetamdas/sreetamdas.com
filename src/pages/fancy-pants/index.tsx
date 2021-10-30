@@ -3,6 +3,7 @@ import { Fragment } from "react";
 import { NavigationContainer, Typography, NavLink, ChromaHighlight } from "components/FancyPants";
 import { ViewsCounter } from "components/ViewsCounter";
 import { DocumentHead } from "components/shared/seo";
+import { WithoutNavbar } from "layouts/WIthoutNavbar";
 import { FullWidth, Space } from "styles/layouts";
 
 const FancyPants = () => {
@@ -15,7 +16,6 @@ const FancyPants = () => {
 						<NavLink href="/">Home</NavLink>
 					</NavigationContainer>
 					<Typography $large>
-						<Space />
 						<ChromaHighlight>Sreetam Das</ChromaHighlight>
 						<br />
 						is a <ChromaHighlight>Front-end Engineer</ChromaHighlight>
@@ -33,10 +33,12 @@ const FancyPants = () => {
 					</Typography>
 				</div>
 			</FullWidth>
+			<Space />
 
 			<ViewsCounter />
 		</Fragment>
 	);
 };
 
+FancyPants.Layout = WithoutNavbar;
 export default FancyPants;
