@@ -3,6 +3,7 @@ import path from "path";
 
 import { bundleMDX } from "mdx-bundler";
 import rehypeRaw from "rehype-raw";
+import remarkGfm from "remark-gfm";
 import remarkSlug from "remark-slug";
 import remarkToc from "remark-toc";
 import { loadTheme, getHighlighter } from "shiki";
@@ -33,6 +34,7 @@ export async function bundleMDXWithOptions(filename: string) {
 			options.remarkPlugins = [
 				...(options.remarkPlugins ?? []),
 				[remarkShiki, { highlighter, renderToHTML }],
+				remarkGfm,
 				remarkSlug,
 				[remarkToc, { tight: true }],
 			];
