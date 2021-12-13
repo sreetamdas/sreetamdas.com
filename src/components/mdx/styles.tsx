@@ -9,6 +9,7 @@ export const UnorderedListBullet = styled(FaLongArrowAltRight).attrs({
 `;
 export const UnorderedListStyled = styled.ul`
 	padding-left: 0;
+	margin: var(--list-item-spacing) 0;
 
 	li {
 		display: flex;
@@ -30,6 +31,11 @@ export const UnorderedListStyled = styled.ul`
 			& ~ span {
 				flex: 1 1 0%;
 			}
+		}
+
+		/* For nested lists */
+		ul {
+			margin-bottom: 0;
 		}
 	}
 `;
