@@ -1,8 +1,6 @@
 import { getMDXComponent } from "mdx-bundler/client";
 import { GetStaticPaths, GetStaticProps } from "next";
 import React, { Fragment, useMemo } from "react";
-import { BsTerminalFill } from "react-icons/bs";
-import { FaFont, FaPodcast } from "react-icons/fa";
 import { SiOculus } from "react-icons/si";
 
 import { ChromaHighlight } from "components/FancyPants";
@@ -51,10 +49,6 @@ const Page = ({ code, frontmatter, subscriberCount }: TProps) => {
 					TextGradient,
 					Heavy,
 					StyledAccentTextLink,
-
-					BsTerminalFill,
-					FaFont,
-					FaPodcast,
 					SiOculus,
 					...MDXComponents,
 				}}
