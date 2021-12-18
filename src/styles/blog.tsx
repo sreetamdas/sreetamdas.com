@@ -1,9 +1,9 @@
 import { PropsWithChildren, ReactNode } from "react";
 import styled, { css } from "styled-components";
 
-import { breakpoint } from "@/utils/style";
 import { sharedTransition } from "@/styles/components";
 import { Datestamp } from "@/styles/typography";
+import { breakpoint } from "@/utils/style";
 
 export const BlogPostContentWrapper = styled.div`
 	padding: 30px 0;

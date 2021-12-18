@@ -7,9 +7,9 @@ import { CustomImage } from "./images";
 import { OrderedList, UnorderedList } from "./lists";
 
 import { CodeBlock } from "@/components/shiki/styled";
-import { useHover } from "@/utils/hooks";
 import { LinkedHeaderIconWrapper } from "@/styles/blog";
 import { Paragraph } from "@/styles/typography";
+import { useHover } from "@/utils/hooks";
 
 export const MDXLinkStyledWrapper = styled.span`
 	& a {
