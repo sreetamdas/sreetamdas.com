@@ -6,10 +6,10 @@ import styled from "styled-components";
 import { CustomImage } from "./images";
 import { OrderedList, UnorderedList } from "./lists";
 
-import { CodeBlock } from "components/shiki/styled";
-import { LinkedHeaderIconWrapper } from "styles/blog";
-import { Paragraph } from "styles/typography";
-import { useHover } from "utils/hooks";
+import { CodeBlock } from "@/components/shiki/styled";
+import { useHover } from "@/utils/hooks";
+import { LinkedHeaderIconWrapper } from "@/styles/blog";
+import { Paragraph } from "@/styles/typography";
 
 export const MDXLinkStyledWrapper = styled.span`
 	& a {

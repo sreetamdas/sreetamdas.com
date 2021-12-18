@@ -1,6 +1,10 @@
 import { Children, PropsWithChildren, ReactElement } from "react";
 
-import { UnorderedListStyled, OrderedListStyled, UnorderedListBullet } from "components/mdx/styles";
+import {
+	UnorderedListStyled,
+	OrderedListStyled,
+	UnorderedListBullet,
+} from "@/components/mdx/styles";
 
 export const ListItem = ({ children, ...props }: PropsWithChildren<Record<string, unknown>>) => {
 	return (

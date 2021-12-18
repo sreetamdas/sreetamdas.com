@@ -1,8 +1,8 @@
 /* eslint-disable react/no-unescaped-entities */
 import { Fragment } from "react";
 
-import { FullWidth } from "styles/layouts";
-import { ReallyBigTitle, Title } from "styles/typography";
+import { FullWidth } from "@/styles/layouts";
+import { ReallyBigTitle, Title } from "@/styles/typography";
 
 const Index = () => {
 	return (

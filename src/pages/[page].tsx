@@ -1,22 +1,21 @@
 import { getMDXComponent } from "mdx-bundler/client";
-import { GetStaticPaths, GetStaticProps } from "next";
+import { GetStaticProps } from "next";
 import React, { Fragment, useMemo } from "react";
-import { SiOculus } from "react-icons/si";
 
-import { ChromaHighlight } from "components/FancyPants";
-import { ViewsCounter } from "components/ViewsCounter";
-import { Newsletter } from "components/blog/Newsletter";
-import { HighlightWithUseEffect, HighlightWithUseInterval } from "components/blog/rgb-text";
-import { MDXComponents } from "components/mdx";
-import { DocumentHead } from "components/shared/seo";
-import { Highlight, CustomBlockquote } from "styles/blog";
-import { MDXLink } from "styles/components";
-import { Center } from "styles/layouts";
-import { Sparkles } from "styles/special";
-import { Title, Heavy, MDXTitle, StyledAccentTextLink, TextGradient } from "styles/typography";
-import { TBlogPostPageProps } from "typings/blog";
-import { getMDXFileData, getRootPagesSlugs } from "utils/blog";
-import { getButtondownSubscriberCount } from "utils/misc";
+import { ChromaHighlight } from "@/components/FancyPants";
+import { ViewsCounter } from "@/components/ViewsCounter";
+import { Newsletter } from "@/components/blog/Newsletter";
+import { HighlightWithUseEffect, HighlightWithUseInterval } from "@/components/blog/rgb-text";
+import { MDXComponents } from "@/components/mdx";
+import { DocumentHead } from "@/components/shared/seo";
+import { Highlight, CustomBlockquote } from "@/styles/blog";
+import { MDXLink } from "@/styles/components";
+import { Center } from "@/styles/layouts";
+import { Sparkles } from "@/styles/special";
+import { Title, Heavy, MDXTitle, StyledAccentTextLink, TextGradient } from "@/styles/typography";
+import { TBlogPostPageProps } from "@/typings/blog";
+import { getMDXFileData, getRootPagesSlugs } from "@/utils/blog";
+import { getButtondownSubscriberCount } from "@/utils/misc";
 
 type TProps = TBlogPostPageProps & {
 	subscriberCount: number;
@@ -49,7 +48,6 @@ const Page = ({ code, frontmatter, subscriberCount }: TProps) => {
 					TextGradient,
 					Heavy,
 					StyledAccentTextLink,
-					SiOculus,
 					...MDXComponents,
 				}}
 			/>
@@ -60,7 +58,7 @@ const Page = ({ code, frontmatter, subscriberCount }: TProps) => {
 	);
 };
 
-export const getStaticPaths: GetStaticPaths = async () => {
+export async function getStaticPaths() {
 	const postsData: Array<{ page: string }> = await getRootPagesSlugs();
 
 	const paths = postsData.map((post) => ({
@@ -68,7 +66,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 	}));
 
 	return { paths, fallback: false };
-};
+}
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
 	const subscriberCount = await getButtondownSubscriberCount();

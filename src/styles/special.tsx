@@ -1,9 +1,9 @@
 import { PropsWithChildren, HTMLAttributes, Key, useState } from "react";
 import styled, { keyframes, CSSProperties } from "styled-components";
 
-import { usePrefersReducedMotion, useRandomInterval } from "utils/hooks";
+import { usePrefersReducedMotion, useRandomInterval } from "@/utils/hooks";
 
-const range = (start: number, end?: number, step = 1) => {
+function range(start: number, end?: number, step = 1) {
 	const output = [];
 	if (typeof end === "undefined") {
 		end = start;
@@ -13,8 +13,10 @@ const range = (start: number, end?: number, step = 1) => {
 		output.push(i);
 	}
 	return output;
-};
-const random = (min: number, max: number) => Math.floor(Math.random() * (max - min)) + min;
+}
+function random(min: number, max: number) {
+	return Math.floor(Math.random() * (max - min)) + min;
+}
 
 type TSparkle = {
 	id: string;
@@ -25,7 +27,7 @@ type TSparkle = {
 	style: CSSProperties;
 };
 const DEFAULT_COLOR = "#FFFF00";
-const generateSparkle = (color: string): Omit<TSparkle, "key"> => {
+function generateSparkle(color: string): Omit<TSparkle, "key"> {
 	const sparkle = {
 		id: String(random(10000, 99999)),
 		createdAt: Date.now(),
@@ -37,7 +39,7 @@ const generateSparkle = (color: string): Omit<TSparkle, "key"> => {
 		},
 	};
 	return sparkle;
-};
+}
 const Sparkles = ({
 	color = DEFAULT_COLOR,
 	children,

@@ -9,9 +9,9 @@ import { ReactQueryDevtools } from "react-query/devtools";
 import { Hydrate } from "react-query/hydration";
 import { ThemeProvider } from "styled-components";
 
-import { DefaultLayout } from "layouts/Default";
-import { GlobalStyles } from "styles";
-import { TGlobalThemeObject } from "typings/styled";
+import { DefaultLayout } from "@/layouts/Default";
+import { GlobalStyles } from "@/styles";
+import { TGlobalThemeObject } from "@/typings/styled";
 
 if (process.env.NEXT_PUBLIC_API_MOCKING_ENABLED === "true") {
 	require("mocks");
@@ -35,11 +35,11 @@ const MyApp = ({ Component, pageProps }: AppPropsWithLayout) => {
 	const [themeObject, setThemeObject] = useState<TThemeObjectInitial>(initTheme);
 	const ComponentLayout = Component.Layout ?? DefaultLayout;
 
-	const getCSSVarValue = (variable: string) => {
+	function getCSSVarValue(variable: string) {
 		if (typeof window !== "undefined")
 			return getComputedStyle(document.body).getPropertyValue(variable);
 		return undefined;
-	};
+	}
 	const changeThemeVariant: TGlobalThemeObject["changeThemeVariant"] = (theme) => {
 		setThemeObject({ theme });
 	};

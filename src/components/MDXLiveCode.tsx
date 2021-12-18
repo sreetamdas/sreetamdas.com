@@ -3,9 +3,9 @@ import { useMemo } from "react";
 import { LiveProvider, LiveEditor, LiveError, LivePreview } from "react-live";
 import styled from "styled-components";
 
+import { FullWidth } from "@/styles/layouts";
+import { TextGradient } from "@/styles/typography";
 import { KARMA_PRISM_THEME } from "pages/karma";
-import { FullWidth } from "styles/layouts";
-import { TextGradient } from "styles/typography";
 
 /* Why is there a tabs import? https://github.com/agneym/playground#why-is-there-a-reacttabs-import*/
 // import "@reach/tabs/styles.css";
@@ -23,9 +23,9 @@ import { TextGradient } from "styles/typography";
 // render(app, document.getElementById('app'));`,
 // };
 
-const formatCodeString = (code: string) => {
+function formatCodeString(code: string) {
 	return code.trim().replace(/\t/g, "  ");
-};
+}
 
 const LiveCode = () => {
 	const code = formatCodeString(JSX_STRING);

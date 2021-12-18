@@ -1,27 +1,27 @@
 import { PropsWithChildren, useEffect } from "react";
 import styled, { css } from "styled-components";
 
-import { random, useInterval } from "utils/hooks";
+import { random, useInterval } from "@/utils/hooks";
 
 let root: HTMLElement;
 
-const getNewColor = () => {
+function getNewColor() {
 	const h = random(1, 360);
 	const s = random(80, 90);
 	const l = random(50, 60);
 
 	return `hsl(${h}, ${s}%, ${l}%)`;
-};
+}
 export const HighlightWithUseEffect = ({
 	children,
 	link,
 }: PropsWithChildren<{ link?: boolean }>) => {
-	const changeColor = () => {
+	function changeColor() {
 		const newColor = getNewColor();
 
 		if (root === undefined) root = document?.documentElement;
 		root.style.setProperty("--color-chameleon-use-effect", newColor);
-	};
+	}
 
 	useEffect(() => {
 		changeColor();
@@ -38,12 +38,12 @@ export const HighlightWithUseInterval = ({
 	children,
 	link,
 }: PropsWithChildren<{ link?: boolean }>) => {
-	const changeColor = () => {
+	function changeColor() {
 		const newColor = getNewColor();
 
 		if (root === undefined) root = document?.documentElement;
 		root.style.setProperty("--color-chameleon-use-interval", newColor);
-	};
+	}
 
 	useEffect(() => {
 		changeColor();

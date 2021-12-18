@@ -18,12 +18,12 @@ import { FiRss, FiSun, FiMenu, FiX } from "react-icons/fi";
 import { IoMdMoon } from "react-icons/io";
 import styled, { css, ThemeContext } from "styled-components";
 
-import { FoobarContext } from "components/foobar";
-import { IconContainer } from "styles/blog";
-import { sharedTransition } from "styles/components";
-import { LinkTo } from "styles/typography";
-import { useHasMounted } from "utils/hooks";
-import { breakpoint } from "utils/style";
+import { FoobarContext } from "@/components/foobar";
+import { IconContainer } from "@/styles/blog";
+import { sharedTransition } from "@/styles/components";
+import { LinkTo } from "@/styles/typography";
+import { useHasMounted } from "@/utils/hooks";
+import { breakpoint } from "@/utils/style";
 
 export const Navbar = () => {
 	const hasMounted = useHasMounted();
@@ -140,12 +140,12 @@ const NavbarMenu = () => {
 	}, [theme]);
 
 	useEffect(() => {
-		const handleKeyboardDarkModeToggle = (event: KeyboardEvent) => {
+		function handleKeyboardDarkModeToggle(event: KeyboardEvent) {
 			if (event.key.toLowerCase() === "l" && event.shiftKey && event.metaKey) {
 				event.preventDefault();
 				setDarkTheme(!darkTheme);
 			}
-		};
+		}
 		window.addEventListener("keydown", handleKeyboardDarkModeToggle);
 
 		return () => {
@@ -158,12 +158,12 @@ const NavbarMenu = () => {
 		document.body.style.removeProperty("overflow");
 	}, [asPath]);
 
-	const handleThemeSwitch = (event: React.MouseEvent) => {
+	function handleThemeSwitch(event: React.MouseEvent) {
 		event.preventDefault();
 		setDarkTheme(!darkTheme);
-	};
+	}
 
-	const handleToggleDrawer = () => {
+	function handleToggleDrawer() {
 		setShowDrawer((showDrawer) => {
 			const nextState = !showDrawer;
 
@@ -176,7 +176,7 @@ const NavbarMenu = () => {
 
 			return nextState;
 		});
-	};
+	}
 
 	return (
 		<>

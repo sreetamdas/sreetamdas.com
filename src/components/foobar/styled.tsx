@@ -1,6 +1,6 @@
 import styled, { css } from "styled-components";
 
-import { sharedTransition } from "styles/components";
+import { sharedTransition } from "@/styles/components";
 
 export const buttonStylesMixin = css`
 	margin: 0;

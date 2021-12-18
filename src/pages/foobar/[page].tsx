@@ -1,11 +1,11 @@
 import { ParsedUrlQuery } from "querystring";
 
-import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from "next";
+import { GetStaticProps, InferGetStaticPropsType } from "next";
 
-import { FoobarSchrodinger } from "components/foobar/pages";
+import { FoobarSchrodinger } from "@/components/foobar/pages";
+import { FOOBAR_PAGES, TFoobarPage } from "@/typings/console";
+import { useHasMounted } from "@/utils/hooks";
 import Custom404 from "pages/404";
-import { FOOBAR_PAGES, TFoobarPage } from "typings/console";
-import { useHasMounted } from "utils/hooks";
 
 type TFoobarPageProps = {
 	page: Exclude<TFoobarPage, "/">;
@@ -34,7 +34,7 @@ export const getStaticProps: GetStaticProps<TFoobarPageProps, TFoobarPageQuery> 
 	return { props: { page } };
 };
 
-export const getStaticPaths: GetStaticPaths = async () => {
+export async function getStaticPaths() {
 	const allPages = Object.values(FOOBAR_PAGES);
 	const paths = allPages.map((page) => ({ params: { page } }));
 
@@ -42,4 +42,4 @@ export const getStaticPaths: GetStaticPaths = async () => {
 		paths,
 		fallback: false,
 	};
-};
+}

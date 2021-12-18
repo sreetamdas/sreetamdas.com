@@ -2,8 +2,8 @@ import { QueryDatabaseResponse } from "@notionhq/client/build/src/api-endpoints"
 import React from "react";
 import styled from "styled-components";
 
-import { CustomImage } from "components/mdx/images";
-import { sharedTransition } from "styles/components";
+import { CustomImage } from "@/components/mdx/images";
+import { sharedTransition } from "@/styles/components";
 
 type TkeebDetails = {
 	name: string;

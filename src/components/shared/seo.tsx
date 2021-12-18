@@ -40,11 +40,11 @@ export const DocumentHead = ({
 	);
 };
 
-export const getAbsoluteURL = (url: string) => {
+export function getAbsoluteURL(url: string) {
 	const hasSiteURL = url.startsWith(siteURL);
 	const startsWithSlash = url[0] === "/";
 
 	if (hasSiteURL) return url;
 	if (startsWithSlash) return `${siteURL}${url}`;
 	return `${siteURL}/${url}`;
-};
+}

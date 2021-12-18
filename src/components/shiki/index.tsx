@@ -1,7 +1,7 @@
 import { Highlighter, renderToHtml } from "shiki";
 import { visit } from "unist-util-visit";
 
-import { renderToHTML } from "components/shiki/renderer";
+import { renderToHTML } from "@/components/shiki/renderer";
 
 type TRemarkShikiOptions = {
 	highlighter: Highlighter;

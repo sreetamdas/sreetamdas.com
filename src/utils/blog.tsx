@@ -8,10 +8,10 @@ import remarkSlug from "remark-slug";
 import remarkToc from "remark-toc";
 import { loadTheme, getHighlighter } from "shiki";
 
-import { rehypeImgSize } from "components/mdx/images/plugins";
-import { remarkShiki } from "components/shiki";
-import { renderToHTML } from "components/shiki/renderer";
-import { TBlogPostPageProps } from "typings/blog";
+import { rehypeImgSize } from "@/components/mdx/images/plugins";
+import { remarkShiki } from "@/components/shiki";
+import { renderToHTML } from "@/components/shiki/renderer";
+import { TBlogPostPageProps } from "@/typings/blog";
 
 const PATH = path.resolve(process.cwd(), "src");
 const BLOG_DIR = path.resolve(PATH, "content", "blog");

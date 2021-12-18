@@ -9,17 +9,23 @@ import {
 	ReactNode,
 } from "react";
 
-import { BREAKPOINTS, TBreakpoint } from "utils/style";
+import { BREAKPOINTS, TBreakpoint } from "@/utils/style";
 
 export const viewportContext = createContext({});
 
-export const random = (min: number, max: number) => min + Math.random() * (max - min);
+export function random(min: number, max: number) {
+	return min + Math.random() * (max - min);
+}
 
-export const useHover: () => [RefObject<HTMLDivElement>, boolean] = () => {
+export function useHover(): [RefObject<HTMLDivElement>, boolean] {
 	const [value, setValue] = useState(false);
 	const ref = useRef<HTMLDivElement>(null);
-	const handleMouseOver = () => setValue(true);
-	const handleMouseOut = () => setValue(false);
+	function handleMouseOver() {
+		return setValue(true);
+	}
+	function handleMouseOut() {
+		return setValue(false);
+	}
 
 	useEffect(() => {
 		const node = ref.current;
@@ -36,7 +42,7 @@ export const useHover: () => [RefObject<HTMLDivElement>, boolean] = () => {
 	}, []);
 
 	return [ref, value];
-};
+}
 
 type Delay = number | null;
 type CallbackFn = (...args: unknown[]) => void;
@@ -47,7 +53,7 @@ type CallbackFn = (...args: unknown[]) => void;
  * @param callback - Function that will be called every `delay` ms.
  * @param delay - Number representing the delay in ms. Set to `null` to "pause" the interval.
  */
-export const useInterval = (callback: CallbackFn, delay: Delay) => {
+export function useInterval(callback: CallbackFn, delay: Delay) {
 	const savedCallback = useRef<CallbackFn>();
 
 	useEffect(() => {
@@ -62,7 +68,7 @@ export const useInterval = (callback: CallbackFn, delay: Delay) => {
 			return () => clearInterval(intervalId);
 		}
 	}, [delay]);
-};
+}
 
 /**
  * Provides a declarative useTimeout
@@ -70,7 +76,7 @@ export const useInterval = (callback: CallbackFn, delay: Delay) => {
  * @param callback - Function that will be called after `delay` ms.
  * @param delay - Number representing the delay in ms.
  */
-export const useTimeout = (callback: CallbackFn, delay: Delay) => {
+export function useTimeout(callback: CallbackFn, delay: Delay) {
 	const savedCallback = useRef<CallbackFn>();
 
 	useEffect(() => {
@@ -85,34 +91,34 @@ export const useTimeout = (callback: CallbackFn, delay: Delay) => {
 			return () => clearTimeout(id);
 		}
 	}, [delay]);
-};
+}
 
-export const useHasMounted = () => {
+export function useHasMounted() {
 	const [hasMounted, setHasMounted] = useState(false);
 	useEffect(() => {
 		setHasMounted(true);
 	}, []);
 	return hasMounted;
-};
+}
 
 const QUERY = "(prefers-reduced-motion: no-preference)";
 const isRenderingOnServer = typeof window === "undefined";
-const getInitialState = () => {
+function getInitialState() {
 	// For our initial server render, we won't know if the user
 	// prefers reduced motion, but it doesn't matter. This value
 	// will be overwritten on the client, before any animations
 	// occur.
 	return isRenderingOnServer ? true : !window.matchMedia(QUERY).matches;
-};
+}
 
-export const usePrefersReducedMotion = () => {
+export function usePrefersReducedMotion() {
 	const [prefersReducedMotion, setPrefersReducedMotion] = useState(getInitialState);
 
 	useEffect(() => {
 		const mediaQueryList = window.matchMedia(QUERY);
-		const listener = (event: MediaQueryListEvent) => {
+		function listener(event: MediaQueryListEvent) {
 			setPrefersReducedMotion(!event.matches);
-		};
+		}
 
 		mediaQueryList.addListener(listener);
 		return () => {
@@ -121,13 +127,13 @@ export const usePrefersReducedMotion = () => {
 	}, []);
 
 	return prefersReducedMotion;
-};
+}
 
-export const useRandomInterval = (
+export function useRandomInterval(
 	callback: () => void,
 	minDelay: null | number,
 	maxDelay: null | number
-) => {
+) {
 	const timeoutId = useRef<number | undefined>();
 	const savedCallback = useRef(callback);
 	useEffect(() => {
@@ -151,13 +157,13 @@ export const useRandomInterval = (
 		window.clearTimeout(timeoutId.current);
 	}, []);
 	return cancel;
-};
+}
 
 export const ViewportProvider = ({ children }: PropsWithChildren<ReactNode>) => {
 	const [width, setWidth] = useState(window?.innerWidth);
-	const handleWindowResize = () => {
+	function handleWindowResize() {
 		setWidth(window.innerWidth);
-	};
+	}
 
 	useEffect(() => {
 		window.addEventListener("resize", handleWindowResize);
@@ -168,12 +174,12 @@ export const ViewportProvider = ({ children }: PropsWithChildren<ReactNode>) => 
 	return <viewportContext.Provider value={{ width }}>{children}</viewportContext.Provider>;
 };
 
-const getBreakpointOrSize = (breakpoint: TBreakpoint | number) => {
+function getBreakpointOrSize(breakpoint: TBreakpoint | number) {
 	if (typeof breakpoint === "string") {
 		return BREAKPOINTS[breakpoint];
 	}
 	return breakpoint;
-};
+}
 
 type TUseBreakpointProps = (
 	{ from, to }: { from?: TBreakpoint | number; to: TBreakpoint | number },
@@ -191,7 +197,7 @@ export const useBreakpointRange: TUseBreakpointProps = ({ from = 0, to }, { onEn
 	const toSize = getBreakpointOrSize(to);
 
 	useEffect(() => {
-		const handleResize = () => {
+		function handleResize() {
 			const screenWidth = window.innerWidth;
 			const withinFrom = screenWidth > fromSize;
 			const withinTo = !toSize || screenWidth < toSize;
@@ -207,7 +213,7 @@ export const useBreakpointRange: TUseBreakpointProps = ({ from = 0, to }, { onEn
 					onLeave();
 				}
 			}
-		};
+		}
 
 		handleResize();
 

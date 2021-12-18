@@ -1,14 +1,14 @@
 import localforage from "localforage";
 
-import { TFoobarData, TFoobarContext, TFoobarPage, FOOBAR_PAGES } from "typings/console";
+import { TFoobarData, TFoobarContext, TFoobarPage, FOOBAR_PAGES } from "@/typings/console";
 
 export const IS_DEV = process.env.NODE_ENV === "development";
 
-export const doAsyncThings = async () => {
+export async function doAsyncThings() {
 	await localforage.setItem("foobar", "/foobar/localforage");
-};
+}
 
-export const getDataFromLocalForage = async <T extends unknown>(key: string): Promise<T | null> => {
+export const getDataFromLocalForage = async <T>(key: string): Promise<T | null> => {
 	try {
 		return await localforage.getItem(key);
 	} catch (error) {
@@ -18,21 +18,21 @@ export const getDataFromLocalForage = async <T extends unknown>(key: string): Pr
 	}
 };
 
-export const saveToLocalForage = async <T extends Record<string, unknown>>(data: T) => {
+export async function saveToLocalForage<T extends Record<string, unknown>>(data: T) {
 	try {
 		await localforage.setItem("foobar-data", data);
 	} catch (error) {
 		throw new Error(error as string);
 	}
-};
-export const updateLocalData = async (data: Record<string, unknown>) => {
+}
+export async function updateLocalData(data: Record<string, unknown>) {
 	await saveToLocalForage(data);
-};
+}
 
-export const loadLocalDataOnMount = async (): Promise<TFoobarData | null> => {
+export async function loadLocalDataOnMount(): Promise<TFoobarData | null> {
 	const data = await getDataFromLocalForage<TFoobarData>("foobar-data");
 	return data;
-};
+}
 
 export const KONAMI_CODE: Array<React.KeyboardEvent["key"]> = [
 	"ArrowUp",
@@ -47,16 +47,16 @@ export const KONAMI_CODE: Array<React.KeyboardEvent["key"]> = [
 	"a",
 ];
 
-export const checkIfKonamiCodeEntered = (codes: Array<string>) => {
+export function checkIfKonamiCodeEntered(codes: Array<string>) {
 	const joinedCodes = codes.join(""),
 		konamiCodeJoined = KONAMI_CODE.join("");
 	return joinedCodes === konamiCodeJoined;
-};
+}
 
-export const handleKonami = (
+export function handleKonami(
 	konamiCodeInput: Array<string>,
 	{ konami, updateFoobarDataPartially, unlocked, completed }: TFoobarContext
-) => {
+) {
 	const check = unlocked && checkIfKonamiCodeEntered(konamiCodeInput);
 	let updatedKonamiCodeInput: Array<string> | null = null;
 
@@ -75,12 +75,12 @@ export const handleKonami = (
 	}
 
 	return updatedKonamiCodeInput;
-};
+}
 
-export const mergeLocalDataIntoStateOnMount = (
+export function mergeLocalDataIntoStateOnMount(
 	parent: TFoobarData,
 	localforageData: TFoobarData | null
-): TFoobarData => {
+): TFoobarData {
 	if (localforageData === null) return parent;
 	const result = { ...parent },
 		localforageCopy = { ...localforageData };
@@ -93,11 +93,11 @@ export const mergeLocalDataIntoStateOnMount = (
 		}
 	}
 	return result;
-};
+}
 
-export const isObject = (item: Record<string, unknown>): boolean => {
+export function isObject(item: Record<string, unknown>): boolean {
 	return item && typeof item === "object" && !Array.isArray(item);
-};
+}
 
 /**
  * Deep merge two objects.
@@ -105,7 +105,7 @@ export const isObject = (item: Record<string, unknown>): boolean => {
  * @param ...sources
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const mergeDeep = (target: any, ...sources: any): any => {
+export function mergeDeep(target: any, ...sources: any): any {
 	if (!sources.length) return target;
 	const source = sources.shift();
 
@@ -121,9 +121,9 @@ export const mergeDeep = (target: any, ...sources: any): any => {
 	}
 
 	return mergeDeep(target, ...sources);
-};
+}
 
-export const logConsoleMessages = () => {
+export function logConsoleMessages() {
 	// eslint-disable-next-line no-console
 	console.log(
 		`%c${CONSOLE_REACT}`,
@@ -149,14 +149,14 @@ export const logConsoleMessages = () => {
 	console.groupEnd();
 
 	dog("Hello", "there!");
-};
+}
 
 /**
  * `dog`: development-only `console.log`
  * @param messages to be logged only during dev
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const dog = (...messages: Array<any>): void => {
+export function dog(...messages: Array<any>): void {
 	IS_DEV &&
 		// eslint-disable-next-line no-console
 		console.log(
@@ -175,7 +175,7 @@ export const dog = (...messages: Array<any>): void => {
 			font-size: 1.2em`,
 			...messages
 		);
-};
+}
 
 const CONSOLE_REACT = `
                                            

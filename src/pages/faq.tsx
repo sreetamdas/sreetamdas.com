@@ -1,11 +1,11 @@
 import React, { Fragment } from "react";
 import styled from "styled-components";
 
-import { ViewsCounter } from "components/ViewsCounter";
-import { DocumentHead } from "components/shared/seo";
-import { StyledDetails, StyledSummary, StyledDetailAnswer } from "styles/components";
-import { Center, Space } from "styles/layouts";
-import { ExternalLink, Paragraph, Title } from "styles/typography";
+import { ViewsCounter } from "@/components/ViewsCounter";
+import { DocumentHead } from "@/components/shared/seo";
+import { StyledDetails, StyledSummary, StyledDetailAnswer } from "@/styles/components";
+import { Center, Space } from "@/styles/layouts";
+import { ExternalLink, Paragraph, Title } from "@/styles/typography";
 
 const Index = () => {
 	return (

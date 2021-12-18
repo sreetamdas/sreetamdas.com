@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 
-import { PostDetails } from "typings/blog";
-import { supabase } from "utils/supabaseClient";
+import { PostDetails } from "@/typings/blog";
+import { supabase } from "@/utils/supabaseClient";
 
 /**
  * @api {post} /api/page/add-view Get view_count for page using Supabase client

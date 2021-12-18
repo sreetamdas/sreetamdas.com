@@ -1,13 +1,13 @@
-import { GetStaticProps } from "next";
+import { InferGetStaticPropsType } from "next";
 import { Fragment } from "react";
 
-import { ViewsCounter } from "components/ViewsCounter";
-import { Newsletter, TNewsletterProps } from "components/blog/Newsletter";
-import { DocumentHead } from "components/shared/seo";
-import { Space } from "styles/layouts";
-import { getButtondownSubscriberCount } from "utils/misc";
+import { ViewsCounter } from "@/components/ViewsCounter";
+import { Newsletter } from "@/components/blog/Newsletter";
+import { DocumentHead } from "@/components/shared/seo";
+import { Space } from "@/styles/layouts";
+import { getButtondownSubscriberCount } from "@/utils/misc";
 
-const Index = ({ subscriberCount }: TNewsletterProps) => {
+const Index = ({ subscriberCount }: InferGetStaticPropsType<typeof getStaticProps>) => {
 	return (
 		<Fragment>
 			<DocumentHead
@@ -23,10 +23,10 @@ const Index = ({ subscriberCount }: TNewsletterProps) => {
 
 export default Index;
 
-export const getStaticProps: GetStaticProps = async () => {
+export async function getStaticProps() {
 	const subscriberCount = await getButtondownSubscriberCount();
 
 	return {
 		props: { subscriberCount },
 	};
-};
+}

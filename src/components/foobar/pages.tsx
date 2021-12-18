@@ -2,19 +2,19 @@ import { useRouter } from "next/router";
 import React, { useContext, useState, useEffect, Fragment } from "react";
 import styled from "styled-components";
 
-import { ViewsCounter } from "components/ViewsCounter";
-import { FoobarContext, initialFoobarData } from "components/foobar";
-import { ShowCompletedBadges } from "components/foobar/badges";
-import { KonamiWrapper } from "components/foobar/konami";
-import { SupportSreetamDas } from "components/foobar/styled";
-import { Terminal } from "components/foobar/terminal";
-import { DocumentHead } from "components/shared/seo";
+import { ViewsCounter } from "@/components/ViewsCounter";
+import { FoobarContext, initialFoobarData } from "@/components/foobar";
+import { ShowCompletedBadges } from "@/components/foobar/badges";
+import { KonamiWrapper } from "@/components/foobar/konami";
+import { SupportSreetamDas } from "@/components/foobar/styled";
+import { Terminal } from "@/components/foobar/terminal";
+import { DocumentHead } from "@/components/shared/seo";
+import { StyledPre, Button } from "@/styles/blog";
+import { Space, Center } from "@/styles/layouts";
+import { Title } from "@/styles/typography";
+import { TFoobarSchrodingerProps, TFoobarPage } from "@/typings/console";
+import { dog } from "@/utils/console";
 import Custom404 from "pages/404";
-import { StyledPre, Button } from "styles/blog";
-import { Space, Center } from "styles/layouts";
-import { Title } from "styles/typography";
-import { TFoobarSchrodingerProps, TFoobarPage } from "typings/console";
-import { dog } from "utils/console";
 
 const XMarksTheSpot = (_props: { foobar: string }) => <div />;
 
@@ -45,17 +45,17 @@ export const Foobar = ({ completedPage, unlocked }: TFoobarSchrodingerProps) => 
 	const { updateFoobarDataPartially, ...foobarObject } = foobarContextObj;
 	const [terminalVisible, setTerminalVisible] = useState(false);
 
-	const handleGotoToggle = (event: KeyboardEvent) => {
+	function handleGotoToggle(event: KeyboardEvent) {
 		if (event.key === "Escape") setTerminalVisible(false);
 		if (event.metaKey && event.key === "k") {
 			event.preventDefault();
 			setTerminalVisible(true);
 		}
-	};
+	}
 
-	const handleUserIsOffline = () => {
+	function handleUserIsOffline() {
 		router.push("/foobar/offline");
-	};
+	}
 
 	useEffect(() => {
 		window.addEventListener("keydown", handleGotoToggle);
@@ -68,13 +68,13 @@ export const Foobar = ({ completedPage, unlocked }: TFoobarSchrodingerProps) => 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
-	const handleClearFoobarData = () => {
+	function handleClearFoobarData() {
 		updateFoobarDataPartially(initialFoobarData);
 		dog("cleared");
-	};
-	const toggleTerminal = () => {
+	}
+	function toggleTerminal() {
 		setTerminalVisible((prev) => !prev);
-	};
+	}
 
 	if (!unlocked) return <FoobarButLocked />;
 

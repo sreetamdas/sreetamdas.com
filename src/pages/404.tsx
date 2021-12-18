@@ -1,10 +1,10 @@
 import React, { Fragment, useContext, useEffect } from "react";
 
-import { FoobarContext } from "components/foobar";
-import { DocumentHead } from "components/shared/seo";
-import { Center, Space } from "styles/layouts";
-import { ReallyBigTitle, Title, Paragraph, LinkTo } from "styles/typography";
-import { FOOBAR_PAGES, TFoobarPage } from "typings/console";
+import { FoobarContext } from "@/components/foobar";
+import { DocumentHead } from "@/components/shared/seo";
+import { Center, Space } from "@/styles/layouts";
+import { ReallyBigTitle, Title, Paragraph, LinkTo } from "@/styles/typography";
+import { FOOBAR_PAGES, TFoobarPage } from "@/typings/console";
 
 export type T404PageMessage = {
 	message?: string;
@@ -23,7 +23,7 @@ const Custom404 = ({ message }: T404PageMessage) => {
 		}
 	}, [completed, updateFoobarDataPartially]);
 
-	const handleDogLinkClick = () => {
+	function handleDogLinkClick() {
 		const updatedPages: Array<TFoobarPage> = [...completed];
 		if (!updatedPages.includes(FOOBAR_PAGES.dogs)) {
 			updatedPages.push(FOOBAR_PAGES.dogs);
@@ -31,7 +31,7 @@ const Custom404 = ({ message }: T404PageMessage) => {
 				completed: updatedPages,
 			});
 		}
-	};
+	}
 	return (
 		<Fragment>
 			<DocumentHead title="404!" description="Ugh, you're in the wrong place :/" noIndex />

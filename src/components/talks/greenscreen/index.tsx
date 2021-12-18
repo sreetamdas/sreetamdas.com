@@ -18,14 +18,14 @@ export const GreenScreen = () => {
 			audio: false,
 			video: { width: 640, height: 480 },
 		};
-		const rapidRefresh = (video: HTMLVideoElement, canvas: CanvasRenderingContext2D) => {
+		function rapidRefresh(video: HTMLVideoElement, canvas: CanvasRenderingContext2D) {
 			canvas.drawImage(video, 0, 0);
 			processImage(canvas, canvasRef);
 
 			setTimeout(() => {
 				rapidRefresh(video, canvas);
 			}, 0); // rapidly refresh ⚡
-		};
+		}
 
 		if (video !== null) {
 			navigator.mediaDevices
@@ -44,10 +44,7 @@ export const GreenScreen = () => {
 		}
 	}, []);
 
-	const processImage = (
-		canvas: CanvasRenderingContext2D,
-		canvasRef: RefObject<HTMLCanvasElement>
-	) => {
+	function processImage(canvas: CanvasRenderingContext2D, canvasRef: RefObject<HTMLCanvasElement>) {
 		if (canvasRef.current === null) return;
 
 		const snapshot: TImageSnapshot = canvas.getImageData(
@@ -57,14 +54,13 @@ export const GreenScreen = () => {
 			canvasRef.current.height
 		);
 
-		/* 
+		/*
 		format of snapshot's data:Uint8ClampedArray =>
 		0: pixel's Red value
 		1: pixel's Green value
 		2: pixel's Blue value
 		3: the alpha value
 		*/
-
 		const numberOfPixels = snapshot.data.length / 4;
 
 		// Now the processing
@@ -73,7 +69,6 @@ export const GreenScreen = () => {
 			const green = snapshot.data[i * 4 + 1];
 			const blue = snapshot.data[i * 4 + 2];
 			// const alpha = snapshot.data[i * 4 + 3];
-
 			const colorToRemove = green;
 			// higher concentration and isnt dark
 			if (colorToRemove > red && colorToRemove > blue && colorToRemove > 100) {
@@ -82,7 +77,7 @@ export const GreenScreen = () => {
 		}
 		canvas.putImageData(snapshot, 0, 0);
 		return;
-	};
+	}
 
 	return (
 		<div

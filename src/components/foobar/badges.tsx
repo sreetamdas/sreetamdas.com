@@ -18,11 +18,11 @@ import { RiWifiOffLine } from "react-icons/ri";
 import { VscDebug, VscTelescope } from "react-icons/vsc";
 import styled, { css } from "styled-components";
 
-import { FoobarContext } from "components/foobar";
-import { sharedTransition } from "styles/components";
-import { ExternalLink } from "styles/typography";
-import { TFoobarData, TFoobarPage } from "typings/console";
-import { breakpoint } from "utils/style";
+import { FoobarContext } from "@/components/foobar";
+import { sharedTransition } from "@/styles/components";
+import { ExternalLink } from "@/styles/typography";
+import { TFoobarData, TFoobarPage } from "@/typings/console";
+import { breakpoint } from "@/utils/style";
 
 const FoobarBadge = ({ badge }: { badge: TFoobarBadge }) => {
 	const { icon: Icon } = FOOBAR_BADGES[badge];
@@ -48,13 +48,13 @@ const Badge = ({ badge, completed, allAchievements }: TBadgeProps) => {
 	);
 };
 
-const renderBadges = (
+function renderBadges(
 	allBadges: Array<TFoobarBadge>,
 	completed: Array<TFoobarPage>,
 	allAchievements: boolean
-) => {
+) {
 	return allBadges.map((badge) => <Badge key={badge} {...{ badge, completed, allAchievements }} />);
-};
+}
 
 export const ShowCompletedBadges = () => {
 	const { completed, allAchievements } = useContext(FoobarContext);

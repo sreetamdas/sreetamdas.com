@@ -1,10 +1,10 @@
 import { FormEvent, useState } from "react";
 import styled, { css } from "styled-components";
 
-import { buttonStylesMixin } from "components/foobar/styled";
-import { sharedTransition } from "styles/components";
-import { Accent } from "styles/typography";
-import { breakpoint } from "utils/style";
+import { buttonStylesMixin } from "@/components/foobar/styled";
+import { sharedTransition } from "@/styles/components";
+import { Accent } from "@/styles/typography";
+import { breakpoint } from "@/utils/style";
 
 export type TNewsletterProps = {
 	subscriberCount: number;
@@ -14,7 +14,7 @@ export const Newsletter = ({ subscriberCount }: TNewsletterProps) => {
 	const [isFormBeingSubmitted, setIsFormBeingSubmitted] = useState(false);
 	const [formError, setFormError] = useState<string>();
 
-	const handleFormSubmit = async (event: FormEvent<HTMLFormElement>) => {
+	async function handleFormSubmit(event: FormEvent<HTMLFormElement>) {
 		setFormSuccess(false);
 		setIsFormBeingSubmitted(true);
 		setFormError(undefined);
@@ -29,7 +29,7 @@ export const Newsletter = ({ subscriberCount }: TNewsletterProps) => {
 		else setFormSuccess(true);
 
 		setIsFormBeingSubmitted(false);
-	};
+	}
 	return (
 		<Grid>
 			<NewsletterTitle>Sign up for my newsletter!</NewsletterTitle>

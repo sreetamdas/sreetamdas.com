@@ -9,10 +9,10 @@ import React, {
 	ReactNode,
 } from "react";
 
-import { Footer } from "components/Footer";
-import { Space, Center, WrapperForFooter } from "styles/layouts";
-import { LinkTo } from "styles/typography";
-import { TFoobarData, TFoobarContext, FOOBAR_PAGES } from "typings/console";
+import { Footer } from "@/components/Footer";
+import { Space, Center, WrapperForFooter } from "@/styles/layouts";
+import { LinkTo } from "@/styles/typography";
+import { TFoobarData, TFoobarContext, FOOBAR_PAGES } from "@/typings/console";
 import {
 	doAsyncThings,
 	loadLocalDataOnMount,
@@ -21,7 +21,7 @@ import {
 	mergeLocalDataIntoStateOnMount,
 	mergeDeep,
 	IS_DEV,
-} from "utils/console";
+} from "@/utils/console";
 
 export const initialFoobarData: TFoobarData = {
 	visitedPages: [],
@@ -34,12 +34,12 @@ export const initialFoobarData: TFoobarData = {
 // we're gonna hydrate this just below, and <FoobarWrapper /> wraps the entire usable DOM anyway
 export const FoobarContext = createContext<TFoobarContext>({} as TFoobarContext);
 
-const checkIfAllAchievementsAreDone = ({ completed }: TFoobarData) => {
+function checkIfAllAchievementsAreDone({ completed }: TFoobarData) {
 	const allPages = Object.values(FOOBAR_PAGES);
 	if (completed.length !== allPages.length) return false;
 
 	return allPages.every((page) => completed.includes(page));
-};
+}
 
 const FoobarWrapper = ({ children }: PropsWithChildren<ReactNode>): JSX.Element => {
 	const router = useRouter();
@@ -65,7 +65,7 @@ const FoobarWrapper = ({ children }: PropsWithChildren<ReactNode>): JSX.Element 
 	};
 
 	useEffect(() => {
-		const onMountAsync = async () => {
+		async function onMountAsync() {
 			const dataFromLocalForage = await loadLocalDataOnMount();
 			if (dataFromLocalForage !== null) {
 				updateFoobarDataPartially(dataFromLocalForage, true);
@@ -74,7 +74,7 @@ const FoobarWrapper = ({ children }: PropsWithChildren<ReactNode>): JSX.Element 
 			}
 			setDataLoaded(true);
 			return;
-		};
+		}
 		onMountAsync();
 
 		// @ts-expect-error add custom function

@@ -1,7 +1,7 @@
 import { CSSProperties, PropsWithChildren, ReactNodeArray } from "react";
 import styled, { css } from "styled-components";
 
-import { breakpoint } from "utils/style";
+import { breakpoint } from "@/utils/style";
 
 const CodePreBlockWithHighlight = styled.pre`
 	padding: 20px;

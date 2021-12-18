@@ -4,7 +4,7 @@ import { VscRepoForked } from "react-icons/vsc";
 import { useQuery } from "react-query";
 import styled from "styled-components";
 
-import { sharedTransition } from "styles/components";
+import { sharedTransition } from "@/styles/components";
 
 export const Stats = styled.div`
 	display: grid;
@@ -88,13 +88,13 @@ export const GitHubStats = () => {
 		<Stats>
 			<Stat href="https://github.com/sreetamdas/sreetamdas.com/stargazers">
 				<StatIcon>
-					<FaRegStar title="star" aria-label="star"/>
+					<FaRegStar title="star" aria-label="star" />
 				</StatIcon>
 				<StatValue>{data?.stars ?? "—"}</StatValue>
 			</Stat>
 			<Stat href="https://github.com/sreetamdas/sreetamdas.com/network/members">
 				<StatIcon>
-					<VscRepoForked title="fork" aria-label="fork"/>
+					<VscRepoForked title="fork" aria-label="fork" />
 				</StatIcon>
 				<StatValue>{data?.forks ?? "—"}</StatValue>
 			</Stat>

@@ -19,6 +19,7 @@
 		"baseUrl": "src",
 		"downlevelIteration": true,
 		"paths": {
+			"@/*": ["./*"],
 			"@/public/*": ["../public/*"]
 		},
 		"incremental": true

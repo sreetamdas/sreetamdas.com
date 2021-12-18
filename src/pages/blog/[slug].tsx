@@ -1,15 +1,15 @@
 import { getMDXComponent } from "mdx-bundler/client";
-import { GetStaticPaths, GetStaticProps } from "next";
+import { GetStaticProps } from "next";
 import React, { Fragment, useMemo, useRef } from "react";
 
-import { ChromaHighlight } from "components/FancyPants";
-import { ViewsCounter } from "components/ViewsCounter";
-import { ScrollToTop, ShareLinks } from "components/blog";
-import { Newsletter } from "components/blog/Newsletter";
-import { ReadingProgress } from "components/blog/ProgressBar";
-import { HighlightWithUseEffect, HighlightWithUseInterval } from "components/blog/rgb-text";
-import { MDXComponents } from "components/mdx";
-import { DocumentHead } from "components/shared/seo";
+import { ChromaHighlight } from "@/components/FancyPants";
+import { ViewsCounter } from "@/components/ViewsCounter";
+import { ScrollToTop, ShareLinks } from "@/components/blog";
+import { Newsletter } from "@/components/blog/Newsletter";
+import { ReadingProgress } from "@/components/blog/ProgressBar";
+import { HighlightWithUseEffect, HighlightWithUseInterval } from "@/components/blog/rgb-text";
+import { MDXComponents } from "@/components/mdx";
+import { DocumentHead } from "@/components/shared/seo";
 import {
 	BlogPostContentWrapper,
 	PostNotPublishedWarning,
@@ -17,19 +17,19 @@ import {
 	EndLinks,
 	Highlight,
 	CustomBlockquote,
-} from "styles/blog";
-import { MDXLink, MDXTitle } from "styles/components";
-import { Sparkles } from "styles/special";
+} from "@/styles/blog";
+import { MDXLink, MDXTitle } from "@/styles/components";
+import { Sparkles } from "@/styles/special";
 import {
 	BlogPostTitle,
 	Datestamp,
 	TextGradient,
 	Heavy,
 	StyledAccentTextLink,
-} from "styles/typography";
-import { TBlogPostPageProps } from "typings/blog";
-import { getMDXFileData, getBlogPostsSlugs } from "utils/blog";
-import { getButtondownSubscriberCount } from "utils/misc";
+} from "@/styles/typography";
+import { TBlogPostPageProps } from "@/typings/blog";
+import { getMDXFileData, getBlogPostsSlugs } from "@/utils/blog";
+import { getButtondownSubscriberCount } from "@/utils/misc";
 
 type TProps = TBlogPostPageProps & {
 	subscriberCount: number;
@@ -90,7 +90,7 @@ const Post = ({ code, frontmatter, slug, subscriberCount }: TProps) => {
 	);
 };
 
-export const getStaticPaths: GetStaticPaths = async () => {
+export async function getStaticPaths() {
 	const postsSlugs = await getBlogPostsSlugs();
 
 	const paths = postsSlugs.map((slug) => ({
@@ -98,7 +98,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 	}));
 
 	return { paths, fallback: false };
-};
+}
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
 	const subscriberCount = await getButtondownSubscriberCount();

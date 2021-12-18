@@ -2,11 +2,11 @@ import { Client } from "@notionhq/client";
 import { InferGetStaticPropsType } from "next";
 import { Fragment } from "react";
 
-import { Keebs } from "components/Keebs";
-import { ViewsCounter } from "components/ViewsCounter";
-import { DocumentHead } from "components/shared/seo";
-import { Center } from "styles/layouts";
-import { Title } from "styles/typography";
+import { Keebs } from "@/components/Keebs";
+import { ViewsCounter } from "@/components/ViewsCounter";
+import { DocumentHead } from "@/components/shared/seo";
+import { Center } from "@/styles/layouts";
+import { Title } from "@/styles/typography";
 
 const KEEBS_DATABASE_ID = "3539f182858f424f9cc2563c07dc300d";
 
@@ -29,7 +29,7 @@ const Index = ({ response }: InferGetStaticPropsType<typeof getStaticProps>) => 
 	);
 };
 
-export const getStaticProps = async () => {
+export async function getStaticProps() {
 	const notion = new Client({
 		auth: process.env.NOTION_TOKEN,
 	});
@@ -47,6 +47,6 @@ export const getStaticProps = async () => {
 	return {
 		props: { response },
 	};
-};
+}
 
 export default Index;

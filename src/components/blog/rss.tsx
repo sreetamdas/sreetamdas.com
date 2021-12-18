@@ -2,9 +2,9 @@ import fs from "fs";
 
 import { Feed } from "feed";
 
-import { getAllBlogPostsPreviewData } from "utils/blog";
+import { getAllBlogPostsPreviewData } from "@/utils/blog";
 
-export const generateRssFeed = async () => {
+export async function generateRssFeed() {
 	if (process.env.NODE_ENV === "development") {
 		return;
 	}
@@ -55,4 +55,4 @@ export const generateRssFeed = async () => {
 	fs.writeFileSync("./public/rss/feed.xml", feed.rss2());
 	fs.writeFileSync("./public/rss/atom.xml", feed.atom1());
 	fs.writeFileSync("./public/rss/feed.json", feed.json1());
-};
+}

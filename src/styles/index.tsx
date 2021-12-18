@@ -1,7 +1,7 @@
 import { createGlobalStyle } from "styled-components";
 
-import { sharedTransition } from "styles/components";
-import { BASE_FONT_SIZE } from "utils/style";
+import { sharedTransition } from "@/styles/components";
+import { BASE_FONT_SIZE } from "@/utils/style";
 
 export const GlobalStyles = createGlobalStyle`
 	:root {
@@ -28,7 +28,7 @@ export const GlobalStyles = createGlobalStyle`
 	--max-width: 650px;
 	--border-radius: 5px;
 	--transition-duration: 0.1s;
-	--list-item-spacing: 15px;
+	--list-item-spacing: 12px;
 	}
 
 	[data-theme="dark"] {

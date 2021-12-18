@@ -1,6 +1,6 @@
 import axios from "axios";
 
-import { PostDetails } from "typings/blog";
+import { PostDetails } from "@/typings/blog";
 
 export const HIDE_NAVBAR_PAGES = ["fancy-pants"];
 const BUTTONDOWN_URL = "https://api.buttondown.email/v1/subscribers";
@@ -9,7 +9,9 @@ const BUTTONDOWN_API_KEY = process.env.BUTTONDOWN_API_KEY;
 /**
  * @param path page pathname without initial slash
  */
-export const checkIfNavbarShouldBeHidden = (path: string) => HIDE_NAVBAR_PAGES.includes(path);
+export function checkIfNavbarShouldBeHidden(path: string) {
+	return HIDE_NAVBAR_PAGES.includes(path);
+}
 
 type TButtondownSubscribersAPIResponseObject = {
 	count: number;
@@ -32,7 +34,7 @@ type TButtondownSubscribersAPIResponseObject = {
 	}>;
 };
 
-export const getButtondownSubscriberCount = async () => {
+export async function getButtondownSubscriberCount() {
 	const BUTTONDOWN_AUTH_TOKEN = `Token ${BUTTONDOWN_API_KEY}`;
 
 	try {
@@ -46,7 +48,7 @@ export const getButtondownSubscriberCount = async () => {
 	} catch (error) {
 		return 69;
 	}
-};
+}
 
 /**
  * Upsert page views using `/api/page/add-view`

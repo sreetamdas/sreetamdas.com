@@ -1,7 +1,7 @@
 import styled, { css } from "styled-components";
 
-import { GitHubStats } from "components/Footer/GitHubStats";
-import { breakpoint } from "utils/style";
+import { GitHubStats } from "@/components/Footer/GitHubStats";
+import { breakpoint } from "@/utils/style";
 
 export const Footer = () => {
 	return (

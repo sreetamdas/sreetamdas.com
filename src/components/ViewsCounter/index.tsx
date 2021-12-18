@@ -2,8 +2,8 @@ import { useRouter } from "next/router";
 import { useQuery } from "react-query";
 import styled, { css } from "styled-components";
 
-import { PostDetails } from "typings/blog";
-import { getViewCount, updateAndGetViewCount } from "utils/misc";
+import { PostDetails } from "@/typings/blog";
+import { getViewCount, updateAndGetViewCount } from "@/utils/misc";
 
 const ViewsWrapper = styled.div<{ $hidden: TViewsCounterProps["hidden"] }>`
 	display: flex;

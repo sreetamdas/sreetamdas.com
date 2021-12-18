@@ -11,16 +11,18 @@ export const BREAKPOINTS = {
 	xl: 1440,
 };
 
-export const pixelToRem = (fontSize: number) => `${fontSize / BASE_FONT_SIZE}rem`;
+export function pixelToRem(fontSize: number) {
+	return `${fontSize / BASE_FONT_SIZE}rem`;
+}
 
-export const getIsMobileLayout = () => {
+export function getIsMobileLayout() {
 	if (typeof window === "undefined") return false;
 
 	const root = window.document.documentElement;
 	const isMobileLayout = root.style.getPropertyValue("--is-mobile-layout") === "true";
 
 	return isMobileLayout;
-};
+}
 
 type TBreakpointSide = typeof breakpointSides[number];
 const breakpointSides = ["until", "from"] as const;

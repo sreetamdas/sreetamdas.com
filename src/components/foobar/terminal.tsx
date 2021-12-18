@@ -2,8 +2,8 @@ import { useRouter } from "next/router";
 import { useState, useEffect, MouseEvent, useContext, ChangeEvent, FormEvent } from "react";
 import styled from "styled-components";
 
-import { FoobarContext } from "components/foobar";
-import { Center } from "styles/layouts";
+import { FoobarContext } from "@/components/foobar";
+import { Center } from "@/styles/layouts";
 
 const TerminalBackdrop = styled.div`
 	background-color: #000000cc;
@@ -53,28 +53,28 @@ const Terminal = ({ visible = false, toggleTerminal }: TTerminalProps) => {
 	const { konami } = useContext(FoobarContext);
 	const [goto, setGoto] = useState("");
 
-	const toggleTerminalVisible = () => {
+	function toggleTerminalVisible() {
 		setTerminalVisible((prev) => !prev);
 		toggleTerminal();
-	};
-	const handleGoToSubmit = (event: FormEvent<HTMLFormElement> | MouseEvent<HTMLInputElement>) => {
+	}
+	function handleGoToSubmit(event: FormEvent<HTMLFormElement> | MouseEvent<HTMLInputElement>) {
 		event.stopPropagation();
 		event.preventDefault();
 
 		if (goto !== "") router.push(`/foobar/${goto}`);
 		else if (goto === "") router.push("/foobar");
 		resetTerminal();
-	};
-	const handleOnChange = (event: ChangeEvent<HTMLInputElement>) => {
+	}
+	function handleOnChange(event: ChangeEvent<HTMLInputElement>) {
 		setGoto(event.target.value);
-	};
-	const ignoreClick = (event: MouseEvent<HTMLFormElement>) => {
+	}
+	function ignoreClick(event: MouseEvent<HTMLFormElement>) {
 		event.stopPropagation();
-	};
-	const resetTerminal = () => {
+	}
+	function resetTerminal() {
 		setGoto("");
 		toggleTerminalVisible();
-	};
+	}
 
 	useEffect(() => {
 		setTerminalVisible(visible);
