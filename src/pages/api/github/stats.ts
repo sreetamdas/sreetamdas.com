@@ -1,5 +1,6 @@
-import axios from "axios";
 import { NextApiRequest, NextApiResponse } from "next";
+
+import { octokit } from "@/domains/github";
 
 /**
  * Get the stars and forks of a repository
@@ -10,16 +11,18 @@ export default async (
 ) => {
 	try {
 		const { owner, repo } = req.body;
-		const { stargazers_count: stars = 0, forks = 0 } = (
-			await axios.get<{ stargazers_count: number; forks: number }>(
-				`https://api.github.com/repos/${owner}/${repo}`
-			)
-		).data;
+
+		const {
+			data: { stargazers_count: stars = 0, forks = 0 },
+		} = await octokit.request("GET /repos/{owner}/{repo}", {
+			owner,
+			repo,
+		});
 
 		res.status(200).send({ stars, forks });
 	} catch (error) {
 		// eslint-disable-next-line no-console
-		console.error("Request to api.github.com failed");
+		console.error("Request using @octokit/core failed");
 
 		res.status(200).send({ stars: 69, forks: 69 });
 	}

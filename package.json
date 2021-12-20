@@ -16,6 +16,7 @@
 	},
 	"dependencies": {
 		"@notionhq/client": "^0.4.7",
+		"@octokit/core": "^3.5.1",
 		"@radix-ui/react-popover": "^0.1.1",
 		"@sreetamdas/karma": "^2.3.4",
 		"@supabase/supabase-js": "^1.28.0",

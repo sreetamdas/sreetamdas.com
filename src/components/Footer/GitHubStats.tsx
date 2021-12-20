@@ -1,9 +1,9 @@
-import axios from "axios";
 import { FaRegStar } from "react-icons/fa";
 import { VscRepoForked } from "react-icons/vsc";
 import { useQuery } from "react-query";
 import styled from "styled-components";
 
+import { getGitHubStats, StatsResult } from "@/domains/github";
 import { sharedTransition } from "@/styles/components";
 
 export const Stats = styled.div`
@@ -45,31 +45,6 @@ export const StatIcon = styled.span`
 `;
 
 export const StatValue = styled.span``;
-
-type StatsResult = {
-	stars: number;
-	forks: number;
-};
-
-type StatsQuery = {
-	owner: string;
-	repo: string;
-};
-
-/**
- * Fetch GitHub stats from /api/github/stats
- */
-export async function getGitHubStats(body: StatsQuery) {
-	const response = (
-		await axios.post<StatsResult>("/api/github/stats", body, {
-			headers: {
-				"Content-Type": "application/json",
-			},
-		})
-	).data;
-
-	return response;
-}
 
 export const GitHubStats = () => {
 	const { data } = useQuery<StatsResult>(
