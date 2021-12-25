@@ -4,13 +4,13 @@ import { NavigationContainer, Typography, NavLink, ChromaHighlight } from "@/com
 import { ViewsCounter } from "@/components/ViewsCounter";
 import { DocumentHead } from "@/components/shared/seo";
 import { WithoutNavbar } from "@/layouts/WIthoutNavbar";
-import { FullWidth, Space } from "@/styles/layouts";
+import { FullWidthWrapper, Space } from "@/styles/layouts";
 
 const FancyPants = () => {
 	return (
 		<Fragment>
 			<DocumentHead title="Fancy Pants" description="Sreetam's fancy-shmancy landing page" />
-			<FullWidth>
+			<FullWidthWrapper>
 				<div style={{ padding: "0 25px" }}>
 					<NavigationContainer>
 						<NavLink href="/">Home</NavLink>
@@ -32,7 +32,7 @@ const FancyPants = () => {
 						<ChromaHighlight>TypeScript</ChromaHighlight>
 					</Typography>
 				</div>
-			</FullWidth>
+			</FullWidthWrapper>
 			<Space />
 
 			<ViewsCounter />
