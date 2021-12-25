@@ -3,7 +3,7 @@ import { ThemeContext } from "styled-components";
 
 import { ViewsCounter } from "@/components/ViewsCounter";
 import { GreenScreen } from "@/components/talks/greenscreen";
-import { FullWidth } from "@/styles/layouts";
+import { FullWidthWrapper } from "@/styles/layouts";
 import { Title } from "@/styles/typography";
 
 const Page = () => {
@@ -16,7 +16,7 @@ const Page = () => {
 
 	return (
 		<>
-			<FullWidth>
+			<FullWidthWrapper>
 				<div style={{ padding: "0 25px" }}>
 					<Title
 						style={{
@@ -29,7 +29,7 @@ const Page = () => {
 					</Title>
 					<GreenScreen />
 				</div>
-			</FullWidth>
+			</FullWidthWrapper>
 			<ViewsCounter />
 		</>
 	);

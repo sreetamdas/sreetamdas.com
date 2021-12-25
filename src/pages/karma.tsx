@@ -8,7 +8,7 @@ import ImageCSS from "@/public/karma/css.webp";
 import ImageElixir from "@/public/karma/elixir.webp";
 import ImagePython from "@/public/karma/python.webp";
 import ImageReact from "@/public/karma/react.webp";
-import { FullWidth, Space } from "@/styles/layouts";
+import { FullWidthWrapper, Space } from "@/styles/layouts";
 import { LinkTo, Title } from "@/styles/typography";
 
 const KARMA_COLOR_PALETTE = [
@@ -89,7 +89,7 @@ const StyledImage = (props: ImageProps) => (
 	</FullScreenImage>
 );
 
-const WideImagesContainer = styled(FullWidth)`
+const WideImagesContainer = styled(FullWidthWrapper)`
 	display: grid;
 	justify-items: center;
 `;
