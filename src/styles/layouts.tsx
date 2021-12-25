@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 import { sharedTransition } from "@/styles/components";
 
@@ -41,7 +41,11 @@ export const Space = styled.div<{ size?: number }>`
 	padding: ${({ size }) => (size ? `${size / 2}px` : "50px")};
 `;
 
-export const FullWidthWrapper = styled.div`
+export const fullWidthMixin = css`
 	width: 100%;
 	grid-column: 1 / -1;
+`;
+
+export const FullWidthWrapper = styled.div`
+	${fullWidthMixin}
 `;
