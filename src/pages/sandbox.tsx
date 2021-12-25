@@ -1,11 +1,9 @@
-import { Fragment } from "react";
-
 import { Sandbox } from "@/components/Sandbox";
 import { ViewsCounter } from "@/components/ViewsCounter";
 import { DocumentHead } from "@/components/shared/seo";
 import { Center, Space } from "@/styles/layouts";
 import "@codesandbox/sandpack-react/dist/index.css";
-import { Title } from "@/styles/typography";
+import { ExternalLink, Paragraph, Title } from "@/styles/typography";
 
 const JSX_STRING = `
 export default function App() {
@@ -19,10 +17,17 @@ function formatCodeString(code: string) {
 
 const Index = () => {
 	return (
-		<Fragment>
-			<DocumentHead title="Sandbox" />
+		<>
+			<DocumentHead
+				title="Sandbox"
+				description="A sandbox to play in, built with @codesandbox/sandpack"
+			/>
 			<Center>
 				<Title size={5}>/sandbox</Title>
+				<Paragraph>
+					A sandbox for you to play with, built with{" "}
+					<ExternalLink href="https://sandpack.codesandbox.io">Sandpack</ExternalLink>.
+				</Paragraph>
 			</Center>
 
 			<Sandbox
@@ -31,10 +36,9 @@ const Index = () => {
 					"/App.js": formatCodeString(JSX_STRING),
 				}}
 			/>
-
 			<Space size={50} />
 			<ViewsCounter />
-		</Fragment>
+		</>
 	);
 };
 

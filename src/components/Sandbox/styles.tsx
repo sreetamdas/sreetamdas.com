@@ -8,7 +8,7 @@ export const Wrapper = styled.div`
 		"$bleed",
 		css`
 			${fullWidthMixin}
-			padding: 0 50px;
+			padding:  50px;
 		`
 	)}
 `;
