@@ -61,4 +61,4 @@ and [subscribe via RSS](https://buttondown.email/sreetamdas/rss)!
 
 ## License
 
-Licensed under the [MIT License](LICENSE.md). Feel free to use in your own projects, with attribution please. A 🌟star on the repository would be super cool too! 😄
+Licensed under the [MIT License](LICENSE). Feel free to use in your own projects, with attribution please. A 🌟star on the repository would be super cool too! 😄
