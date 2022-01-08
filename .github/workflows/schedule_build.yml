@@ -1,0 +1,14 @@
+name: Schedule build
+on:
+  schedule:
+    - cron: "0 0 * * *"
+
+jobs:
+  build:
+    name: Call build hook
+    runs-on: ubuntu-latest
+    steps:
+      - name: Curl request
+        env:
+          VERCEL_BUILD_WEBHOOK_URL: ${{ secrets.VERCEL_BUILD_WEBHOOK_URL }}
+        run: curl -X POST -d $VERCEL_BUILD_WEBHOOK_URL
