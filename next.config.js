@@ -7,19 +7,35 @@ module.exports = withPlausibleProxy()({
 	env: {
 		SITE_URL: "https://sreetamdas.com",
 	},
-	webpack(config) {
-		config.module.rules.push({
-			test: /\.svg$/,
-			use: [
-				{
-					loader: "@svgr/webpack",
-					options: {
-						icon: true,
-						titleProp: true,
+	webpack(config, options) {
+		config.module.rules.push(
+			{
+				test: /\.svg$/,
+				use: [
+					{
+						loader: "@svgr/webpack",
+						options: {
+							icon: true,
+							titleProp: true,
+						},
 					},
-				},
-			],
-		});
+				],
+			},
+			{
+				test: /\.mdx?$/,
+				use: [
+					// The default `babel-loader` used by Next:
+					options.defaultLoaders.babel,
+					{
+						loader: "@mdx-js/loader",
+						/** @type {import('@mdx-js/loader').Options} */
+						options: {
+							/* jsxImportSource: …, otherOptions… */
+						},
+					},
+				],
+			}
+		);
 
 		return config;
 	},
