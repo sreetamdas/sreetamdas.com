@@ -1,6 +1,8 @@
 name: Schedule build
 on:
   schedule:
+    # Customize schedule expression at https://crontab.guru
+    # This one runs at 00:00 UTC, daily
     - cron: "0 0 * * *"
 
 jobs:
