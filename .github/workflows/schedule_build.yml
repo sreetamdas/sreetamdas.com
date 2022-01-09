@@ -11,4 +11,4 @@ jobs:
       - name: Curl request
         env:
           VERCEL_BUILD_WEBHOOK_URL: ${{ secrets.VERCEL_BUILD_WEBHOOK_URL }}
-        run: curl -X POST -d $VERCEL_BUILD_WEBHOOK_URL
+        run: curl -X POST $VERCEL_BUILD_WEBHOOK_URL
