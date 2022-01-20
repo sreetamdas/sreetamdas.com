@@ -400,7 +400,7 @@ type TExternalLinksArray = Array<{
 export const ExternalLinksOverlay = () => {
 	const externalLinks: TExternalLinksArray = [
 		{
-			link: "https://twitter.com/_SreetamDas",
+			link: "https://github.com/sreetamdas",
 			title: "Sreetam Das' GitHub",
 			icon: <FaGithub />,
 		},
