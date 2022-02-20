@@ -4,6 +4,7 @@ import type { AppProps } from "next/app";
 import Head from "next/head";
 import React, { Fragment, useState } from "react";
 import type { PropsWithChildren } from "react";
+import { Toaster } from "react-hot-toast";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { ReactQueryDevtools } from "react-query/devtools";
 import { Hydrate } from "react-query/hydration";
@@ -59,6 +60,7 @@ const MyApp = ({ Component, pageProps }: AppPropsWithLayout) => {
 					<PlausibleProvider domain="sreetamdas.com" customDomain="sreetamdas.com">
 						<ThemeProvider theme={themeForContext}>
 							<GlobalStyles />
+							<Toaster position="top-right" />
 							<ComponentLayout>
 								<Component {...pageProps} />
 							</ComponentLayout>
