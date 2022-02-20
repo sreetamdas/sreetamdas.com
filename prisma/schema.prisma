@@ -1,0 +1,17 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model page_details {
+  id         BigInt   @id(map: "Views_pkey") @default(autoincrement())
+  slug       String
+  created_at DateTime @default(now()) @db.Timestamptz(6)
+  updated_at DateTime @default(now()) @db.Timestamptz(6)
+  view_count BigInt   @default(1)
+  likes      BigInt   @default(0)
+}
