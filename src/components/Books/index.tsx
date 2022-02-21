@@ -6,10 +6,10 @@ import { CustomImage, ImageWrapper } from "@/components/mdx/images";
 import { fullWidthMixin } from "@/styles/layouts";
 import { breakpoint } from "@/utils/style";
 
-type BookDetails = {
+export type BookEntryProperties = {
 	name: string;
 	cover: string;
-	tag: { name?: string; color?: string };
+	status: string;
 	author: string;
 };
 
@@ -20,7 +20,7 @@ const BooksList = ({ results }: Pick<QueryDatabaseResponse, "results">) => {
 		if (!("properties" in result)) return acc;
 		const { properties } = result;
 
-		const details = {} as BookDetails;
+		const details = {} as BookEntryProperties;
 
 		// Process "Name"
 		if ("title" in properties["Name"]) {
@@ -41,13 +41,13 @@ const BooksList = ({ results }: Pick<QueryDatabaseResponse, "results">) => {
 			if (properties["Tags"]["type"] === "select") {
 				const tagObject = properties["Tags"];
 				if (tagObject["type"] === "select") {
-					details.tag = { name: tagObject.select?.name, color: tagObject.select?.color };
+					// details.status = { name: tagObject.select?.name ?? "", color: tagObject.select?.color };
 				}
 			}
 		}
 
 		return [...acc, details];
-	}, [] as Array<BookDetails>);
+	}, [] as Array<BookEntryProperties>);
 
 	return (
 		<KeebsContainer>
