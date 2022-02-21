@@ -32,7 +32,7 @@ export function remarkShiki(options: TRemarkShikiOptions) {
 				});
 
 				const { fg, bg } = theme;
-				const html = renderToHTML(tokens, { fg, bg, langId: lang }, node.meta);
+				const html = renderToHTML(tokens, { fg, bg, langId: lang });
 				node.type = "html";
 				node.value = html;
 			} else {
