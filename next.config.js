@@ -2,7 +2,11 @@
 const { withPlausibleProxy } = require("next-plausible");
 
 module.exports = withPlausibleProxy()({
-	experimental: { esmExternals: true, styledComponents: true },
+	compiler: {
+		// ssr and displayName are configured by default
+		styledComponents: true,
+	},
+	experimental: { esmExternals: true },
 	pageExtensions: ["js", "jsx", "ts", "tsx", "mdx"],
 	env: {
 		SITE_URL: "https://sreetamdas.com",

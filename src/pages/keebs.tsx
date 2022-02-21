@@ -10,7 +10,7 @@ import { Title } from "@/styles/typography";
 
 const KEEBS_DATABASE_ID = "3539f182858f424f9cc2563c07dc300d";
 
-const Index = ({ response }: InferGetStaticPropsType<typeof getStaticProps>) => {
+const Index = ({ results }: InferGetStaticPropsType<typeof getStaticProps>) => {
 	return (
 		<Fragment>
 			<DocumentHead
@@ -22,7 +22,7 @@ const Index = ({ response }: InferGetStaticPropsType<typeof getStaticProps>) => 
 				<Title size={5}>/keebs</Title>
 			</Center>
 
-			<Keebs keebInfo={response.results} />
+			<Keebs results={results} />
 
 			<ViewsCounter />
 		</Fragment>
@@ -43,9 +43,10 @@ export async function getStaticProps() {
 			],
 		},
 	});
+	const { results } = response;
 
 	return {
-		props: { response },
+		props: { results },
 	};
 }
 

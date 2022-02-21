@@ -28,7 +28,8 @@ export async function bundleMDXWithOptions(filename: string) {
 	const theme = await loadTheme("../@sreetamdas/karma/themes/Karma-color-theme.json");
 	const highlighter = await getHighlighter({ theme });
 
-	const result = await bundleMDX(mdxSource, {
+	const result = await bundleMDX({
+		source: mdxSource,
 		cwd: path.dirname(filename),
 		xdmOptions(options) {
 			options.remarkPlugins = [

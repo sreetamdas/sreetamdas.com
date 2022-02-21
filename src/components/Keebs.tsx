@@ -10,13 +10,13 @@ type TkeebDetails = {
 	image?: string;
 	tags: Array<{ name: string; color: string }>;
 };
-export type TKeebInfo = {
-	keebInfo: QueryDatabaseResponse["results"];
-};
-const Keebs = ({ keebInfo }: TKeebInfo) => {
-	const keebDetails = keebInfo.map(({ properties }) => {
+
+const Keebs = ({ results }: Pick<QueryDatabaseResponse, "results">) => {
+	const keebDetails = results.reduce((acc, result) => {
+		if (!("properties" in result)) return acc;
+
 		const details = {} as TkeebDetails;
-		const { Name: nameField, Image: imageField, Type: typeField } = properties;
+		const { Name: nameField, Image: imageField, Type: typeField } = result.properties;
 
 		if (nameField.type === "title") {
 			details.name = nameField.title[0].plain_text;
@@ -31,8 +31,8 @@ const Keebs = ({ keebInfo }: TKeebInfo) => {
 			}));
 		}
 
-		return details;
-	});
+		return [...acc, details];
+	}, [] as Array<TkeebDetails>);
 
 	return (
 		<KeebsContainer>

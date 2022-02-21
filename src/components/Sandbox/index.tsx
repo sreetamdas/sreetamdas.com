@@ -9,10 +9,6 @@ import {
 
 import { Wrapper } from "./styles";
 
-type SandboxProps = SandpackProps & {
-	bleed?: boolean;
-};
-
 const KARMA_SANDPACK_THEME: SandpackThemeProp = {
 	palette: {
 		activeText: "#f7f1ff",
@@ -48,6 +44,10 @@ const KARMA_SANDPACK_THEME: SandpackThemeProp = {
 		fontSize: "16px",
 		lineHeight: "1.5",
 	},
+};
+
+type SandboxProps = SandpackProps & {
+	bleed?: boolean;
 };
 
 export const Sandbox = ({

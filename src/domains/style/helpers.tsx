@@ -1,4 +1,4 @@
-import styled, { css, FlattenSimpleInterpolation, StyledComponentProps } from "styled-components";
+import styled, { css, FlattenSimpleInterpolation, ThemedStyledProps } from "styled-components";
 
 export const screenReaderOnlyMixin = css`
 	clip: rect(0 0 0 0);
@@ -23,17 +23,11 @@ export const SROnly = styled.span`
  * @param style css`` block with style to apply when true
  * @returns
  */
-export function whenProp(props: string | string[], style: FlattenSimpleInterpolation) {
+export function whenProp<P, T>(props: string | string[], style: FlattenSimpleInterpolation) {
 	const normalizedProps = typeof props === "string" ? [props] : props;
-	return (
-		componentProps: StyledComponentProps<
-			keyof JSX.IntrinsicElements | React.ComponentType<unknown>,
-			object,
-			Record<string, unknown>,
-			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			keyof any
-		>
-	) => (normalizedProps.some((prop) => componentProps[prop]) ? style : null);
+	return (componentProps: ThemedStyledProps<P, T>) =>
+		// @ts-expect-error - TS doesn't know that the componentProps object has the props property
+		normalizedProps.some((prop) => componentProps[prop]) ? style : null;
 }
 
 /**
@@ -42,15 +36,9 @@ export function whenProp(props: string | string[], style: FlattenSimpleInterpola
  * @param style css`` block with style to apply when true
  * @returns
  */
-export function unlessProp(props: string | string[], style: FlattenSimpleInterpolation) {
+export function unlessProp<P, T>(props: string | string[], style: FlattenSimpleInterpolation) {
 	const normalizedProps = typeof props === "string" ? [props] : props;
-	return (
-		componentProps: StyledComponentProps<
-			keyof JSX.IntrinsicElements | React.ComponentType<unknown>,
-			object,
-			Record<string, unknown>,
-			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			keyof any
-		>
-	) => (normalizedProps.some((prop) => componentProps[prop]) ? null : style);
+	return (componentProps: ThemedStyledProps<P, T>) =>
+		// @ts-expect-error - TS doesn't know that the componentProps object has the props property
+		normalizedProps.some((prop) => componentProps[prop]) ? null : style;
 }

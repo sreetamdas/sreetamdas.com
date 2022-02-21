@@ -1,7 +1,7 @@
 import NextImage from "next/image";
 import styled from "styled-components";
 
-const ImageWrapper = styled.span`
+export const ImageWrapper = styled.span`
 	& img {
 		max-width: var(--max-width);
 		width: 100%;
