@@ -1,17 +1,41 @@
 import axios from "axios";
 import { FormEvent } from "react";
+// eslint-disable-next-line import/no-named-as-default
+import toast from "react-hot-toast";
+
+import { BookEntryProperties } from "@/components/Books";
+import { uploadFileToSupabase, getSupabaseFileURL } from "@/domains/supabase";
+
+type FormDataValues =
+	| BookEntryProperties
+	| (Omit<BookEntryProperties, "cover"> & {
+			cover: File;
+	  });
 
 export const UploadBook = () => {
 	async function handleSubmit(event: FormEvent<HTMLFormElement>) {
 		event.preventDefault();
 
-		const formData = {};
-		new FormData(event.target as HTMLFormElement).forEach((value, key) => {
+		const formData = {} as FormDataValues;
+
+		// @ts-expect-error Form fields are not typed
+		new FormData(event.target as HTMLFormElement).forEach((value, key: keyof FormDataValues) => {
+			// @ts-expect-error File is not assignable to type string
 			formData[key] = value;
 		});
 
-		console.log(formData);
-		await axios.post("/api/admin/books/add", formData);
+		const imageFile = formData["cover"] as File;
+		const { data, error } = await uploadFileToSupabase(imageFile, { path: "/site/keebs/" });
+		if (error) {
+			toast.error(error.message);
+		}
+		if (data) {
+			toast.success(`Uploaded ${imageFile.name} successfully!`);
+			const fileURL = getSupabaseFileURL(data?.Key);
+			formData["cover"] = fileURL;
+		}
+		const res = (await axios.post("/api/admin/books/add", formData)).data;
+		console.log(res);
 	}
 
 	return (
@@ -21,7 +45,6 @@ export const UploadBook = () => {
 				<input type="name" name="name" placeholder="Name" required />
 				<input type="name" name="author" placeholder="Author" required />
 				<input type="file" name="cover" required />
-				{/* select tag with book status */}
 				<select name="status">
 					{Object.keys(BookStatus).map((status) => (
 						<option key={status} value={status}>

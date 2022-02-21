@@ -6,7 +6,7 @@ export function getSupabaseFileURL(filename: string) {
 
 export async function uploadFileToSupabase(
 	image: File,
-	{ bucket, path } = { bucket: "public", path: "/" }
+	{ bucket = "public", path = "/" }: { bucket?: string; path?: string } = {}
 ) {
 	return await supabaseClient.storage.from(bucket).upload(`${path}${image.name}`, image);
 }

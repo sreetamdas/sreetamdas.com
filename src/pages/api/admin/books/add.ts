@@ -1,31 +1,22 @@
 import { NextApiRequest, NextApiResponse } from "next";
 
 import { BookEntryProperties } from "@/components/Books";
-import { uploadFileToSupabase, getSupabaseFileURL } from "@/domains/supabase";
 import { prismaClient } from "@/utils/prismaClient";
 
-type RequestBody = Omit<BookEntryProperties, "cover"> & {
-	cover: File;
+// @ts-expect-error BigInt prototype
+BigInt.prototype.toJSON = function () {
+	return this.toString();
 };
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
-	if (req.method === "POST") {
-		const { name, cover, author, status } = req.body as RequestBody;
-
-		// Upload cover image and get public URL
-
-		const { data, error } = await uploadFileToSupabase(cover);
-		if (error) {
-			return res.status(500).json({ error: error.message });
-		}
-		if (data) {
-			const fileURL = getSupabaseFileURL(data?.Key);
-			console.log(fileURL);
+	try {
+		if (req.method === "POST") {
+			const { name, cover, author, status } = req.body as BookEntryProperties;
 
 			const book = await prismaClient.books.create({
 				data: {
 					name,
-					cover: fileURL,
+					cover,
 					authors: {
 						connectOrCreate: {
 							where: {
@@ -52,13 +43,11 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 					book_status: true,
 				},
 			});
-			console.log("created");
-
-			// console.log({ book });
-
-			// return res.status(200).json({ book });
+			return res.status(200).send({ book });
+		} else {
+			res.status(400);
 		}
-	} else {
-		res.status(400);
+	} catch (error) {
+		res.status(500).json({ error });
 	}
 };
