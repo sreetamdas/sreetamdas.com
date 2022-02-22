@@ -35,6 +35,7 @@ export const UploadBook = () => {
 			formData["cover"] = fileURL;
 		}
 		const res = (await axios.post("/api/admin/books/add", formData)).data;
+		// eslint-disable-next-line no-console
 		console.log(res);
 	}
 
