@@ -76,7 +76,7 @@ export const GlobalStyles = createGlobalStyle`
 	}
 
 	:focus-visible {
-		box-shadow: 0 0 0.1rem 0.1rem var(--color-primary-accent);
+		box-shadow: 0 0 0 2px var(--color-primary-accent);
 		opacity: 1;
 		outline: 0;
 	}

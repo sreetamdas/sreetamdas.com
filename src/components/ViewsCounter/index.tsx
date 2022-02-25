@@ -41,7 +41,7 @@ const ViewCount = styled.span`
 function getViewCountCopy(view_count: number, pageType: TViewsCounterProps["pageType"]) {
 	switch (view_count) {
 		case 0:
-			return "No views yet. Wait what, How? 🤔";
+			return "No views yet. Wait what, HOW? 🤔";
 		case 1:
 			return "This page has been viewed only once. That's a lot of views!";
 		case 69:

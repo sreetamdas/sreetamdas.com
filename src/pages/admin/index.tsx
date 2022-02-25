@@ -21,7 +21,7 @@ const AdminLogin = () => {
 
 	return (
 		<>
-			<DocumentHead title="/admin" noIndex />
+			<DocumentHead title="Admin" noIndex />
 
 			<Center>
 				<Title size={5}>/admin</Title>
@@ -58,7 +58,7 @@ const Admin = () => {
 	}
 	return (
 		<>
-			<DocumentHead title="/admin" noIndex />
+			<DocumentHead title="Admin" noIndex />
 
 			<Center>
 				<Title size={5}>/admin</Title>
