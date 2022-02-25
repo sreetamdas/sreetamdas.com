@@ -1,6 +1,7 @@
 import axios from "axios";
 import { Formik, FormikHelpers } from "formik";
 // eslint-disable-next-line import/no-named-as-default
+import { useState } from "react";
 import toast from "react-hot-toast";
 
 import { BookEntryProperties } from "@/components/Books";
@@ -14,17 +15,20 @@ export const UploadBook = () => {
 		author: "",
 		status: BookStatus.Have,
 	};
+	const options = Object.keys(BookStatus).map((status) => ({ value: status, label: status }));
 
 	async function handleSubmit(
 		values: FormDataValues,
 		{ setSubmitting }: FormikHelpers<FormDataValues>
 	) {
 		setSubmitting(true);
+
 		const imageFile = values["cover"] as File;
 		const { data, error } = await uploadFileToSupabase(imageFile, { path: "/site/keebs/" });
 		if (error) {
 			toast.error(error.message);
 		}
+
 		if (data) {
 			toast.success(`Uploaded ${imageFile.name} successfully!`);
 			const fileURL = getSupabaseFileURL(data?.Key);
@@ -32,6 +36,7 @@ export const UploadBook = () => {
 			const res = (await axios.post("/api/admin/books/add", formValues)).data;
 			// eslint-disable-next-line no-console
 			console.log(res);
+			setSubmitting(false);
 		}
 	}
 
@@ -42,7 +47,9 @@ export const UploadBook = () => {
 				<InputField name="author" type="text" label="Author" required />
 				<SelectField
 					name="status"
-					options={Object.keys(BookStatus).map((status) => ({ value: status, label: status }))}
+					options={options}
+					defaultValue={options?.[0]}
+					transformValue={(option) => option?.value}
 					label="Status"
 				/>
 				<FileInputField name="cover" type="file" label="Upload image" />
@@ -59,3 +66,15 @@ enum BookStatus {
 	Want = "Want",
 	Finished = "Finished",
 }
+
+// Display image uploaded from file system
+const UploadImagePreview = ({ imageURL }: { imageURL: File }) => {
+	const [preview, setPreview] = useState<string | null>(null);
+	const reader = new FileReader();
+	reader.readAsDataURL(imageURL);
+	reader.onload = () => {
+		setPreview(reader.result);
+	};
+
+	return <div>{preview ? <img src={preview} alt="preview" /> : "loading"}</div>;
+};

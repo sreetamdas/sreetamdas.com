@@ -1,8 +1,14 @@
+/* eslint-disable indent */
 export * from "./styles";
 
-import { useField } from "formik";
+import { Field, FieldProps, useField } from "formik";
 import { InputHTMLAttributes } from "react";
-import Select, { Props as ReactSelectProps, GroupBase } from "react-select";
+import Select, {
+	ActionMeta,
+	GroupBase,
+	OnChangeValue,
+	Props as ReactSelectProps,
+} from "react-select";
 
 import {
 	Label,
@@ -59,35 +65,47 @@ export const FileInputField = ({ label, ...props }: FileInputFieldProps) => {
 	);
 };
 
-type SelectFieldProps = NameLabelProps & ReactSelectProps & { placeholder?: string };
-export const SelectField: <
+type AdditionalSelectProps<Option, IsMulti extends boolean = false> = {
+	transformValue?: (value: OnChangeValue<Option, IsMulti>) => void;
+};
+export const SelectField = <
 	Option,
 	IsMulti extends boolean = false,
 	Group extends GroupBase<Option> = GroupBase<Option>
->(
-	props: ReactSelectProps<Option, IsMulti, Group>
-) => JSX.Element = ({ label, displayLabel, ...props }) => {
-	const [field, meta, helpers] = useField(props);
-
-	const { options } = field;
-	const { touched, error } = meta;
-	const { setValue } = helpers;
-
+>({
+	name,
+	label,
+	displayLabel,
+	options,
+	transformValue,
+	...props
+}: ReactSelectProps<Option, IsMulti, Group> &
+	NameLabelProps &
+	AdditionalSelectProps<Option, IsMulti>) => {
 	return (
-		<InputGroup>
-			<Label
-				htmlFor={field.id || field.name}
-				$show={displayLabel || !!field.value?.toString().length}
-			>
-				{label}
-			</Label>
-			<Select
-				options={options}
-				defaultValue={options?.[0]}
-				onChange={(option) => setValue(option?.value)}
-				isSearchable={false}
-			/>
-			{touched && error ? <Error>{error}</Error> : null}
-		</InputGroup>
+		<Field name={name}>
+			{({ field: { value }, form: { setFieldValue }, meta: { error, touched } }: FieldProps) => {
+				function handleChange(
+					selectedOption: OnChangeValue<Option, IsMulti>,
+					_meta: ActionMeta<Option>
+				) {
+					if (transformValue) {
+						setFieldValue(name, transformValue(selectedOption));
+					} else {
+						setFieldValue(name, selectedOption);
+					}
+				}
+
+				return (
+					<InputGroup>
+						<Label htmlFor={name} $show={displayLabel || !!value?.toString().length}>
+							{label}
+						</Label>
+						<Select options={options} onChange={handleChange} isSearchable={false} {...props} />
+						{touched && error ? <Error>{error}</Error> : null}
+					</InputGroup>
+				);
+			}}
+		</Field>
 	);
 };
