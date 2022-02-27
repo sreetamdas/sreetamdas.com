@@ -9,7 +9,6 @@ type ButtonProps = {
 export const Button = styled.button<ButtonProps>`
 	cursor: pointer;
 	background-color: var(--color-background);
-	padding: 10px 15px;
 	border-radius: var(--border-radius);
 	border: 2px solid var(--color-primary-accent);
 	color: var(--color-primary);
@@ -29,18 +28,21 @@ export const Button = styled.button<ButtonProps>`
 	/* variants with different padding */
 	${({ size }) => {
 		switch (size) {
-			case "sm" || "small":
+			case "sm":
+			case "small":
 				return css`
 					font-size: 0.75rem;
-					padding: 0px 10px;
+					padding: 5px 10px;
 				`;
-			case "md" || "medium":
+			case "md":
+			case "medium":
 			default:
 				return css`
 					font-size: 0.85rem;
 					padding: 10px 30px;
 				`;
-			case "lg" || "large":
+			case "lg":
+			case "large":
 				return css`
 					font-size: 1rem;
 					padding: 15px 80px;

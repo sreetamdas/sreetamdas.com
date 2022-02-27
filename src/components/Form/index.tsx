@@ -17,7 +17,10 @@ import {
 	InputGroup,
 	Error,
 	FileUploadContainer,
+	UploadedFilePreviewContainer,
+	UploadedFileMesssage,
 	FileUploadLabel,
+	FileUploadIcon,
 	customSelectStyles,
 } from "./styles";
 
@@ -55,7 +58,17 @@ export const FileInputField = ({ label, ...props }: FileInputFieldProps) => {
 	return (
 		<FileUploadContainer>
 			<FileUploadLabel>
-				{label}
+				{field.value ? (
+					<UploadedFilePreviewContainer>
+						<UploadedFileMesssage>Image selected</UploadedFileMesssage>
+						<UploadImagePreview image={field.value} />
+					</UploadedFilePreviewContainer>
+				) : (
+					<>
+						<FileUploadIcon />
+						{label}
+					</>
+				)}
 				<Input
 					{...props}
 					onChange={(event) => {
@@ -65,7 +78,6 @@ export const FileInputField = ({ label, ...props }: FileInputFieldProps) => {
 				/>
 			</FileUploadLabel>
 			{meta.touched && meta.error ? <Error>{meta.error}</Error> : null}
-			{field.value ? <UploadImagePreview image={field.value} /> : null}
 		</FileUploadContainer>
 	);
 };
@@ -79,7 +91,7 @@ const UploadImagePreview = ({ image }: { image: File }) => {
 		setPreview(reader.result as string);
 	};
 
-	return <div>{preview ? <CustomImage src={preview} alt="preview" /> : "loading"}</div>;
+	return preview ? <CustomImage src={preview} alt="preview" /> : <>loading</>;
 };
 
 type AdditionalSelectProps<Option, IsMulti extends boolean = false> = {

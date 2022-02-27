@@ -1,7 +1,9 @@
 import { Form } from "formik";
+import { IoImageOutline } from "react-icons/io5";
 import { StylesConfig } from "react-select";
 import styled, { css } from "styled-components";
 
+import { ImageWrapper } from "@/components/mdx/images";
 import { whenProp } from "@/domains/style/helpers";
 import { Button } from "@/styles/Button";
 import { sharedTransition } from "@/styles/components";
@@ -13,7 +15,6 @@ export const StyledForm = styled(Form)`
 	display: flex;
 	flex-direction: column;
 	align-items: stretch;
-
 	gap: 15px;
 `;
 
@@ -84,13 +85,40 @@ export const FileUploadContainer = styled.div`
 	}
 `;
 
+export const UploadedFilePreviewContainer = styled.div`
+	display: flex;
+	width: 100%;
+	max-height: 350px;
+
+	${ImageWrapper} {
+		height: min-content;
+		img {
+			max-height: 350px;
+			width: auto;
+		}
+	}
+`;
+
+export const UploadedFileMesssage = styled.span`
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-grow: 1;
+`;
+
 export const FileUploadLabel = styled.label`
 	position: relative;
 	font-size: ${pixelToRem(16)};
-	display: block;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 5px;
 	border-radius: var(--border-radius);
 	border: 2px solid var(--color-inlineCode-bg);
-	padding: 36px;
+	box-sizing: border-box;
+
+	min-height: 350px;
 	cursor: pointer;
 
 	&:hover,
@@ -108,6 +136,11 @@ export const FileUploadLabel = styled.label`
 	}
 
 	${sharedTransition("color, background-color, border")}
+`;
+
+export const FileUploadIcon = styled(IoImageOutline)`
+	width: 40px;
+	height: auto;
 `;
 
 export const customSelectStyles: StylesConfig = {
@@ -179,6 +212,7 @@ export const customSelectStyles: StylesConfig = {
 
 export const SubmitButton = styled(Button)`
 	width: min-content;
+	margin: 50px auto;
 
 	&:disabled,
 	&[disabled] {

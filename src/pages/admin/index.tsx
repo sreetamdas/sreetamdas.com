@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { UploadBook } from "@/components/Admin/UploadBook";
 import { ViewsCounter } from "@/components/ViewsCounter";
 import { DocumentHead } from "@/components/shared/seo";
+import { Button } from "@/styles/Button";
 import { Center, Space } from "@/styles/layouts";
 import { Title } from "@/styles/typography";
 import { useHasMounted } from "@/utils/hooks";
@@ -15,7 +16,7 @@ const AdminLogin = () => {
 			{
 				provider: "github",
 			},
-			{ redirectTo: "http://localhost:3000/admin" }
+			{ redirectTo: "/admin" }
 		);
 	}
 
@@ -62,12 +63,10 @@ const Admin = () => {
 
 			<Center>
 				<Title size={5}>/admin</Title>
-				<Title size={2}>Signed in successfully.</Title>
 
-				<span>
-					{/* Signed in as {user.email} */}
-					<button onClick={handleSignOut}>Sign out</button>
-				</span>
+				<Button onClick={handleSignOut} size="small">
+					Sign out
+				</Button>
 
 				<UploadBook />
 			</Center>
