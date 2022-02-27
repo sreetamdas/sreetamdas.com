@@ -1,7 +1,7 @@
 import { Session } from "@supabase/supabase-js";
 import { useState, useEffect } from "react";
 
-import { UploadBook } from "@/components/Admin/uploadBook";
+import { UploadBook } from "@/components/Admin/UploadBook";
 import { ViewsCounter } from "@/components/ViewsCounter";
 import { DocumentHead } from "@/components/shared/seo";
 import { Center, Space } from "@/styles/layouts";

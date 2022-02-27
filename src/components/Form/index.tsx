@@ -2,7 +2,7 @@
 export * from "./styles";
 
 import { Field, FieldProps, useField } from "formik";
-import { InputHTMLAttributes } from "react";
+import { InputHTMLAttributes, useState } from "react";
 import Select, {
 	ActionMeta,
 	GroupBase,
@@ -18,6 +18,7 @@ import {
 	FileUploadContainer,
 	FileUploadLabel,
 } from "@/components/Form/styles";
+import { CustomImage } from "@/components/mdx/images";
 
 type NameLabelProps = {
 	name: string;
@@ -46,7 +47,7 @@ export const InputField = ({ label, displayLabel = false, ...props }: InputField
 
 type FileInputFieldProps = Omit<InputFieldProps, "displayLabel">;
 export const FileInputField = ({ label, ...props }: FileInputFieldProps) => {
-	const [, meta, helpers] = useField(props);
+	const [field, meta, helpers] = useField(props);
 
 	return (
 		<FileUploadContainer>
@@ -61,8 +62,21 @@ export const FileInputField = ({ label, ...props }: FileInputFieldProps) => {
 				/>
 			</FileUploadLabel>
 			{meta.touched && meta.error ? <Error>{meta.error}</Error> : null}
+			{field.value ? <UploadImagePreview image={field.value} /> : null}
 		</FileUploadContainer>
 	);
+};
+
+// Display image uploaded from file system
+const UploadImagePreview = ({ image }: { image: File }) => {
+	const [preview, setPreview] = useState<string | null>(null);
+	const reader = new FileReader();
+	reader.readAsDataURL(image);
+	reader.onload = () => {
+		setPreview(reader.result as string);
+	};
+
+	return <div>{preview ? <CustomImage src={preview} alt="preview" /> : "loading"}</div>;
 };
 
 type AdditionalSelectProps<Option, IsMulti extends boolean = false> = {

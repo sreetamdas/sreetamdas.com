@@ -1,11 +1,16 @@
 import axios from "axios";
 import { Formik, FormikHelpers } from "formik";
 // eslint-disable-next-line import/no-named-as-default
-import { useState } from "react";
 import toast from "react-hot-toast";
 
 import { BookEntryProperties } from "@/components/Books";
-import { StyledForm, InputField, FileInputField, SelectField } from "@/components/Form";
+import {
+	StyledForm,
+	InputField,
+	FileInputField,
+	SelectField,
+	SubmitButton,
+} from "@/components/Form";
 import { uploadFileToSupabase, getSupabaseFileURL } from "@/domains/supabase";
 
 type FormDataValues = Omit<BookEntryProperties, "cover"> & { cover?: File };
@@ -43,6 +48,7 @@ export const UploadBook = () => {
 	return (
 		<Formik initialValues={initialValues} onSubmit={handleSubmit}>
 			<StyledForm>
+				<FileInputField name="cover" type="file" label="Upload image" />
 				<InputField name="name" type="text" label="Title" required />
 				<InputField name="author" type="text" label="Author" required />
 				<SelectField
@@ -52,9 +58,8 @@ export const UploadBook = () => {
 					transformValue={(option) => option?.value}
 					label="Status"
 				/>
-				<FileInputField name="cover" type="file" label="Upload image" />
 
-				<button type="submit">Upload</button>
+				<SubmitButton type="submit">Upload</SubmitButton>
 			</StyledForm>
 		</Formik>
 	);
@@ -66,15 +71,3 @@ enum BookStatus {
 	Want = "Want",
 	Finished = "Finished",
 }
-
-// Display image uploaded from file system
-const UploadImagePreview = ({ imageURL }: { imageURL: File }) => {
-	const [preview, setPreview] = useState<string | null>(null);
-	const reader = new FileReader();
-	reader.readAsDataURL(imageURL);
-	reader.onload = () => {
-		setPreview(reader.result);
-	};
-
-	return <div>{preview ? <img src={preview} alt="preview" /> : "loading"}</div>;
-};

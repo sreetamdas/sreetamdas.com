@@ -1,13 +1,14 @@
 import { Form } from "formik";
 import styled, { css } from "styled-components";
 
-import { buttonStylesMixin } from "@/components/foobar/styled";
 import { whenProp } from "@/domains/style/helpers";
+import { Button } from "@/styles/Button";
 import { sharedTransition } from "@/styles/components";
 import { pixelToRem } from "@/utils/style";
 
 export const StyledForm = styled(Form)`
 	width: 100%;
+	max-width: min(var(--max-width) * 0.66, 100vw);
 	display: flex;
 	flex-direction: column;
 	align-items: stretch;
@@ -69,6 +70,8 @@ export const InputGroup = styled.div`
 
 export const FileUploadContainer = styled.div`
 	width: 100%;
+	display: flex;
+	flex-direction: column;
 
 	&:not(:first-child) {
 		margin-top: 23px;
@@ -101,16 +104,12 @@ export const FileUploadLabel = styled.label`
 	${sharedTransition("color, background-color, border")}
 `;
 
-export const Button = styled.input<{ disabled: boolean }>`
-	${buttonStylesMixin}
-	font-size: 16px;
-	padding: 0;
-	align-self: baseline;
+export const SubmitButton = styled(Button)`
+	width: min-content;
 
-	${({ disabled }) =>
-		disabled &&
-		css`
-			cursor: not-allowed;
-			opacity: 0.5;
-		`}
+	&:disabled,
+	&[disabled] {
+		cursor: not-allowed;
+		opacity: 0.5;
+	}
 `;
