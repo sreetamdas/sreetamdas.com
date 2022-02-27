@@ -2,9 +2,9 @@ import { Session } from "@supabase/supabase-js";
 import { useState, useEffect } from "react";
 
 import { UploadBook } from "@/components/Admin/UploadBook";
+import { Button } from "@/components/Button";
 import { ViewsCounter } from "@/components/ViewsCounter";
 import { DocumentHead } from "@/components/shared/seo";
-import { Button } from "@/styles/Button";
 import { Center, Space } from "@/styles/layouts";
 import { Title } from "@/styles/typography";
 import { useHasMounted } from "@/utils/hooks";
@@ -28,7 +28,7 @@ const AdminLogin = () => {
 				<Title size={5}>/admin</Title>
 				<Space />
 
-				<button onClick={handleSignUpWIthGitHub}>Sign in with GitHub</button>
+				<Button onClick={handleSignUpWIthGitHub}>Sign in with GitHub</Button>
 			</Center>
 			<ViewsCounter />
 		</>

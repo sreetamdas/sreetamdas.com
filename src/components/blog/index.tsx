@@ -2,7 +2,7 @@ import Link from "next/link";
 import React, { RefObject } from "react";
 import { FaArrowRight, FaLongArrowAltUp, FaTwitter } from "react-icons/fa";
 
-import { ButtonUnstyled } from "@/styles/Button";
+import { ButtonUnstyled } from "@/components/Button/styles";
 import {
 	AnchorUnstyled,
 	Card,

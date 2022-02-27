@@ -58,8 +58,7 @@ export const UploadBook = () => {
 					transformValue={(option) => option?.value}
 					label="Status"
 				/>
-
-				<SubmitButton type="submit">Upload</SubmitButton>
+				<SubmitButton>Upload</SubmitButton>
 			</StyledForm>
 		</Formik>
 	);

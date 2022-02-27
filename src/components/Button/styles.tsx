@@ -1,12 +1,10 @@
-import styled, { css } from "styled-components";
+import styled, { css, keyframes } from "styled-components";
+
+import { ButtonProps } from "./";
 
 import { sharedTransition } from "@/styles/components";
 
-const BUTTON_SIZES = ["sm", "small", "md", "medium", "lg", "large"] as const;
-type ButtonProps = {
-	size?: typeof BUTTON_SIZES[number];
-};
-export const Button = styled.button<ButtonProps>`
+export const ButtonMain = styled.button<ButtonProps>`
 	cursor: pointer;
 	background-color: var(--color-background);
 	border-radius: var(--border-radius);
@@ -58,4 +56,29 @@ export const ButtonUnstyled = styled.button`
 
 	display: flex;
 	align-items: center;
+`;
+
+const spin = keyframes`
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+`;
+
+export const LoadingAddon = styled.span`
+	position: absolute;
+	display: block;
+	width: 1em;
+	height: 1em;
+	top: calc(50% - 0.5em);
+	left: calc(50% - 0.5em);
+	border-width: 2px;
+	border-color: var(--button-colorText);
+	border-bottom-color: transparent;
+	border-left-color: transparent;
+	border-style: solid;
+	border-radius: 50%;
+	animation: ${spin} 0.45s linear infinite;
 `;

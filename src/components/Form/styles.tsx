@@ -3,9 +3,9 @@ import { IoImageOutline } from "react-icons/io5";
 import { StylesConfig } from "react-select";
 import styled, { css } from "styled-components";
 
+import { Button } from "@/components/Button";
 import { ImageWrapper } from "@/components/mdx/images";
 import { whenProp } from "@/domains/style/helpers";
-import { Button } from "@/styles/Button";
 import { sharedTransition } from "@/styles/components";
 import { pixelToRem } from "@/utils/style";
 
@@ -210,7 +210,9 @@ export const customSelectStyles: StylesConfig = {
 	}),
 };
 
-export const SubmitButton = styled(Button)`
+export const SubmitButton = styled(Button).attrs({
+	type: "submit",
+})`
 	width: min-content;
 	margin: 50px auto;
 
