@@ -8,6 +8,7 @@ import Select, {
 	GroupBase,
 	OnChangeValue,
 	Props as ReactSelectProps,
+	StylesConfig,
 } from "react-select";
 
 import {
@@ -17,7 +18,9 @@ import {
 	Error,
 	FileUploadContainer,
 	FileUploadLabel,
-} from "@/components/Form/styles";
+	customSelectStyles,
+} from "./styles";
+
 import { CustomImage } from "@/components/mdx/images";
 
 type NameLabelProps = {
@@ -115,7 +118,16 @@ export const SelectField = <
 						<Label htmlFor={name} $show={displayLabel || !!value?.toString().length}>
 							{label}
 						</Label>
-						<Select options={options} onChange={handleChange} isSearchable={false} {...props} />
+						<Select
+							options={options}
+							onChange={handleChange}
+							isSearchable={false}
+							components={{
+								IndicatorSeparator: () => null,
+							}}
+							styles={customSelectStyles as unknown as StylesConfig<Option, IsMulti, Group>}
+							{...props}
+						/>
 						{touched && error ? <Error>{error}</Error> : null}
 					</InputGroup>
 				);

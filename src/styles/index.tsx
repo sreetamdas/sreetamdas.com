@@ -71,10 +71,14 @@ export const GlobalStyles = createGlobalStyle`
 		color: var(--color-background)
 	}
 
+	:focus {
+		box-shadow: 0 0 0 2px var(--color-primary-accent);
+		opacity: 1;
+		outline: 0;
+	}
 	:focus:not(:focus-visible) {
 		outline: 0;
 	}
-
 	:focus-visible {
 		box-shadow: 0 0 0 2px var(--color-primary-accent);
 		opacity: 1;

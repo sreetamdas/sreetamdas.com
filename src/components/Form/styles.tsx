@@ -1,4 +1,5 @@
 import { Form } from "formik";
+import { StylesConfig } from "react-select";
 import styled, { css } from "styled-components";
 
 import { whenProp } from "@/domains/style/helpers";
@@ -32,6 +33,11 @@ export const Input = styled.input`
 	border-radius: var(--border-radius);
 	border: 2px solid var(--color-inlineCode-bg);
 
+	&:focus,
+	&:hover {
+		box-shadow: unset;
+		border-color: var(--color-primary-accent);
+	}
 	&:focus-visible {
 		box-shadow: unset;
 		border-color: var(--color-primary-accent);
@@ -103,6 +109,73 @@ export const FileUploadLabel = styled.label`
 
 	${sharedTransition("color, background-color, border")}
 `;
+
+export const customSelectStyles: StylesConfig = {
+	container: (provided) => ({
+		...provided,
+		width: "100%",
+		height: "100%",
+		border: "none",
+		borderRadius: "var(--border-radius)",
+		margin: "0",
+		outline: "none",
+	}),
+	control: (provided, state) => ({
+		...provided,
+		backgroundColor: "var(--color-background)",
+		color: "var(--color-primary)",
+		boxShadow: "none",
+		border: (() => {
+			const borderColor = (() => {
+				if (state.isFocused) {
+					return "var(--color-primary-accent)";
+				}
+
+				return "var(--color-inlineCode-bg)";
+			})();
+
+			return `2px solid ${borderColor}`;
+		})(),
+		"&:hover, &:focus": {
+			borderColor: "var(--color-primary-accent)",
+		},
+		"&:focus-visible": {
+			borderColor: "var(--color-primary-accent)",
+		},
+	}),
+	indicatorSeparator: (provided, state) => ({
+		...provided,
+		backgroundColor: state.isFocused ? "var(--color-primary)" : "var(--color-inlineCode-bg)",
+	}),
+	dropdownIndicator: (provided, state) => ({
+		...provided,
+		color: state.isFocused ? "var(--color-primary)" : "var(--color-inlineCode-bg)",
+	}),
+	menu: (provided) => ({
+		...provided,
+		backgroundColor: "var(--color-background)",
+	}),
+	menuList: (provided) => ({
+		...provided,
+		backgroundColor: "var(--color-background)",
+		border: "2px solid var(--color-inlineCode-bg)",
+		borderRadius: "var(--border-radius)",
+	}),
+	option: (provided, state) => ({
+		...provided,
+		backgroundColor: state.isFocused ? "var(--color-primary-accent)" : "var(--color-background)",
+		color: state.isFocused ? "var(--color-background)" : "var(--color-primary)",
+		padding: "10px",
+		"&:hover": {
+			backgroundColor: "var(--color-primary-accent)",
+			color: "var(--color-background)",
+		},
+	}),
+	singleValue: (provided) => ({
+		...provided,
+		color: "var(--color-primary)",
+	}),
+};
 
 export const SubmitButton = styled(Button)`
 	width: min-content;

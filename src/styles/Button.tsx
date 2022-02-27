@@ -16,9 +16,14 @@ export const Button = styled.button<ButtonProps>`
 
 	${sharedTransition("color, background-color")}
 
-	&:hover {
+	&:hover, &:focus {
 		background-color: var(--color-primary-accent);
 		color: var(--color-background);
+	}
+
+	&:focus {
+		outline: 0;
+		box-shadow: unset;
 	}
 
 	/* variants with different padding */
