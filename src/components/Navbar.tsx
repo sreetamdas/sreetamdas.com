@@ -34,7 +34,7 @@ export const Navbar = () => {
 		<Header>
 			<HeaderInner>
 				<Link href="/" passHref>
-					<IconContainer tabIndex={0}>
+					<IconContainer>
 						<LogoSVG aria-label="Home">
 							<title>Home</title>
 							<rect width="25" height="25" rx="6" fill="currentColor" />
@@ -227,7 +227,7 @@ const NavbarMenu = () => {
 const Container = styled.div`
 	display: grid;
 	grid-auto-flow: column;
-	column-gap: 1rem;
+	column-gap: 15px;
 	justify-self: end;
 	place-items: center;
 	justify-content: center;
@@ -236,16 +236,16 @@ const Container = styled.div`
 const PlatformLinksContainer = styled.div`
 	display: grid;
 	grid-auto-flow: column;
-	column-gap: 1rem;
+	column-gap: 15px;
 	place-items: center;
 	justify-content: center;
-	padding: 1rem 0;
+	padding: 15px 0;
 
 	${breakpoint.until.md(css`
 		display: flex;
 		flex-wrap: wrap;
-		row-gap: 1rem;
-		padding: 1rem 3rem;
+		row-gap: 15px;
+		padding: 15px 3rem;
 	`)}
 `;
 
@@ -282,8 +282,7 @@ const Header = styled.header`
 	position: sticky;
 	top: 0;
 	width: 100%;
-	height: calc(40px + 2rem);
-	padding: 0 1rem;
+	padding: 0 20px;
 	z-index: 2;
 
 	background-color: var(--color-background);
@@ -296,20 +295,21 @@ const Header = styled.header`
 `;
 
 const HeaderInner = styled.div`
-	padding: 1rem 0;
+	padding: 15px 0;
 	margin: 0 auto;
 	width: 100%;
+	height: 60px;
 	max-width: var(--max-width);
 
 	display: grid;
 	grid-template-columns: max-content auto;
 	align-content: center;
-	gap: 2rem;
+	gap: 30px;
 `;
 
 const Nav = styled.nav`
 	display: contents;
-	padding-right: 2rem;
+	padding-right: 30px;
 	width: min-content;
 `;
 
@@ -331,8 +331,8 @@ const IconLinks = styled.ul`
 
 	${breakpoint.until.md(css`
 		grid-auto-flow: column;
-		gap: 2rem;
-		/* padding: 0.5rem 1rem; */
+		gap: 30px;
+		/* padding: 0.5rem 15px; */
 		width: min-content;
 	`)}
 
@@ -372,7 +372,7 @@ const FullScreenWrapper = styled(motion.div)<{ $visible: boolean }>`
 
 	${Nav} {
 		display: grid;
-		gap: 2rem;
+		gap: 30px;
 
 		& > ${PageLinks}, ${IconLinks} {
 			padding-left: 3rem;
@@ -443,26 +443,6 @@ export const ExternalLinksOverlay = () => {
 			link: "https://srtm.fyi/ds",
 			title: "Join Sreetam Das' Discord server",
 			icon: <FaDiscord />,
-		},
-		{
-			link: "https://timeline.sreetamdas.com",
-			title: "Sreetam Das' Polywork",
-			icon: (
-				<svg
-					width="0.95em"
-					height="0.95em"
-					viewBox="0 0 250 250"
-					fill="none"
-					xmlns="http://www.w3.org/2000/svg"
-				>
-					<path
-						fillRule="evenodd"
-						clipRule="evenodd"
-						d="M0 199.219V50.7813C0 22.6563 22.6562 0 50.7812 0H199.219C227.344 0 250 22.6563 250 50.7813V122.656C250 150.781 227.344 173.437 199.219 173.437H170.312V199.219C170.312 227.344 147.656 250 119.531 250H50.7812C22.6562 250 0 227.344 0 199.219ZM78.1249 78.9063H13.2812V50C13.2812 29.6875 29.6875 12.5 50.7812 12.5H78.1249V78.9063ZM199.219 160.937H171.875V93.7498H236.719V123.437C236.719 143.75 220.312 160.937 199.219 160.937ZM119.531 237.5H92.1871V175.781H157.031V200C157.031 220.312 140.625 237.5 119.531 237.5ZM92.1871 160.937H157.031V93.7498H92.1871V160.937ZM171.875 78.9063H236.719V50.7813C236.719 29.6875 219.531 13.2813 199.219 13.2813H171.875V78.9063ZM157.031 78.9063H92.1871V12.5H157.031V78.9063ZM12.5 175V199.219C12.5 220.312 29.6875 236.719 50 236.719H78.1249V175H12.5ZM78.1249 160.937H12.5V93.7498H78.1249V160.937Z"
-						fill="currentColor"
-					/>
-				</svg>
-			),
 		},
 	];
 
