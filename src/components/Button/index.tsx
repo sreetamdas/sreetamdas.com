@@ -9,12 +9,13 @@ export interface ButtonProps extends HTMLAttributes<HTMLButtonElement> {
 	isLoading?: boolean;
 }
 
-export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-	({ isLoading = false, children, ...props }, ref) => {
-		return (
-			<ButtonMain ref={ref} disabled={isLoading} {...props}>
-				{isLoading ? <LoadingAddon /> : children}
-			</ButtonMain>
-		);
-	}
-);
+export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
+	{ isLoading = false, children, ...props },
+	ref
+) {
+	return (
+		<ButtonMain ref={ref} disabled={isLoading} {...props}>
+			{isLoading ? <LoadingAddon /> : children}
+		</ButtonMain>
+	);
+});

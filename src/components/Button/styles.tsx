@@ -3,8 +3,10 @@ import styled, { css, keyframes } from "styled-components";
 import { ButtonProps } from "./";
 
 import { sharedTransition } from "@/styles/components";
+import { pixelToRem } from "@/utils/style";
 
 export const ButtonMain = styled.button<ButtonProps>`
+	position: relative;
 	cursor: pointer;
 	background-color: var(--color-background);
 	border-radius: var(--border-radius);
@@ -29,21 +31,27 @@ export const ButtonMain = styled.button<ButtonProps>`
 			case "sm":
 			case "small":
 				return css`
-					font-size: 0.75rem;
-					padding: 5px 10px;
+					font-size: ${pixelToRem(13)};
+					padding: 0 10px;
+					min-height: 30px;
+					min-width: 80px;
 				`;
 			case "md":
 			case "medium":
 			default:
 				return css`
-					font-size: 0.85rem;
-					padding: 10px 30px;
+					font-size: ${pixelToRem(15)};
+					padding: 0 25px;
+					min-height: 40px;
+					min-width: 100px;
 				`;
 			case "lg":
 			case "large":
 				return css`
 					font-size: 1rem;
-					padding: 15px 80px;
+					padding: 0 50px;
+					min-height: 50px;
+					min-width: 180px;
 				`;
 		}
 	}}
@@ -70,12 +78,12 @@ const spin = keyframes`
 export const LoadingAddon = styled.span`
 	position: absolute;
 	display: block;
-	width: 1em;
-	height: 1em;
-	top: calc(50% - 0.5em);
-	left: calc(50% - 0.5em);
+	width: 1rem;
+	height: 1rem;
+	top: calc(50% - 0.5rem);
+	left: calc(50% - 0.5rem);
 	border-width: 2px;
-	border-color: var(--button-colorText);
+	border-color: var(--color-primary);
 	border-bottom-color: transparent;
 	border-left-color: transparent;
 	border-style: solid;

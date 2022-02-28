@@ -42,24 +42,27 @@ export const UploadBook = () => {
 			// eslint-disable-next-line no-console
 			console.log(res);
 			setSubmitting(false);
+			toast.success(`Uploaded ${values["name"]} successfully!`);
 		}
 	}
 
 	return (
 		<Formik initialValues={initialValues} onSubmit={handleSubmit}>
-			<StyledForm>
-				<FileInputField name="cover" type="file" label="Upload image" />
-				<InputField name="name" type="text" label="Title" required />
-				<InputField name="author" type="text" label="Author" required />
-				<SelectField
-					name="status"
-					options={options}
-					defaultValue={options?.[0]}
-					transformValue={(option) => option?.value}
-					label="Status"
-				/>
-				<SubmitButton>Upload</SubmitButton>
-			</StyledForm>
+			{({ isSubmitting }) => (
+				<StyledForm>
+					<FileInputField name="cover" type="file" label="Upload image" />
+					<InputField name="name" type="text" label="Title" required />
+					<InputField name="author" type="text" label="Author" required />
+					<SelectField
+						name="status"
+						options={options}
+						defaultValue={options?.[0]}
+						transformValue={(option) => option?.value}
+						label="Status"
+					/>
+					<SubmitButton isLoading={isSubmitting}>Upload</SubmitButton>
+				</StyledForm>
+			)}
 		</Formik>
 	);
 };
