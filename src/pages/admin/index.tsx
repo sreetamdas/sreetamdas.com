@@ -39,10 +39,6 @@ const Admin = () => {
 	const hasMounted = useHasMounted();
 	const [session, setSession] = useState<Session | null>(supabaseClient.auth.session());
 
-	async function handleSignOut() {
-		await supabaseClient.auth.signOut();
-	}
-
 	useEffect(() => {
 		setSession(supabaseClient.auth.session());
 
@@ -63,10 +59,6 @@ const Admin = () => {
 
 			<Center>
 				<Title size={5}>/admin</Title>
-
-				<Button onClick={handleSignOut} size="small">
-					Sign out
-				</Button>
 
 				<UploadBook />
 			</Center>

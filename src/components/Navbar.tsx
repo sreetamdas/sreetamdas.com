@@ -1,3 +1,4 @@
+import { Session } from "@supabase/supabase-js";
 import { AnimatePresence, motion, Variants } from "framer-motion";
 import Head from "next/head";
 import Link from "next/link";
@@ -18,12 +19,14 @@ import { FiRss, FiSun, FiMenu, FiX } from "react-icons/fi";
 import { IoMdMoon } from "react-icons/io";
 import styled, { css, ThemeContext } from "styled-components";
 
+import { Button } from "@/components/Button";
 import { FoobarContext } from "@/components/foobar";
 import { IconContainer } from "@/styles/blog";
 import { sharedTransition } from "@/styles/components";
 import { LinkTo } from "@/styles/typography";
 import { useHasMounted } from "@/utils/hooks";
 import { breakpoint } from "@/utils/style";
+import { supabaseClient } from "@/utils/supabaseClient";
 
 export const Navbar = () => {
 	const hasMounted = useHasMounted();
@@ -114,6 +117,20 @@ const NavbarMenu = () => {
 	const [showDrawer, setShowDrawer] = useState(false);
 	const { asPath } = useRouter();
 
+	const [session, setSession] = useState<Session | null>(supabaseClient.auth.session());
+
+	async function handleSignOut() {
+		await supabaseClient.auth.signOut();
+	}
+
+	useEffect(() => {
+		setSession(supabaseClient.auth.session());
+
+		supabaseClient.auth.onAuthStateChange((_event, session) => {
+			setSession(session);
+		});
+	}, []);
+
 	useEffect(() => {
 		const root = window.document.documentElement;
 		const initialColorValue: "light" | "dark" = root.style.getPropertyValue(
@@ -185,6 +202,11 @@ const NavbarMenu = () => {
 			</Head>
 			<AnimatePresence>
 				<NavContainer $showDrawer={showDrawer} key="navigation">
+					{session && (
+						<Button onClick={handleSignOut} size="small">
+							Sign out
+						</Button>
+					)}
 					<NavLinksDesktop>
 						<NavLinks />
 					</NavLinksDesktop>
