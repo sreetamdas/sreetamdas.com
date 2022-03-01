@@ -11,7 +11,7 @@ import { Hydrate } from "react-query/hydration";
 import { ThemeProvider } from "styled-components";
 
 import { DefaultLayout } from "@/layouts/Default";
-import { GlobalStyles } from "@/styles";
+import { toasterProps, GlobalStyles } from "@/styles";
 import { TGlobalThemeObject } from "@/typings/styled";
 
 if (process.env.NEXT_PUBLIC_API_MOCKING_ENABLED === "true") {
@@ -60,7 +60,7 @@ const MyApp = ({ Component, pageProps }: AppPropsWithLayout) => {
 					<PlausibleProvider domain="sreetamdas.com" customDomain="sreetamdas.com">
 						<ThemeProvider theme={themeForContext}>
 							<GlobalStyles />
-							<Toaster position="top-right" />
+							<Toaster {...toasterProps} />
 							<ComponentLayout>
 								<Component {...pageProps} />
 							</ComponentLayout>

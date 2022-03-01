@@ -1,3 +1,4 @@
+import { ToasterProps } from "react-hot-toast";
 import { createGlobalStyle } from "styled-components";
 
 import { sharedTransition } from "@/styles/components";
@@ -71,11 +72,6 @@ export const GlobalStyles = createGlobalStyle`
 		color: var(--color-background)
 	}
 
-	:focus {
-		box-shadow: 0 0 0 2px var(--color-primary-accent);
-		opacity: 1;
-		outline: 0;
-	}
 	:focus:not(:focus-visible) {
 		outline: 0;
 	}
@@ -131,3 +127,20 @@ export const GlobalStyles = createGlobalStyle`
 		${sharedTransition("color, background-color")}
 	}
 `;
+
+export const toasterProps: ToasterProps = {
+	position: "top-right",
+	toastOptions: {
+		style: {
+			backgroundColor: "var(--color-primary-accent)",
+			color: "var(--color-background)",
+			borderRadius: "var(--border-radius)",
+		},
+		loading: {
+			iconTheme: {
+				primary: "var(--color-primary-accent)",
+				secondary: "var(--color-background)",
+			},
+		},
+	},
+};
