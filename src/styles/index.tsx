@@ -136,11 +136,9 @@ export const toasterProps: ToasterProps = {
 			color: "var(--color-background)",
 			borderRadius: "var(--border-radius)",
 		},
-		loading: {
-			iconTheme: {
-				primary: "var(--color-primary-accent)",
-				secondary: "var(--color-background)",
-			},
+		iconTheme: {
+			primary: "var(--color-primary-accent)",
+			secondary: "var(--color-background)",
 		},
 	},
 };

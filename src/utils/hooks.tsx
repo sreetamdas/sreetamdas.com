@@ -17,6 +17,10 @@ export function random(min: number, max: number) {
 	return min + Math.random() * (max - min);
 }
 
+export function randomAlphanumeric(length = 6) {
+	return Math.random().toString(36).slice(-length);
+}
+
 export function useHover(): [RefObject<HTMLDivElement>, boolean] {
 	const [value, setValue] = useState(false);
 	const ref = useRef<HTMLDivElement>(null);

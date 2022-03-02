@@ -202,11 +202,6 @@ const NavbarMenu = () => {
 			</Head>
 			<AnimatePresence>
 				<NavContainer $showDrawer={showDrawer} key="navigation">
-					{session && (
-						<Button onClick={handleSignOut} size="small">
-							Sign out
-						</Button>
-					)}
 					<NavLinksDesktop>
 						<NavLinks />
 					</NavLinksDesktop>
@@ -219,6 +214,11 @@ const NavbarMenu = () => {
 							<FiSun aria-label="Switch to Dark Mode" title="Switch to Dark Mode" />
 						)}
 					</ThemeSwitch>
+					{session && (
+						<Button onClick={handleSignOut} size="small">
+							Sign out
+						</Button>
+					)}
 					<MobileMenuToggle
 						onClick={handleToggleDrawer}
 						aria-label={showDrawer ? "Close menu" : "Open menu"}
