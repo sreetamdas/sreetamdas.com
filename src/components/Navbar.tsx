@@ -116,8 +116,9 @@ const NavbarMenu = () => {
 	const { konami } = useContext(FoobarContext);
 	const [showDrawer, setShowDrawer] = useState(false);
 	const { asPath } = useRouter();
-
 	const [session, setSession] = useState<Session | null>(supabaseClient.auth.session());
+
+	const isAdminRoute = asPath.includes("/admin");
 
 	async function handleSignOut() {
 		await supabaseClient.auth.signOut();
@@ -214,7 +215,7 @@ const NavbarMenu = () => {
 							<FiSun aria-label="Switch to Dark Mode" title="Switch to Dark Mode" />
 						)}
 					</ThemeSwitch>
-					{session && (
+					{session && isAdminRoute && (
 						<Button onClick={handleSignOut} size="small">
 							Sign out
 						</Button>
