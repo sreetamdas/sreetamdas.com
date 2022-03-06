@@ -112,11 +112,11 @@ const NavLinks = () => {
 
 const NavbarMenu = () => {
 	const [darkTheme, setDarkTheme] = useState<boolean | undefined>(undefined);
+	const [showDrawer, setShowDrawer] = useState(false);
+	const [session, setSession] = useState<Session | null>(supabaseClient.auth.session());
 	const { theme } = useContext(ThemeContext);
 	const { konami } = useContext(FoobarContext);
-	const [showDrawer, setShowDrawer] = useState(false);
 	const { asPath } = useRouter();
-	const [session, setSession] = useState<Session | null>(supabaseClient.auth.session());
 
 	const isAdminRoute = asPath.includes("/admin");
 
@@ -134,9 +134,9 @@ const NavbarMenu = () => {
 
 	useEffect(() => {
 		const root = window.document.documentElement;
-		const initialColorValue: "light" | "dark" = root.style.getPropertyValue(
-			"--initial-color-mode"
-		) as "light" | "dark";
+		const initialColorValue = root.style.getPropertyValue("--initial-color-mode") as
+			| "light"
+			| "dark";
 		setDarkTheme(initialColorValue === "dark");
 	}, []);
 
