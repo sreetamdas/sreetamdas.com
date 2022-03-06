@@ -26,6 +26,7 @@ import { useHasMounted } from "@/utils/hooks";
 import { breakpoint } from "@/utils/style";
 
 export const Navbar = () => {
+	const { asPath } = useRouter();
 	const hasMounted = useHasMounted();
 
 	if (!hasMounted) return <Header />;
@@ -34,7 +35,7 @@ export const Navbar = () => {
 		<Header>
 			<HeaderInner>
 				<Link href="/" passHref>
-					<IconContainer tabIndex={0}>
+					<IconContainer tabIndex={0} aria-current={asPath === "/" ? "page" : undefined}>
 						<LogoSVG aria-label="Home">
 							<title>Home</title>
 							<rect width="25" height="25" rx="6" fill="currentColor" />
@@ -63,17 +64,18 @@ const iconLinksVariants: Variants = {
 };
 
 const NavLinks = () => {
+	const { asPath } = useRouter();
 	return (
 		<Nav>
 			<PageLinks>
 				<motion.li variants={textLinksVariants}>
-					<NavLink href="/blog">blog</NavLink>
+					<NavLink href="/blog" aria-current={asPath === "/blog" ? "page" : undefined}>blog</NavLink>
 				</motion.li>
 				<motion.li variants={textLinksVariants}>
-					<NavLink href="/uses">uses</NavLink>
+					<NavLink href="/uses" aria-current={asPath === "/uses" ? "page" : undefined}>uses</NavLink>
 				</motion.li>
 				<motion.li variants={textLinksVariants}>
-					<NavLink href="/about">about</NavLink>
+					<NavLink href="/about" aria-current={asPath === "/about" ? "page" : undefined}>about</NavLink>
 				</motion.li>
 			</PageLinks>
 			<IconLinks>
@@ -349,7 +351,7 @@ const NavLinksDesktop = styled.div`
 	`)}
 `;
 
-const FullScreenWrapper = styled(motion.div)<{ $visible: boolean }>`
+const FullScreenWrapper = styled(motion.div) <{ $visible: boolean }>`
 	height: 100vh;
 	width: 100vw;
 	background-color: var(--color-bg-blurred);
@@ -390,7 +392,7 @@ const FullScreenWrapper = styled(motion.div)<{ $visible: boolean }>`
 	`)}
 `;
 
-const NavContainer = styled(motion(Container))<{ $showDrawer: boolean }>``;
+const NavContainer = styled(motion(Container)) <{ $showDrawer: boolean }>``;
 
 type TExternalLinksArray = Array<{
 	link: string;
