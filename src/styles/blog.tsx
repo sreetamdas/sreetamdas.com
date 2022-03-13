@@ -1,7 +1,6 @@
 import { PropsWithChildren, ReactNode } from "react";
 import styled, { css } from "styled-components";
 
-import { sharedTransition } from "@/styles/components";
 import { Datestamp } from "@/styles/typography";
 import { breakpoint } from "@/utils/style";
 
@@ -143,32 +142,6 @@ const EndLinksGrid = styled.div`
 export const EndLinks = ({ children }: PropsWithChildren<ReactNode>) => (
 	<EndLinksGrid>{children}</EndLinksGrid>
 );
-
-export const Button = styled.button`
-	font-size: 18px;
-	cursor: pointer;
-	background-color: var(--color-background);
-	padding: 10px 15px;
-	border-radius: var(--border-radius);
-	border: 2px solid var(--color-primary-accent);
-	color: var(--color-primary);
-
-	${sharedTransition("color, background-color")}
-
-	&:hover {
-		background-color: var(--color-primary-accent);
-		color: var(--color-background);
-	}
-`;
-
-export const ButtonUnstyled = styled.button`
-	background-color: transparent;
-	border: none;
-	color: inherit;
-
-	display: flex;
-	align-items: center;
-`;
 
 export const AnchorUnstyled = styled.a`
 	color: unset;

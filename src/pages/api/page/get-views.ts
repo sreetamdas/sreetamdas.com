@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 
+import { supabaseClient } from "@/domains/Supabase";
 import { PostDetails } from "@/typings/blog";
-import { supabase } from "@/utils/supabaseClient";
 
 /**
  * @api {post} /api/page/add-view Get view_count for page using Supabase client
@@ -16,7 +16,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 		}
 		// TODO: Add support for getting all/multiple slug views
 		else {
-			const { data, error } = await supabase
+			const { data, error } = await supabaseClient
 				.from<PostDetails>("page_details")
 				.select("view_count")
 				.eq("slug", slug)

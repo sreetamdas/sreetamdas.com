@@ -4,13 +4,14 @@ import type { AppProps } from "next/app";
 import Head from "next/head";
 import React, { Fragment, useState } from "react";
 import type { PropsWithChildren } from "react";
+import { Toaster } from "react-hot-toast";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { ReactQueryDevtools } from "react-query/devtools";
 import { Hydrate } from "react-query/hydration";
 import { ThemeProvider } from "styled-components";
 
 import { DefaultLayout } from "@/layouts/Default";
-import { GlobalStyles } from "@/styles";
+import { toasterProps, GlobalStyles } from "@/styles";
 import { TGlobalThemeObject } from "@/typings/styled";
 
 if (process.env.NEXT_PUBLIC_API_MOCKING_ENABLED === "true") {
@@ -59,6 +60,7 @@ const MyApp = ({ Component, pageProps }: AppPropsWithLayout) => {
 					<PlausibleProvider domain="sreetamdas.com" customDomain="sreetamdas.com">
 						<ThemeProvider theme={themeForContext}>
 							<GlobalStyles />
+							<Toaster {...toasterProps} />
 							<ComponentLayout>
 								<Component {...pageProps} />
 							</ComponentLayout>

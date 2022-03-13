@@ -25,6 +25,7 @@ export async function getBlogPostsSlugs() {
 
 export async function bundleMDXWithOptions(filename: string) {
 	const mdxSource = await fs.readFile(filename, "utf8");
+	// FIXME this is a hack to make sure that the MDX is bundled with the correct theme
 	const theme = await loadTheme("../@sreetamdas/karma/themes/Karma-color-theme.json");
 	const highlighter = await getHighlighter({ theme });
 

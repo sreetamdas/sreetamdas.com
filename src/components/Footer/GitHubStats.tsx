@@ -3,7 +3,7 @@ import { VscRepoForked } from "react-icons/vsc";
 import { useQuery } from "react-query";
 import styled from "styled-components";
 
-import { getGitHubStats, StatsResult } from "@/domains/github";
+import { getGitHubStats, StatsResult } from "@/domains/GitHub";
 import { sharedTransition } from "@/styles/components";
 
 export const Stats = styled.div`
