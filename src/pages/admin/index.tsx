@@ -5,14 +5,15 @@ import { UploadBook } from "@/components/Admin/UploadBook";
 import { Button } from "@/components/Button";
 import { ViewsCounter } from "@/components/ViewsCounter";
 import { DocumentHead } from "@/components/shared/seo";
-import { SITE_URL } from "@/config";
+import { OWNER, SITE_URL } from "@/config";
 import { supabaseClient } from "@/domains/Supabase";
 import { Center, Space } from "@/styles/layouts";
-import { Title } from "@/styles/typography";
+import { Paragraph, Title } from "@/styles/typography";
 import { useHasMounted } from "@/utils/hooks";
 
-const AdminLogin = () => {
-	async function handleSignUpWIthGitHub() {
+type AdminLoginProps = { unauthorizedUser?: boolean };
+const AdminLogin = ({ unauthorizedUser }: AdminLoginProps) => {
+	async function handleSignInWithGitHub() {
 		await supabaseClient.auth.signIn(
 			{
 				provider: "github",
@@ -29,7 +30,11 @@ const AdminLogin = () => {
 				<Title size={5}>/admin</Title>
 				<Space />
 
-				<Button onClick={handleSignUpWIthGitHub}>Sign in with GitHub</Button>
+				{unauthorizedUser ? (
+					<Paragraph>Oops, you don&apos;t have access to that. Sorry!</Paragraph>
+				) : (
+					<Button onClick={handleSignInWithGitHub}>Sign in with GitHub</Button>
+				)}
 			</Center>
 			<ViewsCounter />
 		</>
@@ -54,6 +59,10 @@ const Admin = () => {
 	if (!session) {
 		return <AdminLogin />;
 	}
+	if (session.user?.email !== OWNER) {
+		return <AdminLogin unauthorizedUser />;
+	}
+
 	return (
 		<>
 			<DocumentHead title="Admin" noIndex />

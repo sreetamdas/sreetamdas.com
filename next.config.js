@@ -12,6 +12,7 @@ module.exports = withPlausibleProxy()({
 	pageExtensions: ["js", "jsx", "ts", "tsx", "mdx"],
 	env: {
 		SITE_URL: process.env.SITE_URL,
+		OWNER: process.env.OWNER,
 	},
 	webpack(config) {
 		config.module.rules.push({
