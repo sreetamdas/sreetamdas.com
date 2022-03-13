@@ -1,10 +1,10 @@
-import { Client } from "@notionhq/client";
 import { InferGetStaticPropsType } from "next";
 import { Fragment } from "react";
 
 import { Keebs } from "@/components/Keebs";
 import { ViewsCounter } from "@/components/ViewsCounter";
 import { DocumentHead } from "@/components/shared/seo";
+import { notionClient } from "@/domains/Notion";
 import { Center } from "@/styles/layouts";
 import { Title } from "@/styles/typography";
 
@@ -30,11 +30,7 @@ const Index = ({ results }: InferGetStaticPropsType<typeof getStaticProps>) => {
 };
 
 export async function getStaticProps() {
-	const notion = new Client({
-		auth: process.env.NOTION_TOKEN,
-	});
-
-	const response = await notion.databases.query({
+	const response = await notionClient.databases.query({
 		database_id: KEEBS_DATABASE_ID,
 		filter: {
 			and: [

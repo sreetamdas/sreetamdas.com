@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 
 import { BookEntryProperties } from "@/components/Books";
+import { handleBookUploadToNotion } from "@/domains/Notion";
 import { prismaClient } from "@/domains/Prisma";
 
 // @ts-expect-error BigInt prototype
@@ -38,12 +39,9 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 						},
 					},
 				},
-				include: {
-					authors: true,
-					book_status: true,
-				},
 			});
-			return res.status(200).send({ book });
+			const notionResponse = await handleBookUploadToNotion(book);
+			return res.status(200).send({ book, notionResponse });
 		} else {
 			res.status(400);
 		}
