@@ -47,8 +47,8 @@ export const UploadBook = () => {
 			// eslint-disable-next-line no-console
 			console.log(res);
 			toast.success(`Uploaded ${values["name"]} successfully!`, { id: toastUploadBooksDetails });
-			setSubmitting(false);
 		}
+		setSubmitting(false);
 	}
 
 	return (
