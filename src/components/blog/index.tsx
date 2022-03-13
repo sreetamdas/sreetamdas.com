@@ -3,6 +3,7 @@ import React, { RefObject } from "react";
 import { FaArrowRight, FaLongArrowAltUp, FaTwitter } from "react-icons/fa";
 
 import { ButtonUnstyled } from "@/components/Button/styles";
+import { SITE_URL } from "@/config";
 import {
 	AnchorUnstyled,
 	Card,
@@ -16,7 +17,7 @@ import { useHover } from "@/utils/hooks";
 
 type TShareLinksProps = Pick<TBlogPostPageProps, "slug"> & Pick<TBlogPostFrontmatter, "title">;
 export const ShareLinks = ({ title, slug }: TShareLinksProps) => {
-	const tweetShareURL = `https://twitter.com/intent/tweet?text=Check out: ${title}&url=${process.env.SITE_URL}/blog/${slug}%0D%0A&via=_SreetamDas`;
+	const tweetShareURL = `https://twitter.com/intent/tweet?text=Check out: ${title}&url=${SITE_URL}/blog/${slug}%0D%0A&via=_SreetamDas`;
 
 	return (
 		<IconContainer href={tweetShareURL} target="_blank" rel="noopener noreferrer">

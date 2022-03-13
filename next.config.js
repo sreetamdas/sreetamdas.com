@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const { withPlausibleProxy } = require("next-plausible");
 
+process.env.SITE_URL = process.env.SITE_URL || process.env.VERCEL_URL || "https://sreetamdas.com";
+
 module.exports = withPlausibleProxy()({
 	compiler: {
 		// ssr and displayName are configured by default
@@ -9,7 +11,7 @@ module.exports = withPlausibleProxy()({
 	experimental: { esmExternals: true },
 	pageExtensions: ["js", "jsx", "ts", "tsx", "mdx"],
 	env: {
-		SITE_URL: "https://sreetamdas.com",
+		SITE_URL: process.env.SITE_URL,
 	},
 	webpack(config) {
 		config.module.rules.push({

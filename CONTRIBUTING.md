@@ -30,11 +30,11 @@ Please check out the specific version of Node.js specified in `.nvmrc` (`16.5.0`
 
 #### Almost there
 
-Once you have the specified version of Node.js installed, you can run `npm i` and `npm run dev` to get up and running.
+Once you have the specified version of Node.js installed, make sure you've [setup `pnpm`](https://pnpm.io/installation) and then you can run the following to get up and running.
 
 ```sh
-npm i
-npm run dev
+pnpm i
+pnpm dev
 ```
 
 ---

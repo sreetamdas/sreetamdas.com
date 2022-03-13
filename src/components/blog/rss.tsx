@@ -2,6 +2,7 @@ import fs from "fs";
 
 import { Feed } from "feed";
 
+import { SITE_URL } from "@/config";
 import { getAllBlogPostsPreviewData } from "@/utils/blog";
 
 export async function generateRssFeed() {
@@ -9,7 +10,7 @@ export async function generateRssFeed() {
 		return;
 	}
 	const posts = await getAllBlogPostsPreviewData();
-	const siteURL = process.env.SITE_URL ?? "https://sreetamdas.com";
+	const siteURL = SITE_URL;
 	const date = new Date();
 	const author = {
 		name: "Sreetam Das",

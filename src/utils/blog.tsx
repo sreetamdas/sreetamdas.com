@@ -1,12 +1,14 @@
 import { promises as fs } from "fs";
 import path from "path";
 
+import karmaThemeJSON from "@sreetamdas/karma/themes/Karma-color-theme.json";
 import { bundleMDX } from "mdx-bundler";
 import rehypeRaw from "rehype-raw";
 import remarkGfm from "remark-gfm";
 import remarkSlug from "remark-slug";
 import remarkToc from "remark-toc";
-import { loadTheme, getHighlighter } from "shiki";
+import { getHighlighter, toShikiTheme } from "shiki";
+import { IRawTheme } from "vscode-textmate";
 
 import { rehypeImgSize } from "@/components/mdx/images/plugins";
 import { remarkShiki } from "@/components/shiki";
@@ -25,8 +27,7 @@ export async function getBlogPostsSlugs() {
 
 export async function bundleMDXWithOptions(filename: string) {
 	const mdxSource = await fs.readFile(filename, "utf8");
-	// FIXME this is a hack to make sure that the MDX is bundled with the correct theme
-	const theme = await loadTheme("../@sreetamdas/karma/themes/Karma-color-theme.json");
+	const theme = toShikiTheme(karmaThemeJSON as unknown as IRawTheme);
 	const highlighter = await getHighlighter({ theme });
 
 	const result = await bundleMDX({

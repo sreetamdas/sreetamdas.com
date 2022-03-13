@@ -1,4 +1,4 @@
-import { IRawThemeSetting } from "vscode-textmate";
+import type { IRawThemeSetting } from "vscode-textmate";
 
 enum FontStyle {
 	NotSet = -1,
