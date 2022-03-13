@@ -21,12 +21,12 @@ import styled, { css, ThemeContext } from "styled-components";
 
 import { Button } from "@/components/Button";
 import { FoobarContext } from "@/components/foobar";
+import { supabaseClient } from "@/domains/Supabase";
 import { IconContainer } from "@/styles/blog";
 import { sharedTransition } from "@/styles/components";
 import { LinkTo } from "@/styles/typography";
 import { useHasMounted } from "@/utils/hooks";
 import { breakpoint } from "@/utils/style";
-import { supabaseClient } from "@/utils/supabaseClient";
 
 export const Navbar = () => {
 	const hasMounted = useHasMounted();

@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 
-import { octokit } from "@/domains/github";
+import { octokit } from "@/domains/GitHub";
 
 /**
  * Get the stars and forks of a repository

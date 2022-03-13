@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 
 import { BookEntryProperties } from "@/components/Books";
-import { prismaClient } from "@/utils/prismaClient";
+import { prismaClient } from "@/domains/Prisma";
 
 // @ts-expect-error BigInt prototype
 BigInt.prototype.toJSON = function () {

@@ -5,10 +5,10 @@ import { UploadBook } from "@/components/Admin/UploadBook";
 import { Button } from "@/components/Button";
 import { ViewsCounter } from "@/components/ViewsCounter";
 import { DocumentHead } from "@/components/shared/seo";
+import { supabaseClient } from "@/domains/Supabase";
 import { Center, Space } from "@/styles/layouts";
 import { Title } from "@/styles/typography";
 import { useHasMounted } from "@/utils/hooks";
-import { supabaseClient } from "@/utils/supabaseClient";
 
 const AdminLogin = () => {
 	async function handleSignUpWIthGitHub() {

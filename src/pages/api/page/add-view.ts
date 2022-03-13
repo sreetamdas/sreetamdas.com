@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 
+import { supabaseClient } from "@/domains/Supabase";
 import { PostDetails } from "@/typings/blog";
-import { supabaseClient } from "@/utils/supabaseClient";
 
 /**
  * @api {post} /api/page/add-view Add view to page using RPC in Supabase

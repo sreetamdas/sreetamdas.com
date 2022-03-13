@@ -11,7 +11,7 @@ import {
 	SelectField,
 	SubmitButton,
 } from "@/components/Form";
-import { uploadFileToSupabase, getSupabaseFileURL } from "@/domains/supabase";
+import { uploadFileToSupabase, getSupabaseFileURL } from "@/domains/Supabase";
 
 type FormDataValues = Omit<BookEntryProperties, "cover"> & { cover?: File };
 export const UploadBook = () => {
@@ -20,7 +20,10 @@ export const UploadBook = () => {
 		author: "",
 		status: BookStatus.Have,
 	};
-	const options = Object.keys(BookStatus).map((status) => ({ value: status, label: status }));
+	const bookStatusOptions = Object.keys(BookStatus).map((status) => ({
+		value: status,
+		label: status,
+	}));
 
 	async function handleSubmit(
 		values: FormDataValues,
@@ -29,20 +32,22 @@ export const UploadBook = () => {
 		setSubmitting(true);
 
 		const imageFile = values["cover"] as File;
+		const toastUploadImageToSupabase = toast.loading("Uploading image ...");
 		const { data, error } = await uploadFileToSupabase(imageFile, { path: "/site/keebs/" });
 		if (error) {
-			toast.error(error.message);
+			toast.error(error.message, { id: toastUploadImageToSupabase });
 		}
 
 		if (data) {
-			toast.success(`Uploaded ${imageFile.name} successfully!`);
+			toast.success("Uploaded successfully!", { id: toastUploadImageToSupabase });
 			const fileURL = getSupabaseFileURL(data?.Key);
 			const formValues: BookEntryProperties = { ...values, cover: fileURL };
+			const toastUploadBooksDetails = toast.loading("Uploading book details ...");
 			const res = (await axios.post("/api/admin/books/add", formValues)).data;
 			// eslint-disable-next-line no-console
 			console.log(res);
+			toast.success(`Uploaded ${values["name"]} successfully!`, { id: toastUploadBooksDetails });
 			setSubmitting(false);
-			toast.success(`Uploaded ${values["name"]} successfully!`);
 		}
 	}
 
@@ -55,8 +60,8 @@ export const UploadBook = () => {
 					<InputField name="author" type="text" label="Author" required />
 					<SelectField
 						name="status"
-						options={options}
-						defaultValue={options?.[0]}
+						options={bookStatusOptions}
+						defaultValue={bookStatusOptions?.[0]}
 						transformValue={(option) => option?.value}
 						label="Status"
 					/>
