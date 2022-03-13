@@ -11,14 +11,17 @@ export function getSupabaseFileURL(filename: string) {
 	return `${process.env.NEXT_PUBLIC_SUPABASE_STORAGE_URL}/storage/v1/object/public/${filename}`;
 }
 
-type UploadFileToSupabaseProps = { bucket?: string; path?: string; exactFilename?: boolean };
+type UploadFileToSupabaseProps = { bucket?: string; path?: string; useExactFilename?: boolean };
 export async function uploadFileToSupabase(
 	image: File,
-	{ bucket = "public", path = "/", exactFilename = false }: UploadFileToSupabaseProps
+	{ bucket = "public", path = "/", useExactFilename = false }: UploadFileToSupabaseProps
 ) {
-	const filename = exactFilename
-		? `${path}${image.name}`
-		: `${path}${image.name}-${randomAlphanumeric()}`;
+	const RE_filenameExtension = /(.+)(\.[^.]+?)$/;
+	const [, filename, fileExtension] = RE_filenameExtension.exec(image.name) ?? [];
 
-	return await supabaseClient.storage.from(bucket).upload(filename, image);
+	const filenameToUpload = useExactFilename
+		? `${path}${filename}${fileExtension}`
+		: `${path}${filename}-${randomAlphanumeric()}${fileExtension}`;
+
+	return await supabaseClient.storage.from(bucket).upload(filenameToUpload, image);
 }
