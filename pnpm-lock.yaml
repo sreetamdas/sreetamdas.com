@@ -61,6 +61,7 @@ specifiers:
   typescript: ^4.6.2
   unist-util-visit: ^4.1.0
   vscode-textmate: ^6.0.0
+  zustand: ^3.7.1
 
 dependencies:
   '@codesandbox/sandpack-react': 0.14.8_react-dom@17.0.2+react@17.0.2
@@ -97,6 +98,7 @@ dependencies:
   styled-components: 5.3.3_281a4fa50a045c9112baf635f3bc27a7
   unist-util-visit: 4.1.0
   vscode-textmate: 6.0.0
+  zustand: 3.7.1_react@17.0.2
 
 devDependencies:
   '@next/eslint-plugin-next': 12.1.0
@@ -7518,6 +7520,18 @@ packages:
       y18n: 5.0.8
       yargs-parser: 21.0.0
     dev: true
+
+  /zustand/3.7.1_react@17.0.2:
+    resolution: {integrity: sha512-wHBCZlKj+bg03/hP+Tzv24YhnqqP8MCeN9ECPDXoF01062SIbnfl3j9O0znkDw1lNTY0a8WN3F///a0UhhaEqg==}
+    engines: {node: '>=12.7.0'}
+    peerDependencies:
+      react: '>=16.8'
+    peerDependenciesMeta:
+      react:
+        optional: true
+    dependencies:
+      react: 17.0.2
+    dev: false
 
   /zwitch/2.0.2:
     resolution: {integrity: sha512-JZxotl7SxAJH0j7dN4pxsTV6ZLXoLdGME+PsjkL/DaBrVryK9kTGq06GfKrwcSOqypP+fdXGoCHE36b99fWVoA==}
