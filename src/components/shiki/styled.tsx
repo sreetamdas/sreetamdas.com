@@ -98,14 +98,12 @@ export const CodeBlock = (
 			{Array.isArray(children) ? (
 				(children as ReactNodeArray)
 					?.filter((line) => line !== "\n")
-					.map((line, i) => {
-						return (
-							<CodeblockLineWrapper key={i} $highlight={shouldHighlightLine(i)}>
-								<CodeblockLineNumber>{i + 1}</CodeblockLineNumber>
-								{line}
-							</CodeblockLineWrapper>
-						);
-					})
+					.map((line, i) => (
+						<CodeblockLineWrapper key={i} $highlight={shouldHighlightLine(i)}>
+							<CodeblockLineNumber>{i + 1}</CodeblockLineNumber>
+							{line}
+						</CodeblockLineWrapper>
+					))
 			) : (
 				<CodeblockLineWrapper>
 					<CodeblockLineNumber>1</CodeblockLineNumber>

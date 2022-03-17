@@ -1,13 +1,15 @@
 import Link, { LinkProps } from "next/link";
-import React, { PropsWithoutRef } from "react";
+import React, { AnchorHTMLAttributes, forwardRef, PropsWithChildren } from "react";
 import styled, { css } from "styled-components";
+
+import { breakpoint } from "@/utils/style";
 
 export const ReallyBigTitle = styled.h1`
 	font-size: 8rem;
 	line-height: 1;
 `;
 
-export const TextGradientCSS = css`
+export const primaryGradientMixin = css`
 	background-image: linear-gradient(
 		90deg,
 		var(--color-primary-accent) 0%,
@@ -20,8 +22,8 @@ export const TextGradientCSS = css`
 	box-decoration-break: slice;
 	-webkit-box-decoration-break: clone;
 `;
-export const TextGradient = styled.span`
-	${TextGradientCSS}
+export const PrimaryGradient = styled.span`
+	${primaryGradientMixin}
 `;
 
 export const Heavy = styled.span`
@@ -33,8 +35,7 @@ export const Accent = styled.span`
 `;
 
 export const Monospace = styled.span`
-	font-family: SFMono-Regular, Consolas, Roboto Mono, Menlo, Monaco, Liberation Mono,
-		Lucida FoobarWrapper, monospace;
+	font-family: var(--font-family-code);
 `;
 
 export const MDXText = styled.div`
@@ -51,15 +52,29 @@ export const Datestamp = styled.p`
 	margin: 0.5rem 0;
 `;
 
-export const Title = styled.h1<{ resetLineHeight?: boolean; size?: number }>`
+type TitleProps = {
+	$resetLineHeight?: boolean;
+	$size?: number;
+	$scaled?: boolean;
+};
+export const Title = styled.h1<TitleProps>`
 	padding: 20px 0;
-	font-size: ${({ size }) => (size ? `${size}rem` : "3rem")};
 
-	${({ resetLineHeight }) =>
-		resetLineHeight &&
+	${({ $resetLineHeight }) =>
+		$resetLineHeight &&
 		css`
 			line-height: 1;
 		`}
+
+	${({ $size = 3 }) =>
+		css`
+			font-size: ${$size}rem;
+		`}
+	${({ $scaled, $size }) =>
+		$scaled &&
+		breakpoint.until.sm(css`
+			font-size: clamp(1rem, ${$size}rem, 15vw);
+		`)}
 `;
 
 export const MDXTitle = styled.h1<{ color?: string }>`
@@ -92,21 +107,33 @@ export const BlogPostPreviewTitle = styled.h2<{ isHovered: boolean }>`
 	margin: 0;
 	font-size: 2rem;
 	color: var(--color-primary-accent);
-	${({ isHovered }) => isHovered && TextGradientCSS}
+	${({ isHovered }) => isHovered && primaryGradientMixin}
 `;
 
-export const StyledLink = styled.a`
+type StyledLinkProps = {
+	$primary?: boolean;
+	external?: boolean;
+};
+export const StyledLink = styled.a<StyledLinkProps>`
 	text-decoration: none;
-	cursor: pointer;
-	color: var(--color-primary-accent);
-	border-bottom: 2px solid transparent;
+
+	${({ $primary }) =>
+		$primary
+			? css`
+					color: var(--color-primary);
+					&:hover {
+						color: var(--color-primary-accent);
+					}
+			  `
+			: css`
+					color: var(--color-primary-accent);
+			  `}
 
 	&:visited {
 		text-decoration: none;
 	}
 	&:hover {
-		border-bottom: 2px solid var(--color-primary-accent);
-		text-decoration: none;
+		text-decoration: 2px underline;
 	}
 `;
 
@@ -124,17 +151,38 @@ export const StyledAccentTextLink = styled(StyledLink)`
 	}
 `;
 
-export const LinkTo = ({
-	children,
-	href,
-	as,
-	replace,
-	style = {},
-	...props
-}: PropsWithoutRef<LinkProps & React.HTMLProps<HTMLAnchorElement>>) => {
+export type LinkToProps = PropsWithChildren<LinkProps> &
+	AnchorHTMLAttributes<never> &
+	StyledLinkProps;
+export const LinkTo = forwardRef<HTMLAnchorElement, LinkToProps>(function LinkTo(
+	{ children, ...allProps },
+	ref
+) {
+	const { href, as, passHref, prefetch, replace, scroll, shallow, locale, ...linkProps } = allProps;
+	const { external } = linkProps;
+
+	if (external) {
+		linkProps.target = "_blank";
+		linkProps.rel = "noopener noreferrer";
+	}
+
 	return (
-		<Link {...{ href, as, replace }} passHref>
-			<StyledLink {...{ style, ...props }}>{children}</StyledLink>
+		<Link
+			{...{
+				href,
+				as,
+				passHref,
+				prefetch,
+				replace,
+				scroll,
+				shallow,
+				locale,
+			}}
+			passHref
+		>
+			<StyledLink {...linkProps} ref={ref}>
+				{children}
+			</StyledLink>
 		</Link>
 	);
-};
+});

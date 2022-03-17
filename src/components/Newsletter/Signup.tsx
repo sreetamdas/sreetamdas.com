@@ -3,13 +3,14 @@ import styled, { css } from "styled-components";
 
 import { buttonStylesMixin } from "@/components/foobar/styled";
 import { sharedTransition } from "@/styles/components";
-import { Accent } from "@/styles/typography";
+import { Accent, LinkTo } from "@/styles/typography";
 import { breakpoint } from "@/utils/style";
 
 export type TNewsletterProps = {
 	subscriberCount: number;
+	withNewsletter?: boolean;
 };
-export const Newsletter = ({ subscriberCount }: TNewsletterProps) => {
+export const NewsletterSignup = ({ subscriberCount, withNewsletter }: TNewsletterProps) => {
 	const [formSuccess, setFormSuccess] = useState(false);
 	const [isFormBeingSubmitted, setIsFormBeingSubmitted] = useState(false);
 	const [formError, setFormError] = useState<string>();
@@ -42,8 +43,13 @@ export const Newsletter = ({ subscriberCount }: TNewsletterProps) => {
 				<br />
 				No spam, unsubscribe anytime :&#41;
 				<br />
-				You can also <a href="https://buttondown.email/sreetamdas/archive">view previous issues</a>,
-				and <a href="https://buttondown.email/sreetamdas/rss">subscribe via RSS</a>!
+				You can also{" "}
+				{withNewsletter ? (
+					<>view previous issues below</>
+				) : (
+					<LinkTo href="https://buttondown.email/sreetamdas/archive">view previous issues</LinkTo>
+				)}
+				, and <LinkTo href="https://buttondown.email/sreetamdas/rss">subscribe via RSS</LinkTo>!
 			</NewsletterText>
 			<div>
 				<StyledForm onSubmit={handleFormSubmit}>

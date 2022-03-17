@@ -26,9 +26,7 @@ export const WarningSpan = styled.span`
 	border-radius: var(--border-radius);
 `;
 
-export const PostNotPublishedWarning = () => {
-	return <WarningSpan>UNPUBLISHED</WarningSpan>;
-};
+export const PostNotPublishedWarning = () => <WarningSpan>UNPUBLISHED</WarningSpan>;
 
 export const PostMetaDataGrid = styled.div`
 	display: grid;

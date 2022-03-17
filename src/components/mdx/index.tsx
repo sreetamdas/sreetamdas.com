@@ -1,43 +1,23 @@
-import Link from "next/link";
 import React, { createElement, CSSProperties, PropsWithChildren, ReactHTML } from "react";
 import { FiLink } from "react-icons/fi";
-import styled from "styled-components";
 
 import { CustomImage } from "./images";
 import { OrderedList, UnorderedList } from "./lists";
 
 import { CodeBlock } from "@/components/shiki/styled";
 import { LinkedHeaderIconWrapper } from "@/styles/blog";
-import { Paragraph } from "@/styles/typography";
+import { Paragraph, StyledLink } from "@/styles/typography";
 import { useHover } from "@/utils/hooks";
 
-export const MDXLinkStyledWrapper = styled.span`
-	& a {
-		color: var(--color-primary-accent);
-
-		:hover {
-			border-bottom: 2px solid var(--color-primary-accent);
-			text-decoration: none;
-		}
-	}
-`;
-
-const MDXLinkWrapper = (props: PropsWithChildren<{ href: string }>) => {
-	return (
-		<MDXLinkStyledWrapper>
-			{
-				// link to internal page or skip link
-				"/#".includes(props.href[0]) ? (
-					<Link {...props} />
-				) : (
-					<a {...props} target="_blank" rel="noopener noreferrer">
-						{props.children}
-					</a>
-				)
-			}
-		</MDXLinkStyledWrapper>
+const MDXLinkWrapper = (props: PropsWithChildren<{ href: string }>) =>
+	// link to internal page or skip link
+	"/#".includes(props.href[0]) ? (
+		<StyledLink {...props} />
+	) : (
+		<StyledLink {...props} target="_blank" rel="noopener noreferrer">
+			{props.children}
+		</StyledLink>
 	);
-};
 
 type TIDPropsWithChildren = PropsWithChildren<{ id: string }>;
 const HandleMDXHeaderElement = (

@@ -94,17 +94,15 @@ const IconCoffee = () => (
 	</svg>
 );
 
-export const SupportSreetamDas = () => {
-	return (
-		<SupportLinkWrapper>
-			<SupportLinkStyled
-				href="https://buymeacoff.ee/sreetamdas"
-				target="_blank"
-				rel="noopener noreferrer"
-			>
-				<IconCoffee />
-				Buy me a coffee
-			</SupportLinkStyled>
-		</SupportLinkWrapper>
-	);
-};
+export const SupportSreetamDas = () => (
+	<SupportLinkWrapper>
+		<SupportLinkStyled
+			href="https://buymeacoff.ee/sreetamdas"
+			target="_blank"
+			rel="noopener noreferrer"
+		>
+			<IconCoffee />
+			Buy me a coffee
+		</SupportLinkStyled>
+	</SupportLinkWrapper>
+);

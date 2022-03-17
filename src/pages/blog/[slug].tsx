@@ -3,13 +3,14 @@ import { GetStaticProps } from "next";
 import React, { Fragment, useMemo, useRef } from "react";
 
 import { ChromaHighlight } from "@/components/FancyPants";
+import { NewsletterSignup } from "@/components/Newsletter/Signup";
 import { ViewsCounter } from "@/components/ViewsCounter";
 import { ScrollToTop, ShareLinks } from "@/components/blog";
-import { Newsletter } from "@/components/blog/Newsletter";
 import { ReadingProgress } from "@/components/blog/ProgressBar";
 import { HighlightWithUseEffect, HighlightWithUseInterval } from "@/components/blog/rgb-text";
 import { MDXComponents } from "@/components/mdx";
 import { DocumentHead } from "@/components/shared/seo";
+import { getButtondownSubscriberCount } from "@/domains/Buttondown";
 import {
 	BlogPostContentWrapper,
 	PostNotPublishedWarning,
@@ -23,14 +24,12 @@ import { Sparkles } from "@/styles/special";
 import {
 	BlogPostTitle,
 	Datestamp,
-	TextGradient,
+	PrimaryGradient,
 	Heavy,
 	StyledAccentTextLink,
 } from "@/styles/typography";
 import { TBlogPostPageProps } from "@/typings/blog";
 import { getMDXFileData, getBlogPostsSlugs } from "@/utils/blog";
-import { getButtondownSubscriberCount } from "@/utils/misc";
-
 type TProps = TBlogPostPageProps & {
 	subscriberCount: number;
 };
@@ -48,7 +47,7 @@ const Post = ({ code, frontmatter, slug, subscriberCount }: TProps) => {
 			<ReadingProgress />
 			<div ref={topRef} />
 			<BlogPostTitle>
-				<TextGradient>{frontmatter.title}</TextGradient>
+				<PrimaryGradient>{frontmatter.title}</PrimaryGradient>
 			</BlogPostTitle>
 			<BlogPostContentWrapper>
 				<Component
@@ -62,7 +61,7 @@ const Post = ({ code, frontmatter, slug, subscriberCount }: TProps) => {
 						HighlightWithUseInterval,
 						Highlight,
 						CustomBlockquote,
-						TextGradient,
+						TextGradient: PrimaryGradient,
 						Heavy,
 						StyledAccentTextLink,
 						...MDXComponents,
@@ -85,7 +84,7 @@ const Post = ({ code, frontmatter, slug, subscriberCount }: TProps) => {
 				</Datestamp>
 			</PostMetaDataGrid>
 			<ViewsCounter pageType="post" />
-			<Newsletter {...{ subscriberCount }} />
+			<NewsletterSignup {...{ subscriberCount }} />
 		</Fragment>
 	);
 };

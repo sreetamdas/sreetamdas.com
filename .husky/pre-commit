@@ -1,4 +1,4 @@
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
-echo "test pre-commit hook!"
+pnpm exec lint-staged

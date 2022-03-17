@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import { PropsWithChildren, HTMLAttributes, Key, useState } from "react";
 import styled, { keyframes, CSSProperties } from "styled-components";
 
@@ -45,9 +46,7 @@ const Sparkles = ({
 	children,
 	...props
 }: PropsWithChildren<HTMLAttributes<HTMLElement>>) => {
-	const [sparkles, setSparkles] = useState(() => {
-		return range(3).map(() => generateSparkle(color));
-	});
+	const [sparkles, setSparkles] = useState(() => range(3).map(() => generateSparkle(color)));
 	const prefersReducedMotion = usePrefersReducedMotion();
 	useRandomInterval(
 		() => {

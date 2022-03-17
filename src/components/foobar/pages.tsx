@@ -21,7 +21,7 @@ const XMarksTheSpot = (_props: { foobar: string }) => <div />;
 
 const UnlockedBanner = ({ completedPage }: TFoobarSchrodingerProps) =>
 	completedPage && completedPage !== "/" ? (
-		<CenterUnlockedPage size={3.5}>
+		<CenterUnlockedPage $size={3.5}>
 			— You&apos;ve unlocked —
 			<br />
 			<code>

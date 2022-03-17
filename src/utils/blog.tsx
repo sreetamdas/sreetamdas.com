@@ -99,12 +99,11 @@ export async function getAllBlogPostsPreviewData() {
 		)
 	)
 		.filter(({ frontmatter: { published } }) => process.env.NODE_ENV === "development" || published)
-		.sort((a, b) => {
-			return (
+		.sort(
+			(a, b) =>
 				new Date(b.frontmatter.publishedAt).getTime() -
 				new Date(a.frontmatter.publishedAt).getTime()
-			);
-		});
+		);
 	return postsData;
 }
 
@@ -129,18 +128,14 @@ export async function getRootPagesSlugs() {
 		.map((file) => file.replace(/\.tsx?$/, ""));
 
 	const pagesData: Array<{ page: string }> = files
-		.map((file) => {
-			return {
-				page: file.replace(/\.mdx?$/, ""),
-			};
-		})
+		.map((file) => ({
+			page: file.replace(/\.mdx?$/, ""),
+		}))
 		.filter(({ page }) => existingRootPageFiles.indexOf(page) === -1);
 
-	const pagesDataWithContent = pagesData.map((data) => {
-		return {
-			...data,
-		};
-	});
+	const pagesDataWithContent = pagesData.map((data) => ({
+		...data,
+	}));
 
 	return pagesDataWithContent;
 }

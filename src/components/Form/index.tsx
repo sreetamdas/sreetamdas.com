@@ -110,40 +110,38 @@ export const SelectField = <
 	...props
 }: ReactSelectProps<Option, IsMulti, Group> &
 	NameLabelProps &
-	AdditionalSelectProps<Option, IsMulti>) => {
-	return (
-		<Field name={name}>
-			{({ field: { value }, form: { setFieldValue }, meta: { error, touched } }: FieldProps) => {
-				function handleChange(
-					selectedOption: OnChangeValue<Option, IsMulti>,
-					_meta: ActionMeta<Option>
-				) {
-					if (transformValue) {
-						setFieldValue(name, transformValue(selectedOption));
-					} else {
-						setFieldValue(name, selectedOption);
-					}
+	AdditionalSelectProps<Option, IsMulti>) => (
+	<Field name={name}>
+		{({ field: { value }, form: { setFieldValue }, meta: { error, touched } }: FieldProps) => {
+			function handleChange(
+				selectedOption: OnChangeValue<Option, IsMulti>,
+				_meta: ActionMeta<Option>
+			) {
+				if (transformValue) {
+					setFieldValue(name, transformValue(selectedOption));
+				} else {
+					setFieldValue(name, selectedOption);
 				}
+			}
 
-				return (
-					<InputGroup>
-						<Label htmlFor={name} $show={displayLabel || !!value?.toString().length}>
-							{label}
-						</Label>
-						<Select
-							options={options}
-							onChange={handleChange}
-							isSearchable={false}
-							components={{
-								IndicatorSeparator: () => null,
-							}}
-							styles={customSelectStyles as unknown as StylesConfig<Option, IsMulti, Group>}
-							{...props}
-						/>
-						{touched && error ? <Error>{error}</Error> : null}
-					</InputGroup>
-				);
-			}}
-		</Field>
-	);
-};
+			return (
+				<InputGroup>
+					<Label htmlFor={name} $show={displayLabel || !!value?.toString().length}>
+						{label}
+					</Label>
+					<Select
+						options={options}
+						onChange={handleChange}
+						isSearchable={false}
+						components={{
+							IndicatorSeparator: () => null,
+						}}
+						styles={customSelectStyles as unknown as StylesConfig<Option, IsMulti, Group>}
+						{...props}
+					/>
+					{touched && error ? <Error>{error}</Error> : null}
+				</InputGroup>
+			);
+		}}
+	</Field>
+);

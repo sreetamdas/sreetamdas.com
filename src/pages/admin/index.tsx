@@ -27,7 +27,7 @@ const AdminLogin = ({ unauthorizedUser }: AdminLoginProps) => {
 			<DocumentHead title="Admin" noIndex />
 
 			<Center>
-				<Title size={5}>/admin</Title>
+				<Title $size={5}>/admin</Title>
 				<Space />
 
 				{unauthorizedUser ? (
@@ -68,7 +68,7 @@ const Admin = () => {
 			<DocumentHead title="Admin" noIndex />
 
 			<Center>
-				<Title size={5}>/admin</Title>
+				<Title $size={5}>/admin</Title>
 
 				<UploadBook />
 			</Center>

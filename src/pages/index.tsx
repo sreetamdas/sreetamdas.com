@@ -2,14 +2,14 @@ import { getMDXComponent } from "mdx-bundler/client";
 import { InferGetStaticPropsType } from "next";
 import React, { Fragment, useMemo } from "react";
 
+import { NewsletterSignup } from "@/components/Newsletter/Signup";
 import { ViewsCounter } from "@/components/ViewsCounter";
-import { Newsletter } from "@/components/blog/Newsletter";
 import { MDXComponents } from "@/components/mdx";
 import { DocumentHead } from "@/components/shared/seo";
+import { getButtondownSubscriberCount } from "@/domains/Buttondown";
 import { Center, Space } from "@/styles/layouts";
-import { TextGradient, Heavy, MDXText, Title, Paragraph, StyledLink } from "@/styles/typography";
+import { PrimaryGradient, Heavy, MDXText, Title, Paragraph, StyledLink } from "@/styles/typography";
 import { getMDXFileData } from "@/utils/blog";
-import { getButtondownSubscriberCount } from "@/utils/misc";
 
 const Index = ({ code, subscriberCount }: InferGetStaticPropsType<typeof getStaticProps>) => {
 	const Component = useMemo(() => getMDXComponent(code), [code]);
@@ -20,7 +20,7 @@ const Index = ({ code, subscriberCount }: InferGetStaticPropsType<typeof getStat
 
 			<Space size={25} />
 			<Center>
-				<Title size={2.5}>
+				<Title $size={2.5}>
 					Hey, I&apos;m Sreetam Das!{" "}
 					<span role="img" aria-label="wave">
 						👋
@@ -36,9 +36,9 @@ const Index = ({ code, subscriberCount }: InferGetStaticPropsType<typeof getStat
 			<Paragraph>
 				I&apos;m currently a front-end engineer at{" "}
 				<StyledLink href="https://remote.com">Remote</StyledLink> who loves working with{" "}
-				<TextGradient>
+				<PrimaryGradient>
 					<Heavy>React + TypeScript</Heavy>
-				</TextGradient>
+				</PrimaryGradient>
 				.
 			</Paragraph>
 			<MDXText>
@@ -62,7 +62,7 @@ const Index = ({ code, subscriberCount }: InferGetStaticPropsType<typeof getStat
 			</Paragraph>
 
 			<ViewsCounter hidden />
-			<Newsletter {...{ subscriberCount }} />
+			<NewsletterSignup {...{ subscriberCount }} />
 		</Fragment>
 	);
 };
