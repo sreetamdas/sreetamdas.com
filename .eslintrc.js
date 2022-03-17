@@ -42,18 +42,22 @@ module.exports = {
 		"react-hooks/exhaustive-deps": "warn",
 		"react/react-in-jsx-scope": "off",
 		"react/jsx-no-undef": "off",
-		"react/display-name": "off",
+		"react/display-name": "warn",
 		"react/jsx-uses-react": "off",
 		"@typescript-eslint/explicit-module-boundary-types": "off",
 		// "@typescript-eslint/no-explicit-any": "off",
 		"@typescript-eslint/no-unused-vars": ["error", { argsIgnorePattern: "^_" }],
-		"import/order": [
-			"error",
-			{
-				"newlines-between": "always",
-				alphabetize: { order: "asc" },
-			},
-		],
+
+		// from https://github.com/wesbos/eslint-config-wesbos
+		"prefer-const": ["error", { destructuring: "all" }],
+		"arrow-body-style": ["error", "as-needed"],
+		"no-unused-expressions": ["error", { allowTaggedTemplates: true }],
+		"no-param-reassign": ["error", { props: false }],
+		"import/prefer-default-export": 0,
+		"jsx-a11y/label-has-associated-control": ["error", { assert: "either" }],
+		"jsx-a11y/anchor-is-valid": ["warn", { aspects: ["invalidHref"] }],
+
+		"import/order": ["error", { "newlines-between": "always", alphabetize: { order: "asc" } }],
 	},
 	settings: {
 		react: {

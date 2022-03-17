@@ -17,16 +17,29 @@ import {
 } from "react-icons/fa";
 import { FiRss, FiSun, FiMenu, FiX } from "react-icons/fi";
 import { IoMdMoon } from "react-icons/io";
-import styled, { css, ThemeContext } from "styled-components";
+import { ThemeContext } from "styled-components";
+
+import {
+	PlatformLinksContainer,
+	NavLink,
+	LogoSVG,
+	ThemeSwitch,
+	MobileMenuToggle,
+	Header,
+	HeaderInner,
+	Nav,
+	PageLinks,
+	IconLinks,
+	NavLinksDesktop,
+	FullScreenWrapper,
+	NavContainer,
+} from "./styles";
 
 import { Button } from "@/components/Button";
 import { FoobarContext } from "@/components/foobar";
 import { supabaseClient } from "@/domains/Supabase";
 import { IconContainer } from "@/styles/blog";
-import { sharedTransition } from "@/styles/components";
-import { LinkTo } from "@/styles/typography";
 import { useHasMounted } from "@/utils/hooks";
-import { breakpoint } from "@/utils/style";
 
 export const Navbar = () => {
 	const hasMounted = useHasMounted();
@@ -65,50 +78,51 @@ const iconLinksVariants: Variants = {
 	closed: { opacity: 0 },
 };
 
-const NavLinks = () => {
-	return (
-		<Nav>
-			<PageLinks>
-				<motion.li variants={textLinksVariants}>
-					<NavLink href="/blog">blog</NavLink>
-				</motion.li>
-				<motion.li variants={textLinksVariants}>
-					<NavLink href="/uses">uses</NavLink>
-				</motion.li>
-				<motion.li variants={textLinksVariants}>
-					<NavLink href="/about">about</NavLink>
-				</motion.li>
-			</PageLinks>
-			<IconLinks>
-				<motion.li variants={iconLinksVariants}>
-					<IconContainer
-						href="https://github.com/sreetamdas"
-						target="_blank"
-						rel="noopener noreferrer"
-						$styledOnHover
-					>
-						<FaGithub aria-label="Sreetam's GitHub" title="Sreetam Das' GitHub" />
-					</IconContainer>
-				</motion.li>
-				<motion.li variants={iconLinksVariants}>
-					<IconContainer
-						href="https://twitter.com/_SreetamDas"
-						target="_blank"
-						rel="noopener noreferrer"
-						$styledOnHover
-					>
-						<FaTwitter aria-label="Sreetam Das' Twitter" title="Sreetam Das' Twitter" />
-					</IconContainer>
-				</motion.li>
-				<motion.li variants={iconLinksVariants}>
-					<IconContainer href="https://sreetamdas.com/rss/feed.xml" $styledOnHover>
-						<FiRss aria-label="Blog RSS feed" title="Blog RSS feed" />
-					</IconContainer>
-				</motion.li>
-			</IconLinks>
-		</Nav>
-	);
-};
+const NavLinks = () => (
+	<Nav>
+		<PageLinks>
+			<motion.li variants={textLinksVariants}>
+				<NavLink href="/about">about</NavLink>
+			</motion.li>
+			<motion.li variants={textLinksVariants}>
+				<NavLink href="/blog">blog</NavLink>
+			</motion.li>
+			<motion.li variants={textLinksVariants}>
+				<NavLink href="/newsletter">newsletter</NavLink>
+			</motion.li>
+			<motion.li variants={textLinksVariants}>
+				<NavLink href="/uses">uses</NavLink>
+			</motion.li>
+		</PageLinks>
+		<IconLinks>
+			<motion.li variants={iconLinksVariants}>
+				<IconContainer
+					href="https://github.com/sreetamdas"
+					target="_blank"
+					rel="noopener noreferrer"
+					$styledOnHover
+				>
+					<FaGithub aria-label="Sreetam's GitHub" title="Sreetam Das' GitHub" />
+				</IconContainer>
+			</motion.li>
+			<motion.li variants={iconLinksVariants}>
+				<IconContainer
+					href="https://twitter.com/_SreetamDas"
+					target="_blank"
+					rel="noopener noreferrer"
+					$styledOnHover
+				>
+					<FaTwitter aria-label="Sreetam Das' Twitter" title="Sreetam Das' Twitter" />
+				</IconContainer>
+			</motion.li>
+			<motion.li variants={iconLinksVariants}>
+				<IconContainer href="https://sreetamdas.com/rss/feed.xml" $styledOnHover>
+					<FiRss aria-label="Blog RSS feed" title="Blog RSS feed" />
+				</IconContainer>
+			</motion.li>
+		</IconLinks>
+	</Nav>
+);
 
 const NavbarMenu = () => {
 	const [darkTheme, setDarkTheme] = useState<boolean | undefined>(undefined);
@@ -246,174 +260,6 @@ const NavbarMenu = () => {
 		</>
 	);
 };
-
-const Container = styled.div`
-	display: grid;
-	grid-auto-flow: column;
-	column-gap: 15px;
-	justify-self: end;
-	place-items: center;
-	justify-content: center;
-`;
-
-const PlatformLinksContainer = styled.div`
-	display: grid;
-	grid-auto-flow: column;
-	column-gap: 15px;
-	place-items: center;
-	justify-content: center;
-	padding: 15px 0;
-
-	${breakpoint.until.md(css`
-		display: flex;
-		flex-wrap: wrap;
-		row-gap: 15px;
-		padding: 15px 3rem;
-	`)}
-`;
-
-const NavLink = styled(LinkTo)`
-	border: none !important;
-	color: var(--color-primary);
-
-	&:hover {
-		color: var(--color-primary-accent);
-	}
-`;
-
-const LogoSVG = styled.svg.attrs({
-	width: "25",
-	height: "25",
-	viewBox: "0 0 25 25",
-	xmlns: "http://www.w3.org/2000/svg",
-})`
-	color: var(--color-primary-accent);
-	fill: var(--color-primary-accent);
-`;
-
-const ThemeSwitch = styled(IconContainer).attrs({ as: "button" })``;
-
-const MobileMenuToggle = styled(IconContainer).attrs({ as: "button" })`
-	color: var(--color-primary-accent);
-
-	${breakpoint.from.md(css`
-		display: none;
-	`)}
-`;
-
-const Header = styled.header`
-	position: sticky;
-	top: 0;
-	width: 100%;
-	padding: 0 20px;
-	z-index: 2;
-
-	background-color: var(--color-background);
-
-	${sharedTransition("color, background-color")}
-
-	${IconContainer}, ${ThemeSwitch}, ${MobileMenuToggle} {
-		z-index: 10;
-	}
-`;
-
-const HeaderInner = styled.div`
-	padding: 15px 0;
-	margin: 0 auto;
-	width: 100%;
-	height: 60px;
-	max-width: var(--max-width);
-
-	display: grid;
-	grid-template-columns: max-content auto;
-	align-content: center;
-	gap: 30px;
-`;
-
-const Nav = styled.nav`
-	display: contents;
-	padding-right: 30px;
-	width: min-content;
-`;
-
-const navLinksMixin = css`
-	display: grid;
-	list-style: none;
-
-	${breakpoint.from.md(css`
-		display: contents;
-	`)}
-`;
-
-const PageLinks = styled.ul`
-	${navLinksMixin}
-`;
-
-const IconLinks = styled.ul`
-	${navLinksMixin}
-
-	${breakpoint.until.md(css`
-		grid-auto-flow: column;
-		gap: 30px;
-		/* padding: 0.5rem 15px; */
-		width: min-content;
-	`)}
-
-	& > li {
-		padding: 0;
-	}
-`;
-
-const NavLinksDesktop = styled.div`
-	display: none;
-
-	${breakpoint.from.md(css`
-		display: contents;
-	`)}
-`;
-
-const FullScreenWrapper = styled(motion.div)<{ $visible: boolean }>`
-	height: 100vh;
-	width: 100vw;
-	background-color: var(--color-bg-blurred);
-
-	position: absolute;
-	top: 0;
-	left: 0;
-
-	display: grid;
-	align-content: center;
-
-	${({ $visible }) =>
-		$visible
-			? css`
-					pointer-events: auto;
-			  `
-			: css`
-					pointer-events: none;
-			  `}
-
-	${Nav} {
-		display: grid;
-		gap: 30px;
-
-		& > ${PageLinks}, ${IconLinks} {
-			padding-left: 3rem;
-			font-size: 1.5rem;
-			width: min-content;
-		}
-
-		& > ${PageLinks} > li {
-			padding: 0.5rem 0;
-		}
-	}
-
-	${breakpoint.from.md(css`
-		display: none;
-	`)}
-`;
-
-const NavContainer = styled(motion(Container))<{ $showDrawer: boolean }>``;
 
 type TExternalLinksArray = Array<{
 	link: string;

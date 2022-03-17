@@ -9,24 +9,22 @@ import { notionClient } from "@/domains/Notion";
 import { Center } from "@/styles/layouts";
 import { Title } from "@/styles/typography";
 
-const BooksPage = ({ results }: InferGetStaticPropsType<typeof getStaticProps>) => {
-	return (
-		<Fragment>
-			<DocumentHead
-				title="Books"
-				// description="Mechanical keyboards and their components that I own"
-			/>
+const BooksPage = ({ results }: InferGetStaticPropsType<typeof getStaticProps>) => (
+	<Fragment>
+		<DocumentHead
+			title="Books"
+			// description="Mechanical keyboards and their components that I own"
+		/>
 
-			<Center>
-				<Title size={5}>/books</Title>
-			</Center>
+		<Center>
+			<Title $size={5}>/books</Title>
+		</Center>
 
-			<BooksList results={results} />
+		<BooksList results={results} />
 
-			<ViewsCounter />
-		</Fragment>
-	);
-};
+		<ViewsCounter />
+	</Fragment>
+);
 
 export async function getStaticProps() {
 	const response = await notionClient.databases.query({

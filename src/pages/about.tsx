@@ -2,16 +2,16 @@ import { getMDXComponent } from "mdx-bundler/client";
 import React, { Fragment, useContext, useMemo } from "react";
 
 import { ExternalLinksOverlay } from "@/components/Navbar";
+import { NewsletterSignup } from "@/components/Newsletter/Signup";
 import { ViewsCounter } from "@/components/ViewsCounter";
-import { Newsletter } from "@/components/blog/Newsletter";
 import { FoobarContext } from "@/components/foobar";
 import { MDXComponents } from "@/components/mdx";
 import { DocumentHead } from "@/components/shared/seo";
+import { getButtondownSubscriberCount } from "@/domains/Buttondown";
 import { Center } from "@/styles/layouts";
 import { Title, LinkTo } from "@/styles/typography";
 import { TBlogPostPageProps } from "@/typings/blog";
 import { getMDXFileData } from "@/utils/blog";
-import { getButtondownSubscriberCount } from "@/utils/misc";
 
 type TProps = TBlogPostPageProps & { subscriberCount: number };
 
@@ -29,7 +29,7 @@ const About = ({ code, frontmatter: _, subscriberCount }: TProps) => {
 			<DocumentHead title="About" />
 
 			<Center>
-				<Title size={5}>/about</Title>
+				<Title $size={5}>/about</Title>
 			</Center>
 
 			<Component
@@ -42,7 +42,7 @@ const About = ({ code, frontmatter: _, subscriberCount }: TProps) => {
 
 			<ViewsCounter />
 
-			<Newsletter {...{ subscriberCount }} />
+			<NewsletterSignup {...{ subscriberCount }} />
 
 			<Center>
 				<LinkTo

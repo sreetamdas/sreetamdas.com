@@ -157,7 +157,7 @@ export function logConsoleMessages() {
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function dog(...messages: Array<any>): void {
-	IS_DEV &&
+	if (IS_DEV) {
 		// eslint-disable-next-line no-console
 		console.log(
 			"%cdev%c🐶",
@@ -175,6 +175,7 @@ export function dog(...messages: Array<any>): void {
 			font-size: 1.2em`,
 			...messages
 		);
+	}
 }
 
 const CONSOLE_REACT = `

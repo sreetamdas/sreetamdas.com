@@ -1,35 +1,33 @@
 import { InferGetStaticPropsType } from "next";
 import React, { Fragment } from "react";
 
+import { NewsletterSignup } from "@/components/Newsletter/Signup";
 import { ViewsCounter } from "@/components/ViewsCounter";
 import { BlogPostPreview } from "@/components/blog";
-import { Newsletter } from "@/components/blog/Newsletter";
 import { generateRssFeed } from "@/components/blog/rss";
 import { DocumentHead } from "@/components/shared/seo";
+import { getButtondownSubscriberCount } from "@/domains/Buttondown";
 import { BlogPostsPreviewLayout, Center } from "@/styles/layouts";
 import { Title } from "@/styles/typography";
 import { getAllBlogPostsPreviewData } from "@/utils/blog";
-import { getButtondownSubscriberCount } from "@/utils/misc";
 
-const Index = ({ postsData, subscriberCount }: InferGetStaticPropsType<typeof getStaticProps>) => {
-	return (
-		<Fragment>
-			<DocumentHead title="Blog" />
-			<Center>
-				<Title size={5}>/blog</Title>
-			</Center>
+const Index = ({ postsData, subscriberCount }: InferGetStaticPropsType<typeof getStaticProps>) => (
+	<Fragment>
+		<DocumentHead title="Blog" />
+		<Center>
+			<Title $size={5}>/blog</Title>
+		</Center>
 
-			<BlogPostsPreviewLayout>
-				{postsData?.map(({ frontmatter, slug }, index) => (
-					<BlogPostPreview {...{ frontmatter, slug }} key={index} />
-				))}
-			</BlogPostsPreviewLayout>
+		<BlogPostsPreviewLayout>
+			{postsData?.map(({ frontmatter, slug }, index) => (
+				<BlogPostPreview {...{ frontmatter, slug }} key={index} />
+			))}
+		</BlogPostsPreviewLayout>
 
-			<ViewsCounter hidden />
-			<Newsletter {...{ subscriberCount }} />
-		</Fragment>
-	);
-};
+		<ViewsCounter hidden />
+		<NewsletterSignup {...{ subscriberCount }} />
+	</Fragment>
+);
 
 export async function getStaticProps() {
 	const subscriberCount = await getButtondownSubscriberCount();

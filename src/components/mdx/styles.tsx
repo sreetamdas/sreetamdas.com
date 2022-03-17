@@ -1,6 +1,8 @@
 import { FaLongArrowAltRight } from "react-icons/fa";
 import styled from "styled-components";
 
+import { Paragraph } from "@/styles/typography";
+
 export const UnorderedListBullet = styled(FaLongArrowAltRight).attrs({
 	"aria-label": "marker",
 })`
@@ -31,6 +33,10 @@ export const UnorderedListStyled = styled.ul`
 			& ~ span {
 				flex: 1 1 0%;
 			}
+		}
+
+		${Paragraph} {
+			padding: 0;
 		}
 
 		/* For nested lists */

@@ -89,6 +89,9 @@ export const GlobalStyles = createGlobalStyle`
 		padding-top: 2rem;
 	}
 
+	h1 {
+		font-size: 2.5rem;
+	}
 	h2 {
 		font-size: 2rem;
 	}
@@ -101,11 +104,11 @@ export const GlobalStyles = createGlobalStyle`
 		color: var(--color-primary-accent);
 		cursor: pointer;
 
-		&:visited {
+		:visited {
 			text-decoration: none;
 		}
-		&:hover {
-			text-decoration: underline;
+		:hover {
+			text-decoration: 2px underline;
 		}
 	}
 

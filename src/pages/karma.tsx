@@ -21,57 +21,55 @@ const KARMA_COLOR_PALETTE = [
 ] as const;
 type TKarmaColors = typeof KARMA_COLOR_PALETTE[number];
 
-const Index = () => {
-	return (
-		<Fragment>
-			<DocumentHead
-				title="Karma"
-				imageURL="/karma/karma-card.jpg"
-				description="A colorful VSCode theme by Sreetam Das"
-			/>
-			<Space />
-			<Title>Karma — a VSCode theme</Title>
-			<ColorPaletteWrapper>
-				{KARMA_COLOR_PALETTE.map((color) => (
-					<ColorPaletteBlock $color={color} key={color}>
-						{color}
-					</ColorPaletteBlock>
-				))}
-			</ColorPaletteWrapper>
-			<LinksContainer>
-				<LinkTo href="https://marketplace.visualstudio.com/items?itemName=SreetamD.karma">
-					Install from VSCode marketplace
-				</LinkTo>
+const Index = () => (
+	<Fragment>
+		<DocumentHead
+			title="Karma"
+			imageURL="/karma/karma-card.jpg"
+			description="A colorful VSCode theme by Sreetam Das"
+		/>
+		<Space />
+		<Title>Karma — a VSCode theme</Title>
+		<ColorPaletteWrapper>
+			{KARMA_COLOR_PALETTE.map((color) => (
+				<ColorPaletteBlock $color={color} key={color}>
+					{color}
+				</ColorPaletteBlock>
+			))}
+		</ColorPaletteWrapper>
+		<LinksContainer>
+			<LinkTo href="https://marketplace.visualstudio.com/items?itemName=SreetamD.karma">
+				Install from VSCode marketplace
+			</LinkTo>
 
-				<LinkTo href="https://github.com/sreetamdas/karma">View source</LinkTo>
-			</LinksContainer>
-			<Space />
-			<WideImagesContainer>
-				<Title size={2.5} as="h2" id="react">
-					React + TypeScript
-				</Title>
-				<StyledImage src={ImageReact} alt="Karma theme screenshot for React" />
+			<LinkTo href="https://github.com/sreetamdas/karma">View source</LinkTo>
+		</LinksContainer>
+		<Space />
+		<WideImagesContainer>
+			<Title $size={2.5} as="h2" id="react">
+				React + TypeScript
+			</Title>
+			<StyledImage src={ImageReact} alt="Karma theme screenshot for React" />
 
-				<Title size={2.5} as="h2" id="css">
-					CSS
-				</Title>
-				<StyledImage src={ImageCSS} alt="Karma theme screenshot for CSS" />
+			<Title $size={2.5} as="h2" id="css">
+				CSS
+			</Title>
+			<StyledImage src={ImageCSS} alt="Karma theme screenshot for CSS" />
 
-				<Title size={2.5} as="h2" id="elixir">
-					Elixir
-				</Title>
-				<StyledImage src={ImageElixir} alt="Karma theme screenshot for Elixir" />
+			<Title $size={2.5} as="h2" id="elixir">
+				Elixir
+			</Title>
+			<StyledImage src={ImageElixir} alt="Karma theme screenshot for Elixir" />
 
-				<Title size={2.5} as="h2" id="python">
-					Python
-				</Title>
-				<StyledImage src={ImagePython} alt="Karma theme screenshot for Python" />
-			</WideImagesContainer>
+			<Title $size={2.5} as="h2" id="python">
+				Python
+			</Title>
+			<StyledImage src={ImagePython} alt="Karma theme screenshot for Python" />
+		</WideImagesContainer>
 
-			<ViewsCounter />
-		</Fragment>
-	);
-};
+		<ViewsCounter />
+	</Fragment>
+);
 
 export default Index;
 

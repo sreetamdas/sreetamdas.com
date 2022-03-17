@@ -84,7 +84,7 @@ const FoobarWrapper = ({ children }: PropsWithChildren<ReactNode>): JSX.Element 
 		};
 
 		doAsyncThings();
-		!IS_DEV && logConsoleMessages();
+		if (!IS_DEV) logConsoleMessages();
 	}, [updateFoobarDataPartially]);
 
 	useEffect(() => {

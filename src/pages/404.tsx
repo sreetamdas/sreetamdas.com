@@ -37,9 +37,9 @@ const Custom404 = ({ message }: T404PageMessage) => {
 			<DocumentHead title="404!" description="Ugh, you're in the wrong place :/" noIndex />
 			<Center>
 				<ReallyBigTitle>404!</ReallyBigTitle>
-				<Title resetLineHeight>Page not found :(</Title>
+				<Title $resetLineHeight>Page not found :(</Title>
 				<Space size={50} />
-				<Title size={1.5} resetLineHeight>
+				<Title $size={1.5} $resetLineHeight>
 					<LinkTo href="/">Go back home</LinkTo>
 				</Title>
 				<Paragraph style={{ textAlign: "center" }}>

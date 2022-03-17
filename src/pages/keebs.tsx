@@ -10,24 +10,22 @@ import { Title } from "@/styles/typography";
 
 const KEEBS_DATABASE_ID = "3539f182858f424f9cc2563c07dc300d";
 
-const Index = ({ results }: InferGetStaticPropsType<typeof getStaticProps>) => {
-	return (
-		<Fragment>
-			<DocumentHead
-				title="Keebs"
-				description="Mechanical keyboards and their components that I own"
-			/>
+const Index = ({ results }: InferGetStaticPropsType<typeof getStaticProps>) => (
+	<Fragment>
+		<DocumentHead
+			title="Keebs"
+			description="Mechanical keyboards and their components that I own"
+		/>
 
-			<Center>
-				<Title size={5}>/keebs</Title>
-			</Center>
+		<Center>
+			<Title $size={5}>/keebs</Title>
+		</Center>
 
-			<Keebs results={results} />
+		<Keebs results={results} />
 
-			<ViewsCounter />
-		</Fragment>
-	);
-};
+		<ViewsCounter />
+	</Fragment>
+);
 
 export async function getStaticProps() {
 	const response = await notionClient.databases.query({
