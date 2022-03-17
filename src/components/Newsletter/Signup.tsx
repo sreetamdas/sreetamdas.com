@@ -47,7 +47,7 @@ export const NewsletterSignup = ({ subscriberCount, withNewsletter }: TNewslette
 				{withNewsletter ? (
 					<>view previous issues below</>
 				) : (
-					<LinkTo href="https://buttondown.email/sreetamdas/archive">view previous issues</LinkTo>
+					<LinkTo href="/newsletter">view previous issues</LinkTo>
 				)}
 				, and <LinkTo href="https://buttondown.email/sreetamdas/rss">subscribe via RSS</LinkTo>!
 			</NewsletterText>
