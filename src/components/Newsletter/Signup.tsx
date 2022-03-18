@@ -55,7 +55,7 @@ export const NewsletterSignup = ({ subscriberCount, withNewsletter }: TNewslette
 					<StyledLabel htmlFor="bd-email">Email</StyledLabel>
 					<StyledInput type="email" name="email" id="bd-email" required />
 					<input type="hidden" value="1" name="embed" />
-					<SubscribeButton disabled={isFormBeingSubmitted}>Subscribe</SubscribeButton>
+					<SubscribeButton isLoading={isFormBeingSubmitted}>Subscribe</SubscribeButton>
 					<FormMessageContainer success={formSuccess}>
 						{formError ? formError : null}
 						{formSuccess ? "Thanks for signing up!" : null}
