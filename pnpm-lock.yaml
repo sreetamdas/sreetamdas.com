@@ -10,6 +10,7 @@ specifiers:
   '@supabase/supabase-js': ^1.31.1
   '@svgr/webpack': ^6.2.1
   '@types/eslint': ^8.4.1
+  '@types/lodash-es': ^4.17.6
   '@types/node': ^17.0.21
   '@types/prettier': ^2.4.4
   '@types/react': ^17.0.40
@@ -37,6 +38,7 @@ specifiers:
   image-size: ^1.0.1
   lint-staged: ^12.3.5
   localforage: ^1.10.0
+  lodash-es: ^4.17.21
   mdx-bundler: ^8.0.1
   micromark: ^3.0.10
   msw: ^0.39.1
@@ -79,6 +81,7 @@ dependencies:
   image-size: 1.0.1
   lint-staged: 12.3.5
   localforage: 1.10.0
+  lodash-es: 4.17.21
   mdx-bundler: 8.0.1_esbuild@0.14.25
   micromark: 3.0.10
   next: 12.1.0_react-dom@17.0.2+react@17.0.2
@@ -104,6 +107,7 @@ devDependencies:
   '@next/eslint-plugin-next': 12.1.0
   '@svgr/webpack': 6.2.1
   '@types/eslint': 8.4.1
+  '@types/lodash-es': 4.17.6
   '@types/node': 17.0.21
   '@types/prettier': 2.4.4
   '@types/react': 17.0.40
@@ -2438,6 +2442,16 @@ packages:
     dependencies:
       '@types/node': 17.0.21
     dev: false
+
+  /@types/lodash-es/4.17.6:
+    resolution: {integrity: sha512-R+zTeVUKDdfoRxpAryaQNRKk3105Rrgx2CFRClIgRGaqDTdjsm8h6IYA8ir584W3ePzkZfst5xIgDwYrlh9HLg==}
+    dependencies:
+      '@types/lodash': 4.14.180
+    dev: true
+
+  /@types/lodash/4.14.180:
+    resolution: {integrity: sha512-XOKXa1KIxtNXgASAnwj7cnttJxS4fksBRywK/9LzRV5YxrF80BXZIGeQSuoESQ/VkUj30Ae0+YcuHc15wJCB2g==}
+    dev: true
 
   /@types/mdast/3.0.10:
     resolution: {integrity: sha512-W864tg/Osz1+9f4lrGTZpCSO5/z4608eUp19tbozkq2HJK6i3z1kT0H9tlADXuYIb1YYOBByU4Jsqkk75q48qA==}
