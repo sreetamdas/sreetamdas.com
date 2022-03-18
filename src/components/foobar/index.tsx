@@ -10,6 +10,7 @@ import React, {
 } from "react";
 
 import { Footer } from "@/components/Footer";
+import { FoobarStoreType, useFoobarStore } from "@/domains/Foobar";
 import { Space, Center, WrapperForFooter } from "@/styles/layouts";
 import { LinkTo } from "@/styles/typography";
 import { TFoobarData, TFoobarContext, FOOBAR_PAGES } from "@/typings/console";
@@ -41,10 +42,17 @@ function checkIfAllAchievementsAreDone({ completed }: TFoobarData) {
 	return allPages.every((page) => completed.includes(page));
 }
 
+const foobarDataSelector = (state: FoobarStoreType) => ({
+	foobarStoreData: state.foobarData,
+	setFoobarStoreData: state.setFoobarData,
+});
+
 const FoobarWrapper = ({ children }: PropsWithChildren<ReactNode>): JSX.Element => {
 	const router = useRouter();
 	const [dataLoaded, setDataLoaded] = useState(false);
 	const [foobarData, setFoobarData] = useState<typeof initialFoobarData>(initialFoobarData);
+
+	const { foobarStoreData, setFoobarStoreData } = useFoobarStore(foobarDataSelector);
 
 	const updateFoobarDataPartially = useCallback(
 		(data: Partial<TFoobarData>, mergeManually = false) => {
@@ -106,6 +114,11 @@ const FoobarWrapper = ({ children }: PropsWithChildren<ReactNode>): JSX.Element 
 				visitedPages: [...foobarData.visitedPages, pageName],
 			});
 		}
+		if (!foobarStoreData.visitedPages?.includes(pageName)) {
+			setFoobarStoreData({
+				visitedPages: [...foobarStoreData.visitedPages, pageName],
+			});
+		}
 
 		// for the `navigator` achievement
 		if (
@@ -116,7 +129,14 @@ const FoobarWrapper = ({ children }: PropsWithChildren<ReactNode>): JSX.Element 
 				completed: [...foobarData.completed, FOOBAR_PAGES.navigator],
 			});
 		}
-	}, [foobarData.completed, foobarData.visitedPages, router, updateFoobarDataPartially]);
+	}, [
+		foobarData.completed,
+		foobarData.visitedPages,
+		foobarStoreData.visitedPages,
+		router,
+		setFoobarStoreData,
+		updateFoobarDataPartially,
+	]);
 
 	useEffect(() => {
 		// for the `completed` achievement

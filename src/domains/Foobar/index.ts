@@ -1,15 +1,25 @@
 import { merge } from "lodash-es";
-import create from "zustand";
+import create, { StateCreator } from "zustand";
+import { persist } from "zustand/middleware";
 
-import { initialFoobarData } from "@/components/foobar";
 import { TFoobarData } from "@/typings/console";
 
-type FoobarStoreType = {
+const initialFoobarData: TFoobarData = {
+	visitedPages: [],
+	konami: false,
+	unlocked: false,
+	completed: [],
+	allAchievements: false,
+};
+
+export type FoobarStoreType = {
 	foobarData: TFoobarData;
 	setFoobarData: (data: Partial<TFoobarData>) => void;
 };
 
-export const useFoobarStore = create<FoobarStoreType>((set) => ({
+const foobarStore: StateCreator<FoobarStoreType> = (set) => ({
 	foobarData: initialFoobarData,
 	setFoobarData: (data) => set((state) => ({ foobarData: merge(state.foobarData, data) })),
-}));
+});
+
+export const useFoobarStore = create(persist(foobarStore, { name: "foobar-data-zustand" }));
