@@ -1,15 +1,16 @@
 import { useRouter } from "next/router";
-import React, { useContext, useState, useEffect, Fragment } from "react";
+import React, { useState, useEffect, Fragment } from "react";
 import styled from "styled-components";
 
 import { Button } from "@/components/Button";
 import { ViewsCounter } from "@/components/ViewsCounter";
-import { FoobarContext, initialFoobarData } from "@/components/foobar";
+import { initialFoobarData } from "@/components/foobar";
 import { ShowCompletedBadges } from "@/components/foobar/badges";
 import { KonamiWrapper } from "@/components/foobar/konami";
 import { SupportSreetamDas } from "@/components/foobar/styled";
 import { Terminal } from "@/components/foobar/terminal";
 import { DocumentHead } from "@/components/shared/seo";
+import { useFoobarStore } from "@/domains/Foobar";
 import { StyledPre } from "@/styles/blog";
 import { Space, Center } from "@/styles/layouts";
 import { Title } from "@/styles/typography";
@@ -42,8 +43,11 @@ const CenterUnlockedPage = styled(Title)`
 
 export const Foobar = ({ completedPage, unlocked }: TFoobarSchrodingerProps) => {
 	const router = useRouter();
-	const foobarContextObj = useContext(FoobarContext);
-	const { updateFoobarDataPartially, ...foobarObject } = foobarContextObj;
+
+	const { foobarData, setFoobarData } = useFoobarStore((state) => ({
+		foobarData: state.foobarData,
+		setFoobarData: state.setFoobarData,
+	}));
 	const [terminalVisible, setTerminalVisible] = useState(false);
 
 	function handleGotoToggle(event: KeyboardEvent) {
@@ -70,7 +74,7 @@ export const Foobar = ({ completedPage, unlocked }: TFoobarSchrodingerProps) => 
 	}, []);
 
 	function handleClearFoobarData() {
-		updateFoobarDataPartially(initialFoobarData);
+		setFoobarData(initialFoobarData);
 		dog("cleared");
 	}
 	function toggleTerminal() {
@@ -97,7 +101,7 @@ export const Foobar = ({ completedPage, unlocked }: TFoobarSchrodingerProps) => 
 					<Space />
 					<StyledPre>
 						<Title>DEV</Title>
-						{JSON.stringify(foobarObject, null, 2)}
+						{JSON.stringify(foobarData, null, 2)}
 					</StyledPre>
 				</Fragment>
 			)}
@@ -137,17 +141,21 @@ export const FoobarButLocked = () => (
  * @param completedPage foobar page that is being currently accessed
  */
 export const FoobarSchrodinger = ({ completedPage }: TFoobarSchrodingerProps) => {
-	const { unlocked, dataLoaded, updateFoobarDataPartially, completed } = useContext(FoobarContext);
+	const { unlocked, setFoobarData, completed } = useFoobarStore((state) => ({
+		unlocked: state.foobarData.unlocked,
+		completed: state.foobarData.completed,
+		setFoobarData: state.setFoobarData,
+	}));
 
 	useEffect(() => {
 		if (completedPage && !completed?.includes(completedPage)) {
 			const updatedPages: Array<TFoobarPage> = [...completed];
 			updatedPages.push(completedPage);
-			updateFoobarDataPartially({
+			setFoobarData({
 				completed: updatedPages,
 			});
 		}
-	}, [completed, completedPage, updateFoobarDataPartially]);
+	}, [completed, completedPage, setFoobarData]);
 
-	return <Fragment>{dataLoaded ? <Foobar {...{ completedPage, unlocked }} /> : null}</Fragment>;
+	return <Foobar {...{ completedPage, unlocked }} />;
 };

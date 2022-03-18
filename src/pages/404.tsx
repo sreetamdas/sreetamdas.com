@@ -1,7 +1,7 @@
-import React, { Fragment, useContext, useEffect } from "react";
+import React, { Fragment, useEffect } from "react";
 
-import { FoobarContext } from "@/components/foobar";
 import { DocumentHead } from "@/components/shared/seo";
+import { useFoobarStore } from "@/domains/Foobar";
 import { Center, Space } from "@/styles/layouts";
 import { ReallyBigTitle, Title, Paragraph, LinkTo } from "@/styles/typography";
 import { FOOBAR_PAGES, TFoobarPage } from "@/typings/console";
@@ -10,24 +10,27 @@ export type T404PageMessage = {
 	message?: string;
 };
 const Custom404 = ({ message }: T404PageMessage) => {
-	const { updateFoobarDataPartially, completed } = useContext(FoobarContext);
+	const { setFoobarData, completed } = useFoobarStore((state) => ({
+		completed: state.foobarData.completed,
+		setFoobarData: state.setFoobarData,
+	}));
 
 	useEffect(() => {
 		const updatedPages: Array<TFoobarPage> = [...completed];
 
 		if (!updatedPages.includes(FOOBAR_PAGES.notFound)) {
 			updatedPages.push(FOOBAR_PAGES.notFound);
-			updateFoobarDataPartially({
+			setFoobarData({
 				completed: updatedPages,
 			});
 		}
-	}, [completed, updateFoobarDataPartially]);
+	}, [completed, setFoobarData]);
 
 	function handleDogLinkClick() {
 		const updatedPages: Array<TFoobarPage> = [...completed];
 		if (!updatedPages.includes(FOOBAR_PAGES.dogs)) {
 			updatedPages.push(FOOBAR_PAGES.dogs);
-			updateFoobarDataPartially({
+			setFoobarData({
 				completed: updatedPages,
 			});
 		}

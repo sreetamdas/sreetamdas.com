@@ -1,3 +1,4 @@
+// TODO move these to domains/foobar
 export const FOOBAR_PAGES = {
 	sourceCode: "source-code",
 	headers: "headers",
@@ -16,19 +17,6 @@ export const FOOBAR_PAGES = {
 } as const;
 
 export type TFoobarPage = typeof FOOBAR_PAGES[keyof typeof FOOBAR_PAGES];
-
-export type TFoobarData = {
-	visitedPages: Array<string>;
-	konami: boolean;
-	unlocked: boolean;
-	completed: Array<TFoobarPage>;
-	allAchievements: boolean;
-};
-
-export type TFoobarContext = TFoobarData & {
-	dataLoaded: boolean;
-	updateFoobarDataPartially: (data: Partial<TFoobarData>) => void;
-};
 
 export type TFoobarSchrodingerProps = {
 	completedPage?: TFoobarPage;

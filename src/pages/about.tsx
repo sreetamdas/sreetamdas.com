@@ -1,13 +1,13 @@
 import { getMDXComponent } from "mdx-bundler/client";
-import React, { Fragment, useContext, useMemo } from "react";
+import React, { Fragment, useMemo } from "react";
 
 import { ExternalLinksOverlay } from "@/components/Navbar";
 import { NewsletterSignup } from "@/components/Newsletter/Signup";
 import { ViewsCounter } from "@/components/ViewsCounter";
-import { FoobarContext } from "@/components/foobar";
 import { MDXComponents } from "@/components/mdx";
 import { DocumentHead } from "@/components/shared/seo";
 import { getButtondownSubscriberCount } from "@/domains/Buttondown";
+import { useFoobarStore } from "@/domains/Foobar";
 import { Center } from "@/styles/layouts";
 import { Title, LinkTo } from "@/styles/typography";
 import { TBlogPostPageProps } from "@/typings/blog";
@@ -18,10 +18,13 @@ type TProps = TBlogPostPageProps & { subscriberCount: number };
 const About = ({ code, frontmatter: _, subscriberCount }: TProps) => {
 	const Component = useMemo(() => getMDXComponent(code), [code]);
 
-	const { updateFoobarDataPartially, unlocked } = useContext(FoobarContext);
+	const { setFoobarData, unlocked } = useFoobarStore((state) => ({
+		unlocked: state.foobarData.unlocked,
+		setFoobarData: state.setFoobarData,
+	}));
 
 	function handleXDiscovery() {
-		if (!unlocked) updateFoobarDataPartially({ unlocked: true });
+		if (!unlocked) setFoobarData({ unlocked: true });
 	}
 
 	return (

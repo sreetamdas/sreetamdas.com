@@ -36,7 +36,7 @@ import {
 } from "./styles";
 
 import { Button } from "@/components/Button";
-import { FoobarContext } from "@/components/foobar";
+import { useFoobarStore } from "@/domains/Foobar";
 import { supabaseClient } from "@/domains/Supabase";
 import { IconContainer } from "@/styles/blog";
 import { useHasMounted } from "@/utils/hooks";
@@ -129,7 +129,7 @@ const NavbarMenu = () => {
 	const [showDrawer, setShowDrawer] = useState(false);
 	const [session, setSession] = useState<Session | null>(supabaseClient.auth.session());
 	const { theme } = useContext(ThemeContext);
-	const { konami } = useContext(FoobarContext);
+	const konami = useFoobarStore((state) => state.foobarData.konami);
 	const { asPath } = useRouter();
 
 	const isAdminRoute = asPath.includes("/admin");
