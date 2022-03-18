@@ -1,10 +1,9 @@
 import React, { Fragment, useEffect } from "react";
 
 import { DocumentHead } from "@/components/shared/seo";
-import { useFoobarStore } from "@/domains/Foobar";
+import { useFoobarStore, FOOBAR_PAGES, TFoobarPage } from "@/domains/Foobar";
 import { Center, Space } from "@/styles/layouts";
 import { ReallyBigTitle, Title, Paragraph, LinkTo } from "@/styles/typography";
-import { FOOBAR_PAGES, TFoobarPage } from "@/typings/console";
 
 export type T404PageMessage = {
 	message?: string;

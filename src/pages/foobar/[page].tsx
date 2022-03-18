@@ -3,7 +3,7 @@ import { ParsedUrlQuery } from "querystring";
 import { GetStaticProps, InferGetStaticPropsType } from "next";
 
 import { FoobarSchrodinger } from "@/components/foobar/pages";
-import { FOOBAR_PAGES, TFoobarPage } from "@/typings/console";
+import { FOOBAR_PAGES, TFoobarPage } from "@/domains/Foobar";
 import { useHasMounted } from "@/utils/hooks";
 import Custom404 from "pages/404";
 
