@@ -37,7 +37,6 @@ specifiers:
   husky: ^7.0.4
   image-size: ^1.0.1
   lint-staged: ^12.3.5
-  localforage: ^1.10.0
   lodash-es: ^4.17.21
   mdx-bundler: ^8.0.1
   micromark: ^3.0.10
@@ -80,7 +79,6 @@ dependencies:
   gray-matter: 4.0.3
   image-size: 1.0.1
   lint-staged: 12.3.5
-  localforage: 1.10.0
   lodash-es: 4.17.21
   mdx-bundler: 8.0.1_esbuild@0.14.25
   micromark: 3.0.10
@@ -4729,10 +4727,6 @@ packages:
       queue: 6.0.2
     dev: false
 
-  /immediate/3.0.6:
-    resolution: {integrity: sha1-nbHb0Pr43m++D13V5Wu2BigN5ps=}
-    dev: false
-
   /import-fresh/3.3.0:
     resolution: {integrity: sha512-veYYhQa+D1QBKznvhUHxb8faxlrwUnxseDAbAp457E0wLNio2bOSKnjYDhMj+YiAq61xrMGhQk9iXVk5FzgQMw==}
     engines: {node: '>=6'}
@@ -5112,12 +5106,6 @@ packages:
       type-check: 0.4.0
     dev: true
 
-  /lie/3.1.1:
-    resolution: {integrity: sha1-mkNrLMd0bKWd56QfpGmz77dr2H4=}
-    dependencies:
-      immediate: 3.0.6
-    dev: false
-
   /lilconfig/2.0.4:
     resolution: {integrity: sha512-bfTIN7lEsiooCocSISTWXkiWJkRqtL9wYtYy+8EK3Y41qh3mpwPU0ycTOgjdY9ErwXCc8QyrQp82bdL0Xkm9yA==}
     engines: {node: '>=10'}
@@ -5165,12 +5153,6 @@ packages:
       rxjs: 7.5.5
       through: 2.3.8
       wrap-ansi: 7.0.0
-    dev: false
-
-  /localforage/1.10.0:
-    resolution: {integrity: sha512-14/H1aX7hzBBmmh7sGPd+AOMkkIrHM3Z1PAyGgZigA1H1p5O5ANnMyWzvpAETtG68/dC4pC0ncy3+PPGzXZHPg==}
-    dependencies:
-      lie: 3.1.1
     dev: false
 
   /locate-path/2.0.0:
