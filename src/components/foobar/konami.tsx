@@ -1,11 +1,21 @@
-import { useState, useCallback, useEffect, useContext } from "react";
+import { useState, useCallback, useEffect } from "react";
 
-import { FoobarContext } from "@/components/foobar";
-import { handleKonami } from "@/utils/console";
+import { useFoobarStore } from "@/domains/Foobar";
+import { handleKonami } from "@/domains/Foobar/konami";
 
 const KonamiWrapper = () => {
-	const foobarContextObj = useContext(FoobarContext);
 	const [konamiCodeInput, setKonamiCodeInput] = useState<Array<string>>([]);
+	const foobarStoreData = useFoobarStore((state) => ({
+		foobarData: {
+			completed: state.foobarData.completed,
+			konami: state.foobarData.konami,
+			unlocked: state.foobarData.unlocked,
+		},
+		setFoobarData: state.setFoobarData,
+	}));
+	const {
+		foobarData: { unlocked },
+	} = foobarStoreData;
 
 	const handleKonamiCode = useCallback((event: KeyboardEvent) => {
 		setKonamiCodeInput((prev) => [...prev, event.key]);
@@ -19,8 +29,8 @@ const KonamiWrapper = () => {
 	}, [handleKonamiCode]);
 
 	useEffect(() => {
-		if (foobarContextObj.unlocked) {
-			const updated = handleKonami(konamiCodeInput, foobarContextObj);
+		if (unlocked) {
+			const updated = handleKonami(konamiCodeInput, foobarStoreData);
 			if (updated) setKonamiCodeInput(updated);
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
