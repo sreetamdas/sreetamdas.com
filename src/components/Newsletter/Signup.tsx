@@ -1,8 +1,7 @@
 import { FormEvent, useState } from "react";
 import styled, { css } from "styled-components";
 
-import { buttonStylesMixin } from "@/components/foobar/styled";
-import { sharedTransition } from "@/styles/components";
+import { Input, SubmitButton } from "@/components/Form";
 import { Accent, LinkTo } from "@/styles/typography";
 import { breakpoint } from "@/utils/style";
 
@@ -56,7 +55,7 @@ export const NewsletterSignup = ({ subscriberCount, withNewsletter }: TNewslette
 					<StyledLabel htmlFor="bd-email">Email</StyledLabel>
 					<StyledInput type="email" name="email" id="bd-email" required />
 					<input type="hidden" value="1" name="embed" />
-					<SubscribeButton value="Subscribe" disabled={isFormBeingSubmitted} />
+					<SubscribeButton disabled={isFormBeingSubmitted}>Subscribe</SubscribeButton>
 					<FormMessageContainer success={formSuccess}>
 						{formError ? formError : null}
 						{formSuccess ? "Thanks for signing up!" : null}
@@ -90,39 +89,25 @@ const StyledForm = styled.form`
 	`)}
 `;
 
-const StyledInput = styled.input.attrs({
+const StyledInput = styled(Input).attrs({
 	placeholder: "sreetam@sreetamdas.com",
 })`
-	font-size: 16px;
 	background-color: var(--color-background);
 	color: var(--color-primary);
 	padding: 10px;
-	border: 2px solid var(--color-primary-accent);
-	border-radius: var(--border-radius);
-	grid-column: 1 / span 2;
 
-	${sharedTransition("color, background-color")}
+	grid-column: 1 / span 2;
 `;
 
-const SubscribeButton = styled.input.attrs({ type: "submit" })<{
-	disabled: boolean;
-}>`
-	${buttonStylesMixin}
-	font-size: 16px;
-	padding: 0;
+const SubscribeButton = styled(SubmitButton)`
 	align-self: baseline;
 	grid-column: 2;
+	margin: 0;
+	padding: 0 10px;
 
 	${breakpoint.from.md(css`
 		grid-column: 1;
 	`)}
-
-	${({ disabled }) =>
-		disabled &&
-		css`
-			cursor: not-allowed;
-			opacity: 0.5;
-		`}
 `;
 
 const NewsletterTitle = styled.h2`
