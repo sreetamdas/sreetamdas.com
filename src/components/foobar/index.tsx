@@ -4,6 +4,7 @@ import React, { useEffect, PropsWithChildren, Fragment, ReactNode } from "react"
 import { Footer } from "@/components/Footer";
 import { IS_DEV } from "@/config";
 import { FoobarStoreType, useFoobarStore, FOOBAR_PAGES } from "@/domains/Foobar";
+import { migrateLocalForageToZustand } from "@/domains/Foobar/helpers";
 import { Space, Center, WrapperForFooter } from "@/styles/layouts";
 import { LinkTo } from "@/styles/typography";
 import { logConsoleMessages } from "@/utils/console";
@@ -31,13 +32,19 @@ const FoobarWrapper = ({ children }: PropsWithChildren<ReactNode>): JSX.Element 
 	const { completed, visitedPages } = foobarStoreData;
 
 	useEffect(() => {
+		async function handleMigration() {
+			await migrateLocalForageToZustand("foobar-data");
+		}
+		handleMigration();
+
+		// Add functions for Foobar badges
+		addFoobarToLocalStorage();
 		// @ts-expect-error add custom function
 		window.hack = () => {
 			// eslint-disable-next-line no-console
 			console.warn("/foobar/hack");
 		};
 
-		addFoobarToLocalStorage();
 		if (!IS_DEV) logConsoleMessages();
 	}, []);
 
