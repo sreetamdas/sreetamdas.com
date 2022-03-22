@@ -31,6 +31,7 @@
 		"image-size": "^1.0.1",
 		"lint-staged": "^12.3.5",
 		"localforage": "^1.10.0",
+		"lodash-es": "^4.17.21",
 		"mdx-bundler": "^8.0.1",
 		"micromark": "^3.0.10",
 		"next": "^12.1.0",
@@ -49,12 +50,14 @@
 		"shiki": "^0.10.1",
 		"styled-components": "^5.3.3",
 		"unist-util-visit": "^4.1.0",
-		"vscode-textmate": "^6.0.0"
+		"vscode-textmate": "^6.0.0",
+		"zustand": "^3.7.1"
 	},
 	"devDependencies": {
 		"@next/eslint-plugin-next": "^12.1.0",
 		"@svgr/webpack": "^6.2.1",
 		"@types/eslint": "^8.4.1",
+		"@types/lodash-es": "^4.17.6",
 		"@types/node": "^17.0.21",
 		"@types/prettier": "^2.4.4",
 		"@types/react": "^17.0.40",

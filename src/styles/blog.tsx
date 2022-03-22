@@ -47,6 +47,8 @@ export const StyledPre = styled.pre`
 	padding: 15px;
 	border-radius: var(--border-radius);
 	font-size: 14px;
+	max-width: var(--max-width);
+	overflow-x: scroll;
 `;
 
 export const IconContainer = styled.a<{ $styledOnHover?: boolean }>`

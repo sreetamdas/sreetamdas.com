@@ -1,8 +1,8 @@
 import { useRouter } from "next/router";
-import { useState, useEffect, MouseEvent, useContext, ChangeEvent, FormEvent } from "react";
+import { useState, useEffect, MouseEvent, ChangeEvent, FormEvent } from "react";
 import styled from "styled-components";
 
-import { FoobarContext } from "@/components/foobar";
+import { useFoobarStore } from "@/domains/Foobar";
 import { Center } from "@/styles/layouts";
 
 const TerminalBackdrop = styled.div`
@@ -50,7 +50,7 @@ type TTerminalProps = {
 const Terminal = ({ visible = false, toggleTerminal }: TTerminalProps) => {
 	const router = useRouter();
 	const [terminalVisible, setTerminalVisible] = useState(visible);
-	const { konami } = useContext(FoobarContext);
+	const konami = useFoobarStore((state) => state.foobarData.konami);
 	const [goto, setGoto] = useState("");
 
 	function toggleTerminalVisible() {

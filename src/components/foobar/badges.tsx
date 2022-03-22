@@ -1,4 +1,4 @@
-import { Fragment, useContext, useState } from "react";
+import { Fragment, useState } from "react";
 import { IconBaseProps } from "react-icons";
 import { BsEgg } from "react-icons/bs";
 import {
@@ -18,10 +18,9 @@ import { RiWifiOffLine } from "react-icons/ri";
 import { VscDebug, VscTelescope } from "react-icons/vsc";
 import styled, { css } from "styled-components";
 
-import { FoobarContext } from "@/components/foobar";
+import { useFoobarStore, FoobarDataType, TFoobarPage } from "@/domains/Foobar";
 import { sharedTransition } from "@/styles/components";
 import { ExternalLink } from "@/styles/typography";
-import { TFoobarData, TFoobarPage } from "@/typings/console";
 import { breakpoint } from "@/utils/style";
 
 const FoobarBadge = ({ badge }: { badge: TFoobarBadge }) => {
@@ -31,7 +30,7 @@ const FoobarBadge = ({ badge }: { badge: TFoobarBadge }) => {
 
 type TBadgeProps = {
 	badge: TFoobarBadge;
-} & Pick<TFoobarData, "completed" | "allAchievements">;
+} & Pick<FoobarDataType, "completed" | "allAchievements">;
 const Badge = ({ badge, completed, allAchievements }: TBadgeProps) => {
 	const [clicks, setClicks] = useState(0);
 	const badgeUnlocked = badge === "completed" ? allAchievements : completed.includes(badge);
@@ -57,7 +56,10 @@ function renderBadges(
 }
 
 export const ShowCompletedBadges = () => {
-	const { completed, allAchievements } = useContext(FoobarContext);
+	const { completed, allAchievements } = useFoobarStore((state) => ({
+		completed: state.foobarData.completed,
+		allAchievements: state.foobarData.allAchievements,
+	}));
 	const allBadges = Object.keys(FOOBAR_BADGES) as Array<TFoobarBadge>;
 
 	return (
@@ -140,7 +142,7 @@ export const FOOBAR_BADGES: TFOOBAR_BADGES = {
 	},
 	localforage: {
 		icon: (props) => <FaDatabase {...props} />,
-		description: "Check the local storage/indexedDB",
+		description: "Check the localStorage/indexedDB",
 	},
 	teapot: {
 		icon: (props) => <GiTeapot {...props} />,
