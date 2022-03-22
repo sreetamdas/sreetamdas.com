@@ -2,7 +2,7 @@ import type { NextPage } from "next";
 import PlausibleProvider from "next-plausible";
 import type { AppProps } from "next/app";
 import Head from "next/head";
-import React, { Fragment, useState } from "react";
+import { useState } from "react";
 import type { PropsWithChildren } from "react";
 import { Toaster } from "react-hot-toast";
 import { QueryClient, QueryClientProvider } from "react-query";
@@ -51,7 +51,7 @@ const MyApp = ({ Component, pageProps }: AppPropsWithLayout) => {
 	};
 
 	return (
-		<Fragment>
+		<>
 			<Head>
 				<meta name="viewport" content="initial-scale=1.0, width=device-width" />
 			</Head>
@@ -69,7 +69,7 @@ const MyApp = ({ Component, pageProps }: AppPropsWithLayout) => {
 				</Hydrate>
 				<ReactQueryDevtools />
 			</QueryClientProvider>
-		</Fragment>
+		</>
 	);
 };
 

@@ -1,6 +1,6 @@
 import { getMDXComponent } from "mdx-bundler/client";
 import { GetStaticProps } from "next";
-import React, { Fragment, useMemo, useRef } from "react";
+import { Fragment, useMemo, useRef } from "react";
 
 import { ChromaHighlight } from "@/components/FancyPants";
 import { NewsletterSignup } from "@/components/Newsletter/Signup";
@@ -38,7 +38,7 @@ const Post = ({ code, frontmatter, slug, subscriberCount }: TProps) => {
 	const Component = useMemo(() => getMDXComponent(code), [code]);
 
 	return (
-		<Fragment>
+		<>
 			<DocumentHead
 				title={frontmatter.seoTitle ?? frontmatter.title}
 				imageURL={frontmatter?.image}
@@ -85,7 +85,7 @@ const Post = ({ code, frontmatter, slug, subscriberCount }: TProps) => {
 			</PostMetaDataGrid>
 			<ViewsCounter pageType="post" />
 			<NewsletterSignup {...{ subscriberCount }} />
-		</Fragment>
+		</>
 	);
 };
 

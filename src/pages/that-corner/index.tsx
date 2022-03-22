@@ -5,7 +5,7 @@ import { FullWidthWrapper } from "@/styles/layouts";
 import { ReallyBigTitle, Title } from "@/styles/typography";
 
 const Index = () => (
-	<Fragment>
+	<>
 		<FullWidthWrapper>
 			<div style={{ padding: "0 50px" }}>
 				<ReallyBigTitle>
@@ -26,7 +26,7 @@ const Index = () => (
 				⚡️
 			</span>
 		</Title>
-	</Fragment>
+	</>
 );
 
 export default Index;

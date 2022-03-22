@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import React, { useEffect, PropsWithChildren, ReactNode } from "react";
+import { useEffect, PropsWithChildren, ReactNode } from "react";
 
 import { Footer } from "@/components/Footer";
 import { IS_DEV } from "@/config";

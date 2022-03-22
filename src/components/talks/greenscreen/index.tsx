@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/media-has-caption */
-import React, { useRef, useEffect, RefObject } from "react";
+import { useRef, useEffect, RefObject } from "react";
 
 type TImageSnapshot = {
 	data: Uint8ClampedArray;

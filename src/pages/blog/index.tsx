@@ -1,5 +1,5 @@
 import { InferGetStaticPropsType } from "next";
-import React, { Fragment } from "react";
+import { Fragment } from "react";
 
 import { NewsletterSignup } from "@/components/Newsletter/Signup";
 import { ViewsCounter } from "@/components/ViewsCounter";
@@ -12,7 +12,7 @@ import { Title } from "@/styles/typography";
 import { getAllBlogPostsPreviewData } from "@/utils/blog";
 
 const Index = ({ postsData, subscriberCount }: InferGetStaticPropsType<typeof getStaticProps>) => (
-	<Fragment>
+	<>
 		<DocumentHead title="Blog" />
 		<Center>
 			<Title $size={5}>/blog</Title>
@@ -26,7 +26,7 @@ const Index = ({ postsData, subscriberCount }: InferGetStaticPropsType<typeof ge
 
 		<ViewsCounter hidden />
 		<NewsletterSignup {...{ subscriberCount }} />
-	</Fragment>
+	</>
 );
 
 export async function getStaticProps() {

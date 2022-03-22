@@ -1,5 +1,5 @@
 import Link, { LinkProps } from "next/link";
-import React, { AnchorHTMLAttributes, forwardRef, PropsWithChildren } from "react";
+import { AnchorHTMLAttributes, forwardRef, PropsWithChildren } from "react";
 import styled, { css } from "styled-components";
 
 import { breakpoint } from "@/utils/style";

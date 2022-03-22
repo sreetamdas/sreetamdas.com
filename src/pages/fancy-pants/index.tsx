@@ -7,7 +7,7 @@ import { WithoutNavbar } from "@/layouts/WIthoutNavbar";
 import { FullWidthWrapper, Space } from "@/styles/layouts";
 
 const FancyPants = () => (
-	<Fragment>
+	<>
 		<DocumentHead title="Fancy Pants" description="Sreetam's fancy-shmancy landing page" />
 		<FullWidthWrapper>
 			<div style={{ padding: "0 25px" }}>
@@ -34,7 +34,7 @@ const FancyPants = () => (
 		<Space />
 
 		<ViewsCounter />
-	</Fragment>
+	</>
 );
 
 FancyPants.Layout = WithoutNavbar;

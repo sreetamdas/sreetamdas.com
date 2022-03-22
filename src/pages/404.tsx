@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect } from "react";
+import { useEffect } from "react";
 
 import { DocumentHead } from "@/components/shared/seo";
 import { useFoobarStore, FOOBAR_PAGES, TFoobarPage } from "@/domains/Foobar";
@@ -35,7 +35,7 @@ const Custom404 = ({ message }: T404PageMessage) => {
 		}
 	}
 	return (
-		<Fragment>
+		<>
 			<DocumentHead title="404!" description="Ugh, you're in the wrong place :/" noIndex />
 			<Center>
 				<ReallyBigTitle>404!</ReallyBigTitle>
@@ -58,15 +58,15 @@ const Custom404 = ({ message }: T404PageMessage) => {
 					</a>
 				</Paragraph>
 				{message ? (
-					<Fragment>
+					<>
 						<Space />
 						<Paragraph>
 							<i style={{ fontWeight: 100, fontSize: "12px" }}>{message}</i>
 						</Paragraph>
-					</Fragment>
+					</>
 				) : null}
 			</Center>
-		</Fragment>
+		</>
 	);
 };
 

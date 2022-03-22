@@ -1,5 +1,5 @@
 import { getMDXComponent } from "mdx-bundler/client";
-import React, { Fragment, useMemo } from "react";
+import { useMemo } from "react";
 
 import { ExternalLinksOverlay } from "@/components/Navbar";
 import { NewsletterSignup } from "@/components/Newsletter/Signup";
@@ -28,7 +28,7 @@ const About = ({ code, frontmatter: _, subscriberCount }: TProps) => {
 	}
 
 	return (
-		<Fragment>
+		<>
 			<DocumentHead title="About" />
 
 			<Center>
@@ -61,7 +61,7 @@ const About = ({ code, frontmatter: _, subscriberCount }: TProps) => {
 					Ⅹ
 				</LinkTo>
 			</Center>
-		</Fragment>
+		</>
 	);
 };
 
