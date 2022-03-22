@@ -1,12 +1,14 @@
 import { useRouter } from "next/router";
-import React, { useEffect, PropsWithChildren, Fragment, ReactNode } from "react";
+import React, { useEffect, PropsWithChildren, ReactNode } from "react";
 
 import { Footer } from "@/components/Footer";
 import { IS_DEV } from "@/config";
 import { FoobarStoreType, useFoobarStore, FOOBAR_PAGES } from "@/domains/Foobar";
+import { migrateLocalForageToZustand } from "@/domains/Foobar/helpers";
 import { Space, Center, WrapperForFooter } from "@/styles/layouts";
 import { LinkTo } from "@/styles/typography";
 import { logConsoleMessages } from "@/utils/console";
+import { useHasMounted } from "@/utils/hooks";
 
 function checkIfAllAchievementsAreDone(completed: FoobarStoreType["foobarData"]["completed"]) {
 	const allPages = Object.values(FOOBAR_PAGES);
@@ -26,18 +28,25 @@ const foobarDataSelector = (state: FoobarStoreType) => ({
 
 const FoobarWrapper = ({ children }: PropsWithChildren<ReactNode>): JSX.Element => {
 	const router = useRouter();
+	const hasMounted = useHasMounted();
 
 	const { foobarStoreData, setFoobarStoreData } = useFoobarStore(foobarDataSelector);
 	const { completed, visitedPages } = foobarStoreData;
 
 	useEffect(() => {
+		async function handleMigration() {
+			await migrateLocalForageToZustand("foobar-data");
+		}
+		handleMigration();
+
+		// Add functions for Foobar badges
+		addFoobarToLocalStorage();
 		// @ts-expect-error add custom function
 		window.hack = () => {
 			// eslint-disable-next-line no-console
 			console.warn("/foobar/hack");
 		};
 
-		addFoobarToLocalStorage();
 		if (!IS_DEV) logConsoleMessages();
 	}, []);
 
@@ -84,16 +93,16 @@ const FoobarWrapper = ({ children }: PropsWithChildren<ReactNode>): JSX.Element 
 			<Center>
 				<Footer />
 				<Space size={10} />
-				{foobarStoreData.unlocked && (
-					<Fragment>
+				{hasMounted && foobarStoreData.unlocked ? (
+					<>
 						<code>
 							<LinkTo href="/foobar" style={{ border: "none" }}>
 								resume /foobar
 							</LinkTo>
 						</code>
 						<Space size={10} />
-					</Fragment>
-				)}
+					</>
+				) : null}
 			</Center>
 		</WrapperForFooter>
 	);

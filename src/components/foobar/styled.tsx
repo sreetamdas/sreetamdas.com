@@ -106,3 +106,12 @@ export const SupportSreetamDas = () => (
 		</SupportLinkStyled>
 	</SupportLinkWrapper>
 );
+
+export const FoobarHintWrapper = styled.span`
+	position: absolute;
+	bottom: 100px;
+	left: 0;
+	right: 0;
+	padding-top: 50px;
+	text-align: center;
+`;

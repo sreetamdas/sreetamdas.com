@@ -2,11 +2,12 @@ import { useRouter } from "next/router";
 import React, { useState, useEffect, Fragment } from "react";
 import styled from "styled-components";
 
+import { SupportSreetamDas, FoobarHintWrapper } from "./styled";
+
 import { Button } from "@/components/Button";
 import { ViewsCounter } from "@/components/ViewsCounter";
 import { ShowCompletedBadges } from "@/components/foobar/badges";
 import { KonamiWrapper } from "@/components/foobar/konami";
-import { SupportSreetamDas } from "@/components/foobar/styled";
 import { Terminal } from "@/components/foobar/terminal";
 import { DocumentHead } from "@/components/shared/seo";
 import {
@@ -19,6 +20,7 @@ import { StyledPre } from "@/styles/blog";
 import { Space, Center } from "@/styles/layouts";
 import { Title } from "@/styles/typography";
 import { dog } from "@/utils/console";
+import { useHasMounted } from "@/utils/hooks";
 import Custom404 from "pages/404";
 
 const XMarksTheSpot = (_props: { foobar: string }) => <div />;
@@ -83,7 +85,9 @@ export const Foobar = ({ completedPage, unlocked }: TFoobarSchrodingerProps) => 
 	function toggleTerminal() {
 		setTerminalVisible((prev) => !prev);
 	}
+	const hasMounted = useHasMounted();
 
+	if (!hasMounted) return null;
 	if (!unlocked) return <FoobarButLocked />;
 
 	return (
@@ -100,13 +104,13 @@ export const Foobar = ({ completedPage, unlocked }: TFoobarSchrodingerProps) => 
 				<SupportSreetamDas />
 			</Center>
 			{process.env.NODE_ENV === "development" && (
-				<Fragment>
+				<>
 					<Space />
 					<StyledPre>
 						<Title>DEV</Title>
 						{JSON.stringify(foobarData, null, 2)}
 					</StyledPre>
-				</Fragment>
+				</>
 			)}
 			<Terminal {...{ visible: terminalVisible, toggleTerminal }} />
 			{!terminalVisible && <KonamiWrapper />}
@@ -119,23 +123,13 @@ export const Foobar = ({ completedPage, unlocked }: TFoobarSchrodingerProps) => 
 export const FoobarButLocked = () => (
 	<Fragment>
 		<Custom404 />
-		<div
-			style={{
-				position: "absolute",
-				bottom: "0",
-				left: "0",
-				right: "0",
-				margin: "auto",
-				padding: "50px 0",
-				textAlign: "center",
-			}}
-		>
+		<FoobarHintWrapper>
 			<small>
 				<code>
 					<em>psst, you should check the console!</em>
 				</code>
 			</small>
-		</div>
+		</FoobarHintWrapper>
 	</Fragment>
 );
 
