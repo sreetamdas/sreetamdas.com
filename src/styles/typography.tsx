@@ -133,7 +133,10 @@ export const StyledLink = styled.a<StyledLinkProps>`
 		text-decoration: none;
 	}
 	&:hover {
-		text-decoration: 2px underline;
+		text-decoration-color: currentColor;
+		text-decoration-line: underline;
+		text-decoration-style: solid;
+		text-decoration-thickness: 2px;
 	}
 `;
 
