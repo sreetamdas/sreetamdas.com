@@ -1,11 +1,11 @@
 import { useRouter } from "next/router";
-import { useEffect, PropsWithChildren, ReactNode } from "react";
+import { useEffect } from "react";
 
-import { Footer } from "@/components/Footer";
+import { FoobarHintWrapper } from "@/components/foobar/styled";
 import { IS_DEV } from "@/config";
 import { FoobarStoreType, useFoobarStore, FOOBAR_PAGES } from "@/domains/Foobar";
 import { migrateLocalForageToZustand } from "@/domains/Foobar/helpers";
-import { Space, Center, WrapperForFooter } from "@/styles/layouts";
+import { Space } from "@/styles/layouts";
 import { LinkTo } from "@/styles/typography";
 import { logConsoleMessages } from "@/utils/console";
 import { useHasMounted } from "@/utils/hooks";
@@ -26,7 +26,7 @@ const foobarDataSelector = (state: FoobarStoreType) => ({
 	setFoobarStoreData: state.setFoobarData,
 });
 
-const FoobarWrapper = ({ children }: PropsWithChildren<ReactNode>): JSX.Element => {
+export const Foobar = () => {
 	const router = useRouter();
 	const hasMounted = useHasMounted();
 
@@ -86,26 +86,14 @@ const FoobarWrapper = ({ children }: PropsWithChildren<ReactNode>): JSX.Element 
 		}
 	}, [completed, setFoobarStoreData]);
 
-	return (
-		<WrapperForFooter>
-			{children}
-			<Space />
-			<Center>
-				<Footer />
-				<Space size={10} />
-				{hasMounted && foobarStoreData.unlocked ? (
-					<>
-						<code>
-							<LinkTo href="/foobar" style={{ border: "none" }}>
-								resume /foobar
-							</LinkTo>
-						</code>
-						<Space size={10} />
-					</>
-				) : null}
-			</Center>
-		</WrapperForFooter>
-	);
+	return hasMounted && foobarStoreData.unlocked ? (
+		<FoobarHintWrapper>
+			<code>
+				<LinkTo href="/foobar" style={{ border: "none" }}>
+					resume /foobar
+				</LinkTo>
+			</code>
+			<Space size={10} />
+		</FoobarHintWrapper>
+	) : null;
 };
-
-export { FoobarWrapper };

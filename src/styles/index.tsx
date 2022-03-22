@@ -60,6 +60,7 @@ export const GlobalStyles = createGlobalStyle`
 		background-color: var(--color-background);
 		margin: 0;
 		line-height: 1.5;
+		min-height: 100vh;
 		scroll-padding-top: 60px;
 	}
 
