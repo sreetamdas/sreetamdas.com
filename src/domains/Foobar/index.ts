@@ -52,4 +52,5 @@ const foobarStore: StateCreator<FoobarStoreType> = (set) => ({
 	setFoobarData: (data) => set((state) => ({ foobarData: merge(state.foobarData, data) })),
 });
 
-export const useFoobarStore = create(persist(foobarStore, { name: "foobar-data-zustand" }));
+export const FOOBAR_ZUSTAND_KEY = "foobar-zustand";
+export const useFoobarStore = create(persist(foobarStore, { name: FOOBAR_ZUSTAND_KEY }));
