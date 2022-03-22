@@ -1,6 +1,6 @@
 import { getMDXComponent } from "mdx-bundler/client";
 import { GetStaticProps } from "next";
-import { Fragment, useMemo } from "react";
+import { useMemo } from "react";
 
 import { ChromaHighlight } from "@/components/FancyPants";
 import { NewsletterSignup } from "@/components/Newsletter/Signup";

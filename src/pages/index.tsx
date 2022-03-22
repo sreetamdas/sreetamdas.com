@@ -1,6 +1,6 @@
 import { getMDXComponent } from "mdx-bundler/client";
 import { InferGetStaticPropsType } from "next";
-import { Fragment, useMemo } from "react";
+import { useMemo } from "react";
 
 import { NewsletterSignup } from "@/components/Newsletter/Signup";
 import { ViewsCounter } from "@/components/ViewsCounter";

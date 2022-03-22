@@ -1,5 +1,4 @@
 /* eslint-disable react/no-unescaped-entities */
-import { Fragment } from "react";
 
 import { FullWidthWrapper } from "@/styles/layouts";
 import { ReallyBigTitle, Title } from "@/styles/typography";

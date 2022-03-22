@@ -1,5 +1,4 @@
 import Image, { ImageProps } from "next/image";
-import { Fragment } from "react";
 import styled from "styled-components";
 
 import { ViewsCounter } from "@/components/ViewsCounter";

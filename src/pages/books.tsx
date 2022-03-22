@@ -1,5 +1,4 @@
 import { InferGetStaticPropsType } from "next";
-import { Fragment } from "react";
 
 import { BooksList } from "@/components/Books";
 import { ViewsCounter } from "@/components/ViewsCounter";

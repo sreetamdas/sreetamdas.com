@@ -1,5 +1,3 @@
-import { Fragment } from "react";
-
 import { NavigationContainer, Typography, NavLink, ChromaHighlight } from "@/components/FancyPants";
 import { ViewsCounter } from "@/components/ViewsCounter";
 import { DocumentHead } from "@/components/shared/seo";
