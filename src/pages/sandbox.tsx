@@ -35,7 +35,7 @@ const Index = () => (
 				"/App.js": formatCodeString(JSX_STRING),
 			}}
 		/>
-		<Space size={50} />
+		<Space $size={50} />
 		<ViewsCounter />
 	</>
 );

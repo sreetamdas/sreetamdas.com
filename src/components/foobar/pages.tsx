@@ -93,11 +93,11 @@ export const Foobar = ({ completedPage, unlocked }: TFoobarSchrodingerProps) => 
 	return (
 		<>
 			<DocumentHead title="Foobar" noIndex />
-			<Space size={50} />
+			<Space $size={50} />
 			{/* <Title>Hello Beautiful Nerd!</Title> */}
 			<UnlockedBanner {...{ completedPage }} />
 			<ShowCompletedBadges />
-			<Space size={20} />
+			<Space $size={20} />
 			<Button onClick={handleClearFoobarData}>Clear everything and Restart</Button>
 			<Space />
 			<Center>

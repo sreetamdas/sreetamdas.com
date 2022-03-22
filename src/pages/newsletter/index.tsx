@@ -23,11 +23,11 @@ const NewsletterLandingPage = ({
 
 		<NewsletterSignup subscriberCount={subscriberCount} withNewsletter />
 
-		<Space size={100} />
+		<Space $size={100} />
 		<NewsletterIssues issues={newsletterIssues} />
-		<Space size={50} />
+		<Space $size={50} />
 
-		<Space size={50} />
+		<Space $size={50} />
 		<ViewsCounter />
 	</>
 );

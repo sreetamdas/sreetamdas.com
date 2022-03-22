@@ -93,7 +93,7 @@ export const Foobar = () => {
 					resume /foobar
 				</LinkTo>
 			</code>
-			<Space size={10} />
+			<Space $size={10} />
 		</FoobarHintWrapper>
 	) : null;
 };

@@ -18,7 +18,7 @@ const Index = ({ code, subscriberCount }: InferGetStaticPropsType<typeof getStat
 		<>
 			<DocumentHead title="Home" />
 
-			<Space size={25} />
+			<Space $size={25} />
 			<Center>
 				<Title $size={2.5}>
 					Hey, I&apos;m Sreetam Das!{" "}
@@ -27,7 +27,7 @@ const Index = ({ code, subscriberCount }: InferGetStaticPropsType<typeof getStat
 					</span>
 				</Title>
 			</Center>
-			<Space size={25} />
+			<Space $size={25} />
 			<Paragraph>
 				I&apos;m a developer from India in love with all things React. I&apos;ve also worked with
 				different languages like Python, JavaScript, Elixir, TypeScript and C++, as well as Node,

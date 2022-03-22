@@ -21,7 +21,7 @@ const Index = () => (
 			😄
 		</Paragraph>
 
-		<Space size={20} />
+		<Space $size={20} />
 
 		<FAQGrid>
 			<StyledDetails>

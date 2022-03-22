@@ -39,9 +39,11 @@ export const WrapperForFooter = styled.div`
 	${sharedTransition("color, background-color")}
 `;
 
-export const Space = styled.div<{ size?: number }>`
+export const Space = styled.div<{ $size?: number }>`
 	margin: 0;
-	padding: ${({ size }) => (size ? `${size / 2}px` : "50px")};
+	${({ $size = 100 }) => css`
+		padding: ${$size / 2}px;
+	`}
 `;
 
 export const fullWidthMixin = css`
