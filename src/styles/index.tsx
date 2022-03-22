@@ -60,6 +60,7 @@ export const GlobalStyles = createGlobalStyle`
 		background-color: var(--color-background);
 		margin: 0;
 		line-height: 1.5;
+		min-height: 100vh;
 		scroll-padding-top: 60px;
 	}
 
@@ -108,7 +109,10 @@ export const GlobalStyles = createGlobalStyle`
 			text-decoration: none;
 		}
 		:hover {
-			text-decoration: 2px underline;
+			text-decoration-color: currentColor;
+			text-decoration-line: underline;
+			text-decoration-style: solid;
+			text-decoration-thickness: 2px;
 		}
 	}
 

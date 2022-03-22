@@ -1,5 +1,4 @@
 import { QueryDatabaseResponse } from "@notionhq/client/build/src/api-endpoints";
-import React from "react";
 
 import { SectionContainer, BookWrapper, BookInfo, BookTitle } from "./styles";
 

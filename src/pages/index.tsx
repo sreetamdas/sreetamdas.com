@@ -1,6 +1,6 @@
 import { getMDXComponent } from "mdx-bundler/client";
 import { InferGetStaticPropsType } from "next";
-import React, { Fragment, useMemo } from "react";
+import { useMemo } from "react";
 
 import { NewsletterSignup } from "@/components/Newsletter/Signup";
 import { ViewsCounter } from "@/components/ViewsCounter";
@@ -15,10 +15,10 @@ const Index = ({ code, subscriberCount }: InferGetStaticPropsType<typeof getStat
 	const Component = useMemo(() => getMDXComponent(code), [code]);
 
 	return (
-		<Fragment>
+		<>
 			<DocumentHead title="Home" />
 
-			<Space size={25} />
+			<Space $size={25} />
 			<Center>
 				<Title $size={2.5}>
 					Hey, I&apos;m Sreetam Das!{" "}
@@ -27,7 +27,7 @@ const Index = ({ code, subscriberCount }: InferGetStaticPropsType<typeof getStat
 					</span>
 				</Title>
 			</Center>
-			<Space size={25} />
+			<Space $size={25} />
 			<Paragraph>
 				I&apos;m a developer from India in love with all things React. I&apos;ve also worked with
 				different languages like Python, JavaScript, Elixir, TypeScript and C++, as well as Node,
@@ -63,7 +63,7 @@ const Index = ({ code, subscriberCount }: InferGetStaticPropsType<typeof getStat
 
 			<ViewsCounter hidden />
 			<NewsletterSignup {...{ subscriberCount }} />
-		</Fragment>
+		</>
 	);
 };
 

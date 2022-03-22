@@ -3,7 +3,7 @@ import { AnimatePresence, motion, Variants } from "framer-motion";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import React, { useState, useEffect, useContext, cloneElement } from "react";
+import { useState, useEffect, useContext, cloneElement } from "react";
 import {
 	FaGithub,
 	FaTwitter,

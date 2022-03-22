@@ -1,5 +1,5 @@
 import Link, { LinkProps } from "next/link";
-import React, { AnchorHTMLAttributes, forwardRef, PropsWithChildren } from "react";
+import { AnchorHTMLAttributes, forwardRef, PropsWithChildren } from "react";
 import styled, { css } from "styled-components";
 
 import { breakpoint } from "@/utils/style";
@@ -133,7 +133,10 @@ export const StyledLink = styled.a<StyledLinkProps>`
 		text-decoration: none;
 	}
 	&:hover {
-		text-decoration: 2px underline;
+		text-decoration-color: currentColor;
+		text-decoration-line: underline;
+		text-decoration-style: solid;
+		text-decoration-thickness: 2px;
 	}
 `;
 

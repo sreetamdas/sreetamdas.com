@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import React, { useState, useEffect, Fragment } from "react";
+import { useState, useEffect } from "react";
 import styled from "styled-components";
 
 import { SupportSreetamDas, FoobarHintWrapper } from "./styled";
@@ -91,13 +91,13 @@ export const Foobar = ({ completedPage, unlocked }: TFoobarSchrodingerProps) => 
 	if (!unlocked) return <FoobarButLocked />;
 
 	return (
-		<Fragment>
+		<>
 			<DocumentHead title="Foobar" noIndex />
-			<Space size={50} />
+			<Space $size={50} />
 			{/* <Title>Hello Beautiful Nerd!</Title> */}
 			<UnlockedBanner {...{ completedPage }} />
 			<ShowCompletedBadges />
-			<Space size={20} />
+			<Space $size={20} />
 			<Button onClick={handleClearFoobarData}>Clear everything and Restart</Button>
 			<Space />
 			<Center>
@@ -116,12 +116,12 @@ export const Foobar = ({ completedPage, unlocked }: TFoobarSchrodingerProps) => 
 			{!terminalVisible && <KonamiWrapper />}
 			<XMarksTheSpot foobar={"/foobar/devtools"} />
 			<ViewsCounter />
-		</Fragment>
+		</>
 	);
 };
 
 export const FoobarButLocked = () => (
-	<Fragment>
+	<>
 		<Custom404 />
 		<FoobarHintWrapper>
 			<small>
@@ -130,7 +130,7 @@ export const FoobarButLocked = () => (
 				</code>
 			</small>
 		</FoobarHintWrapper>
-	</Fragment>
+	</>
 );
 
 /**

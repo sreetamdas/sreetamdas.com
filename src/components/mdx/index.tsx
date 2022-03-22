@@ -1,4 +1,4 @@
-import React, { createElement, CSSProperties, PropsWithChildren, ReactHTML } from "react";
+import { createElement, CSSProperties, PropsWithChildren, ReactHTML } from "react";
 import { FiLink } from "react-icons/fi";
 
 import { CustomImage } from "./images";

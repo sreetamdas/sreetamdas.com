@@ -1,4 +1,4 @@
-import { Fragment, useState } from "react";
+import { useState } from "react";
 import { IconBaseProps } from "react-icons";
 import { BsEgg } from "react-icons/bs";
 import {
@@ -147,9 +147,9 @@ export const FOOBAR_BADGES: TFOOBAR_BADGES = {
 	teapot: {
 		icon: (props) => <GiTeapot {...props} />,
 		description: (
-			<Fragment>
+			<>
 				Brew some <code>/api/coffee</code>
-			</Fragment>
+			</>
 		),
 	},
 	completed: {

@@ -1,14 +1,16 @@
 import type { PropsWithChildren } from "react";
 
+import { Footer } from "@/components/Footer";
 import { Navbar } from "@/components/Navbar";
-import { FoobarWrapper } from "@/components/foobar";
-import { Layout } from "@/styles/layouts";
+import { Foobar } from "@/components/foobar";
+import { PageWrapper, ContentLayout, Space } from "@/styles/layouts";
 
 export const DefaultLayout = ({ children }: PropsWithChildren<unknown>) => (
-	<>
-		<FoobarWrapper>
-			<Navbar />
-			<Layout>{children}</Layout>
-		</FoobarWrapper>
-	</>
+	<PageWrapper>
+		<Navbar />
+		<ContentLayout>{children}</ContentLayout>
+		<Space $size={50} />
+		<Foobar />
+		<Footer />
+	</PageWrapper>
 );

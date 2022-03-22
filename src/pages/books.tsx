@@ -1,5 +1,4 @@
 import { InferGetStaticPropsType } from "next";
-import { Fragment } from "react";
 
 import { BooksList } from "@/components/Books";
 import { ViewsCounter } from "@/components/ViewsCounter";
@@ -10,7 +9,7 @@ import { Center } from "@/styles/layouts";
 import { Title } from "@/styles/typography";
 
 const BooksPage = ({ results }: InferGetStaticPropsType<typeof getStaticProps>) => (
-	<Fragment>
+	<>
 		<DocumentHead
 			title="Books"
 			// description="Mechanical keyboards and their components that I own"
@@ -23,7 +22,7 @@ const BooksPage = ({ results }: InferGetStaticPropsType<typeof getStaticProps>) 
 		<BooksList results={results} />
 
 		<ViewsCounter />
-	</Fragment>
+	</>
 );
 
 export async function getStaticProps() {

@@ -108,10 +108,7 @@ export const SupportSreetamDas = () => (
 );
 
 export const FoobarHintWrapper = styled.span`
-	position: absolute;
-	bottom: 100px;
-	left: 0;
-	right: 0;
-	padding-top: 50px;
+	display: block;
+	padding: 20px 20px 0;
 	text-align: center;
 `;

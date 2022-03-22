@@ -7,7 +7,11 @@ export const BlogPostsPreviewLayout = styled.div`
 	gap: 1rem;
 `;
 
-export const Layout = styled.div`
+export const PageWrapper = styled.main`
+	min-height: 100vh;
+`;
+
+export const ContentLayout = styled.div`
 	display: grid;
 	grid-template-columns: 1fr min(var(--max-width), calc(100% - 2rem)) 1fr;
 	column-gap: 1rem;
@@ -27,7 +31,6 @@ export const Center = styled.div`
 export const WrapperForFooter = styled.div`
 	display: grid;
 	grid-template-rows: auto 1fr auto;
-	min-height: 100vh;
 	align-items: start;
 
 	color: var(--color-primary);
@@ -36,9 +39,11 @@ export const WrapperForFooter = styled.div`
 	${sharedTransition("color, background-color")}
 `;
 
-export const Space = styled.div<{ size?: number }>`
+export const Space = styled.div<{ $size?: number }>`
 	margin: 0;
-	padding: ${({ size }) => (size ? `${size / 2}px` : "50px")};
+	${({ $size = 100 }) => css`
+		padding: ${$size / 2}px;
+	`}
 `;
 
 export const fullWidthMixin = css`

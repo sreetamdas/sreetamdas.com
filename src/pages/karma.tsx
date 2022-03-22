@@ -1,5 +1,4 @@
 import Image, { ImageProps } from "next/image";
-import React, { Fragment } from "react";
 import styled from "styled-components";
 
 import { ViewsCounter } from "@/components/ViewsCounter";
@@ -22,7 +21,7 @@ const KARMA_COLOR_PALETTE = [
 type TKarmaColors = typeof KARMA_COLOR_PALETTE[number];
 
 const Index = () => (
-	<Fragment>
+	<>
 		<DocumentHead
 			title="Karma"
 			imageURL="/karma/karma-card.jpg"
@@ -68,7 +67,7 @@ const Index = () => (
 		</WideImagesContainer>
 
 		<ViewsCounter />
-	</Fragment>
+	</>
 );
 
 export default Index;

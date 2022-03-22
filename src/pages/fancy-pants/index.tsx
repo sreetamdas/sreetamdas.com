@@ -1,5 +1,3 @@
-import { Fragment } from "react";
-
 import { NavigationContainer, Typography, NavLink, ChromaHighlight } from "@/components/FancyPants";
 import { ViewsCounter } from "@/components/ViewsCounter";
 import { DocumentHead } from "@/components/shared/seo";
@@ -7,7 +5,7 @@ import { WithoutNavbar } from "@/layouts/WIthoutNavbar";
 import { FullWidthWrapper, Space } from "@/styles/layouts";
 
 const FancyPants = () => (
-	<Fragment>
+	<>
 		<DocumentHead title="Fancy Pants" description="Sreetam's fancy-shmancy landing page" />
 		<FullWidthWrapper>
 			<div style={{ padding: "0 25px" }}>
@@ -34,7 +32,7 @@ const FancyPants = () => (
 		<Space />
 
 		<ViewsCounter />
-	</Fragment>
+	</>
 );
 
 FancyPants.Layout = WithoutNavbar;

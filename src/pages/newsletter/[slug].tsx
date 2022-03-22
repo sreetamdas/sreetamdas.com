@@ -20,12 +20,12 @@ const NewsletterLandingPage = ({
 	<>
 		<DocumentHead title={issue.subject} description={NEWSLETTER_DESCRIPTION} />
 
-		<Space size={50} />
+		<Space $size={50} />
 		<NewsletterIssueDetail issue={issue} />
-		<Space size={50} />
+		<Space $size={50} />
 
 		<NewsletterSignup {...{ subscriberCount }} />
-		<Space size={50} />
+		<Space $size={50} />
 		<ViewsCounter />
 	</>
 );

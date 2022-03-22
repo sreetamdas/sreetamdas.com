@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import { useContext, useEffect } from "react";
 import { ThemeContext } from "styled-components";
 
 import { ViewsCounter } from "@/components/ViewsCounter";

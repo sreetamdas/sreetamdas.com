@@ -1,4 +1,3 @@
-import React, { Fragment } from "react";
 import styled from "styled-components";
 
 import { ViewsCounter } from "@/components/ViewsCounter";
@@ -8,7 +7,7 @@ import { Center, Space } from "@/styles/layouts";
 import { ExternalLink, Paragraph, Title } from "@/styles/typography";
 
 const Index = () => (
-	<Fragment>
+	<>
 		<DocumentHead title="FAQ" description="Questions that you may have, answered!" />
 
 		<Center>
@@ -22,7 +21,7 @@ const Index = () => (
 			😄
 		</Paragraph>
 
-		<Space size={20} />
+		<Space $size={20} />
 
 		<FAQGrid>
 			<StyledDetails>
@@ -58,7 +57,7 @@ const Index = () => (
 		</FAQGrid>
 
 		<ViewsCounter />
-	</Fragment>
+	</>
 );
 
 export default Index;

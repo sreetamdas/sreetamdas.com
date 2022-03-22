@@ -1,12 +1,14 @@
 import type { PropsWithChildren } from "react";
 
-import { FoobarWrapper } from "@/components/foobar";
-import { Layout } from "@/styles/layouts";
+import { Footer } from "@/components/Footer";
+import { Foobar } from "@/components/foobar";
+import { ContentLayout, PageWrapper, Space } from "@/styles/layouts";
 
 export const WithoutNavbar = ({ children }: PropsWithChildren<unknown>) => (
-	<>
-		<FoobarWrapper>
-			<Layout>{children}</Layout>
-		</FoobarWrapper>
-	</>
+	<PageWrapper>
+		<ContentLayout>{children}</ContentLayout>
+		<Space $size={50} />
+		<Foobar />
+		<Footer />
+	</PageWrapper>
 );
