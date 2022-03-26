@@ -69,7 +69,6 @@ export const OrderedListStyled = styled.ol`
 		&::before {
 			color: var(--color-primary-accent);
 			font-family: var(--font-family-code);
-			font-weight: 900;
 			font-feature-settings: "tnum";
 			content: counters(var(--counter-name), ".") ". ";
 			padding-right: 10px;
