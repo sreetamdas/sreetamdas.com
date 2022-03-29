@@ -38,9 +38,9 @@ export default class MyDocument extends Document {
 					<meta name="apple-mobile-web-app-capable" content="yes" />
 					<meta name="mobile-web-app-capable" content="yes" />
 
+					<link rel="preload" href="/fonts/iosevka/woff2/iosevka-regular.woff2" as="font" />
+					<link rel="preload" href="/fonts/iosevka/woff2/iosevka-italic.woff2" as="font" />
 					<link rel="preload" href="/fonts/iosevka/iosevka.css" as="style" />
-					{/* eslint-disable-next-line @next/next/no-css-tags */}
-					<link rel="stylesheet" href="/fonts/iosevka/iosevka.css" />
 					<link
 						href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,700;1,400&display=swap"
 						rel="stylesheet"
