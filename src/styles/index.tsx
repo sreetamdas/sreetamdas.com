@@ -62,6 +62,8 @@ export const GlobalStyles = createGlobalStyle`
 		line-height: 1.5;
 		min-height: 100vh;
 		scroll-padding-top: 60px;
+
+		${sharedTransition("color, background-color")}
 	}
 
 	*, *:before, *:after {

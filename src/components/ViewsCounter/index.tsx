@@ -2,6 +2,7 @@ import { useRouter } from "next/router";
 import { useQuery } from "react-query";
 import styled, { css } from "styled-components";
 
+import { sharedTransition } from "@/styles/components";
 import { PostDetails } from "@/typings/blog";
 import { getViewCount, updateAndGetViewCount } from "@/utils/misc";
 
@@ -36,6 +37,8 @@ const ViewCount = styled.span`
 	border-radius: var(--border-radius);
 	background-color: var(--color-background);
 	border: 2px solid var(--color-primary-accent);
+
+	${sharedTransition("color, background-color")}
 `;
 
 function getViewCountCopy(view_count: number, pageType: TViewsCounterProps["pageType"]) {
