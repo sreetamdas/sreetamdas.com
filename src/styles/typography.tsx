@@ -2,7 +2,7 @@ import Link, { LinkProps } from "next/link";
 import { AnchorHTMLAttributes, forwardRef, PropsWithChildren } from "react";
 import styled, { css } from "styled-components";
 
-import { breakpoint } from "@/utils/style";
+import { breakpoint, pixelToRem } from "@/utils/style";
 
 export const ReallyBigTitle = styled.h1`
 	font-size: 8rem;
@@ -90,7 +90,7 @@ export const Paragraph = styled.p<{ paddingTop?: boolean | number }>`
 `;
 
 export const SmallText = styled.p`
-	font-size: 14px;
+	font-size: ${pixelToRem(14)};
 	margin: 0;
 	padding-bottom: 10px;
 `;
@@ -142,7 +142,6 @@ export const StyledLink = styled.a<StyledLinkProps>`
 
 export const ExternalLink = styled(StyledLink).attrs({
 	target: "_blank",
-	rel: "noopener noreferrer",
 })``;
 
 export const StyledAccentTextLink = styled(StyledLink)`
@@ -166,7 +165,6 @@ export const LinkTo = forwardRef<HTMLAnchorElement, LinkToProps>(function LinkTo
 
 	if (external) {
 		linkProps.target = "_blank";
-		linkProps.rel = "noopener noreferrer";
 	}
 
 	return (

@@ -5,6 +5,7 @@ import styled from "styled-components";
 
 import { getGitHubStats, StatsResult } from "@/domains/GitHub";
 import { sharedTransition } from "@/styles/components";
+import { ExternalLink } from "@/styles/typography";
 
 export const Stats = styled.div`
 	display: grid;
@@ -16,10 +17,7 @@ export const Stats = styled.div`
 	padding: 0.8rem 0;
 `;
 
-export const Stat = styled.a.attrs({
-	target: "_blank",
-	rel: "noopener noreferrer",
-})`
+export const Stat = styled(ExternalLink)`
 	width: max-content;
 	display: flex;
 	align-items: center;

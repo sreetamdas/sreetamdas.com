@@ -41,6 +41,7 @@ module.exports = {
 		"react-hooks/rules-of-hooks": "error",
 		"react-hooks/exhaustive-deps": "warn",
 		"react/react-in-jsx-scope": "off",
+		"react/jsx-no-target-blank": "off",
 		"react/jsx-no-undef": "warn",
 		"react/display-name": "warn",
 		"react/jsx-uses-react": "warn",
