@@ -15,7 +15,6 @@ export const Footer = () => (
 
 const FooterWrapper = styled.footer`
 	position: sticky;
-	bottom: 0;
 	top: 100vh;
 	font-size: 0.8rem;
 	padding: 0 20px 20px;
