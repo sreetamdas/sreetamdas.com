@@ -9,8 +9,6 @@ const CodePreBlockWithHighlight = styled.pre`
 	margin-left: -2.5rem;
 	border-radius: var(--border-radius);
 	overflow-x: scroll;
-	white-space: pre-wrap;
-	word-wrap: break-word;
 
 	${breakpoint.until.md(css`
 		margin-left: -20px;
