@@ -1,6 +1,11 @@
 import { getMDXComponent } from "mdx-bundler/client";
 import { useMemo } from "react";
 
+import {
+	getRepoContributors,
+	RepoContributors,
+	RepoContributorsProps,
+} from "@/components/GitHub/RepoContributors";
 import { ExternalLinksOverlay } from "@/components/Navbar";
 import { NewsletterSignup } from "@/components/Newsletter/Signup";
 import { ViewsCounter } from "@/components/ViewsCounter";
@@ -12,9 +17,12 @@ import { Title } from "@/styles/typography";
 import { TBlogPostPageProps } from "@/typings/blog";
 import { getMDXFileData } from "@/utils/blog";
 
-type TProps = TBlogPostPageProps & { subscriberCount: number };
+type TProps = TBlogPostPageProps & {
+	subscriberCount: number;
+	repoContributors: RepoContributorsProps["contributors"];
+};
 
-const About = ({ code, frontmatter: _, subscriberCount }: TProps) => {
+const About = ({ code, frontmatter: _, subscriberCount, repoContributors }: TProps) => {
 	const Component = useMemo(() => getMDXComponent(code), [code]);
 
 	return (
@@ -32,6 +40,7 @@ const About = ({ code, frontmatter: _, subscriberCount }: TProps) => {
 					...MDXComponents,
 				}}
 			/>
+			<RepoContributors contributors={repoContributors} />
 
 			<ViewsCounter />
 
@@ -49,10 +58,11 @@ const About = ({ code, frontmatter: _, subscriberCount }: TProps) => {
 export default About;
 
 export async function getStaticProps() {
-	const subscriberCount = await getButtondownSubscriberCount();
 	const result = await getMDXFileData("credits", { cwd: "content" });
+	const subscriberCount = await getButtondownSubscriberCount();
+	const repoContributors = await getRepoContributors();
 
 	return {
-		props: { ...result, subscriberCount },
+		props: { ...result, subscriberCount, repoContributors },
 	};
 }
