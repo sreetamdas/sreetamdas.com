@@ -6,7 +6,7 @@ import { OrderedList, UnorderedList } from "./lists";
 
 import { CodeBlock } from "@/components/shiki/styled";
 import { LinkedHeaderIconWrapper } from "@/styles/blog";
-import { Paragraph, StyledLink } from "@/styles/typography";
+import { ExternalLink, Paragraph, StyledLink } from "@/styles/typography";
 import { useHover } from "@/utils/hooks";
 
 const MDXLinkWrapper = (props: PropsWithChildren<{ href: string }>) =>
@@ -14,9 +14,7 @@ const MDXLinkWrapper = (props: PropsWithChildren<{ href: string }>) =>
 	"/#".includes(props.href[0]) ? (
 		<StyledLink {...props} />
 	) : (
-		<StyledLink {...props} target="_blank" rel="noopener noreferrer">
-			{props.children}
-		</StyledLink>
+		<ExternalLink {...props}>{props.children}</ExternalLink>
 	);
 
 type TIDPropsWithChildren = PropsWithChildren<{ id: string }>;

@@ -96,11 +96,7 @@ const IconCoffee = () => (
 
 export const SupportSreetamDas = () => (
 	<SupportLinkWrapper>
-		<SupportLinkStyled
-			href="https://buymeacoff.ee/sreetamdas"
-			target="_blank"
-			rel="noopener noreferrer"
-		>
+		<SupportLinkStyled href="https://buymeacoff.ee/sreetamdas" target="_blank">
 			<IconCoffee />
 			Buy me a coffee
 		</SupportLinkStyled>

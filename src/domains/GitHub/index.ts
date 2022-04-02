@@ -2,6 +2,10 @@ import { Octokit } from "@octokit/core";
 import axios from "axios";
 
 export const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
+export const DEFAULT_REPO = {
+	owner: "sreetamdas",
+	repo: "sreetamdas.com",
+};
 
 export type StatsResult = {
 	stars: number;

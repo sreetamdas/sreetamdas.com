@@ -20,7 +20,7 @@ export const ShareLinks = ({ title, slug }: TShareLinksProps) => {
 	const tweetShareURL = `https://twitter.com/intent/tweet?text=Check out: ${title}&url=${SITE_URL}/blog/${slug}%0D%0A&via=_SreetamDas`;
 
 	return (
-		<IconContainer href={tweetShareURL} target="_blank" rel="noopener noreferrer">
+		<IconContainer href={tweetShareURL}>
 			<FaTwitter aria-label="Share on Twitter" />
 			<span>Share via Twitter</span>
 		</IconContainer>

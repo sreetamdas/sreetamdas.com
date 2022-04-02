@@ -96,22 +96,12 @@ const NavLinks = () => (
 		</PageLinks>
 		<IconLinks>
 			<motion.li variants={iconLinksVariants}>
-				<IconContainer
-					href="https://github.com/sreetamdas"
-					target="_blank"
-					rel="noopener noreferrer"
-					$styledOnHover
-				>
+				<IconContainer href="https://github.com/sreetamdas" target="_blank" $styledOnHover>
 					<FaGithub aria-label="Sreetam's GitHub" title="Sreetam Das' GitHub" />
 				</IconContainer>
 			</motion.li>
 			<motion.li variants={iconLinksVariants}>
-				<IconContainer
-					href="https://twitter.com/_SreetamDas"
-					target="_blank"
-					rel="noopener noreferrer"
-					$styledOnHover
-				>
+				<IconContainer href="https://twitter.com/_SreetamDas" target="_blank" $styledOnHover>
 					<FaTwitter aria-label="Sreetam Das' Twitter" title="Sreetam Das' Twitter" />
 				</IconContainer>
 			</motion.li>
@@ -321,13 +311,7 @@ export const ExternalLinksOverlay = () => {
 	return (
 		<PlatformLinksContainer>
 			{externalLinks.map(({ link, title, icon }) => (
-				<IconContainer
-					href={link}
-					title={title}
-					key={title}
-					target="_blank"
-					rel="noopener noreferrer"
-				>
+				<IconContainer href={link} title={title} key={title} target="_blank">
 					<IconWithProps {...{ icon, title }} />
 				</IconContainer>
 			))}
