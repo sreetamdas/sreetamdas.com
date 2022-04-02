@@ -25,10 +25,10 @@ const Index = () => (
 		<DocumentHead
 			title="Karma"
 			imageURL="/karma/karma-card.jpg"
-			description="A colorful VSCode theme by Sreetam Das"
+			description="A colorful VS Code theme by Sreetam Das"
 		/>
 		<Space />
-		<Title>Karma — a VSCode theme</Title>
+		<Title>Karma — a VS Code theme</Title>
 		<ColorPaletteWrapper>
 			{KARMA_COLOR_PALETTE.map((color) => (
 				<ColorPaletteBlock $color={color} key={color}>
@@ -38,7 +38,7 @@ const Index = () => (
 		</ColorPaletteWrapper>
 		<LinksContainer>
 			<LinkTo href="https://marketplace.visualstudio.com/items?itemName=SreetamD.karma">
-				Install from VSCode marketplace
+				Install from VS Code marketplace
 			</LinkTo>
 
 			<LinkTo href="https://github.com/sreetamdas/karma">View source</LinkTo>
