@@ -1,4 +1,4 @@
-import { CSSProperties, PropsWithChildren, ReactNodeArray } from "react";
+import { CSSProperties, PropsWithChildren } from "react";
 import styled, { css } from "styled-components";
 
 import { breakpoint } from "@/utils/style";
@@ -9,8 +9,6 @@ const CodePreBlockWithHighlight = styled.pre`
 	margin-left: -2.5rem;
 	border-radius: var(--border-radius);
 	overflow-x: scroll;
-	white-space: pre-wrap;
-	word-wrap: break-word;
 
 	${breakpoint.until.md(css`
 		margin-left: -20px;
@@ -96,7 +94,7 @@ export const CodeBlock = (
 		<CodePreBlockWithHighlight {...{ style }}>
 			<CodeBlockLanguageWrapper>{language.toLocaleUpperCase()}</CodeBlockLanguageWrapper>
 			{Array.isArray(children) ? (
-				(children as ReactNodeArray)
+				children
 					?.filter((line) => line !== "\n")
 					.map((line, i) => (
 						<CodeblockLineWrapper key={i} $highlight={shouldHighlightLine(i)}>
