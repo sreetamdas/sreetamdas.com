@@ -51,13 +51,13 @@ interface HtmlRendererOptions {
 export function renderToHTML(
 	lines: IThemedToken[][],
 	options: HtmlRendererOptions = {},
-	metaProps?: string
+	meta?: string
 ) {
 	const bg = options.bg || "#fff";
 
 	let html = "";
 
-	html += `<pre class="shiki" style="background-color: ${bg}" ${metaProps ? metaProps : ""} ${
+	html += `<pre class="shiki" style="background-color: ${bg}" ${meta ? meta : ""} ${
 		options.langId ? `language="${options.langId}"` : ""
 	}>`;
 

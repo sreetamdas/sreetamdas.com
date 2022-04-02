@@ -1,11 +1,11 @@
-import { Highlighter, renderToHtml } from "shiki";
+import { Highlighter } from "shiki";
 import { visit } from "unist-util-visit";
 
 import { renderToHTML } from "@/components/shiki/renderer";
 
 type TRemarkShikiOptions = {
 	highlighter: Highlighter;
-	renderToHTML?: typeof renderToHtml | typeof renderToHTML;
+	renderToHTML?: typeof renderToHTML;
 	ignoreUnknownLanguage?: string;
 };
 
@@ -32,7 +32,7 @@ export function remarkShiki(options: TRemarkShikiOptions) {
 				});
 
 				const { fg, bg } = theme;
-				const html = renderToHTML(tokens, { fg, bg, langId: lang });
+				const html = renderToHTML(tokens, { fg, bg, langId: lang }, node.meta);
 				node.type = "html";
 				node.value = html;
 			} else {
