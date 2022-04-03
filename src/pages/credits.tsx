@@ -6,7 +6,6 @@ import {
 	RepoContributors,
 	RepoContributorsProps,
 } from "@/components/GitHub/RepoContributors";
-import { ExternalLinksOverlay } from "@/components/Navbar";
 import { NewsletterSignup } from "@/components/Newsletter/Signup";
 import { ViewsCounter } from "@/components/ViewsCounter";
 import { MDXComponents } from "@/components/mdx";
@@ -36,11 +35,10 @@ const About = ({ code, frontmatter: _, subscriberCount, repoContributors }: TPro
 			<Component
 				// @ts-expect-error MDX
 				components={{
-					ExternalLinksOverlay,
+					RepoContributors: () => <RepoContributors contributors={repoContributors} />,
 					...MDXComponents,
 				}}
 			/>
-			<RepoContributors contributors={repoContributors} />
 
 			<ViewsCounter />
 
