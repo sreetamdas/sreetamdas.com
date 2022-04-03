@@ -7,13 +7,14 @@ import { ExternalLink, SmallText } from "@/styles/typography";
 export async function getRepoContributors() {
 	return (
 		await octokit.request("GET /repos/{owner}/{repo}/contributors", DEFAULT_REPO)
-	).data.filter(({ type }) => type !== "Bot");
+	).data.filter(({ type, login }) => type !== "Bot" && login !== "sreetamdas");
 }
 
 const ContributorsWrapper = styled.div`
 	display: flex;
 	gap: 25px;
 	flex-wrap: wrap;
+	padding-top: 15px;
 `;
 const ContributorWrapper = styled.div`
 	display: flex;
