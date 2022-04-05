@@ -3,7 +3,7 @@ import { VscRepoForked } from "react-icons/vsc";
 import { useQuery } from "react-query";
 import styled from "styled-components";
 
-import { getGitHubStats, StatsResult } from "@/domains/GitHub";
+import { DEFAULT_REPO, getGitHubStats, StatsResult } from "@/domains/GitHub";
 import { sharedTransition } from "@/styles/components";
 import { ExternalLink } from "@/styles/typography";
 
@@ -47,11 +47,7 @@ export const StatValue = styled.span``;
 export const GitHubStats = () => {
 	const { data } = useQuery<StatsResult>(
 		["api", "github", "stats"],
-		async () =>
-			await getGitHubStats({
-				owner: "sreetamdas",
-				repo: "sreetamdas.com",
-			}),
+		async () => await getGitHubStats(DEFAULT_REPO),
 		{
 			staleTime: Infinity,
 		}
