@@ -13,7 +13,9 @@ import { Title, LinkTo } from "@/styles/typography";
 import { TBlogPostPageProps } from "@/typings/blog";
 import { getMDXFileData } from "@/utils/blog";
 
-type TProps = TBlogPostPageProps & { subscriberCount: number };
+type TProps = TBlogPostPageProps & {
+	subscriberCount: Awaited<ReturnType<typeof getButtondownSubscriberCount>>;
+};
 
 const About = ({ code, frontmatter: _, subscriberCount }: TProps) => {
 	const Component = useMemo(() => getMDXComponent(code), [code]);

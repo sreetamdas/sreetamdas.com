@@ -8,7 +8,6 @@ module.exports = withPlausibleProxy()({
 		// ssr and displayName are configured by default
 		styledComponents: true,
 	},
-	experimental: { esmExternals: true },
 	pageExtensions: ["js", "jsx", "ts", "tsx", "mdx"],
 	env: {
 		SITE_URL: process.env.SITE_URL,
@@ -17,22 +16,7 @@ module.exports = withPlausibleProxy()({
 	images: {
 		domains: ["avatars.githubusercontent.com"],
 	},
-	webpack(config) {
-		config.module.rules.push({
-			test: /\.svg$/,
-			use: [
-				{
-					loader: "@svgr/webpack",
-					options: {
-						icon: true,
-						titleProp: true,
-					},
-				},
-			],
-		});
 
-		return config;
-	},
 	async headers() {
 		return [
 			{

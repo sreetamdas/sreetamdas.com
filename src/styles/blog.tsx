@@ -36,11 +36,6 @@ export const PostMetaDataGrid = styled.div`
 	align-items: center;
 `;
 
-export const RoundedImageSmall = styled.img`
-	height: 25px;
-	border-radius: 50%;
-`;
-
 export const StyledPre = styled.pre`
 	background-color: var(--color-inlineCode-bg);
 	margin: 0;
