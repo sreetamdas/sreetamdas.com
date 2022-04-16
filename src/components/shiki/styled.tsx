@@ -46,11 +46,11 @@ const CodeblockLineWrapper = styled.div<{ $highlight?: boolean }>`
 		css`
 			background-color: rgb(255, 255, 255, 0.07);
 			display: block;
-			margin-right: -1.3em;
-			margin-left: -1.3em;
-			padding-right: 1em;
-			padding-left: 1em;
-			border-left: 0.3em solid #9d86e9;
+			margin-right: -20px;
+			margin-left: -20px;
+			padding-right: 15px;
+			padding-left: 15px;
+			border-left: 5px solid #9d86e9;
 		`}
 
 	& > ${CodeblockLineNumber} {

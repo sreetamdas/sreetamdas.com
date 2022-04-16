@@ -91,19 +91,20 @@ export const LinkedHeaderIconWrapper = styled.a<{ isHovered: boolean }>`
 `;
 
 export const CustomBlockquote = styled.aside<{ type?: string }>`
-	padding: 20px;
-	margin: 20px -20px 20px -25px;
+	padding: 20px 20px 20px 40px;
+	margin: 20px -20px 20px -45px;
 	border-radius: var(--border-radius);
+	border-left: 5px solid;
 
 	${({ type }) =>
 		type
-			? `
-				background-color: var(--color-${type}-accent-faded);
-				border-left: 0.3em var(--color-${type}-accent) solid;
+			? css`
+					background-color: var(--color-${type}-accent-faded);
+					border-color: var(--color-${type}-accent);
 			  `
 			: css`
 					background-color: var(--color-info-accent-faded);
-					border-left: 0.3em var(--color-info-accent) solid;
+					border-color: var(--color-info-accent);
 			  `}
 `;
 
