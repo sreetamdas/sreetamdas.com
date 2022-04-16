@@ -6,8 +6,9 @@ export type TBlogPostFrontmatter = {
 	subtitle?: string;
 	summary: string;
 	image?: string;
-	publishedAt: string;
 	published: boolean;
+	publishedAt: string;
+	updatedAt: string;
 };
 
 export type PostDetails = {
@@ -19,12 +20,7 @@ export type PostDetails = {
 	likes: number;
 };
 
-export type PromiseResolvedType<T> = T extends Promise<infer R> ? R : never;
-
-export type TBlogPostPageProps = Omit<
-	PromiseResolvedType<ReturnType<typeof bundleMDX>>,
-	"frontmatter"
-> & {
+export type TBlogPostPageProps = Omit<Awaited<ReturnType<typeof bundleMDX>>, "frontmatter"> & {
 	frontmatter: TBlogPostFrontmatter;
 	slug: string;
 };

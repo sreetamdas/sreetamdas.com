@@ -7,11 +7,10 @@ import { SectionWrapper, IssueContentWrapper, IssueSubject } from "./styles";
 import { MDXComponents } from "@/components/mdx";
 import { ButtondownEmailsType } from "@/domains/Buttondown";
 import { MDXLink, MDXTitle } from "@/styles/components";
-import { PromiseResolvedType } from "@/typings/blog";
 
 export type IssueViewProps = {
 	issue: ButtondownEmailsType["results"][number] & {
-		bodyParsed: PromiseResolvedType<ReturnType<typeof bundleMDX>>;
+		bodyParsed: Awaited<ReturnType<typeof bundleMDX>>;
 	};
 };
 export const NewsletterIssueDetail = ({ issue }: IssueViewProps) => {
