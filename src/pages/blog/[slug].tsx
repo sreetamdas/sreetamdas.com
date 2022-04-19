@@ -75,7 +75,7 @@ const Post = ({ code, frontmatter, slug, subscriberCount }: TProps) => {
 			<PostMetaDataGrid>
 				<Datestamp>
 					Last updated:{" "}
-					{new Date(frontmatter.updatedAt).toLocaleDateString("en-US", {
+					{new Date(frontmatter.updatedAt ?? frontmatter.publishedAt).toLocaleDateString("en-US", {
 						month: "long",
 						year: "numeric",
 						day: "numeric",
