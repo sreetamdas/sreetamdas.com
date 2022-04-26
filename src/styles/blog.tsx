@@ -1,21 +1,10 @@
 import { PropsWithChildren, ReactNode } from "react";
 import styled, { css } from "styled-components";
 
-import { Datestamp } from "@/styles/typography";
 import { breakpoint } from "@/utils/style";
 
 export const BlogPostContentWrapper = styled.div`
 	padding: 30px 0;
-`;
-
-export const Card = styled.div`
-	padding: 10px 0;
-	cursor: pointer;
-
-	& > ${Datestamp} {
-		font-size: 0.8rem;
-		font-style: unset;
-	}
 `;
 
 export const WarningSpan = styled.span`
@@ -114,13 +103,6 @@ export const Highlight = styled.span`
 	font-weight: bold;
 `;
 
-export const ReadMorePrompt = styled.p<{ isHovered: boolean }>`
-	font-weight: bold;
-	font-size: 0.8rem;
-	margin: 0;
-	color: ${({ isHovered }) => (isHovered ? "var(--color-primary-accent)" : null)};
-`;
-
 const EndLinksGrid = styled.div`
 	padding-top: 15px;
 	display: grid;
@@ -138,11 +120,3 @@ const EndLinksGrid = styled.div`
 export const EndLinks = ({ children }: PropsWithChildren<ReactNode>) => (
 	<EndLinksGrid>{children}</EndLinksGrid>
 );
-
-export const AnchorUnstyled = styled.a`
-	color: unset;
-
-	&:hover {
-		text-decoration: unset;
-	}
-`;
