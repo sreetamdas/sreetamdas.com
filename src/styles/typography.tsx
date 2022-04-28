@@ -22,6 +22,7 @@ export const primaryGradientMixin = css`
 	box-decoration-break: slice;
 	-webkit-box-decoration-break: clone;
 `;
+
 export const PrimaryGradient = styled.span`
 	${primaryGradientMixin}
 `;
@@ -103,16 +104,18 @@ export const BlogPostTitle = styled.h1`
 	padding-bottom: 15px;
 `;
 
-export const BlogPostPreviewTitle = styled.h2<{ isHovered: boolean }>`
-	margin: 0;
-	font-size: 2rem;
-	color: var(--color-primary-accent);
-	${({ isHovered }) => isHovered && primaryGradientMixin}
+export const LinkUnstyled = styled.a`
+	text-decoration: none;
+
+	&:visited {
+		text-decoration: none;
+	}
 `;
 
 type StyledLinkProps = {
 	$primary?: boolean;
 	external?: boolean;
+	$unstyledOnHover?: boolean;
 };
 export const StyledLink = styled.a<StyledLinkProps>`
 	text-decoration: none;
@@ -129,15 +132,25 @@ export const StyledLink = styled.a<StyledLinkProps>`
 					color: var(--color-primary-accent);
 			  `}
 
-	&:visited {
+	:visited {
 		text-decoration: none;
 	}
-	&:hover {
-		text-decoration-color: currentColor;
-		text-decoration-line: underline;
-		text-decoration-style: solid;
-		text-decoration-thickness: 2px;
-	}
+
+	${({ $unstyledOnHover }) =>
+		$unstyledOnHover
+			? css`
+					:hover {
+						text-decoration: none;
+					}
+			  `
+			: css`
+					:hover {
+						text-decoration-color: currentColor;
+						text-decoration-line: underline;
+						text-decoration-style: solid;
+						text-decoration-thickness: 2px;
+					}
+			  `}
 `;
 
 export const ExternalLink = styled(StyledLink).attrs({
@@ -145,10 +158,10 @@ export const ExternalLink = styled(StyledLink).attrs({
 })``;
 
 export const StyledAccentTextLink = styled(StyledLink)`
-	&:visited {
+	:visited {
 		text-decoration: none;
 	}
-	&:hover {
+	:hover {
 		text-decoration: underline;
 	}
 `;

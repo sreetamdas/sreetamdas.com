@@ -1,23 +1,27 @@
 import styled from "styled-components";
 
-import { primaryGradientMixin } from "@/styles/typography";
+import { primaryGradientMixin, StyledLink } from "@/styles/typography";
+import { pixelToRem } from "@/utils/style";
 
 export const PreviewCard = styled.article`
-	> a:hover {
-		text-decoration: none;
-	}
+	display: grid;
+	row-gap: 10px;
 `;
 
 export const ExtraInfoWrapper = styled.div`
-	padding-top: 10px;
-	display: grid;
-	justify-content: space-between;
-	grid-template-columns: 1fr max-content;
-`;
-export const PreviewMetadata = styled.span`
 	display: flex;
-	align-items: center;
-	gap: 20px;
+	justify-content: space-between;
+
+	${StyledLink} {
+		font-size: ${pixelToRem(16)};
+		:hover {
+			text-decoration: none;
+		}
+	}
+`;
+export const PreviewMetadata = styled.p`
+	font-size: ${pixelToRem(16)};
+	margin: 0;
 `;
 
 export const PostPreviewTitle = styled.h3<{ $isHovered: boolean }>`
@@ -32,10 +36,5 @@ export const PostPreviewTitle = styled.h3<{ $isHovered: boolean }>`
 	}
 `;
 export const PostPreviewSummary = styled.p`
-	margin: 0;
-`;
-
-export const ReadMorePrompt = styled.p`
-	font-size: 0.85rem;
 	margin: 0;
 `;

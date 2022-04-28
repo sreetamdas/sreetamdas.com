@@ -4,7 +4,6 @@ import {
 	PreviewMetadata,
 	PostPreviewTitle,
 	PostPreviewSummary,
-	ReadMorePrompt,
 } from "./PostPreview.styled";
 
 import { PostNotPublishedWarning } from "@/styles/blog";
@@ -19,11 +18,17 @@ export const BlogPostPreview = ({ frontmatter, slug }: TBlogPostPreviewProps) =>
 
 	return (
 		<PreviewCard>
-			<LinkTo href={`/blog/${slug}`} scroll={false} passHref>
+			<LinkTo href={`/blog/${slug}`} scroll={false} passHref $unstyledOnHover>
 				<PostPreviewTitle $isHovered={isHovered}>{frontmatter.title}</PostPreviewTitle>
 			</LinkTo>
-			<PostPreviewSummary>{frontmatter.summary}</PostPreviewSummary>
+			<PostPreviewSummary>
+				{!frontmatter.published && <PostNotPublishedWarning />}
+				{frontmatter.summary}
+			</PostPreviewSummary>
 			<ExtraInfoWrapper>
+				<LinkTo ref={hoverRef} href={`/blog/${slug}`}>
+					Read more
+				</LinkTo>
 				<PreviewMetadata>
 					{new Date(frontmatter.publishedAt).toLocaleDateString("en-US", {
 						year: "numeric",
@@ -32,10 +37,6 @@ export const BlogPostPreview = ({ frontmatter, slug }: TBlogPostPreviewProps) =>
 					})}
 				</PreviewMetadata>
 			</ExtraInfoWrapper>
-			{!frontmatter.published && <PostNotPublishedWarning />}
-			<LinkTo ref={hoverRef} href={`/blog/${slug}`}>
-				<ReadMorePrompt>Read more</ReadMorePrompt>
-			</LinkTo>
 		</PreviewCard>
 	);
 };

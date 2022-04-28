@@ -9,7 +9,7 @@ export const BlogPostContentWrapper = styled.div`
 
 export const WarningSpan = styled.span`
 	padding: 5px 10px;
-	margin: 0 15px;
+	margin: 0 15px 0 0;
 	background-color: red;
 	color: white;
 	border-radius: var(--border-radius);
