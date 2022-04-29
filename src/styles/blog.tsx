@@ -1,4 +1,4 @@
-import { PropsWithChildren, ReactNode } from "react";
+import { PropsWithChildren } from "react";
 import styled, { css } from "styled-components";
 
 import { breakpoint } from "@/utils/style";
@@ -117,6 +117,6 @@ const EndLinksGrid = styled.div`
 	}
 `;
 
-export const EndLinks = ({ children }: PropsWithChildren<ReactNode>) => (
+export const EndLinks = ({ children }: PropsWithChildren<Record<string, unknown>>) => (
 	<EndLinksGrid>{children}</EndLinksGrid>
 );

@@ -23,7 +23,7 @@ const HandleMDXHeaderElement = (
 	// propsWithoutChildren contains `id` attr here
 	{ children, ...propsWithoutChildren }: TIDPropsWithChildren
 ) => {
-	const [hoverRef, isHovered] = useHover();
+	const [hoverRef, isHovered] = useHover<HTMLDivElement>();
 	const headerStyles: CSSProperties = {
 		color: "var(--color-primary-accent)",
 	};
