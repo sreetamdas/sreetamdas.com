@@ -13,9 +13,10 @@ export const WarningSpan = styled.span`
 	background-color: red;
 	color: white;
 	border-radius: var(--border-radius);
+	text-transform: uppercase;
 `;
 
-export const PostNotPublishedWarning = () => <WarningSpan>UNPUBLISHED</WarningSpan>;
+export const PostNotPublishedWarning = () => <WarningSpan>Unpublished</WarningSpan>;
 
 export const PostMetaDataGrid = styled.div`
 	display: grid;
