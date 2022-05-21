@@ -13,14 +13,13 @@ export const primaryGradientMixin = css`
 	background-image: linear-gradient(
 		90deg,
 		var(--color-primary-accent) 0%,
-		var(--color-secondary-accent) 90%
+		var(--color-secondary-accent) 100%
 	);
 
 	background-clip: text;
 	-webkit-background-clip: text;
 	-webkit-text-fill-color: transparent;
 	box-decoration-break: slice;
-	-webkit-box-decoration-break: clone;
 `;
 
 export const PrimaryGradient = styled.span`
