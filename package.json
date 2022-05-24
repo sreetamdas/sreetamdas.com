@@ -30,7 +30,6 @@
 		"framer-motion": "^6.2.8",
 		"gray-matter": "^4.0.3",
 		"image-size": "^1.0.1",
-		"lint-staged": "^12.3.7",
 		"localforage": "^1.10.0",
 		"lodash-es": "^4.17.21",
 		"mdx-bundler": "^9.0.1",
