@@ -13,26 +13,30 @@ export const ExtraInfoWrapper = styled.div`
 	justify-content: space-between;
 
 	${StyledLink} {
-		font-size: ${pixelToRem(16)};
+		font-size: ${pixelToRem(14)};
 		:hover {
 			text-decoration: none;
 		}
 	}
 `;
 export const PreviewMetadata = styled.p`
-	font-size: ${pixelToRem(16)};
+	font-size: ${pixelToRem(14)};
 	margin: 0;
 `;
 
 export const PostPreviewTitle = styled.h3<{ $isHovered: boolean }>`
+	font-size: 2rem;
+	line-height: 1.1;
+	color: var(--color-primary-accent);
 	margin: 0;
 	padding: 0;
-	font-size: 2rem;
-	color: var(--color-primary-accent);
-	${({ $isHovered }) => $isHovered && primaryGradientMixin}
 
-	:hover {
-		${primaryGradientMixin}
+	> span {
+		${({ $isHovered }) => $isHovered && primaryGradientMixin}
+
+		:hover {
+			${primaryGradientMixin}
+		}
 	}
 `;
 export const PostPreviewSummary = styled.p`
