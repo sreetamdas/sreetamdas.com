@@ -14,14 +14,13 @@ export const ButtonMain = styled.button<ButtonProps>`
 	color: var(--color-primary);
 
 	${sharedTransition("color, background-color")}
-	${focusVisible(css`
-		background-color: var(--color-primary-accent);
-		color: var(--color-background);
-	`)}
-	&:hover {
-		background-color: var(--color-primary-accent);
-		color: var(--color-background);
-	}
+	${focusVisible(
+		css`
+			background-color: var(--color-primary-accent);
+			color: var(--color-background);
+		`,
+		true
+	)}
 
 	/* variants with different padding */
 	${({ size }) => {

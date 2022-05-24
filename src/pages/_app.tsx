@@ -1,3 +1,4 @@
+import "focus-visible";
 import type { NextPage } from "next";
 import PlausibleProvider from "next-plausible";
 import type { AppProps } from "next/app";
