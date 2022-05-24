@@ -3,7 +3,7 @@ import styled, { css, keyframes } from "styled-components";
 import { ButtonProps } from "./";
 
 import { sharedTransition } from "@/styles/components";
-import { pixelToRem } from "@/utils/style";
+import { focusVisible, pixelToRem } from "@/utils/style";
 
 export const ButtonMain = styled.button<ButtonProps>`
 	position: relative;
@@ -14,15 +14,13 @@ export const ButtonMain = styled.button<ButtonProps>`
 	color: var(--color-primary);
 
 	${sharedTransition("color, background-color")}
-
-	&:hover, &:focus {
+	${focusVisible(css`
 		background-color: var(--color-primary-accent);
 		color: var(--color-background);
-	}
-
-	&:focus {
-		outline: 0;
-		box-shadow: unset;
+	`)}
+	&:hover {
+		background-color: var(--color-primary-accent);
+		color: var(--color-background);
 	}
 
 	/* variants with different padding */

@@ -34,7 +34,8 @@ type NameLabelProps = {
 
 type InputFieldProps<T = Element> = InputHTMLAttributes<T> & NameLabelProps;
 export const InputField = ({ label, displayLabel = false, ...props }: InputFieldProps) => {
-	const [field, meta] = useField(props);
+	const [field, meta] = useField<string>(props);
+	const [isFocused, setIsFocused] = useState(false);
 	const placeholder = props.placeholder ?? label;
 
 	return (
@@ -42,10 +43,17 @@ export const InputField = ({ label, displayLabel = false, ...props }: InputField
 			<Label
 				htmlFor={props.id || props.name}
 				$show={displayLabel || !!field.value?.toString().length}
+				$isFocused={isFocused}
 			>
 				{label}
 			</Label>
-			<Input placeholder={placeholder} {...field} {...props} />
+			<Input
+				placeholder={placeholder}
+				{...field}
+				{...props}
+				onFocus={() => setIsFocused(true)}
+				onBlur={() => setIsFocused(false)}
+			/>
 			{meta.touched && meta.error ? <Error>{meta.error}</Error> : null}
 		</InputGroup>
 	);
