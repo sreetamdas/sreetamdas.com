@@ -18,12 +18,11 @@ export const BlogPostPreview = ({ frontmatter, slug }: TBlogPostPreviewProps) =>
 
 	return (
 		<PreviewCard>
-			<LinkTo href={`/blog/${slug}`} scroll={false} passHref $unstyledOnHover>
-				<PostPreviewTitle $isHovered={isHovered}>
-					{/* span ensures the gradient works across line breaks */}
-					<span>{frontmatter.title}</span>
-				</PostPreviewTitle>
-			</LinkTo>
+			<PostPreviewTitle $isHovered={isHovered}>
+				<LinkTo href={`/blog/${slug}`} scroll={false} passHref $unstyledOnHover>
+					{frontmatter.title}
+				</LinkTo>
+			</PostPreviewTitle>
 			<PostPreviewSummary>
 				{!frontmatter.published && <PostNotPublishedWarning />}
 				{frontmatter.summary}

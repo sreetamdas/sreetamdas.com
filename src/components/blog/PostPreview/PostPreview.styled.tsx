@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 import { primaryGradientMixin, StyledLink } from "@/styles/typography";
 import { pixelToRem } from "@/utils/style";
@@ -31,10 +31,16 @@ export const PostPreviewTitle = styled.h3<{ $isHovered: boolean }>`
 	margin: 0;
 	padding: 0;
 
-	> span {
-		${({ $isHovered }) => $isHovered && primaryGradientMixin}
+	${({ $isHovered }) =>
+		$isHovered &&
+		css`
+			> ${StyledLink} {
+				${primaryGradientMixin}
+			}
+		`}
 
-		:hover {
+	:hover {
+		> ${StyledLink} {
 			${primaryGradientMixin}
 		}
 	}
