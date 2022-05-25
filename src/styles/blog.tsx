@@ -1,7 +1,7 @@
 import { PropsWithChildren } from "react";
 import styled, { css } from "styled-components";
 
-import { breakpoint } from "@/utils/style";
+import { breakpoint, focusVisible } from "@/utils/style";
 
 export const BlogPostContentWrapper = styled.div`
 	padding: 30px 0;
@@ -66,17 +66,23 @@ export const IconContainer = styled.a<{ $styledOnHover?: boolean }>`
 	}
 `;
 
-export const LinkedHeaderIconWrapper = styled.a<{ isHovered: boolean }>`
+export const LinkedHeaderIconWrapper = styled.a<{ $isHovered: boolean }>`
 	color: var(--color-primary-accent);
 	position: absolute;
 	transform: translateX(-125%) translateY(0.2rem);
 	font-size: inherit;
 
-	opacity: ${({ isHovered }) => (isHovered ? 0.75 : 0)};
+	opacity: ${({ $isHovered }) => ($isHovered ? 0.75 : 0)};
 	transition: opacity 200ms ease;
 
 	${breakpoint.until.md(css`
 		display: none;
+	`)}
+
+	${focusVisible(css`
+		opacity: 0.75;
+		outline: 2px dashed var(--color-secondary-accent) !important;
+		outline-offset: 2px;
 	`)}
 `;
 
