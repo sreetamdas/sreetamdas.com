@@ -23,8 +23,8 @@ export const ButtonMain = styled.button<ButtonProps>`
 	)}
 
 	/* variants with different padding */
-	${({ size }) => {
-		switch (size) {
+	${({ $size }) => {
+		switch ($size) {
 			case "sm":
 			case "small":
 				return css`

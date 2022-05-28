@@ -5,7 +5,7 @@ import { ButtonMain, LoadingAddon } from "./styles";
 const BUTTON_SIZES = ["sm", "small", "md", "medium", "lg", "large"] as const;
 
 export interface ButtonProps extends HTMLAttributes<HTMLButtonElement> {
-	size?: typeof BUTTON_SIZES[number];
+	$size?: typeof BUTTON_SIZES[number];
 	isLoading?: boolean;
 }
 
