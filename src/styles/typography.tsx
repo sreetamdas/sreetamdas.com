@@ -2,7 +2,7 @@ import Link, { LinkProps } from "next/link";
 import { AnchorHTMLAttributes, forwardRef, PropsWithChildren } from "react";
 import styled, { css } from "styled-components";
 
-import { breakpoint, focusVisible, pixelToRem } from "@/utils/style";
+import { breakpoint, pixelToRem } from "@/utils/style";
 
 export const ReallyBigTitle = styled.h1`
 	font-size: 8rem;
@@ -134,11 +134,6 @@ export const StyledLink = styled.a<StyledLinkProps>`
 	:visited {
 		text-decoration: none;
 	}
-
-	${focusVisible(css`
-		outline: 2px dashed var(--color-secondary-accent) !important;
-		outline-offset: 2px;
-	`)}
 
 	${({ $unstyledOnHover }) =>
 		$unstyledOnHover
