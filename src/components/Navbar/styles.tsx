@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import styled, { css } from "styled-components";
 
-import { IconContainer } from "@/styles/blog";
+import { LinkedIcon } from "@/styles/blog";
 import { sharedTransition } from "@/styles/components";
 import { LinkTo, LinkToProps } from "@/styles/typography";
 import { breakpoint } from "@/utils/style";
@@ -43,13 +43,15 @@ export const LogoSVG = styled.svg.attrs({
 	fill: var(--color-primary-accent);
 `;
 
-export const ThemeSwitch = styled(IconContainer).attrs({ as: "button" })``;
+export const ThemeSwitch = styled(LinkedIcon).attrs({ as: "button" })``;
 
-export const MobileMenuToggle = styled(IconContainer).attrs({ as: "button" })`
+export const MobileMenuToggle = styled(LinkedIcon).attrs({ as: "button" })`
 	color: var(--color-primary-accent);
 
 	${breakpoint.from.md(css`
-		display: none;
+		&& {
+			display: none;
+		}
 	`)}
 `;
 
@@ -65,7 +67,7 @@ export const Header = styled.header`
 
 	${sharedTransition("color, background-color")}
 
-	${IconContainer}, ${ThemeSwitch}, ${MobileMenuToggle} {
+	${LinkedIcon}, ${ThemeSwitch}, ${MobileMenuToggle} {
 		z-index: 10;
 	}
 `;

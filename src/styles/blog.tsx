@@ -36,7 +36,7 @@ export const StyledPre = styled.pre`
 	overflow-x: scroll;
 `;
 
-export const IconContainer = styled.a<{ $styledOnHover?: boolean }>`
+export const LinkedIcon = styled.a<{ $styledOnHover?: boolean }>`
 	font-size: 25px;
 	background-color: transparent;
 	border: none;
@@ -81,8 +81,6 @@ export const LinkedHeaderIconWrapper = styled.a<{ $isHovered: boolean }>`
 
 	${focusVisible(css`
 		opacity: 0.75;
-		outline: 2px dashed var(--color-secondary-accent) !important;
-		outline-offset: 2px;
 	`)}
 `;
 

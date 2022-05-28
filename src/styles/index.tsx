@@ -1,8 +1,8 @@
 import { ToasterProps } from "react-hot-toast";
-import { createGlobalStyle } from "styled-components";
+import { createGlobalStyle, css } from "styled-components";
 
 import { sharedTransition } from "@/styles/components";
-import { BASE_FONT_SIZE } from "@/utils/style";
+import { BASE_FONT_SIZE, focusVisible } from "@/utils/style";
 
 export const GlobalStyles = createGlobalStyle`
 	:root {
@@ -105,6 +105,14 @@ export const GlobalStyles = createGlobalStyle`
 			text-decoration-style: solid;
 			text-decoration-thickness: 2px;
 		}
+	}
+
+	a,
+	button {
+		${focusVisible(css`
+			outline: 2px dashed var(--color-secondary-accent) !important;
+			outline-offset: 2px;
+		`)}
 	}
 
 	code,

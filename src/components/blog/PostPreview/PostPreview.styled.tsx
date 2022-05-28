@@ -10,7 +10,8 @@ export const PreviewCard = styled.article`
 
 export const ExtraInfoWrapper = styled.div`
 	display: flex;
-	justify-content: space-between;
+	justify-content: flex-start;
+	column-gap: 25px;
 
 	${StyledLink} {
 		font-size: ${pixelToRem(14)};
@@ -47,4 +48,5 @@ export const PostPreviewTitle = styled.h3<{ $isHovered: boolean }>`
 `;
 export const PostPreviewSummary = styled.p`
 	margin: 0;
+	font-size: ${pixelToRem(16)};
 `;

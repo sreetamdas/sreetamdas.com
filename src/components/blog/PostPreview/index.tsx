@@ -28,9 +28,6 @@ export const BlogPostPreview = ({ frontmatter, slug }: TBlogPostPreviewProps) =>
 				{frontmatter.summary}
 			</PostPreviewSummary>
 			<ExtraInfoWrapper>
-				<LinkTo ref={hoverRef} href={`/blog/${slug}`}>
-					Read more
-				</LinkTo>
 				<PreviewMetadata>
 					{new Date(frontmatter.publishedAt).toLocaleDateString("en-US", {
 						year: "numeric",
@@ -38,6 +35,9 @@ export const BlogPostPreview = ({ frontmatter, slug }: TBlogPostPreviewProps) =>
 						day: "numeric",
 					})}
 				</PreviewMetadata>
+				<LinkTo ref={hoverRef} href={`/blog/${slug}`}>
+					Read more
+				</LinkTo>
 			</ExtraInfoWrapper>
 		</PreviewCard>
 	);
