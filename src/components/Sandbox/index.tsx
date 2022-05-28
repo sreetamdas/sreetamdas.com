@@ -1,25 +1,23 @@
 import {
-	SandpackProvider,
-	SandpackLayout,
-	SandpackCodeEditor,
-	SandpackPreview,
-	SandpackProps,
 	SandpackThemeProp,
+	Sandpack,
+	SandpackProps,
+	SandpackOptions,
 } from "@codesandbox/sandpack-react";
 
 import { Wrapper } from "./styles";
 
 const KARMA_SANDPACK_THEME: SandpackThemeProp = {
-	palette: {
-		activeText: "#f7f1ff",
-		defaultText: "#696969",
-		inactiveText: "#444344",
-		activeBackground: "#444344",
-		defaultBackground: "#0a0e14",
-		inputBackground: "rgb(25, 24, 26)",
+	colors: {
+		hover: "#f7f1ff",
+		clickable: "#fff",
+		surface2: "#444344",
+		base: "#444344",
+		surface1: "#0a0e14",
+		surface3: "#19181a",
 		accent: "#e3cf65",
-		errorBackground: "#ffcdca",
-		errorForeground: "#811e18",
+		error: "#811e18",
+		errorSurface: "#ffcdca",
 	},
 	syntax: {
 		plain: "rgb(252, 252, 250)",
@@ -35,34 +33,35 @@ const KARMA_SANDPACK_THEME: SandpackThemeProp = {
 		static: "#af98e6",
 		string: "#e3cf65",
 	},
-	typography: {
-		bodyFont:
-			// eslint-disable-next-line quotes
-			'-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"',
-		// eslint-disable-next-line quotes
-		monoFont: 'Iosevka, "Iosevka Web", consolas',
-		fontSize: "16px",
+	font: {
+		body: "Iosevka, 'Iosevka Web', consolas",
+		mono: "Iosevka, 'Iosevka Web', consolas",
+		size: "16px",
 		lineHeight: "1.5",
 	},
 };
 
-type SandboxProps = SandpackProps & {
+const defaultSandpackOptions: SandpackOptions = {};
+
+interface SandboxProps extends SandpackProps {
 	bleed?: boolean;
-};
+}
 
 export const Sandbox = ({
+	bleed = true,
 	theme = KARMA_SANDPACK_THEME,
 	files,
 	customSetup,
-	bleed = true,
+	options,
 	...props
 }: SandboxProps) => (
-	<SandpackProvider {...props} customSetup={{ ...customSetup, files }}>
-		<Wrapper $bleed={bleed}>
-			<SandpackLayout {...{ theme }}>
-				<SandpackCodeEditor />
-				<SandpackPreview />
-			</SandpackLayout>
-		</Wrapper>
-	</SandpackProvider>
+	<Wrapper $bleed={bleed}>
+		<Sandpack
+			{...props}
+			customSetup={customSetup}
+			files={files}
+			theme={theme}
+			options={{ ...defaultSandpackOptions, ...options }}
+		></Sandpack>
+	</Wrapper>
 );
