@@ -26,9 +26,11 @@ type NewsletterIssuePreviewProps = {
 };
 const NewsletterIssuePreview = ({ issue }: NewsletterIssuePreviewProps) => (
 	<PreviewWrapper>
-		<LinkTo href={`/newsletter/${issue.slug}`}>
-			<PreviewSubject>{issue.subject}</PreviewSubject>
-		</LinkTo>
+		<PreviewSubject>
+			<LinkTo href={`/newsletter/${issue.slug}`} scroll={false} passHref $unstyledOnHover>
+				{issue.subject}
+			</LinkTo>
+		</PreviewSubject>
 		<PreviewBody dangerouslySetInnerHTML={{ __html: micromark(issue.body) }}></PreviewBody>
 		<ExtraInfoWrapper>
 			<PreviewMetadata>

@@ -1,5 +1,6 @@
 import styled from "styled-components";
 
+import { primaryGradientMixin, StyledLink } from "@/styles/typography";
 import { pixelToRem } from "@/utils/style";
 
 export const SectionWrapper = styled.section`
@@ -14,6 +15,12 @@ export const PreviewSubject = styled.h2`
 	padding: 0;
 	font-size: ${pixelToRem(24)};
 	line-height: ${pixelToRem(30)};
+
+	:hover {
+		> ${StyledLink} {
+			${primaryGradientMixin}
+		}
+	}
 `;
 
 export const PreviewBody = styled.div`
