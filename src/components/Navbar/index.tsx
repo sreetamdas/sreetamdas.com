@@ -38,7 +38,7 @@ import {
 import { Button } from "@/components/Button";
 import { useFoobarStore } from "@/domains/Foobar";
 import { supabaseClient } from "@/domains/Supabase";
-import { IconContainer } from "@/styles/blog";
+import { LinkedIcon } from "@/styles/blog";
 import { useHasMounted } from "@/utils/hooks";
 
 export const Navbar = () => {
@@ -50,12 +50,12 @@ export const Navbar = () => {
 		<Header>
 			<HeaderInner>
 				<Link href="/" passHref>
-					<IconContainer>
+					<LinkedIcon>
 						<LogoSVG aria-label="Home">
 							<title>Home</title>
 							<rect width="25" height="25" rx="6" fill="currentColor" />
 						</LogoSVG>
-					</IconContainer>
+					</LinkedIcon>
 				</Link>
 				<NavbarMenu />
 			</HeaderInner>
@@ -96,19 +96,19 @@ const NavLinks = () => (
 		</PageLinks>
 		<IconLinks>
 			<motion.li variants={iconLinksVariants}>
-				<IconContainer href="https://github.com/sreetamdas" target="_blank" $styledOnHover>
+				<LinkedIcon href="https://github.com/sreetamdas" target="_blank" $styledOnHover>
 					<FaGithub aria-label="Sreetam's GitHub" title="Sreetam Das' GitHub" />
-				</IconContainer>
+				</LinkedIcon>
 			</motion.li>
 			<motion.li variants={iconLinksVariants}>
-				<IconContainer href="https://twitter.com/_SreetamDas" target="_blank" $styledOnHover>
+				<LinkedIcon href="https://twitter.com/_SreetamDas" target="_blank" $styledOnHover>
 					<FaTwitter aria-label="Sreetam Das' Twitter" title="Sreetam Das' Twitter" />
-				</IconContainer>
+				</LinkedIcon>
 			</motion.li>
 			<motion.li variants={iconLinksVariants}>
-				<IconContainer href="https://sreetamdas.com/rss/feed.xml" $styledOnHover>
+				<LinkedIcon href="https://sreetamdas.com/rss/feed.xml" $styledOnHover>
 					<FiRss aria-label="Blog RSS feed" title="Blog RSS feed" />
-				</IconContainer>
+				</LinkedIcon>
 			</motion.li>
 		</IconLinks>
 	</Nav>
@@ -220,7 +220,7 @@ const NavbarMenu = () => {
 						)}
 					</ThemeSwitch>
 					{session && isAdminRoute && (
-						<Button onClick={handleSignOut} size="small">
+						<Button onClick={handleSignOut} $size="small">
 							Sign out
 						</Button>
 					)}
@@ -311,9 +311,9 @@ export const ExternalLinksOverlay = () => {
 	return (
 		<PlatformLinksContainer>
 			{externalLinks.map(({ link, title, icon }) => (
-				<IconContainer href={link} title={title} key={title} target="_blank">
+				<LinkedIcon href={link} title={title} key={title} target="_blank">
 					<IconWithProps {...{ icon, title }} />
-				</IconContainer>
+				</LinkedIcon>
 			))}
 		</PlatformLinksContainer>
 	);

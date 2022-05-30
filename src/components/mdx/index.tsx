@@ -17,31 +17,31 @@ const MDXLinkWrapper = (props: PropsWithChildren<{ href: string }>) =>
 		<ExternalLink {...props}>{props.children}</ExternalLink>
 	);
 
-type TIDPropsWithChildren = PropsWithChildren<{ id: string }>;
+type PropsWithChildrenWIthID = PropsWithChildren<{ id: string }>;
 const HandleMDXHeaderElement = (
 	el: keyof ReactHTML,
 	// propsWithoutChildren contains `id` attr here
-	{ children, ...propsWithoutChildren }: TIDPropsWithChildren
+	{ children, ...propsWithoutChildren }: PropsWithChildrenWIthID
 ) => {
-	const [hoverRef, isHovered] = useHover();
+	const [hoverRef, isHovered] = useHover<HTMLDivElement>();
 	const headerStyles: CSSProperties = {
 		color: "var(--color-primary-accent)",
 	};
-	const propsWithStyles = { ...propsWithoutChildren, style: headerStyles };
+	const propsWithStyles = { ...propsWithoutChildren, style: headerStyles, ref: hoverRef };
 	const LinkIcons = (
-		<LinkedHeaderIconWrapper href={`#${propsWithoutChildren.id ?? ""}`} isHovered={isHovered}>
+		<LinkedHeaderIconWrapper href={`#${propsWithoutChildren.id ?? ""}`} $isHovered={isHovered}>
 			<FiLink aria-label={propsWithoutChildren.id} />
 		</LinkedHeaderIconWrapper>
 	);
 	const ActualHeading = createElement(el, propsWithStyles, LinkIcons, children);
 
-	return <div ref={hoverRef}>{ActualHeading}</div>;
+	return ActualHeading;
 };
 
 const MDXHeadingWrapper = {
-	h1: (props: TIDPropsWithChildren) => HandleMDXHeaderElement("h1", props),
-	h2: (props: TIDPropsWithChildren) => HandleMDXHeaderElement("h2", props),
-	h3: (props: TIDPropsWithChildren) => HandleMDXHeaderElement("h3", props),
+	h1: (props: PropsWithChildrenWIthID) => HandleMDXHeaderElement("h1", props),
+	h2: (props: PropsWithChildrenWIthID) => HandleMDXHeaderElement("h2", props),
+	h3: (props: PropsWithChildrenWIthID) => HandleMDXHeaderElement("h3", props),
 };
 
 export const MDXComponents = {

@@ -1,32 +1,22 @@
-import { PropsWithChildren, ReactNode } from "react";
+import { PropsWithChildren } from "react";
 import styled, { css } from "styled-components";
 
-import { Datestamp } from "@/styles/typography";
-import { breakpoint } from "@/utils/style";
+import { breakpoint, focusVisible } from "@/utils/style";
 
 export const BlogPostContentWrapper = styled.div`
 	padding: 30px 0;
 `;
 
-export const Card = styled.div`
-	padding: 10px 0;
-	cursor: pointer;
-
-	& > ${Datestamp} {
-		font-size: 0.8rem;
-		font-style: unset;
-	}
-`;
-
 export const WarningSpan = styled.span`
 	padding: 5px 10px;
-	margin: 0 15px;
+	margin: 0 15px 0 0;
 	background-color: red;
 	color: white;
 	border-radius: var(--border-radius);
+	text-transform: uppercase;
 `;
 
-export const PostNotPublishedWarning = () => <WarningSpan>UNPUBLISHED</WarningSpan>;
+export const PostNotPublishedWarning = () => <WarningSpan>Unpublished</WarningSpan>;
 
 export const PostMetaDataGrid = styled.div`
 	display: grid;
@@ -46,7 +36,7 @@ export const StyledPre = styled.pre`
 	overflow-x: scroll;
 `;
 
-export const IconContainer = styled.a<{ $styledOnHover?: boolean }>`
+export const LinkedIcon = styled.a<{ $styledOnHover?: boolean }>`
 	font-size: 25px;
 	background-color: transparent;
 	border: none;
@@ -76,17 +66,21 @@ export const IconContainer = styled.a<{ $styledOnHover?: boolean }>`
 	}
 `;
 
-export const LinkedHeaderIconWrapper = styled.a<{ isHovered: boolean }>`
+export const LinkedHeaderIconWrapper = styled.a<{ $isHovered: boolean }>`
 	color: var(--color-primary-accent);
 	position: absolute;
 	transform: translateX(-125%) translateY(0.2rem);
 	font-size: inherit;
 
-	opacity: ${({ isHovered }) => (isHovered ? 0.75 : 0)};
+	opacity: ${({ $isHovered }) => ($isHovered ? 0.75 : 0)};
 	transition: opacity 200ms ease;
 
 	${breakpoint.until.md(css`
 		display: none;
+	`)}
+
+	${focusVisible(css`
+		opacity: 0.75;
 	`)}
 `;
 
@@ -114,13 +108,6 @@ export const Highlight = styled.span`
 	font-weight: bold;
 `;
 
-export const ReadMorePrompt = styled.p<{ isHovered: boolean }>`
-	font-weight: bold;
-	font-size: 0.8rem;
-	margin: 0;
-	color: ${({ isHovered }) => (isHovered ? "var(--color-primary-accent)" : null)};
-`;
-
 const EndLinksGrid = styled.div`
 	padding-top: 15px;
 	display: grid;
@@ -135,14 +122,6 @@ const EndLinksGrid = styled.div`
 	}
 `;
 
-export const EndLinks = ({ children }: PropsWithChildren<ReactNode>) => (
+export const EndLinks = ({ children }: PropsWithChildren<Record<string, unknown>>) => (
 	<EndLinksGrid>{children}</EndLinksGrid>
 );
-
-export const AnchorUnstyled = styled.a`
-	color: unset;
-
-	&:hover {
-		text-decoration: unset;
-	}
-`;

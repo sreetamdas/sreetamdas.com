@@ -1,10 +1,9 @@
 /* eslint-disable indent */
 export * from "./styles";
 
-import { Field, FieldProps, useField } from "formik";
+import { useField } from "formik";
 import { InputHTMLAttributes, useState } from "react";
 import Select, {
-	ActionMeta,
 	GroupBase,
 	OnChangeValue,
 	Props as ReactSelectProps,
@@ -34,7 +33,8 @@ type NameLabelProps = {
 
 type InputFieldProps<T = Element> = InputHTMLAttributes<T> & NameLabelProps;
 export const InputField = ({ label, displayLabel = false, ...props }: InputFieldProps) => {
-	const [field, meta] = useField(props);
+	const [field, meta] = useField<string>(props);
+	const [isFocused, setIsFocused] = useState(false);
 	const placeholder = props.placeholder ?? label;
 
 	return (
@@ -42,10 +42,17 @@ export const InputField = ({ label, displayLabel = false, ...props }: InputField
 			<Label
 				htmlFor={props.id || props.name}
 				$show={displayLabel || !!field.value?.toString().length}
+				$isFocused={isFocused}
 			>
 				{label}
 			</Label>
-			<Input placeholder={placeholder} {...field} {...props} />
+			<Input
+				placeholder={placeholder}
+				{...field}
+				{...props}
+				onFocus={() => setIsFocused(true)}
+				onBlur={() => setIsFocused(false)}
+			/>
 			{meta.touched && meta.error ? <Error>{meta.error}</Error> : null}
 		</InputGroup>
 	);
@@ -95,53 +102,48 @@ const UploadImagePreview = ({ image }: { image: File }) => {
 };
 
 type AdditionalSelectProps<Option, IsMulti extends boolean = false> = {
-	transformValue?: (value: OnChangeValue<Option, IsMulti>) => void;
+	transformValue?: (value: OnChangeValue<Option, IsMulti>) => string | undefined;
 };
 export const SelectField = <
 	Option,
 	IsMulti extends boolean = false,
 	Group extends GroupBase<Option> = GroupBase<Option>
->({
-	name,
-	label,
-	displayLabel,
-	options,
-	transformValue,
-	...props
-}: ReactSelectProps<Option, IsMulti, Group> &
-	NameLabelProps &
-	AdditionalSelectProps<Option, IsMulti>) => (
-	<Field name={name}>
-		{({ field: { value }, form: { setFieldValue }, meta: { error, touched } }: FieldProps) => {
-			function handleChange(
-				selectedOption: OnChangeValue<Option, IsMulti>,
-				_meta: ActionMeta<Option>
-			) {
-				if (transformValue) {
-					setFieldValue(name, transformValue(selectedOption));
-				} else {
-					setFieldValue(name, selectedOption);
-				}
-			}
+>(
+	props: ReactSelectProps<Option, IsMulti, Group> &
+		NameLabelProps &
+		AdditionalSelectProps<Option, IsMulti>
+) => {
+	const [{ value }, { error, touched }, { setValue }] = useField<string>(props.name);
+	const [isFocused, setIsFocused] = useState(false);
+	const { name, label, displayLabel, options, transformValue, ...otherProps } = props;
 
-			return (
-				<InputGroup>
-					<Label htmlFor={name} $show={displayLabel || !!value?.toString().length}>
-						{label}
-					</Label>
-					<Select
-						options={options}
-						onChange={handleChange}
-						isSearchable={false}
-						components={{
-							IndicatorSeparator: () => null,
-						}}
-						styles={customSelectStyles as unknown as StylesConfig<Option, IsMulti, Group>}
-						{...props}
-					/>
-					{touched && error ? <Error>{error}</Error> : null}
-				</InputGroup>
-			);
-		}}
-	</Field>
-);
+	function handleChange(selectedOption: OnChangeValue<Option, IsMulti>) {
+		// @ts-expect-error react-select isn't being nice
+		setValue(transformValue?.(selectedOption) ?? selectedOption);
+	}
+
+	return (
+		<InputGroup>
+			<Label
+				htmlFor={name}
+				$show={displayLabel || !!value?.toString().length}
+				$isFocused={isFocused}
+			>
+				{label}
+			</Label>
+			<Select
+				options={options}
+				onChange={handleChange}
+				onFocus={() => setIsFocused(true)}
+				onBlur={() => setIsFocused(false)}
+				isSearchable={false}
+				components={{
+					IndicatorSeparator: () => null,
+				}}
+				styles={customSelectStyles as unknown as StylesConfig<Option, IsMulti, Group>}
+				{...otherProps}
+			/>
+			{touched && error ? <Error>{error}</Error> : null}
+		</InputGroup>
+	);
+};

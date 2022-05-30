@@ -1,8 +1,10 @@
+import { getSandpackCssText } from "@codesandbox/sandpack-react";
+import Head from "next/head";
+
 import { Sandbox } from "@/components/Sandbox";
 import { ViewsCounter } from "@/components/ViewsCounter";
 import { DocumentHead } from "@/components/shared/seo";
 import { Center, Space } from "@/styles/layouts";
-import "@codesandbox/sandpack-react/dist/index.css";
 import { ExternalLink, Paragraph, Title } from "@/styles/typography";
 
 const JSX_STRING = `
@@ -21,6 +23,9 @@ const Index = () => (
 			title="Sandbox"
 			description="A sandbox to play in, built with @codesandbox/sandpack"
 		/>
+		<Head>
+			<style dangerouslySetInnerHTML={{ __html: getSandpackCssText() }} id="sandpack" />
+		</Head>
 		<Center>
 			<Title $size={5}>/sandbox</Title>
 			<Paragraph>
@@ -28,7 +33,6 @@ const Index = () => (
 				<ExternalLink href="https://sandpack.codesandbox.io">Sandpack</ExternalLink>.
 			</Paragraph>
 		</Center>
-
 		<Sandbox
 			template="react"
 			files={{

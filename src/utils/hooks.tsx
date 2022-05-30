@@ -21,9 +21,9 @@ export function randomAlphanumeric(length = 6) {
 	return Math.random().toString(36).slice(-length);
 }
 
-export function useHover(): [RefObject<HTMLDivElement>, boolean] {
+export function useHover<Element extends HTMLElement>(): [RefObject<Element>, boolean] {
 	const [value, setValue] = useState(false);
-	const ref = useRef<HTMLDivElement>(null);
+	const ref = useRef<Element>(null);
 	function handleMouseOver() {
 		return setValue(true);
 	}

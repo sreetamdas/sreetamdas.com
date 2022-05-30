@@ -1,12 +1,6 @@
 /* eslint-disable jsx-a11y/media-has-caption */
 import { useRef, useEffect, RefObject } from "react";
 
-type TImageSnapshot = {
-	data: Uint8ClampedArray;
-	height: number;
-	width: number;
-};
-
 export const GreenScreen = () => {
 	const canvasRef = useRef<HTMLCanvasElement>(null);
 	const videoRef = useRef<HTMLVideoElement>(null);
@@ -47,12 +41,7 @@ export const GreenScreen = () => {
 	function processImage(canvas: CanvasRenderingContext2D, canvasRef: RefObject<HTMLCanvasElement>) {
 		if (canvasRef.current === null) return;
 
-		const snapshot: TImageSnapshot = canvas.getImageData(
-			0,
-			0,
-			canvasRef.current.width,
-			canvasRef.current.height
-		);
+		const snapshot = canvas.getImageData(0, 0, canvasRef.current.width, canvasRef.current.height);
 
 		/*
 		format of snapshot's data:Uint8ClampedArray =>

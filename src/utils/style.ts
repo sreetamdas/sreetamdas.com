@@ -46,3 +46,26 @@ export const breakpoint = breakpointSides.reduce(
 	}),
 	{} as TBreakpointFn
 );
+
+export function focusVisible(rules: FlattenSimpleInterpolation, onHover?: boolean) {
+	return css`
+		.js-focus-visible &:focus {
+			outline: none;
+		}
+
+		&:focus-visible {
+			${rules}
+		}
+
+		&:focus.focus-visible {
+			${rules}
+		}
+
+		${onHover &&
+		css`
+			&:hover {
+				${rules}
+			}
+		`}
+	`;
+}

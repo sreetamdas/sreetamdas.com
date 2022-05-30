@@ -7,7 +7,7 @@ import { Button } from "@/components/Button";
 import { ImageWrapper } from "@/components/mdx/images";
 import { whenProp } from "@/domains/style/helpers";
 import { sharedTransition } from "@/styles/components";
-import { pixelToRem } from "@/utils/style";
+import { focusVisible, pixelToRem } from "@/utils/style";
 
 export const StyledForm = styled(Form)`
 	width: 100%;
@@ -34,22 +34,18 @@ export const Input = styled.input`
 	border-radius: var(--border-radius);
 	border: 2px solid var(--color-inlineCode-bg);
 
-	&:focus,
-	&:hover {
+	${focusVisible(css`
 		box-shadow: unset;
 		border-color: var(--color-primary-accent);
-	}
-	&:focus-visible {
-		box-shadow: unset;
-		border-color: var(--color-primary-accent);
-	}
+	`)}
 
 	${sharedTransition("color, background-color, border")}
 `;
 
-export const Label = styled.label<{ $show: boolean }>`
+export const Label = styled.label<{ $show: boolean; $isFocused?: boolean }>`
 	font-size: ${pixelToRem(12)};
 	margin: 0 10px 5px 0;
+	padding: 0 10px;
 
 	transform: translateY(5px);
 	opacity: 0;
@@ -59,6 +55,13 @@ export const Label = styled.label<{ $show: boolean }>`
 		css`
 			transform: translateY(0);
 			opacity: 1;
+		`
+	)}
+
+	${whenProp(
+		"$isFocused",
+		css`
+			color: var(--color-primary-accent);
 		`
 	)}
 
@@ -214,7 +217,6 @@ export const SubmitButton = styled(Button).attrs({
 	type: "submit",
 })`
 	width: min-content;
-	margin: 50px auto;
 
 	&:disabled,
 	&[disabled] {

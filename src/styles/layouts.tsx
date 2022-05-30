@@ -4,7 +4,7 @@ import { sharedTransition } from "@/styles/components";
 
 export const BlogPostsPreviewLayout = styled.div`
 	display: grid;
-	gap: 1rem;
+	gap: 80px;
 `;
 
 export const PageWrapper = styled.main`

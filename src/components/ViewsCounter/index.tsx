@@ -109,7 +109,7 @@ export const ViewsCounter = ({
 }: TViewsCounterProps) => {
 	const { asPath: path } = useRouter();
 
-	const { data } = useQuery<Pick<PostDetails, "view_count">>(
+	const { data, isLoading } = useQuery<Pick<PostDetails, "view_count">>(
 		["page-details", "view", path.split(/[?#]/)[0]],
 		async () =>
 			await (disabled
@@ -125,7 +125,7 @@ export const ViewsCounter = ({
 			<span role="img" aria-label="eyes">
 				👀
 			</span>
-			<p>{getViewCountCopy(data?.view_count ?? 0, pageType)}</p>
+			<p>{isLoading ? "Getting view count" : getViewCountCopy(data?.view_count ?? 0, pageType)}</p>
 		</ViewsWrapper>
 	);
 };
