@@ -1,6 +1,6 @@
 import { bundleMDX } from "mdx-bundler";
 
-export type TBlogPostFrontmatter = {
+export type FrontmatterProps = {
 	title: string;
 	seoTitle?: string;
 	subtitle?: string;
@@ -20,7 +20,7 @@ export type PostDetails = {
 	likes: number;
 };
 
-export type TBlogPostPageProps = Omit<Awaited<ReturnType<typeof bundleMDX>>, "frontmatter"> & {
-	frontmatter: TBlogPostFrontmatter;
+export type MDXBundledResultProps = Omit<Awaited<ReturnType<typeof bundleMDX>>, "frontmatter"> & {
+	frontmatter: FrontmatterProps;
 	slug: string;
 };

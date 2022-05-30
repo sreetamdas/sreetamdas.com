@@ -13,10 +13,10 @@ import { DocumentHead } from "@/components/shared/seo";
 import { getButtondownSubscriberCount } from "@/domains/Buttondown";
 import { Center } from "@/styles/layouts";
 import { Title } from "@/styles/typography";
-import { TBlogPostPageProps } from "@/typings/blog";
+import { MDXBundledResultProps } from "@/typings/blog";
 import { getMDXFileData } from "@/utils/blog";
 
-type TProps = TBlogPostPageProps & {
+type TProps = MDXBundledResultProps & {
 	subscriberCount: number;
 	repoContributors: RepoContributorsProps["contributors"];
 };

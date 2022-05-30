@@ -28,9 +28,9 @@ import {
 	Heavy,
 	StyledAccentTextLink,
 } from "@/styles/typography";
-import { TBlogPostPageProps } from "@/typings/blog";
+import { MDXBundledResultProps } from "@/typings/blog";
 import { getMDXFileData, getBlogPostsSlugs } from "@/utils/blog";
-type TProps = TBlogPostPageProps & {
+type TProps = MDXBundledResultProps & {
 	subscriberCount: number;
 };
 const Post = ({ code, frontmatter, slug, subscriberCount }: TProps) => {

@@ -15,7 +15,7 @@ import { IRawTheme } from "vscode-textmate";
 import { rehypeImgSize } from "@/components/mdx/images/plugins";
 import { remarkShiki } from "@/components/shiki";
 import { renderToHTML } from "@/components/shiki/renderer";
-import { TBlogPostPageProps } from "@/typings/blog";
+import { MDXBundledResultProps } from "@/typings/blog";
 
 const PATH = path.resolve(process.cwd(), "src");
 const BLOG_DIR = path.resolve(PATH, "content", "blog");
@@ -96,7 +96,7 @@ export async function getAllBlogPostsPreviewData() {
 				return {
 					slug: result.slug,
 					frontmatter: result.frontmatter,
-				} as Pick<TBlogPostPageProps, "frontmatter" | "slug">;
+				} as Pick<MDXBundledResultProps, "frontmatter" | "slug">;
 			})
 		)
 	)

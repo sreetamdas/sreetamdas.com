@@ -9,10 +9,10 @@ import {
 import { PostNotPublishedWarning } from "@/styles/blog";
 import { BlogPostsPreviewLayout } from "@/styles/layouts";
 import { LinkTo } from "@/styles/typography";
-import { TBlogPostPageProps } from "@/typings/blog";
+import { MDXBundledResultProps } from "@/typings/blog";
 import { useHover } from "@/utils/hooks";
 
-type TBlogPostPreviewProps = Pick<TBlogPostPageProps, "frontmatter" | "slug">;
+type TBlogPostPreviewProps = Pick<MDXBundledResultProps, "frontmatter" | "slug">;
 export const BlogPostPreview = ({ frontmatter, slug }: TBlogPostPreviewProps) => {
 	const [hoverRef, isHovered] = useHover<HTMLAnchorElement>();
 

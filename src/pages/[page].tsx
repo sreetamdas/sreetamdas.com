@@ -14,10 +14,10 @@ import { MDXLink } from "@/styles/components";
 import { Center } from "@/styles/layouts";
 import { Sparkles } from "@/styles/special";
 import { Title, Heavy, MDXTitle, StyledAccentTextLink, PrimaryGradient } from "@/styles/typography";
-import { TBlogPostPageProps } from "@/typings/blog";
+import { MDXBundledResultProps } from "@/typings/blog";
 import { getMDXFileData, getRootPagesSlugs } from "@/utils/blog";
 
-type TProps = TBlogPostPageProps & {
+type TProps = MDXBundledResultProps & {
 	subscriberCount: number;
 };
 const Page = ({ code, frontmatter, subscriberCount }: TProps) => {
