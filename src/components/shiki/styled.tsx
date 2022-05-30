@@ -32,6 +32,7 @@ const CodeblockLineNumber = styled.span`
 	min-width: 2rem;
 	user-select: none;
 	text-align: center;
+	color: #424242;
 
 	${breakpoint.until.md(css`
 		display: none;
@@ -51,11 +52,11 @@ const CodeblockLineWrapper = styled.div<{ $highlight?: boolean }>`
 			padding-right: 15px;
 			padding-left: 15px;
 			border-left: 5px solid #9d86e9;
-		`}
 
-	& > ${CodeblockLineNumber} {
-		color: #424242;
-	}
+			${CodeblockLineNumber} {
+				color: #9d86e9;
+			}
+		`}
 `;
 
 /**
