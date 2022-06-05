@@ -50,11 +50,11 @@ Here's a rough list of what we need to implement:
 
 Let's start by putting together a simple Next.js page with a pretty basic dark mode toggle:
 
-```jsx highlight="5" filename="pages/index.js"
+```jsx highlight="4" filename="pages/index.js"
 import { useState } from "react";
 
 const IndexPage = () => {
-  const [isDarkTheme, setIsDarkTheme] = useState(false);
+  const [isDarkTheme, setIsDarkTheme] = useState(undefined);
 
   const handleToggle = (event) => {
     setIsDarkTheme(event.target.checked);
@@ -117,7 +117,7 @@ Let's add these to our app
 import { useState } from "react";
 
 const IndexPage = () => {
-  const [isDarkTheme, setIsDarkTheme] = useState(false);
+  const [isDarkTheme, setIsDarkTheme] = useState(undefined);
 
   const handleToggle = (event) => {
     setIsDarkTheme(event.target.checked);
@@ -150,7 +150,7 @@ const IndexPage = () => {
     }
   }, []);
   useEffect(() => {
-    if (isDarkTheme !== undefined) {
+    if (typeof isDarkTheme !== "undefined") {
       if (isDarkTheme) {
         storeUserSetPreference("dark");
       } else {
