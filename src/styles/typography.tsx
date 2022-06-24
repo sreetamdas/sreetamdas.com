@@ -56,6 +56,7 @@ type TitleProps = {
 	$resetLineHeight?: boolean;
 	$size?: number;
 	$scaled?: boolean;
+	$codeFont?: boolean;
 };
 export const Title = styled.h1<TitleProps>`
 	padding: 20px 0;
@@ -69,12 +70,19 @@ export const Title = styled.h1<TitleProps>`
 	${({ $size = 3 }) =>
 		css`
 			font-size: ${$size}rem;
-		`}
+		`};
+
 	${({ $scaled, $size }) =>
 		$scaled &&
 		breakpoint.until.sm(css`
 			font-size: clamp(1rem, ${$size}rem, 15vw);
-		`)}
+		`)};
+
+	${({ $codeFont }) =>
+		$codeFont &&
+		css`
+			font-family: var(--font-family-code);
+		`}
 `;
 
 export const MDXTitle = styled.h1<{ color?: string }>`
