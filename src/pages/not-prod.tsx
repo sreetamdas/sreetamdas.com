@@ -14,7 +14,6 @@ const Index = () => (
 			</Title>
 			<Paragraph>A non-Prod environment.</Paragraph>
 			<Button
-				type="button"
 				onClick={() => {
 					throw new Error("Sentry Frontend Error");
 				}}

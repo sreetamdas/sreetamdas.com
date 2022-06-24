@@ -1,3 +1,4 @@
+import { withSentry } from "@sentry/nextjs";
 import { NextApiRequest, NextApiResponse } from "next";
 
 import { octokit } from "@/domains/GitHub";
@@ -5,7 +6,8 @@ import { octokit } from "@/domains/GitHub";
 /**
  * Get the stars and forks of a repository
  */
-export default async (
+
+const handler = async (
 	req: NextApiRequest,
 	res: NextApiResponse<{ stars: number; forks: number }>
 ) => {
@@ -26,4 +28,12 @@ export default async (
 
 		res.status(200).send({ stars: 69, forks: 69 });
 	}
+};
+
+export default withSentry(handler);
+
+export const config = {
+	api: {
+		externalResolver: true,
+	},
 };

@@ -1,10 +1,10 @@
-import { forwardRef, HTMLAttributes } from "react";
+import { ButtonHTMLAttributes, forwardRef } from "react";
 
 import { ButtonMain, LoadingAddon } from "./styles";
 
 const BUTTON_SIZES = ["sm", "small", "md", "medium", "lg", "large"] as const;
 
-export interface ButtonProps extends HTMLAttributes<HTMLButtonElement> {
+export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 	$size?: typeof BUTTON_SIZES[number];
 	isLoading?: boolean;
 }
