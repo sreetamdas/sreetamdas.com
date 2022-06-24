@@ -1,3 +1,4 @@
+import { withSentry } from "@sentry/nextjs";
 import { NextApiRequest, NextApiResponse } from "next";
 
 import { BookEntryProperties } from "@/components/Books";
@@ -9,7 +10,7 @@ BigInt.prototype.toJSON = function () {
 	return this.toString();
 };
 
-export default async (req: NextApiRequest, res: NextApiResponse) => {
+const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 	try {
 		if (req.method === "POST") {
 			const { name, cover, author, status } = req.body as BookEntryProperties;
@@ -48,4 +49,12 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 	} catch (error) {
 		res.status(500).json({ error });
 	}
+};
+
+export default withSentry(handler);
+
+export const config = {
+	api: {
+		externalResolver: true,
+	},
 };

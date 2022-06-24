@@ -1,3 +1,4 @@
+import { withSentry } from "@sentry/nextjs";
 import { NextApiRequest, NextApiResponse } from "next";
 
 import { supabaseClient } from "@/domains/Supabase";
@@ -6,7 +7,7 @@ import { PostDetails } from "@/typings/blog";
 /**
  * @api {post} /api/page/add-view Add view to page using RPC in Supabase
  */
-export default async (req: NextApiRequest, res: NextApiResponse) => {
+const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 	if (req.method === "POST") {
 		const { page_slug } = req.body;
 
@@ -25,4 +26,12 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 	} else {
 		res.status(400).send("Bad request");
 	}
+};
+
+export default withSentry(handler);
+
+export const config = {
+	api: {
+		externalResolver: true,
+	},
 };
