@@ -28,7 +28,7 @@ export const MDXLink = styled(Link)`
 export function sharedTransition(properties: string) {
 	return css`
 		transition-duration: var(--transition-duration);
-		transition-timing-function: linear;
+		transition-timing-function: var(--transition-timing-function, linear);
 		transition-property: ${properties};
 	`;
 }

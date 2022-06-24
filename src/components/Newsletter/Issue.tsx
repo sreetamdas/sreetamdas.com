@@ -1,4 +1,4 @@
-import { bundleMDX } from "mdx-bundler";
+import type { bundleMDX } from "mdx-bundler";
 import { getMDXComponent } from "mdx-bundler/client";
 import { useMemo } from "react";
 
