@@ -12,6 +12,11 @@ function onUnhandledRequest(
 	request: UnhandledRequestCallback[0],
 	print: UnhandledRequestCallback[1]
 ) {
+	// Ignore /_next/* requests
+	if (request.url.pathname.startsWith("/_next/")) {
+		return;
+	}
+
 	// Ignore unhandled Sentry requests.
 	// @ts-expect-error we're not adding this handler when SENTRY_ENVELOPE_URL is undefined
 	if (request.url.href.startsWith(SENTRY_ENVELOPE_URL)) {
