@@ -15,9 +15,8 @@ export const handlers = [
 	),
 
 	// Supabase
-	rest.post(
-		"https://shpiudmeykaahmmhipos.supabase.co/rest/v1/rpc/upsert_page_view",
-		(_req, res, ctx) => res(ctx.status(200))
+	rest.post("/api/page/add-view", (_req, res, ctx) => res(ctx.status(200))),
+	rest.get("/api/page/get-views", (_req, res, ctx) =>
+		res(ctx.status(200), ctx.json({ view_count: 69 }))
 	),
-	rest.post("/api/page/*", (_req, res, ctx) => res(ctx.status(200), ctx.json({ view_count: 69 }))),
 ];
