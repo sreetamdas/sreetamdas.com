@@ -1,8 +1,6 @@
 export type SuccessResponse<Type = unknown> = Type;
 
-export type ErrorResponse<Type = unknown> = Type & {
+export type ErrorResponse<Type = unknown> = {
 	errorCode?: number;
-	error: string;
+	error: string | Type;
 };
-
-export type GetViewsResponse = SuccessResponse | ErrorResponse;

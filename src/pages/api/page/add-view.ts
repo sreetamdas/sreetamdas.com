@@ -1,4 +1,5 @@
 import { withSentry } from "@sentry/nextjs";
+import type { PostgrestError } from "@supabase/supabase-js";
 import { NextApiRequest, NextApiResponse } from "next";
 
 import { supabaseClient } from "@/domains/Supabase";
@@ -10,7 +11,7 @@ type AddViewSuccessResponse = SuccessResponse<{
 	message?: string;
 }>;
 
-type AddViewErrorResponse = ErrorResponse;
+type AddViewErrorResponse = ErrorResponse<PostgrestError | unknown>;
 
 type AddViewResponse = AddViewSuccessResponse | AddViewErrorResponse;
 
@@ -31,6 +32,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<AddViewResponse
 		if (error) {
 			res.status(500).json({ error });
 		} else {
+			// @ts-expect-error view_count is number here, not number[]
 			res.status(200).json({ view_count });
 		}
 	} else {

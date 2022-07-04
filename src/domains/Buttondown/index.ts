@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BUTTONDOWN_BASE_URL = "https://api.buttondown.email/v1/";
+const BUTTONDOWN_BASE_URL = "https://api.buttondown.email/v1";
 const BUTTONDOWN_API_KEY = process.env.BUTTONDOWN_API_KEY;
 
 const axiosButtondown = axios.create({
@@ -52,7 +52,7 @@ export type ButtondownEmailsType = {
 
 export async function getButtondownSubscriberCount() {
 	try {
-		const response = (await axiosButtondown.get<ButtondownSubscribersType>("subscribers")).data;
+		const response = (await axiosButtondown.get<ButtondownSubscribersType>("/subscribers")).data;
 		return response.count;
 	} catch (error) {
 		return 69;
@@ -62,7 +62,7 @@ export async function getButtondownSubscriberCount() {
 export async function getAllButtondownEmails() {
 	try {
 		// TODO: handle paginated results
-		const response = (await axiosButtondown.get<ButtondownEmailsType>("emails")).data;
+		const response = (await axiosButtondown.get<ButtondownEmailsType>("/emails")).data;
 		return response;
 	} catch (error) {
 		throw new Error("Couldn't get Buttondown emails");
