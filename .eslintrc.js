@@ -49,7 +49,10 @@ module.exports = {
 		"react/jsx-fragments": "warn",
 		"@typescript-eslint/explicit-module-boundary-types": "off",
 		// "@typescript-eslint/no-explicit-any": "off",
-		"@typescript-eslint/no-unused-vars": ["error", { argsIgnorePattern: "^_" }],
+		"@typescript-eslint/no-unused-vars": [
+			"error",
+			{ argsIgnorePattern: "^_", destructuredArrayIgnorePattern: "^_" },
+		],
 
 		// from https://github.com/wesbos/eslint-config-wesbos
 		"prefer-const": ["error", { destructuring: "all" }],
