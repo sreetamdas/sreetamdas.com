@@ -17,7 +17,7 @@
 	},
 	"dependencies": {
 		"@codesandbox/sandpack-react": "^1.2.2",
-		"@notionhq/client": "^2.0.0",
+		"@notionhq/client": "1.0.4",
 		"@octokit/core": "^4.0.4",
 		"@prisma/client": "^4.0.0",
 		"@sentry/nextjs": "^7.6.0",
