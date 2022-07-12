@@ -2261,6 +2261,10 @@ packages:
     resolution: {integrity: sha512-u/rG4lDHALolWBLr3yebZ+N2qImp3SDMcu7bHNJuRDaYvYEXy/MqfNRNEgd9GoPsXL3gofYf0VzJf2AmCG3YVw==}
     requiresBuild: true
 
+  /@prisma/prisma-fmt-wasm/4.1.0-12.09f9659a3d73d5ed2aac8298e2856b8be910cd66:
+    resolution: {integrity: sha512-92cZ5P1IcJex6aIxFptU3HNv8g53b/eP0AhqmVGCiyzcTbwCQcbCMUycDuEoHjIuIR0o7XXdHIrXnbiQQMhEGg==}
+    dev: true
+
   /@react-hook/intersection-observer/3.1.1_react@18.2.0:
     resolution: {integrity: sha512-OTDx8/wFaRvzFtKl1dEUEXSOqK2zVJHporiTTdC2xO++0e9FEx9wIrPis5q3lqtXeZH9zYGLbk+aB75qNFbbuw==}
     peerDependencies:
@@ -4796,6 +4800,10 @@ packages:
       get-intrinsic: 1.1.2
     dev: true
 
+  /get-tsconfig/4.1.0:
+    resolution: {integrity: sha512-bhshxJhpfmeQ8x4fAvDqJV2VfGp5TfHdLpmBpNZZhMoVyfIrOippBW4mayC3DT9Sxuhcyl56Efw61qL28hG4EQ==}
+    dev: true
+
   /github-slugger/1.4.0:
     resolution: {integrity: sha512-w0dzqw/nt51xMVmlaV1+JRzN+oCa1KfcgGEWhxUG16wbdA+Xnt/yoFO8Z8x/V82ZcZ0wy6ln9QDup5avbhiDhQ==}
     dev: false
@@ -6605,6 +6613,16 @@ packages:
   /prelude-ls/1.2.1:
     resolution: {integrity: sha512-vkcDPrRZo1QZLbn5RLGPpg/WmIQ65qoWWhcGKf/b5eplkkarX0m9z8ppCat4mlOqUsWpyNuYgO3VRyrYHSzX5g==}
     engines: {node: '>= 0.8.0'}
+    dev: true
+
+  /prettier-plugin-prisma/4.1.0_prettier@2.7.1:
+    resolution: {integrity: sha512-bGh1pEzEjSVky3T1uznlZlWgPzyJykEbkg8iFjsBKWMMrkEDRT+5iDJD0CSFjR3bI6r9KkQQJcRvUa5oUR6hwA==}
+    engines: {node: '>=12', npm: '>=7'}
+    peerDependencies:
+      prettier: '>=2'
+    dependencies:
+      '@prisma/prisma-fmt-wasm': 4.1.0-12.09f9659a3d73d5ed2aac8298e2856b8be910cd66
+      prettier: 2.7.1
     dev: true
 
   /prettier/2.7.1:

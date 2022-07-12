@@ -2,14 +2,31 @@ import { withSentry } from "@sentry/nextjs";
 import { NextApiRequest, NextApiResponse } from "next";
 
 import { supabaseClient } from "@/domains/Supabase";
+import type { ErrorResponse, SuccessResponse } from "@/domains/api";
 import { PostDetails } from "@/typings/blog";
 
+type GetViewsSuccessResponse = SuccessResponse<{
+	view_count: number;
+	message?: string;
+}>;
+
+type GetViewsErrorResponse = ErrorResponse;
+
+type GetViewsResponse = GetViewsSuccessResponse | GetViewsErrorResponse;
+
 /**
- * @api {post} /api/page/add-view Get view_count for page using Supabase client
+ * @api {post} /api/page/get-views Get view_count for page using Supabase client
  */
-const handler = async (req: NextApiRequest, res: NextApiResponse) => {
+const handler = async (req: NextApiRequest, res: NextApiResponse<GetViewsResponse>) => {
 	if (req.method === "GET") {
 		const { slug } = req.query;
+
+		if (typeof slug === "undefined") {
+			res.status(400).json({
+				error: "Missing slug",
+			});
+			return;
+		}
 
 		// TODO: Add support for multiple slugs
 		if (Array.isArray(slug)) {
@@ -32,7 +49,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 			}
 		}
 	} else {
-		res.status(400).send("Bad request");
+		res.status(400).json({ error: "Bad request" });
 	}
 };
 
