@@ -47,10 +47,12 @@ export type FoobarStoreType = {
 	setFoobarData: (data: Partial<FoobarDataType>) => void;
 };
 
-const foobarStore: StateCreator<FoobarStoreType> = (set) => ({
+const foobarStore: StateCreator<FoobarStoreType, [["zustand/persist", unknown]]> = (set) => ({
 	foobarData: initialFoobarData,
 	setFoobarData: (data) => set((state) => ({ foobarData: merge(state.foobarData, data) })),
 });
 
 export const FOOBAR_ZUSTAND_KEY = "foobar-zustand";
-export const useFoobarStore = create(persist(foobarStore, { name: FOOBAR_ZUSTAND_KEY }));
+export const useFoobarStore = create<FoobarStoreType>()(
+	persist(foobarStore, { name: FOOBAR_ZUSTAND_KEY })
+);
