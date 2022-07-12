@@ -8,7 +8,7 @@ import { BrowserTracing } from "@sentry/tracing";
 const SENTRY_DSN = process.env.SENTRY_DSN || process.env.NEXT_PUBLIC_SENTRY_DSN;
 const ENVIRONMENT = process.env.VERCEL_ENV || process.env.NODE_ENV;
 Sentry.init({
-	dsn: SENTRY_DSN || "https://01cad872659c4c56bc7aa5054cd26ff5@o326666.ingest.sentry.io/1835069",
+	dsn: SENTRY_DSN,
 	// This enables automatic instrumentation (highly recommended), but is not
 	// necessary for purely manual usage
 	integrations: [new BrowserTracing()],
