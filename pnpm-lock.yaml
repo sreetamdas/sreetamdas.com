@@ -3,7 +3,7 @@ lockfileVersion: 5.4
 specifiers:
   '@codesandbox/sandpack-react': ^1.2.4
   '@next/eslint-plugin-next': ^12.2.2
-  '@notionhq/client': 1.0.4
+  '@notionhq/client': 2.0.0
   '@octokit/core': ^4.0.4
   '@prisma/client': ^4.1.0
   '@sentry/nextjs': ^7.7.0
@@ -67,8 +67,16 @@ specifiers:
   zustand: 4.0.0-rc.1
 
 dependencies:
+<<<<<<< HEAD
   '@codesandbox/sandpack-react': 1.2.4_biqbaboplfbrettd7655fr4n2y
   '@notionhq/client': 1.0.4
+||||||| parent of 81e10da (wip: upgrade Notion dep)
+  '@codesandbox/sandpack-react': 1.2.2_biqbaboplfbrettd7655fr4n2y
+  '@notionhq/client': 1.0.4
+=======
+  '@codesandbox/sandpack-react': 1.2.2_biqbaboplfbrettd7655fr4n2y
+  '@notionhq/client': 2.0.0
+>>>>>>> 81e10da (wip: upgrade Notion dep)
   '@octokit/core': 4.0.4
   '@prisma/client': 4.1.0_prisma@4.1.0
   '@sentry/nextjs': 7.7.0_next@12.2.2+react@18.2.0
@@ -2009,7 +2017,7 @@ packages:
     dependencies:
       '@mdx-js/mdx': 2.1.2
       esbuild: 0.14.49
-      node-fetch: 3.2.6
+      node-fetch: 3.2.8
       vfile: 5.3.4
     transitivePeerDependencies:
       - supports-color
@@ -2244,8 +2252,8 @@ packages:
       fastq: 1.13.0
     dev: true
 
-  /@notionhq/client/1.0.4:
-    resolution: {integrity: sha512-m7zZ5l3RUktayf1lRBV1XMb8HSKsmWTv/LZPqP7UGC1NMzOlc+bbTOPNQ4CP/c1P4cP61VWLb/zBq7a3c0nMaw==}
+  /@notionhq/client/2.0.0:
+    resolution: {integrity: sha512-S3pNOoeKxdpog3jSTzFtJ7OivB/ubxn1MK9a5T7/eYtsdulyL0eqAt/btY0S9QEPCKVNKjnZbYMdV+E4x8eItA==}
     engines: {node: '>=12'}
     dependencies:
       '@types/node-fetch': 2.6.2
@@ -6474,8 +6482,8 @@ packages:
     dependencies:
       whatwg-url: 5.0.0
 
-  /node-fetch/3.2.6:
-    resolution: {integrity: sha512-LAy/HZnLADOVkVPubaxHDft29booGglPFDr2Hw0J1AercRh01UiVFm++KMDnJeH9sHgNB4hsXPii7Sgym/sTbw==}
+  /node-fetch/3.2.8:
+    resolution: {integrity: sha512-KtpD1YhGszhntMpBDyp5lyagk8KIMopC1LEb7cQUAh7zcosaX5uK8HnbNb2i3NTQK3sIawCItS0uFC3QzcLHdg==}
     engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
     dependencies:
       data-uri-to-buffer: 4.0.0
