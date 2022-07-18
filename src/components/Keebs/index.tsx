@@ -10,7 +10,7 @@ type TkeebDetails = {
 	tags: Array<{ name: string; color: string }>;
 };
 
-const Keebs = ({ results }: Pick<QueryDatabaseResponse, "results">) => {
+export const Keebs = ({ results }: Pick<QueryDatabaseResponse, "results">) => {
 	const keebDetails = results.reduce((acc, result) => {
 		if (!("properties" in result)) return acc;
 
@@ -51,8 +51,6 @@ const Keebs = ({ results }: Pick<QueryDatabaseResponse, "results">) => {
 		</KeebsContainer>
 	);
 };
-
-export { Keebs };
 
 const KeebsContainer = styled.section`
 	display: grid;

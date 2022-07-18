@@ -6,7 +6,7 @@ import { Button } from "@/components/Button";
 import { ViewsCounter } from "@/components/ViewsCounter";
 import { DocumentHead } from "@/components/shared/seo";
 import { OWNER, SITE_URL } from "@/config";
-import { supabaseClient } from "@/domains/Supabase";
+import { SupabaseClient } from "@/domains/Supabase";
 import { Center, Space } from "@/styles/layouts";
 import { Paragraph, Title } from "@/styles/typography";
 import { useHasMounted } from "@/utils/hooks";
@@ -14,7 +14,7 @@ import { useHasMounted } from "@/utils/hooks";
 type AdminLoginProps = { unauthorizedUser?: boolean };
 const AdminLogin = ({ unauthorizedUser }: AdminLoginProps) => {
 	async function handleSignInWithGitHub() {
-		await supabaseClient.auth.signIn(
+		await SupabaseClient.auth.signIn(
 			{
 				provider: "github",
 			},
@@ -43,12 +43,12 @@ const AdminLogin = ({ unauthorizedUser }: AdminLoginProps) => {
 
 const Admin = () => {
 	const hasMounted = useHasMounted();
-	const [session, setSession] = useState<Session | null>(supabaseClient.auth.session());
+	const [session, setSession] = useState<Session | null>(SupabaseClient.auth.session());
 
 	useEffect(() => {
-		setSession(supabaseClient.auth.session());
+		setSession(SupabaseClient.auth.session());
 
-		supabaseClient.auth.onAuthStateChange((_event, session) => {
+		SupabaseClient.auth.onAuthStateChange((_event, session) => {
 			setSession(session);
 		});
 	}, []);

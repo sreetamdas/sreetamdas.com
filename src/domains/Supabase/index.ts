@@ -5,7 +5,7 @@ import { randomAlphanumeric } from "@/utils/hooks";
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL ?? "";
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? "";
 
-export const supabaseClient = createClient(supabaseUrl, supabaseAnonKey);
+export const SupabaseClient = createClient(supabaseUrl, supabaseAnonKey);
 
 export function getSupabaseFileURL(filename: string) {
 	return `${process.env.NEXT_PUBLIC_SUPABASE_STORAGE_URL}/storage/v1/object/public/${filename}`;
@@ -23,5 +23,5 @@ export async function uploadFileToSupabase(
 		? `${path}${filename}${fileExtension}`
 		: `${path}${filename}-${randomAlphanumeric()}${fileExtension}`;
 
-	return await supabaseClient.storage.from(bucket).upload(filenameToUpload, image);
+	return await SupabaseClient.storage.from(bucket).upload(filenameToUpload, image);
 }

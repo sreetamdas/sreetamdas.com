@@ -1,7 +1,7 @@
 import { withSentry } from "@sentry/nextjs";
 import { NextApiRequest, NextApiResponse } from "next";
 
-import { supabaseClient } from "@/domains/Supabase";
+import { SupabaseClient } from "@/domains/Supabase";
 import type { ErrorResponse, SuccessResponse } from "@/domains/api";
 import { PostDetails } from "@/typings/blog";
 
@@ -34,8 +34,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse<GetViewsRespons
 		}
 		// TODO: Add support for getting all/multiple slug views
 		else {
-			const { data, error } = await supabaseClient
-				.from<PostDetails>("page_details")
+			const { data, error } = await SupabaseClient.from<PostDetails>("page_details")
 				.select("view_count")
 				.eq("slug", slug)
 				.limit(1)

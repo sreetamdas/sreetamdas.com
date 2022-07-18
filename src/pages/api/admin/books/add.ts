@@ -3,7 +3,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 
 import { BookEntryProperties } from "@/components/Books";
 import { handleBookUploadToNotion } from "@/domains/Notion";
-import { prismaClient } from "@/domains/Prisma";
+import { PrismaClient } from "@/domains/Prisma";
 
 // @ts-expect-error BigInt prototype
 BigInt.prototype.toJSON = function () {
@@ -15,7 +15,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
 		if (req.method === "POST") {
 			const { name, cover, author, status } = req.body as BookEntryProperties;
 
-			const book = await prismaClient.books.create({
+			const book = await PrismaClient.books.create({
 				data: {
 					name,
 					cover,

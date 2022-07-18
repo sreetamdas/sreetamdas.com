@@ -68,6 +68,7 @@ specifiers:
 
 dependencies:
 <<<<<<< HEAD
+<<<<<<< HEAD
   '@codesandbox/sandpack-react': 1.2.4_biqbaboplfbrettd7655fr4n2y
   '@notionhq/client': 1.0.4
 ||||||| parent of 81e10da (wip: upgrade Notion dep)
@@ -75,6 +76,11 @@ dependencies:
   '@notionhq/client': 1.0.4
 =======
   '@codesandbox/sandpack-react': 1.2.2_biqbaboplfbrettd7655fr4n2y
+||||||| parent of 35274ce (wip: upgrade @notionhq/client@2.0.0)
+  '@codesandbox/sandpack-react': 1.2.2_biqbaboplfbrettd7655fr4n2y
+=======
+  '@codesandbox/sandpack-react': 1.2.4_biqbaboplfbrettd7655fr4n2y
+>>>>>>> 35274ce (wip: upgrade @notionhq/client@2.0.0)
   '@notionhq/client': 2.0.0
 >>>>>>> 81e10da (wip: upgrade Notion dep)
   '@octokit/core': 4.0.4
@@ -88,7 +94,13 @@ dependencies:
   feed: 4.2.2
   focus-visible: 5.2.0
   formik: 2.2.9_react@18.2.0
+<<<<<<< HEAD
   framer-motion: 6.5.1_biqbaboplfbrettd7655fr4n2y
+||||||| parent of 35274ce (wip: upgrade @notionhq/client@2.0.0)
+  framer-motion: 6.4.3_biqbaboplfbrettd7655fr4n2y
+=======
+  framer-motion: 6.5.0_biqbaboplfbrettd7655fr4n2y
+>>>>>>> 35274ce (wip: upgrade @notionhq/client@2.0.0)
   gray-matter: 4.0.3
   image-size: 1.0.2
   localforage: 1.10.0
@@ -99,7 +111,13 @@ dependencies:
   next-plausible: 3.2.0_7gpduzaz4csxytrukenoyuq3te
   react: 18.2.0
   react-dom: 18.2.0_react@18.2.0
+<<<<<<< HEAD
   react-hot-toast: 2.3.0_vt6aeitzauirmcdhimiad2yjxy
+||||||| parent of 35274ce (wip: upgrade @notionhq/client@2.0.0)
+  react-hot-toast: 2.2.0_biqbaboplfbrettd7655fr4n2y
+=======
+  react-hot-toast: 2.3.0_biqbaboplfbrettd7655fr4n2y
+>>>>>>> 35274ce (wip: upgrade @notionhq/client@2.0.0)
   react-icons: 4.4.0_react@18.2.0
   react-is: 18.2.0
   react-query: 3.39.1_biqbaboplfbrettd7655fr4n2y
@@ -119,7 +137,13 @@ devDependencies:
   '@svgr/webpack': 6.3.0
   '@types/eslint': 8.4.5
   '@types/lodash-es': 4.17.6
+<<<<<<< HEAD
   '@types/node': 18.0.6
+||||||| parent of 35274ce (wip: upgrade @notionhq/client@2.0.0)
+  '@types/node': 18.0.3
+=======
+  '@types/node': 18.0.4
+>>>>>>> 35274ce (wip: upgrade @notionhq/client@2.0.0)
   '@types/prettier': 2.6.3
   '@types/react': 18.0.15
   '@types/react-dom': 18.0.6
@@ -136,8 +160,16 @@ devDependencies:
   eslint-plugin-react: 7.30.1_eslint@8.20.0
   eslint-plugin-react-hooks: 4.6.0_eslint@8.20.0
   husky: 8.0.1
+<<<<<<< HEAD
   msw: 0.44.2_typescript@4.7.4
   next-sitemap: 3.1.11_5crenonpc5mzdu2runrquyablm
+||||||| parent of 35274ce (wip: upgrade @notionhq/client@2.0.0)
+  msw: 0.43.1_typescript@4.7.4
+  next-sitemap: 3.1.10_next@12.2.2
+=======
+  msw: 0.44.0_typescript@4.7.4
+  next-sitemap: 3.1.10_next@12.2.2
+>>>>>>> 35274ce (wip: upgrade @notionhq/client@2.0.0)
   prettier: 2.7.1
   prisma: 4.1.0
   typescript: 4.7.4
@@ -2867,12 +2899,26 @@ packages:
   /@types/node-fetch/2.6.2:
     resolution: {integrity: sha512-DHqhlq5jeESLy19TYhLakJ07kNumXWjcDdxXsLUMJZ6ue8VZJj4kLPQVE/2mdHh3xZziNF1xppu5lwmS53HR+A==}
     dependencies:
+<<<<<<< HEAD
       '@types/node': 18.0.6
+||||||| parent of 35274ce (wip: upgrade @notionhq/client@2.0.0)
+      '@types/node': 18.0.3
+=======
+      '@types/node': 18.0.4
+>>>>>>> 35274ce (wip: upgrade @notionhq/client@2.0.0)
       form-data: 3.0.1
     dev: false
 
+<<<<<<< HEAD
   /@types/node/18.0.6:
     resolution: {integrity: sha512-/xUq6H2aQm261exT6iZTMifUySEt4GR5KX8eYyY+C4MSNPqSh9oNIP7tz2GLKTlFaiBbgZNxffoR3CVRG+cljw==}
+||||||| parent of 35274ce (wip: upgrade @notionhq/client@2.0.0)
+  /@types/node/18.0.3:
+    resolution: {integrity: sha512-HzNRZtp4eepNitP+BD6k2L6DROIDG4Q0fm4x+dwfsr6LGmROENnok75VGw40628xf+iR24WeMFcHuuBDUAzzsQ==}
+=======
+  /@types/node/18.0.4:
+    resolution: {integrity: sha512-M0+G6V0Y4YV8cqzHssZpaNCqvYwlCiulmm0PwpNLF55r/+cT8Ol42CHRU1SEaYFH2rTwiiE1aYg/2g2rrtGdPA==}
+>>>>>>> 35274ce (wip: upgrade @notionhq/client@2.0.0)
 
   /@types/parse-json/4.0.0:
     resolution: {integrity: sha512-//oorEZjL6sbPcKUaCdIGlIUeH26mgzimjBB77G6XRgnDl/L5wOnpyBGRe/Mmf5CVW3PwEBE1NjiMZ/ssFh4wA==}
@@ -2927,7 +2973,13 @@ packages:
   /@types/set-cookie-parser/2.4.2:
     resolution: {integrity: sha512-fBZgytwhYAUkj/jC/FAV4RQ5EerRup1YQsXQCh8rZfiHkc4UahC192oH0smGwsXol3cL3A5oETuAHeQHmhXM4w==}
     dependencies:
+<<<<<<< HEAD
       '@types/node': 18.0.6
+||||||| parent of 35274ce (wip: upgrade @notionhq/client@2.0.0)
+      '@types/node': 18.0.3
+=======
+      '@types/node': 18.0.4
+>>>>>>> 35274ce (wip: upgrade @notionhq/client@2.0.0)
     dev: true
 
   /@types/styled-components/5.1.25:
@@ -4822,8 +4874,16 @@ packages:
       tslib: 1.14.1
     dev: false
 
+<<<<<<< HEAD
   /framer-motion/6.5.1_biqbaboplfbrettd7655fr4n2y:
     resolution: {integrity: sha512-o1BGqqposwi7cgDrtg0dNONhkmPsUFDaLcKXigzuTFC5x58mE8iyTazxSudFzmT6MEyJKfjjU8ItoMe3W+3fiw==}
+||||||| parent of 35274ce (wip: upgrade @notionhq/client@2.0.0)
+  /framer-motion/6.4.3_biqbaboplfbrettd7655fr4n2y:
+    resolution: {integrity: sha512-prcyOGFkGjwGEgbxObIWteVz1ihuWaDLdR03626cbA1GxTaPRpLb8ioJfWPmP5mwcWC7TlhMOjS5kBYnuiktFA==}
+=======
+  /framer-motion/6.5.0_biqbaboplfbrettd7655fr4n2y:
+    resolution: {integrity: sha512-nd6IrudXz5jDdlfps54QArUAEqbCJHcm/r8TB4OSBrylQMULsJc+kKDFHn3Lk5R6yakRqOXeFZ/3W8WrwlodAQ==}
+>>>>>>> 35274ce (wip: upgrade @notionhq/client@2.0.0)
     peerDependencies:
       react: '>=16.8 || ^17.0.0 || ^18.0.0'
       react-dom: '>=16.8 || ^17.0.0 || ^18.0.0'
@@ -6336,8 +6396,16 @@ packages:
     resolution: {integrity: sha512-6FlzubTLZG3J2a/NVCAleEhjzq5oxgHyaCU9yYXvcLsvoVaHJq/s5xXI6/XXP6tz7R9xAOtHnSO/tXtF3WRTlA==}
     dev: true
 
+<<<<<<< HEAD
   /msw/0.44.2_typescript@4.7.4:
     resolution: {integrity: sha512-u8wjzzcMWouoZtuIShCwx4M3wFF5sBAV1f8K4a0WX8kiihFjzl89IKE1VYmTclLyMIwpOq8qQ1HTpuh2BFX/3A==}
+||||||| parent of 35274ce (wip: upgrade @notionhq/client@2.0.0)
+  /msw/0.43.1_typescript@4.7.4:
+    resolution: {integrity: sha512-wzhPpL6RsiYkyIUlTCg0aZY0aRZa4Eiubd6MOA5oJVgfuapDmvZrI8OMi4h4e+fpHD+Qsy+4unAjv3wpWia5yw==}
+=======
+  /msw/0.44.0_typescript@4.7.4:
+    resolution: {integrity: sha512-LLXfLos7JwzI1bfh0cBIKffXfyISezsMXALS2M1uq56pn1UhGVtyz8OaAguiJFxkirqn+S6e0GcKuGVDwZG1dg==}
+>>>>>>> 35274ce (wip: upgrade @notionhq/client@2.0.0)
     engines: {node: '>=14'}
     hasBin: true
     requiresBuild: true
@@ -6830,8 +6898,16 @@ packages:
     resolution: {integrity: sha512-suNP+J1VU1MWFKcyt7RtjiSWUjvidmQSlqu+eHslq+342xCbGTYmC0mEhPCOHxlW0CywylOC1u2DFAT+bv4dBw==}
     dev: false
 
+<<<<<<< HEAD
   /react-hot-toast/2.3.0_vt6aeitzauirmcdhimiad2yjxy:
     resolution: {integrity: sha512-/RxV+bfjld7tSJR1SCLzMAXgFuNW7fCpK6+vbYqfmbGSWcqTMz2rizrvfWKvtcPH5HK0NqxmBaC5SrAy1F42zA==}
+||||||| parent of 35274ce (wip: upgrade @notionhq/client@2.0.0)
+  /react-hot-toast/2.2.0_biqbaboplfbrettd7655fr4n2y:
+    resolution: {integrity: sha512-248rXw13uhf/6TNDVzagX+y7R8J183rp7MwUMNkcrBRyHj/jWOggfXTGlM8zAOuh701WyVW+eUaWG2LeSufX9g==}
+=======
+  /react-hot-toast/2.3.0_biqbaboplfbrettd7655fr4n2y:
+    resolution: {integrity: sha512-/RxV+bfjld7tSJR1SCLzMAXgFuNW7fCpK6+vbYqfmbGSWcqTMz2rizrvfWKvtcPH5HK0NqxmBaC5SrAy1F42zA==}
+>>>>>>> 35274ce (wip: upgrade @notionhq/client@2.0.0)
     engines: {node: '>=10'}
     peerDependencies:
       react: '>=16'
