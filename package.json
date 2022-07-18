@@ -29,7 +29,7 @@
 		"feed": "^4.2.2",
 		"focus-visible": "^5.2.0",
 		"formik": "^2.2.9",
-		"framer-motion": "^6.4.3",
+		"framer-motion": "^6.5.1",
 		"gray-matter": "^4.0.3",
 		"image-size": "^1.0.1",
 		"localforage": "^1.10.0",

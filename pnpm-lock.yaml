@@ -34,7 +34,7 @@ specifiers:
   feed: ^4.2.2
   focus-visible: ^5.2.0
   formik: ^2.2.9
-  framer-motion: ^6.4.3
+  framer-motion: ^6.5.1
   gray-matter: ^4.0.3
   husky: ^8.0.1
   image-size: ^1.0.1
@@ -80,7 +80,7 @@ dependencies:
   feed: 4.2.2
   focus-visible: 5.2.0
   formik: 2.2.9_react@18.2.0
-  framer-motion: 6.4.3_biqbaboplfbrettd7655fr4n2y
+  framer-motion: 6.5.1_biqbaboplfbrettd7655fr4n2y
   gray-matter: 4.0.3
   image-size: 1.0.1
   localforage: 1.10.0
@@ -4701,8 +4701,8 @@ packages:
       tslib: 1.14.1
     dev: false
 
-  /framer-motion/6.4.3_biqbaboplfbrettd7655fr4n2y:
-    resolution: {integrity: sha512-prcyOGFkGjwGEgbxObIWteVz1ihuWaDLdR03626cbA1GxTaPRpLb8ioJfWPmP5mwcWC7TlhMOjS5kBYnuiktFA==}
+  /framer-motion/6.5.1_biqbaboplfbrettd7655fr4n2y:
+    resolution: {integrity: sha512-o1BGqqposwi7cgDrtg0dNONhkmPsUFDaLcKXigzuTFC5x58mE8iyTazxSudFzmT6MEyJKfjjU8ItoMe3W+3fiw==}
     peerDependencies:
       react: '>=16.8 || ^17.0.0 || ^18.0.0'
       react-dom: '>=16.8 || ^17.0.0 || ^18.0.0'
