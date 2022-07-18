@@ -1,4 +1,4 @@
-import { motion, useTransform, useViewportScroll } from "framer-motion";
+import { motion, useTransform, useScroll } from "framer-motion";
 import styled from "styled-components";
 
 const ProgressBar = styled(motion.div)`
@@ -16,7 +16,7 @@ const ProgressBar = styled(motion.div)`
 `;
 
 export const ReadingProgress = () => {
-	const { scrollYProgress } = useViewportScroll();
+	const { scrollYProgress } = useScroll();
 	const progressValue = useTransform(scrollYProgress, (value) => `${value * 100}%`);
 
 	return <ProgressBar style={{ width: progressValue }} />;
