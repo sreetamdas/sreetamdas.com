@@ -10,7 +10,7 @@ BigInt.prototype.toJSON = function () {
 	return this.toString();
 };
 
-const handler = async (req: NextApiRequest, res: NextApiResponse) => {
+async function handler(req: NextApiRequest, res: NextApiResponse) {
 	try {
 		if (req.method === "POST") {
 			const { name, cover, author, status } = req.body as BookEntryProperties;
@@ -49,7 +49,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 	} catch (error) {
 		res.status(500).json({ error });
 	}
-};
+}
 
 export default withSentry(handler);
 

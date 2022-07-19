@@ -17,7 +17,7 @@ type GetViewsResponse = GetViewsSuccessResponse | GetViewsErrorResponse;
 /**
  * @api {post} /api/page/get-views Get view_count for page using Supabase client
  */
-const handler = async (req: NextApiRequest, res: NextApiResponse<GetViewsResponse>) => {
+async function handler(req: NextApiRequest, res: NextApiResponse<GetViewsResponse>) {
 	if (req.method === "GET") {
 		const { slug } = req.query;
 
@@ -51,7 +51,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<GetViewsRespons
 	} else {
 		res.status(400).json({ error: "Bad request" });
 	}
-};
+}
 
 export default withSentry(handler);
 
