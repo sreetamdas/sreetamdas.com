@@ -7,10 +7,10 @@ import { octokit } from "@/domains/GitHub";
  * Get the stars and forks of a repository
  */
 
-const handler = async (
+async function handler(
 	req: NextApiRequest,
 	res: NextApiResponse<{ stars: number; forks: number }>
-) => {
+) {
 	try {
 		const { owner, repo } = req.body;
 
@@ -28,7 +28,7 @@ const handler = async (
 
 		res.status(200).send({ stars: 69, forks: 69 });
 	}
-};
+}
 
 export default withSentry(handler);
 

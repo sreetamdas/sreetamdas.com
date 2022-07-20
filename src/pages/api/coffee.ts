@@ -1,13 +1,13 @@
 import { withSentry } from "@sentry/nextjs";
 import { NextApiRequest, NextApiResponse } from "next";
 
-const handler = (req: NextApiRequest, res: NextApiResponse) => {
+async function handler(req: NextApiRequest, res: NextApiResponse) {
 	if (req.method === "POST") {
 		res.status(418).json({ message: "I'm a teapot", foobar: "/foobar/teapot" });
 	} else {
 		res.status(301).send("POST a request, please ;)");
 	}
-};
+}
 
 export default withSentry(handler);
 

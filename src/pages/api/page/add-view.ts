@@ -18,7 +18,7 @@ type AddViewResponse = AddViewSuccessResponse | AddViewErrorResponse;
 /**
  * @api {post} /api/page/add-view Add view to page using RPC in Supabase
  */
-const handler = async (req: NextApiRequest, res: NextApiResponse<AddViewResponse>) => {
+async function handler(req: NextApiRequest, res: NextApiResponse<AddViewResponse>) {
 	if (req.method === "POST") {
 		const { page_slug } = req.body;
 
@@ -38,7 +38,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<AddViewResponse
 	} else {
 		res.status(400).json({ error: "Bad request" });
 	}
-};
+}
 
 export default withSentry(handler);
 
