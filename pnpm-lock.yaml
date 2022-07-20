@@ -3,7 +3,7 @@ lockfileVersion: 5.4
 specifiers:
   '@codesandbox/sandpack-react': ^1.2.4
   '@next/eslint-plugin-next': ^12.2.2
-  '@notionhq/client': 1.0.4
+  '@notionhq/client': 2.1.0
   '@octokit/core': ^4.0.4
   '@prisma/client': ^4.1.0
   '@sentry/nextjs': ^7.7.0
@@ -68,7 +68,7 @@ specifiers:
 
 dependencies:
   '@codesandbox/sandpack-react': 1.2.4_biqbaboplfbrettd7655fr4n2y
-  '@notionhq/client': 1.0.4
+  '@notionhq/client': 2.1.0
   '@octokit/core': 4.0.4
   '@prisma/client': 4.1.0_prisma@4.1.0
   '@sentry/nextjs': 7.7.0_next@12.2.2+react@18.2.0
@@ -2244,8 +2244,8 @@ packages:
       fastq: 1.13.0
     dev: true
 
-  /@notionhq/client/1.0.4:
-    resolution: {integrity: sha512-m7zZ5l3RUktayf1lRBV1XMb8HSKsmWTv/LZPqP7UGC1NMzOlc+bbTOPNQ4CP/c1P4cP61VWLb/zBq7a3c0nMaw==}
+  /@notionhq/client/2.1.0:
+    resolution: {integrity: sha512-EQx0n8aVoAwfQdHoqq1VyL82G4+TZwR3WCBNZhm5Qke+yMFK15g/jDX/Y67f6rOmWAOphCJcm4SFx0TkWVHwGg==}
     engines: {node: '>=12'}
     dependencies:
       '@types/node-fetch': 2.6.2
