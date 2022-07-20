@@ -1,13 +1,14 @@
 import * as url from "url";
 
 import { withSentry, captureException } from "@sentry/nextjs";
+import axios from "axios";
 import { NextApiRequest, NextApiResponse } from "next";
 
 import { getSentryKeyElements } from "@/domains/sentry";
 
 // Set knownProjectIds to an array with your Sentry project IDs which you
 // want to accept through this proxy.
-const { ingestURL, projectID } = getSentryKeyElements();
+const { publicKey, hostURL, projectID } = getSentryKeyElements();
 const knownProjectIds = [projectID];
 
 async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -18,7 +19,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
 
 		const { host, path } = url.parse(header.dsn);
 
-		if (host !== ingestURL) {
+		if (host !== hostURL) {
 			throw new Error(`invalid host: ${host}`);
 		}
 
@@ -27,12 +28,14 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
 			throw new Error(`invalid project id: ${projectId}`);
 		}
 
-		const sentryUrl = `https://${ingestURL}/api/${projectId}/envelope/`;
-		const response = await fetch(sentryUrl, {
-			method: "POST",
-			body: envelope,
+		const sentryUrl = `https://${hostURL}/api/${projectId}/envelope/`;
+		const response = await axios.post(sentryUrl, envelope, {
+			params: {
+				sentry_key: publicKey,
+			},
 		});
-		return response.json();
+
+		return res.status(response.status).send(response.data);
 	} catch (e) {
 		captureException(e);
 		return res.status(400).json({ status: "invalid request" });
