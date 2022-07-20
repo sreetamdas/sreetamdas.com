@@ -4,8 +4,8 @@ export function getSentryKeyElements() {
 	if (!SENTRY_DSN) {
 		return {};
 	}
-	const [_https, , _token, ingestURL, projectID] = SENTRY_DSN.split(/[@/]{1}/);
-	return { ingestURL, projectID };
+	const [_https, , publicKey, hostURL, projectID] = SENTRY_DSN.split(/[@/]{1}/);
+	return { publicKey, hostURL, projectID };
 }
 
 /**
@@ -16,8 +16,8 @@ function getSentryEnvelopeURL() {
 	if (!SENTRY_DSN) {
 		return undefined;
 	}
-	const { ingestURL, projectID } = getSentryKeyElements();
-	return `https://${ingestURL}/api/${projectID}/envelope/`;
+	const { hostURL, projectID } = getSentryKeyElements();
+	return `https://${hostURL}/api/${projectID}/envelope/`;
 }
 
 export const SENTRY_ENVELOPE_URL = getSentryEnvelopeURL();
