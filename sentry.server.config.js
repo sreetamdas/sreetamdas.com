@@ -13,7 +13,7 @@ Sentry.init({
 	// necessary for purely manual usage
 	integrations: [new BrowserTracing()],
 	// Adjust this value in production, or use tracesSampler for greater control
-	tracesSampleRate: 1.0,
+	tracesSampleRate: 0.25,
 	environment: ENVIRONMENT,
 	// ...
 	// Note: if you want to override the automatic release value, do not set a
