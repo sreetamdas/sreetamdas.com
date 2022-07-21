@@ -1,56 +1,36 @@
-import { QueryDatabaseResponse } from "@notionhq/client/build/src/api-endpoints";
 import styled from "styled-components";
 
 import { CustomImage } from "@/components/mdx/images";
 import { sharedTransition } from "@/styles/components";
 
-type TkeebDetails = {
+export type KeebDetails = {
 	name: string;
-	image?: string;
+	image: {
+		url: string;
+	};
 	tags: Array<{ name: string; color: string }>;
 };
 
-export const Keebs = ({ results }: Pick<QueryDatabaseResponse, "results">) => {
-	const keebDetails = results.reduce((acc, result) => {
-		if (!("properties" in result)) return acc;
-
-		const details = {} as TkeebDetails;
-		const { Name: nameField, Image: imageField, Type: typeField } = result.properties;
-
-		if (nameField.type === "title") {
-			details.name = nameField.title[0].plain_text;
-		}
-		if (imageField.type === "files") {
-			details.image = imageField.files[0]?.name;
-		}
-		if (typeField.type === "multi_select") {
-			details.tags = typeField.multi_select.map(({ name, color }) => ({
-				name,
-				color,
-			}));
-		}
-
-		return [...acc, details];
-	}, [] as Array<TkeebDetails>);
-
-	return (
-		<KeebsContainer>
-			{keebDetails.map(({ name, image, tags }) => (
-				<KeebWrapper key={name.toLowerCase().replace(" ", "-")}>
-					<Info>
-						<h3>{name}</h3>
-						<Tags>
-							{tags.map((tag) => (
-								<span key={tag.name}>{tag.name}</span>
-							))}
-						</Tags>
-					</Info>
-					{image ? <CustomImage src={image} alt={name} /> : null}
-				</KeebWrapper>
-			))}
-		</KeebsContainer>
-	);
+type Props = {
+	results: Array<KeebDetails>;
 };
+export const Keebs = ({ results }: Props) => (
+	<KeebsContainer>
+		{results.map(({ name, image, tags }) => (
+			<KeebWrapper key={name.toLowerCase().replace(" ", "-")}>
+				<Info>
+					<h3>{name}</h3>
+					<Tags>
+						{tags.map((tag) => (
+							<span key={tag.name}>{tag.name}</span>
+						))}
+					</Tags>
+				</Info>
+				{image ? <CustomImage src={image.url} alt={name} /> : null}
+			</KeebWrapper>
+		))}
+	</KeebsContainer>
+);
 
 const KeebsContainer = styled.section`
 	display: grid;

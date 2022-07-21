@@ -25,8 +25,7 @@ const Index = ({ results }: InferGetStaticPropsType<typeof getStaticProps>) => (
 );
 
 export async function getStaticProps() {
-	const response = await getKeebsFromNotion();
-	const { results } = response;
+	const results = await getKeebsFromNotion();
 
 	return {
 		props: { results },

@@ -1,15 +1,17 @@
+import { GetPagePropertyResponse } from "@notionhq/client/build/src/api-endpoints";
+
 import { NotionClient } from "./client";
 
-type Props = { pageId: string; propertyId: string };
+type Props = { pageID: string; propertyID: string };
 /**
  * If property is paginated, returns an array of property items.
  *
  * Otherwise, it will return a single property item.
  */
-export async function getPropertyValue({ pageId, propertyId }: Props) {
+export async function getPropertyValue({ pageID, propertyID }: Props) {
 	const propertyItem = await NotionClient.pages.properties.retrieve({
-		page_id: pageId,
-		property_id: propertyId,
+		page_id: pageID,
+		property_id: propertyID,
 	});
 	if (propertyItem.object === "property_item") {
 		return propertyItem;
@@ -20,15 +22,31 @@ export async function getPropertyValue({ pageId, propertyId }: Props) {
 	const results = propertyItem.results;
 
 	while (nextCursor !== null) {
-		const propertyItem = await NotionClient.pages.properties.retrieve({
-			page_id: pageId,
-			property_id: propertyId,
+		const nextPropertyItem = await NotionClient.pages.properties.retrieve({
+			page_id: pageID,
+			property_id: propertyID,
 			start_cursor: nextCursor,
 		});
 
-		nextCursor = propertyItem.next_cursor;
-		results.push(...propertyItem.results);
+		nextCursor = getNextCursor(nextPropertyItem);
+		results.push(...getPropertyItemResults(nextPropertyItem));
 	}
 
 	return results;
+}
+
+function getNextCursor(propertyItem: GetPagePropertyResponse): string | null {
+	if (propertyItem.object === "property_item") {
+		return null;
+	}
+
+	return propertyItem.next_cursor;
+}
+
+function getPropertyItemResults(propertyItem: GetPagePropertyResponse) {
+	if (propertyItem.object === "property_item") {
+		return [propertyItem];
+	}
+
+	return propertyItem.results;
 }
