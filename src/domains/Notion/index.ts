@@ -1,5 +1,9 @@
 import { Client } from "@notionhq/client";
-import { GetPagePropertyResponse } from "@notionhq/client/build/src/api-endpoints";
+import {
+	GetPagePropertyResponse,
+	QueryDatabaseParameters,
+	QueryDatabaseResponse,
+} from "@notionhq/client/build/src/api-endpoints";
 
 export const NotionClient = new Client({
 	auth: process.env.NOTION_TOKEN,
@@ -36,6 +40,53 @@ export async function getPropertyValue({ pageID, propertyID }: Props) {
 	}
 
 	return results;
+}
+
+type OptionsResults = {
+	results: QueryDatabaseResponse["results"];
+};
+type OptionsQuery = {
+	query: QueryDatabaseParameters;
+};
+export type GetPropertiesOptions = OptionsResults | OptionsQuery;
+
+/**
+ * Parse Notion query database response into array of properties
+ * @param properties Properties to retrieve.
+ * @param options
+ * @returns Array of values for each property in the Notion database
+ */
+export async function getPropertiesValues(
+	properties: string | Array<string>,
+	options: GetPropertiesOptions
+) {
+	const propertiesToRetrieve = Array.isArray(properties) ? properties : [properties];
+	let results: Extract<GetPropertiesOptions, OptionsResults>["results"];
+
+	if ("query" in options) {
+		results = (await NotionClient.databases.query(options.query)).results;
+	} else {
+		results = options.results;
+	}
+
+	const propertiesValues = await Promise.all(
+		results.map(async (result) => {
+			if (!("properties" in result)) return null;
+			const { id: pageID, properties } = result;
+
+			const propertiesObj = new Map();
+
+			await Promise.all(
+				propertiesToRetrieve.map(async (property) => {
+					const rawValue = await getPropertyValue({ pageID, propertyID: properties[property].id });
+					propertiesObj.set(property, rawValue);
+				})
+			);
+
+			return propertiesObj;
+		})
+	);
+	return propertiesValues;
 }
 
 function getNextCursor(propertyItem: GetPagePropertyResponse): string | null {
