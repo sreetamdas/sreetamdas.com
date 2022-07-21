@@ -1,8 +1,7 @@
 import { withSentry } from "@sentry/nextjs";
 import { NextApiRequest, NextApiResponse } from "next";
 
-import { BookEntryProperties } from "@/components/Books";
-import { handleBookUploadToNotion } from "@/domains/Notion";
+import { BookEntryProperties, handleBookUploadToNotion } from "@/components/Books";
 import { PrismaClient } from "@/domains/Prisma";
 
 // @ts-expect-error BigInt prototype

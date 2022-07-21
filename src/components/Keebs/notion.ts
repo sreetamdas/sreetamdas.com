@@ -1,7 +1,6 @@
 import { KeebDetails } from "./index";
 
-import { NotionClient } from "@/domains/Notion";
-import { getPropertyValue } from "@/domains/Notion/api";
+import { NotionClient, getPropertyValue } from "@/domains/Notion";
 
 const KEEBS_DATABASE_ID = "3539f182858f424f9cc2563c07dc300d";
 

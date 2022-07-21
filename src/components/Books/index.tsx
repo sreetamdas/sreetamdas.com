@@ -1,8 +1,11 @@
 import { QueryDatabaseResponse } from "@notionhq/client/build/src/api-endpoints";
+import { books } from "@prisma/client";
 
 import { SectionContainer, BookWrapper, BookInfo, BookTitle } from "./styles";
 
 import { CustomImage } from "@/components/mdx/images";
+import { BOOKS_DATABASE_ID } from "@/config";
+import { NotionClient } from "@/domains/Notion";
 
 export type BookEntryProperties = {
 	name: string;
@@ -60,3 +63,48 @@ export const BooksList = ({ results }: Pick<QueryDatabaseResponse, "results">) =
 		</SectionContainer>
 	);
 };
+
+type BookType = books;
+export async function handleBookUploadToNotion(book: BookType) {
+	const { name: bookTitle, cover: coverImageURL, author, status } = book;
+	const coverImageName = coverImageURL.split("/").pop();
+
+	const response = await NotionClient.pages.create({
+		parent: {
+			database_id: BOOKS_DATABASE_ID,
+		},
+		properties: {
+			Name: {
+				type: "title",
+				title: [
+					{
+						type: "text",
+						text: {
+							content: bookTitle,
+						},
+					},
+				],
+			},
+			Cover: {
+				type: "files",
+				files: [{ type: "external", name: coverImageName, external: { url: coverImageURL } }],
+			},
+			Author: {
+				type: "multi_select",
+				multi_select: [
+					{
+						name: author,
+					},
+				],
+			},
+			Status: {
+				type: "select",
+				select: {
+					name: status,
+				},
+			},
+		},
+	});
+
+	return response;
+}

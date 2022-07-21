@@ -1,51 +1,55 @@
-import type { books } from "@prisma/client";
+import { Client } from "@notionhq/client";
+import { GetPagePropertyResponse } from "@notionhq/client/build/src/api-endpoints";
 
-export { NotionClient } from "./client";
-import { NotionClient } from "./client";
+export const NotionClient = new Client({
+	auth: process.env.NOTION_TOKEN,
+});
 
-import { BOOKS_DATABASE_ID } from "@/config";
-
-type BookType = books;
-export async function handleBookUploadToNotion(book: BookType) {
-	const { name: bookTitle, cover: coverImageURL, author, status } = book;
-	const coverImageName = coverImageURL.split("/").pop();
-
-	const response = await NotionClient.pages.create({
-		parent: {
-			database_id: BOOKS_DATABASE_ID,
-		},
-		properties: {
-			Name: {
-				type: "title",
-				title: [
-					{
-						type: "text",
-						text: {
-							content: bookTitle,
-						},
-					},
-				],
-			},
-			Cover: {
-				type: "files",
-				files: [{ type: "external", name: coverImageName, external: { url: coverImageURL } }],
-			},
-			Author: {
-				type: "multi_select",
-				multi_select: [
-					{
-						name: author,
-					},
-				],
-			},
-			Status: {
-				type: "select",
-				select: {
-					name: status,
-				},
-			},
-		},
+type Props = { pageID: string; propertyID: string };
+/**
+ * If property is paginated, returns an array of property items.
+ *
+ * Otherwise, it will return a single property item.
+ */
+export async function getPropertyValue({ pageID, propertyID }: Props) {
+	const propertyItem = await NotionClient.pages.properties.retrieve({
+		page_id: pageID,
+		property_id: propertyID,
 	});
+	if (propertyItem.object === "property_item") {
+		return propertyItem;
+	}
 
-	return response;
+	// Property is paginated.
+	let nextCursor = propertyItem.next_cursor;
+	const results = propertyItem.results;
+
+	while (nextCursor !== null) {
+		const nextPropertyItem = await NotionClient.pages.properties.retrieve({
+			page_id: pageID,
+			property_id: propertyID,
+			start_cursor: nextCursor,
+		});
+
+		nextCursor = getNextCursor(nextPropertyItem);
+		results.push(...getPropertyItemResults(nextPropertyItem));
+	}
+
+	return results;
+}
+
+function getNextCursor(propertyItem: GetPagePropertyResponse): string | null {
+	if (propertyItem.object === "property_item") {
+		return null;
+	}
+
+	return propertyItem.next_cursor;
+}
+
+function getPropertyItemResults(propertyItem: GetPagePropertyResponse) {
+	if (propertyItem.object === "property_item") {
+		return [propertyItem];
+	}
+
+	return propertyItem.results;
 }
