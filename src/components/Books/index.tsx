@@ -52,14 +52,14 @@ export const BooksList = ({ results }: Pick<QueryDatabaseResponse, "results">) =
 
 	return (
 		<SectionContainer>
-			{booksDetailsList.map(({ name, cover }) => (
+			{/* {booksDetailsList.map(({ name, cover }) => (
 				<BookWrapper key={name.toLowerCase().replace(" ", "-")}>
 					{cover ? <CustomImage src={cover} alt={name} /> : null}
 					<BookInfo>
 						<BookTitle>{name}</BookTitle>
 					</BookInfo>
 				</BookWrapper>
-			))}
+			))} */}
 		</SectionContainer>
 	);
 };

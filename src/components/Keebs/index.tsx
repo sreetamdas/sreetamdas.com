@@ -14,9 +14,11 @@ export type KeebDetails = {
 type Props = {
 	results: Array<KeebDetails>;
 };
-export const Keebs = ({ results }: Props) => (
+export const Keebs = ({ results }: Props) => {
+	console.log({ results });
+
 	<KeebsContainer>
-		{results.map(({ name, image, tags }) => (
+		{/* {results.map(({ name, image, tags }) => (
 			<KeebWrapper key={name.toLowerCase().replace(" ", "-")}>
 				<Info>
 					<h3>{name}</h3>
@@ -28,9 +30,9 @@ export const Keebs = ({ results }: Props) => (
 				</Info>
 				{image ? <CustomImage src={image.url} alt={name} /> : null}
 			</KeebWrapper>
-		))}
-	</KeebsContainer>
-);
+		))} */}
+	</KeebsContainer>;
+};
 
 const KeebsContainer = styled.section`
 	display: grid;
