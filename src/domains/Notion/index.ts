@@ -74,12 +74,12 @@ export async function getPropertiesValues(
 			if (!("properties" in result)) return null;
 			const { id: pageID, properties } = result;
 
-			const propertiesObj = new Map();
+			const propertiesObj: Record<string, unknown> = {};
 
 			await Promise.all(
 				propertiesToRetrieve.map(async (property) => {
 					const rawValue = await getPropertyValue({ pageID, propertyID: properties[property].id });
-					propertiesObj.set(property, rawValue);
+					propertiesObj[property] = rawValue;
 				})
 			);
 
