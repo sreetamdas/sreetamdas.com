@@ -50,6 +50,7 @@ type OptionsQuery = {
 };
 export type GetPropertiesOptions = OptionsResults | OptionsQuery;
 
+type PropertiesValuesType = Record<string, Awaited<ReturnType<typeof getPropertyValue>>>;
 /**
  * Parse Notion query database response into array of properties
  * @param properties Properties to retrieve.
@@ -71,15 +72,16 @@ export async function getPropertiesValues(
 
 	const propertiesValues = await Promise.all(
 		results.map(async (result) => {
-			if (!("properties" in result)) return null;
+			if (!("properties" in result)) return {};
 			const { id: pageID, properties } = result;
-
-			const propertiesObj: Record<string, unknown> = {};
+			const propertiesObj: PropertiesValuesType = {};
 
 			await Promise.all(
 				propertiesToRetrieve.map(async (property) => {
-					const rawValue = await getPropertyValue({ pageID, propertyID: properties[property].id });
-					propertiesObj[property] = rawValue;
+					propertiesObj[property] = await getPropertyValue({
+						pageID,
+						propertyID: properties[property].id,
+					});
 				})
 			);
 
