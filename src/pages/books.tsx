@@ -4,7 +4,7 @@ import { BooksList } from "@/components/Books";
 import { ViewsCounter } from "@/components/ViewsCounter";
 import { DocumentHead } from "@/components/shared/seo";
 import { BOOKS_DATABASE_ID } from "@/config";
-import { notionClient } from "@/domains/Notion";
+import { NotionClient } from "@/domains/Notion";
 import { Center } from "@/styles/layouts";
 import { Title } from "@/styles/typography";
 
@@ -26,7 +26,7 @@ const BooksPage = ({ results }: InferGetStaticPropsType<typeof getStaticProps>) 
 );
 
 export async function getStaticProps() {
-	const response = await notionClient.databases.query({
+	const response = await NotionClient.databases.query({
 		database_id: BOOKS_DATABASE_ID,
 		filter: {
 			property: "Status",

@@ -2,7 +2,7 @@ import { withSentry } from "@sentry/nextjs";
 import type { PostgrestError } from "@supabase/supabase-js";
 import { NextApiRequest, NextApiResponse } from "next";
 
-import { supabaseClient } from "@/domains/Supabase";
+import { SupabaseClient } from "@/domains/Supabase";
 import type { ErrorResponse, SuccessResponse } from "@/domains/api";
 import { PostDetails } from "@/typings/blog";
 
@@ -22,7 +22,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse<AddViewResponse
 	if (req.method === "POST") {
 		const { page_slug } = req.body;
 
-		const { data: view_count, error } = await supabaseClient.rpc<PostDetails["view_count"]>(
+		const { data: view_count, error } = await SupabaseClient.rpc<PostDetails["view_count"]>(
 			"upsert_page_view",
 			{
 				page_slug,

@@ -37,7 +37,7 @@ import {
 
 import { Button } from "@/components/Button";
 import { useFoobarStore } from "@/domains/Foobar";
-import { supabaseClient } from "@/domains/Supabase";
+import { SupabaseClient } from "@/domains/Supabase";
 import { LinkedIcon } from "@/styles/blog";
 import { useHasMounted } from "@/utils/hooks";
 
@@ -117,7 +117,7 @@ const NavLinks = () => (
 const NavbarMenu = () => {
 	const [darkTheme, setDarkTheme] = useState<boolean | undefined>(undefined);
 	const [showDrawer, setShowDrawer] = useState(false);
-	const [session, setSession] = useState<Session | null>(supabaseClient.auth.session());
+	const [session, setSession] = useState<Session | null>(SupabaseClient.auth.session());
 	const { theme } = useContext(ThemeContext);
 	const konami = useFoobarStore((state) => state.foobarData.konami);
 	const { asPath } = useRouter();
@@ -125,13 +125,13 @@ const NavbarMenu = () => {
 	const isAdminRoute = asPath.includes("/admin");
 
 	async function handleSignOut() {
-		await supabaseClient.auth.signOut();
+		await SupabaseClient.auth.signOut();
 	}
 
 	useEffect(() => {
-		setSession(supabaseClient.auth.session());
+		setSession(SupabaseClient.auth.session());
 
-		supabaseClient.auth.onAuthStateChange((_event, session) => {
+		SupabaseClient.auth.onAuthStateChange((_event, session) => {
 			setSession(session);
 		});
 	}, []);

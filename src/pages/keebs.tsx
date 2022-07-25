@@ -1,13 +1,11 @@
-import { InferGetStaticPropsType } from "next";
+import type { InferGetStaticPropsType } from "next";
 
 import { Keebs } from "@/components/Keebs";
+import { getKeebsFromNotion } from "@/components/Keebs/notion";
 import { ViewsCounter } from "@/components/ViewsCounter";
 import { DocumentHead } from "@/components/shared/seo";
-import { notionClient } from "@/domains/Notion";
-import { Center } from "@/styles/layouts";
+import { Center, Space } from "@/styles/layouts";
 import { Title } from "@/styles/typography";
-
-const KEEBS_DATABASE_ID = "3539f182858f424f9cc2563c07dc300d";
 
 const Index = ({ results }: InferGetStaticPropsType<typeof getStaticProps>) => (
 	<>
@@ -20,6 +18,7 @@ const Index = ({ results }: InferGetStaticPropsType<typeof getStaticProps>) => (
 			<Title $size={5}>/keebs</Title>
 		</Center>
 
+		<Space />
 		<Keebs results={results} />
 
 		<ViewsCounter />
@@ -27,16 +26,7 @@ const Index = ({ results }: InferGetStaticPropsType<typeof getStaticProps>) => (
 );
 
 export async function getStaticProps() {
-	const response = await notionClient.databases.query({
-		database_id: KEEBS_DATABASE_ID,
-		filter: {
-			and: [
-				{ property: "Bought", checkbox: { equals: true } },
-				{ property: "Type", multi_select: { does_not_contain: "Switches" } },
-			],
-		},
-	});
-	const { results } = response;
+	const results = await getKeebsFromNotion();
 
 	return {
 		props: { results },
