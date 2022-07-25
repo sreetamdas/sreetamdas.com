@@ -1,7 +1,7 @@
 import { withSentry } from "@sentry/nextjs";
 import { NextApiRequest, NextApiResponse } from "next";
 
-import { BookEntryProperties, handleBookUploadToNotion } from "@/components/Books";
+import { BookEntryProperties } from "@/components/Books";
 import { PrismaClient } from "@/domains/Prisma";
 
 // @ts-expect-error BigInt prototype
@@ -40,8 +40,8 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
 					},
 				},
 			});
-			const notionResponse = await handleBookUploadToNotion(book);
-			return res.status(200).send({ book, notionResponse });
+			// const notionResponse = await handleBookUploadToNotion(book);
+			return res.status(200).send({ book });
 		} else {
 			res.status(400);
 		}
