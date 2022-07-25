@@ -15,8 +15,9 @@ export function pixelToRem(fontSize: number) {
 	return `${fontSize / BASE_FONT_SIZE}rem`;
 }
 
-type TBreakpointSide = typeof breakpointSides[number];
 const breakpointSides = ["until", "from"] as const;
+type TBreakpointSide = typeof breakpointSides[number];
+
 type TBreakpointFn = {
 	[side in TBreakpointSide]: {
 		[key in TBreakpoint]: (styles: FlattenSimpleInterpolation) => string;

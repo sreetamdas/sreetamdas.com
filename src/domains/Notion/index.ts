@@ -50,18 +50,21 @@ type OptionsQuery = {
 };
 export type GetPropertiesOptions = OptionsResults | OptionsQuery;
 
-type PropertiesValuesType = Record<string, Awaited<ReturnType<typeof getPropertyValue>>>;
+type PropertiesValuesType<Properties extends Array<string>> = Record<
+	Properties[number],
+	Awaited<ReturnType<typeof getPropertyValue>>
+>;
 /**
  * Parse Notion query database response into array of properties
  * @param properties Properties to retrieve.
  * @param options
  * @returns Array of values for each property in the Notion database
  */
-export async function getPropertiesValues(
-	properties: string | Array<string>,
+export async function getPropertiesValues<Properties extends Array<string>>(
+	propertiesToRetrieve: Readonly<Properties>,
 	options: GetPropertiesOptions
 ) {
-	const propertiesToRetrieve = Array.isArray(properties) ? properties : [properties];
+	// const propertiesToRetrieve = properties; //Array.isArray(properties) ? properties : [properties];
 	let results: Extract<GetPropertiesOptions, OptionsResults>["results"];
 
 	if ("query" in options) {
@@ -70,24 +73,28 @@ export async function getPropertiesValues(
 		results = options.results;
 	}
 
-	const propertiesValues = await Promise.all(
-		results.map(async (result) => {
-			if (!("properties" in result)) return {};
-			const { id: pageID, properties } = result;
-			const propertiesObj: PropertiesValuesType = {};
+	const propertiesValues = (
+		await Promise.all(
+			results.map(async (result) => {
+				// @ts-expect-error initialise properties values with empty object
+				const propertiesObj: PropertiesValuesType<Properties> = {};
 
-			await Promise.all(
-				propertiesToRetrieve.map(async (property) => {
-					propertiesObj[property] = await getPropertyValue({
-						pageID,
-						propertyID: properties[property].id,
-					});
-				})
-			);
+				if (!("properties" in result)) return null;
+				const { id: pageID, properties } = result;
 
-			return propertiesObj;
-		})
-	);
+				await Promise.all(
+					propertiesToRetrieve.map(async (property) => {
+						propertiesObj[property as Properties[number]] = await getPropertyValue({
+							pageID,
+							propertyID: properties[property].id,
+						});
+					})
+				);
+
+				return propertiesObj;
+			})
+		)
+	).flatMap((propertyObj) => (propertyObj === null ? [] : propertyObj));
 	return propertiesValues;
 }
 
