@@ -1,11 +1,12 @@
 import { KeebDetails } from "./index";
 
-import { NotionClient, getPropertyValue, getPropertiesValues } from "@/domains/Notion";
+import { NotionClient, getPropertiesValues } from "@/domains/Notion";
+import { getFiles, getMultiSelectNames, getTitlePlainText } from "@/domains/Notion/helpers";
 
 const KEEBS_DATABASE_ID = "3539f182858f424f9cc2563c07dc300d";
 
 export async function getKeebsFromNotion(): Promise<KeebDetails[]> {
-	const propertiesToRetrieve = ["Name", "Image", "Type"];
+	const propertiesToRetrieve = ["Name", "Image", "Type"] as const;
 
 	const { results } = await NotionClient.databases.query({
 		database_id: KEEBS_DATABASE_ID,
@@ -17,24 +18,32 @@ export async function getKeebsFromNotion(): Promise<KeebDetails[]> {
 		},
 	});
 
-	const keebsDetails = getPropertiesValues(propertiesToRetrieve, { results });
-	// if (Array.isArray(propertyObj)) {
-	// 	if (propertyObj.length > 0 && propertyObj[0].type === "title") {
-	// 		keebDetailsObj.name = propertyObj[0].title.plain_text;
-	// 	}
-	// } else {
-	// 	if (propertyObj.type === "files") {
-	// 		const { name: url } = propertyObj.files[0];
-	// 		keebDetailsObj.image = { url };
-	// 	}
+	const keebsDetails = await getPropertiesValues(propertiesToRetrieve, { results });
 
-	// 	if (propertyObj.type === "multi_select") {
-	// 		keebDetailsObj.tags = propertyObj.multi_select.map(({ name, color }) => ({
-	// 			name,
-	// 			color,
-	// 		}));
-	// 	}
-	// }
+	const keebsDetailsFormatted = keebsDetails.map((keebDetails) => {
+		const keebDetailsFormatted = (
+			Object.keys(keebDetails) as Array<keyof typeof keebDetails>
+		).reduce<KeebDetails>((details: KeebDetails, property) => {
+			const propertyValue = keebDetails[property];
+			if (Array.isArray(propertyValue)) {
+				if (propertyValue.length > 0 && propertyValue[0].type === "title") {
+					details.name = getTitlePlainText(propertyValue[0]);
+				}
+			} else {
+				if (propertyValue.type === "files") {
+					details.imageURL = getFiles(propertyValue)[0];
+				}
 
-	return keebsDetails;
+				if (propertyValue.type === "multi_select") {
+					details.tags = getMultiSelectNames(propertyValue);
+				}
+			}
+
+			return details;
+		}, {} as KeebDetails);
+
+		return keebDetailsFormatted;
+	});
+
+	return keebsDetailsFormatted;
 }

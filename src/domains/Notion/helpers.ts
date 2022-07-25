@@ -9,7 +9,7 @@ export function getTitlePlainText(input: TitlePropertyItemObjectResponse) {
 }
 
 export function getMultiSelectNames(input: MultiSelectPropertyItemObjectResponse) {
-	return input.multi_select.map((item) => item.name);
+	return input.multi_select.map(({ name }) => ({ name }));
 }
 
 export function getFiles(input: FilesPropertyItemObjectResponse) {

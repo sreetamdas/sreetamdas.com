@@ -50,7 +50,7 @@ type OptionsQuery = {
 };
 export type GetPropertiesOptions = OptionsResults | OptionsQuery;
 
-type PropertiesValuesType<Properties extends Array<string>> = Record<
+type PropertiesValuesType<Properties extends readonly string[]> = Record<
 	Properties[number],
 	Awaited<ReturnType<typeof getPropertyValue>>
 >;
@@ -60,10 +60,10 @@ type PropertiesValuesType<Properties extends Array<string>> = Record<
  * @param options
  * @returns Array of values for each property in the Notion database
  */
-export async function getPropertiesValues<Properties extends Array<string>>(
-	propertiesToRetrieve: Readonly<Properties>,
+export async function getPropertiesValues<Properties extends readonly string[]>(
+	propertiesToRetrieve: Properties,
 	options: GetPropertiesOptions
-) {
+): Promise<Awaited<PropertiesValuesType<Properties>>[]> {
 	// const propertiesToRetrieve = properties; //Array.isArray(properties) ? properties : [properties];
 	let results: Extract<GetPropertiesOptions, OptionsResults>["results"];
 

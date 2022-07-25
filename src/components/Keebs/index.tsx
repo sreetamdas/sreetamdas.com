@@ -5,20 +5,16 @@ import { sharedTransition } from "@/styles/components";
 
 export type KeebDetails = {
 	name: string;
-	image: {
-		url: string;
-	};
-	tags: Array<{ name: string; color: string }>;
+	imageURL: string;
+	tags: Array<{ name: string }>;
 };
 
 type Props = {
 	results: Array<KeebDetails>;
 };
-export const Keebs = ({ results }: Props) => {
-	console.log({ results });
-
+export const Keebs = ({ results }: Props) => (
 	<KeebsContainer>
-		{/* {results.map(({ name, image, tags }) => (
+		{results.map(({ name, imageURL, tags }) => (
 			<KeebWrapper key={name.toLowerCase().replace(" ", "-")}>
 				<Info>
 					<h3>{name}</h3>
@@ -28,11 +24,11 @@ export const Keebs = ({ results }: Props) => {
 						))}
 					</Tags>
 				</Info>
-				{image ? <CustomImage src={image.url} alt={name} /> : null}
+				{imageURL ? <CustomImage src={imageURL} alt={name} /> : null}
 			</KeebWrapper>
-		))} */}
-	</KeebsContainer>;
-};
+		))}
+	</KeebsContainer>
+);
 
 const KeebsContainer = styled.section`
 	display: grid;
