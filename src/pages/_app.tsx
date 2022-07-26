@@ -1,4 +1,6 @@
 import "focus-visible";
+import { Hydrate, QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import type { NextPage } from "next";
 import PlausibleProvider from "next-plausible";
 import type { AppProps } from "next/app";
@@ -6,9 +8,6 @@ import Head from "next/head";
 import { useState } from "react";
 import type { PropsWithChildren } from "react";
 import { Toaster } from "react-hot-toast";
-import { QueryClient, QueryClientProvider } from "react-query";
-import { ReactQueryDevtools } from "react-query/devtools";
-import { Hydrate } from "react-query/hydration";
 import { ThemeProvider } from "styled-components";
 
 import { DefaultLayout } from "@/layouts/Default";

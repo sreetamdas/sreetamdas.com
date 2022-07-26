@@ -1,6 +1,6 @@
+import { useQuery } from "@tanstack/react-query";
 import { FaRegStar } from "react-icons/fa";
 import { VscRepoForked } from "react-icons/vsc";
-import { useQuery } from "react-query";
 import styled from "styled-components";
 
 import { DEFAULT_REPO, getGitHubStats, StatsResult } from "@/domains/GitHub";
