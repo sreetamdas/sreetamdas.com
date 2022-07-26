@@ -52,7 +52,11 @@ export type ButtondownEmailsType = {
 
 export async function getButtondownSubscriberCount() {
 	try {
-		const response = (await axiosButtondown.get<ButtondownSubscribersType>("/subscribers")).data;
+		const response = (
+			await axiosButtondown.get<ButtondownSubscribersType>("/subscribers", {
+				params: { type: "regular" },
+			})
+		).data;
 		return response.count;
 	} catch (error) {
 		return 69;
