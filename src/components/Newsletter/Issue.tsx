@@ -31,7 +31,6 @@ export const NewsletterIssueDetail = ({ issue }: IssueViewProps) => {
 						...MDXComponents,
 					}}
 				/>
-				{/* <PreviewBody dangerouslySetInnerHTML={{ __html: micromark(issue.body) }}></PreviewBody> */}
 			</IssueContentWrapper>
 		</SectionWrapper>
 	);
