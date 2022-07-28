@@ -3,15 +3,15 @@ import { ParsedUrlQuery } from "querystring";
 import { GetStaticProps, InferGetStaticPropsType } from "next";
 
 import { FoobarSchrodinger } from "@/components/foobar/pages";
-import { FOOBAR_PAGES, TFoobarPage } from "@/domains/Foobar";
+import { FOOBAR_PAGES, FoobarPage } from "@/domains/Foobar";
 import { useHasMounted } from "@/utils/hooks";
 import Custom404 from "pages/404";
 
 type TFoobarPageProps = {
-	page: Exclude<TFoobarPage, "/">;
+	page: Exclude<FoobarPage, "/">;
 };
 interface TFoobarPageQuery extends ParsedUrlQuery {
-	page: Exclude<TFoobarPage, "/">;
+	page: Exclude<FoobarPage, "/">;
 }
 
 const Index = ({ page }: InferGetStaticPropsType<typeof getStaticProps>) => {

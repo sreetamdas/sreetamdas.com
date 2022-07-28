@@ -18,20 +18,20 @@ import { RiWifiOffLine } from "react-icons/ri";
 import { VscDebug, VscTelescope } from "react-icons/vsc";
 import styled, { css } from "styled-components";
 
-import { useFoobarStore, FoobarDataType, TFoobarPage } from "@/domains/Foobar";
+import { useFoobarStore, FoobarDataType, FoobarPage } from "@/domains/Foobar";
 import { sharedTransition } from "@/styles/components";
 import { ExternalLink } from "@/styles/typography";
 import { breakpoint } from "@/utils/style";
 
-const FoobarBadge = ({ badge }: { badge: TFoobarBadge }) => {
+const FoobarBadge = ({ badge }: { badge: FoobarBadge }) => {
 	const { icon: Icon } = FOOBAR_BADGES[badge];
 	return <Icon aria-label={badge} />;
 };
 
-type TBadgeProps = {
-	badge: TFoobarBadge;
+type BadgeProps = {
+	badge: FoobarBadge;
 } & Pick<FoobarDataType, "completed" | "allAchievements">;
-const Badge = ({ badge, completed, allAchievements }: TBadgeProps) => {
+const Badge = ({ badge, completed, allAchievements }: BadgeProps) => {
 	const [clicks, setClicks] = useState(0);
 	const badgeUnlocked = badge === "completed" ? allAchievements : completed.includes(badge);
 
@@ -48,8 +48,8 @@ const Badge = ({ badge, completed, allAchievements }: TBadgeProps) => {
 };
 
 function renderBadges(
-	allBadges: Array<TFoobarBadge>,
-	completed: Array<TFoobarPage>,
+	allBadges: Array<FoobarBadge>,
+	completed: Array<FoobarPage>,
 	allAchievements: boolean
 ) {
 	return allBadges.map((badge) => <Badge key={badge} {...{ badge, completed, allAchievements }} />);
@@ -60,7 +60,7 @@ export const ShowCompletedBadges = () => {
 		completed: state.foobarData.completed,
 		allAchievements: state.foobarData.allAchievements,
 	}));
-	const allBadges = Object.keys(FOOBAR_BADGES) as Array<TFoobarBadge>;
+	const allBadges = Object.keys(FOOBAR_BADGES) as Array<FoobarBadge>;
 
 	return (
 		<HelperBlock>
@@ -83,15 +83,15 @@ export const ShowCompletedBadges = () => {
 	);
 };
 
-type TFoobarBadge = TFoobarPage | "completed";
+type FoobarBadge = FoobarPage | "completed";
 
 type TFoobarBadgeRecord = {
 	icon: (props: IconBaseProps) => JSX.Element;
 	description: string | JSX.Element;
 };
-type TFOOBAR_BADGES = Readonly<Record<TFoobarBadge, TFoobarBadgeRecord>>;
+type FoobarBadges = Readonly<Record<FoobarBadge, TFoobarBadgeRecord>>;
 
-export const FOOBAR_BADGES: TFOOBAR_BADGES = {
+export const FOOBAR_BADGES: FoobarBadges = {
 	"/": {
 		icon: (props) => <FaRegFlag {...props} />,
 		description: "Discover the foobar homepage (you're here!)",

@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 
 import { DocumentHead } from "@/components/shared/seo";
-import { useFoobarStore, FOOBAR_PAGES, TFoobarPage } from "@/domains/Foobar";
+import { useFoobarStore, FOOBAR_PAGES, FoobarPage } from "@/domains/Foobar";
 import { Center, Space } from "@/styles/layouts";
 import { ReallyBigTitle, Title, Paragraph, LinkTo } from "@/styles/typography";
 
@@ -15,7 +15,7 @@ const Custom404 = ({ message }: T404PageMessage) => {
 	}));
 
 	useEffect(() => {
-		const updatedPages: Array<TFoobarPage> = [...completed];
+		const updatedPages: Array<FoobarPage> = [...completed];
 
 		if (!updatedPages.includes(FOOBAR_PAGES.notFound)) {
 			updatedPages.push(FOOBAR_PAGES.notFound);
@@ -26,7 +26,7 @@ const Custom404 = ({ message }: T404PageMessage) => {
 	}, [completed, setFoobarData]);
 
 	function handleDogLinkClick() {
-		const updatedPages: Array<TFoobarPage> = [...completed];
+		const updatedPages: Array<FoobarPage> = [...completed];
 		if (!updatedPages.includes(FOOBAR_PAGES.dogs)) {
 			updatedPages.push(FOOBAR_PAGES.dogs);
 			setFoobarData({
