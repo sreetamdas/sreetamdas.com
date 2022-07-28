@@ -32,7 +32,6 @@ const About = ({ code, frontmatter: _, subscriberCount }: TProps) => {
 	return (
 		<>
 			<DocumentHead title="About" />
-
 			<Center>
 				<Title $size={5}>/about</Title>
 			</Center>
@@ -46,9 +45,7 @@ const About = ({ code, frontmatter: _, subscriberCount }: TProps) => {
 			/>
 
 			<ViewsCounter />
-
 			<NewsletterSignup {...{ subscriberCount }} />
-
 			<Center>
 				<LinkTo
 					href="/foobar"
