@@ -4,7 +4,6 @@ import { useEffect } from "react";
 import { FoobarHintWrapper } from "@/components/foobar/styled";
 import { IS_DEV } from "@/config";
 import { FoobarStoreType, useFoobarStore, FOOBAR_PAGES } from "@/domains/Foobar";
-import { migrateLocalForageToZustand } from "@/domains/Foobar/helpers";
 import { Space } from "@/styles/layouts";
 import { LinkTo } from "@/styles/typography";
 import { logConsoleMessages } from "@/utils/console";
@@ -34,11 +33,6 @@ export const Foobar = () => {
 	const { completed, visitedPages } = foobarStoreData;
 
 	useEffect(() => {
-		async function handleMigration() {
-			await migrateLocalForageToZustand("foobar-data");
-		}
-		handleMigration();
-
 		// Add functions for Foobar badges
 		addFoobarToLocalStorage();
 		// @ts-expect-error add custom function
