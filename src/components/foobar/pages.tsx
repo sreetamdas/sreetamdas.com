@@ -16,10 +16,10 @@ import {
 	TFoobarPage,
 	initialFoobarData,
 } from "@/domains/Foobar";
+import { dog } from "@/domains/Foobar/console";
 import { StyledPre } from "@/styles/blog";
 import { Space, Center } from "@/styles/layouts";
 import { Title } from "@/styles/typography";
-import { dog } from "@/utils/console";
 import { useHasMounted } from "@/utils/hooks";
 import Custom404 from "pages/404";
 
