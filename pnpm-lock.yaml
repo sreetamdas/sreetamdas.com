@@ -1,7 +1,7 @@
 lockfileVersion: 5.4
 
 specifiers:
-  '@codesandbox/sandpack-react': ^1.3.1
+  '@codesandbox/sandpack-react': ^1.3.2
   '@next/bundle-analyzer': ^12.2.3
   '@next/eslint-plugin-next': ^12.2.3
   '@notionhq/client': 2.1.1
@@ -68,7 +68,7 @@ specifiers:
   zustand: 4.0.0
 
 dependencies:
-  '@codesandbox/sandpack-react': 1.3.1_biqbaboplfbrettd7655fr4n2y
+  '@codesandbox/sandpack-react': 1.3.2_biqbaboplfbrettd7655fr4n2y
   '@next/bundle-analyzer': 12.2.3
   '@notionhq/client': 2.1.1
   '@octokit/core': 4.0.4
@@ -1721,15 +1721,15 @@ packages:
       w3c-keyname: 2.2.5
     dev: false
 
-  /@codesandbox/sandpack-client/1.2.2:
-    resolution: {integrity: sha512-sTPQVS7mzpEm2ttpHFFSqkGd1A1tBZn7UTZwIjBNCXKHywrt9o7MyrdhUuS03J7MyXN+HSJ55Vz+OGD1Wv4ejQ==}
+  /@codesandbox/sandpack-client/1.3.2:
+    resolution: {integrity: sha512-EQj3jxW3ispcScE5Yw6lWZgn94RfIBgb+KTCe49gZt4DIUmcDXVhnRh3ArcfBcTNqr7TeuLgHYwJ9nHP/T1V8w==}
     dependencies:
       codesandbox-import-utils: 1.3.8
       lodash.isequal: 4.5.0
     dev: false
 
-  /@codesandbox/sandpack-react/1.3.1_biqbaboplfbrettd7655fr4n2y:
-    resolution: {integrity: sha512-Ju/c6sHYvlPaX69CVXVULhOJ4zwKLKqk5wKNfhz/xINO1+Pm7xR4Qq7kDr4eYnkivmPuYY/6pyIOPWwoWkmLBA==}
+  /@codesandbox/sandpack-react/1.3.2_biqbaboplfbrettd7655fr4n2y:
+    resolution: {integrity: sha512-0MOhVTOoLX9DmRipfWkyYICxwionPKr6QzPicECfj4jilUvmMzf9DQ5+QgDL9oGGKJAtFNtfBNHB+VkLgQEasQ==}
     peerDependencies:
       react: ^16.8.0 || ^17 || ^18
       react-dom: ^16.8.0 || ^17 || ^18
@@ -1749,7 +1749,7 @@ packages:
       '@codemirror/matchbrackets': 0.19.4
       '@codemirror/state': 0.19.9
       '@codemirror/view': 0.19.48
-      '@codesandbox/sandpack-client': 1.2.2
+      '@codesandbox/sandpack-client': 1.3.2
       '@react-hook/intersection-observer': 3.1.1_react@18.2.0
       '@stitches/core': 1.2.8
       codesandbox-import-util-types: 2.2.3
