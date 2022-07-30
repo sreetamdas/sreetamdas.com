@@ -4,19 +4,42 @@ import { createGlobalStyle, css } from "styled-components";
 import { sharedTransition } from "@/styles/components";
 import { BASE_FONT_SIZE, focusVisible } from "@/utils/style";
 
+export const theme = {
+	light: {
+		foreground: "rgb(0, 0, 0)",
+		background: "rgb(255, 255, 255)",
+		accentPrimaryValues: "91, 52, 218",
+		accentPrimary: "rgb(91, 52, 218)",
+		accentSecondary: "rgb(53, 142, 241)",
+		backgroundBlurred: "rgba(255, 255, 255, 0.93)",
+		inlineCodeBackground: "rgb(220, 220, 220)",
+	},
+	dark: {
+		foreground: "rgb(255, 255, 255)",
+		background: "rgb(0, 0, 0)",
+		accentPrimaryValues: "157, 134, 233",
+		accentPrimary: "rgb(157, 134, 233)",
+		accentSecondary: "rgb(97, 218, 251)",
+		backgroundBlurred: "rgba(15, 10, 35, 0.9)",
+		inlineCodeBackground: "rgb(51, 51, 51)",
+	},
+};
+
 export const GlobalStyles = createGlobalStyle`
 	:root {
-	--color-primary: rgb(0, 0, 0);
-	--color-background: rgb(255, 255, 255);
+	--color-primary: ${theme.light.foreground};
+	--color-background: ${theme.light.background};
+	--values-primary-accent: ${theme.light.accentPrimaryValues};
+	--color-primary-accent: ${theme.light.accentPrimary};
+	--color-secondary-accent: ${theme.light.accentSecondary};
+	--color-bg-blurred: ${theme.light.backgroundBlurred};
+	--color-inlineCode-bg: ${theme.light.inlineCodeBackground};
+	
 	--color-inlineCode-fg: var(--color-primary);
-	--color-inlineCode-bg: rgb(220, 220, 220);
-	--values-primary-accent: 91, 52, 218;
-	--color-primary-accent: rgb(91, 52, 218);
-	--color-secondary-accent: rgb(53, 142, 241);
 	--color-fancy-pants: var(--color-primary-accent);
-
+	
 	--font-family-code: "Iosevka Web", SFMono-Regular, Consolas, Roboto Mono, Menlo, Monaco,
-		Liberation Mono, Lucida Console, monospace;
+	Liberation Mono, Lucida Console, monospace;
 	--color-success-accent: rgb(0, 255, 127);
 	--color-success-accent-faded: rgba(0, 255, 127, 0.19);
 	--color-danger-accent: rgb(255, 128, 0);
@@ -24,22 +47,21 @@ export const GlobalStyles = createGlobalStyle`
 	--color-info-accent: rgb(0, 191, 255);
 	--color-info-accent-faded: rgba(0, 191, 255, 0.27);
 	--color-error: rgb(255, 0, 0);
-	--color-bg-blurred: rgba(255,255,255,0.93);
-
+	
 	--max-width: 650px;
 	--border-radius: 5px;
 	--transition-duration: 0.1s;
 	--list-item-spacing: 12px;
 	}
-
+	
 	[data-theme="dark"] {
-		--color-primary: rgb(255, 255, 255);
-		--color-primary-accent: rgb(157, 134, 233);
-		--values-primary-accent: 157, 134, 233;
-		--color-secondary-accent: rgb(97, 218, 251);
-		--color-background: rgb(0, 0, 0);
-		--color-inlineCode-bg: rgb(51, 51, 51);
-		--color-bg-blurred: rgba(15,10,35,0.9);
+		--color-primary: ${theme.dark.foreground};
+		--color-background: ${theme.dark.background};
+		--values-primary-accent: ${theme.dark.accentPrimaryValues};
+		--color-primary-accent: ${theme.dark.accentPrimary};
+		--color-secondary-accent: ${theme.dark.accentSecondary};
+		--color-inlineCode-bg: ${theme.dark.inlineCodeBackground};
+		--color-bg-blurred: ${theme.dark.backgroundBlurred};
 	}
 	[data-theme="batman"] {
 		--color-primary-accent: rgb(255, 255, 0);

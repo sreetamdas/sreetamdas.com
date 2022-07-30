@@ -10,9 +10,10 @@ import type { PropsWithChildren } from "react";
 import { Toaster } from "react-hot-toast";
 import { ThemeProvider } from "styled-components";
 
+import { getInitialColorMode } from "@/domains/style/darkmode";
 import { DefaultLayout } from "@/layouts/Default";
-import { toasterProps, GlobalStyles } from "@/styles";
-import { TGlobalThemeObject } from "@/typings/styled";
+import { theme, toasterProps, GlobalStyles } from "@/styles";
+import { StyledThemeObject } from "@/typings/styled";
 
 if (process.env.NEXT_PUBLIC_API_MOCKING_ENABLED === "true") {
 	require("mocks");
@@ -26,29 +27,25 @@ type AppPropsWithLayout = AppProps & {
 	Component: NextPageWithLayout;
 };
 
-type TThemeObjectInitial = Pick<TGlobalThemeObject, "theme">;
-const initTheme = {
-	theme: undefined,
-};
+type ThemeObjectInitial = Pick<StyledThemeObject, "themeType" | "theme">;
 
 const MyApp = ({ Component, pageProps }: AppPropsWithLayout) => {
 	const reactQueryClient = new QueryClient();
-	const [themeObject, setThemeObject] = useState<TThemeObjectInitial>(initTheme);
-	const ComponentLayout = Component.Layout ?? DefaultLayout;
-
-	function getCSSVarValue(variable: string) {
-		if (typeof window !== "undefined")
-			return getComputedStyle(document.body).getPropertyValue(variable);
-		return undefined;
+	// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+	const initialTheme = getInitialColorMode()!;
+	const [themeObject, setThemeObject] = useState<ThemeObjectInitial>({
+		themeType: initialTheme,
+		theme: theme[initialTheme],
+	});
+	function changeThemeVariant(themeType: StyledThemeObject["themeType"]) {
+		setThemeObject((prevState) => ({ ...prevState, themeType, theme: theme[themeType] }));
 	}
-	const changeThemeVariant: TGlobalThemeObject["changeThemeVariant"] = (theme) => {
-		setThemeObject({ theme });
-	};
-	const themeForContext: TGlobalThemeObject = {
+	const themeForContext: StyledThemeObject = {
 		...themeObject,
-		getCSSVarValue,
 		changeThemeVariant,
 	};
+
+	const ComponentLayout = Component.Layout ?? DefaultLayout;
 
 	return (
 		<>

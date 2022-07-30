@@ -3,7 +3,7 @@ import { AnimatePresence, motion, Variants } from "framer-motion";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useState, useEffect, useContext, cloneElement } from "react";
+import { useState, useEffect, useContext, cloneElement, MouseEvent, useRef } from "react";
 import {
 	FaGithub,
 	FaTwitter,
@@ -38,6 +38,8 @@ import {
 import { Button } from "@/components/Button";
 import { useFoobarStore } from "@/domains/Foobar";
 import { SupabaseClient } from "@/domains/Supabase";
+import { canvasDrawRectangle } from "@/domains/style/darkmode";
+import { theme as siteTHeme } from "@/styles";
 import { LinkedIcon } from "@/styles/blog";
 import { useHasMounted } from "@/utils/hooks";
 
@@ -60,6 +62,179 @@ export const Navbar = () => {
 				<NavbarMenu />
 			</HeaderInner>
 		</Header>
+	);
+};
+
+const NavbarMenu = () => {
+	const [darkTheme, setDarkTheme] = useState<boolean | undefined>(undefined);
+	const [showDrawer, setShowDrawer] = useState(false);
+	const [session, setSession] = useState<Session | null>(SupabaseClient.auth.session());
+	const konami = useFoobarStore((state) => state.foobarData.konami);
+	const { asPath } = useRouter();
+	const canvasRef = useRef<HTMLCanvasElement>(null);
+	const { themeType, changeThemeVariant } = useContext(ThemeContext);
+
+	const canvas = canvasRef.current;
+	const canvasContext = canvas?.getContext("2d");
+
+	function updateFavicon(
+		ctx: CanvasRenderingContext2D | null | undefined,
+		colorMode: typeof themeType
+	) {
+		if (canvas !== null && typeof ctx !== "undefined" && ctx !== null) {
+			const color = siteTHeme[colorMode].accentPrimary;
+			ctx.fillStyle = color;
+			ctx.strokeStyle = color;
+
+			canvasDrawRectangle(ctx, 0, 0, 100, 100, 25, true, true);
+			const data = canvas.toDataURL("image/png");
+
+			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+			const link = document.querySelector<HTMLLinkElement>("link[rel*='icon']")!;
+			link.type = "image/x-icon";
+			link.href = data;
+		}
+	}
+
+	const isAdminRoute = asPath.includes("/admin");
+
+	async function handleSignOut() {
+		await SupabaseClient.auth.signOut();
+	}
+
+	function handleThemeToggle() {
+		setDarkTheme((isDarkTheme) => {
+			updateFavicon(canvasContext, isDarkTheme ? "light" : "dark");
+			return !isDarkTheme;
+		});
+	}
+
+	function handleKeyboardDarkModeToggle(event: KeyboardEvent) {
+		if (event.key?.toLowerCase() === "l" && event.shiftKey && event.metaKey) {
+			event.preventDefault();
+		}
+	}
+
+	function handleThemeToggleClick(event: MouseEvent) {
+		event.preventDefault();
+		handleThemeToggle();
+	}
+
+	function handleToggleDrawer() {
+		setShowDrawer((showDrawer) => {
+			const nextState = !showDrawer;
+
+			if (nextState === true) {
+				document.body.style.overflow = "hidden";
+			} else {
+				// Re-enable scrolling once menu is closed
+				document.body.style.removeProperty("overflow");
+			}
+
+			return nextState;
+		});
+	}
+
+	useEffect(() => {
+		// Get initial dark mode
+		const root = window.document.documentElement;
+		const initialColorValue = root.style.getPropertyValue("--initial-color-mode") as
+			| "light"
+			| "dark";
+		setDarkTheme(initialColorValue === "dark");
+
+		// Supabase Auth
+		setSession(SupabaseClient.auth.session());
+		SupabaseClient.auth.onAuthStateChange((_event, session) => {
+			setSession(session);
+		});
+
+		// Keyboard dark mode toggle
+		window.addEventListener("keydown", handleKeyboardDarkModeToggle);
+
+		return () => {
+			window.removeEventListener("keydown", handleKeyboardDarkModeToggle);
+		};
+	}, []);
+
+	useEffect(() => {
+		if (darkTheme !== undefined) {
+			updateFavicon(canvasContext, darkTheme ? "dark" : "light");
+			changeThemeVariant(darkTheme ? "dark" : "light");
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [darkTheme]);
+
+	useEffect(() => {
+		if (darkTheme !== undefined) {
+			if (darkTheme) {
+				document.documentElement.setAttribute("data-theme", konami ? "batman" : "dark");
+				window.localStorage.setItem("theme", "dark");
+			} else {
+				document.documentElement.removeAttribute("data-theme");
+				window.localStorage.setItem("theme", "light");
+			}
+		}
+	}, [darkTheme, konami]);
+
+	useEffect(() => {
+		if (typeof themeType !== "undefined") setDarkTheme(themeType === "dark");
+	}, [themeType]);
+
+	useEffect(() => {
+		setShowDrawer(false);
+		document.body.style.removeProperty("overflow");
+	}, [asPath]);
+
+	return (
+		<>
+			<Head>
+				<meta name="theme-color" content={darkTheme ? "#9D86E9" : "#5B34DA"} />
+			</Head>
+			<canvas ref={canvasRef} width="100" height="100" hidden></canvas>
+			<AnimatePresence>
+				<NavContainer $showDrawer={showDrawer} key="navigation">
+					<NavLinksDesktop>
+						<NavLinks />
+					</NavLinksDesktop>
+					<ThemeSwitch onClick={handleThemeToggleClick}>
+						{darkTheme === undefined ? (
+							<span style={{ width: "25px" }} />
+						) : darkTheme ? (
+							<IoMdMoon aria-label="Switch to Light Mode" title="Switch to Light Mode" />
+						) : (
+							<FiSun aria-label="Switch to Dark Mode" title="Switch to Dark Mode" />
+						)}
+					</ThemeSwitch>
+					{session && isAdminRoute && (
+						<Button onClick={handleSignOut} $size="small">
+							Sign out
+						</Button>
+					)}
+					<MobileMenuToggle
+						onClick={handleToggleDrawer}
+						aria-label={showDrawer ? "Close menu" : "Open menu"}
+					>
+						{showDrawer ? (
+							<FiX aria-label="Open menu" title="Open menu" />
+						) : (
+							<FiMenu aria-label="Open menu" title="Open menu" />
+						)}
+					</MobileMenuToggle>
+				</NavContainer>
+				<FullScreenWrapper
+					key="mobile-navigation"
+					aria-label="mobile-navigation"
+					$visible={showDrawer}
+					variants={variants}
+					initial="closed"
+					animate={showDrawer ? "open" : "closed"}
+					transition={{ type: "spring", stiffness: 180, damping: 20 }}
+				>
+					<NavLinks />
+				</FullScreenWrapper>
+			</AnimatePresence>
+		</>
 	);
 };
 
@@ -113,143 +288,6 @@ const NavLinks = () => (
 		</IconLinks>
 	</Nav>
 );
-
-const NavbarMenu = () => {
-	const [darkTheme, setDarkTheme] = useState<boolean | undefined>(undefined);
-	const [showDrawer, setShowDrawer] = useState(false);
-	const [session, setSession] = useState<Session | null>(SupabaseClient.auth.session());
-	const { theme } = useContext(ThemeContext);
-	const konami = useFoobarStore((state) => state.foobarData.konami);
-	const { asPath } = useRouter();
-
-	const isAdminRoute = asPath.includes("/admin");
-
-	async function handleSignOut() {
-		await SupabaseClient.auth.signOut();
-	}
-
-	useEffect(() => {
-		setSession(SupabaseClient.auth.session());
-
-		SupabaseClient.auth.onAuthStateChange((_event, session) => {
-			setSession(session);
-		});
-	}, []);
-
-	useEffect(() => {
-		const root = window.document.documentElement;
-		const initialColorValue = root.style.getPropertyValue("--initial-color-mode") as
-			| "light"
-			| "dark";
-		setDarkTheme(initialColorValue === "dark");
-	}, []);
-
-	useEffect(() => {
-		if (darkTheme !== undefined) {
-			if (darkTheme) {
-				document.documentElement.setAttribute("data-theme", konami ? "batman" : "dark");
-				window.localStorage.setItem("theme", "dark");
-			} else {
-				document.documentElement.removeAttribute("data-theme");
-				window.localStorage.setItem("theme", "light");
-			}
-		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [darkTheme, konami]);
-
-	useEffect(() => {
-		if (theme) setDarkTheme(theme === "dark");
-	}, [theme]);
-
-	useEffect(() => {
-		function handleKeyboardDarkModeToggle(event: KeyboardEvent) {
-			if (event.key.toLowerCase() === "l" && event.shiftKey && event.metaKey) {
-				event.preventDefault();
-				setDarkTheme(!darkTheme);
-			}
-		}
-		window.addEventListener("keydown", handleKeyboardDarkModeToggle);
-
-		return () => {
-			window.removeEventListener("keydown", handleKeyboardDarkModeToggle);
-		};
-	}, [darkTheme]);
-
-	useEffect(() => {
-		setShowDrawer(false);
-		document.body.style.removeProperty("overflow");
-	}, [asPath]);
-
-	function handleThemeSwitch(event: React.MouseEvent) {
-		event.preventDefault();
-		setDarkTheme(!darkTheme);
-	}
-
-	function handleToggleDrawer() {
-		setShowDrawer((showDrawer) => {
-			const nextState = !showDrawer;
-
-			if (nextState === true) {
-				document.body.style.overflow = "hidden";
-			} else {
-				// Re-enable scrolling once menu is closed
-				document.body.style.removeProperty("overflow");
-			}
-
-			return nextState;
-		});
-	}
-
-	return (
-		<>
-			<Head>
-				<meta name="theme-color" content={darkTheme ? "#9D86E9" : "#5B34DA"} />
-			</Head>
-			<AnimatePresence>
-				<NavContainer $showDrawer={showDrawer} key="navigation">
-					<NavLinksDesktop>
-						<NavLinks />
-					</NavLinksDesktop>
-					<ThemeSwitch onClick={handleThemeSwitch}>
-						{darkTheme === undefined ? (
-							<span style={{ width: "25px" }} />
-						) : darkTheme ? (
-							<IoMdMoon aria-label="Switch to Light Mode" title="Switch to Light Mode" />
-						) : (
-							<FiSun aria-label="Switch to Dark Mode" title="Switch to Dark Mode" />
-						)}
-					</ThemeSwitch>
-					{session && isAdminRoute && (
-						<Button onClick={handleSignOut} $size="small">
-							Sign out
-						</Button>
-					)}
-					<MobileMenuToggle
-						onClick={handleToggleDrawer}
-						aria-label={showDrawer ? "Close menu" : "Open menu"}
-					>
-						{showDrawer ? (
-							<FiX aria-label="Open menu" title="Open menu" />
-						) : (
-							<FiMenu aria-label="Open menu" title="Open menu" />
-						)}
-					</MobileMenuToggle>
-				</NavContainer>
-				<FullScreenWrapper
-					key="mobile-navigation"
-					aria-label="mobile-navigation"
-					$visible={showDrawer}
-					variants={variants}
-					initial="closed"
-					animate={showDrawer ? "open" : "closed"}
-					transition={{ type: "spring", stiffness: 180, damping: 20 }}
-				>
-					<NavLinks />
-				</FullScreenWrapper>
-			</AnimatePresence>
-		</>
-	);
-};
 
 type TExternalLinksArray = Array<{
 	link: string;
