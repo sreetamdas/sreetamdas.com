@@ -12,20 +12,20 @@ import { Terminal } from "@/components/foobar/terminal";
 import { DocumentHead } from "@/components/shared/seo";
 import {
 	useFoobarStore,
-	TFoobarSchrodingerProps,
-	TFoobarPage,
+	FoobarSchrodingerProps,
+	FoobarPage,
 	initialFoobarData,
 } from "@/domains/Foobar";
+import { dog } from "@/domains/Foobar/console";
 import { StyledPre } from "@/styles/blog";
 import { Space, Center } from "@/styles/layouts";
 import { Title } from "@/styles/typography";
-import { dog } from "@/utils/console";
 import { useHasMounted } from "@/utils/hooks";
 import Custom404 from "pages/404";
 
 const XMarksTheSpot = (_props: { foobar: string }) => <div />;
 
-const UnlockedBanner = ({ completedPage }: TFoobarSchrodingerProps) =>
+const UnlockedBanner = ({ completedPage }: FoobarSchrodingerProps) =>
 	completedPage && completedPage !== "/" ? (
 		<CenterUnlockedPage $size={3.5}>
 			— You&apos;ve unlocked —
@@ -46,7 +46,7 @@ const CenterUnlockedPage = styled(Title)`
 	text-align: center;
 `;
 
-export const Foobar = ({ completedPage, unlocked }: TFoobarSchrodingerProps) => {
+export const Foobar = ({ completedPage, unlocked }: FoobarSchrodingerProps) => {
 	const router = useRouter();
 
 	const { foobarData, setFoobarData } = useFoobarStore((state) => ({
@@ -137,7 +137,7 @@ export const FoobarButLocked = () => (
  * Foobar page, that is only shown once foobar is unlocked
  * @param completedPage foobar page that is being currently accessed
  */
-export const FoobarSchrodinger = ({ completedPage }: TFoobarSchrodingerProps) => {
+export const FoobarSchrodinger = ({ completedPage }: FoobarSchrodingerProps) => {
 	const { unlocked, setFoobarData, completed } = useFoobarStore((state) => ({
 		unlocked: state.foobarData.unlocked,
 		completed: state.foobarData.completed,
@@ -146,7 +146,7 @@ export const FoobarSchrodinger = ({ completedPage }: TFoobarSchrodingerProps) =>
 
 	useEffect(() => {
 		if (completedPage && !completed?.includes(completedPage)) {
-			const updatedPages: Array<TFoobarPage> = [...completed];
+			const updatedPages: Array<FoobarPage> = [...completed];
 			updatedPages.push(completedPage);
 			setFoobarData({
 				completed: updatedPages,

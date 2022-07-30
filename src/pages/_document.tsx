@@ -33,8 +33,7 @@ export default class MyDocument extends Document {
 		return (
 			<Html lang="en">
 				<Head>
-					<link rel="shortcut icon" href="/favicon.png" />
-					<link rel="apple-touch-icon" href="/logo.png" />
+					<link rel="icon" href="/favicon.png" />
 					<meta name="apple-mobile-web-app-title" content="Sreetam Das' Blog" />
 					<meta name="apple-mobile-web-app-status-bar-style" content="default" />
 					<meta name="apple-mobile-web-app-capable" content="yes" />

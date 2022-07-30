@@ -1,12 +1,13 @@
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 
-import { FoobarHintWrapper } from "@/components/foobar/styled";
+import { FoobarHintWrapper } from "./styled";
+
 import { IS_DEV } from "@/config";
 import { FoobarStoreType, useFoobarStore, FOOBAR_PAGES } from "@/domains/Foobar";
+import { logConsoleMessages } from "@/domains/Foobar/console";
 import { Space } from "@/styles/layouts";
 import { LinkTo } from "@/styles/typography";
-import { logConsoleMessages } from "@/utils/console";
 import { useHasMounted } from "@/utils/hooks";
 
 function checkIfAllAchievementsAreDone(completed: FoobarStoreType["foobarData"]["completed"]) {

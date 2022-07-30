@@ -19,10 +19,10 @@ export const FOOBAR_PAGES = {
 	teapot: "teapot",
 } as const;
 
-export type TFoobarPage = typeof FOOBAR_PAGES[keyof typeof FOOBAR_PAGES];
+export type FoobarPage = typeof FOOBAR_PAGES[keyof typeof FOOBAR_PAGES];
 
-export type TFoobarSchrodingerProps = {
-	completedPage?: TFoobarPage;
+export type FoobarSchrodingerProps = {
+	completedPage?: FoobarPage;
 	unlocked?: boolean;
 };
 
@@ -30,7 +30,7 @@ export type FoobarDataType = {
 	visitedPages: Array<string>;
 	konami: boolean;
 	unlocked: boolean;
-	completed: Array<TFoobarPage>;
+	completed: Array<FoobarPage>;
 	allAchievements: boolean;
 };
 
