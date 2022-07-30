@@ -110,8 +110,14 @@ const NavbarMenu = () => {
 	}
 
 	function handleKeyboardDarkModeToggle(event: KeyboardEvent) {
-		if (event.key?.toLowerCase() === "l" && event.shiftKey && event.metaKey) {
-			event.preventDefault();
+		if (
+			event.metaKey &&
+			event.ctrlKey &&
+			event.altKey &&
+			event.shiftKey &&
+			(event.key?.toLowerCase() === "l" || event.code === "KeyL")
+		) {
+			handleThemeToggle();
 		}
 	}
 
@@ -155,6 +161,7 @@ const NavbarMenu = () => {
 		return () => {
 			window.removeEventListener("keydown", handleKeyboardDarkModeToggle);
 		};
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	useEffect(() => {
