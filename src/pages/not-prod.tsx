@@ -1,6 +1,5 @@
 import { GetStaticProps } from "next";
 
-import { Button } from "@/components/Button";
 import { DocumentHead } from "@/components/shared/seo";
 import { Center } from "@/styles/layouts";
 import { Paragraph, Title } from "@/styles/typography";
@@ -13,13 +12,6 @@ const Index = () => (
 				/dev
 			</Title>
 			<Paragraph>A non-Prod environment.</Paragraph>
-			<Button
-				onClick={() => {
-					throw new Error("Sentry Frontend Error");
-				}}
-			>
-				Throw error
-			</Button>
 		</Center>
 	</>
 );

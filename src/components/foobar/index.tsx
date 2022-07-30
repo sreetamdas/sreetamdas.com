@@ -1,7 +1,8 @@
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 
-import { FoobarHintWrapper } from "@/components/foobar/styled";
+import { FoobarHintWrapper } from "./styled";
+
 import { IS_DEV } from "@/config";
 import { FoobarStoreType, useFoobarStore, FOOBAR_PAGES } from "@/domains/Foobar";
 import { logConsoleMessages } from "@/domains/Foobar/console";
