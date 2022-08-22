@@ -65,7 +65,7 @@ specifiers:
   typescript: ^4.7.4
   unist-util-visit: ^4.1.0
   vscode-textmate: ^7.0.1
-  zustand: 4.0.0
+  zustand: 4.1.1
 
 dependencies:
   '@codesandbox/sandpack-react': 1.3.2_biqbaboplfbrettd7655fr4n2y
@@ -105,7 +105,7 @@ dependencies:
   styled-components: 5.3.5_7i5myeigehqah43i5u7wbekgba
   unist-util-visit: 4.1.0
   vscode-textmate: 7.0.1
-  zustand: 4.0.0_react@18.2.0
+  zustand: 4.1.1_react@18.2.0
 
 devDependencies:
   '@next/eslint-plugin-next': 12.2.3
@@ -8081,8 +8081,8 @@ packages:
       yargs-parser: 21.0.1
     dev: true
 
-  /zustand/4.0.0_react@18.2.0:
-    resolution: {integrity: sha512-OrsfQTnRXF1LZ9/vR/IqN9ws5EXUhb149xmPjErZnUrkgxS/gAHGy2dPNIVkVvoxrVe1sIydn4JjF0dYHmGeeQ==}
+  /zustand/4.1.1_react@18.2.0:
+    resolution: {integrity: sha512-h4F3WMqsZgvvaE0n3lThx4MM81Ls9xebjvrABNzf5+jb3/03YjNTSgZXeyrvXDArMeV9untvWXRw1tY+ntPYbA==}
     engines: {node: '>=12.7.0'}
     peerDependencies:
       immer: '>=9.0'
