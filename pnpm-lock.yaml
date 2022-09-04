@@ -44,7 +44,7 @@ specifiers:
   lodash-es: ^4.17.21
   mdx-bundler: ^9.0.1
   micromark: ^3.0.10
-  msw: ^0.44.2
+  msw: ^0.47.0
   next: ^12.2.3
   next-plausible: ^3.2.0
   next-sitemap: ^3.1.15
@@ -130,7 +130,7 @@ devDependencies:
   eslint-plugin-react: 7.30.1_eslint@8.20.0
   eslint-plugin-react-hooks: 4.6.0_eslint@8.20.0
   husky: 8.0.1
-  msw: 0.44.2_typescript@4.7.4
+  msw: 0.47.0_typescript@4.7.4
   next-sitemap: 3.1.15_6lynxinfr2uix4icggokqiwwie
   prettier: 2.7.1
   prisma: 4.1.1
@@ -3197,7 +3197,6 @@ packages:
   /ansi-regex/5.0.1:
     resolution: {integrity: sha512-quJQXlTSUGL2LH9SUXo8VwsY4soanhgo6LNSm84E1LBcE8s3O0wpdiRzyR9z/ZZJMlMWv37qOOb9pdJlMUEKFQ==}
     engines: {node: '>=8'}
-    dev: true
 
   /ansi-styles/3.2.1:
     resolution: {integrity: sha512-VT0ZI6kZRdTh8YyJw3SMbYm/u+NqfsAxEpWO0Pf9sq8/e94WxxOpPKx9FR1FlyCtOVDNOQ+8ntlqFxiRc+r5qA==}
@@ -3951,7 +3950,6 @@ packages:
 
   /emoji-regex/8.0.0:
     resolution: {integrity: sha512-MSjYzcWNOA0ewAHpz0MxpYFvwg6yjy1NG3xteoqz644VCo/RPgnr1/GGt+ic3iJTzQ8Eu3TdM14SawnVUmGE6A==}
-    dev: true
 
   /emoji-regex/9.2.2:
     resolution: {integrity: sha512-L18DaJsXSUk2+42pv8mLs5jJT2hqFkFE4j21wOmgbUqsZ2hL72NsUU785g9RXgo3s0ZNgVl42TiHp3ZtOv/Vyg==}
@@ -5318,7 +5316,7 @@ packages:
     engines: {node: '>=12.0.0'}
     dependencies:
       ansi-escapes: 4.3.2
-      chalk: 4.1.1
+      chalk: 4.1.2
       cli-cursor: 3.1.0
       cli-width: 3.0.0
       external-editor: 3.1.0
@@ -5442,7 +5440,6 @@ packages:
   /is-fullwidth-code-point/3.0.0:
     resolution: {integrity: sha512-zymm5+u+sCsSWyD9qNaejV3DFvhCKclKdizYaJUuHA83RLjb7nSuGnddCHGv0hk+KY7BMAlsWeK4Ueg6EV6XQg==}
     engines: {node: '>=8'}
-    dev: true
 
   /is-generator-function/1.0.10:
     resolution: {integrity: sha512-jsEjy9l3yiXEQ+PsXdmBwEPcOxaXWLspKdplFUVI9vq1iZgIekeC0L167qeu86czQaxed3q/Uzuw0swL0irL8A==}
@@ -6400,13 +6397,13 @@ packages:
     resolution: {integrity: sha512-6FlzubTLZG3J2a/NVCAleEhjzq5oxgHyaCU9yYXvcLsvoVaHJq/s5xXI6/XXP6tz7R9xAOtHnSO/tXtF3WRTlA==}
     dev: true
 
-  /msw/0.44.2_typescript@4.7.4:
-    resolution: {integrity: sha512-u8wjzzcMWouoZtuIShCwx4M3wFF5sBAV1f8K4a0WX8kiihFjzl89IKE1VYmTclLyMIwpOq8qQ1HTpuh2BFX/3A==}
+  /msw/0.47.0_typescript@4.7.4:
+    resolution: {integrity: sha512-e4zfVjv+YoTshwuatioFWWpfJOG2h9ZMqzlwsXX5146q4k2pn+wBrb4wPQP+Gp3Tghc44QZ9II2am532HNkumA==}
     engines: {node: '>=14'}
     hasBin: true
     requiresBuild: true
     peerDependencies:
-      typescript: '>= 4.2.x <= 4.7.x'
+      typescript: '>= 4.2.x <= 4.8.x'
     peerDependenciesMeta:
       typescript:
         optional: true
@@ -6429,7 +6426,7 @@ packages:
       path-to-regexp: 6.2.1
       statuses: 2.0.1
       strict-event-emitter: 0.2.4
-      type-fest: 1.4.0
+      type-fest: 2.19.0
       typescript: 4.7.4
       yargs: 17.5.1
     transitivePeerDependencies:
@@ -6682,7 +6679,7 @@ packages:
     engines: {node: '>=10'}
     dependencies:
       bl: 4.1.0
-      chalk: 4.1.1
+      chalk: 4.1.2
       cli-cursor: 3.1.0
       cli-spinners: 2.6.1
       is-interactive: 1.0.0
@@ -7368,7 +7365,6 @@ packages:
       emoji-regex: 8.0.0
       is-fullwidth-code-point: 3.0.0
       strip-ansi: 6.0.1
-    dev: true
 
   /string.prototype.matchall/4.0.7:
     resolution: {integrity: sha512-f48okCX7JiwVi1NXCVWcFnZgADDC/n2vePlQ/KUCNqCikLLilQvwjMO8+BHVKvgzH0JB0J9LEPgxOGT02RoETg==}
@@ -7430,7 +7426,6 @@ packages:
     engines: {node: '>=8'}
     dependencies:
       ansi-regex: 5.0.1
-    dev: true
 
   /strip-bom-string/1.0.0:
     resolution: {integrity: sha512-uCC2VHvQRYu+lMh4My/sFNmF2klFymLX1wHJeXnbEJERpV/ZsVuonzerjfrGpIGF7LBVa1O7i9kjiWvJiFck8g==}
@@ -7662,9 +7657,9 @@ packages:
     engines: {node: '>=10'}
     dev: true
 
-  /type-fest/1.4.0:
-    resolution: {integrity: sha512-yGSza74xk0UG8k+pLh5oeoYirvIiWo5t0/o3zHHAO2tRDiZcxWP7fywNlXhqb6/r6sWvwi+RsyQMWhVLe4BVuA==}
-    engines: {node: '>=10'}
+  /type-fest/2.19.0:
+    resolution: {integrity: sha512-RAH822pAdBgcNMAfWnCBU3CFZcfZ/i1eZjwFU/dsLKumyuuP3niueg2UAukXYF0E2AAoc82ZSSf9J0WQBinzHA==}
+    engines: {node: '>=12.20'}
     dev: true
 
   /type/1.2.0:
@@ -8005,7 +8000,7 @@ packages:
   /wide-align/1.1.5:
     resolution: {integrity: sha512-eDMORYaPNZ4sQIuuYPDHdQvf4gyCF9rEEV/yPxGfwPkRodwEgiMUUXTx/dex+Me0wxx53S+NgUHaP7y3MGlDmg==}
     dependencies:
-      string-width: 1.0.2
+      string-width: 4.2.3
     dev: false
 
   /word-wrap/1.2.3:
