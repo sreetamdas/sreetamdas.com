@@ -4,44 +4,39 @@
 // https://nextjs.org/docs/api-reference/next.config.js/introduction
 // https://docs.sentry.io/platforms/javascript/guides/nextjs/
 
-const withBundleAnalyzer = require("@next/bundle-analyzer")({
-	enabled: process.env.ANALYZE === "true",
-});
 const { withSentryConfig } = require("@sentry/nextjs");
 const { withPlausibleProxy } = require("next-plausible");
 
 process.env.SITE_URL = process.env.SITE_URL || process.env.VERCEL_URL || "https://sreetamdas.com";
 
-const moduleExports = withBundleAnalyzer(
-	withPlausibleProxy()({
-		compiler: {
-			// ssr and displayName are configured by default
-			styledComponents: true,
-		},
-		pageExtensions: ["js", "jsx", "ts", "tsx", "mdx"],
-		env: {
-			SITE_URL: process.env.SITE_URL,
-			OWNER: process.env.OWNER,
-		},
-		images: {
-			domains: ["avatars.githubusercontent.com"],
-		},
+const moduleExports = withPlausibleProxy()({
+	compiler: {
+		// ssr and displayName are configured by default
+		styledComponents: true,
+	},
+	pageExtensions: ["js", "jsx", "ts", "tsx", "mdx"],
+	env: {
+		SITE_URL: process.env.SITE_URL,
+		OWNER: process.env.OWNER,
+	},
+	images: {
+		domains: ["avatars.githubusercontent.com"],
+	},
 
-		async headers() {
-			return [
-				{
-					source: "/foobar",
-					headers: [
-						{
-							key: "x-foobar",
-							value: "/foobar/headers", // Matched parameters can be used in the value
-						},
-					],
-				},
-			];
-		},
-	})
-);
+	async headers() {
+		return [
+			{
+				source: "/foobar",
+				headers: [
+					{
+						key: "x-foobar",
+						value: "/foobar/headers", // Matched parameters can be used in the value
+					},
+				],
+			},
+		];
+	},
+});
 
 const sentryWebpackPluginOptions = {
 	// Additional config options for the Sentry Webpack plugin. Keep in mind that
