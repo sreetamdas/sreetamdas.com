@@ -14,6 +14,9 @@ const moduleExports = withPlausibleProxy()({
 		// ssr and displayName are configured by default
 		styledComponents: true,
 	},
+	sentry: {
+		hideSourceMaps: true,
+	},
 	pageExtensions: ["js", "jsx", "ts", "tsx", "mdx"],
 	env: {
 		SITE_URL: process.env.SITE_URL,
