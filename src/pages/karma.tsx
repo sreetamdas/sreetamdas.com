@@ -18,7 +18,7 @@ const KARMA_COLOR_PALETTE = [
 	"#7BD88F",
 	"#FD9353",
 ] as const;
-type TKarmaColors = typeof KARMA_COLOR_PALETTE[number];
+type KarmaColors = typeof KARMA_COLOR_PALETTE[number];
 
 const Index = () => (
 	<>
@@ -99,7 +99,7 @@ const ColorPaletteWrapper = styled.div`
 	gap: 1rem;
 `;
 
-const ColorPaletteBlock = styled.div<{ $color: TKarmaColors }>`
+const ColorPaletteBlock = styled.div<{ $color: KarmaColors }>`
 	display: grid;
 	place-content: center;
 

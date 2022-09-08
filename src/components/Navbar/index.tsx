@@ -296,13 +296,13 @@ const NavLinks = () => (
 	</Nav>
 );
 
-type TExternalLinksArray = Array<{
+type ExternalLinksArrayType = Array<{
 	link: string;
 	title: string;
 	icon: JSX.Element;
 }>;
 export const ExternalLinksOverlay = () => {
-	const externalLinks: TExternalLinksArray = [
+	const externalLinks: ExternalLinksArrayType = [
 		{
 			link: "https://github.com/sreetamdas",
 			title: "Sreetam Das' GitHub",

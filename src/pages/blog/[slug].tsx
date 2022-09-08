@@ -30,10 +30,10 @@ import {
 } from "@/styles/typography";
 import { MDXBundledResultProps } from "@/typings/blog";
 import { getMDXFileData, getBlogPostsSlugs } from "@/utils/blog";
-type TProps = MDXBundledResultProps & {
+type Props = MDXBundledResultProps & {
 	subscriberCount: number;
 };
-const Post = ({ code, frontmatter, slug, subscriberCount }: TProps) => {
+const Post = ({ code, frontmatter, slug, subscriberCount }: Props) => {
 	const topRef = useRef<HTMLDivElement>(null);
 	const Component = useMemo(() => getMDXComponent(code), [code]);
 

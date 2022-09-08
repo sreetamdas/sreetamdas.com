@@ -7,10 +7,10 @@ import { FOOBAR_PAGES, FoobarPage } from "@/domains/Foobar";
 import { useHasMounted } from "@/utils/hooks";
 import Custom404 from "pages/404";
 
-type TFoobarPageProps = {
+type FoobarPageProps = {
 	page: Exclude<FoobarPage, "/">;
 };
-interface TFoobarPageQuery extends ParsedUrlQuery {
+interface FoobarPageQuery extends ParsedUrlQuery {
 	page: Exclude<FoobarPage, "/">;
 }
 
@@ -26,7 +26,7 @@ const Index = ({ page }: InferGetStaticPropsType<typeof getStaticProps>) => {
 };
 export default Index;
 
-export const getStaticProps: GetStaticProps<TFoobarPageProps, TFoobarPageQuery> = async ({
+export const getStaticProps: GetStaticProps<FoobarPageProps, FoobarPageQuery> = async ({
 	params,
 }) => {
 	// eslint-disable-next-line @typescript-eslint/no-non-null-assertion

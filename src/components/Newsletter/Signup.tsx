@@ -5,11 +5,11 @@ import { Input, SubmitButton } from "@/components/Form";
 import { Accent, LinkTo } from "@/styles/typography";
 import { breakpoint } from "@/utils/style";
 
-export type TNewsletterProps = {
+export type NewsletterProps = {
 	subscriberCount: number;
 	withNewsletter?: boolean;
 };
-export const NewsletterSignup = ({ subscriberCount, withNewsletter }: TNewsletterProps) => {
+export const NewsletterSignup = ({ subscriberCount, withNewsletter }: NewsletterProps) => {
 	const [formSuccess, setFormSuccess] = useState(false);
 	const [isFormBeingSubmitted, setIsFormBeingSubmitted] = useState(false);
 	const [formError, setFormError] = useState<string>();

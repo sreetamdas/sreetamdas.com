@@ -85,11 +85,11 @@ export const ShowCompletedBadges = () => {
 
 type FoobarBadge = FoobarPage | "completed";
 
-type TFoobarBadgeRecord = {
+type FoobarBadgeRecord = {
 	icon: (props: IconBaseProps) => JSX.Element;
 	description: string | JSX.Element;
 };
-type FoobarBadges = Readonly<Record<FoobarBadge, TFoobarBadgeRecord>>;
+type FoobarBadges = Readonly<Record<FoobarBadge, FoobarBadgeRecord>>;
 
 export const FOOBAR_BADGES: FoobarBadges = {
 	"/": {

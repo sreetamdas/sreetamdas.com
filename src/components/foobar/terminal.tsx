@@ -42,12 +42,12 @@ const TerminalInput = styled.input<{ isButton?: boolean; konami?: boolean }>`
 	}
 `;
 
-type TTerminalProps = {
+type TerminalProps = {
 	foobar?: string;
 	visible?: boolean;
 	toggleTerminal: () => void;
 };
-const Terminal = ({ visible = false, toggleTerminal }: TTerminalProps) => {
+const Terminal = ({ visible = false, toggleTerminal }: TerminalProps) => {
 	const router = useRouter();
 	const [terminalVisible, setTerminalVisible] = useState(visible);
 	const konami = useFoobarStore((state) => state.foobarData.konami);
