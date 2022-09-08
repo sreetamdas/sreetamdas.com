@@ -1,14 +1,19 @@
-import Image, { ImageProps } from "next/image";
+import Image, { ImageProps } from "next/future/image";
 import styled from "styled-components";
 
 import { ViewsCounter } from "@/components/ViewsCounter";
 import { DocumentHead } from "@/components/shared/seo";
 import ImageCSS from "@/public/karma/css.webp";
-import ImageElixir from "@/public/karma/elixir.webp";
+import ImageGo from "@/public/karma/go.webp";
+import ImagePhoenix from "@/public/karma/phoenix.webp";
 import ImagePython from "@/public/karma/python.webp";
 import ImageReact from "@/public/karma/react.webp";
+import ImageRust from "@/public/karma/rust.webp";
+import ImageSvelte from "@/public/karma/svelte.webp";
+import ImageTypeScript from "@/public/karma/typescript.webp";
+import ImageVue from "@/public/karma/vue.webp";
 import { FullWidthWrapper, Space } from "@/styles/layouts";
-import { LinkTo, Title } from "@/styles/typography";
+import { LinkTo, ReallyBigTitle, Title } from "@/styles/typography";
 
 const KARMA_COLOR_PALETTE = [
 	"#FC618D",
@@ -20,6 +25,45 @@ const KARMA_COLOR_PALETTE = [
 ] as const;
 type KarmaColors = typeof KARMA_COLOR_PALETTE[number];
 
+const data = [
+	{
+		name: "React",
+		image: ImageReact,
+	},
+	{
+		name: "CSS",
+		image: ImageCSS,
+	},
+	{
+		name: "Go",
+		image: ImageGo,
+	},
+	{
+		name: "Phoenix",
+		image: ImagePhoenix,
+	},
+	{
+		name: "Python",
+		image: ImagePython,
+	},
+	{
+		name: "Rust",
+		image: ImageRust,
+	},
+	{
+		name: "Svelte",
+		image: ImageSvelte,
+	},
+	{
+		name: "TypeScript",
+		image: ImageTypeScript,
+	},
+	{
+		name: "Vue",
+		image: ImageVue,
+	},
+];
+
 const Index = () => (
 	<>
 		<DocumentHead
@@ -28,7 +72,8 @@ const Index = () => (
 			description="A colorful VS Code theme by Sreetam Das"
 		/>
 		<Space />
-		<Title>Karma — a VS Code theme</Title>
+		<ReallyBigTitle>Karma —</ReallyBigTitle>
+		<Title $size={4}>a VS Code theme</Title>
 		<ColorPaletteWrapper>
 			{KARMA_COLOR_PALETTE.map((color) => (
 				<ColorPaletteBlock $color={color} key={color}>
@@ -45,25 +90,14 @@ const Index = () => (
 		</LinksContainer>
 		<Space />
 		<WideImagesContainer>
-			<Title $size={2.5} as="h2" id="react">
-				React + TypeScript
-			</Title>
-			<StyledImage src={ImageReact} alt="Karma theme screenshot for React" />
-
-			<Title $size={2.5} as="h2" id="css">
-				CSS
-			</Title>
-			<StyledImage src={ImageCSS} alt="Karma theme screenshot for CSS" />
-
-			<Title $size={2.5} as="h2" id="elixir">
-				Elixir
-			</Title>
-			<StyledImage src={ImageElixir} alt="Karma theme screenshot for Elixir" />
-
-			<Title $size={2.5} as="h2" id="python">
-				Python
-			</Title>
-			<StyledImage src={ImagePython} alt="Karma theme screenshot for Python" />
+			{data.map(({ name, image }) => (
+				<>
+					<Title $size={2.5} as="h2" id={name.toLowerCase()}>
+						{name}
+					</Title>
+					<StyledImage src={image} alt={`Karma theme screenshot for ${name}`} />
+				</>
+			))}
 		</WideImagesContainer>
 
 		<ViewsCounter />
@@ -74,15 +108,20 @@ export default Index;
 
 const FullScreenImage = styled.div`
 	margin-top: -1.5rem;
-	max-width: 95vw;
 	justify-self: center;
-	width: 100%;
 	border-radius: var(--border-radius);
+
+	&,
+	> img {
+		max-width: 95vw;
+		width: 100%;
+		height: auto;
+	}
 `;
 
 const StyledImage = (props: ImageProps) => (
 	<FullScreenImage>
-		<Image {...props} quality={100} placeholder={"blur"} />
+		<Image {...props} quality={100} placeholder={"blur"} unoptimized />
 	</FullScreenImage>
 );
 
