@@ -53,6 +53,7 @@ const MyApp = ({ Component, pageProps }: AppPropsWithLayout) => {
 				<meta name="viewport" content="initial-scale=1.0, width=device-width" />
 			</Head>
 			<QueryClientProvider client={reactQueryClient}>
+				{/* @ts-expect-error shush for now */}
 				<Hydrate state={pageProps.dehydratedState}>
 					<PlausibleProvider domain="sreetamdas.com" customDomain="sreetamdas.com">
 						<ThemeProvider theme={themeForContext}>
