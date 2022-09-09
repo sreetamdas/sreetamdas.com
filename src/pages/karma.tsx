@@ -1,19 +1,20 @@
 import Image, { ImageProps } from "next/future/image";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 import { ViewsCounter } from "@/components/ViewsCounter";
 import { DocumentHead } from "@/components/shared/seo";
-import ImageCSS from "@/public/karma/css.webp";
-import ImageGo from "@/public/karma/go.webp";
-import ImagePhoenix from "@/public/karma/phoenix.webp";
-import ImagePython from "@/public/karma/python.webp";
-import ImageReact from "@/public/karma/react.webp";
-import ImageRust from "@/public/karma/rust.webp";
-import ImageSvelte from "@/public/karma/svelte.webp";
-import ImageTypeScript from "@/public/karma/typescript.webp";
-import ImageVue from "@/public/karma/vue.webp";
+import ImageCSS from "@/public/karma/default/css.webp";
+import ImageGo from "@/public/karma/default/go.webp";
+import ImagePhoenix from "@/public/karma/default/phoenix.webp";
+import ImagePython from "@/public/karma/default/python.webp";
+import ImageReact from "@/public/karma/default/react.webp";
+import ImageRust from "@/public/karma/default/rust.webp";
+import ImageSvelte from "@/public/karma/default/svelte.webp";
+import ImageTypeScript from "@/public/karma/default/typescript.webp";
+import ImageVue from "@/public/karma/default/vue.webp";
 import { FullWidthWrapper, Space } from "@/styles/layouts";
-import { LinkTo, ReallyBigTitle, Title } from "@/styles/typography";
+import { LinkTo, Title } from "@/styles/typography";
+import { breakpoint } from "@/utils/style";
 
 const KARMA_COLOR_PALETTE = [
 	"#FC618D",
@@ -64,7 +65,7 @@ const data = [
 	},
 ];
 
-const Index = () => (
+const KarmaPage = () => (
 	<>
 		<DocumentHead
 			title="Karma"
@@ -72,8 +73,12 @@ const Index = () => (
 			description="A colorful VS Code theme by Sreetam Das"
 		/>
 		<Space />
-		<ReallyBigTitle>Karma —</ReallyBigTitle>
-		<Title $size={4}>a VS Code theme</Title>
+		<Title $size={8} $resetLineHeight $scaled $padding="0">
+			Karma —
+		</Title>
+		<Title $size={3} $resetLineHeight $scaled>
+			a colorful VS Code theme
+		</Title>
 		<ColorPaletteWrapper>
 			{KARMA_COLOR_PALETTE.map((color) => (
 				<ColorPaletteBlock $color={color} key={color}>
@@ -88,15 +93,14 @@ const Index = () => (
 
 			<LinkTo href="https://github.com/sreetamdas/karma">View source</LinkTo>
 		</LinksContainer>
-		<Space />
 		<WideImagesContainer>
 			{data.map(({ name, image }) => (
-				<>
-					<Title $size={2.5} as="h2" id={name.toLowerCase()}>
+				<CodeExampleWrapper key={name.toLowerCase()}>
+					<Title $size={2.5} as="h2" id={name.toLowerCase()} $padding="0 0 20px 0">
 						{name}
 					</Title>
 					<StyledImage src={image} alt={`Karma theme screenshot for ${name}`} />
-				</>
+				</CodeExampleWrapper>
 			))}
 		</WideImagesContainer>
 
@@ -104,7 +108,7 @@ const Index = () => (
 	</>
 );
 
-export default Index;
+export default KarmaPage;
 
 const FullScreenImage = styled.div`
 	margin-top: -1.5rem;
@@ -126,16 +130,27 @@ const StyledImage = (props: ImageProps) => (
 );
 
 const WideImagesContainer = styled(FullWidthWrapper)`
-	display: grid;
-	justify-items: center;
+	display: flex;
+	flex-direction: column;
+	row-gap: 100px;
+`;
+
+const CodeExampleWrapper = styled.article`
+	display: flex;
+	flex-direction: column;
+	align-items: center;
 `;
 
 const ColorPaletteWrapper = styled.div`
 	display: flex;
 	flex-wrap: wrap;
-	justify-content: center;
+	justify-content: space-between;
 	align-items: center;
 	gap: 1rem;
+
+	${breakpoint.until.sm(css`
+		justify-content: center;
+	`)}
 `;
 
 const ColorPaletteBlock = styled.div<{ $color: KarmaColors }>`
