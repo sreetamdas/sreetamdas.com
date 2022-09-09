@@ -1,4 +1,5 @@
 import Image, { ImageProps } from "next/future/image";
+import { useEffect, useState } from "react";
 import styled, { css, useTheme } from "styled-components";
 
 import { ViewsCounter } from "@/components/ViewsCounter";
@@ -23,7 +24,7 @@ import ImageRustLight from "@/public/karma/light/rust.webp";
 import ImageSvelteLight from "@/public/karma/light/svelte.webp";
 import ImageTypeScriptLight from "@/public/karma/light/typescript.webp";
 import ImageVueLight from "@/public/karma/light/vue.webp";
-import { FullWidthWrapper, Space } from "@/styles/layouts";
+import { Center, FullWidthWrapper, Space } from "@/styles/layouts";
 import { LinkTo, Title } from "@/styles/typography";
 import { breakpoint } from "@/utils/style";
 
@@ -100,7 +101,11 @@ const data = [
 
 const KarmaPage = () => {
 	const { themeType } = useTheme();
-	const defaultTheme = themeType === "dark";
+	const [isDefaultTheme, setIsDefaultTheme] = useState(true);
+
+	useEffect(() => {
+		setIsDefaultTheme(themeType === "dark");
+	}, [themeType]);
 
 	return (
 		<>
@@ -110,13 +115,15 @@ const KarmaPage = () => {
 				description="A colorful VS Code theme by Sreetam Das"
 			/>
 			<Space />
-			<MainTitle>Karma —</MainTitle>
-			<Title $size={3} $resetLineHeight $scaled>
-				a colorful VS Code theme
-			</Title>
+			<Center>
+				<MainTitle>Karma</MainTitle>
+				<Title $size={3} $resetLineHeight $scaled>
+					a colorful VS Code theme
+				</Title>
+			</Center>
 			<ColorPaletteWrapper>
-				{(defaultTheme ? KARMA_COLOR_PALETTE : KARMA_LIGHT_COLOR_PALETTE).map((color) => (
-					<ColorPaletteBlock $color={color} key={color} $isDefaultTheme={defaultTheme}>
+				{(isDefaultTheme ? KARMA_COLOR_PALETTE : KARMA_LIGHT_COLOR_PALETTE).map((color) => (
+					<ColorPaletteBlock $color={color} key={color} $isDefaultTheme={isDefaultTheme}>
 						{color}
 					</ColorPaletteBlock>
 				))}
@@ -128,16 +135,29 @@ const KarmaPage = () => {
 
 				<LinkTo href="https://github.com/sreetamdas/karma">View source</LinkTo>
 			</LinksContainer>
+			<TableOfContentsWrapper>
+				<p>Check out examples:</p>
+				<TableOfContents>
+					{data.map(({ name }) => (
+						<li key={name.toLowerCase()}>
+							<a href={`#${name.toLowerCase()}`}>{name}</a>
+						</li>
+					))}
+				</TableOfContents>
+			</TableOfContentsWrapper>
 			<WideImagesContainer>
 				{data.map(({ name, defaultImage, lightImage }) => {
-					const image = defaultTheme ? defaultImage : lightImage;
+					const image = isDefaultTheme ? defaultImage : lightImage;
 
 					return (
 						<CodeExampleWrapper key={name.toLowerCase()}>
 							<Title $size={2.5} as="h2" id={name.toLowerCase()} $padding="0 0 20px 0">
 								{name}
 							</Title>
-							<StyledImage src={image} alt={`Karma ${themeType} theme screenshot for ${name}`} />
+							<StyledImage
+								src={image}
+								alt={`Karma ${isDefaultTheme ? "" : "Light "}theme screenshot for ${name}`}
+							/>
 						</CodeExampleWrapper>
 					);
 				})}
@@ -179,6 +199,34 @@ const StyledImage = (props: ImageProps) => (
 	</FullScreenImage>
 );
 
+const TableOfContentsWrapper = styled.div`
+	display: flex;
+	gap: 30px;
+	padding-bottom: 50px;
+
+	> p {
+		margin: 0;
+
+		${breakpoint.from.sm(css`
+			flex-shrink: 0;
+		`)}
+	}
+`;
+
+const TableOfContents = styled.ul`
+	display: flex;
+	flex-wrap: wrap;
+	margin: 0;
+	padding: 0;
+	column-gap: 30px;
+	row-gap: 10px;
+
+	li {
+		display: inline;
+		list-style: none;
+	}
+`;
+
 const WideImagesContainer = styled(FullWidthWrapper)`
 	display: flex;
 	flex-direction: column;
@@ -197,6 +245,7 @@ const ColorPaletteWrapper = styled.div`
 	justify-content: space-between;
 	align-items: center;
 	gap: 1rem;
+	padding-top: 50px;
 
 	${breakpoint.until.sm(css`
 		justify-content: center;
@@ -218,10 +267,9 @@ const ColorPaletteBlock = styled.div<{ $color: KarmaColors; $isDefaultTheme: boo
 `;
 
 const LinksContainer = styled.div`
-	display: grid;
+	display: flex;
 	gap: 5rem;
 	justify-content: center;
-	grid-auto-flow: column;
 	padding: 40px 0;
 `;
 
