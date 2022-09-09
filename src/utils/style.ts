@@ -5,9 +5,9 @@ export const BASE_FONT_SIZE = 18;
 export type BreakpointType = keyof typeof BREAKPOINTS;
 export const BREAKPOINTS = {
 	xs: 320,
-	sm: 400,
+	sm: 640,
 	md: 768,
-	lg: 1060,
+	lg: 1024,
 	xl: 1440,
 };
 

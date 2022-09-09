@@ -57,9 +57,17 @@ type TitleProps = {
 	$size?: number;
 	$scaled?: boolean;
 	$codeFont?: boolean;
+	$padding?: string | number;
 };
 export const Title = styled.h1<TitleProps>`
-	padding: 20px 0;
+	${({ $padding }) =>
+		$padding
+			? css`
+					padding: ${$padding};
+			  `
+			: css`
+					padding: 20px 0;
+			  `}
 
 	${({ $resetLineHeight }) =>
 		$resetLineHeight &&
