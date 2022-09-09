@@ -146,7 +146,7 @@ const KarmaPage = () => {
 				</TableOfContents>
 			</TableOfContentsWrapper>
 			<WideImagesContainer>
-				{data.map(({ name, defaultImage, lightImage }) => {
+				{data.map(({ name, defaultImage, lightImage }, index) => {
 					const image = isDefaultTheme ? defaultImage : lightImage;
 
 					return (
@@ -157,6 +157,7 @@ const KarmaPage = () => {
 							<StyledImage
 								src={image}
 								alt={`Karma ${isDefaultTheme ? "" : "Light "}theme screenshot for ${name}`}
+								priority={index === 0}
 							/>
 						</CodeExampleWrapper>
 					);
@@ -169,6 +170,12 @@ const KarmaPage = () => {
 };
 
 export default KarmaPage;
+
+const StyledImage = (props: ImageProps) => (
+	<FullScreenImage>
+		<Image {...props} quality={100} placeholder={"blur"} unoptimized />
+	</FullScreenImage>
+);
 
 const MainTitle = styled.h1`
 	font-size: clamp(1rem, 8rem, 20vw);
@@ -192,12 +199,6 @@ const FullScreenImage = styled.div`
 		`)}
 	}
 `;
-
-const StyledImage = (props: ImageProps) => (
-	<FullScreenImage>
-		<Image {...props} quality={100} placeholder={"blur"} unoptimized />
-	</FullScreenImage>
-);
 
 const TableOfContentsWrapper = styled.div`
 	display: flex;
