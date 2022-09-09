@@ -1,5 +1,5 @@
 import "focus-visible";
-import { Hydrate, QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { Hydrate, QueryClient, QueryClientProvider, DehydratedState } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import type { NextPage } from "next";
 import PlausibleProvider from "next-plausible";
@@ -23,14 +23,15 @@ type NextPageWithLayout = NextPage & {
 	Layout?: ({ children }: PropsWithChildren<unknown>) => JSX.Element;
 };
 
-type AppPropsWithLayout = AppProps & {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type AppPropsWithLayout = AppProps<{ dehydratedState: DehydratedState } & any> & {
 	Component: NextPageWithLayout;
 };
 
 type ThemeObjectInitial = Pick<StyledThemeObject, "themeType" | "theme">;
 
 const MyApp = ({ Component, pageProps }: AppPropsWithLayout) => {
-	const reactQueryClient = new QueryClient();
+	const [queryClient] = useState(() => new QueryClient());
 	// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 	const initialTheme = getInitialColorMode()!;
 	const [themeObject, setThemeObject] = useState<ThemeObjectInitial>({
@@ -52,8 +53,7 @@ const MyApp = ({ Component, pageProps }: AppPropsWithLayout) => {
 			<Head>
 				<meta name="viewport" content="initial-scale=1.0, width=device-width" />
 			</Head>
-			<QueryClientProvider client={reactQueryClient}>
-				{/* @ts-expect-error shush for now */}
+			<QueryClientProvider client={queryClient}>
 				<Hydrate state={pageProps.dehydratedState}>
 					<PlausibleProvider domain="sreetamdas.com" customDomain="sreetamdas.com">
 						<ThemeProvider theme={themeForContext}>

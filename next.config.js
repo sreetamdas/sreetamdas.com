@@ -14,9 +14,9 @@ const moduleExports = withPlausibleProxy()({
 		// ssr and displayName are configured by default
 		styledComponents: true,
 	},
-	swcMinify: true,
+	// swcMinify: true,
 	sentry: {
-		hideSourceMaps: true,
+		hideSourceMaps: false,
 	},
 	pageExtensions: ["js", "jsx", "ts", "tsx", "mdx"],
 	env: {
