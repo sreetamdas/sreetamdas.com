@@ -35,7 +35,15 @@ const KARMA_COLOR_PALETTE = [
 	"#7BD88F",
 	"#FD9353",
 ] as const;
-type KarmaColors = typeof KARMA_COLOR_PALETTE[number];
+const KARMA_LIGHT_COLOR_PALETTE = [
+	"#FC618D",
+	"#5688C7",
+	"#6F42C1",
+	"#FFAA33",
+	"#2D972F",
+	"#FA8D3E",
+] as const;
+type KarmaColors = typeof KARMA_COLOR_PALETTE[number] | typeof KARMA_LIGHT_COLOR_PALETTE[number];
 
 const data = [
 	{
@@ -92,6 +100,7 @@ const data = [
 
 const KarmaPage = () => {
 	const { themeType } = useTheme();
+	const defaultTheme = themeType === "dark";
 
 	return (
 		<>
@@ -101,15 +110,13 @@ const KarmaPage = () => {
 				description="A colorful VS Code theme by Sreetam Das"
 			/>
 			<Space />
-			<Title $size={8} $resetLineHeight $scaled $padding="0">
-				Karma —
-			</Title>
+			<MainTitle>Karma —</MainTitle>
 			<Title $size={3} $resetLineHeight $scaled>
 				a colorful VS Code theme
 			</Title>
 			<ColorPaletteWrapper>
-				{KARMA_COLOR_PALETTE.map((color) => (
-					<ColorPaletteBlock $color={color} key={color}>
+				{(defaultTheme ? KARMA_COLOR_PALETTE : KARMA_LIGHT_COLOR_PALETTE).map((color) => (
+					<ColorPaletteBlock $color={color} key={color} $isDefaultTheme={defaultTheme}>
 						{color}
 					</ColorPaletteBlock>
 				))}
@@ -123,14 +130,14 @@ const KarmaPage = () => {
 			</LinksContainer>
 			<WideImagesContainer>
 				{data.map(({ name, defaultImage, lightImage }) => {
-					const image = themeType === "dark" ? defaultImage : lightImage;
+					const image = defaultTheme ? defaultImage : lightImage;
 
 					return (
 						<CodeExampleWrapper key={name.toLowerCase()}>
 							<Title $size={2.5} as="h2" id={name.toLowerCase()} $padding="0 0 20px 0">
 								{name}
 							</Title>
-							<StyledImage src={image} alt={`Karma theme screenshot for ${name}`} />
+							<StyledImage src={image} alt={`Karma ${themeType} theme screenshot for ${name}`} />
 						</CodeExampleWrapper>
 					);
 				})}
@@ -143,6 +150,12 @@ const KarmaPage = () => {
 
 export default KarmaPage;
 
+const MainTitle = styled.h1`
+	font-size: clamp(1rem, 8rem, 20vw);
+	padding: 0;
+	line-height: 1;
+`;
+
 const FullScreenImage = styled.div`
 	margin-top: -1.5rem;
 	justify-self: center;
@@ -150,9 +163,13 @@ const FullScreenImage = styled.div`
 
 	&,
 	> img {
-		max-width: 95vw;
+		max-width: 75vw;
 		width: 100%;
 		height: auto;
+
+		${breakpoint.until.sm(css`
+			max-width: 95vw;
+		`)}
 	}
 `;
 
@@ -186,11 +203,11 @@ const ColorPaletteWrapper = styled.div`
 	`)}
 `;
 
-const ColorPaletteBlock = styled.div<{ $color: KarmaColors }>`
+const ColorPaletteBlock = styled.div<{ $color: KarmaColors; $isDefaultTheme: boolean }>`
 	display: grid;
 	place-content: center;
 
-	color: #000;
+	color: ${({ $isDefaultTheme }) => ($isDefaultTheme ? "#000" : "#FFF")};
 	background-color: ${({ $color }) => $color};
 
 	font-family: var(--font-family-code);
