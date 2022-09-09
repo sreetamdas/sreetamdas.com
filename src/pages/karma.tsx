@@ -1,9 +1,10 @@
 import Image, { ImageProps } from "next/future/image";
-import styled, { css } from "styled-components";
+import styled, { css, useTheme } from "styled-components";
 
 import { ViewsCounter } from "@/components/ViewsCounter";
 import { DocumentHead } from "@/components/shared/seo";
 import ImageCSS from "@/public/karma/default/css.webp";
+import ImageElixir from "@/public/karma/default/elixir.webp";
 import ImageGo from "@/public/karma/default/go.webp";
 import ImagePhoenix from "@/public/karma/default/phoenix.webp";
 import ImagePython from "@/public/karma/default/python.webp";
@@ -12,6 +13,16 @@ import ImageRust from "@/public/karma/default/rust.webp";
 import ImageSvelte from "@/public/karma/default/svelte.webp";
 import ImageTypeScript from "@/public/karma/default/typescript.webp";
 import ImageVue from "@/public/karma/default/vue.webp";
+import ImageCSSLight from "@/public/karma/light/css.webp";
+import ImageElixirLight from "@/public/karma/light/elixir.webp";
+import ImageGoLight from "@/public/karma/light/go.webp";
+import ImagePhoenixLight from "@/public/karma/light/phoenix.webp";
+import ImagePythonLight from "@/public/karma/light/python.webp";
+import ImageReactLight from "@/public/karma/light/react.webp";
+import ImageRustLight from "@/public/karma/light/rust.webp";
+import ImageSvelteLight from "@/public/karma/light/svelte.webp";
+import ImageTypeScriptLight from "@/public/karma/light/typescript.webp";
+import ImageVueLight from "@/public/karma/light/vue.webp";
 import { FullWidthWrapper, Space } from "@/styles/layouts";
 import { LinkTo, Title } from "@/styles/typography";
 import { breakpoint } from "@/utils/style";
@@ -29,84 +40,106 @@ type TKarmaColors = typeof KARMA_COLOR_PALETTE[number];
 const data = [
 	{
 		name: "React",
-		image: ImageReact,
+		defaultImage: ImageReact,
+		lightImage: ImageReactLight,
+	},
+	{
+		name: "Elixir",
+		defaultImage: ImageElixir,
+		lightImage: ImageElixirLight,
 	},
 	{
 		name: "CSS",
-		image: ImageCSS,
+		defaultImage: ImageCSS,
+		lightImage: ImageCSSLight,
 	},
 	{
 		name: "Go",
-		image: ImageGo,
+		defaultImage: ImageGo,
+		lightImage: ImageGoLight,
 	},
 	{
 		name: "Phoenix",
-		image: ImagePhoenix,
+		defaultImage: ImagePhoenix,
+		lightImage: ImagePhoenixLight,
 	},
 	{
 		name: "Python",
-		image: ImagePython,
+		defaultImage: ImagePython,
+		lightImage: ImagePythonLight,
 	},
 	{
 		name: "Rust",
-		image: ImageRust,
+		defaultImage: ImageRust,
+		lightImage: ImageRustLight,
 	},
 	{
 		name: "Svelte",
-		image: ImageSvelte,
+		defaultImage: ImageSvelte,
+		lightImage: ImageSvelteLight,
 	},
 	{
 		name: "TypeScript",
-		image: ImageTypeScript,
+		defaultImage: ImageTypeScript,
+		lightImage: ImageTypeScriptLight,
 	},
 	{
 		name: "Vue",
-		image: ImageVue,
+		defaultImage: ImageVue,
+		lightImage: ImageVueLight,
 	},
 ];
 
-const KarmaPage = () => (
-	<>
-		<DocumentHead
-			title="Karma"
-			imageURL="/karma/karma-card.jpg"
-			description="A colorful VS Code theme by Sreetam Das"
-		/>
-		<Space />
-		<Title $size={8} $resetLineHeight $scaled $padding="0">
-			Karma —
-		</Title>
-		<Title $size={3} $resetLineHeight $scaled>
-			a colorful VS Code theme
-		</Title>
-		<ColorPaletteWrapper>
-			{KARMA_COLOR_PALETTE.map((color) => (
-				<ColorPaletteBlock $color={color} key={color}>
-					{color}
-				</ColorPaletteBlock>
-			))}
-		</ColorPaletteWrapper>
-		<LinksContainer>
-			<LinkTo href="https://marketplace.visualstudio.com/items?itemName=SreetamD.karma">
-				Install from VS Code marketplace
-			</LinkTo>
+const KarmaPage = () => {
+	const { themeType } = useTheme();
 
-			<LinkTo href="https://github.com/sreetamdas/karma">View source</LinkTo>
-		</LinksContainer>
-		<WideImagesContainer>
-			{data.map(({ name, image }) => (
-				<CodeExampleWrapper key={name.toLowerCase()}>
-					<Title $size={2.5} as="h2" id={name.toLowerCase()} $padding="0 0 20px 0">
-						{name}
-					</Title>
-					<StyledImage src={image} alt={`Karma theme screenshot for ${name}`} />
-				</CodeExampleWrapper>
-			))}
-		</WideImagesContainer>
+	return (
+		<>
+			<DocumentHead
+				title="Karma"
+				imageURL="/karma/karma-card.jpg"
+				description="A colorful VS Code theme by Sreetam Das"
+			/>
+			<Space />
+			<Title $size={8} $resetLineHeight $scaled $padding="0">
+				Karma —
+			</Title>
+			<Title $size={3} $resetLineHeight $scaled>
+				a colorful VS Code theme
+			</Title>
+			<ColorPaletteWrapper>
+				{KARMA_COLOR_PALETTE.map((color) => (
+					<ColorPaletteBlock $color={color} key={color}>
+						{color}
+					</ColorPaletteBlock>
+				))}
+			</ColorPaletteWrapper>
+			<LinksContainer>
+				<LinkTo href="https://marketplace.visualstudio.com/items?itemName=SreetamD.karma">
+					Install from VS Code marketplace
+				</LinkTo>
 
-		<ViewsCounter />
-	</>
-);
+				<LinkTo href="https://github.com/sreetamdas/karma">View source</LinkTo>
+			</LinksContainer>
+			<WideImagesContainer>
+				{data.map(({ name, defaultImage, lightImage }) => {
+					const image = themeType === "dark" ? defaultImage : lightImage;
+
+					return (
+						<CodeExampleWrapper key={name.toLowerCase()}>
+							<Title $size={2.5} as="h2" id={name.toLowerCase()} $padding="0 0 20px 0">
+								{name}
+							</Title>
+							<StyledImage src={image} alt={`Karma theme screenshot for ${name}`} />
+						</CodeExampleWrapper>
+					);
+				})}
+			</WideImagesContainer>
+
+			<ViewsCounter />
+		</>
+	);
+};
 
 export default KarmaPage;
 
