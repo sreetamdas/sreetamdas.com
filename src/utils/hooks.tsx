@@ -9,7 +9,7 @@ import {
 	ReactNode,
 } from "react";
 
-import { BREAKPOINTS, TBreakpoint } from "@/utils/style";
+import { BREAKPOINTS, BreakpointType } from "@/utils/style";
 
 export const viewportContext = createContext({});
 
@@ -178,15 +178,15 @@ export const ViewportProvider = ({ children }: PropsWithChildren<ReactNode>) => 
 	return <viewportContext.Provider value={{ width }}>{children}</viewportContext.Provider>;
 };
 
-function getBreakpointOrSize(breakpoint: TBreakpoint | number) {
+function getBreakpointOrSize(breakpoint: BreakpointType | number) {
 	if (typeof breakpoint === "string") {
 		return BREAKPOINTS[breakpoint];
 	}
 	return breakpoint;
 }
 
-type TUseBreakpointProps = (
-	{ from, to }: { from?: TBreakpoint | number; to: TBreakpoint | number },
+type UseBreakpointProps = (
+	{ from, to }: { from?: BreakpointType | number; to: BreakpointType | number },
 	{ onEnter, onLeave }: { onEnter: () => void; onLeave: () => void }
 ) => void;
 
@@ -195,7 +195,7 @@ type TUseBreakpointProps = (
  * @param viewportSize the viewport range to be tracked
  * @param callbackFn handler functions to be executed when the viewport is entering/leaving that size
  */
-export const useBreakpointRange: TUseBreakpointProps = ({ from = 0, to }, { onEnter, onLeave }) => {
+export const useBreakpointRange: UseBreakpointProps = ({ from = 0, to }, { onEnter, onLeave }) => {
 	const [currentState, setCurrentState] = useState("");
 	const fromSize = getBreakpointOrSize(from);
 	const toSize = getBreakpointOrSize(to);

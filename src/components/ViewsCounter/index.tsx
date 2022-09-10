@@ -6,7 +6,7 @@ import { sharedTransition } from "@/styles/components";
 import { PostDetails } from "@/typings/blog";
 import { getViewCount, updateAndGetViewCount } from "@/utils/misc";
 
-const ViewsWrapper = styled.div<{ $hidden: TViewsCounterProps["hidden"] }>`
+const ViewsWrapper = styled.div<{ $hidden: ViewsCounterProps["hidden"] }>`
 	display: flex;
 	flex-direction: row;
 	gap: 0.4rem;
@@ -41,7 +41,7 @@ const ViewCount = styled.span`
 	${sharedTransition("color, background-color")}
 `;
 
-function getViewCountCopy(view_count: number, pageType: TViewsCounterProps["pageType"]) {
+function getViewCountCopy(view_count: number, pageType: ViewsCounterProps["pageType"]) {
 	switch (view_count) {
 		case 0:
 			return "No views yet. Wait what, HOW? 🤔";
@@ -94,7 +94,7 @@ function getViewCountCopy(view_count: number, pageType: TViewsCounterProps["page
 	}
 }
 
-type TViewsCounterProps = {
+type ViewsCounterProps = {
 	pageType?: "post" | "page";
 	hidden?: boolean;
 	disabled?: boolean;
@@ -106,7 +106,7 @@ export const ViewsCounter = ({
 	hidden = false,
 	// Essentially unmount the component, e.g. during development
 	disabled = process.env.NODE_ENV === "development",
-}: TViewsCounterProps) => {
+}: ViewsCounterProps) => {
 	const { asPath: path } = useRouter();
 
 	const { data, isLoading } = useQuery<Pick<PostDetails, "view_count">>(

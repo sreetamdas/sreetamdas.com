@@ -71,10 +71,10 @@ export async function bundleMDXWithOptions(filename: string) {
 	return result;
 }
 
-type TGetMDXFileDataOptions = {
+type GetMDXFileDataOptions = {
 	cwd: string;
 };
-export async function getMDXFileData(fileSlug: string, options?: TGetMDXFileDataOptions) {
+export async function getMDXFileData(fileSlug: string, options?: GetMDXFileDataOptions) {
 	const DIR = path.resolve(PATH, ...(options?.cwd ?? "content").split("/"));
 	const name = path.resolve(DIR ?? BLOG_DIR, `${fileSlug}.mdx`);
 	const result = await bundleMDXWithOptions(name);

@@ -12,8 +12,8 @@ import { LinkTo } from "@/styles/typography";
 import { MDXBundledResultProps } from "@/typings/blog";
 import { useHover } from "@/utils/hooks";
 
-type TBlogPostPreviewProps = Pick<MDXBundledResultProps, "frontmatter" | "slug">;
-export const BlogPostPreview = ({ frontmatter, slug }: TBlogPostPreviewProps) => {
+type BlogPostPreviewProps = Pick<MDXBundledResultProps, "frontmatter" | "slug">;
+export const BlogPostPreview = ({ frontmatter, slug }: BlogPostPreviewProps) => {
 	const [hoverRef, isHovered] = useHover<HTMLAnchorElement>();
 
 	return (
@@ -43,8 +43,8 @@ export const BlogPostPreview = ({ frontmatter, slug }: TBlogPostPreviewProps) =>
 	);
 };
 
-type TBlogPostsPreviewProps = { posts: Array<TBlogPostPreviewProps> };
-export const BlogPostsPreviews = ({ posts }: TBlogPostsPreviewProps) => (
+type BlogPostsPreviewProps = { posts: Array<BlogPostPreviewProps> };
+export const BlogPostsPreviews = ({ posts }: BlogPostsPreviewProps) => (
 	<BlogPostsPreviewLayout>
 		{posts.map(({ frontmatter, slug }, index) => (
 			<BlogPostPreview {...{ frontmatter, slug }} key={index} />

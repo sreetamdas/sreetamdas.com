@@ -17,10 +17,10 @@ import { Title, Heavy, MDXTitle, StyledAccentTextLink, PrimaryGradient } from "@
 import { MDXBundledResultProps } from "@/typings/blog";
 import { getMDXFileData, getRootPagesSlugs } from "@/utils/blog";
 
-type TProps = MDXBundledResultProps & {
+type Props = MDXBundledResultProps & {
 	subscriberCount: number;
 };
-const Page = ({ code, frontmatter, subscriberCount }: TProps) => {
+const Page = ({ code, frontmatter, subscriberCount }: Props) => {
 	const Component = useMemo(() => getMDXComponent(code), [code]);
 
 	return (

@@ -2,12 +2,12 @@ import { css, FlattenSimpleInterpolation } from "styled-components";
 
 export const BASE_FONT_SIZE = 18;
 
-export type TBreakpoint = keyof typeof BREAKPOINTS;
+export type BreakpointType = keyof typeof BREAKPOINTS;
 export const BREAKPOINTS = {
 	xs: 320,
-	sm: 400,
+	sm: 640,
 	md: 768,
-	lg: 1060,
+	lg: 1024,
 	xl: 1440,
 };
 
@@ -16,11 +16,11 @@ export function pixelToRem(fontSize: number) {
 }
 
 const breakpointSides = ["until", "from"] as const;
-type TBreakpointSide = typeof breakpointSides[number];
+type BreakpointSide = typeof breakpointSides[number];
 
-type TBreakpointFn = {
-	[side in TBreakpointSide]: {
-		[key in TBreakpoint]: (styles: FlattenSimpleInterpolation) => string;
+type BreakpointFn = {
+	[side in BreakpointSide]: {
+		[key in BreakpointType]: (styles: FlattenSimpleInterpolation) => string;
 	};
 };
 export const breakpoint = breakpointSides.reduce(
@@ -42,10 +42,10 @@ export const breakpoint = breakpointSides.reduce(
 								}
 						  `,
 			}),
-			{} as TBreakpointFn
+			{} as BreakpointFn
 		),
 	}),
-	{} as TBreakpointFn
+	{} as BreakpointFn
 );
 
 export function focusVisible(rules: FlattenSimpleInterpolation, onHover?: boolean) {

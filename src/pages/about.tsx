@@ -13,11 +13,11 @@ import { Title, LinkTo } from "@/styles/typography";
 import { MDXBundledResultProps } from "@/typings/blog";
 import { getMDXFileData } from "@/utils/blog";
 
-type TProps = MDXBundledResultProps & {
+type Props = MDXBundledResultProps & {
 	subscriberCount: Awaited<ReturnType<typeof getButtondownSubscriberCount>>;
 };
 
-const About = ({ code, frontmatter: _, subscriberCount }: TProps) => {
+const About = ({ code, frontmatter: _, subscriberCount }: Props) => {
 	const Component = useMemo(() => getMDXComponent(code), [code]);
 
 	const { setFoobarData, unlocked } = useFoobarStore((state) => ({

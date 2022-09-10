@@ -3,13 +3,13 @@ import { visit } from "unist-util-visit";
 
 import { renderToHTML } from "@/components/shiki/renderer";
 
-type TRemarkShikiOptions = {
+type RemarkShikiOptions = {
 	highlighter: Highlighter;
 	renderToHTML?: typeof renderToHTML;
 	ignoreUnknownLanguage?: string;
 };
 
-export function remarkShiki(options: TRemarkShikiOptions) {
+export function remarkShiki(options: RemarkShikiOptions) {
 	const { highlighter, renderToHTML } = options;
 	const loadedLanguages = highlighter.getLoadedLanguages();
 	const ignoreUnknownLanguage =
