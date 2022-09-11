@@ -21,6 +21,7 @@
 		"@notionhq/client": "2.2.0",
 		"@octokit/core": "^4.0.5",
 		"@prisma/client": "^4.3.1",
+		"@radix-ui/react-switch": "^1.0.0",
 		"@sentry/nextjs": "^7.12.1",
 		"@sentry/tracing": "^7.12.1",
 		"@sreetamdas/karma": "^2.3.4",
