@@ -273,6 +273,9 @@ const NavLinks = () => (
 				<NavLink href="/newsletter">newsletter</NavLink>
 			</motion.li>
 			<motion.li variants={textLinksVariants}>
+				<NavLink href="/karma">karma</NavLink>
+			</motion.li>
+			<motion.li variants={textLinksVariants}>
 				<NavLink href="/uses">uses</NavLink>
 			</motion.li>
 		</PageLinks>
