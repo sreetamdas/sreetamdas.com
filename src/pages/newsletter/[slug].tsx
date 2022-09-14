@@ -48,7 +48,9 @@ export const getStaticProps: GetStaticProps<PageProps> = async ({ params }) => {
 
 	if (!allNewsletterIssuesData) {
 		// TODO: trim data being passed down
-		allNewsletterIssuesData = await getAllButtondownEmails();
+		allNewsletterIssuesData = await getAllButtondownEmails(
+			`NO CACHE getStaticProps ${params.slug}`
+		);
 	}
 	const newsletterIssue = allNewsletterIssuesData.results.find(
 		(issue) => issue.slug === params.slug
@@ -67,7 +69,7 @@ export const getStaticProps: GetStaticProps<PageProps> = async ({ params }) => {
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {
-	const newsletterIssues = await getAllButtondownEmails();
+	const newsletterIssues = await getAllButtondownEmails("getStaticPaths [slug]");
 	const paths = newsletterIssues.results.map(({ slug }) => ({
 		params: { slug },
 	}));
