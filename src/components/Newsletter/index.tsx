@@ -9,9 +9,10 @@ import {
 	ExtraInfoWrapper,
 	PreviewMetadata,
 	IconContainer,
+	StatsLinkWrapper,
 } from "./styles";
 
-import { ButtondownEmailsType } from "@/domains/Buttondown";
+import { ButtondownEmailsType, BUTTONDOWN_EMAIL_STATS_URL_PREFIX } from "@/domains/Buttondown";
 import { LinkTo } from "@/styles/typography";
 
 type IssueDefaultFields = ButtondownEmailsType["results"][number];
@@ -23,8 +24,9 @@ type IssuePreviewProps = Pick<IssueDefaultFields, "body" | "slug" | "subject"> &
 
 type NewsletterIssuePreviewProps = {
 	issue: IssuePreviewProps;
+	isAdminUser: boolean;
 };
-const NewsletterIssuePreview = ({ issue }: NewsletterIssuePreviewProps) => (
+const NewsletterIssuePreview = ({ issue, isAdminUser }: NewsletterIssuePreviewProps) => (
 	<PreviewWrapper>
 		<PreviewSubject>
 			<LinkTo href={`/newsletter/${issue.slug}`} scroll={false} passHref $unstyledOnHover>
@@ -45,6 +47,13 @@ const NewsletterIssuePreview = ({ issue }: NewsletterIssuePreviewProps) => (
 						day: "numeric",
 					})}
 				</IconContainer>
+				{isAdminUser && (
+					<StatsLinkWrapper>
+						<LinkTo href={`${BUTTONDOWN_EMAIL_STATS_URL_PREFIX}${issue.id}`} external>
+							Stats
+						</LinkTo>
+					</StatsLinkWrapper>
+				)}
 			</PreviewMetadata>
 		</ExtraInfoWrapper>
 	</PreviewWrapper>
@@ -52,11 +61,12 @@ const NewsletterIssuePreview = ({ issue }: NewsletterIssuePreviewProps) => (
 
 type NewsletterIssuesProps = {
 	issues: Array<IssuePreviewProps>;
+	isAdminUser: boolean;
 };
-export const NewsletterIssues = ({ issues }: NewsletterIssuesProps) => (
+export const NewsletterIssues = ({ issues, isAdminUser }: NewsletterIssuesProps) => (
 	<SectionWrapper>
 		{issues.map((issue, index) => (
-			<NewsletterIssuePreview key={index} issue={issue} />
+			<NewsletterIssuePreview key={index} issue={issue} isAdminUser={isAdminUser} />
 		))}
 	</SectionWrapper>
 );

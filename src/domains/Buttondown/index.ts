@@ -2,6 +2,7 @@ import axios from "axios";
 
 const BUTTONDOWN_BASE_URL = "https://api.buttondown.email/v1";
 const BUTTONDOWN_API_KEY = process.env.BUTTONDOWN_API_KEY;
+export const BUTTONDOWN_EMAIL_STATS_URL_PREFIX = "https://buttondown.email/archive/analytics/";
 
 const axiosButtondown = axios.create({
 	baseURL: BUTTONDOWN_BASE_URL,

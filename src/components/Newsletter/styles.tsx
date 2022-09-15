@@ -64,6 +64,11 @@ export const IconContainer = styled.span`
 	}
 `;
 
+export const StatsLinkWrapper = styled.span`
+	/* move to the right */
+	margin-left: auto;
+`;
+
 export const IssueSubject = styled.h1`
 	color: var(--color-primary-accent);
 	padding: 0;
