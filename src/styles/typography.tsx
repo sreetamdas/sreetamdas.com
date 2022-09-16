@@ -132,7 +132,7 @@ type StyledLinkProps = {
 	external?: boolean;
 	$unstyledOnHover?: boolean;
 };
-export const StyledLink = styled.a<StyledLinkProps>`
+export const StyledLinkBase = styled.a<StyledLinkProps>`
 	text-decoration: none;
 
 	${({ $primary }) =>
@@ -168,11 +168,11 @@ export const StyledLink = styled.a<StyledLinkProps>`
 			  `}
 `;
 
-export const ExternalLink = styled(StyledLink).attrs({
+export const ExternalLink = styled(StyledLinkBase).attrs({
 	target: "_blank",
 })``;
 
-export const StyledAccentTextLink = styled(StyledLink)`
+export const StyledAccentTextLink = styled(StyledLinkBase)`
 	:visited {
 		text-decoration: none;
 	}
@@ -209,9 +209,9 @@ export const LinkTo = forwardRef<HTMLAnchorElement, LinkToProps>(function LinkTo
 			}}
 			passHref
 		>
-			<StyledLink {...linkProps} ref={ref}>
+			<StyledLinkBase {...linkProps} ref={ref}>
 				{children}
-			</StyledLink>
+			</StyledLinkBase>
 		</Link>
 	);
 });

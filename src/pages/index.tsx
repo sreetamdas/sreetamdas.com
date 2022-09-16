@@ -8,7 +8,7 @@ import { MDXComponents } from "@/components/mdx";
 import { DocumentHead } from "@/components/shared/seo";
 import { getButtondownSubscriberCount } from "@/domains/Buttondown";
 import { Center, Space } from "@/styles/layouts";
-import { PrimaryGradient, Heavy, MDXText, Title, Paragraph, StyledLink } from "@/styles/typography";
+import { PrimaryGradient, Heavy, MDXText, Title, Paragraph, StyledLinkBase } from "@/styles/typography";
 import { getMDXFileData } from "@/utils/blog";
 
 const Index = ({ code, subscriberCount }: InferGetStaticPropsType<typeof getStaticProps>) => {
@@ -35,7 +35,7 @@ const Index = ({ code, subscriberCount }: InferGetStaticPropsType<typeof getStat
 			</Paragraph>
 			<Paragraph>
 				I&apos;m currently a front-end engineer at{" "}
-				<StyledLink href="https://remote.com">Remote</StyledLink> who loves working with{" "}
+				<StyledLinkBase href="https://remote.com">Remote</StyledLinkBase> who loves working with{" "}
 				<PrimaryGradient>
 					<Heavy>React + TypeScript</Heavy>
 				</PrimaryGradient>

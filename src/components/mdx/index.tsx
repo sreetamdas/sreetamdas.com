@@ -6,13 +6,13 @@ import { OrderedList, UnorderedList } from "./lists";
 
 import { CodeBlock } from "@/components/shiki/styled";
 import { LinkedHeaderIconWrapper } from "@/styles/blog";
-import { ExternalLink, Paragraph, StyledLink } from "@/styles/typography";
+import { ExternalLink, Paragraph, StyledLinkBase } from "@/styles/typography";
 import { useHover } from "@/utils/hooks";
 
 const MDXLinkWrapper = (props: PropsWithChildren<{ href: string }>) =>
 	// link to internal page or skip link
 	"/#".includes(props.href[0]) ? (
-		<StyledLink {...props} />
+		<StyledLinkBase {...props} />
 	) : (
 		<ExternalLink {...props}>{props.children}</ExternalLink>
 	);
