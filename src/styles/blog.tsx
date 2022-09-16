@@ -1,6 +1,7 @@
 import { PropsWithChildren } from "react";
 import styled, { css } from "styled-components";
 
+import { UnstyledLink } from "@/styles/typography";
 import { breakpoint, focusVisible } from "@/utils/style";
 
 export const BlogPostContentWrapper = styled.div`
@@ -36,7 +37,7 @@ export const StyledPre = styled.pre`
 	overflow-x: scroll;
 `;
 
-export const LinkedIcon = styled.a<{ $styledOnHover?: boolean }>`
+export const LinkedIcon = styled(UnstyledLink)<{ $styledOnHover?: boolean }>`
 	font-size: 25px;
 	background-color: transparent;
 	border: none;
@@ -66,7 +67,7 @@ export const LinkedIcon = styled.a<{ $styledOnHover?: boolean }>`
 	}
 `;
 
-export const LinkedHeaderIconWrapper = styled.a<{ $isHovered: boolean }>`
+export const LinkedHeaderIconWrapper = styled(UnstyledLink)<{ $isHovered: boolean }>`
 	color: var(--color-primary-accent);
 	position: absolute;
 	transform: translateX(-125%) translateY(0.2rem);

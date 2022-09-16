@@ -119,10 +119,10 @@ export const BlogPostTitle = styled.h1`
 	padding-bottom: 15px;
 `;
 
-export const LinkUnstyled = styled.a`
+export const UnstyledLink = styled.a`
 	text-decoration: none;
 
-	&:visited {
+	:visited {
 		text-decoration: none;
 	}
 `;
@@ -132,9 +132,7 @@ type StyledLinkProps = {
 	external?: boolean;
 	$unstyledOnHover?: boolean;
 };
-export const StyledLinkBase = styled.a<StyledLinkProps>`
-	text-decoration: none;
-
+export const StyledLinkBase = styled(UnstyledLink)<StyledLinkProps>`
 	${({ $primary }) =>
 		$primary
 			? css`
@@ -146,10 +144,6 @@ export const StyledLinkBase = styled.a<StyledLinkProps>`
 			: css`
 					color: var(--color-primary-accent);
 			  `}
-
-	:visited {
-		text-decoration: none;
-	}
 
 	${({ $unstyledOnHover }) =>
 		$unstyledOnHover
