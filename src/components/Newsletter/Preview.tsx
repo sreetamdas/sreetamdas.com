@@ -8,7 +8,6 @@ import {
 	ExtraInfoWrapper,
 	PreviewMetadata,
 	IconContainer,
-	StatsLinkWrapper,
 } from "./styles";
 
 import { ButtondownEmailsType, BUTTONDOWN_EMAIL_STATS_URL_PREFIX } from "@/domains/Buttondown";
@@ -48,11 +47,9 @@ export const NewsletterIssuePreview = ({ issue, isAdminUser }: NewsletterIssuePr
 					})}
 				</IconContainer>
 				{isAdminUser && (
-					<StatsLinkWrapper>
-						<LinkTo href={`${BUTTONDOWN_EMAIL_STATS_URL_PREFIX}/${issue.id}`} external>
-							Stats
-						</LinkTo>
-					</StatsLinkWrapper>
+					<LinkTo href={`${BUTTONDOWN_EMAIL_STATS_URL_PREFIX}/${issue.id}`} external>
+						Stats
+					</LinkTo>
 				)}
 			</PreviewMetadata>
 		</ExtraInfoWrapper>

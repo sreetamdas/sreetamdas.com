@@ -1,8 +1,15 @@
 import type { bundleMDX } from "mdx-bundler";
 import { getMDXComponent } from "mdx-bundler/client";
 import { useMemo } from "react";
+import { HiOutlineCalendar, HiOutlineNewspaper } from "react-icons/hi";
 
-import { SectionWrapper, IssueContentWrapper, IssueSubject } from "./styles";
+import {
+	SectionWrapper,
+	IssueContentWrapper,
+	IssueSubject,
+	IssueInfoWrapper,
+	IconContainer,
+} from "./styles";
 
 import { MDXComponents } from "@/components/mdx";
 import { ButtondownEmailsType } from "@/domains/Buttondown";
@@ -23,6 +30,19 @@ export const NewsletterIssueDetail = ({ issue }: IssueViewProps) => {
 		<SectionWrapper>
 			<IssueContentWrapper>
 				<IssueSubject>{issue.subject}</IssueSubject>
+				<IssueInfoWrapper>
+					<IconContainer>
+						<HiOutlineNewspaper /> #{issue.secondary_id}
+					</IconContainer>
+					<IconContainer>
+						<HiOutlineCalendar />{" "}
+						{new Date(issue.publish_date).toLocaleDateString("en-US", {
+							year: "numeric",
+							month: "long",
+							day: "numeric",
+						})}
+					</IconContainer>
+				</IssueInfoWrapper>
 				<Component
 					components={{
 						MDXLink,

@@ -51,7 +51,7 @@ export const ExtraInfoWrapper = styled.div`
 `;
 export const PreviewMetadata = styled.span`
 	display: flex;
-	align-items: center;
+	justify-content: end;
 	gap: 20px;
 `;
 export const IconContainer = styled.span`
@@ -65,17 +65,17 @@ export const IconContainer = styled.span`
 	}
 `;
 
-export const StatsLinkWrapper = styled.span`
-	/* move to the right */
-	margin-left: auto;
-`;
-
 export const IssueSubject = styled.h1`
 	color: var(--color-primary-accent);
 	padding: 0;
 	font-size: ${pixelToRem(48)};
 	line-height: ${pixelToRem(54)};
-	margin-bottom: 50px;
+`;
+export const IssueInfoWrapper = styled.div`
+	display: flex;
+	justify-content: end;
+	gap: 20px;
+	margin: 20px 0 50px;
 `;
 
 export const IssueContentWrapper = styled.article``;
