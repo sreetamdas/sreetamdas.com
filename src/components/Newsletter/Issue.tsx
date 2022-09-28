@@ -24,7 +24,6 @@ export const NewsletterIssueDetail = ({ issue }: IssueViewProps) => {
 			<IssueContentWrapper>
 				<IssueSubject>{issue.subject}</IssueSubject>
 				<Component
-					// @ts-expect-error ugh, MDX
 					components={{
 						MDXLink,
 						MDXTitle,

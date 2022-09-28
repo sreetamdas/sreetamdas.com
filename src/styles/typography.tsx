@@ -1,5 +1,5 @@
 import Link, { LinkProps } from "next/link";
-import { AnchorHTMLAttributes, forwardRef, PropsWithChildren } from "react";
+import { AnchorHTMLAttributes, forwardRef, HTMLAttributeAnchorTarget, PropsWithChildren } from "react";
 import styled, { css } from "styled-components";
 
 import { breakpoint, pixelToRem } from "@/utils/style";
@@ -163,7 +163,7 @@ export const StyledLinkBase = styled(UnstyledLink)<StyledLinkProps>`
 `;
 
 export const ExternalLink = styled(StyledLinkBase).attrs({
-	target: "_blank",
+	target: "_blank" as HTMLAttributeAnchorTarget,
 })``;
 
 export const StyledAccentTextLink = styled(StyledLinkBase)`

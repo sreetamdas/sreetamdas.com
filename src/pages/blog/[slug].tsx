@@ -51,7 +51,6 @@ const Post = ({ code, frontmatter, slug, subscriberCount }: Props) => {
 			</BlogPostTitle>
 			<BlogPostContentWrapper>
 				<Component
-					// @ts-expect-error ugh, MDX
 					components={{
 						MDXLink,
 						MDXTitle,

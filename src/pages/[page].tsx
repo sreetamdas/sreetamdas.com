@@ -35,7 +35,6 @@ const Page = ({ code, frontmatter, subscriberCount }: Props) => {
 				<Title $size={5}>/{frontmatter.title.toLowerCase()}</Title>
 			</Center>
 			<Component
-				// @ts-expect-error ugh, MDX
 				components={{
 					MDXLink,
 					MDXTitle,

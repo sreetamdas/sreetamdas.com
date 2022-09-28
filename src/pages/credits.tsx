@@ -33,7 +33,6 @@ const About = ({ code, frontmatter: _, subscriberCount, repoContributors }: Prop
 			</Center>
 
 			<Component
-				// @ts-expect-error MDX
 				components={{
 					RepoContributors: () => <RepoContributors contributors={repoContributors} />,
 					...MDXComponents,
