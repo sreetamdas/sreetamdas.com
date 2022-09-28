@@ -87,19 +87,21 @@ function getPreviewContent(content: string) {
 	return content.replace("Hello there!\n", "").split("\n").slice(0, 3).join("\n");
 }
 export async function getAllButtondownEmailsPreviews() {
-	try {
-		const allEmails = await getAllButtondownEmails();
-		return [...allEmails.results]
-			.reverse()
-			.map(({ body, subject, publish_date, id, secondary_id, slug }) => ({
-				slug,
-				subject,
-				publishDate: publish_date,
-				id: id,
-				secondaryID: secondary_id,
-				body: getPreviewContent(body),
-			}));
-	} catch (error) {
-		throw new Error("Couldn't get Buttondown emails previews");
-	}
+	const allEmails = await getAllButtondownEmails();
+	return [...allEmails.results]
+		.reverse()
+		.map(({ body, subject, publish_date, id, secondary_id, slug }) => ({
+			slug,
+			subject,
+			publishDate: publish_date,
+			id: id,
+			secondaryID: secondary_id,
+			body: getPreviewContent(body),
+		}));
+}
+
+export async function getLatestButtondownEmailSlug() {
+	const allEmails = await getAllButtondownEmails();
+
+	return [...allEmails.results].reverse()[0]?.slug;
 }
