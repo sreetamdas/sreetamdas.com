@@ -49,7 +49,7 @@ export const NewsletterIssuePreview = ({ issue, isAdminUser }: NewsletterIssuePr
 				</IconContainer>
 				{isAdminUser && (
 					<StatsLinkWrapper>
-						<LinkTo href={`${BUTTONDOWN_EMAIL_STATS_URL_PREFIX}${issue.id}`} external>
+						<LinkTo href={`${BUTTONDOWN_EMAIL_STATS_URL_PREFIX}/${issue.id}`} external>
 							Stats
 						</LinkTo>
 					</StatsLinkWrapper>

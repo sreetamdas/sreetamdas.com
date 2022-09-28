@@ -1,4 +1,4 @@
-import { IssuePreviewProps, NewsletterIssuePreview } from "./preview";
+import { IssuePreviewProps, NewsletterIssuePreview } from "./Preview";
 import { SectionWrapper } from "./styles";
 
 type NewsletterIssuesProps = {

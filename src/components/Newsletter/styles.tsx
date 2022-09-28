@@ -33,6 +33,7 @@ export const PreviewBody = styled.div`
 
 	& > p {
 		margin: 10px 0;
+		font-size: ${pixelToRem(16)};
 	}
 
 	img {
