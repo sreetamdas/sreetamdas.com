@@ -66,15 +66,13 @@ export async function getButtondownSubscriberCount() {
 
 export let allNewsletterIssuesData: ButtondownEmailsType;
 
-export async function getAllButtondownEmails(where: string) {
+export async function getAllButtondownEmails() {
 	try {
 		if (allNewsletterIssuesData) {
 			return allNewsletterIssuesData;
 		}
 		// TODO: handle paginated results
 		const response = (await axiosButtondown.get<ButtondownEmailsType>("/emails")).data;
-		// eslint-disable-next-line no-console
-		console.log("RAN BUTTONDOWN EMAILS QUERY", where);
 		if (!allNewsletterIssuesData) {
 			allNewsletterIssuesData = response;
 		}
@@ -90,7 +88,7 @@ function getPreviewContent(content: string) {
 }
 export async function getAllButtondownEmailsPreviews() {
 	try {
-		const allEmails = await getAllButtondownEmails("getAllPreviews");
+		const allEmails = await getAllButtondownEmails();
 		return [...allEmails.results]
 			.reverse()
 			.map(({ body, subject, publish_date, id, secondary_id, slug }) => ({
