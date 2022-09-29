@@ -7,7 +7,7 @@
 		"start": "next start",
 		"build": "next build",
 		"build:analyze": "ANALYZE=true next build",
-		"postbuild": "next-sitemap",
+		"postbuild": "next-sitemap --config next-sitemap.config.cjs",
 		"export": "next build && next export",
 		"deploy": "yarn build && netlify deploy",
 		"compile": "tsc --watch",
