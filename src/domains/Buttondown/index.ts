@@ -1,4 +1,7 @@
+import { captureException } from "@sentry/nextjs";
 import axios from "axios";
+
+import { dog } from "@/utils/helpers";
 
 const BUTTONDOWN_BASE_URL = "https://api.buttondown.email/v1";
 const BUTTONDOWN_API_KEY = process.env.BUTTONDOWN_API_KEY;
@@ -64,22 +67,47 @@ export async function getButtondownSubscriberCount() {
 	}
 }
 
-export let allNewsletterIssuesData: ButtondownEmailsType;
-
-export async function getAllButtondownEmails() {
+async function getButtondownNewsletterEmails() {
 	try {
-		if (allNewsletterIssuesData) {
-			return allNewsletterIssuesData;
-		}
-		// TODO: handle paginated results
+		dog("MAKING REQUEST");
 		const response = (await axiosButtondown.get<ButtondownEmailsType>("/emails")).data;
-		if (!allNewsletterIssuesData) {
-			allNewsletterIssuesData = response;
-		}
+		return response;
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	} catch (error: any) {
+		captureException(error);
+		throw new Error("Couldn't get Buttondown emails", error);
+	}
+}
+
+let allNewsletterIssuesData: ButtondownEmailsType | null = null;
+export async function getAllNewsletterIssuesData(where: string) {
+	dog("BUTTONDOWN GET", where);
+	if (allNewsletterIssuesData) {
+		dog("CACHE HIT");
+		return allNewsletterIssuesData;
+	}
+	try {
+		const response = await getButtondownNewsletterEmails();
+		dog("CACHING");
+		allNewsletterIssuesData = response;
+
+		return allNewsletterIssuesData;
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	} catch (error: any) {
+		captureException(error);
+		throw new Error("Couldn't get Buttondown emails", error);
+	}
+}
+
+export async function getAllButtondownEmails(where: string) {
+	try {
+		const response = await getAllNewsletterIssuesData(where);
 
 		return response;
-	} catch (error) {
-		throw new Error("Couldn't get Buttondown emails");
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	} catch (error: any) {
+		captureException(error);
+		throw new Error("Couldn't get Buttondown emails", error);
 	}
 }
 
@@ -87,7 +115,7 @@ function getPreviewContent(content: string) {
 	return content.replace("Hello there!\n", "").split("\n").slice(0, 3).join("\n");
 }
 export async function getAllButtondownEmailsPreviews() {
-	const allEmails = await getAllButtondownEmails();
+	const allEmails = await getAllButtondownEmails("preview");
 	return [...allEmails.results]
 		.reverse()
 		.map(({ body, subject, publish_date, id, secondary_id, slug }) => ({
@@ -101,7 +129,7 @@ export async function getAllButtondownEmailsPreviews() {
 }
 
 export async function getLatestButtondownEmailSlug() {
-	const allEmails = await getAllButtondownEmails();
+	const allEmails = await getAllButtondownEmails("latest slug");
 
 	return [...allEmails.results].reverse()[0]?.slug;
 }

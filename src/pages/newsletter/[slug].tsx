@@ -7,7 +7,7 @@ import { ViewsCounter } from "@/components/ViewsCounter";
 import { DocumentHead } from "@/components/shared/seo";
 import { NEWSLETTER_DESCRIPTION } from "@/config";
 import {
-	ButtondownEmailsType,
+	getAllNewsletterIssuesData,
 	getAllButtondownEmails,
 	getButtondownSubscriberCount,
 } from "@/domains/Buttondown";
@@ -32,8 +32,6 @@ const NewsletterLandingPage = ({
 
 export default NewsletterLandingPage;
 
-let allNewsletterIssuesData: ButtondownEmailsType;
-
 type PageProps = {
 	subscriberCount: number;
 } & IssueViewProps;
@@ -46,13 +44,10 @@ export const getStaticProps: GetStaticProps<PageProps> = async ({ params }) => {
 		};
 	}
 
-	if (!allNewsletterIssuesData) {
-		// TODO: trim data being passed down
-		allNewsletterIssuesData = await getAllButtondownEmails();
-	}
-	const newsletterIssue = allNewsletterIssuesData.results.find(
+	const newsletterIssue = (await getAllNewsletterIssuesData("getStaticProps")).results.find(
 		(issue) => issue.slug === params.slug
 	);
+
 	if (typeof newsletterIssue === "undefined") {
 		return {
 			notFound: true,
@@ -67,7 +62,7 @@ export const getStaticProps: GetStaticProps<PageProps> = async ({ params }) => {
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {
-	const newsletterIssues = await getAllButtondownEmails();
+	const newsletterIssues = await getAllButtondownEmails("getStaticPaths");
 	const paths = newsletterIssues.results.map(({ slug }) => ({
 		params: { slug },
 	}));
