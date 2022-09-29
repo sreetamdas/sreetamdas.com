@@ -19,7 +19,7 @@ import {
 	Highlight,
 	CustomBlockquote,
 } from "@/styles/blog";
-import { MDXLink, MDXTitle } from "@/styles/components";
+import { MDXTitle } from "@/styles/components";
 import { Sparkles } from "@/styles/special";
 import {
 	BlogPostTitle,
@@ -52,7 +52,6 @@ const Post = ({ code, frontmatter, slug, subscriberCount }: Props) => {
 			<BlogPostContentWrapper>
 				<Component
 					components={{
-						MDXLink,
 						MDXTitle,
 						Sparkles,
 						ChromaHighlight,

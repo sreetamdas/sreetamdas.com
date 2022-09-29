@@ -5,7 +5,7 @@ import { Sandbox } from "@/components/Sandbox";
 import { ViewsCounter } from "@/components/ViewsCounter";
 import { DocumentHead } from "@/components/shared/seo";
 import { Center, Space } from "@/styles/layouts";
-import { ExternalLink, Paragraph, Title } from "@/styles/typography";
+import { LinkTo, Paragraph, Title } from "@/styles/typography";
 
 const JSX_STRING = `
 export default function App() {
@@ -30,7 +30,7 @@ const Index = () => (
 			<Title $size={5}>/sandbox</Title>
 			<Paragraph>
 				A sandbox for you to play with, built with{" "}
-				<ExternalLink href="https://sandpack.codesandbox.io">Sandpack</ExternalLink>.
+				<LinkTo href="https://sandpack.codesandbox.io">Sandpack</LinkTo>.
 			</Paragraph>
 		</Center>
 		<Sandbox

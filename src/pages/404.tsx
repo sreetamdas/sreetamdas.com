@@ -46,7 +46,7 @@ const Custom404 = ({ message }: T404PageMessage) => {
 				</Title>
 				<Paragraph style={{ textAlign: "center" }}>
 					or check out{" "}
-					<a
+					<LinkTo
 						href="https://www.theguardian.com/lifeandstyle/gallery/2018/jul/18/dog-photographer-of-the-year-2018-in-pictures"
 						target="_blank"
 						onClick={handleDogLinkClick}
@@ -54,7 +54,7 @@ const Custom404 = ({ message }: T404PageMessage) => {
 						the winners of Dog Photographer of the Year 2018
 						<br />
 						from The Guardian
-					</a>
+					</LinkTo>
 				</Paragraph>
 				{message ? (
 					<>

@@ -47,7 +47,7 @@ export const NewsletterIssuePreview = ({ issue, isAdminUser }: NewsletterIssuePr
 					})}
 				</IconContainer>
 				{isAdminUser && (
-					<LinkTo href={`${BUTTONDOWN_EMAIL_STATS_URL_PREFIX}/${issue.id}`} external>
+					<LinkTo href={`${BUTTONDOWN_EMAIL_STATS_URL_PREFIX}/${issue.id}`} target="_blank">
 						Stats
 					</LinkTo>
 				)}

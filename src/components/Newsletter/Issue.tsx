@@ -13,7 +13,7 @@ import {
 
 import { MDXComponents } from "@/components/mdx";
 import { ButtondownEmailsType } from "@/domains/Buttondown";
-import { MDXLink, MDXTitle } from "@/styles/components";
+import { MDXTitle } from "@/styles/components";
 
 export type IssueViewProps = {
 	issue: ButtondownEmailsType["results"][number] & {
@@ -45,7 +45,6 @@ export const NewsletterIssueDetail = ({ issue }: IssueViewProps) => {
 				</IssueInfoWrapper>
 				<Component
 					components={{
-						MDXLink,
 						MDXTitle,
 						...MDXComponents,
 					}}

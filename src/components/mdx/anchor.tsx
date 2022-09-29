@@ -1,14 +1,26 @@
 import { AnchorHTMLAttributes } from "react";
 
-import { ExternalLink, StyledLinkBase } from "@/styles/typography";
+import { LinkTo } from "@/styles/typography";
 
-export const MDXAnchor = (props: AnchorHTMLAttributes<HTMLAnchorElement>) => {
-	if (typeof props.href === "undefined") return null;
+export const MDXAnchor = ({
+	href,
+	children,
+	...restProps
+}: AnchorHTMLAttributes<HTMLAnchorElement>) => {
+	if (typeof href === "undefined") return null;
 
 	// link to internal page or skip link
-	if ("/#".includes(props.href?.[0])) {
-		return <StyledLinkBase {...props} />;
+	if ("/#".includes(href?.[0])) {
+		return (
+			<LinkTo {...restProps} href={href}>
+				{children}
+			</LinkTo>
+		);
 	}
 
-	return <ExternalLink {...props}>{props.children}</ExternalLink>;
+	return (
+		<LinkTo {...restProps} href={href} target="_blank">
+			{children}
+		</LinkTo>
+	);
 };

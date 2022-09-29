@@ -48,7 +48,11 @@ export const NewsletterSignup = ({ subscriberCount, withNewsletter }: Newsletter
 				) : (
 					<LinkTo href="/newsletter">view previous issues</LinkTo>
 				)}
-				, and <LinkTo href="https://buttondown.email/sreetamdas/rss">subscribe via RSS</LinkTo>!
+				, and{" "}
+				<LinkTo href="https://buttondown.email/sreetamdas/rss" target="_blank">
+					subscribe via RSS
+				</LinkTo>
+				!
 			</NewsletterText>
 			<div>
 				<StyledForm onSubmit={handleFormSubmit}>

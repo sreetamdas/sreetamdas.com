@@ -10,7 +10,6 @@ import { MDXComponents } from "@/components/mdx";
 import { DocumentHead } from "@/components/shared/seo";
 import { getButtondownSubscriberCount } from "@/domains/Buttondown";
 import { Highlight, CustomBlockquote } from "@/styles/blog";
-import { MDXLink } from "@/styles/components";
 import { Center } from "@/styles/layouts";
 import { Sparkles } from "@/styles/special";
 import { Title, Heavy, MDXTitle, StyledAccentTextLink, PrimaryGradient } from "@/styles/typography";
@@ -36,7 +35,6 @@ const Page = ({ code, frontmatter, subscriberCount }: Props) => {
 			</Center>
 			<Component
 				components={{
-					MDXLink,
 					MDXTitle,
 					Sparkles,
 					ChromaHighlight,

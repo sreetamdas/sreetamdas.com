@@ -4,7 +4,7 @@ import { ViewsCounter } from "@/components/ViewsCounter";
 import { DocumentHead } from "@/components/shared/seo";
 import { StyledDetails, StyledSummary, StyledDetailAnswer } from "@/styles/components";
 import { Center, Space } from "@/styles/layouts";
-import { ExternalLink, Paragraph, Title } from "@/styles/typography";
+import { LinkTo, Paragraph, Title } from "@/styles/typography";
 
 const Index = () => (
 	<>
@@ -15,9 +15,9 @@ const Index = () => (
 		</Center>
 		<Paragraph>
 			Frequently Asked Questions. Have a question that isn&apos;t answered here? Feel free to{" "}
-			<ExternalLink href="https://twitter.com/messages/compose?recipient_id=520276345">
+			<LinkTo href="https://twitter.com/messages/compose?recipient_id=520276345" target="_blank">
 				DM me on Twitter
-			</ExternalLink>{" "}
+			</LinkTo>{" "}
 			😄
 		</Paragraph>
 
@@ -28,29 +28,37 @@ const Index = () => (
 				<StyledSummary>What are those &quot;plus sign keys&quot; on your desk?</StyledSummary>
 				<StyledDetailAnswer>
 					I&apos;m so glad you asked! Those are different{" "}
-					<ExternalLink href="https://keyboard.university/100-courses/switches-101">
+					<LinkTo href="https://keyboard.university/100-courses/switches-101" target="_blank">
 						switches
-					</ExternalLink>{" "}
+					</LinkTo>{" "}
 					that I&apos;d purchased to test out before buying my{" "}
-					<ExternalLink href="https://srtm.fyi/keeb">custom mechanical keyboard</ExternalLink>. If
-					you&apos;re interested, you can check them out (and order some for yourself!) on{" "}
-					<ExternalLink href="https://rectangles.store">Rectangles.store</ExternalLink> 😄
+					<LinkTo href="https://srtm.fyi/keeb" target="_blank">
+						custom mechanical keyboard
+					</LinkTo>
+					. If you&apos;re interested, you can check them out (and order some for yourself!) on{" "}
+					<LinkTo href="https://rectangles.store" target="_blank">
+						Rectangles.store
+					</LinkTo>{" "}
+					😄
 				</StyledDetailAnswer>
 			</StyledDetails>
 			<StyledDetails>
 				<StyledSummary>What keyboard is that on your desk?</StyledSummary>
 				<StyledDetailAnswer>
 					It&apos;s a custom mechanical keyboard you can find more details in{" "}
-					<ExternalLink href="https://srtm.fyi/keeb">the tweet about it</ExternalLink>.
+					<LinkTo href="https://srtm.fyi/keeb" target="_blank">
+						the tweet about it
+					</LinkTo>
+					.
 				</StyledDetailAnswer>
 			</StyledDetails>
 			<StyledDetails>
 				<StyledSummary>Cool website! How&apos;d you build it?</StyledSummary>
 				<StyledDetailAnswer>
 					Thanks! You can check out the{" "}
-					<ExternalLink href="https://github.com/sreetamdas/sreetamdas.com">
+					<LinkTo href="https://github.com/sreetamdas/sreetamdas.com" target="_blank">
 						source code on GitHub
-					</ExternalLink>
+					</LinkTo>
 					.
 				</StyledDetailAnswer>
 			</StyledDetails>
