@@ -1,4 +1,9 @@
-export const IS_DEV = process.env.DEBUG_MODE ?? process.env.NODE_ENV === "development";
+export const IS_DEV =
+	typeof process.env.DEBUG_MODE !== "undefined"
+		? process.env.DEBUG_MODE === "true"
+			? false
+			: true
+		: process.env.NODE_ENV === "development";
 
 export const BOOKS_DATABASE_ID = "26075554531e46ab893cc487fdedd8c6";
 export const OWNER = process.env.OWNER;
