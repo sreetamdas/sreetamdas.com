@@ -4,8 +4,8 @@
 // https://nextjs.org/docs/api-reference/next.config.js/introduction
 // https://docs.sentry.io/platforms/javascript/guides/nextjs/
 
-const { withSentryConfig } = require("@sentry/nextjs");
-const { withPlausibleProxy } = require("next-plausible");
+import { withSentryConfig } from "@sentry/nextjs";
+import { withPlausibleProxy } from "next-plausible";
 
 process.env.SITE_URL = process.env.SITE_URL || process.env.VERCEL_URL || "https://sreetamdas.com";
 
@@ -56,4 +56,4 @@ const sentryWebpackPluginOptions = {
 
 // Make sure adding Sentry options is the last code to run before exporting, to
 // ensure that your source maps include changes from all other Webpack plugins
-module.exports = withSentryConfig(moduleExports, sentryWebpackPluginOptions);
+export default withSentryConfig(moduleExports, sentryWebpackPluginOptions);
