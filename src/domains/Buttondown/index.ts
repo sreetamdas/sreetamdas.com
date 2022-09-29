@@ -81,12 +81,11 @@ async function getButtondownNewsletterEmails() {
 
 let allNewsletterIssuesData: ButtondownEmailsType | null = null;
 export async function getAllNewsletterIssuesData(where: string) {
-	dog("BUTTONDOWN GET", where);
 	if (allNewsletterIssuesData) {
-		dog("CACHE HIT");
 		return allNewsletterIssuesData;
 	}
 	try {
+		dog("BUTTONDOWN GET", where);
 		const response = await getButtondownNewsletterEmails();
 		dog("CACHING");
 		allNewsletterIssuesData = response;
@@ -112,6 +111,7 @@ export async function getAllButtondownEmails(where: string) {
 }
 
 function getPreviewContent(content: string) {
+	// remove salutation, get two paragraphs
 	return content.replace("Hello there!\n", "").split("\n").slice(0, 3).join("\n");
 }
 export async function getAllButtondownEmailsPreviews() {
