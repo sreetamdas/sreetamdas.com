@@ -1,62 +1,14 @@
-import { micromark } from "micromark";
-import { HiOutlineCalendar, HiOutlineNewspaper } from "react-icons/hi";
-
-import {
-	SectionWrapper,
-	PreviewWrapper,
-	PreviewSubject,
-	PreviewBody,
-	ExtraInfoWrapper,
-	PreviewMetadata,
-	IconContainer,
-} from "./styles";
-
-import { ButtondownEmailsType } from "@/domains/Buttondown";
-import { LinkTo } from "@/styles/typography";
-
-type IssueDefaultFields = ButtondownEmailsType["results"][number];
-type IssuePreviewProps = Pick<IssueDefaultFields, "body" | "slug" | "subject"> & {
-	id: IssueDefaultFields["id"];
-	secondaryID: IssueDefaultFields["secondary_id"];
-	publishDate: IssueDefaultFields["publish_date"];
-};
-
-type NewsletterIssuePreviewProps = {
-	issue: IssuePreviewProps;
-};
-const NewsletterIssuePreview = ({ issue }: NewsletterIssuePreviewProps) => (
-	<PreviewWrapper>
-		<PreviewSubject>
-			<LinkTo href={`/newsletter/${issue.slug}`} scroll={false} passHref $unstyledOnHover>
-				{issue.subject}
-			</LinkTo>
-		</PreviewSubject>
-		<PreviewBody dangerouslySetInnerHTML={{ __html: micromark(issue.body) }}></PreviewBody>
-		<ExtraInfoWrapper>
-			<PreviewMetadata>
-				<IconContainer>
-					<HiOutlineNewspaper /> #{issue.secondaryID}
-				</IconContainer>
-				<IconContainer>
-					<HiOutlineCalendar />{" "}
-					{new Date(issue.publishDate).toLocaleDateString("en-US", {
-						year: "numeric",
-						month: "long",
-						day: "numeric",
-					})}
-				</IconContainer>
-			</PreviewMetadata>
-		</ExtraInfoWrapper>
-	</PreviewWrapper>
-);
+import { IssuePreviewProps, NewsletterIssuePreview } from "./Preview";
+import { SectionWrapper } from "./styles";
 
 type NewsletterIssuesProps = {
 	issues: Array<IssuePreviewProps>;
+	isAdminUser: boolean;
 };
-export const NewsletterIssues = ({ issues }: NewsletterIssuesProps) => (
+export const NewsletterIssues = ({ issues, isAdminUser }: NewsletterIssuesProps) => (
 	<SectionWrapper>
 		{issues.map((issue, index) => (
-			<NewsletterIssuePreview key={index} issue={issue} />
+			<NewsletterIssuePreview key={index} issue={issue} isAdminUser={isAdminUser} />
 		))}
 	</SectionWrapper>
 );

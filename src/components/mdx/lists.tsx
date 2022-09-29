@@ -1,4 +1,5 @@
-import { Children, PropsWithChildren, ReactElement } from "react";
+import { Children, HTMLAttributes, OlHTMLAttributes, PropsWithChildren } from "react";
+import { isElement } from "react-is";
 
 import { UnorderedListStyled, OrderedListStyled, UnorderedListBullet } from "./styles";
 
@@ -9,17 +10,18 @@ export const ListItem = ({ children, ...props }: PropsWithChildren<Record<string
 	</li>
 );
 
-export const UnorderedList = ({
-	children,
-	...props
-}: PropsWithChildren<Record<string, unknown>>) => (
+export const MDXUnorderedList = (props: HTMLAttributes<HTMLUListElement>) => (
 	<UnorderedListStyled {...props}>
-		{Children.map(children as ReactElement, ({ props }) =>
-			typeof props === "undefined" ? null : <ListItem {...props} />
-		)}
+		{Children.map(props.children, (child) => {
+			if (isElement(child)) {
+				const childProps = child.props;
+				return <ListItem {...childProps} />;
+			}
+			return null;
+		})}
 	</UnorderedListStyled>
 );
 
-export const OrderedList = ({ children, ...props }: PropsWithChildren<Record<string, unknown>>) => (
-	<OrderedListStyled {...props}>{children}</OrderedListStyled>
+export const MDXOrderedList = (props: OlHTMLAttributes<HTMLOListElement>) => (
+	<OrderedListStyled {...props} />
 );

@@ -1,6 +1,6 @@
 import styled, { css } from "styled-components";
 
-import { primaryGradientMixin, StyledLink } from "@/styles/typography";
+import { primaryGradientMixin, StyledLinkBase } from "@/styles/typography";
 import { pixelToRem } from "@/utils/style";
 
 export const PreviewCard = styled.article`
@@ -13,7 +13,7 @@ export const ExtraInfoWrapper = styled.div`
 	justify-content: flex-start;
 	column-gap: 25px;
 
-	${StyledLink} {
+	${StyledLinkBase} {
 		font-size: ${pixelToRem(14)};
 		:hover {
 			text-decoration: none;
@@ -35,13 +35,13 @@ export const PostPreviewTitle = styled.h3<{ $isHovered: boolean }>`
 	${({ $isHovered }) =>
 		$isHovered &&
 		css`
-			> ${StyledLink} {
+			> ${StyledLinkBase} {
 				${primaryGradientMixin}
 			}
 		`}
 
 	:hover {
-		> ${StyledLink} {
+		> ${StyledLinkBase} {
 			${primaryGradientMixin}
 		}
 	}

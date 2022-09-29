@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-import { primaryGradientMixin, StyledLink } from "@/styles/typography";
+import { primaryGradientMixin, StyledLinkBase } from "@/styles/typography";
 import { pixelToRem } from "@/utils/style";
 
 export const SectionWrapper = styled.section`
@@ -17,7 +17,7 @@ export const PreviewSubject = styled.h2`
 	line-height: ${pixelToRem(30)};
 
 	:hover {
-		> ${StyledLink} {
+		> ${StyledLinkBase} {
 			${primaryGradientMixin}
 		}
 	}
@@ -33,6 +33,7 @@ export const PreviewBody = styled.div`
 
 	& > p {
 		margin: 10px 0;
+		font-size: ${pixelToRem(16)};
 	}
 
 	img {
@@ -50,7 +51,7 @@ export const ExtraInfoWrapper = styled.div`
 `;
 export const PreviewMetadata = styled.span`
 	display: flex;
-	align-items: center;
+	justify-content: end;
 	gap: 20px;
 `;
 export const IconContainer = styled.span`
@@ -69,7 +70,12 @@ export const IssueSubject = styled.h1`
 	padding: 0;
 	font-size: ${pixelToRem(48)};
 	line-height: ${pixelToRem(54)};
-	margin-bottom: 50px;
+`;
+export const IssueInfoWrapper = styled.div`
+	display: flex;
+	justify-content: end;
+	gap: 20px;
+	margin: 20px 0 50px;
 `;
 
 export const IssueContentWrapper = styled.article``;

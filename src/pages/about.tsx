@@ -37,7 +37,6 @@ const About = ({ code, frontmatter: _, subscriberCount }: Props) => {
 			</Center>
 
 			<Component
-				// @ts-expect-error MDX
 				components={{
 					ExternalLinksOverlay,
 					...MDXComponents,

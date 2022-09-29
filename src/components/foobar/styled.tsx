@@ -1,6 +1,7 @@
 import styled, { css } from "styled-components";
 
 import { sharedTransition } from "@/styles/components";
+import { UnstyledLink } from "@/styles/typography";
 
 export const buttonStylesMixin = css`
 	margin: 0;
@@ -16,7 +17,7 @@ export const buttonStylesMixin = css`
 
 	${sharedTransition("color, background-color")}
 `;
-const SupportLinkStyled = styled.a`
+const SupportLinkStyled = styled(UnstyledLink)`
 	${buttonStylesMixin}
 
 	display: grid;
