@@ -12,8 +12,8 @@ specifiers:
   '@sreetamdas/karma': ^2.3.4
   '@supabase/supabase-js': ^1.35.7
   '@svgr/webpack': ^6.3.1
-  '@tanstack/react-query': ^4.7.2
-  '@tanstack/react-query-devtools': ^4.7.2
+  '@tanstack/react-query': ^4.8.0
+  '@tanstack/react-query-devtools': ^4.8.0
   '@types/eslint': ^8.4.6
   '@types/lodash-es': ^4.17.6
   '@types/node': ^18.7.23
@@ -77,7 +77,7 @@ dependencies:
   '@sentry/tracing': 7.14.0
   '@sreetamdas/karma': 2.3.4
   '@supabase/supabase-js': 1.35.7
-  '@tanstack/react-query': 4.7.2_biqbaboplfbrettd7655fr4n2y
+  '@tanstack/react-query': 4.8.0_biqbaboplfbrettd7655fr4n2y
   axios: 0.27.2
   esbuild: 0.15.10
   feed: 4.2.2
@@ -110,7 +110,7 @@ dependencies:
 devDependencies:
   '@next/eslint-plugin-next': 12.3.1
   '@svgr/webpack': 6.3.1
-  '@tanstack/react-query-devtools': 4.7.2_5y6winp2ndk3p734flb325i4v4
+  '@tanstack/react-query-devtools': 4.8.0_nscguit52pwjmvr4nqvhrqfsfq
   '@types/eslint': 8.4.6
   '@types/lodash-es': 4.17.6
   '@types/node': 18.7.23
@@ -2995,25 +2995,25 @@ packages:
       remove-accents: 0.4.2
     dev: true
 
-  /@tanstack/query-core/4.7.2:
-    resolution: {integrity: sha512-1zQuFsKShMhLY6rQYBEmkYiK9Zcb3lQcCVOTIgQcvliKIxPyZFaE/8LMtaITEEfgGF5qwYqHdm61+BUtpyNsrg==}
+  /@tanstack/query-core/4.8.0:
+    resolution: {integrity: sha512-PVcSqAWboFA86eNgtHTOjfHjBkNuFGAM6kPH82p1ibx1R76f7EjedZ+LZi4ZnW4ppoSl/+hUtCgWsiNQ2ViLTw==}
 
-  /@tanstack/react-query-devtools/4.7.2_5y6winp2ndk3p734flb325i4v4:
-    resolution: {integrity: sha512-Dia8EaesGvZeWVFsDnSd98cbNi16+s74glAjrjFigtvUNQKziBqYKMzBpFwFMNfMJbaZlx4b4V5DeJh7hkKfvA==}
+  /@tanstack/react-query-devtools/4.8.0_nscguit52pwjmvr4nqvhrqfsfq:
+    resolution: {integrity: sha512-PJNAuUFOVfv/8FDjpL8O0DmXGkS5hONhSE9Ciyn/ewkqpAgbZOnwQ3nYj/9HKxNyciBzNx/54nPxQfe/smqoLw==}
     peerDependencies:
-      '@tanstack/react-query': 4.7.2
+      '@tanstack/react-query': 4.8.0
       react: ^16.8.0 || ^17.0.0 || ^18.0.0
       react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
     dependencies:
       '@tanstack/match-sorter-utils': 8.1.1
-      '@tanstack/react-query': 4.7.2_biqbaboplfbrettd7655fr4n2y
+      '@tanstack/react-query': 4.8.0_biqbaboplfbrettd7655fr4n2y
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
       use-sync-external-store: 1.2.0_react@18.2.0
     dev: true
 
-  /@tanstack/react-query/4.7.2_biqbaboplfbrettd7655fr4n2y:
-    resolution: {integrity: sha512-4nJ0HxU2kxkaHZ/swJw39io3Bb3liiggJBsCCdFOydZOl8AJDRCor1E3GsOBrtn53HT01R9EIP4PY/6fyYdKsw==}
+  /@tanstack/react-query/4.8.0_biqbaboplfbrettd7655fr4n2y:
+    resolution: {integrity: sha512-e3QzL/S8XeA5MYqOUUABet4oZDBc1MbeUIo32r0cxEDoDJS+9oqx0az9AbBxacZ7SjM/Fy4u/eXQFBjsKGFQ6A==}
     peerDependencies:
       react: ^16.8.0 || ^17.0.0 || ^18.0.0
       react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
@@ -3024,7 +3024,7 @@ packages:
       react-native:
         optional: true
     dependencies:
-      '@tanstack/query-core': 4.7.2
+      '@tanstack/query-core': 4.8.0
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
       use-sync-external-store: 1.2.0_react@18.2.0
@@ -3649,7 +3649,7 @@ packages:
     hasBin: true
     dependencies:
       caniuse-lite: 1.0.30001414
-      electron-to-chromium: 1.4.268
+      electron-to-chromium: 1.4.269
       node-releases: 2.0.6
       update-browserslist-db: 1.0.9_browserslist@4.21.4
 
@@ -4174,8 +4174,8 @@ packages:
     resolution: {integrity: sha512-WIGME0Cs7oob3mxsJwHbeWkH0tYkIE/sjkJ8ML2BYmuRcjhRl/q5kVDXG7W9LOOKwzPU5M0LBlXRq9rlSgnNlg==}
     dev: true
 
-  /electron-to-chromium/1.4.268:
-    resolution: {integrity: sha512-PO90Bv++vEzdln+eA9qLg1IRnh0rKETus6QkTzcFm5P3Wg3EQBZud5dcnzkpYXuIKWBjKe5CO8zjz02cicvn1g==}
+  /electron-to-chromium/1.4.269:
+    resolution: {integrity: sha512-7mHFONwp7MNvdyto1v70fCwk28NJMFgsK79op+iYHzz1BLE8T66a1B2qW5alb8XgE0yi3FL3ZQjSYZpJpF6snw==}
 
   /emoji-regex/8.0.0:
     resolution: {integrity: sha512-MSjYzcWNOA0ewAHpz0MxpYFvwg6yjy1NG3xteoqz644VCo/RPgnr1/GGt+ic3iJTzQ8Eu3TdM14SawnVUmGE6A==}

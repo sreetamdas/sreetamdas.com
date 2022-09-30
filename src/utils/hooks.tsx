@@ -226,3 +226,24 @@ export const useBreakpointRange: UseBreakpointProps = ({ from = 0, to }, { onEnt
 		return () => window.removeEventListener("resize", handleResize);
 	}, [fromSize, toSize, onEnter, onLeave, currentState, setCurrentState]);
 };
+
+export function useKeydownEvent() {
+	const [key, setKey] = useState<KeyboardEvent["key"] | null>(null);
+
+	useEffect(() => {
+		const keyDownHandler = ({ key }: KeyboardEvent) => setKey(key);
+		const keyUpHandler = () => setKey(null);
+
+		window.addEventListener("keydown", keyDownHandler);
+		window.addEventListener("keyup", keyUpHandler);
+
+		return () => {
+			window.removeEventListener("keydown", keyDownHandler);
+			window.removeEventListener("keyup", keyUpHandler);
+		};
+	}, []);
+
+	// dog(key);
+
+	return key;
+}

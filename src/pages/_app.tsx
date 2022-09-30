@@ -55,7 +55,12 @@ const MyApp = ({ Component, pageProps }: AppPropsWithLayout) => {
 			</Head>
 			<QueryClientProvider client={queryClient}>
 				<Hydrate state={pageProps.dehydratedState}>
-					<PlausibleProvider domain="sreetamdas.com" customDomain="sreetamdas.com">
+					<PlausibleProvider
+						domain="sreetamdas.com"
+						customDomain="sreetamdas.com"
+						trackOutboundLinks
+						trackFileDownloads
+					>
 						<ThemeProvider theme={themeForContext}>
 							<GlobalStyles />
 							<Toaster {...toasterProps} />

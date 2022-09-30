@@ -28,10 +28,10 @@ export function handleKonami(
 		foobarData: Pick<FoobarStoreType["foobarData"], "completed" | "konami" | "unlocked">;
 	} & Pick<FoobarStoreType, "setFoobarData">
 ) {
-	const check = unlocked && checkIfKonamiCodeEntered(konamiCodeInput);
+	const didInputKonamiCode = unlocked && checkIfKonamiCodeEntered(konamiCodeInput);
 	let updatedKonamiCodeInput: Array<string> | null = null;
 
-	if (check) {
+	if (didInputKonamiCode) {
 		const completedCopy = [...completed];
 		completedCopy.push(FOOBAR_PAGES.konami);
 		setFoobarData({

@@ -2,6 +2,7 @@ import { useEffect } from "react";
 
 import { DocumentHead } from "@/components/shared/seo";
 import { useFoobarStore, FOOBAR_PAGES, FoobarPage } from "@/domains/Foobar";
+import { useCustomPlausible } from "@/domains/Plausible";
 import { Center, Space } from "@/styles/layouts";
 import { ReallyBigTitle, Title, Paragraph, LinkTo } from "@/styles/typography";
 
@@ -13,6 +14,7 @@ const Custom404 = ({ message }: T404PageMessage) => {
 		completed: state.foobarData.completed,
 		setFoobarData: state.setFoobarData,
 	}));
+	const plausibleEvent = useCustomPlausible();
 
 	useEffect(() => {
 		const updatedPages: Array<FoobarPage> = [...completed];
@@ -29,6 +31,7 @@ const Custom404 = ({ message }: T404PageMessage) => {
 		const updatedPages: Array<FoobarPage> = [...completed];
 		if (!updatedPages.includes(FOOBAR_PAGES.dogs)) {
 			updatedPages.push(FOOBAR_PAGES.dogs);
+			plausibleEvent("foobar", { props: { achievement: FOOBAR_PAGES.dogs } });
 			setFoobarData({
 				completed: updatedPages,
 			});

@@ -23,13 +23,13 @@ import { sharedTransition } from "@/styles/components";
 import { LinkTo } from "@/styles/typography";
 import { breakpoint } from "@/utils/style";
 
-const FoobarBadge = ({ badge }: { badge: FoobarBadge }) => {
+const FoobarBadge = ({ badge }: { badge: FoobarAchievement }) => {
 	const { icon: Icon } = FOOBAR_BADGES[badge];
 	return <Icon aria-label={badge} />;
 };
 
 type BadgeProps = {
-	badge: FoobarBadge;
+	badge: FoobarAchievement;
 } & Pick<FoobarDataType, "completed" | "allAchievements">;
 const Badge = ({ badge, completed, allAchievements }: BadgeProps) => {
 	const [clicks, setClicks] = useState(0);
@@ -48,7 +48,7 @@ const Badge = ({ badge, completed, allAchievements }: BadgeProps) => {
 };
 
 function renderBadges(
-	allBadges: Array<FoobarBadge>,
+	allBadges: Array<FoobarAchievement>,
 	completed: Array<FoobarPage>,
 	allAchievements: boolean
 ) {
@@ -60,7 +60,7 @@ export const ShowCompletedBadges = () => {
 		completed: state.foobarData.completed,
 		allAchievements: state.foobarData.allAchievements,
 	}));
-	const allBadges = Object.keys(FOOBAR_BADGES) as Array<FoobarBadge>;
+	const allBadges = Object.keys(FOOBAR_BADGES) as Array<FoobarAchievement>;
 
 	return (
 		<HelperBlock>
@@ -83,13 +83,13 @@ export const ShowCompletedBadges = () => {
 	);
 };
 
-type FoobarBadge = FoobarPage | "completed";
+export type FoobarAchievement = FoobarPage | "completed";
 
 type FoobarBadgeRecord = {
 	icon: (props: IconBaseProps) => JSX.Element;
 	description: string | JSX.Element;
 };
-type FoobarBadges = Readonly<Record<FoobarBadge, FoobarBadgeRecord>>;
+type FoobarBadges = Readonly<Record<FoobarAchievement, FoobarBadgeRecord>>;
 
 export const FOOBAR_BADGES: FoobarBadges = {
 	"/": {

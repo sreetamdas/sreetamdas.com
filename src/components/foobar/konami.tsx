@@ -1,11 +1,41 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useEffect } from "react";
 
-import { useFoobarStore } from "@/domains/Foobar";
-import { handleKonami } from "@/domains/Foobar/konami";
+import { FOOBAR_PAGES, useFoobarStore } from "@/domains/Foobar";
+import { KONAMI_CODE } from "@/domains/Foobar/konami";
+import { useCustomPlausible } from "@/domains/Plausible";
+import { useKeydownEvent } from "@/utils/hooks";
+
+function useKonamiCode() {
+	const [count, setCount] = useState(0);
+	const [success, setSuccess] = useState(false);
+	const key = useKeydownEvent();
+
+	function resetKonami() {
+		setSuccess(false);
+		setCount(0);
+	}
+
+	useEffect(() => {
+		if (key === null) return;
+		if (key !== KONAMI_CODE[count]) {
+			setCount(0);
+			return;
+		}
+
+		setCount((state) => state + 1);
+		if (count + 1 === KONAMI_CODE.length) {
+			setSuccess(true);
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [key]);
+
+	return { success, resetKonami };
+}
 
 const KonamiWrapper = () => {
-	const [konamiCodeInput, setKonamiCodeInput] = useState<Array<string>>([]);
-	const foobarStoreData = useFoobarStore((state) => ({
+	const plausibleEvent = useCustomPlausible();
+	const { success, resetKonami } = useKonamiCode();
+	const { foobarData, setFoobarData } = useFoobarStore((state) => ({
 		foobarData: {
 			completed: state.foobarData.completed,
 			konami: state.foobarData.konami,
@@ -13,28 +43,25 @@ const KonamiWrapper = () => {
 		},
 		setFoobarData: state.setFoobarData,
 	}));
-	const {
-		foobarData: { unlocked },
-	} = foobarStoreData;
-
-	const handleKonamiCode = useCallback((event: KeyboardEvent) => {
-		setKonamiCodeInput((prev) => [...prev, event.key]);
-	}, []);
-	useEffect(() => {
-		window.addEventListener("keydown", handleKonamiCode);
-
-		return () => {
-			window.removeEventListener("keydown", handleKonamiCode);
-		};
-	}, [handleKonamiCode]);
+	const [isKonamiActive, setIsKonamiActive] = useState(() => foobarData.konami);
 
 	useEffect(() => {
-		if (unlocked) {
-			const updated = handleKonami(konamiCodeInput, foobarStoreData);
-			if (updated) setKonamiCodeInput(updated);
+		if (foobarData.unlocked && success) {
+			const firstTimeKonami = !foobarData.completed.includes("konami");
+
+			if (firstTimeKonami) {
+				plausibleEvent("foobar", { props: { achievement: "konami" } });
+			}
+			setFoobarData({
+				konami: !isKonamiActive,
+				completed: [...new Set([...foobarData.completed, FOOBAR_PAGES.konami])],
+			});
+
+			setIsKonamiActive((isActive) => !isActive);
+			resetKonami();
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [konamiCodeInput]);
+	}, [foobarData.unlocked, success]);
 	return <div />;
 };
 
