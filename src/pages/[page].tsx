@@ -10,17 +10,16 @@ import { MDXComponents } from "@/components/mdx";
 import { DocumentHead } from "@/components/shared/seo";
 import { getButtondownSubscriberCount } from "@/domains/Buttondown";
 import { Highlight, CustomBlockquote } from "@/styles/blog";
-import { MDXLink } from "@/styles/components";
 import { Center } from "@/styles/layouts";
 import { Sparkles } from "@/styles/special";
 import { Title, Heavy, MDXTitle, StyledAccentTextLink, PrimaryGradient } from "@/styles/typography";
 import { MDXBundledResultProps } from "@/typings/blog";
 import { getMDXFileData, getRootPagesSlugs } from "@/utils/blog";
 
-type TProps = MDXBundledResultProps & {
+type Props = MDXBundledResultProps & {
 	subscriberCount: number;
 };
-const Page = ({ code, frontmatter, subscriberCount }: TProps) => {
+const Page = ({ code, frontmatter, subscriberCount }: Props) => {
 	const Component = useMemo(() => getMDXComponent(code), [code]);
 
 	return (
@@ -35,9 +34,7 @@ const Page = ({ code, frontmatter, subscriberCount }: TProps) => {
 				<Title $size={5}>/{frontmatter.title.toLowerCase()}</Title>
 			</Center>
 			<Component
-				// @ts-expect-error ugh, MDX
 				components={{
-					MDXLink,
 					MDXTitle,
 					Sparkles,
 					ChromaHighlight,

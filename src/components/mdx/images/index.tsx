@@ -10,16 +10,17 @@ export const ImageWrapper = styled.span`
 `;
 
 export const CustomImage = ({
-	alt,
+	alt = " ",
 	src,
 	height,
 	width,
 }: {
-	alt: string;
-	src: string;
-	height?: string;
-	width?: string;
+	alt?: string;
+	src?: string;
+	height?: string | number;
+	width?: string | number;
 }) => {
+	if (typeof src === "undefined") return null;
 	const type = src.slice(-3);
 
 	if (type === "mp4") {

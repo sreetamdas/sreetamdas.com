@@ -1,8 +1,7 @@
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
-import styled from "styled-components";
 
-import { SupportSreetamDas, FoobarHintWrapper } from "./styled";
+import { SupportSreetamDas, FoobarHintWrapper, CenterUnlockedPage } from "./styled";
 
 import { Button } from "@/components/Button";
 import { ViewsCounter } from "@/components/ViewsCounter";
@@ -16,10 +15,11 @@ import {
 	FoobarPage,
 	initialFoobarData,
 } from "@/domains/Foobar";
-import { dog } from "@/domains/Foobar/console";
+import { useCustomPlausible } from "@/domains/Plausible";
 import { StyledPre } from "@/styles/blog";
 import { Space, Center } from "@/styles/layouts";
 import { Title } from "@/styles/typography";
+import { dog } from "@/utils/helpers";
 import { useHasMounted } from "@/utils/hooks";
 import Custom404 from "pages/404";
 
@@ -42,13 +42,9 @@ const UnlockedBanner = ({ completedPage }: FoobarSchrodingerProps) =>
 		</CenterUnlockedPage>
 	) : null;
 
-const CenterUnlockedPage = styled(Title)`
-	text-align: center;
-`;
-
 export const Foobar = ({ completedPage, unlocked }: FoobarSchrodingerProps) => {
 	const router = useRouter();
-
+	const plausibleEvent = useCustomPlausible();
 	const { foobarData, setFoobarData } = useFoobarStore((state) => ({
 		foobarData: state.foobarData,
 		setFoobarData: state.setFoobarData,
@@ -79,6 +75,7 @@ export const Foobar = ({ completedPage, unlocked }: FoobarSchrodingerProps) => {
 	}, []);
 
 	function handleClearFoobarData() {
+		plausibleEvent("foobar", { props: { achievement: "restart" } });
 		setFoobarData(initialFoobarData);
 		dog("cleared");
 	}
@@ -94,7 +91,6 @@ export const Foobar = ({ completedPage, unlocked }: FoobarSchrodingerProps) => {
 		<>
 			<DocumentHead title="Foobar" noIndex />
 			<Space $size={50} />
-			{/* <Title>Hello Beautiful Nerd!</Title> */}
 			<UnlockedBanner {...{ completedPage }} />
 			<ShowCompletedBadges />
 			<Space $size={20} />
@@ -143,16 +139,21 @@ export const FoobarSchrodinger = ({ completedPage }: FoobarSchrodingerProps) => 
 		completed: state.foobarData.completed,
 		setFoobarData: state.setFoobarData,
 	}));
+	const plausibleEvent = useCustomPlausible();
 
 	useEffect(() => {
 		if (completedPage && !completed?.includes(completedPage)) {
 			const updatedPages: Array<FoobarPage> = [...completed];
 			updatedPages.push(completedPage);
+			dog("adding completedPage:", completedPage);
+
+			plausibleEvent("foobar", { props: { achievement: completedPage } });
 			setFoobarData({
 				completed: updatedPages,
 			});
 		}
-	}, [completed, completedPage, setFoobarData]);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [completed, completedPage]);
 
 	return <Foobar {...{ completedPage, unlocked }} />;
 };

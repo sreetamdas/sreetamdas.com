@@ -1,6 +1,6 @@
 import Head from "next/head";
 
-type TDocumentHeadProps = {
+type DocumentHeadProps = {
 	title: string;
 	imageURL?: string;
 	description?: string;
@@ -14,7 +14,7 @@ export const DocumentHead = ({
 	imageURL: relativeImageURL,
 	description = "Software Tinkerer and Engineer from India. 💜 React and TypeScript, CS:GO and Mechanical Keyboards!",
 	noIndex = false,
-}: TDocumentHeadProps) => {
+}: DocumentHeadProps) => {
 	const pageTitle = `${title} | Sreetam Das`;
 	const imageURL = getAbsoluteURL(relativeImageURL ?? "/og-image.png");
 

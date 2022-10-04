@@ -1,5 +1,6 @@
 /* eslint-disable no-console */
-import { IS_DEV } from "@/config";
+
+import { dog } from "@/utils/helpers";
 
 export function logConsoleMessages() {
 	console.log(
@@ -38,32 +39,6 @@ export function logConsoleMessages() {
 	console.groupEnd();
 
 	dog("Hello", "there!");
-}
-
-/**
- * `dog`: development-only `console.log`
- * @param messages to be logged only during dev
- */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function dog(...messages: Array<any>): void {
-	if (IS_DEV) {
-		console.log(
-			"%cdev%c🐶",
-			`font-family: monospace;
-			color: indianred;
-			background-color: #eee;
-			border-radius: 2px;
-			padding: 2px;
-			margin-right: 2px;
-			font-size: 1.1em`,
-			`font-family: unset;
-			color: unset;
-			background-color: unset;
-			border: unset
-			font-size: 1.2em`,
-			...messages
-		);
-	}
 }
 
 const CONSOLE_REACT = `

@@ -8,25 +8,29 @@ import { MDXComponents } from "@/components/mdx";
 import { DocumentHead } from "@/components/shared/seo";
 import { getButtondownSubscriberCount } from "@/domains/Buttondown";
 import { useFoobarStore } from "@/domains/Foobar";
+import { useCustomPlausible } from "@/domains/Plausible";
 import { Center } from "@/styles/layouts";
 import { Title, LinkTo } from "@/styles/typography";
 import { MDXBundledResultProps } from "@/typings/blog";
 import { getMDXFileData } from "@/utils/blog";
 
-type TProps = MDXBundledResultProps & {
+type Props = MDXBundledResultProps & {
 	subscriberCount: Awaited<ReturnType<typeof getButtondownSubscriberCount>>;
 };
 
-const About = ({ code, frontmatter: _, subscriberCount }: TProps) => {
+const About = ({ code, frontmatter: _, subscriberCount }: Props) => {
 	const Component = useMemo(() => getMDXComponent(code), [code]);
-
+	const plausible = useCustomPlausible();
 	const { setFoobarData, unlocked } = useFoobarStore((state) => ({
 		unlocked: state.foobarData.unlocked,
 		setFoobarData: state.setFoobarData,
 	}));
 
 	function handleXDiscovery() {
-		if (!unlocked) setFoobarData({ unlocked: true });
+		if (!unlocked) {
+			plausible("foobar", { props: { achievement: "/" } });
+			setFoobarData({ unlocked: true });
+		}
 	}
 
 	return (
@@ -37,7 +41,6 @@ const About = ({ code, frontmatter: _, subscriberCount }: TProps) => {
 			</Center>
 
 			<Component
-				// @ts-expect-error MDX
 				components={{
 					ExternalLinksOverlay,
 					...MDXComponents,

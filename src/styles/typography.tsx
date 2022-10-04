@@ -1,7 +1,9 @@
 import Link, { LinkProps } from "next/link";
 import { AnchorHTMLAttributes, forwardRef, PropsWithChildren } from "react";
+import { ImArrowUpRight2 } from "react-icons/im";
 import styled, { css } from "styled-components";
 
+import { SROnly } from "@/domains/style/helpers";
 import { breakpoint, pixelToRem } from "@/utils/style";
 
 export const ReallyBigTitle = styled.h1`
@@ -57,9 +59,17 @@ type TitleProps = {
 	$size?: number;
 	$scaled?: boolean;
 	$codeFont?: boolean;
+	$padding?: string | number;
 };
 export const Title = styled.h1<TitleProps>`
-	padding: 20px 0;
+	${({ $padding }) =>
+		$padding
+			? css`
+					padding: ${$padding};
+			  `
+			: css`
+					padding: 20px 0;
+			  `}
 
 	${({ $resetLineHeight }) =>
 		$resetLineHeight &&
@@ -111,21 +121,28 @@ export const BlogPostTitle = styled.h1`
 	padding-bottom: 15px;
 `;
 
-export const LinkUnstyled = styled.a`
+export const UnstyledLink = styled.a`
 	text-decoration: none;
 
-	&:visited {
+	:visited {
 		text-decoration: none;
 	}
 `;
 
+const ExternalLinkIndicator = styled(ImArrowUpRight2)`
+	color: var(--color-secondary-accent);
+`;
+
 type StyledLinkProps = {
 	$primary?: boolean;
-	external?: boolean;
 	$unstyledOnHover?: boolean;
 };
-export const StyledLink = styled.a<StyledLinkProps>`
-	text-decoration: none;
+export const StyledLinkBase = styled(UnstyledLink)<StyledLinkProps>`
+	position: relative;
+
+	${ExternalLinkIndicator} {
+		margin-left: -2px;
+	}
 
 	${({ $primary }) =>
 		$primary
@@ -138,10 +155,6 @@ export const StyledLink = styled.a<StyledLinkProps>`
 			: css`
 					color: var(--color-primary-accent);
 			  `}
-
-	:visited {
-		text-decoration: none;
-	}
 
 	${({ $unstyledOnHover }) =>
 		$unstyledOnHover
@@ -160,11 +173,7 @@ export const StyledLink = styled.a<StyledLinkProps>`
 			  `}
 `;
 
-export const ExternalLink = styled(StyledLink).attrs({
-	target: "_blank",
-})``;
-
-export const StyledAccentTextLink = styled(StyledLink)`
+export const StyledAccentTextLink = styled(StyledLinkBase)`
 	:visited {
 		text-decoration: none;
 	}
@@ -174,18 +183,27 @@ export const StyledAccentTextLink = styled(StyledLink)`
 `;
 
 export type LinkToProps = PropsWithChildren<LinkProps> &
-	AnchorHTMLAttributes<never> &
-	StyledLinkProps;
+	AnchorHTMLAttributes<HTMLAnchorElement> &
+	StyledLinkProps & {
+		hideExternalLinkIndicator?: boolean;
+	};
 export const LinkTo = forwardRef<HTMLAnchorElement, LinkToProps>(function LinkTo(
 	{ children, ...allProps },
 	ref
 ) {
-	const { href, as, passHref, prefetch, replace, scroll, shallow, locale, ...linkProps } = allProps;
-	const { external } = linkProps;
-
-	if (external) {
-		linkProps.target = "_blank";
-	}
+	const {
+		href,
+		as,
+		passHref,
+		prefetch,
+		replace,
+		scroll,
+		shallow,
+		locale,
+		hideExternalLinkIndicator = false,
+		...linkProps
+	} = allProps;
+	const isExternal = linkProps.target === "_blank";
 
 	return (
 		<Link
@@ -201,9 +219,16 @@ export const LinkTo = forwardRef<HTMLAnchorElement, LinkToProps>(function LinkTo
 			}}
 			passHref
 		>
-			<StyledLink {...linkProps} ref={ref}>
+			<StyledLinkBase {...linkProps} ref={ref}>
 				{children}
-			</StyledLink>
+				{isExternal && !hideExternalLinkIndicator && (
+					<>
+						{" "}
+						<SROnly>(opens in a new tab)</SROnly>
+						<ExternalLinkIndicator />
+					</>
+				)}
+			</StyledLinkBase>
 		</Link>
 	);
 });

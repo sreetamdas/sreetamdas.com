@@ -1,4 +1,4 @@
-import { CSSProperties, PropsWithChildren } from "react";
+import { DetailedHTMLProps, FunctionComponent, HTMLAttributes } from "react";
 import styled, { css } from "styled-components";
 
 import { breakpoint } from "@/utils/style";
@@ -85,10 +85,13 @@ function calculateLinesToHighlight(meta = "") {
 	}
 }
 
-export const CodeBlock = (
-	props: PropsWithChildren<{ language: string; highlight?: string; style: CSSProperties }>
-) => {
-	const { language, children, highlight, style } = props;
+export const CodeBlock: FunctionComponent<
+	DetailedHTMLProps<HTMLAttributes<HTMLPreElement>, HTMLPreElement> & {
+		language?: string;
+		highlight?: string;
+	}
+> = (props) => {
+	const { language = "js", children, highlight, style } = props;
 	const shouldHighlightLine = calculateLinesToHighlight(highlight);
 
 	return (

@@ -6,6 +6,7 @@ import { FoobarHintWrapper } from "./styled";
 import { IS_DEV } from "@/config";
 import { FoobarStoreType, useFoobarStore, FOOBAR_PAGES } from "@/domains/Foobar";
 import { logConsoleMessages } from "@/domains/Foobar/console";
+import { useCustomPlausible } from "@/domains/Plausible";
 import { Space } from "@/styles/layouts";
 import { LinkTo } from "@/styles/typography";
 import { useHasMounted } from "@/utils/hooks";
@@ -27,9 +28,9 @@ const foobarDataSelector = (state: FoobarStoreType) => ({
 });
 
 export const Foobar = () => {
-	const router = useRouter();
+	const { asPath: path, pathname } = useRouter();
 	const hasMounted = useHasMounted();
-
+	const plausibleEvent = useCustomPlausible();
 	const { foobarStoreData, setFoobarStoreData } = useFoobarStore(foobarDataSelector);
 	const { completed, visitedPages } = foobarStoreData;
 
@@ -54,7 +55,6 @@ export const Foobar = () => {
 	}, [foobarStoreData]);
 
 	useEffect(() => {
-		const { asPath: path, pathname } = router;
 		let pageName = path;
 		if (pathname === "/404") pageName = "/404";
 
@@ -66,20 +66,24 @@ export const Foobar = () => {
 
 		// for the `navigator` achievement
 		if (visitedPages.length >= 5 && !completed.includes(FOOBAR_PAGES.navigator)) {
+			plausibleEvent("foobar", { props: { achievement: FOOBAR_PAGES.navigator } });
 			setFoobarStoreData({
 				completed: [...completed, FOOBAR_PAGES.navigator],
 			});
 		}
-	}, [completed, visitedPages, router, setFoobarStoreData]);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [completed, visitedPages, path, pathname]);
 
 	useEffect(() => {
 		// for the `completed` achievement
 		if (checkIfAllAchievementsAreDone(completed)) {
+			plausibleEvent("foobar", { props: { achievement: "completed" } });
 			setFoobarStoreData({
 				allAchievements: true,
 			});
 		}
-	}, [completed, setFoobarStoreData]);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [completed]);
 
 	return hasMounted && foobarStoreData.unlocked ? (
 		<FoobarHintWrapper>

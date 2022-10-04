@@ -5,7 +5,7 @@ import styled from "styled-components";
 
 import { DEFAULT_REPO, getGitHubStats, StatsResult } from "@/domains/GitHub";
 import { sharedTransition } from "@/styles/components";
-import { ExternalLink } from "@/styles/typography";
+import { LinkTo, StyledLinkBase } from "@/styles/typography";
 
 export const Stats = styled.div`
 	display: grid;
@@ -15,20 +15,20 @@ export const Stats = styled.div`
 	align-items: center;
 	gap: 1rem;
 	padding: 0.8rem 0;
-`;
 
-export const Stat = styled(ExternalLink)`
-	width: max-content;
-	display: flex;
-	align-items: center;
-	gap: 0.25rem;
-	color: var(--color-primary);
+	${StyledLinkBase} {
+		width: max-content;
+		display: flex;
+		align-items: center;
+		gap: 0.25rem;
+		color: var(--color-primary);
 
-	${sharedTransition("color, background-color")}
+		${sharedTransition("color, background-color")}
 
-	&:hover {
-		color: var(--color-primary-accent);
-		text-decoration: none;
+		:hover {
+			color: var(--color-primary-accent);
+			text-decoration: none;
+		}
 	}
 `;
 
@@ -55,18 +55,18 @@ export const GitHubStats = () => {
 
 	return (
 		<Stats>
-			<Stat href="https://github.com/sreetamdas/sreetamdas.com/stargazers">
+			<LinkTo href="https://github.com/sreetamdas/sreetamdas.com/stargazers">
 				<StatIcon>
 					<FaRegStar title="star" aria-label="star" />
 				</StatIcon>
 				<StatValue>{data?.stars ?? "—"}</StatValue>
-			</Stat>
-			<Stat href="https://github.com/sreetamdas/sreetamdas.com/network/members">
+			</LinkTo>
+			<LinkTo href="https://github.com/sreetamdas/sreetamdas.com/network/members">
 				<StatIcon>
 					<VscRepoForked title="fork" aria-label="fork" />
 				</StatIcon>
 				<StatValue>{data?.forks ?? "—"}</StatValue>
-			</Stat>
+			</LinkTo>
 		</Stats>
 	);
 };

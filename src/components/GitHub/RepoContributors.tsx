@@ -2,7 +2,7 @@ import Image from "next/image";
 import styled from "styled-components";
 
 import { DEFAULT_REPO, octokit } from "@/domains/GitHub";
-import { ExternalLink, SmallText } from "@/styles/typography";
+import { LinkTo, SmallText } from "@/styles/typography";
 
 export async function getRepoContributors() {
 	return (
@@ -37,17 +37,20 @@ export type RepoContributorsProps = {
 };
 export const RepoContributors = ({ contributors }: RepoContributorsProps) => (
 	<ContributorsWrapper>
-		{contributors?.map(({ login, avatar_url, html_url }) => (
-			<ExternalLink href={html_url} key={login}>
-				<ContributorWrapper>
-					{avatar_url ? (
-						<ContributorImage>
-							<Image src={avatar_url} alt={login} height={128} width={128} />
-						</ContributorImage>
-					) : null}
-					<ContributorLogin>{login}</ContributorLogin>
-				</ContributorWrapper>
-			</ExternalLink>
-		))}
+		{contributors?.map(
+			({ login, avatar_url, html_url }) =>
+				html_url && (
+					<LinkTo href={html_url} key={login} target="_blank" hideExternalLinkIndicator>
+						<ContributorWrapper>
+							{avatar_url ? (
+								<ContributorImage>
+									<Image src={avatar_url} alt={login} height={128} width={128} />
+								</ContributorImage>
+							) : null}
+							<ContributorLogin>{login}</ContributorLogin>
+						</ContributorWrapper>
+					</LinkTo>
+				)
+		)}
 	</ContributorsWrapper>
 );

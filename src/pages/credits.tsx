@@ -16,12 +16,12 @@ import { Title } from "@/styles/typography";
 import { MDXBundledResultProps } from "@/typings/blog";
 import { getMDXFileData } from "@/utils/blog";
 
-type TProps = MDXBundledResultProps & {
+type Props = MDXBundledResultProps & {
 	subscriberCount: number;
 	repoContributors: RepoContributorsProps["contributors"];
 };
 
-const About = ({ code, frontmatter: _, subscriberCount, repoContributors }: TProps) => {
+const About = ({ code, frontmatter: _, subscriberCount, repoContributors }: Props) => {
 	const Component = useMemo(() => getMDXComponent(code), [code]);
 
 	return (
@@ -33,7 +33,6 @@ const About = ({ code, frontmatter: _, subscriberCount, repoContributors }: TPro
 			</Center>
 
 			<Component
-				// @ts-expect-error MDX
 				components={{
 					RepoContributors: () => <RepoContributors contributors={repoContributors} />,
 					...MDXComponents,

@@ -1,6 +1,7 @@
 import styled, { css } from "styled-components";
 
 import { sharedTransition } from "@/styles/components";
+import { Title, UnstyledLink } from "@/styles/typography";
 
 export const buttonStylesMixin = css`
 	margin: 0;
@@ -16,7 +17,7 @@ export const buttonStylesMixin = css`
 
 	${sharedTransition("color, background-color")}
 `;
-const SupportLinkStyled = styled.a`
+const SupportLinkStyled = styled(UnstyledLink)`
 	${buttonStylesMixin}
 
 	display: grid;
@@ -106,5 +107,9 @@ export const SupportSreetamDas = () => (
 export const FoobarHintWrapper = styled.span`
 	display: block;
 	padding: 20px 20px 0;
+	text-align: center;
+`;
+
+export const CenterUnlockedPage = styled(Title)`
 	text-align: center;
 `;

@@ -110,8 +110,14 @@ const NavbarMenu = () => {
 	}
 
 	function handleKeyboardDarkModeToggle(event: KeyboardEvent) {
-		if (event.key?.toLowerCase() === "l" && event.shiftKey && event.metaKey) {
-			event.preventDefault();
+		if (
+			event.metaKey &&
+			event.ctrlKey &&
+			event.altKey &&
+			event.shiftKey &&
+			(event.key?.toLowerCase() === "l" || event.code === "KeyL")
+		) {
+			handleThemeToggle();
 		}
 	}
 
@@ -155,6 +161,7 @@ const NavbarMenu = () => {
 		return () => {
 			window.removeEventListener("keydown", handleKeyboardDarkModeToggle);
 		};
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	useEffect(() => {
@@ -266,6 +273,9 @@ const NavLinks = () => (
 				<NavLink href="/newsletter">newsletter</NavLink>
 			</motion.li>
 			<motion.li variants={textLinksVariants}>
+				<NavLink href="/karma">karma</NavLink>
+			</motion.li>
+			<motion.li variants={textLinksVariants}>
 				<NavLink href="/uses">uses</NavLink>
 			</motion.li>
 		</PageLinks>
@@ -289,13 +299,13 @@ const NavLinks = () => (
 	</Nav>
 );
 
-type TExternalLinksArray = Array<{
+type ExternalLinksArrayType = Array<{
 	link: string;
 	title: string;
 	icon: JSX.Element;
 }>;
 export const ExternalLinksOverlay = () => {
-	const externalLinks: TExternalLinksArray = [
+	const externalLinks: ExternalLinksArrayType = [
 		{
 			link: "https://github.com/sreetamdas",
 			title: "Sreetam Das' GitHub",

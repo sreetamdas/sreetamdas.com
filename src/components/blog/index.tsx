@@ -6,8 +6,8 @@ import { SITE_URL } from "@/config";
 import { LinkedIcon } from "@/styles/blog";
 import { FrontmatterProps, MDXBundledResultProps } from "@/typings/blog";
 
-type TShareLinksProps = Pick<MDXBundledResultProps, "slug"> & Pick<FrontmatterProps, "title">;
-export const ShareLinks = ({ title, slug }: TShareLinksProps) => {
+type ShareLinksProps = Pick<MDXBundledResultProps, "slug"> & Pick<FrontmatterProps, "title">;
+export const ShareLinks = ({ title, slug }: ShareLinksProps) => {
 	const tweetShareURL = `https://twitter.com/intent/tweet?text=Check out: ${title}&url=${SITE_URL}/blog/${slug}%0D%0A&via=_SreetamDas`;
 
 	return (

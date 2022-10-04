@@ -5,11 +5,11 @@ import { Input, SubmitButton } from "@/components/Form";
 import { Accent, LinkTo } from "@/styles/typography";
 import { breakpoint } from "@/utils/style";
 
-export type TNewsletterProps = {
+export type NewsletterProps = {
 	subscriberCount: number;
 	withNewsletter?: boolean;
 };
-export const NewsletterSignup = ({ subscriberCount, withNewsletter }: TNewsletterProps) => {
+export const NewsletterSignup = ({ subscriberCount, withNewsletter }: NewsletterProps) => {
 	const [formSuccess, setFormSuccess] = useState(false);
 	const [isFormBeingSubmitted, setIsFormBeingSubmitted] = useState(false);
 	const [formError, setFormError] = useState<string>();
@@ -48,7 +48,11 @@ export const NewsletterSignup = ({ subscriberCount, withNewsletter }: TNewslette
 				) : (
 					<LinkTo href="/newsletter">view previous issues</LinkTo>
 				)}
-				, and <LinkTo href="https://buttondown.email/sreetamdas/rss">subscribe via RSS</LinkTo>!
+				, and{" "}
+				<LinkTo href="https://buttondown.email/sreetamdas/rss" target="_blank">
+					subscribe via RSS
+				</LinkTo>
+				!
 			</NewsletterText>
 			<div>
 				<StyledForm onSubmit={handleFormSubmit}>
