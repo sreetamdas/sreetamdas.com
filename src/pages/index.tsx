@@ -17,7 +17,6 @@ const Index = ({ code, subscriberCount }: InferGetStaticPropsType<typeof getStat
 	return (
 		<>
 			<DocumentHead title="Home" />
-
 			<Space $size={25} />
 			<Center>
 				<Title $size={2.5}>
@@ -28,43 +27,16 @@ const Index = ({ code, subscriberCount }: InferGetStaticPropsType<typeof getStat
 				</Title>
 			</Center>
 			<Space $size={25} />
-			<Paragraph>
-				I&apos;m a developer from India in love with all things React. I&apos;ve also worked with
-				different languages like Python, JavaScript, Elixir, TypeScript and C++, as well as Node,
-				Django and Redux.
-			</Paragraph>
-			<Paragraph>
-				I&apos;m currently a front-end engineer at{" "}
-				<LinkTo href="https://remote.com" target="_blank">
-					Remote
-				</LinkTo>{" "}
-				who loves working with{" "}
-				<PrimaryGradient>
-					<Heavy>React + TypeScript</Heavy>
-				</PrimaryGradient>
-				.
-			</Paragraph>
-			<MDXText>
-				<Component
-					components={{
-						...MDXComponents,
-					}}
-				/>
-			</MDXText>
-			<Paragraph>
-				I also{" "}
-				<span role="img" aria-label="heart">
-					❤️
-				</span>{" "}
-				a lot of other things, in no particular order:
-				<br />
-				<br />
-				CSGO, Reddit, Mechanical Keyboards, Open Source, GitHub, Factorio, Tactile Switches, Batman
-				and the Internet!
-			</Paragraph>
+			<Component
+				components={{
+					PrimaryGradient,
+					Heavy,
+					...MDXComponents,
+				}}
+			/>
+			<NewsletterSignup {...{ subscriberCount }} />
 
 			<ViewsCounter hidden />
-			<NewsletterSignup {...{ subscriberCount }} />
 		</>
 	);
 };
@@ -73,7 +45,7 @@ export default Index;
 
 export async function getStaticProps() {
 	const subscriberCount = await getButtondownSubscriberCount();
-	const result = await getMDXFileData("tooling", { cwd: "content" });
+	const result = await getMDXFileData("introduction", { cwd: "content" });
 
 	return {
 		props: { ...result, subscriberCount },
