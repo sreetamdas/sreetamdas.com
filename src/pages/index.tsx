@@ -8,7 +8,7 @@ import { MDXComponents } from "@/components/mdx";
 import { DocumentHead } from "@/components/shared/seo";
 import { getButtondownSubscriberCount } from "@/domains/Buttondown";
 import { Center, Space } from "@/styles/layouts";
-import { PrimaryGradient, Heavy, MDXText, Title, Paragraph, LinkTo } from "@/styles/typography";
+import { PrimaryGradient, Heavy, Title } from "@/styles/typography";
 import { getMDXFileData } from "@/utils/blog";
 
 const Index = ({ code, subscriberCount }: InferGetStaticPropsType<typeof getStaticProps>) => {
