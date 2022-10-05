@@ -9,6 +9,7 @@ import { DocumentHead } from "@/components/shared/seo";
 import { getButtondownSubscriberCount } from "@/domains/Buttondown";
 import { Center, Space } from "@/styles/layouts";
 import { PrimaryGradient, Heavy, Title } from "@/styles/typography";
+import { ContentFrontmatterProps } from "@/typings/blog";
 import { getMDXFileData } from "@/utils/blog";
 
 const Index = ({ code, subscriberCount }: InferGetStaticPropsType<typeof getStaticProps>) => {
@@ -45,7 +46,7 @@ export default Index;
 
 export async function getStaticProps() {
 	const subscriberCount = await getButtondownSubscriberCount();
-	const result = await getMDXFileData("introduction", { cwd: "content" });
+	const result = await getMDXFileData<ContentFrontmatterProps>("introduction", { cwd: "content" });
 
 	return {
 		props: { ...result, subscriberCount },

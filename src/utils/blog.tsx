@@ -27,12 +27,12 @@ export async function getBlogPostsSlugs() {
 	return postsSlugs;
 }
 
-export async function bundleMDXWithOptions(filename: string) {
+export async function bundleMDXWithOptions<Frontmatter>(filename: string) {
 	const mdxSource = await fs.readFile(filename, "utf8");
 	const theme = toShikiTheme(karmaThemeJSON as unknown as IRawTheme);
 	const highlighter = await getHighlighter({ theme });
 
-	const result = await bundleMDX({
+	const result = await bundleMDX<Frontmatter>({
 		source: mdxSource,
 		cwd: path.dirname(filename),
 		mdxOptions(options, _frontmatter) {
@@ -74,10 +74,13 @@ export async function bundleMDXWithOptions(filename: string) {
 type GetMDXFileDataOptions = {
 	cwd: string;
 };
-export async function getMDXFileData(fileSlug: string, options?: GetMDXFileDataOptions) {
+export async function getMDXFileData<Frontmatter extends { [key: string]: unknown }>(
+	fileSlug: string,
+	options?: GetMDXFileDataOptions
+) {
 	const DIR = path.resolve(PATH, ...(options?.cwd ?? "content").split("/"));
 	const name = path.resolve(DIR ?? BLOG_DIR, `${fileSlug}.mdx`);
-	const result = await bundleMDXWithOptions(name);
+	const result = await bundleMDXWithOptions<Frontmatter>(name);
 
 	return { ...result, slug: fileSlug };
 }
