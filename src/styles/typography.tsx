@@ -185,7 +185,7 @@ export const StyledAccentTextLink = styled(StyledLinkBase)`
 export type LinkToProps = PropsWithChildren<LinkProps> &
 	AnchorHTMLAttributes<HTMLAnchorElement> &
 	StyledLinkProps & {
-		hideExternalLinkIndicator?: boolean;
+		showExternalLinkIndicator?: boolean;
 	};
 export const LinkTo = forwardRef<HTMLAnchorElement, LinkToProps>(function LinkTo(
 	{ children, ...allProps },
@@ -200,7 +200,7 @@ export const LinkTo = forwardRef<HTMLAnchorElement, LinkToProps>(function LinkTo
 		scroll,
 		shallow,
 		locale,
-		hideExternalLinkIndicator = false,
+		showExternalLinkIndicator = false,
 		...linkProps
 	} = allProps;
 	const isExternal = linkProps.target === "_blank";
@@ -221,7 +221,7 @@ export const LinkTo = forwardRef<HTMLAnchorElement, LinkToProps>(function LinkTo
 		>
 			<StyledLinkBase {...linkProps} ref={ref}>
 				{children}
-				{isExternal && !hideExternalLinkIndicator && (
+				{isExternal && showExternalLinkIndicator && (
 					<>
 						{" "}
 						<SROnly>(opens in a new tab)</SROnly>
