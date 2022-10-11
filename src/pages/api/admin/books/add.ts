@@ -1,4 +1,3 @@
-import { withSentry } from "@sentry/nextjs";
 import { NextApiRequest, NextApiResponse } from "next";
 
 import { BookEntryProperties } from "@/components/Books";
@@ -40,7 +39,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
 					},
 				},
 			});
-			// const notionResponse = await handleBookUploadToNotion(book);
+
 			return res.status(200).send({ book });
 		} else {
 			res.status(400);
@@ -50,7 +49,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
 	}
 }
 
-export default withSentry(handler);
+export default handler;
 
 export const config = {
 	api: {

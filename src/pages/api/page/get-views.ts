@@ -1,4 +1,3 @@
-import { withSentry } from "@sentry/nextjs";
 import { NextApiRequest, NextApiResponse } from "next";
 
 import { SupabaseClient } from "@/domains/Supabase";
@@ -52,7 +51,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse<GetViewsRespons
 	}
 }
 
-export default withSentry(handler);
+export default handler;
 
 export const config = {
 	api: {

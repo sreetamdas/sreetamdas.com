@@ -1,4 +1,3 @@
-import { withSentry } from "@sentry/nextjs";
 import { NextApiRequest, NextApiResponse } from "next";
 
 import { octokit } from "@/domains/GitHub";
@@ -30,7 +29,7 @@ async function handler(
 	}
 }
 
-export default withSentry(handler);
+export default handler;
 
 export const config = {
 	api: {

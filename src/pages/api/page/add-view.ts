@@ -1,4 +1,3 @@
-import { withSentry } from "@sentry/nextjs";
 import type { PostgrestError } from "@supabase/supabase-js";
 import { NextApiRequest, NextApiResponse } from "next";
 
@@ -40,7 +39,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse<AddViewResponse
 	}
 }
 
-export default withSentry(handler);
+export default handler;
 
 export const config = {
 	api: {
