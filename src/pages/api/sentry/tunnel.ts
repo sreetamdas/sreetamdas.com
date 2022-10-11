@@ -4,7 +4,7 @@ import { withSentry, captureException } from "@sentry/nextjs";
 import axios from "axios";
 import { NextApiRequest, NextApiResponse } from "next";
 
-import { getSentryKeyElements } from "@/domains/sentry";
+import { getSentryKeyElements } from "@/domains/Sentry";
 
 // Set knownProjectIds to an array with your Sentry project IDs which you
 // want to accept through this proxy.
