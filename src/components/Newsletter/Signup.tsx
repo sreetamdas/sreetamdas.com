@@ -37,7 +37,7 @@ export const NewsletterSignup = ({ subscriberCount, withNewsletter }: Newsletter
 				I curate links keeping up with the JavaScript, React and webdev world. Join{" "}
 				<Accent>{subscriberCount}</Accent> others!
 				<br />
-				May include Mechanical Keyboards.
+				May include mechanical keyboards.
 				<br />
 				<br />
 				No spam, unsubscribe anytime :&#41;
