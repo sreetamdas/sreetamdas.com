@@ -1,4 +1,4 @@
-import { Session } from "@supabase/supabase-js";
+import { useSessionContext, useSupabaseClient } from "@supabase/auth-helpers-react";
 import { AnimatePresence, motion, Variants } from "framer-motion";
 import Head from "next/head";
 import Link from "next/link";
@@ -37,7 +37,6 @@ import {
 
 import { Button } from "@/components/Button";
 import { useFoobarStore } from "@/domains/Foobar";
-import { SupabaseClient } from "@/domains/Supabase";
 import { canvasDrawRectangle } from "@/domains/style/darkmode";
 import { theme as siteTHeme } from "@/styles";
 import { LinkedIcon } from "@/styles/blog";
@@ -68,7 +67,9 @@ export const Navbar = () => {
 const NavbarMenu = () => {
 	const [darkTheme, setDarkTheme] = useState<boolean | undefined>(undefined);
 	const [showDrawer, setShowDrawer] = useState(false);
-	const [session, setSession] = useState<Session | null>(SupabaseClient.auth.session());
+	const { isLoading, session } = useSessionContext();
+	const supabaseClient = useSupabaseClient();
+
 	const konami = useFoobarStore((state) => state.foobarData.konami);
 	const { asPath } = useRouter();
 	const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -99,7 +100,7 @@ const NavbarMenu = () => {
 	const isAdminRoute = asPath.includes("/admin");
 
 	async function handleSignOut() {
-		await SupabaseClient.auth.signOut();
+		await supabaseClient.auth.signOut();
 	}
 
 	function handleThemeToggle() {
@@ -148,12 +149,6 @@ const NavbarMenu = () => {
 			| "light"
 			| "dark";
 		setDarkTheme(initialColorValue === "dark");
-
-		// Supabase Auth
-		setSession(SupabaseClient.auth.session());
-		SupabaseClient.auth.onAuthStateChange((_event, session) => {
-			setSession(session);
-		});
 
 		// Keyboard dark mode toggle
 		window.addEventListener("keydown", handleKeyboardDarkModeToggle);
@@ -213,6 +208,7 @@ const NavbarMenu = () => {
 							<FiSun aria-label="Switch to Dark Mode" title="Switch to Dark Mode" />
 						)}
 					</ThemeSwitch>
+					{isLoading && "isLoading"}
 					{session && isAdminRoute && (
 						<Button onClick={handleSignOut} $size="small">
 							Sign out

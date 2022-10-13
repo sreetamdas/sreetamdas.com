@@ -1,4 +1,6 @@
 import "focus-visible";
+import { createBrowserSupabaseClient } from "@supabase/auth-helpers-nextjs";
+import { SessionContextProvider } from "@supabase/auth-helpers-react";
 import { Hydrate, QueryClient, QueryClientProvider, DehydratedState } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import type { NextPage } from "next";
@@ -31,9 +33,11 @@ type AppPropsWithLayout = AppProps<{ dehydratedState: DehydratedState } & any> &
 type ThemeObjectInitial = Pick<StyledThemeObject, "themeType" | "theme">;
 
 const MyApp = ({ Component, pageProps }: AppPropsWithLayout) => {
-	const [queryClient] = useState(() => new QueryClient());
 	// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 	const initialTheme = getInitialColorMode()!;
+
+	const [supabaseClient] = useState(() => createBrowserSupabaseClient());
+	const [queryClient] = useState(() => new QueryClient());
 	const [themeObject, setThemeObject] = useState<ThemeObjectInitial>({
 		themeType: initialTheme,
 		theme: theme[initialTheme],
@@ -53,25 +57,30 @@ const MyApp = ({ Component, pageProps }: AppPropsWithLayout) => {
 			<Head>
 				<meta name="viewport" content="initial-scale=1.0, width=device-width" />
 			</Head>
-			<QueryClientProvider client={queryClient}>
-				<Hydrate state={pageProps.dehydratedState}>
-					<PlausibleProvider
-						domain="sreetamdas.com"
-						customDomain="sreetamdas.com"
-						trackOutboundLinks
-						trackFileDownloads
-					>
-						<ThemeProvider theme={themeForContext}>
-							<GlobalStyles />
-							<Toaster {...toasterProps} />
-							<ComponentLayout>
-								<Component {...pageProps} />
-							</ComponentLayout>
-						</ThemeProvider>
-					</PlausibleProvider>
-				</Hydrate>
-				<ReactQueryDevtools />
-			</QueryClientProvider>
+			<SessionContextProvider
+				supabaseClient={supabaseClient}
+				initialSession={pageProps.initialSession}
+			>
+				<QueryClientProvider client={queryClient}>
+					<Hydrate state={pageProps.dehydratedState}>
+						<PlausibleProvider
+							domain="sreetamdas.com"
+							customDomain="sreetamdas.com"
+							trackOutboundLinks
+							trackFileDownloads
+						>
+							<ThemeProvider theme={themeForContext}>
+								<GlobalStyles />
+								<Toaster {...toasterProps} />
+								<ComponentLayout>
+									<Component {...pageProps} />
+								</ComponentLayout>
+							</ThemeProvider>
+						</PlausibleProvider>
+					</Hydrate>
+					<ReactQueryDevtools />
+				</QueryClientProvider>
+			</SessionContextProvider>
 		</>
 	);
 };

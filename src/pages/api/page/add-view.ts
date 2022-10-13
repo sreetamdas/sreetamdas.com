@@ -1,7 +1,7 @@
+import { createServerSupabaseClient } from "@supabase/auth-helpers-nextjs";
 import type { PostgrestError } from "@supabase/supabase-js";
 import { NextApiRequest, NextApiResponse } from "next";
 
-import { SupabaseClient } from "@/domains/Supabase";
 import type { ErrorResponse, SuccessResponse } from "@/domains/api";
 import { PostDetails } from "@/typings/blog";
 
@@ -19,14 +19,15 @@ type AddViewResponse = AddViewSuccessResponse | AddViewErrorResponse;
  */
 async function handler(req: NextApiRequest, res: NextApiResponse<AddViewResponse>) {
 	if (req.method === "POST") {
+		const supabaseServerClient = createServerSupabaseClient({ req, res });
 		const { page_slug } = req.body;
 
-		const { data: view_count, error } = await SupabaseClient.rpc<PostDetails["view_count"]>(
+		const { data: view_count, error } = await supabaseServerClient.rpc<
 			"upsert_page_view",
-			{
-				page_slug,
-			}
-		);
+			PostDetails["view_count"]
+		>("upsert_page_view", {
+			page_slug,
+		});
 
 		if (error) {
 			res.status(500).json({ error });
