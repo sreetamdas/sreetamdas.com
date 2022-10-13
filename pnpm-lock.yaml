@@ -48,7 +48,7 @@ specifiers:
   msw: ^0.47.4
   next: ^12.3.1
   next-plausible: ^3.6.3
-  next-sitemap: ^3.1.24
+  next-sitemap: ^3.1.25
   prettier: ^2.7.1
   prisma: ^4.4.0
   react: ^18.2.0
@@ -65,7 +65,7 @@ specifiers:
   styled-components: ^5.3.6
   typescript: ^4.8.4
   unist-util-visit: ^4.1.1
-  vscode-textmate: ^7.0.1
+  vscode-textmate: ^7.0.3
   zustand: 4.1.2
 
 dependencies:
@@ -106,7 +106,7 @@ dependencies:
   shiki: 0.11.1
   styled-components: 5.3.6_7i5myeigehqah43i5u7wbekgba
   unist-util-visit: 4.1.1
-  vscode-textmate: 7.0.1
+  vscode-textmate: 7.0.3
   zustand: 4.1.2_react@18.2.0
 
 devDependencies:
@@ -133,7 +133,7 @@ devDependencies:
   eslint-plugin-react-hooks: 4.6.0_eslint@8.25.0
   husky: 8.0.1
   msw: 0.47.4_typescript@4.8.4
-  next-sitemap: 3.1.24_mna6xsgplvxkrmeg4ftolwenke
+  next-sitemap: 3.1.25_mna6xsgplvxkrmeg4ftolwenke
   prettier: 2.7.1
   prisma: 4.4.0
   typescript: 4.8.4
@@ -6627,7 +6627,6 @@ packages:
 
   /minimist/1.2.7:
     resolution: {integrity: sha512-bzfL1YUZsP41gmu/qjrEk0Q6i2ix/cVeAhbCbqH9u3zYutS1cLg00qhrD0M2MVdCcx4Sc0UpP2eBWo9rotpq6g==}
-    dev: false
 
   /mkdirp/0.5.6:
     resolution: {integrity: sha512-FP+p8RB8OWpF3YZBCrP5gtADmtXApB5AMLn+vdyA+PyxCjrCs00mjyUozssO33cwDeT3wNGdLxJ5M//YqtHAJw==}
@@ -6721,8 +6720,8 @@ packages:
       react-dom: 18.2.0_react@18.2.0
     dev: false
 
-  /next-sitemap/3.1.24_mna6xsgplvxkrmeg4ftolwenke:
-    resolution: {integrity: sha512-dEFOI6cnNffDcmxis/1IVNK2JI1wtxxGoj2ipP7L8xDVbxjyuuH2V8MEajHPPrIhybfGk6gyZ5HDpXgVcTv9QA==}
+  /next-sitemap/3.1.25_mna6xsgplvxkrmeg4ftolwenke:
+    resolution: {integrity: sha512-+unneurDQyhZZqwumlE9LmBDyk2BAzTE4tJeXq0qOWNvfjw+Mp1/ciDrQgaP/CG/JJvKvKUhUsg2CqTQEuAqQA==}
     engines: {node: '>=14.18'}
     hasBin: true
     peerDependencies:
@@ -6731,7 +6730,7 @@ packages:
     dependencies:
       '@corex/deepmerge': 4.0.29
       '@next/env': 12.3.1
-      minimist: 1.2.6
+      minimist: 1.2.7
       next: 12.3.1_6tziyx3dehkoeijunclpkpolha
     dev: true
 
@@ -8243,8 +8242,8 @@ packages:
     resolution: {integrity: sha512-gu73tuZfJgu+mvCSy4UZwd2JXykjK9zAZsfmDeut5dx/1a7FeTk0XwJsSuqQn+cuMCGVbIBfl+s53X4T19DnzQ==}
     dev: false
 
-  /vscode-textmate/7.0.1:
-    resolution: {integrity: sha512-zQ5U/nuXAAMsh691FtV0wPz89nSkHbs+IQV8FDk+wew9BlSDhf4UmWGlWJfTR2Ti6xZv87Tj5fENzKf6Qk7aLw==}
+  /vscode-textmate/7.0.3:
+    resolution: {integrity: sha512-OkE/mYm1h5ZX9IEKeKR/2zKDt2SzYyIfTEOVFX4QhA+B3BPROvNEmDDXvBThz3qknKO3Cy/VVb8/sx1UlqP/Xw==}
     dev: false
 
   /w3c-keyname/2.2.6:
