@@ -1,6 +1,5 @@
-import type { Session } from "@supabase/supabase-js";
+import { useSessionContext } from "@supabase/auth-helpers-react";
 import { InferGetStaticPropsType } from "next";
-import { useState, useEffect } from "react";
 
 import { NewsletterIssues } from "@/components/Newsletter";
 import { NewsletterSignup } from "@/components/Newsletter/Signup";
@@ -8,7 +7,6 @@ import { ViewsCounter } from "@/components/ViewsCounter";
 import { DocumentHead } from "@/components/shared/seo";
 import { NEWSLETTER_DESCRIPTION, OWNER } from "@/config";
 import { getAllButtondownEmailsPreviews, getButtondownSubscriberCount } from "@/domains/Buttondown";
-import { SupabaseClient } from "@/domains/Supabase";
 import { Center, Space } from "@/styles/layouts";
 import { Title } from "@/styles/typography";
 import { useHasMounted } from "@/utils/hooks";
@@ -18,15 +16,7 @@ const NewsletterLandingPage = ({
 	newsletterIssues,
 }: InferGetStaticPropsType<typeof getStaticProps>) => {
 	const hasMounted = useHasMounted();
-	const [session, setSession] = useState<Session | null>(SupabaseClient.auth.session());
-
-	useEffect(() => {
-		setSession(SupabaseClient.auth.session());
-
-		SupabaseClient.auth.onAuthStateChange((_event, session) => {
-			setSession(session);
-		});
-	}, []);
+	const { session } = useSessionContext();
 
 	return (
 		<>
