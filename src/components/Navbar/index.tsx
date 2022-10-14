@@ -67,7 +67,7 @@ export const Navbar = () => {
 const NavbarMenu = () => {
 	const [darkTheme, setDarkTheme] = useState<boolean | undefined>(undefined);
 	const [showDrawer, setShowDrawer] = useState(false);
-	const { isLoading, session } = useSessionContext();
+	const { session } = useSessionContext();
 	const supabaseClient = useSupabaseClient();
 
 	const konami = useFoobarStore((state) => state.foobarData.konami);
@@ -208,7 +208,6 @@ const NavbarMenu = () => {
 							<FiSun aria-label="Switch to Dark Mode" title="Switch to Dark Mode" />
 						)}
 					</ThemeSwitch>
-					{isLoading && "isLoading"}
 					{session && isAdminRoute && (
 						<Button onClick={handleSignOut} $size="small">
 							Sign out
