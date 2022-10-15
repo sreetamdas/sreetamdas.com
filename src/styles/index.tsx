@@ -11,6 +11,7 @@ export const theme = {
 		accentPrimaryValues: "91, 52, 218",
 		accentPrimary: "rgb(91, 52, 218)",
 		accentSecondary: "rgb(53, 142, 241)",
+		accentSecondaryValues: "53, 142, 241",
 		backgroundBlurred: "rgba(255, 255, 255, 0.93)",
 		inlineCodeBackground: "rgb(220, 220, 220)",
 	},
@@ -20,6 +21,7 @@ export const theme = {
 		accentPrimaryValues: "157, 134, 233",
 		accentPrimary: "rgb(157, 134, 233)",
 		accentSecondary: "rgb(97, 218, 251)",
+		accentSecondaryValues: "97, 218, 251",
 		backgroundBlurred: "rgba(15, 10, 35, 0.9)",
 		inlineCodeBackground: "rgb(51, 51, 51)",
 	},
@@ -32,6 +34,7 @@ export const GlobalStyles = createGlobalStyle`
 	--values-primary-accent: ${theme.light.accentPrimaryValues};
 	--color-primary-accent: ${theme.light.accentPrimary};
 	--color-secondary-accent: ${theme.light.accentSecondary};
+	--values-secondary-accent: ${theme.light.accentSecondaryValues};
 	--color-bg-blurred: ${theme.light.backgroundBlurred};
 	--color-inlineCode-bg: ${theme.light.inlineCodeBackground};
 	
@@ -60,6 +63,7 @@ export const GlobalStyles = createGlobalStyle`
 		--values-primary-accent: ${theme.dark.accentPrimaryValues};
 		--color-primary-accent: ${theme.dark.accentPrimary};
 		--color-secondary-accent: ${theme.dark.accentSecondary};
+		--values-secondary-accent: ${theme.dark.accentSecondaryValues};
 		--color-inlineCode-bg: ${theme.dark.inlineCodeBackground};
 		--color-bg-blurred: ${theme.dark.backgroundBlurred};
 	}
@@ -67,6 +71,7 @@ export const GlobalStyles = createGlobalStyle`
 		--color-primary-accent: rgb(255, 255, 0);
 		--values-primary-accent: 255, 255, 0;
 		--color-secondary-accent: rgb(97, 218, 251);
+		--values-secondary-accent: 97, 218, 251;
 		--color-primary: rgb(255, 255, 255);
 		--color-background: rgb(0, 0, 0);
 		--color-inlineCode-bg: rgb(34, 34, 34);
@@ -75,7 +80,7 @@ export const GlobalStyles = createGlobalStyle`
 	html,
 	body {
 		font-size: ${BASE_FONT_SIZE}px;
-		font-family: -apple-system, BlinkMacSystemFont, Inter, Roboto, Segoe UI,
+		font-family: 'Inter', -apple-system, BlinkMacSystemFont, Roboto, Segoe UI,
 			Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue,
 			sans-serif;
 		color: var(--color-primary);
@@ -92,7 +97,7 @@ export const GlobalStyles = createGlobalStyle`
 	}
 
 	:not(pre):not(span)::selection {
-		background: rgba(var(--values-primary-accent), 0.99);
+		background: rgba(var(--values-secondary-accent), 0.99);
 		color: var(--color-background)
 	}
 

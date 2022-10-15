@@ -4,9 +4,9 @@ import { FaLongArrowAltUp, FaTwitter } from "react-icons/fa";
 import { ButtonUnstyled } from "@/components/Button/styles";
 import { SITE_URL } from "@/config";
 import { LinkedIcon } from "@/styles/blog";
-import { FrontmatterProps, MDXBundledResultProps } from "@/typings/blog";
+import { ContentFrontmatterProps, MDXBundledResultProps } from "@/typings/blog";
 
-type ShareLinksProps = Pick<MDXBundledResultProps, "slug"> & Pick<FrontmatterProps, "title">;
+type ShareLinksProps = Pick<MDXBundledResultProps, "slug"> & Pick<ContentFrontmatterProps, "title">;
 export const ShareLinks = ({ title, slug }: ShareLinksProps) => {
 	const tweetShareURL = `https://twitter.com/intent/tweet?text=Check out: ${title}&url=${SITE_URL}/blog/${slug}%0D%0A&via=_SreetamDas`;
 

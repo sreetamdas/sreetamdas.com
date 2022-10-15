@@ -8,7 +8,8 @@ import { MDXComponents } from "@/components/mdx";
 import { DocumentHead } from "@/components/shared/seo";
 import { getButtondownSubscriberCount } from "@/domains/Buttondown";
 import { Center, Space } from "@/styles/layouts";
-import { PrimaryGradient, Heavy, MDXText, Title, Paragraph, LinkTo } from "@/styles/typography";
+import { PrimaryGradient, Heavy, Title } from "@/styles/typography";
+import { ContentFrontmatterProps } from "@/typings/blog";
 import { getMDXFileData } from "@/utils/blog";
 
 const Index = ({ code, subscriberCount }: InferGetStaticPropsType<typeof getStaticProps>) => {
@@ -16,55 +17,27 @@ const Index = ({ code, subscriberCount }: InferGetStaticPropsType<typeof getStat
 
 	return (
 		<>
-			<DocumentHead title="Home" />
-
-			<Space $size={25} />
+			<DocumentHead title="Hello hello!" />
+			<Space $size={50} />
 			<Center>
 				<Title $size={2.5}>
-					Hey, I&apos;m Sreetam Das!{" "}
+					Hey, I&apos;m Sreetam!{" "}
 					<span role="img" aria-label="wave">
 						👋
 					</span>
 				</Title>
 			</Center>
-			<Space $size={25} />
-			<Paragraph>
-				I&apos;m a developer from India in love with all things React. I&apos;ve also worked with
-				different languages like Python, JavaScript, Elixir, TypeScript and C++, as well as Node,
-				Django and Redux.
-			</Paragraph>
-			<Paragraph>
-				I&apos;m currently a front-end engineer at{" "}
-				<LinkTo href="https://remote.com" target="_blank">
-					Remote
-				</LinkTo>{" "}
-				who loves working with{" "}
-				<PrimaryGradient>
-					<Heavy>React + TypeScript</Heavy>
-				</PrimaryGradient>
-				.
-			</Paragraph>
-			<MDXText>
-				<Component
-					components={{
-						...MDXComponents,
-					}}
-				/>
-			</MDXText>
-			<Paragraph>
-				I also{" "}
-				<span role="img" aria-label="heart">
-					❤️
-				</span>{" "}
-				a lot of other things, in no particular order:
-				<br />
-				<br />
-				CSGO, Reddit, Mechanical Keyboards, Open Source, GitHub, Factorio, Tactile Switches, Batman
-				and the Internet!
-			</Paragraph>
+			<Space $size={50} />
+			<Component
+				components={{
+					PrimaryGradient,
+					Heavy,
+					...MDXComponents,
+				}}
+			/>
+			<NewsletterSignup {...{ subscriberCount }} />
 
 			<ViewsCounter hidden />
-			<NewsletterSignup {...{ subscriberCount }} />
 		</>
 	);
 };
@@ -73,7 +46,7 @@ export default Index;
 
 export async function getStaticProps() {
 	const subscriberCount = await getButtondownSubscriberCount();
-	const result = await getMDXFileData("tooling", { cwd: "content" });
+	const result = await getMDXFileData<ContentFrontmatterProps>("introduction", { cwd: "content" });
 
 	return {
 		props: { ...result, subscriberCount },

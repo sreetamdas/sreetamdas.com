@@ -28,7 +28,7 @@ import {
 	Heavy,
 	StyledAccentTextLink,
 } from "@/styles/typography";
-import { MDXBundledResultProps } from "@/typings/blog";
+import { ContentFrontmatterProps, MDXBundledResultProps } from "@/typings/blog";
 import { getMDXFileData, getBlogPostsSlugs } from "@/utils/blog";
 type Props = MDXBundledResultProps & {
 	subscriberCount: number;
@@ -106,7 +106,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 			},
 		};
 	}
-	const result = await getMDXFileData(params?.slug, { cwd: "content/blog" });
+	const result = await getMDXFileData<ContentFrontmatterProps>(params?.slug, { cwd: "content/blog" });
 
 	return { props: { ...result, subscriberCount } };
 };

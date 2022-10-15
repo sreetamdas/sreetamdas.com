@@ -13,7 +13,7 @@ import { DocumentHead } from "@/components/shared/seo";
 import { getButtondownSubscriberCount } from "@/domains/Buttondown";
 import { Center } from "@/styles/layouts";
 import { Title } from "@/styles/typography";
-import { MDXBundledResultProps } from "@/typings/blog";
+import { ContentFrontmatterProps, MDXBundledResultProps } from "@/typings/blog";
 import { getMDXFileData } from "@/utils/blog";
 
 type Props = MDXBundledResultProps & {
@@ -55,7 +55,7 @@ const About = ({ code, frontmatter: _, subscriberCount, repoContributors }: Prop
 export default About;
 
 export async function getStaticProps() {
-	const result = await getMDXFileData("credits", { cwd: "content" });
+	const result = await getMDXFileData<ContentFrontmatterProps>("credits", { cwd: "content" });
 	const subscriberCount = await getButtondownSubscriberCount();
 	const repoContributors = await getRepoContributors();
 

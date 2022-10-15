@@ -40,7 +40,7 @@ export const RepoContributors = ({ contributors }: RepoContributorsProps) => (
 		{contributors?.map(
 			({ login, avatar_url, html_url }) =>
 				html_url && (
-					<LinkTo href={html_url} key={login} target="_blank" hideExternalLinkIndicator>
+					<LinkTo href={html_url} key={login} target="_blank">
 						<ContributorWrapper>
 							{avatar_url ? (
 								<ContributorImage>
