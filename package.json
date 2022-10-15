@@ -55,7 +55,6 @@
 		"shiki": "^0.11.1",
 		"styled-components": "^5.3.6",
 		"unist-util-visit": "^4.1.1",
-		"vscode-textmate": "^7.0.3",
 		"zustand": "4.1.2"
 	},
 	"devDependencies": {
@@ -85,7 +84,8 @@
 		"next-sitemap": "^3.1.25",
 		"prettier": "^2.7.1",
 		"prisma": "^4.4.0",
-		"typescript": "^4.8.4"
+		"typescript": "^4.8.4",
+		"vscode-textmate": "^7.0.3"
 	},
 	"license": "MIT",
 	"pnpm": {

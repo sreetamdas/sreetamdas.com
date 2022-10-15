@@ -106,7 +106,6 @@ dependencies:
   shiki: 0.11.1
   styled-components: 5.3.6_7i5myeigehqah43i5u7wbekgba
   unist-util-visit: 4.1.1
-  vscode-textmate: 7.0.3
   zustand: 4.1.2_react@18.2.0
 
 devDependencies:
@@ -137,6 +136,7 @@ devDependencies:
   prettier: 2.7.1
   prisma: 4.4.0
   typescript: 4.8.4
+  vscode-textmate: 7.0.3
 
 packages:
 
@@ -8244,7 +8244,7 @@ packages:
 
   /vscode-textmate/7.0.3:
     resolution: {integrity: sha512-OkE/mYm1h5ZX9IEKeKR/2zKDt2SzYyIfTEOVFX4QhA+B3BPROvNEmDDXvBThz3qknKO3Cy/VVb8/sx1UlqP/Xw==}
-    dev: false
+    dev: true
 
   /w3c-keyname/2.2.6:
     resolution: {integrity: sha512-f+fciywl1SJEniZHD6H+kUO8gOnwIr7f4ijKA6+ZvJFjeGi1r4PDLl53Ayud9O/rk64RqgoQine0feoeOU0kXg==}

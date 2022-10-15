@@ -12,10 +12,11 @@ import {
 	SelectField,
 	SubmitButton,
 } from "@/components/Form";
+import { Database } from "@/domains/Supabase/database.types";
 import { randomAlphanumeric } from "@/utils/hooks";
 
 export const UploadBook = () => {
-	const supabaseClient = useSupabaseClient();
+	const supabaseClient = useSupabaseClient<Database>();
 
 	type FormDataValues = Omit<BookEntryProperties, "cover"> & { cover?: File };
 	const initialValues: FormDataValues = {

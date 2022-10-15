@@ -37,6 +37,7 @@ import {
 
 import { Button } from "@/components/Button";
 import { useFoobarStore } from "@/domains/Foobar";
+import { Database } from "@/domains/Supabase/database.types";
 import { canvasDrawRectangle } from "@/domains/style/darkmode";
 import { theme as siteTHeme } from "@/styles";
 import { LinkedIcon } from "@/styles/blog";
@@ -68,7 +69,7 @@ const NavbarMenu = () => {
 	const [darkTheme, setDarkTheme] = useState<boolean | undefined>(undefined);
 	const [showDrawer, setShowDrawer] = useState(false);
 	const { session } = useSessionContext();
-	const supabaseClient = useSupabaseClient();
+	const supabaseClient = useSupabaseClient<Database>();
 
 	const konami = useFoobarStore((state) => state.foobarData.konami);
 	const { asPath } = useRouter();

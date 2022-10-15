@@ -10,7 +10,7 @@ import remarkGfm from "remark-gfm";
 import remarkSlug from "remark-slug";
 import remarkToc from "remark-toc";
 import { getHighlighter, toShikiTheme } from "shiki";
-import { IRawTheme } from "vscode-textmate";
+import type { IRawTheme } from "vscode-textmate";
 
 import { rehypeImgSize } from "@/components/mdx/images/plugins";
 import { remarkShiki } from "@/components/shiki";

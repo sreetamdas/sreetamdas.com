@@ -4,6 +4,7 @@ import { Button } from "@/components/Button";
 import { ViewsCounter } from "@/components/ViewsCounter";
 import { DocumentHead } from "@/components/shared/seo";
 import { OWNER, SITE_URL } from "@/config";
+import { Database } from "@/domains/Supabase/database.types";
 import { Center, Space } from "@/styles/layouts";
 import { Paragraph, Title } from "@/styles/typography";
 import { useHasMounted } from "@/utils/hooks";
@@ -12,7 +13,7 @@ const Admin = () => {
 	const hasMounted = useHasMounted();
 	const { isLoading, session } = useSessionContext();
 
-	const supabaseClient = useSupabaseClient();
+	const supabaseClient = useSupabaseClient<Database>();
 
 	async function handleSignInWithGitHub() {
 		await supabaseClient.auth.signInWithOAuth({

@@ -1,9 +1,10 @@
+import { captureException } from "@sentry/nextjs";
 import { createServerSupabaseClient } from "@supabase/auth-helpers-nextjs";
 import type { PostgrestError } from "@supabase/supabase-js";
 import { NextApiRequest, NextApiResponse } from "next";
 
+import { Database } from "@/domains/Supabase/database.types";
 import type { ErrorResponse, SuccessResponse } from "@/domains/api";
-import { PostDetails } from "@/typings/blog";
 
 type AddViewSuccessResponse = SuccessResponse<{
 	view_count: number;
@@ -19,17 +20,15 @@ type AddViewResponse = AddViewSuccessResponse | AddViewErrorResponse;
  */
 async function handler(req: NextApiRequest, res: NextApiResponse<AddViewResponse>) {
 	if (req.method === "POST") {
-		const supabaseServerClient = createServerSupabaseClient({ req, res });
+		const supabaseServerClient = createServerSupabaseClient<Database>({ req, res });
 		const { page_slug } = req.body;
 
-		const { data: view_count, error } = await supabaseServerClient.rpc<
-			"upsert_page_view",
-			PostDetails["view_count"]
-		>("upsert_page_view", {
+		const { data: view_count, error } = await supabaseServerClient.rpc("upsert_page_view", {
 			page_slug,
 		});
 
 		if (error) {
+			captureException(error);
 			res.status(500).json({ error });
 		} else {
 			// @ts-expect-error view_count is number here, not number[]

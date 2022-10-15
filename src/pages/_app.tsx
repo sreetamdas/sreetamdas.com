@@ -12,6 +12,7 @@ import type { PropsWithChildren } from "react";
 import { Toaster } from "react-hot-toast";
 import { ThemeProvider } from "styled-components";
 
+import { Database } from "@/domains/Supabase/database.types";
 import { getInitialColorMode } from "@/domains/style/darkmode";
 import { DefaultLayout } from "@/layouts/Default";
 import { theme, toasterProps, GlobalStyles } from "@/styles";
@@ -36,7 +37,7 @@ const MyApp = ({ Component, pageProps }: AppPropsWithLayout) => {
 	// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 	const initialTheme = getInitialColorMode()!;
 
-	const [supabaseClient] = useState(() => createBrowserSupabaseClient());
+	const [supabaseClient] = useState(() => createBrowserSupabaseClient<Database>());
 	const [queryClient] = useState(() => new QueryClient());
 	const [themeObject, setThemeObject] = useState<ThemeObjectInitial>({
 		themeType: initialTheme,
