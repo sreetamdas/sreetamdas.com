@@ -17,17 +17,17 @@ const Index = ({ code, subscriberCount }: InferGetStaticPropsType<typeof getStat
 
 	return (
 		<>
-			<DocumentHead title="Home" />
-			<Space $size={25} />
+			<DocumentHead title="Hello hello!" />
+			<Space $size={50} />
 			<Center>
 				<Title $size={2.5}>
-					Hey, I&apos;m Sreetam Das!{" "}
+					Hey, I&apos;m Sreetam!{" "}
 					<span role="img" aria-label="wave">
 						👋
 					</span>
 				</Title>
 			</Center>
-			<Space $size={25} />
+			<Space $size={50} />
 			<Component
 				components={{
 					PrimaryGradient,
