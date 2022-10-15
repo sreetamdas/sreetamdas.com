@@ -1,7 +1,7 @@
 import { useSessionContext } from "@supabase/auth-helpers-react";
 import styled, { css } from "styled-components";
 
-import { GitHubStats } from "@/components/Footer/GitHubStats";
+import { GitHubStats } from "@/components/GitHub/FooterStats";
 import { Foobar } from "@/components/foobar";
 import { OWNER } from "@/config";
 import { breakpoint } from "@/utils/style";
@@ -15,9 +15,9 @@ export const Footer = () => {
 			<Foobar />
 			<GitHubStats />
 			Made with <a href="https://nextjs.org">Next.js</a> &bull; View source on{" "}
-			<a href="https://github.com/sreetamdas/sreetamdas.com">Github</a>
-			<span>&bull;</span> <br />
+			<a href="https://github.com/sreetamdas/sreetamdas.com">Github</a> <span>&bull;</span> <br />
 			Find me on <a href="https://twitter.com/_SreetamDas">Twitter</a>
+			<MessageWrapper>I hope you have a very nice day :)</MessageWrapper>
 		</FooterWrapper>
 	);
 };
@@ -40,4 +40,8 @@ const FooterWrapper = styled.footer`
 			display: none;
 		`)}
 	}
+`;
+
+const MessageWrapper = styled.div`
+	padding-top: 30px;
 `;

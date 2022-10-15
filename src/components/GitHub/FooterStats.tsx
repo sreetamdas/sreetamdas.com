@@ -14,7 +14,7 @@ export const Stats = styled.div`
 	justify-items: center;
 	align-items: center;
 	gap: 1rem;
-	padding: 0.8rem 0;
+	padding: 10px 0;
 
 	${StyledLinkBase} {
 		width: max-content;
