@@ -1,6 +1,6 @@
 import { bundleMDX } from "mdx-bundler";
 
-export type FrontmatterProps = {
+export type ContentFrontmatterProps = {
 	title: string;
 	seoTitle?: string;
 	subtitle?: string;
@@ -9,6 +9,7 @@ export type FrontmatterProps = {
 	published: boolean;
 	publishedAt: string;
 	updatedAt: string;
+	skipPage?: boolean;
 };
 
 export type PostDetails = {
@@ -21,6 +22,6 @@ export type PostDetails = {
 };
 
 export type MDXBundledResultProps = Omit<Awaited<ReturnType<typeof bundleMDX>>, "frontmatter"> & {
-	frontmatter: FrontmatterProps;
+	frontmatter: ContentFrontmatterProps;
 	slug: string;
 };

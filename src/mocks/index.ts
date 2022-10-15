@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import { SetupWorkerApi, SharedOptions } from "msw";
 
-import { SENTRY_ENVELOPE_URL } from "@/domains/sentry";
+import { SENTRY_ENVELOPE_URL } from "@/domains/Sentry";
 
 type UnhandledRequestStrategy = NonNullable<SharedOptions["onUnhandledRequest"]>;
 type UnhandledRequestCallback = Parameters<

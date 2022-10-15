@@ -12,7 +12,7 @@ const siteURL = process.env.SITE_URL ?? "https://sreetamdas.com";
 export const DocumentHead = ({
 	title,
 	imageURL: relativeImageURL,
-	description = "Software Tinkerer and Engineer from India. 💜 React and TypeScript, CS:GO and Mechanical Keyboards!",
+	description = "Software Tinkerer and Engineer from India. 💜 React and TypeScript, CS:GO and mechanical keyboards!",
 	noIndex = false,
 }: DocumentHeadProps) => {
 	const pageTitle = `${title} | Sreetam Das`;

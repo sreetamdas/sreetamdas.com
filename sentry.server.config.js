@@ -3,7 +3,7 @@
 // https://docs.sentry.io/platforms/javascript/guides/nextjs/
 
 import * as Sentry from "@sentry/nextjs";
-import { BrowserTracing } from "@sentry/tracing";
+
 
 const SENTRY_DSN = process.env.SENTRY_DSN || process.env.NEXT_PUBLIC_SENTRY_DSN;
 const ENVIRONMENT = process.env.VERCEL_ENV || process.env.NODE_ENV;
@@ -12,9 +12,6 @@ const ENVIRONMENT = process.env.VERCEL_ENV || process.env.NODE_ENV;
 if (ENVIRONMENT !== "development") {
 	Sentry.init({
 		dsn: SENTRY_DSN,
-		// This enables automatic instrumentation (highly recommended), but is not
-		// necessary for purely manual usage
-		integrations: [new BrowserTracing()],
 		// Adjust this value in production, or use tracesSampler for greater control
 		tracesSampleRate: 0.25,
 		environment: ENVIRONMENT,

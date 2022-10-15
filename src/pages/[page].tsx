@@ -13,7 +13,7 @@ import { Highlight, CustomBlockquote } from "@/styles/blog";
 import { Center } from "@/styles/layouts";
 import { Sparkles } from "@/styles/special";
 import { Title, Heavy, MDXTitle, StyledAccentTextLink, PrimaryGradient } from "@/styles/typography";
-import { MDXBundledResultProps } from "@/typings/blog";
+import { ContentFrontmatterProps, MDXBundledResultProps } from "@/typings/blog";
 import { getMDXFileData, getRootPagesSlugs } from "@/utils/blog";
 
 type Props = MDXBundledResultProps & {
@@ -74,7 +74,13 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 			},
 		};
 	}
-	const result = await getMDXFileData(params?.page);
+	const result = await getMDXFileData<ContentFrontmatterProps>(params?.page);
+
+	if (result.frontmatter.skipPage) {
+		return {
+			notFound: true,
+		};
+	}
 
 	return { props: { ...result, subscriberCount } };
 };

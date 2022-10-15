@@ -11,7 +11,7 @@ import { useFoobarStore } from "@/domains/Foobar";
 import { useCustomPlausible } from "@/domains/Plausible";
 import { Center } from "@/styles/layouts";
 import { Title, LinkTo } from "@/styles/typography";
-import { MDXBundledResultProps } from "@/typings/blog";
+import { ContentFrontmatterProps, MDXBundledResultProps } from "@/typings/blog";
 import { getMDXFileData } from "@/utils/blog";
 
 type Props = MDXBundledResultProps & {
@@ -77,7 +77,7 @@ export default About;
 
 export async function getStaticProps() {
 	const subscriberCount = await getButtondownSubscriberCount();
-	const result = await getMDXFileData("about", { cwd: "content" });
+	const result = await getMDXFileData<ContentFrontmatterProps>("about", { cwd: "content" });
 
 	return {
 		props: { ...result, subscriberCount },

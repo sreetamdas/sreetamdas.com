@@ -10,10 +10,7 @@ import { Title } from "@/styles/typography";
 
 const BooksPage = ({ results }: InferGetStaticPropsType<typeof getStaticProps>) => (
 	<>
-		<DocumentHead
-			title="Books"
-			// description="Mechanical keyboards and their components that I own"
-		/>
+		<DocumentHead title="Books" />
 
 		<Center>
 			<Title $size={5}>/books</Title>
