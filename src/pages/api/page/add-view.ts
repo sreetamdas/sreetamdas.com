@@ -1,9 +1,8 @@
 import { captureException } from "@sentry/nextjs";
-import { createServerSupabaseClient } from "@supabase/auth-helpers-nextjs";
 import type { PostgrestError } from "@supabase/supabase-js";
 import { NextApiRequest, NextApiResponse } from "next";
 
-import { Database } from "@/domains/Supabase/database.types";
+import { SupabaseClient } from "@/domains/Supabase";
 import type { ErrorResponse, SuccessResponse } from "@/domains/api";
 
 type AddViewSuccessResponse = SuccessResponse<{
@@ -20,10 +19,9 @@ type AddViewResponse = AddViewSuccessResponse | AddViewErrorResponse;
  */
 async function handler(req: NextApiRequest, res: NextApiResponse<AddViewResponse>) {
 	if (req.method === "POST") {
-		const supabaseServerClient = createServerSupabaseClient<Database>({ req, res });
 		const { page_slug } = req.body;
 
-		const { data: view_count, error } = await supabaseServerClient.rpc("upsert_page_view", {
+		const { data: view_count, error } = await SupabaseClient.rpc("upsert_page_view", {
 			page_slug,
 		});
 
