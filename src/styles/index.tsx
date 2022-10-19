@@ -80,7 +80,7 @@ export const GlobalStyles = createGlobalStyle`
 	html,
 	body {
 		font-size: ${BASE_FONT_SIZE}px;
-		font-family: 'Inter', -apple-system, BlinkMacSystemFont, Roboto, Segoe UI,
+		font-family: -apple-system, BlinkMacSystemFont, 'Inter', Roboto, Segoe UI,
 			Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue,
 			sans-serif;
 		color: var(--color-primary);
