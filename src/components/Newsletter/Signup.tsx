@@ -60,7 +60,7 @@ export const NewsletterSignup = ({ subscriberCount, withNewsletter }: Newsletter
 					<StyledInput type="email" name="email" id="bd-email" required />
 					<input type="hidden" value="1" name="embed" />
 					<SubscribeButton isLoading={isFormBeingSubmitted}>Subscribe</SubscribeButton>
-					<FormMessageContainer success={formSuccess}>
+					<FormMessageContainer $success={formSuccess}>
 						{formError ? formError : null}
 						{formSuccess ? "Thanks for signing up!" : null}
 					</FormMessageContainer>
@@ -120,8 +120,8 @@ const NewsletterTitle = styled.h2`
 	grid-column: 1 / -1;
 `;
 
-const FormMessageContainer = styled.p<{ success: boolean }>`
-	color: var(${({ success }) => (success ? "--color-success-accent" : "--color-error")});
+const FormMessageContainer = styled.p<{ $success: boolean }>`
+	color: var(${({ $success }) => ($success ? "--color-success-accent" : "--color-error")});
 	padding: 0;
 	margin: 0;
 	font-size: 14px;
