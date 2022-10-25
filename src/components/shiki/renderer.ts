@@ -61,6 +61,8 @@ export function renderToHTML(
 		options.langId ? `language="${options.langId}"` : ""
 	}>`;
 
+	// console.log(html);
+
 	lines.forEach((l: IThemedToken[]) => {
 		// eslint-disable-next-line quotes
 		html += '<span class="line">';

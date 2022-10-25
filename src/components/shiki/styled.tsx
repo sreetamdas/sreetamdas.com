@@ -91,6 +91,8 @@ export const CodeBlock: FunctionComponent<
 		highlight?: string;
 	}
 > = (props) => {
+	console.log({ props });
+
 	const { language = "js", children, highlight, style } = props;
 	const shouldHighlightLine = calculateLinesToHighlight(highlight);
 

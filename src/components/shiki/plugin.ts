@@ -33,6 +33,8 @@ export function remarkShiki(options: RemarkShikiOptions) {
 
 				const { fg, bg } = theme;
 				const html = renderToHTML(tokens, { fg, bg, langId: lang }, node.meta);
+				// console.log(html);
+
 				node.type = "html";
 				node.value = html;
 			} else {
