@@ -19,7 +19,7 @@
 	},
 	"dependencies": {
 		"@codesandbox/sandpack-react": "^1.15.1",
-		"@notionhq/client": "2.2.1",
+		"@notionhq/client": "2.2.2",
 		"@octokit/core": "^4.1.0",
 		"@prisma/client": "^4.5.0",
 		"@radix-ui/react-switch": "^1.0.1",
