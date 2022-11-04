@@ -1,26 +1,19 @@
-import { useSessionContext } from "@supabase/auth-helpers-react";
 import styled, { css } from "styled-components";
 
 import { GitHubStats } from "@/components/GitHub/FooterStats";
 import { Foobar } from "@/components/foobar";
-import { OWNER } from "@/config";
 import { breakpoint } from "@/utils/style";
 
-export const Footer = () => {
-	const { session } = useSessionContext();
-
-	return (
-		<FooterWrapper>
-			{session && session.user.email === OWNER && <span>isAdmin</span>}
-			<Foobar />
-			<GitHubStats />
-			Made with <a href="https://nextjs.org">Next.js</a> &bull; View source on{" "}
-			<a href="https://github.com/sreetamdas/sreetamdas.com">Github</a> <span>&bull;</span> <br />
-			Find me on <a href="https://twitter.com/_SreetamDas">Twitter</a>
-			<MessageWrapper>I hope you have a very nice day :)</MessageWrapper>
-		</FooterWrapper>
-	);
-};
+export const Footer = () => (
+	<FooterWrapper>
+		<Foobar />
+		<GitHubStats />
+		Made with <a href="https://nextjs.org">Next.js</a> &bull; View source on{" "}
+		<a href="https://github.com/sreetamdas/sreetamdas.com">Github</a> <span>&bull;</span> <br />
+		Find me on <a href="https://twitter.com/_SreetamDas">Twitter</a>
+		<MessageWrapper>I hope you have a very nice day :)</MessageWrapper>
+	</FooterWrapper>
+);
 
 const FooterWrapper = styled.footer`
 	position: sticky;
