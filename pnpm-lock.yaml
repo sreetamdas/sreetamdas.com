@@ -9,7 +9,7 @@ specifiers:
   '@radix-ui/react-switch': ^1.0.1
   '@sentry/nextjs': ^7.16.0
   '@sreetamdas/karma': ^2.3.4
-  '@supabase/auth-helpers-nextjs': ^0.4.1
+  '@supabase/auth-helpers-nextjs': ^0.5.0
   '@supabase/auth-helpers-react': ^0.3.0
   '@supabase/supabase-js': ^2.0.2
   '@svgr/webpack': ^6.5.0
@@ -76,7 +76,7 @@ dependencies:
   '@radix-ui/react-switch': 1.0.1_biqbaboplfbrettd7655fr4n2y
   '@sentry/nextjs': 7.16.0_next@12.3.1+react@18.2.0
   '@sreetamdas/karma': 2.3.4
-  '@supabase/auth-helpers-nextjs': 0.4.1
+  '@supabase/auth-helpers-nextjs': 0.5.1_cw3mukwjdxhze3hto5xwo6ueee
   '@supabase/auth-helpers-react': 0.3.0
   '@supabase/supabase-js': 2.0.2
   '@tanstack/react-query': 4.12.0_biqbaboplfbrettd7655fr4n2y
@@ -2661,10 +2661,13 @@ packages:
     resolution: {integrity: sha512-Gfkvwk9o9kE9r9XNBmJRfV8zONvXThnm1tcuojL04Uy5uRyqg93DC83lDebl0rocZCfKSjUv+fWYtMQmEDJldg==}
     dev: false
 
-  /@supabase/auth-helpers-nextjs/0.4.1:
-    resolution: {integrity: sha512-qrtMYlLoxm/Xf2U1l+OeDlckEzQHbRusIRcj5JKOj+gV/r62/VkDpB92cgjt3bbVtPDka5szXF4tBku6ZZkMeQ==}
+  /@supabase/auth-helpers-nextjs/0.5.1_cw3mukwjdxhze3hto5xwo6ueee:
+    resolution: {integrity: sha512-aXpFlg3XUN70fX+uqsxZCTYe4u0c9yQuSYxTxvxZFAQuRPGxv86zoxUAslMFMIvQN8uwb8dUjlTsqb1e0qTEPQ==}
+    peerDependencies:
+      '@supabase/supabase-js': ^2.0.4
     dependencies:
-      '@supabase/auth-helpers-shared': 0.2.0
+      '@supabase/auth-helpers-shared': 0.2.3_cw3mukwjdxhze3hto5xwo6ueee
+      '@supabase/supabase-js': 2.0.2
     dev: false
 
   /@supabase/auth-helpers-react/0.3.0:
@@ -2675,6 +2678,14 @@ packages:
 
   /@supabase/auth-helpers-shared/0.2.0:
     resolution: {integrity: sha512-GaWzuP3RjLSdSlFajbgwQkZO24A14DSEIJG5sUva/sUYWkriEWROjf8Vbwg4YsSxqeU6fP3lloFeync9BwgyYA==}
+    dev: false
+
+  /@supabase/auth-helpers-shared/0.2.3_cw3mukwjdxhze3hto5xwo6ueee:
+    resolution: {integrity: sha512-Xwnd2UQ/VTjTKIuVg1Xl/ryrElbSccOJhC11jbVPHOs7Y6yxzy9APxQs//jj4IpbDH4uOEDCdpMIJ0tzRxj9DQ==}
+    peerDependencies:
+      '@supabase/supabase-js': ^2.0.4
+    dependencies:
+      '@supabase/supabase-js': 2.0.2
     dev: false
 
   /@supabase/functions-js/2.0.0:
