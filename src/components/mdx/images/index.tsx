@@ -1,4 +1,5 @@
 import NextImage from "next/image";
+import { DetailedHTMLProps, ImgHTMLAttributes } from "react";
 import styled from "styled-components";
 
 export const ImageWrapper = styled.span`
@@ -9,17 +10,9 @@ export const ImageWrapper = styled.span`
 	}
 `;
 
-export const CustomImage = ({
-	alt = " ",
-	src,
-	height,
-	width,
-}: {
-	alt?: string;
-	src?: string;
-	height?: string | number;
-	width?: string | number;
-}) => {
+type SafeNumber = number | `${number}`;
+type ImageProps = DetailedHTMLProps<ImgHTMLAttributes<HTMLImageElement>, HTMLImageElement>;
+export const CustomImage = ({ alt = " ", src, height, width }: ImageProps) => {
 	if (typeof src === "undefined") return null;
 	const type = src.slice(-3);
 
@@ -41,19 +34,24 @@ export const CustomImage = ({
 			</video>
 		);
 	}
-	if (src[0] === "/") {
+	if (src[0] === "/" && typeof height !== undefined && typeof width !== "undefined") {
 		return (
 			<ImageWrapper>
-				<NextImage {...{ alt, src, height, width }} quality="100" />
+				<NextImage
+					alt={alt}
+					src={src}
+					height={height as SafeNumber}
+					width={width as SafeNumber}
+					quality="100"
+				/>
 			</ImageWrapper>
 		);
 	}
 
+	// for external images
 	return (
 		<ImageWrapper>
-			{/* for external images */}
-			{/* eslint-disable-next-line @next/next/no-img-element */}
-			<img src={src} alt={alt} loading="lazy" />
+			<NextImage src={src} alt={alt} />
 		</ImageWrapper>
 	);
 };
