@@ -218,6 +218,7 @@ export const LinkTo = forwardRef<HTMLAnchorElement, LinkToProps>(function LinkTo
 				locale,
 			}}
 			passHref
+			legacyBehavior
 		>
 			<StyledLinkBase {...linkProps} ref={ref}>
 				{children}
