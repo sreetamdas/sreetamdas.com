@@ -51,7 +51,8 @@ export const CustomImage = ({ alt = " ", src, height, width }: ImageProps) => {
 	// for external images
 	return (
 		<ImageWrapper>
-			<NextImage src={src} alt={alt} />
+			{/* eslint-disable-next-line @next/next/no-img-element */}
+			<img src={src} alt={alt} loading="lazy" />
 		</ImageWrapper>
 	);
 };
