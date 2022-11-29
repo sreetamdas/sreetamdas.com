@@ -2,6 +2,7 @@ import { ToasterProps } from "react-hot-toast";
 import { createGlobalStyle, css } from "styled-components";
 
 import { sharedTransition } from "@/styles/components";
+import { interFont, iosevkaFont } from "@/styles/fonts";
 import { BASE_FONT_SIZE, focusVisible } from "@/utils/style";
 
 export const theme = {
@@ -41,7 +42,7 @@ export const GlobalStyles = createGlobalStyle`
 	--color-inlineCode-fg: var(--color-primary);
 	--color-fancy-pants: var(--color-primary-accent);
 	
-	--font-family-code: "Iosevka Web", SFMono-Regular, Consolas, Roboto Mono, Menlo, Monaco,
+	--font-family-code: ${iosevkaFont.style.fontFamily}, Consolas, Roboto Mono, Menlo, Monaco,
 	Liberation Mono, Lucida Console, monospace;
 	--color-success-accent: rgb(0, 255, 127);
 	--color-success-accent-faded: rgba(0, 255, 127, 0.19);
@@ -80,7 +81,7 @@ export const GlobalStyles = createGlobalStyle`
 	html,
 	body {
 		font-size: ${BASE_FONT_SIZE}px;
-		font-family: -apple-system, BlinkMacSystemFont, 'Inter', Roboto, Segoe UI,
+		font-family: -apple-system, BlinkMacSystemFont, ${interFont.style.fontFamily}, Roboto, Segoe UI,
 			Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue,
 			sans-serif;
 		color: var(--color-primary);

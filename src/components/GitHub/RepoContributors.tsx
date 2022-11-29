@@ -44,7 +44,7 @@ export const RepoContributors = ({ contributors }: RepoContributorsProps) => (
 						<ContributorWrapper>
 							{avatar_url ? (
 								<ContributorImage>
-									<Image src={avatar_url} alt={login} height={128} width={128} />
+									<Image src={avatar_url} alt={login ?? ""} height={128} width={128} />
 								</ContributorImage>
 							) : null}
 							<ContributorLogin>{login}</ContributorLogin>

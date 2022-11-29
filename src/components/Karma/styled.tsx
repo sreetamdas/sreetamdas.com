@@ -1,5 +1,5 @@
 import * as SwitchPrimitive from "@radix-ui/react-switch";
-import Image, { ImageProps } from "next/future/image";
+import Image, { ImageProps } from "next/image";
 import styled, { css } from "styled-components";
 
 import { sharedTransition } from "@/styles/components";

@@ -51,7 +51,7 @@ export const Navbar = () => {
 	return (
 		<Header>
 			<HeaderInner>
-				<Link href="/" passHref>
+				<Link href="/" passHref legacyBehavior>
 					<LinkedIcon>
 						<LogoSVG aria-label="Home">
 							<title>Home</title>
