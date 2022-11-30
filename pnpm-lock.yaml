@@ -9,7 +9,7 @@ specifiers:
   '@prisma/client': ^4.7.0
   '@radix-ui/react-switch': ^1.0.1
   '@sentry/nextjs': ^7.22.0
-  '@sreetamdas/karma': ^2.3.4
+  '@sreetamdas/karma': ^3.0.0
   '@supabase/auth-helpers-nextjs': ^0.5.2
   '@supabase/auth-helpers-react': ^0.3.1
   '@supabase/supabase-js': ^2.1.1
@@ -77,7 +77,7 @@ dependencies:
   '@prisma/client': 4.7.0_prisma@4.7.0
   '@radix-ui/react-switch': 1.0.1_biqbaboplfbrettd7655fr4n2y
   '@sentry/nextjs': 7.22.0_next@13.0.5+react@18.2.0
-  '@sreetamdas/karma': 2.3.4
+  '@sreetamdas/karma': 3.0.0
   '@supabase/auth-helpers-nextjs': 0.5.2_m57u6a6l34vkx3j4pjzwywi7ua
   '@supabase/auth-helpers-react': 0.3.1_m57u6a6l34vkx3j4pjzwywi7ua
   '@supabase/supabase-js': 2.1.1
@@ -2751,8 +2751,8 @@ packages:
       - supports-color
     dev: false
 
-  /@sreetamdas/karma/2.3.4:
-    resolution: {integrity: sha512-wQPwSdPAOmmt+6XFV7Faj0FMyTxCr5MeVtWkzJfbv6n9ZlIBStvqzNs89q9KVbmY23z9L/U20mwDqqMUAmpu2g==}
+  /@sreetamdas/karma/3.0.0:
+    resolution: {integrity: sha512-3Muqbr45wjOhhZs5CdEbAxCCBFqdOvH9458Aqma1D+vlleNicU+qeWj1dX7a7sPlR/LviQdPmQtd5P0S7e4lUQ==}
     engines: {vscode: ^1.41.0}
     dev: false
 
