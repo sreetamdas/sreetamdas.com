@@ -24,7 +24,7 @@ const moduleExports = withPlausibleProxy()({
 		OWNER: process.env.OWNER,
 	},
 	images: {
-		domains: ["avatars.githubusercontent.com"],
+		domains: ["avatars.githubusercontent.com", "i.imgur.com"],
 	},
 
 	async headers() {

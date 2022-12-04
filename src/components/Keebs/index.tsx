@@ -1,32 +1,42 @@
 import styled from "styled-components";
 
+import type { KeebDetailsFromNotion } from "./notion";
+import type { KeebDetails } from "./types";
+
 import { CustomImage } from "@/components/mdx/images";
 import { sharedTransition } from "@/styles/components";
 
-export type KeebDetails = {
-	name: string;
-	imageURL: string;
-	tags: Array<{ name: string }>;
-};
-
 type Props = {
-	results: Array<KeebDetails>;
+	results: Array<KeebDetails | KeebDetailsFromNotion>;
 };
 export const Keebs = ({ results }: Props) => (
 	<KeebsContainer>
-		{results.map(({ name, imageURL, tags }) => (
-			<KeebWrapper key={name.toLowerCase().replace(" ", "-")}>
-				<Info>
-					<h3>{name}</h3>
-					<Tags>
-						{tags.map((tag) => (
-							<span key={tag.name}>{tag.name}</span>
-						))}
-					</Tags>
-				</Info>
-				{imageURL ? <CustomImage src={imageURL} alt={name} /> : null}
-			</KeebWrapper>
-		))}
+		{results.map((imageObj) => {
+			const { name, tags, image } = imageObj;
+
+			const KeebImage = () => {
+				if ("height" in image)
+					return (
+						<CustomImage src={image.url} alt={name} height={image.height} width={image.width} />
+					);
+
+				return <CustomImage src={image.url} alt={name} />;
+			};
+
+			return (
+				<KeebWrapper key={name.toLowerCase().replace(" ", "-")}>
+					<Info>
+						<h3>{name}</h3>
+						<Tags>
+							{tags.map((tag) => (
+								<span key={tag.name}>{tag.name}</span>
+							))}
+						</Tags>
+					</Info>
+					{image.url ? <KeebImage /> : null}
+				</KeebWrapper>
+			);
+		})}
 	</KeebsContainer>
 );
 

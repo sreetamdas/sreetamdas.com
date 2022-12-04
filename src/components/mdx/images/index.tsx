@@ -6,6 +6,7 @@ export const ImageWrapper = styled.span`
 	& img {
 		max-width: var(--max-width);
 		width: 100%;
+		height: auto;
 		border-radius: var(--border-radius);
 	}
 `;
@@ -34,7 +35,7 @@ export const CustomImage = ({ alt = " ", src, height, width }: ImageProps) => {
 			</video>
 		);
 	}
-	if (src[0] === "/" && typeof height !== undefined && typeof width !== "undefined") {
+	if (typeof height !== "undefined" && typeof width !== "undefined") {
 		return (
 			<ImageWrapper>
 				<NextImage
