@@ -1,11 +1,16 @@
-import { KeebDetails } from "./index";
+import { addImgurImagesData } from "./imgur";
+import { KeebDetails } from "./types";
 
 import { NotionClient, getPropertiesValues } from "@/domains/Notion";
 import { getFiles, getMultiSelectNames, getTitlePlainText } from "@/domains/Notion/helpers";
 
 const KEEBS_DATABASE_ID = "3539f182858f424f9cc2563c07dc300d";
 
-export async function getKeebsFromNotion(): Promise<KeebDetails[]> {
+export type KeebDetailsFromNotion = Omit<KeebDetails, "image"> & {
+	image: Omit<KeebDetails["image"], "height" | "width">;
+};
+
+export async function getKeebsFromNotion() {
 	const propertiesToRetrieve = ["Name", "Image", "Type"] as const;
 
 	const { results } = await NotionClient.databases.query({
@@ -23,7 +28,7 @@ export async function getKeebsFromNotion(): Promise<KeebDetails[]> {
 	const keebsDetailsFormatted = keebsDetails.map((keebDetails) => {
 		const keebDetailsFormatted = (
 			Object.keys(keebDetails) as Array<keyof typeof keebDetails>
-		).reduce<KeebDetails>((details: KeebDetails, property) => {
+		).reduce<KeebDetailsFromNotion>((details, property) => {
 			const propertyValue = keebDetails[property];
 			if (Array.isArray(propertyValue)) {
 				if (propertyValue.length > 0 && propertyValue[0].type === "title") {
@@ -31,7 +36,7 @@ export async function getKeebsFromNotion(): Promise<KeebDetails[]> {
 				}
 			} else {
 				if (propertyValue.type === "files") {
-					details.imageURL = getFiles(propertyValue)[0];
+					details.image = { url: getFiles(propertyValue)[0] };
 				}
 
 				if (propertyValue.type === "multi_select") {
@@ -45,5 +50,7 @@ export async function getKeebsFromNotion(): Promise<KeebDetails[]> {
 		return keebDetailsFormatted;
 	});
 
-	return keebsDetailsFormatted;
+	const keebsDetailsWithImgurData = await addImgurImagesData(keebsDetailsFormatted);
+
+	return keebsDetailsWithImgurData;
 }
