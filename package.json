@@ -86,7 +86,7 @@
 		"prettier": "^2.8.0",
 		"prisma": "^4.7.1",
 		"typescript": "^4.9.3",
-		"vscode-textmate": "^7.0.4"
+		"vscode-textmate": "^8.0.0"
 	},
 	"license": "MIT",
 	"pnpm": {

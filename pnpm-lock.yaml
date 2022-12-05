@@ -66,7 +66,7 @@ specifiers:
   styled-components: ^5.3.6
   typescript: ^4.9.3
   unist-util-visit: ^4.1.1
-  vscode-textmate: ^7.0.4
+  vscode-textmate: ^8.0.0
   zustand: 4.1.4
 
 dependencies:
@@ -138,7 +138,7 @@ devDependencies:
   prettier: 2.8.0
   prisma: 4.7.1
   typescript: 4.9.3
-  vscode-textmate: 7.0.4
+  vscode-textmate: 8.0.0
 
 packages:
 
@@ -8351,8 +8351,8 @@ packages:
     resolution: {integrity: sha512-gu73tuZfJgu+mvCSy4UZwd2JXykjK9zAZsfmDeut5dx/1a7FeTk0XwJsSuqQn+cuMCGVbIBfl+s53X4T19DnzQ==}
     dev: false
 
-  /vscode-textmate/7.0.4:
-    resolution: {integrity: sha512-9hJp0xL7HW1Q5OgGe03NACo7yiCTMEk3WU/rtKXUbncLtdg6rVVNJnHwD88UhbIYU2KoxY0Dih0x+kIsmUKn2A==}
+  /vscode-textmate/8.0.0:
+    resolution: {integrity: sha512-AFbieoL7a5LMqcnOF04ji+rpXadgOXnZsxQr//r83kLPr7biP7am3g9zbaZIaBGwBRWeSvoMD4mgPdX3e4NWBg==}
     dev: true
 
   /w3c-keyname/2.2.6:
