@@ -8,7 +8,7 @@ const SENTRY_DSN = process.env.SENTRY_DSN || process.env.NEXT_PUBLIC_SENTRY_DSN;
 const ENVIRONMENT = process.env.VERCEL_ENV || process.env.NODE_ENV;
 
 // Disable sentry reporting in development
-if (ENVIRONMENT !== "development") {
+if (ENVIRONMENT !== "development" && SENTRY_DSN !== "") {
 	Sentry.init({
 		dsn: SENTRY_DSN,
 		// Adjust this value in production, or use tracesSampler for greater control
