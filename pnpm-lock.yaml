@@ -4,7 +4,7 @@ specifiers:
   '@codesandbox/sandpack-react': ^1.17.1
   '@next/eslint-plugin-next': ^13.0.6
   '@next/font': ^13.0.6
-  '@notionhq/client': 2.2.2
+  '@notionhq/client': 2.2.3
   '@octokit/core': ^4.1.0
   '@prisma/client': ^4.7.1
   '@radix-ui/react-switch': ^1.0.1
@@ -72,7 +72,7 @@ specifiers:
 dependencies:
   '@codesandbox/sandpack-react': 1.17.1_biqbaboplfbrettd7655fr4n2y
   '@next/font': 13.0.6
-  '@notionhq/client': 2.2.2
+  '@notionhq/client': 2.2.3
   '@octokit/core': 4.1.0
   '@prisma/client': 4.7.1_prisma@4.7.1
   '@radix-ui/react-switch': 1.0.1_biqbaboplfbrettd7655fr4n2y
@@ -2331,8 +2331,8 @@ packages:
       fastq: 1.14.0
     dev: true
 
-  /@notionhq/client/2.2.2:
-    resolution: {integrity: sha512-L7TB+UyhnWTSv1ek7xzGr9+mS9o76qMKnZ8Ag8H2q6QgvywAiPOFcE3ulWI/1AnMewGVRqwb30agPHMVRY/K/w==}
+  /@notionhq/client/2.2.3:
+    resolution: {integrity: sha512-ZqUzY0iRg/LIrwS+wzz/6osSB2nxIpmqdAtdUwzpcimc9Jlu1j85FeYdaU26Shr193CFrl2TLFeKqpk/APRQ4g==}
     engines: {node: '>=12'}
     dependencies:
       '@types/node-fetch': 2.6.2
