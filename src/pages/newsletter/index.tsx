@@ -4,7 +4,7 @@ import { NewsletterIssues } from "@/components/Newsletter";
 import { NewsletterSignup } from "@/components/Newsletter/Signup";
 import { ViewsCounter } from "@/components/ViewsCounter";
 import { DocumentHead } from "@/components/shared/seo";
-import { NEWSLETTER_DESCRIPTION, OWNER } from "@/config";
+import { NEWSLETTER_DESCRIPTION } from "@/config";
 import { getAllButtondownEmailsPreviews, getButtondownSubscriberCount } from "@/domains/Buttondown";
 import { useSupabaseSession } from "@/domains/Supabase";
 import { Center, Space } from "@/styles/layouts";

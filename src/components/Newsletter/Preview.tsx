@@ -21,9 +21,9 @@ export type IssuePreviewProps = Pick<IssueDefaultFields, "body" | "slug" | "subj
 	publishDate: IssueDefaultFields["publish_date"];
 };
 
-type NewsletterIssuePreviewProps = {
+export type NewsletterIssuePreviewProps = {
 	issue: IssuePreviewProps;
-	isAdminUser: boolean;
+	isAdminUser?: boolean;
 };
 export const NewsletterIssuePreview = ({ issue, isAdminUser }: NewsletterIssuePreviewProps) => (
 	<PreviewWrapper>
