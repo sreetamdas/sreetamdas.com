@@ -44,7 +44,7 @@ export const getStaticProps: GetStaticProps<PageProps> = async ({ params }) => {
 		};
 	}
 
-	const newsletterIssue = (await getAllNewsletterIssuesData("getStaticProps")).results.find(
+	const newsletterIssue = (await getAllNewsletterIssuesData()).results.find(
 		(issue) => issue.slug === params.slug
 	);
 
@@ -62,7 +62,7 @@ export const getStaticProps: GetStaticProps<PageProps> = async ({ params }) => {
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {
-	const newsletterIssues = await getAllButtondownEmails("getStaticPaths");
+	const newsletterIssues = await getAllButtondownEmails();
 	const paths = newsletterIssues.results.map(({ slug }) => ({
 		params: { slug },
 	}));

@@ -25,7 +25,7 @@ async function handler(
 		// eslint-disable-next-line no-console
 		console.error("Request using @octokit/core failed");
 
-		res.status(200).send({ stars: 69, forks: 69 });
+		res.status(200).send({ stars: 0, forks: 0 });
 	}
 }
 

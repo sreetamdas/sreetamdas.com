@@ -12,7 +12,7 @@ const IMGUR_API_CLIENT_ID = process.env.IMGUR_API_CLIENT_ID;
 export const axiosImgur = axios.create({
 	baseURL: IMGUR_BASE_URL,
 	headers: {
-		Authorization: `Client-ID ${IMGUR_API_CLIENT_ID}`,
+		...(IMGUR_API_CLIENT_ID !== "" && { Authorization: `Client-ID ${IMGUR_API_CLIENT_ID}` }),
 	},
 });
 
