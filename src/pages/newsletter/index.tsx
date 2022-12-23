@@ -1,4 +1,3 @@
-import { useSessionContext } from "@supabase/auth-helpers-react";
 import { InferGetStaticPropsType } from "next";
 
 import { NewsletterIssues } from "@/components/Newsletter";
@@ -7,6 +6,7 @@ import { ViewsCounter } from "@/components/ViewsCounter";
 import { DocumentHead } from "@/components/shared/seo";
 import { NEWSLETTER_DESCRIPTION, OWNER } from "@/config";
 import { getAllButtondownEmailsPreviews, getButtondownSubscriberCount } from "@/domains/Buttondown";
+import { useSupabaseSession } from "@/domains/Supabase";
 import { Center, Space } from "@/styles/layouts";
 import { Title } from "@/styles/typography";
 import { useHasMounted } from "@/utils/hooks";
@@ -16,7 +16,7 @@ const NewsletterLandingPage = ({
 	newsletterIssues,
 }: InferGetStaticPropsType<typeof getStaticProps>) => {
 	const hasMounted = useHasMounted();
-	const { session } = useSessionContext();
+	const { isAdminUser } = useSupabaseSession();
 
 	return (
 		<>
@@ -30,10 +30,7 @@ const NewsletterLandingPage = ({
 			<NewsletterSignup subscriberCount={subscriberCount} withNewsletter />
 
 			<Space $size={100} />
-			<NewsletterIssues
-				issues={newsletterIssues}
-				isAdminUser={hasMounted && session?.user?.email === OWNER}
-			/>
+			<NewsletterIssues issues={newsletterIssues} isAdminUser={hasMounted && isAdminUser} />
 			<Space $size={50} />
 
 			<Space $size={50} />

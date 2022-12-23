@@ -1,4 +1,3 @@
-import { useSessionContext, useSupabaseClient } from "@supabase/auth-helpers-react";
 import { AnimatePresence, motion, Variants } from "framer-motion";
 import Head from "next/head";
 import Link from "next/link";
@@ -37,7 +36,7 @@ import {
 
 import { Button } from "@/components/Button";
 import { useFoobarStore } from "@/domains/Foobar";
-import { Database } from "@/domains/Supabase/database.types";
+import { getSupabaseClient, useSupabaseSession } from "@/domains/Supabase";
 import { canvasDrawRectangle } from "@/domains/style/darkmode";
 import { theme as siteTHeme } from "@/styles";
 import { LinkedIcon } from "@/styles/blog";
@@ -68,13 +67,14 @@ export const Navbar = () => {
 const NavbarMenu = () => {
 	const [darkTheme, setDarkTheme] = useState<boolean | undefined>(undefined);
 	const [showDrawer, setShowDrawer] = useState(false);
-	const { session } = useSessionContext();
-	const supabaseClient = useSupabaseClient<Database>();
 
+	const { enabled: supabaseEnabled, supabaseClient } = getSupabaseClient();
+	const { session } = useSupabaseSession();
+
+	const { themeType, changeThemeVariant } = useContext(ThemeContext);
 	const konami = useFoobarStore((state) => state.foobarData.konami);
 	const { asPath } = useRouter();
 	const canvasRef = useRef<HTMLCanvasElement>(null);
-	const { themeType, changeThemeVariant } = useContext(ThemeContext);
 
 	const canvas = canvasRef.current;
 	const canvasContext = canvas?.getContext("2d");
@@ -101,7 +101,9 @@ const NavbarMenu = () => {
 	const isAdminRoute = asPath.includes("/admin");
 
 	async function handleSignOut() {
-		await supabaseClient.auth.signOut();
+		if (supabaseEnabled) {
+			await supabaseClient.auth.signOut();
+		}
 	}
 
 	function handleThemeToggle() {

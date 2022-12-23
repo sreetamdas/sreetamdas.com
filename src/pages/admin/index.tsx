@@ -1,27 +1,26 @@
-import { useSessionContext, useSupabaseClient } from "@supabase/auth-helpers-react";
-
 import { Button } from "@/components/Button";
 import { ViewsCounter } from "@/components/ViewsCounter";
 import { DocumentHead } from "@/components/shared/seo";
 import { OWNER, SITE_URL } from "@/config";
-import { Database } from "@/domains/Supabase/database.types";
+import { getSupabaseClient, useSupabaseSession } from "@/domains/Supabase";
 import { Center, Space } from "@/styles/layouts";
 import { Paragraph, Title } from "@/styles/typography";
 import { useHasMounted } from "@/utils/hooks";
 
 const Admin = () => {
 	const hasMounted = useHasMounted();
-	const { isLoading, session } = useSessionContext();
-
-	const supabaseClient = useSupabaseClient<Database>();
+	const { enabled: supabaseEnabled, supabaseClient } = getSupabaseClient();
+	const { isLoading, session } = useSupabaseSession();
 
 	async function handleSignInWithGitHub() {
-		await supabaseClient.auth.signInWithOAuth({
-			provider: "github",
-			options: {
-				redirectTo: `${SITE_URL}/admin`,
-			},
-		});
+		if (supabaseEnabled) {
+			await supabaseClient.auth.signInWithOAuth({
+				provider: "github",
+				options: {
+					redirectTo: `${SITE_URL}/admin`,
+				},
+			});
+		}
 	}
 
 	if (!hasMounted || isLoading) {
