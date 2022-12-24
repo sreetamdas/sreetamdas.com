@@ -8,6 +8,7 @@ import { withSentryConfig } from "@sentry/nextjs";
 import { withPlausibleProxy } from "next-plausible";
 
 process.env.SITE_URL = process.env.SITE_URL || process.env.VERCEL_URL || "https://sreetamdas.com";
+const SENTRY_DSN = process.env.SENTRY_DSN || process.env.NEXT_PUBLIC_SENTRY_DSN;
 
 const moduleExports = withPlausibleProxy()({
 	compiler: {
@@ -17,6 +18,8 @@ const moduleExports = withPlausibleProxy()({
 	sentry: {
 		hideSourceMaps: false,
 		tunnelRoute: "/tunnel/sentry",
+		disableServerWebpackPlugin: SENTRY_DSN === "",
+		disableClientWebpackPlugin: SENTRY_DSN === "",
 	},
 	pageExtensions: ["js", "jsx", "ts", "tsx", "mdx"],
 	env: {

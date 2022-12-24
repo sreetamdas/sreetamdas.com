@@ -15,10 +15,7 @@ import { StyledThemeObject } from "@/typings/styled";
 
 import "focus-visible";
 
-if (
-	process.env.NODE_ENV === "development" &&
-	process.env.NEXT_PUBLIC_API_MOCKING_ENABLED === "true"
-) {
+if (process.env.NEXT_PUBLIC_API_MOCKING_ENABLED === "true") {
 	require("mocks");
 }
 

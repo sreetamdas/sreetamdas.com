@@ -7,8 +7,7 @@ import { ViewsCounter } from "@/components/ViewsCounter";
 import { DocumentHead } from "@/components/shared/seo";
 import { NEWSLETTER_DESCRIPTION } from "@/config";
 import {
-	getAllNewsletterIssuesData,
-	getAllButtondownEmails,
+	getAllButtondownNewsletterEmails,
 	getButtondownSubscriberCount,
 } from "@/domains/Buttondown";
 import { Space } from "@/styles/layouts";
@@ -44,7 +43,7 @@ export const getStaticProps: GetStaticProps<PageProps> = async ({ params }) => {
 		};
 	}
 
-	const newsletterIssue = (await getAllNewsletterIssuesData()).results.find(
+	const newsletterIssue = (await getAllButtondownNewsletterEmails()).results.find(
 		(issue) => issue.slug === params.slug
 	);
 
@@ -62,7 +61,7 @@ export const getStaticProps: GetStaticProps<PageProps> = async ({ params }) => {
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {
-	const newsletterIssues = await getAllButtondownEmails();
+	const newsletterIssues = await getAllButtondownNewsletterEmails();
 	const paths = newsletterIssues.results.map(({ slug }) => ({
 		params: { slug },
 	}));

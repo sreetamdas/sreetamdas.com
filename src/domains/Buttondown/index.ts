@@ -76,32 +76,15 @@ async function getButtondownNewsletterEmails() {
 }
 
 let allNewsletterIssuesData: ButtondownEmailsType | null = null;
-export async function getAllNewsletterIssuesData() {
+export async function getAllButtondownNewsletterEmails() {
 	if (allNewsletterIssuesData) {
 		return allNewsletterIssuesData;
 	}
-	try {
-		const response = await getButtondownNewsletterEmails();
-		allNewsletterIssuesData = response;
 
-		return allNewsletterIssuesData;
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	} catch (error: any) {
-		captureException(error);
-		throw new Error("Couldn't get Buttondown emails", error);
-	}
-}
+	const response = await getButtondownNewsletterEmails();
+	allNewsletterIssuesData = response;
 
-export async function getAllButtondownEmails() {
-	try {
-		const response = await getAllNewsletterIssuesData();
-
-		return response;
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	} catch (error: any) {
-		captureException(error);
-		throw new Error("Couldn't get Buttondown emails", error);
-	}
+	return allNewsletterIssuesData;
 }
 
 function getPreviewContent(content: string) {
@@ -109,7 +92,7 @@ function getPreviewContent(content: string) {
 	return content.replace("Hello there!\n", "").split("\n").slice(0, 3).join("\n");
 }
 export async function getAllButtondownEmailsPreviews() {
-	const allEmails = await getAllButtondownEmails();
+	const allEmails = await getAllButtondownNewsletterEmails();
 	return [...allEmails.results]
 		.reverse()
 		.map(({ body, subject, publish_date, id, secondary_id, slug }) => ({
@@ -123,7 +106,7 @@ export async function getAllButtondownEmailsPreviews() {
 }
 
 export async function getLatestButtondownEmailSlug() {
-	const allEmails = await getAllButtondownEmails();
+	const allEmails = await getAllButtondownNewsletterEmails();
 
 	return [...allEmails.results].reverse()[0]?.slug;
 }
