@@ -1,7 +1,7 @@
 import { addImgurImagesData } from "./imgur";
 import { KeebDetails } from "./types";
 
-import { NotionClient, getPropertiesValues } from "@/domains/Notion";
+import { getPropertiesValues, getNotionClient } from "@/domains/Notion";
 import { getFiles, getMultiSelectNames, getTitlePlainText } from "@/domains/Notion/helpers";
 
 const KEEBS_DATABASE_ID = "3539f182858f424f9cc2563c07dc300d";
@@ -11,9 +11,14 @@ export type KeebDetailsFromNotion = Omit<KeebDetails, "image"> & {
 };
 
 export async function getKeebsFromNotion() {
+	const { enabled, notionClient } = getNotionClient();
+	if (!enabled) {
+		return null;
+	}
+
 	const propertiesToRetrieve = ["Name", "Image", "Type"] as const;
 
-	const { results } = await NotionClient.databases.query({
+	const { results } = await notionClient.databases.query({
 		database_id: KEEBS_DATABASE_ID,
 		filter: {
 			and: [
@@ -25,7 +30,7 @@ export async function getKeebsFromNotion() {
 
 	const keebsDetails = await getPropertiesValues(propertiesToRetrieve, { results });
 
-	const keebsDetailsFormatted = keebsDetails.map((keebDetails) => {
+	const keebsDetailsFormatted = keebsDetails?.map((keebDetails) => {
 		const keebDetailsFormatted = (
 			Object.keys(keebDetails) as Array<keyof typeof keebDetails>
 		).reduce<KeebDetailsFromNotion>((details, property) => {
@@ -35,11 +40,11 @@ export async function getKeebsFromNotion() {
 					details.name = getTitlePlainText(propertyValue[0]);
 				}
 			} else {
-				if (propertyValue.type === "files") {
+				if (propertyValue?.type === "files") {
 					details.image = { url: getFiles(propertyValue)[0] };
 				}
 
-				if (propertyValue.type === "multi_select") {
+				if (propertyValue?.type === "multi_select") {
 					details.tags = getMultiSelectNames(propertyValue);
 				}
 			}
@@ -50,7 +55,8 @@ export async function getKeebsFromNotion() {
 		return keebDetailsFormatted;
 	});
 
-	const keebsDetailsWithImgurData = await addImgurImagesData(keebsDetailsFormatted);
+	// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+	const keebsDetailsWithImgurData = await addImgurImagesData(keebsDetailsFormatted!);
 
 	return keebsDetailsWithImgurData;
 }

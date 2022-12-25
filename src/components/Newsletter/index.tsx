@@ -1,9 +1,9 @@
-import { IssuePreviewProps, NewsletterIssuePreview } from "./Preview";
+import { NewsletterIssuePreviewProps, NewsletterIssuePreview } from "./Preview";
 import { SectionWrapper } from "./styles";
 
 type NewsletterIssuesProps = {
-	issues: Array<IssuePreviewProps>;
-	isAdminUser: boolean;
+	issues: Array<NewsletterIssuePreviewProps["issue"]>;
+	isAdminUser: NewsletterIssuePreviewProps["isAdminUser"];
 };
 export const NewsletterIssues = ({ issues, isAdminUser }: NewsletterIssuesProps) => (
 	<SectionWrapper>

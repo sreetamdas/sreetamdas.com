@@ -5,9 +5,33 @@ import {
 	QueryDatabaseResponse,
 } from "@notionhq/client/build/src/api-endpoints";
 
-export const NotionClient = new Client({
-	auth: process.env.NOTION_TOKEN,
-});
+const notionEnabled =
+	typeof process.env.NOTION_TOKEN !== "undefined" && process.env.NOTION_TOKEN !== "";
+export const notionClient = notionEnabled
+	? new Client({ auth: process.env.NOTION_TOKEN })
+	: undefined;
+
+type NotionClientUnknown =
+	| {
+			enabled: true;
+			notionClient: Client;
+	  }
+	| {
+			enabled: false;
+			notionClient: undefined;
+	  };
+export function getNotionClient(): NotionClientUnknown {
+	if (notionEnabled && typeof notionClient !== "undefined") {
+		return {
+			enabled: true,
+			notionClient: notionClient,
+		};
+	}
+	return {
+		enabled: false,
+		notionClient: undefined,
+	};
+}
 
 type Props = { pageID: string; propertyID: string };
 /**
@@ -15,8 +39,13 @@ type Props = { pageID: string; propertyID: string };
  *
  * Otherwise, it will return a single property item.
  */
-export async function getPropertyValue({ pageID, propertyID }: Props) {
-	const propertyItem = await NotionClient.pages.properties.retrieve({
+async function getPropertyValue({ pageID, propertyID }: Props) {
+	const { enabled, notionClient: notionClient_ } = getNotionClient();
+	if (!enabled) {
+		return null;
+	}
+
+	const propertyItem = await notionClient_.pages.properties.retrieve({
 		page_id: pageID,
 		property_id: propertyID,
 	});
@@ -29,7 +58,7 @@ export async function getPropertyValue({ pageID, propertyID }: Props) {
 	const results = propertyItem.results;
 
 	while (nextCursor !== null) {
-		const nextPropertyItem = await NotionClient.pages.properties.retrieve({
+		const nextPropertyItem = await notionClient_.pages.properties.retrieve({
 			page_id: pageID,
 			property_id: propertyID,
 			start_cursor: nextCursor,
@@ -63,12 +92,16 @@ type PropertiesValuesType<Properties extends readonly string[]> = Record<
 export async function getPropertiesValues<Properties extends readonly string[]>(
 	propertiesToRetrieve: Properties,
 	options: GetPropertiesOptions
-): Promise<Awaited<PropertiesValuesType<Properties>>[]> {
-	// const propertiesToRetrieve = properties; //Array.isArray(properties) ? properties : [properties];
+): Promise<Awaited<PropertiesValuesType<Properties>>[] | null> {
+	const { enabled, notionClient: notionClient_ } = getNotionClient();
+	if (!enabled) {
+		return null;
+	}
+
 	let results: Extract<GetPropertiesOptions, OptionsResults>["results"];
 
 	if ("query" in options) {
-		results = (await NotionClient.databases.query(options.query)).results;
+		results = (await notionClient_.databases.query(options.query)).results;
 	} else {
 		results = options.results;
 	}

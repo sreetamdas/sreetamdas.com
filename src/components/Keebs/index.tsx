@@ -7,11 +7,11 @@ import { CustomImage } from "@/components/mdx/images";
 import { sharedTransition } from "@/styles/components";
 
 type Props = {
-	results: Array<KeebDetails | KeebDetailsFromNotion>;
+	results: Array<KeebDetails | KeebDetailsFromNotion> | null;
 };
 export const Keebs = ({ results }: Props) => (
 	<KeebsContainer>
-		{results.map((imageObj) => {
+		{results?.map((imageObj) => {
 			const { name, tags, image } = imageObj;
 
 			const KeebImage = () => {

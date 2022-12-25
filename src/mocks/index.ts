@@ -1,5 +1,7 @@
+// @ts-check
 /* eslint-disable @typescript-eslint/no-var-requires */
 import { SetupWorkerApi, SharedOptions } from "msw";
+import { SetupServerApi } from "msw/lib/node";
 
 import { SENTRY_ENVELOPE_URL } from "@/domains/Sentry";
 
@@ -18,8 +20,11 @@ function onUnhandledRequest(
 	}
 
 	// Ignore unhandled Sentry requests.
-	// @ts-expect-error we're not adding this handler when SENTRY_ENVELOPE_URL is undefined
-	if (request.url.href.startsWith(SENTRY_ENVELOPE_URL)) {
+	// we're not adding this handler when SENTRY_ENVELOPE_URL is undefined
+	if (
+		typeof SENTRY_ENVELOPE_URL !== "undefined" &&
+		request.url.href.startsWith(SENTRY_ENVELOPE_URL)
+	) {
 		return;
 	}
 
@@ -27,28 +32,31 @@ function onUnhandledRequest(
 	print.warning(); // or "print.error()"
 }
 
-let workerOptions;
-if (typeof window === "undefined") {
-	if (typeof SENTRY_ENVELOPE_URL !== "undefined") {
-		workerOptions = {
-			onUnhandledRequest,
-		};
-	}
-	const { server } = require("./server");
-	server.listen(workerOptions);
-} else {
-	if (typeof SENTRY_ENVELOPE_URL !== "undefined") {
-		// eslint-disable-next-line no-console
-		console.info("[MSW] Info: Sentry DSN found. Skipping logging unhandled Sentry API requests.");
-		workerOptions = {
-			onUnhandledRequest,
-		};
+type ServerOptions = Parameters<SetupServerApi["listen"]>[0];
+type WorkerOptions = Parameters<SetupWorkerApi["start"]>[0];
+
+async function initMocks() {
+	const workerOptions: ServerOptions | WorkerOptions = {
+		onUnhandledRequest,
+	};
+	if (typeof window === "undefined") {
+		// server
+		const { server } = (await import("./server")) as { server: SetupServerApi };
+		server.listen(workerOptions);
 	} else {
-		// eslint-disable-next-line no-console
-		console.warn("[MSW] Warning: Sentry DSN is missing. Logging unhandled Sentry API requests.");
+		// worker
+		if (typeof SENTRY_ENVELOPE_URL !== "undefined") {
+			// eslint-disable-next-line no-console
+			console.info("[MSW] Info: Sentry DSN found. Skipping logging unhandled Sentry API requests.");
+		} else {
+			// eslint-disable-next-line no-console
+			console.warn("[MSW] Warning: Sentry DSN is missing. Logging unhandled Sentry API requests.");
+		}
+		const { worker } = (await import("./browser")) as { worker: SetupWorkerApi };
+		worker.start(workerOptions);
 	}
-	const { worker } = require("./browser") as { worker: SetupWorkerApi };
-	worker.start(workerOptions);
 }
+
+initMocks();
 
 export {};
