@@ -26,7 +26,7 @@ type KarmaColors = typeof KARMA_COLOR_PALETTE[number] | typeof KARMA_LIGHT_COLOR
 
 export const StyledImage = (props: ImageProps) => (
 	<FullScreenImage>
-		<Image {...props} quality={100} placeholder={"blur"} unoptimized />
+		<Image {...props} alt={props.alt} quality={100} placeholder={"blur"} unoptimized />
 	</FullScreenImage>
 );
 
