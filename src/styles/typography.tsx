@@ -22,6 +22,17 @@ export const primaryGradientMixin = css`
 	-webkit-background-clip: text;
 	-webkit-text-fill-color: transparent;
 	box-decoration-break: slice;
+
+	::selection {
+		background: rgba(var(--values-secondary-accent), 0.99);
+		color: var(--color-background);
+
+		background-image: unset;
+		background-clip: initial;
+		-webkit-background-clip: initial;
+		-webkit-text-fill-color: initial;
+		box-decoration-break: initial;
+	}
 `;
 
 export const PrimaryGradient = styled.span`
