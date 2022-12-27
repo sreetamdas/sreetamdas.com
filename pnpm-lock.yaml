@@ -6,7 +6,6 @@ specifiers:
   '@next/font': ^13.1.1
   '@notionhq/client': 2.2.3
   '@octokit/core': ^4.1.0
-  '@prisma/client': ^4.8.0
   '@radix-ui/react-switch': ^1.0.1
   '@sentry/nextjs': ^7.28.1
   '@sreetamdas/karma': ^3.0.0
@@ -49,7 +48,6 @@ specifiers:
   next-plausible: ^3.6.5
   next-sitemap: ^3.1.43
   prettier: ^2.8.1
-  prisma: ^4.8.0
   react: ^18.2.0
   react-dom: ^18.2.0
   react-hot-toast: ^2.4.0
@@ -72,7 +70,6 @@ dependencies:
   '@next/font': 13.1.1
   '@notionhq/client': 2.2.3
   '@octokit/core': 4.1.0
-  '@prisma/client': 4.8.0_prisma@4.8.0
   '@radix-ui/react-switch': 1.0.1_biqbaboplfbrettd7655fr4n2y
   '@sentry/nextjs': 7.28.1_next@13.1.1+react@18.2.0
   '@sreetamdas/karma': 3.0.0
@@ -132,7 +129,6 @@ devDependencies:
   msw: 0.49.2_typescript@4.9.4
   next-sitemap: 3.1.43_syentjjt63dukspj2zj7hzem6y
   prettier: 2.8.1
-  prisma: 4.8.0
   typescript: 4.9.4
   vscode-textmate: 8.0.0
 
@@ -2634,28 +2630,6 @@ packages:
       tiny-glob: 0.2.9
       tslib: 2.4.1
     dev: true
-
-  /@prisma/client/4.8.0_prisma@4.8.0:
-    resolution: {integrity: sha512-Y1riB0p2W52kh3zgssP/YAhln3RjBFcJy3uwEiyjmU+TQYh6QTZDRFBo3JtBWuq2FyMOl1Rye8jxzUP+n0l5Cg==}
-    engines: {node: '>=14.17'}
-    requiresBuild: true
-    peerDependencies:
-      prisma: '*'
-    peerDependenciesMeta:
-      prisma:
-        optional: true
-    dependencies:
-      '@prisma/engines-version': 4.8.0-61.d6e67a83f971b175a593ccc12e15c4a757f93ffe
-      prisma: 4.8.0
-    dev: false
-
-  /@prisma/engines-version/4.8.0-61.d6e67a83f971b175a593ccc12e15c4a757f93ffe:
-    resolution: {integrity: sha512-MHSOSexomRMom8QN4t7bu87wPPD+pa+hW9+71JnVcF3DqyyO/ycCLhRL1we3EojRpZxKvuyGho2REQsMCvxcJw==}
-    dev: false
-
-  /@prisma/engines/4.8.0:
-    resolution: {integrity: sha512-A1Asn2rxZMlLAj1HTyfaCv0VQrLUv034jVay05QlqZg1qiHPeA3/pGTfNMijbsMYCsGVxfWEJuaZZuNxXGMCrA==}
-    requiresBuild: true
 
   /@radix-ui/primitive/1.0.0:
     resolution: {integrity: sha512-3e7rn8FDMin4CgeL7Z/49smCA3rFYY3Ha2rUQ7HRWFadS5iCRw08ZgVT1LaNTCNqgvrUiyczLflrVrF0SRQtNA==}
@@ -7201,14 +7175,6 @@ packages:
     engines: {node: '>=10.13.0'}
     hasBin: true
     dev: true
-
-  /prisma/4.8.0:
-    resolution: {integrity: sha512-DWIhxvxt8f4h6MDd35mz7BJff+fu7HItW3WPDIEpCR3RzcOWyiHBbLQW5/DOgmf+pRLTjwXQob7kuTZVYUAw5w==}
-    engines: {node: '>=14.17'}
-    hasBin: true
-    requiresBuild: true
-    dependencies:
-      '@prisma/engines': 4.8.0
 
   /process-nextick-args/2.0.1:
     resolution: {integrity: sha512-3ouUOpQhtgrbOa17J7+uxOTpITYWaGP7/AhoR3+A+/1e9skrzelGi/dXzEYyvbxubEF6Wn2ypscTKiKJFFn1ag==}
