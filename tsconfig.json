@@ -19,6 +19,7 @@
 		"skipLibCheck": true,
 		"strict": true,
 		"target": "es5",
+		"types": ["@cloudflare/workers-types"],
 
 		"paths": {
 			"@/*": ["./*"],

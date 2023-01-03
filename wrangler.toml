@@ -1,0 +1,16 @@
+compatibility_date = "2022-12-27"
+main = "src/workers/index.ts"
+name = "sreetamdas-com"
+
+[dev]
+ip = "localhost"
+port = 8787
+
+[durable_objects]
+bindings = [
+  {name = "live_views_counter", class_name = "LiveViewsCounter"},
+]
+
+[[migrations]]
+new_classes = ["LiveViewsCounter"] # Array of new classes          
+tag = "v1" # Should be unique for each entry
