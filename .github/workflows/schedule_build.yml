@@ -7,6 +7,8 @@ jobs:
   build:
     name: Call build hook
     runs-on: ubuntu-latest
+    # prevent from running on forks
+    if: github.repository == "sreetamdas/sreetamdas"
     steps:
       - name: Curl request
         env:

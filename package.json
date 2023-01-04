@@ -9,6 +9,7 @@
 		"build:analyze": "ANALYZE=true next build",
 		"postbuild": "next-sitemap --config next-sitemap.config.cjs",
 		"workers:dev": "wrangler dev",
+		"workers:types": "wrangler types",
 		"export": "next build && next export",
 		"compile": "tsc --watch",
 		"typecheck": "tsc -p tsconfig.json",
