@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { useRouter } from "next/router";
 import { useEffect, useRef } from "react";
 

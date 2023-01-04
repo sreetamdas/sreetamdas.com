@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { WebSocket as CFWebSocket } from "@cloudflare/workers-types";
 
 type Session = {
@@ -50,7 +51,7 @@ export class LiveViewsCounter {
 
 		this.sessions.forEach(({ socket, session_id }) => {
 			socket.send(message);
-			// eslint-disable-next-line no-console
+
 			console.log(`Broadcast to ${session_id}`);
 		});
 	}
@@ -91,7 +92,6 @@ export class LiveViewsCounter {
 		this.sessions = this.sessions.filter(({ session_id }) => session_id !== id);
 
 		if (this.sessions.length === 0) {
-			// eslint-disable-next-line no-console
 			console.log("No live viewers left");
 			await this.state.storage.deleteAll();
 		} else {
