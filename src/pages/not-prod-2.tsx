@@ -1,7 +1,6 @@
 import { GetStaticProps } from "next";
 
 import { DocumentHead } from "@/components/shared/seo";
-import { IS_DEV } from "@/config";
 import { LiveViewsCounter } from "@/domains/Workers/LiveViewsCounter";
 import { Center } from "@/styles/layouts";
 import { Paragraph, Title } from "@/styles/typography";
@@ -20,7 +19,9 @@ const Index = () => (
 );
 
 export const getStaticProps: GetStaticProps = () => {
-	if (IS_DEV) return { props: {} };
+	const isNotProduction = process.env.NODE_ENV !== "production";
+
+	if (isNotProduction) return { props: {} };
 	return { notFound: true };
 };
 
