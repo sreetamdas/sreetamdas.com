@@ -1,6 +1,6 @@
 /** @type {import('next-sitemap').IConfig} */
 module.exports = {
-	siteUrl: process.env.SITE_URL || "https://sreetamdas.com",
+	siteUrl: process.env.SITE_URL ?? "https://example.com",
 	transform: async (config, path) => {
 		if (path.startsWith("/foobar")) {
 			return null;

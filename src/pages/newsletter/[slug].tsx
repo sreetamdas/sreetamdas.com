@@ -1,11 +1,11 @@
 import { bundleMDX } from "mdx-bundler";
 import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from "next";
 
+import { NEWSLETTER_DESCRIPTION } from "@/components/Newsletter";
 import { IssueViewProps, NewsletterIssueDetail } from "@/components/Newsletter/Issue";
 import { NewsletterSignup } from "@/components/Newsletter/Signup";
 import { ViewsCounter } from "@/components/ViewsCounter";
 import { DocumentHead } from "@/components/shared/seo";
-import { NEWSLETTER_DESCRIPTION } from "@/config";
 import {
 	getAllButtondownNewsletterEmails,
 	getButtondownSubscriberCount,
