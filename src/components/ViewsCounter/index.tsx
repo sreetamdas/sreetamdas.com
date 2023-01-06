@@ -3,7 +3,6 @@ import axios from "axios";
 import { useRouter } from "next/router";
 import styled, { css } from "styled-components";
 
-import { LiveViewsCounter } from "@/domains/Workers/LiveViewsCounter";
 import { sharedTransition } from "@/styles/components";
 import { PostDetails } from "@/typings/blog";
 
@@ -34,17 +33,12 @@ export const ViewsCounter = ({
 	);
 
 	return (
-		<>
-			<LiveViewsCounter />
-			<ViewsWrapper $hidden={hidden}>
-				<span role="img" aria-label="eyes">
-					👀
-				</span>
-				<p>
-					{isLoading ? "Getting view count" : getViewCountCopy(data?.view_count ?? 0, pageType)}
-				</p>
-			</ViewsWrapper>
-		</>
+		<ViewsWrapper $hidden={hidden}>
+			<span role="img" aria-label="eyes">
+				👀
+			</span>
+			<p>{isLoading ? "Getting view count" : getViewCountCopy(data?.view_count ?? 0, pageType)}</p>
+		</ViewsWrapper>
 	);
 };
 

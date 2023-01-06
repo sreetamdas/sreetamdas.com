@@ -1,9 +1,7 @@
 /* eslint-disable no-console */
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
-import styled, { css } from "styled-components";
-
-import { sharedTransition } from "@/styles/components";
+import styled from "styled-components";
 
 const workersWebSocketURL = process.env.NEXT_PUBLIC_WORKERS_WEBSOCKET_URL ?? "";
 
@@ -19,7 +17,7 @@ export const LiveViewsCounter = () => {
 	const webSocketRef = useRef<WebSocket>();
 	const webSocketConn = webSocketRef.current;
 
-	const [[page, unique, total], setViewerData] = useState<ViewerData>([null, null, null]);
+	const [[page, unique, total], _setViewerData] = useState<ViewerData>([null, null, null]);
 
 	function closeWebSocket() {
 		if (webSocketConn?.OPEN) {
@@ -69,16 +67,4 @@ const LiveViewsWrapper = styled.div`
 		margin: 0;
 		font-size: 0.7rem;
 	}
-`;
-
-const LiveViewCount = styled.span`
-	font-size: 1rem;
-	padding: 5px;
-	font-family: var(--font-family-code);
-	color: var(--color-primary-accent);
-	border-radius: var(--border-radius);
-	background-color: var(--color-background);
-	border: 2px solid var(--color-primary-accent);
-
-	${sharedTransition("color, background-color")}
 `;

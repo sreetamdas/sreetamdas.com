@@ -8,8 +8,6 @@
 		"build": "next build",
 		"build:analyze": "ANALYZE=true next build",
 		"postbuild": "next-sitemap --config next-sitemap.config.cjs",
-		"workers:dev": "wrangler dev",
-		"workers:types": "wrangler types",
 		"export": "next build && next export",
 		"compile": "tsc --watch",
 		"typecheck": "tsc -p tsconfig.json",
@@ -54,11 +52,9 @@
 		"shiki": "^0.12.1",
 		"styled-components": "^5.3.6",
 		"unist-util-visit": "^4.1.1",
-		"wrangler": "^2.6.2",
 		"zustand": "4.2.0"
 	},
 	"devDependencies": {
-		"@cloudflare/workers-types": "^4.20221111.1",
 		"@next/eslint-plugin-next": "^13.1.1",
 		"@svgr/webpack": "^6.5.1",
 		"@tanstack/react-query-devtools": "^4.20.4",
