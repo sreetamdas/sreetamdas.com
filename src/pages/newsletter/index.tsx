@@ -1,10 +1,9 @@
 import { InferGetStaticPropsType } from "next";
 
-import { NewsletterIssues } from "@/components/Newsletter";
+import { NewsletterIssues, NEWSLETTER_DESCRIPTION } from "@/components/Newsletter";
 import { NewsletterSignup } from "@/components/Newsletter/Signup";
 import { ViewsCounter } from "@/components/ViewsCounter";
 import { DocumentHead } from "@/components/shared/seo";
-import { NEWSLETTER_DESCRIPTION } from "@/config";
 import { getAllButtondownEmailsPreviews, getButtondownSubscriberCount } from "@/domains/Buttondown";
 import { useSupabaseSession } from "@/domains/Supabase";
 import { Center, Space } from "@/styles/layouts";

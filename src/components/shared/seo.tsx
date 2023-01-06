@@ -1,13 +1,13 @@
 import Head from "next/head";
 
+import { SITE_URL } from "@/config";
+
 type DocumentHeadProps = {
 	title: string;
 	imageURL?: string;
 	description?: string;
 	noIndex?: boolean;
 };
-
-const siteURL = process.env.SITE_URL ?? "https://sreetamdas.com";
 
 export const DocumentHead = ({
 	title,
@@ -28,7 +28,7 @@ export const DocumentHead = ({
 			<meta name="og:description" content={description} />
 			<meta name="og:image" content={imageURL} />
 			<meta name="og:image:alt" content={pageTitle} />
-			<meta property="og:url" content={siteURL} />
+			<meta property="og:url" content={SITE_URL} />
 			<meta property="og:type" content="website" />
 
 			<meta name="twitter:card" content="summary_large_image" />
@@ -41,10 +41,10 @@ export const DocumentHead = ({
 };
 
 export function getAbsoluteURL(url: string) {
-	const hasSiteURL = url.startsWith(siteURL);
+	const hasSiteURL = url.startsWith(SITE_URL);
 	const startsWithSlash = url[0] === "/";
 
 	if (hasSiteURL) return url;
-	if (startsWithSlash) return `${siteURL}${url}`;
-	return `${siteURL}/${url}`;
+	if (startsWithSlash) return `${SITE_URL}${url}`;
+	return `${SITE_URL}/${url}`;
 }
