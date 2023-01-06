@@ -1,8 +1,8 @@
 import { GetStaticProps } from "next";
 
+import { ViewsCounter } from "@/components/ViewsCounter";
 import { DocumentHead } from "@/components/shared/seo";
 import { IS_DEV } from "@/config";
-import { LiveViewsCounter } from "@/domains/Workers/LiveViewsCounter";
 import { Center } from "@/styles/layouts";
 import { Paragraph, Title } from "@/styles/typography";
 
@@ -14,7 +14,7 @@ const Index = () => (
 				/dev
 			</Title>
 			<Paragraph>A non-Prod environment.</Paragraph>
-			<LiveViewsCounter />
+			<ViewsCounter />
 		</Center>
 	</>
 );
