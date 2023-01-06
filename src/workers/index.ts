@@ -1,4 +1,4 @@
-/* eslint-disable no-console */
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { WebSocket as CFWebSocket } from "@cloudflare/workers-types";
 
 type Session = {
@@ -10,8 +10,11 @@ type Session = {
 
 type PagePath = `/${string}`;
 
-type StorageType = {
+type InitialStorageType = {
 	totalViewers: number;
+	uniqueUsers: Set<string>;
+};
+type StorageType = InitialStorageType & {
 	[updatedPage: PagePath]: number;
 };
 
@@ -26,17 +29,20 @@ export class LiveViewsCounter {
 	env: Env;
 
 	sessions: Array<Session>;
-	uniqueUsers: Set<string>;
+	uniqueUsersSet: Set<string>;
 
 	constructor(controller: DurableObjectState, env: Env) {
 		this.state = controller;
 		this.env = env;
 
 		this.sessions = [];
-		this.uniqueUsers = new Set();
+		this.uniqueUsersSet = new Set();
 
 		this.state.blockConcurrencyWhile(async () => {
-			await this.state.storage.put({ totalViewers: 0 });
+			await this.state.storage.put<InitialStorageType[keyof InitialStorageType]>({
+				totalViewers: 0,
+				uniqueUsers: new Set(),
+			});
 		});
 	}
 
@@ -44,45 +50,45 @@ export class LiveViewsCounter {
 		let message: string;
 		// Apply JSON if we weren't given a string to start with.
 		if (typeof messageRaw !== "string") {
-			message = JSON.stringify(messageRaw);
+			message = JSON.stringify({ ...messageRaw, uniqueUsers: messageRaw.uniqueUsers.size });
 		} else {
 			message = messageRaw;
 		}
 
-		this.sessions.forEach(({ socket, session_id }) => {
+		this.sessions.forEach(({ socket }) => {
 			socket.send(message);
-
-			console.log(`Broadcast to ${session_id}`);
 		});
 	}
 
-	async getLiveViewers(pathname: PagePath) {
-		const stale = await this.state.storage.get<number>(["totalViewers", pathname]);
+	async getPersistentStorage(pathname: PagePath) {
+		const stale = await this.state.storage.get<StorageType[keyof StorageType]>([
+			"totalViewers",
+			"uniqueUsers",
+			pathname,
+		]);
 
-		const staleCount = stale.get("totalViewers") ?? 0;
-		const pathUsers = stale.get(pathname) ?? 0;
-		const updated = { totalViewers: staleCount + 1, [pathname]: pathUsers + 1 };
+		const staleCount = stale.get("totalViewers")! as number;
+		const uniqueUsers = stale.get("uniqueUsers")! as Set<string>;
+		const pathUsers = (stale.get(pathname) as number) ?? 0;
 
-		return JSON.stringify(updated);
+		return { staleCount, uniqueUsers, pathUsers };
 	}
 
-	async incrementLiveViewers(pathname: PagePath) {
-		const stale = await this.state.storage.get<number>(["totalViewers", pathname]);
+	async incrementLiveViewers(userID: string, pathname: PagePath) {
+		const { staleCount, uniqueUsers, pathUsers } = await this.getPersistentStorage(pathname);
 
-		const staleCount = stale.get("totalViewers") ?? 0;
-		const pathUsers = stale.get(pathname) ?? 0;
-		const updated = { totalViewers: staleCount + 1, [pathname]: pathUsers + 1 };
+		uniqueUsers.add(userID);
+		const updated = { uniqueUsers, totalViewers: staleCount + 1, [pathname]: pathUsers + 1 };
 
 		await this.state.storage.put(updated);
 		this.broadcast({ type: "update/increment", ...updated });
 	}
 
 	async decrementLiveViewers(pathname: PagePath) {
-		const stale = await this.state.storage.get<number>(["totalViewers", pathname]);
+		const { staleCount, uniqueUsers, pathUsers } = await this.getPersistentStorage(pathname);
 
-		const staleCount = stale.get("totalViewers") ?? 1;
-		const pathUsers = stale.get(pathname) ?? 1;
-		const updated = { totalViewers: staleCount - 1, [pathname]: pathUsers - 1 };
+		// TODO compute uniqueUsers ƒ
+		const updated = { uniqueUsers, totalViewers: staleCount - 1, [pathname]: pathUsers - 1 };
 
 		await this.state.storage.put(updated);
 		this.broadcast({ type: "update/decrement", ...updated });
@@ -91,12 +97,7 @@ export class LiveViewsCounter {
 	async handleEndSession(id: string, pathname: PagePath) {
 		this.sessions = this.sessions.filter(({ session_id }) => session_id !== id);
 
-		if (this.sessions.length === 0) {
-			console.log("No live viewers left");
-			await this.state.storage.deleteAll();
-		} else {
-			await this.decrementLiveViewers(pathname);
-		}
+		await this.decrementLiveViewers(pathname);
 	}
 
 	async handleNewSession(socket: CFWebSocket, request: Request) {
@@ -115,11 +116,9 @@ export class LiveViewsCounter {
 
 		socket.accept();
 
-		this.uniqueUsers.add(userID);
 		this.sessions.push({ session_id: sessionID, user_id: userID, path, socket });
 
-		await this.incrementLiveViewers(path);
-		socket.send("CONNECTED");
+		await this.incrementLiveViewers(userID, path);
 	}
 
 	async fetch(request: Request) {
