@@ -8,7 +8,6 @@ import { useState } from "react";
 import type { PropsWithChildren } from "react";
 import { ThemeProvider } from "styled-components";
 
-import { SITE_URL } from "@/config";
 import { getInitialColorMode } from "@/domains/style/darkmode";
 import { DefaultLayout } from "@/layouts/Default";
 import { theme, GlobalStyles } from "@/styles";
@@ -58,8 +57,8 @@ const MyApp = ({ Component, pageProps }: AppPropsWithLayout) => {
 			<QueryClientProvider client={queryClient}>
 				<Hydrate state={pageProps.dehydratedState}>
 					<PlausibleProvider
-						domain={SITE_URL}
-						customDomain={SITE_URL}
+						domain="sreetamdas.com"
+						customDomain="sreetamdas.com"
 						trackOutboundLinks
 						trackFileDownloads
 					>
