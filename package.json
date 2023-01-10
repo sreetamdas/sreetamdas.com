@@ -17,7 +17,6 @@
 		"prepare": "husky install"
 	},
 	"dependencies": {
-		"@codesandbox/sandpack-react": "^1.18.4",
 		"@next/font": "^13.1.1",
 		"@notionhq/client": "2.2.3",
 		"@octokit/core": "^4.1.0",
