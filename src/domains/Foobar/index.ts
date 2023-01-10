@@ -1,5 +1,5 @@
 import { merge } from "lodash-es";
-import create, { StateCreator } from "zustand";
+import { create, StateCreator } from "zustand";
 import { persist } from "zustand/middleware";
 
 export const FOOBAR_PAGES = {
