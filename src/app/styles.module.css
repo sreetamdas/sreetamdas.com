@@ -1,0 +1,13 @@
+.page-wrapper {
+	min-height: 100vh;
+}
+
+.content-layout {
+	display: grid;
+	grid-template-columns: 1fr min(var(--max-width), calc(100% - 2rem)) 1fr;
+	column-gap: 1rem;
+	padding: 0;
+}
+.content-layout > * {
+	grid-column: 2;
+}
