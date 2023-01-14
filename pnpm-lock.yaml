@@ -62,7 +62,7 @@ specifiers:
   typescript: ^4.9.4
   unist-util-visit: ^4.1.1
   vscode-textmate: ^8.0.0
-  zustand: 4.3.1
+  zustand: 4.3.2
 
 dependencies:
   '@next/font': 13.1.1
@@ -99,7 +99,7 @@ dependencies:
   shiki: 0.12.1
   styled-components: 5.3.6_7i5myeigehqah43i5u7wbekgba
   unist-util-visit: 4.1.1
-  zustand: 4.3.1_react@18.2.0
+  zustand: 4.3.2_react@18.2.0
 
 devDependencies:
   '@next/eslint-plugin-next': 13.1.1
@@ -8254,8 +8254,8 @@ packages:
     engines: {node: '>=10'}
     dev: true
 
-  /zustand/4.3.1_react@18.2.0:
-    resolution: {integrity: sha512-EVyo/eLlOTcJm/X5M00rwtbYFXwRVTaRteSvhtbTZUCQFJkNfIyHPiJ6Ke68MSWzcKHpPzvqNH4gC2ZS/sbNqw==}
+  /zustand/4.3.2_react@18.2.0:
+    resolution: {integrity: sha512-rd4haDmlwMTVWVqwvgy00ny8rtti/klRoZjFbL/MAcDnmD5qSw/RZc+Vddstdv90M5Lv6RPgWvm1Hivyn0QgJw==}
     engines: {node: '>=12.7.0'}
     peerDependencies:
       immer: '>=9.0'
