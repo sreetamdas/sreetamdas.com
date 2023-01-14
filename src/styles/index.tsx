@@ -1,4 +1,3 @@
-import { ToasterProps } from "react-hot-toast";
 import { createGlobalStyle, css } from "styled-components";
 
 import { sharedTransition } from "@/styles/components";
@@ -162,18 +161,3 @@ export const GlobalStyles = createGlobalStyle`
 		${sharedTransition("color, background-color")}
 	}
 `;
-
-export const toasterProps: ToasterProps = {
-	position: "top-right",
-	toastOptions: {
-		style: {
-			backgroundColor: "var(--color-primary-accent)",
-			color: "var(--color-background)",
-			borderRadius: "var(--border-radius)",
-		},
-		iconTheme: {
-			primary: "var(--color-primary-accent)",
-			secondary: "var(--color-background)",
-		},
-	},
-};
