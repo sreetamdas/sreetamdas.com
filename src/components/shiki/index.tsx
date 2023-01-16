@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-import { getKarmaHighlighter } from "@/components/shiki/helpers";
+import { getKarmaHighlighter } from "./helpers";
 
 const initialContent = `
 function visitor(node: any) {
@@ -25,14 +25,16 @@ function visitor(node: any) {
 
 export const ShikiPlayground = () => {
 	const [htmlTokens, setHtmlTokens] = useState("");
+
 	useEffect(() => {
 		async function getTokens() {
 			const karmaHighlighter = await getKarmaHighlighter();
-			const tokenizedHTML = karmaHighlighter.codeToHtml(initialContent, "ts");
+			const tokenizedHTML = karmaHighlighter.codeToHtml(initialContent.trim(), { lang: "ts" });
 			setHtmlTokens(tokenizedHTML);
 		}
 
 		getTokens();
 	}, []);
-	return <div>{htmlTokens}</div>;
+
+	return <div dangerouslySetInnerHTML={{ __html: htmlTokens }}></div>;
 };
