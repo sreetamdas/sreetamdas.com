@@ -1,9 +1,9 @@
 import { Hydrate, QueryClient, QueryClientProvider, DehydratedState } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import type { NextPage } from "next";
-import PlausibleProvider from "next-plausible";
 import type { AppProps } from "next/app";
 import Head from "next/head";
+import PlausibleProvider from "next-plausible";
 import { useState } from "react";
 import type { PropsWithChildren } from "react";
 import { ThemeProvider } from "styled-components";
@@ -16,7 +16,7 @@ import { StyledThemeObject } from "@/typings/styled";
 import "focus-visible";
 
 if (process.env.NEXT_PUBLIC_API_MOCKING_ENABLED === "true") {
-	require("mocks");
+	require("@/mocks");
 }
 
 type NextPageWithLayout = NextPage & {
