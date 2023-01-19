@@ -13,6 +13,7 @@ export const MDXComponents: MDXContentProps["components"] = {
 	h1: MDXHeadingWrapper.h1,
 	h2: MDXHeadingWrapper.h2,
 	h3: MDXHeadingWrapper.h3,
+	// @ts-expect-error shut up
 	pre: CodeBlock,
 	img: CustomImage,
 	a: MDXAnchor,
