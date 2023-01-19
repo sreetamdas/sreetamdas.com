@@ -1,85 +1,91 @@
-import type { IRawThemeSetting } from "vscode-textmate/release/theme";
+import { FontStyle, HtmlRendererOptions, IThemedToken } from "shiki";
 
-enum FontStyle {
-	NotSet = -1,
-	None = 0,
-	Italic = 1,
-	Bold = 2,
-	Underline = 4,
-}
-interface IThemedTokenScopeExplanation {
-	scopeName: string;
-	themeMatches: IRawThemeSetting[];
-}
+const defaultElements: NonNullable<HtmlRendererOptions["elements"]> = {
+	pre({ className, style, children, props }) {
+		return `<pre class="${className}" style="${style}" ${props}>${children}</pre>`;
+	},
 
-interface IThemedTokenExplanation {
-	content: string;
-	scopes: IThemedTokenScopeExplanation[];
-}
+	code({ children }) {
+		return `<code>${children}</code>`;
+	},
 
-/**
- * A single token with color, and optionally with explanation.
- */
-interface IThemedToken {
-	/**
-	 * The content of the token
-	 */
-	content: string;
-	/**
-	 * 6 or 8 digit hex code representation of the token's color
-	 */
-	color?: string;
-	/**
-	 * Font style of token. Can be None/Italic/Bold/Underline
-	 */
-	fontStyle?: FontStyle;
-	/**
-	 * Explanation of
-	 *
-	 * - token text's matching scopes
-	 * - reason that token text is given a color (one matching scope matches a rule (scope -> color) in the theme)
-	 */
-	explanation?: IThemedTokenExplanation[];
-}
+	line({ className, children }) {
+		return `<span class="${className}">${children}</span>`;
+	},
 
-interface HtmlRendererOptions {
-	langId?: string;
-	fg?: string;
-	bg?: string;
-}
+	token({ style, children }) {
+		return `<span style="${style}">${children}</span>`;
+	},
+};
 
-export function renderToHTML(
+export function renderToHtml(
 	lines: IThemedToken[][],
 	options: HtmlRendererOptions = {},
 	meta?: string
 ) {
 	const bg = options.bg || "#fff";
+	// const optionsByLineNumber = groupBy(options.lineOptions ?? [], (option) => option.line);
+	const userElements = options.elements || {};
 
-	let html = "";
+	function h(type = "", props = {}, children: string[]): string {
+		// @ts-expect-error shut up
+		const element = userElements[type] || defaultElements[type];
+		if (element) {
+			// eslint-disable-next-line no-param-reassign
+			children = children.filter(Boolean);
 
-	html += `<pre class="shiki" style="background-color: ${bg}" ${meta ? meta : ""} ${
+			return element({
+				...props,
+				children: type === "code" ? children.join("\n") : children.join(""),
+			});
+		}
+
+		return "";
+	}
+
+	const extraProps = `${meta !== undefined ? meta + " " : ""}${
 		options.langId ? `language="${options.langId}"` : ""
-	}>`;
+	}`;
 
-	// console.log(html);
+	return h(
+		"pre",
+		{
+			className: "shiki " + (options.themeName || ""),
+			style: `background-color: ${bg}`,
+			props: extraProps,
+		},
+		[
+			h(
+				"code",
+				{},
+				lines.map((line, index) =>
+					h(
+						"line",
+						{ className: "line", lines, line, index },
+						line.map((token, index) => {
+							const cssDeclarations = [`color: ${token.color || options.fg}`];
+							// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+							if (token.fontStyle! & FontStyle.Italic) {
+								cssDeclarations.push("font-style: italic");
+							}
+							// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+							if (token.fontStyle! & FontStyle.Bold) {
+								cssDeclarations.push("font-weight: bold");
+							}
+							// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+							if (token.fontStyle! & FontStyle.Underline) {
+								cssDeclarations.push("text-decoration: underline");
+							}
 
-	lines.forEach((l: IThemedToken[]) => {
-		// eslint-disable-next-line quotes
-		html += '<span class="line">';
-
-		l.forEach((token) => {
-			const cssDeclarations = [`color: ${token.color || options.fg}`];
-			if (token.fontStyle ?? 0 & FontStyle.Italic) {
-				cssDeclarations.push("font-style: italic");
-			}
-			html += `<span style="${cssDeclarations.join("; ")}">${escapeHtml(token.content)}</span>`;
-		});
-		html += "</span>\n";
-	});
-	html = html.replace(/\n*$/, ""); // Get rid of final new lines
-	html += "</pre>";
-
-	return html;
+							return h("token", { style: cssDeclarations.join("; "), tokens: line, token, index }, [
+								escapeHtml(token.content),
+							]);
+						})
+					)
+				)
+			),
+		]
+	);
 }
 
 const htmlEscapes = {

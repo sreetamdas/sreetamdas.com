@@ -39,6 +39,7 @@ export const GlobalStyles = createGlobalStyle`
 	--color-inlineCode-bg: ${theme.light.inlineCodeBackground};
 	
 	--color-inlineCode-fg: var(--color-primary);
+	--color-codeBlock-bg: #0a0e14;
 	--color-fancy-pants: var(--color-primary-accent);
 	
 	--font-family-code: ${iosevkaFont.style.fontFamily}, Consolas, Roboto Mono, Menlo, Monaco,
@@ -146,10 +147,18 @@ export const GlobalStyles = createGlobalStyle`
 	code,
 	pre {
 		font-family: var(--font-family-code);
+	}
+
+	pre:has(code) {
+	background-color: var(--color-codeBlock-bg);
+
+	}
+
+	:not(pre) > code, pre {
 		font-size: 0.85em;
 	}
 
-	code {
+	:not(pre) > code {
 		background-color: var(--color-inlineCode-bg);
 		padding: 0.2em;
 		border-radius: 3px;

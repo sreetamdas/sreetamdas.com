@@ -1,4 +1,5 @@
-import { DetailedHTMLProps, FunctionComponent, HTMLAttributes } from "react";
+import { ReactNode } from "react";
+import { renderToString } from "react-dom/server";
 import styled, { css } from "styled-components";
 
 import { breakpoint } from "@/utils/style";
@@ -9,6 +10,7 @@ const CodePreBlockWithHighlight = styled.pre`
 	margin-left: -2.5rem;
 	border-radius: var(--border-radius);
 	overflow-x: scroll;
+	background-color: var(--color-codeBlock-bg);
 
 	${breakpoint.until.md(css`
 		margin-left: -20px;
@@ -85,32 +87,39 @@ function calculateLinesToHighlight(meta = "") {
 	}
 }
 
-export const CodeBlock: FunctionComponent<
-	DetailedHTMLProps<HTMLAttributes<HTMLPreElement>, HTMLPreElement> & {
-		language?: string;
-		highlight?: string;
-	}
-> = (props) => {
-	const { language = "js", children, highlight, style } = props;
+export const CodeBlock = (props: {
+	children: string | { props: { children: ReactNode } };
+	style?: { [styleProp: string]: string };
+	language?: string;
+	highlight?: string;
+}) => {
+	const { language = "js", children: codeElement, highlight, style } = props;
 	const shouldHighlightLine = calculateLinesToHighlight(highlight);
 
-	return (
+	let children: string | ReactNode;
+
+	if (typeof codeElement === "string") {
+		children = codeElement;
+	} else {
+		children = codeElement.props.children;
+	}
+
+	return typeof children === "string" ? (
+		renderToString(<CodePreBlockWithHighlight dangerouslySetInnerHTML={{ __html: children }} />)
+	) : (
 		<CodePreBlockWithHighlight {...{ style }}>
 			<CodeBlockLanguageWrapper>{language.toLocaleUpperCase()}</CodeBlockLanguageWrapper>
-			{Array.isArray(children) ? (
-				children
-					?.filter((line) => line !== "\n")
-					.map((line, i) => (
-						<CodeblockLineWrapper key={i} $highlight={shouldHighlightLine(i)}>
-							<CodeblockLineNumber>{i + 1}</CodeblockLineNumber>
-							{line}
-						</CodeblockLineWrapper>
-					))
-			) : (
-				<CodeblockLineWrapper>
-					<CodeblockLineNumber>1</CodeblockLineNumber>
-					{children}
-				</CodeblockLineWrapper>
+			{Array.isArray(children) && (
+				<code>
+					{children
+						?.filter((line) => line !== "\n")
+						.map((line, i) => (
+							<CodeblockLineWrapper key={i} $highlight={shouldHighlightLine(i)}>
+								<CodeblockLineNumber>{i + 1}</CodeblockLineNumber>
+								{line}
+							</CodeblockLineWrapper>
+						))}
+				</code>
 			)}
 		</CodePreBlockWithHighlight>
 	);

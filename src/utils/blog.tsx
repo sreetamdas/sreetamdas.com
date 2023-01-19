@@ -10,7 +10,7 @@ import remarkToc from "remark-toc";
 import { rehypeImgSize } from "@/components/mdx/images/plugins";
 import { getKarmaHighlighter } from "@/components/shiki/helpers";
 import { remarkShiki } from "@/components/shiki/plugin";
-import { renderToHTML } from "@/components/shiki/renderer";
+import { renderToHtml } from "@/components/shiki/renderer";
 import { MDXBundledResultProps } from "@/typings/blog";
 
 const PATH = path.resolve(process.cwd(), "src");
@@ -35,7 +35,7 @@ export async function bundleMDXWithOptions<Frontmatter extends { [key: string]: 
 		mdxOptions(options, _frontmatter) {
 			options.remarkPlugins = [
 				...(options.remarkPlugins ?? []),
-				[remarkShiki, { highlighter, renderToHTML }],
+				[remarkShiki, { highlighter, renderToHtml }],
 				remarkGfm,
 				remarkSlug,
 				[remarkToc, { tight: true }],
