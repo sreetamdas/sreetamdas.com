@@ -1,4 +1,4 @@
-import { captureException } from "@sentry/nextjs";
+import { captureException, captureMessage } from "@sentry/nextjs";
 import { NextApiRequest, NextApiResponse } from "next";
 
 import { getSupabaseClient } from "@/domains/Supabase";
@@ -37,6 +37,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse<AddViewResponse
 				res.status(200).json({ view_count });
 			}
 		} else {
+			captureMessage("Bad request, req.method !== POST");
 			res.status(400).json({ error: "Bad request" });
 		}
 	}

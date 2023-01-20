@@ -1,3 +1,4 @@
+import { captureException } from "@sentry/nextjs";
 import { NextApiRequest, NextApiResponse } from "next";
 
 import { octokit } from "@/domains/GitHub";
@@ -22,6 +23,7 @@ async function handler(
 
 		res.status(200).send({ stars, forks });
 	} catch (error) {
+		captureException(error);
 		// eslint-disable-next-line no-console
 		console.error("Request using @octokit/core failed");
 
