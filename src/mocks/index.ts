@@ -1,5 +1,3 @@
-// @ts-check
-/* eslint-disable @typescript-eslint/no-var-requires */
 import { SetupWorkerApi, SharedOptions } from "msw";
 import { SetupServerApi } from "msw/lib/node";
 
