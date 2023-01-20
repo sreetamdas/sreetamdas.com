@@ -18,8 +18,6 @@ export const ShikiPlayground = ({ initialHtml: input }: ShikiPlaygroundProps) =>
 			setHtmlTokens(await getShikiHtml(initialCodeExample));
 		}
 
-		// if (typeof initialHtml === "undefined") {
-		// }
 		setInitialHtml();
 	}, [initialHtml]);
 

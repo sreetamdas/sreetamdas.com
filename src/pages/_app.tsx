@@ -16,6 +16,9 @@ import { StyledThemeObject } from "@/typings/styled";
 import "focus-visible";
 
 if (process.env.NEXT_PUBLIC_API_MOCKING_ENABLED === "true") {
+	// eslint-disable-next-line no-console
+	console.log("info: MOCKING IS ENABLED");
+
 	require("@/mocks");
 }
 
