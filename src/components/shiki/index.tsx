@@ -5,13 +5,8 @@ import { getKarmaHighlighter } from "./helpers";
 import { renderToHtml } from "@/components/shiki/renderer";
 import { CodeBlock } from "@/components/shiki/styled";
 
-type ShikiPlaygroundProps = {
-	initialHtml?: string;
-};
-
-export const ShikiPlayground = ({ initialHtml: input }: ShikiPlaygroundProps) => {
-	const initialHtml = input ?? "";
-	const [htmlTokens, setHtmlTokens] = useState(initialHtml);
+export const ShikiPlayground = () => {
+	const [htmlTokens, setHtmlTokens] = useState("");
 
 	useEffect(() => {
 		async function setInitialHtml() {
@@ -19,7 +14,7 @@ export const ShikiPlayground = ({ initialHtml: input }: ShikiPlaygroundProps) =>
 		}
 
 		setInitialHtml();
-	}, [initialHtml]);
+	}, []);
 
 	return <div dangerouslySetInnerHTML={{ __html: htmlTokens }}></div>;
 };
