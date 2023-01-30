@@ -48,7 +48,7 @@
 		"remark-gfm": "^3.0.1",
 		"remark-slug": "^7.0.1",
 		"remark-toc": "^8.0.1",
-		"shiki": "^0.12.1",
+		"shiki": "^0.14.0",
 		"styled-components": "^5.3.6",
 		"unist-util-visit": "^4.1.1",
 		"zustand": "4.3.1"
