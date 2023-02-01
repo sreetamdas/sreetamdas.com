@@ -35,7 +35,7 @@ specifiers:
   feed: ^4.2.2
   focus-visible: ^5.2.0
   formik: ^2.2.9
-  framer-motion: ^8.4.0
+  framer-motion: ^9.0.0
   gray-matter: ^4.0.3
   husky: ^8.0.3
   image-size: ^1.0.2
@@ -78,7 +78,7 @@ dependencies:
   feed: 4.2.2
   focus-visible: 5.2.0
   formik: 2.2.9_react@18.2.0
-  framer-motion: 8.4.0_biqbaboplfbrettd7655fr4n2y
+  framer-motion: 9.0.0_biqbaboplfbrettd7655fr4n2y
   gray-matter: 4.0.3
   image-size: 1.0.2
   lodash-es: 4.17.21
@@ -4860,8 +4860,8 @@ packages:
       tslib: 1.14.1
     dev: false
 
-  /framer-motion/8.4.0_biqbaboplfbrettd7655fr4n2y:
-    resolution: {integrity: sha512-32ECxsAMrhFfpMnA/j3wXku//587kQe29emTGpIQsnh60mFSMTrnpIupAn5Bnk5qq4/OMNgWWCI6mnaFhsIu7w==}
+  /framer-motion/9.0.0_biqbaboplfbrettd7655fr4n2y:
+    resolution: {integrity: sha512-nDLVzUlIUNyxD7SbqWpWKBeK1FIP/mDMFNy4yhXjhaRoyvGPcoe3uGYf0cEti+DG64N99Dzaw5kdmVjsxbwlEA==}
     peerDependencies:
       react: ^18.0.0
       react-dom: ^18.0.0
