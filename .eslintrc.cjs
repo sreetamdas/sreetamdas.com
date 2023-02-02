@@ -48,7 +48,6 @@ module.exports = {
 		"react/jsx-no-useless-fragment": "warn",
 		"react/jsx-fragments": "warn",
 		"@typescript-eslint/explicit-module-boundary-types": "off",
-		// "@typescript-eslint/no-explicit-any": "off",
 		"@typescript-eslint/no-unused-vars": [
 			"error",
 			{ argsIgnorePattern: "^_", destructuredArrayIgnorePattern: "^_" },
@@ -63,14 +62,21 @@ module.exports = {
 		"jsx-a11y/label-has-associated-control": ["error", { assert: "either" }],
 		"jsx-a11y/anchor-is-valid": ["warn", { aspects: ["invalidHref"] }],
 
-		"import/order": ["error", { "newlines-between": "always", alphabetize: { order: "asc" } }],
+		"import/order": [
+			"warn",
+			{
+				"newlines-between": "always",
+				alphabetize: { order: "asc" },
+			},
+		],
 	},
 	settings: {
 		react: {
 			version: "detect",
 		},
 		"import/resolver": {
-			typescript: {},
+			typescript: true,
+			node: true,
 		},
 	},
 };

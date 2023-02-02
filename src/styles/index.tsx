@@ -1,4 +1,3 @@
-import { ToasterProps } from "react-hot-toast";
 import { createGlobalStyle, css } from "styled-components";
 
 import { sharedTransition } from "@/styles/components";
@@ -40,6 +39,7 @@ export const GlobalStyles = createGlobalStyle`
 	--color-inlineCode-bg: ${theme.light.inlineCodeBackground};
 	
 	--color-inlineCode-fg: var(--color-primary);
+	--color-codeBlock-bg: #0a0e14;
 	--color-fancy-pants: var(--color-primary-accent);
 	
 	--font-family-code: ${iosevkaFont.style.fontFamily}, Consolas, Roboto Mono, Menlo, Monaco,
@@ -147,10 +147,18 @@ export const GlobalStyles = createGlobalStyle`
 	code,
 	pre {
 		font-family: var(--font-family-code);
+	}
+
+	pre:has(code) {
+	background-color: var(--color-codeBlock-bg);
+
+	}
+
+	:not(pre) > code, pre {
 		font-size: 0.85em;
 	}
 
-	code {
+	:not(pre) > code {
 		background-color: var(--color-inlineCode-bg);
 		padding: 0.2em;
 		border-radius: 3px;
@@ -162,18 +170,3 @@ export const GlobalStyles = createGlobalStyle`
 		${sharedTransition("color, background-color")}
 	}
 `;
-
-export const toasterProps: ToasterProps = {
-	position: "top-right",
-	toastOptions: {
-		style: {
-			backgroundColor: "var(--color-primary-accent)",
-			color: "var(--color-background)",
-			borderRadius: "var(--border-radius)",
-		},
-		iconTheme: {
-			primary: "var(--color-primary-accent)",
-			secondary: "var(--color-background)",
-		},
-	},
-};

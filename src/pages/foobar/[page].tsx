@@ -4,8 +4,8 @@ import { GetStaticProps, InferGetStaticPropsType } from "next";
 
 import { FoobarSchrodinger } from "@/components/foobar/pages";
 import { FOOBAR_PAGES, FoobarPage } from "@/domains/Foobar";
+import Custom404 from "@/pages/404";
 import { useHasMounted } from "@/utils/hooks";
-import Custom404 from "pages/404";
 
 type FoobarPageProps = {
 	page: Exclude<FoobarPage, "/">;

@@ -22,7 +22,9 @@ export const KARMA_LIGHT_COLOR_PALETTE = [
 	"#2D972F",
 	"#FA8D3E",
 ] as const;
-type KarmaColors = typeof KARMA_COLOR_PALETTE[number] | typeof KARMA_LIGHT_COLOR_PALETTE[number];
+type KarmaColors =
+	| (typeof KARMA_COLOR_PALETTE)[number]
+	| (typeof KARMA_LIGHT_COLOR_PALETTE)[number];
 
 export const StyledImage = (props: ImageProps) => (
 	<FullScreenImage>

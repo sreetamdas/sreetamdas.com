@@ -16,12 +16,12 @@ import {
 	initialFoobarData,
 } from "@/domains/Foobar";
 import { useCustomPlausible } from "@/domains/Plausible";
+import Custom404 from "@/pages/404";
 import { StyledPre } from "@/styles/blog";
 import { Space, Center } from "@/styles/layouts";
 import { Title } from "@/styles/typography";
 import { dog } from "@/utils/helpers";
 import { useHasMounted } from "@/utils/hooks";
-import Custom404 from "pages/404";
 
 const XMarksTheSpot = (_props: { foobar: string }) => <div />;
 

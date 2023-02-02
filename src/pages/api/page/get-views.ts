@@ -1,4 +1,4 @@
-import { captureException } from "@sentry/nextjs";
+import { captureException, captureMessage } from "@sentry/nextjs";
 import { NextApiRequest, NextApiResponse } from "next";
 
 import { getSupabaseClient } from "@/domains/Supabase";
@@ -46,14 +46,20 @@ async function handler(req: NextApiRequest, res: NextApiResponse<GetViewsRespons
 					.single();
 
 				if (error) {
-					captureException(error);
-					res.status(500).json({ error });
+					if (error.code === "PGRST116") {
+						// Page hasn't been added to Supabase views DB yet
+						res.status(200).json({ view_count: 0 });
+					} else {
+						captureException(error);
+						res.status(500).json({ error });
+					}
 				} else {
 					const { view_count } = data;
 					res.status(200).json({ view_count });
 				}
 			}
 		} else {
+			captureMessage("Bad request, req.method !== GET");
 			res.status(400).json({ error: "Bad request" });
 		}
 	}

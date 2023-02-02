@@ -1,7 +1,7 @@
 {
 	"compilerOptions": {
 		"allowJs": false,
-		"baseUrl": "src",
+		"baseUrl": ".",
 		"downlevelIteration": true,
 		"esModuleInterop": true,
 		"forceConsistentCasingInFileNames": true,
@@ -18,13 +18,13 @@
 		"resolveJsonModule": true,
 		"skipLibCheck": true,
 		"strict": true,
-		"target": "es5",
+		"target": "ES2018",
 
 		"paths": {
-			"@/*": ["./*"],
-			"@/public/*": ["../public/*"]
+			"@/*": ["./src/*"],
+			"@/public/*": ["./public/*"]
 		}
 	},
-	"exclude": ["node_modules", "public"],
-	"include": ["next-env.d.ts", "src/**/*.ts", "src/**/*.tsx"]
+	"exclude": ["node_modules"],
+	"include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"]
 }

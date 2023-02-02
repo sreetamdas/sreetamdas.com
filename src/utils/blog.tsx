@@ -1,20 +1,16 @@
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-nocheck
 import { promises as fs } from "fs";
 import path from "path";
 
-import karmaThemeJSON from "@sreetamdas/karma/themes/Karma-color-theme.json";
 import { bundleMDX } from "mdx-bundler";
 import rehypeRaw from "rehype-raw";
 import remarkGfm from "remark-gfm";
 import remarkSlug from "remark-slug";
 import remarkToc from "remark-toc";
-import { getHighlighter, toShikiTheme } from "shiki";
-import type { IRawTheme } from "vscode-textmate";
 
 import { rehypeImgSize } from "@/components/mdx/images/plugins";
-import { remarkShiki } from "@/components/shiki";
-import { renderToHTML } from "@/components/shiki/renderer";
+import { getKarmaHighlighter } from "@/components/shiki/helpers";
+import { remarkShiki } from "@/components/shiki/plugin";
+import { renderToHtml } from "@/components/shiki/renderer";
 import { MDXBundledResultProps } from "@/typings/blog";
 
 const PATH = path.resolve(process.cwd(), "src");
@@ -27,10 +23,11 @@ export async function getBlogPostsSlugs() {
 	return postsSlugs;
 }
 
-export async function bundleMDXWithOptions<Frontmatter>(filename: string) {
+export async function bundleMDXWithOptions<Frontmatter extends { [key: string]: unknown }>(
+	filename: string
+) {
 	const mdxSource = await fs.readFile(filename, "utf8");
-	const theme = toShikiTheme(karmaThemeJSON as unknown as IRawTheme);
-	const highlighter = await getHighlighter({ theme });
+	const highlighter = await getKarmaHighlighter();
 
 	const result = await bundleMDX<Frontmatter>({
 		source: mdxSource,
@@ -38,7 +35,7 @@ export async function bundleMDXWithOptions<Frontmatter>(filename: string) {
 		mdxOptions(options, _frontmatter) {
 			options.remarkPlugins = [
 				...(options.remarkPlugins ?? []),
-				[remarkShiki, { highlighter, renderToHTML }],
+				[remarkShiki, { highlighter, renderToHtml }],
 				remarkGfm,
 				remarkSlug,
 				[remarkToc, { tight: true }],

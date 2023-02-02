@@ -1,45 +1,94 @@
-import { Highlighter } from "shiki";
-import { visit } from "unist-util-visit";
+import { useState, useEffect } from "react";
 
-import { renderToHTML } from "@/components/shiki/renderer";
+import { getKarmaHighlighter } from "./helpers";
 
-type RemarkShikiOptions = {
-	highlighter: Highlighter;
-	renderToHTML?: typeof renderToHTML;
-	ignoreUnknownLanguage?: string;
+import { renderToHtml } from "@/components/shiki/renderer";
+import { CodeBlock } from "@/components/shiki/styled";
+
+export const ShikiPlayground = () => {
+	const [htmlTokens, setHtmlTokens] = useState("");
+
+	useEffect(() => {
+		async function setInitialHtml() {
+			setHtmlTokens(await getShikiHtml(initialCodeExample));
+		}
+
+		setInitialHtml();
+	}, []);
+
+	return <div dangerouslySetInnerHTML={{ __html: htmlTokens }}></div>;
 };
 
-export function remarkShiki(options: RemarkShikiOptions) {
-	const { highlighter, renderToHTML } = options;
-	const loadedLanguages = highlighter.getLoadedLanguages();
-	const ignoreUnknownLanguage =
-		options.ignoreUnknownLanguage == null ? true : options.ignoreUnknownLanguage;
+export async function getShikiHtml(code: string) {
+	const karmaHighlighter = await getKarmaHighlighter();
+	const theme = karmaHighlighter.getTheme();
+	const tokens = karmaHighlighter.codeToThemedTokens(
+		code.trim().replaceAll("\t", "  "),
+		"tsx",
+		// @ts-expect-error custom theme
+		theme,
+		{ includeExplanation: false }
+	);
 
-	return transformer;
+	const { fg, bg } = theme;
+	const html = renderToHtml(tokens, {
+		fg,
+		bg,
+		// langId: "tsx",
+		themeName: "karma",
+		elements: {
+			// @ts-expect-error shut up
+			pre: CodeBlock,
+		},
+	});
 
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	function transformer(tree: any) {
-		visit(tree, "code", visitor);
-
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		function visitor(node: any) {
-			const lang = ignoreUnknownLanguage && !loadedLanguages.includes(node.lang) ? null : node.lang;
-			if (renderToHTML) {
-				const theme = highlighter.getTheme();
-				// @ts-expect-error custom theme
-				const tokens = highlighter.codeToThemedTokens(node.value, lang, theme, {
-					includeExplanation: false,
-				});
-
-				const { fg, bg } = theme;
-				const html = renderToHTML(tokens, { fg, bg, langId: lang }, node.meta);
-				node.type = "html";
-				node.value = html;
-			} else {
-				const highlighted = highlighter.codeToHtml(node.value, lang);
-				node.type = "html";
-				node.value = highlighted;
-			}
-		}
-	}
+	return html;
 }
+
+export const initialCodeExample = `
+import { useState, useEffect } from "react";
+
+import { getKarmaHighlighter } from "./helpers";
+
+import { renderToHtml } from "@/components/shiki/renderer";
+import { CodeBlock } from "@/components/shiki/styled";
+
+export const ShikiPlayground = () => {
+	const [htmlTokens, setHtmlTokens] = useState("");
+
+	useEffect(() => {
+		async function setInitialHtml() {
+			setHtmlTokens(await getShikiHtml(initialCodeExample));
+		}
+
+		setInitialHtml();
+	}, []);
+
+	return <div dangerouslySetInnerHTML={{ __html: htmlTokens }}></div>;
+};
+
+export async function getShikiHtml(code: string) {
+	const karmaHighlighter = await getKarmaHighlighter();
+	const theme = karmaHighlighter.getTheme();
+	const tokens = karmaHighlighter.codeToThemedTokens(
+		code.trim().replaceAll("\\t", "  "),
+		"tsx",
+		// @ts-expect-error custom theme
+		theme,
+		{ includeExplanation: false }
+	);
+
+	const { fg, bg } = theme;
+	const html = renderToHtml(tokens, {
+		fg,
+		bg,
+		themeName: "karma",
+		elements: {
+			// @ts-expect-error shut up
+			pre: CodeBlock,
+		},
+	});
+
+	return html;
+}
+`;
