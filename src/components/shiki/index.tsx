@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-import { getKarmaHighlighter } from "./helpers";
+import { getKarmaHighlighter } from "./highlighter";
 
 import { renderToHtml } from "@/components/shiki/renderer";
 import { CodeBlock } from "@/components/shiki/styled";
@@ -48,7 +48,7 @@ export async function getShikiHtml(code: string) {
 export const initialCodeExample = `
 import { useState, useEffect } from "react";
 
-import { getKarmaHighlighter } from "./helpers";
+import { getKarmaHighlighter } from "./highlighter";
 
 import { renderToHtml } from "@/components/shiki/renderer";
 import { CodeBlock } from "@/components/shiki/styled";

@@ -8,7 +8,7 @@ import remarkSlug from "remark-slug";
 import remarkToc from "remark-toc";
 
 import { rehypeImgSize } from "@/components/mdx/images/plugins";
-import { getKarmaHighlighter } from "@/components/shiki/helpers";
+import { getKarmaHighlighter } from "@/components/shiki/highlighter";
 import { remarkShiki } from "@/components/shiki/plugin";
 import { renderToHtml } from "@/components/shiki/renderer";
 import { MDXBundledResultProps } from "@/typings/blog";
