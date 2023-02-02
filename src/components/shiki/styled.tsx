@@ -2,9 +2,12 @@ import { ReactNode } from "react";
 import { renderToString } from "react-dom/server";
 import styled, { css } from "styled-components";
 
+import { whenProp } from "@/domains/style/helpers";
 import { breakpoint } from "@/utils/style";
 
-const CodePreBlockWithHighlight = styled.pre`
+const CodePreBlockWithHighlight = styled.pre<{
+	$noLineNumberOffset?: boolean;
+}>`
 	padding: 20px;
 	margin: 1rem -20px;
 	margin-left: -2.5rem;
@@ -15,6 +18,13 @@ const CodePreBlockWithHighlight = styled.pre`
 	${breakpoint.until.md(css`
 		margin-left: -20px;
 	`)}
+
+	${whenProp(
+		"$noLineNumberOffset",
+		css`
+			margin-left: -1rem;
+		`
+	)}
 `;
 
 const CodeBlockLanguageWrapper = styled.span`
@@ -44,8 +54,8 @@ const CodeblockLineNumber = styled.span`
 const CodeblockLineWrapper = styled.div<{ $highlight?: boolean }>`
 	height: calc(0.85rem * 1.5);
 
-	${({ $highlight }) =>
-		$highlight &&
+	${whenProp(
+		"$highlight",
 		css`
 			background-color: rgb(255, 255, 255, 0.07);
 			display: block;
@@ -58,7 +68,8 @@ const CodeblockLineWrapper = styled.div<{ $highlight?: boolean }>`
 			${CodeblockLineNumber} {
 				color: #9d86e9;
 			}
-		`}
+		`
+	)}
 `;
 
 /**
@@ -105,7 +116,12 @@ export const CodeBlock = (props: {
 	}
 
 	return typeof children === "string" ? (
-		renderToString(<CodePreBlockWithHighlight dangerouslySetInnerHTML={{ __html: children }} />)
+		renderToString(
+			<CodePreBlockWithHighlight
+				$noLineNumberOffset
+				dangerouslySetInnerHTML={{ __html: children }}
+			/>
+		)
 	) : (
 		<CodePreBlockWithHighlight {...{ style }}>
 			<CodeBlockLanguageWrapper>{language.toLocaleUpperCase()}</CodeBlockLanguageWrapper>

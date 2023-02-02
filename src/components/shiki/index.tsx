@@ -46,29 +46,32 @@ export async function getShikiHtml(code: string) {
 }
 
 export const initialCodeExample = `
-type ShikiPlaygroundProps = {
-	initialHtml?: string;
-};
+import { useState, useEffect } from "react";
 
-export const ShikiPlayground = ({ initialHtml }: ShikiPlaygroundProps) => {
-	const [htmlTokens, setHtmlTokens] = useState(initialHtml ?? "");
+import { getKarmaHighlighter } from "./helpers";
+
+import { renderToHtml } from "@/components/shiki/renderer";
+import { CodeBlock } from "@/components/shiki/styled";
+
+export const ShikiPlayground = () => {
+	const [htmlTokens, setHtmlTokens] = useState("");
 
 	useEffect(() => {
 		async function setInitialHtml() {
-			setHtmlTokens(await getTokens());
+			setHtmlTokens(await getShikiHtml(initialCodeExample));
 		}
 
 		setInitialHtml();
 	}, []);
 
-	return <div dangerouslySetInnerHTML={{ __html: htmlTokens }} {...props}></div>;
+	return <div dangerouslySetInnerHTML={{ __html: htmlTokens }}></div>;
 };
 
-async function getTokens() {
+export async function getShikiHtml(code: string) {
 	const karmaHighlighter = await getKarmaHighlighter();
 	const theme = karmaHighlighter.getTheme();
 	const tokens = karmaHighlighter.codeToThemedTokens(
-		initialContent.trim().replaceAll("\\t", "  "),
+		code.trim().replaceAll("\\t", "  "),
 		"tsx",
 		// @ts-expect-error custom theme
 		theme,
