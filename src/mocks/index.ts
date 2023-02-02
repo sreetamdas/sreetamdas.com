@@ -1,5 +1,5 @@
-import { SetupWorkerApi, SharedOptions } from "msw";
-import { SetupServerApi } from "msw/lib/node";
+import { SetupWorker, SharedOptions } from "msw";
+import { SetupServer } from "msw/lib/node";
 
 import { SENTRY_ENVELOPE_URL } from "@/domains/Sentry";
 
@@ -30,8 +30,8 @@ function onUnhandledRequest(
 	print.warning(); // or "print.error()"
 }
 
-type ServerOptions = Parameters<SetupServerApi["listen"]>[0];
-type WorkerOptions = Parameters<SetupWorkerApi["start"]>[0];
+type ServerOptions = Parameters<SetupServer["listen"]>[0];
+type WorkerOptions = Parameters<SetupWorker["start"]>[0];
 
 async function initMocks() {
 	const workerOptions: ServerOptions | WorkerOptions = {
@@ -39,7 +39,7 @@ async function initMocks() {
 	};
 	if (typeof window === "undefined") {
 		// server
-		const { server } = (await import("./server")) as { server: SetupServerApi };
+		const { server } = (await import("./server")) as { server: SetupServer };
 		server.listen(workerOptions);
 	} else {
 		// worker
@@ -50,7 +50,7 @@ async function initMocks() {
 			// eslint-disable-next-line no-console
 			console.warn("[MSW] Warning: Sentry DSN is missing. Logging unhandled Sentry API requests.");
 		}
-		const { worker } = (await import("./browser")) as { worker: SetupWorkerApi };
+		const { worker } = (await import("./browser")) as { worker: SetupWorker };
 		worker.start(workerOptions);
 	}
 }
