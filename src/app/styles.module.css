@@ -1,13 +1,18 @@
-.page-wrapper {
+.main-wrapper {
 	min-height: 100vh;
-}
+	padding: 0;
 
-.content-layout {
 	display: grid;
 	grid-template-columns: 1fr min(var(--max-width), calc(100% - 2rem)) 1fr;
-	column-gap: 1rem;
-	padding: 0;
+	grid-template-rows: auto 1fr max-content;
+	grid-auto-flow: column;
+	column-gap: 20px;
 }
-.content-layout > * {
+
+.main-wrapper > * {
 	grid-column: 2;
+}
+
+#main-content {
+	display: contents;
 }

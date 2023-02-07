@@ -2,24 +2,21 @@ import styles from "./styles.module.css";
 import "./global.css";
 
 import { Footer } from "@/lib/components/Footer";
-import StyledComponentsRegistry from "@/lib/registry/style";
+import { interFont, iosevkaFont, madeMellowFont } from "@/lib/styles/typography";
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
 	return (
-		<html lang="en">
-			{/*
-        <head /> will contain the components returned by the nearest parent
-        head.tsx. Find out more at https://beta.nextjs.org/docs/api-reference/file-conventions/head
-      */}
+		<html
+			lang="en"
+			className={`${interFont.variable} ${iosevkaFont.variable} ${madeMellowFont.variable}`}
+		>
 			<head />
 			<body>
-				<StyledComponentsRegistry>
-					<main className={styles["page-wrapper"]}>
-						<nav>Navbar</nav>
-						<div className={styles["content-layout"]}>{children}</div>
-						<Footer />
-					</main>
-				</StyledComponentsRegistry>
+				<main className={`${styles["main-wrapper"]}`}>
+					<nav>Navbar</nav>
+					<div id="main-content">{children}</div>
+					<Footer />
+				</main>
 			</body>
 		</html>
 	);
