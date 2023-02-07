@@ -18,11 +18,7 @@ const moduleExports = withPlausibleProxy()({
 	// 	disableServerWebpackPlugin: SENTRY_DSN === "",
 	// 	disableClientWebpackPlugin: SENTRY_DSN === "",
 	// },
-	pageExtensions: ["js", "jsx", "ts", "tsx", "mdx"],
-	env: {
-		SITE_URL: process.env.SITE_URL,
-		OWNER: process.env.OWNER,
-	},
+	// pageExtensions: ["js", "jsx", "ts", "tsx", "mdx"],
 	images: {
 		domains: ["avatars.githubusercontent.com", "i.imgur.com"],
 	},
