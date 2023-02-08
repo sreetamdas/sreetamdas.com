@@ -2,114 +2,32 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-	--color-primary: rgb(0, 0, 0);
-	--color-background: rgb(255, 255, 255);
-	--values-primary-accent: 91, 52, 218;
-	--color-primary-accent: rgb(91, 52, 218);
-	--color-secondary-accent: rgb(53, 142, 241);
-	--values-secondary-accent: 53, 142, 241;
-	--color-bg-blurred: rgba(255, 255, 255, 0.93);
-	--color-inlineCode-bg: rgb(220, 220, 220);
+@layer base {
+	:root {
+		--color-primary: 91 52 218;
+		--color-secondary: 53 142 241;
+		--color-foreground: 10 14 20;
+		--color-background: 247 241 255;
 
-	--color-inlineCode-fg: var(--color-primary);
-	--color-fancy-pants: var(--color-primary-accent);
+		--max-width: 650px;
+		--border-radius: 5px;
+		--transition-duration: 0.1s;
+	}
+	[data-theme="dark"] {
+		--color-primary: 157 134 233;
+		--color-secondary: 97 218 251;
+		--color-foreground: 247 241 255;
+		--color-background: 10 14 20;
+	}
 
-	--font-family-code: Iosevka, Consolas, Roboto Mono, Menlo, Monaco, Liberation Mono, Lucida Console,
-		monospace;
-	--color-success-accent: rgb(0, 255, 127);
-	--color-success-accent-faded: rgba(0, 255, 127, 0.19);
-	--color-danger-accent: rgb(255, 128, 0);
-	--color-danger-accent-faded: rgba(255, 128, 0, 0.2);
-	--color-info-accent: rgb(0, 191, 255);
-	--color-info-accent-faded: rgba(0, 191, 255, 0.27);
-	--color-error: rgb(255, 0, 0);
-
-	--max-width: 650px;
-	--border-radius: 5px;
-	--transition-duration: 0.1s;
-}
-
-[data-theme="dark"] {
-	--color-primary: rgb(255, 255, 255);
-	--color-background: rgb(0, 0, 0);
-	--values-primary-accent: 157, 134, 233;
-	--color-primary-accent: rgb(157, 134, 233);
-	--color-secondary-accent: rgb(97, 218, 251);
-	--values-secondary-accent: 97, 218, 251;
-	--color-bg-blurred: rgba(15, 10, 35, 0.9);
-	--color-inlineCode-bg: rgb(51, 51, 51);
-}
-
-html,
-body {
-	font-size: 18px;
-	font-family: -apple-system, BlinkMacSystemFont, Inter, Roboto, Segoe UI, Oxygen, Ubuntu, Cantarell,
-		Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
-	color: var(--color-primary);
-	background-color: var(--color-background);
-	margin: 0;
-	line-height: 1.5;
-	min-height: 100vh;
-	scroll-padding-top: 60px;
-	scroll-behavior: smooth;
-}
-
-*,
-*:before,
-*:after {
-	box-sizing: border-box;
+	body {
+		@apply bg-background text-foreground min-h-screen scroll-py-16 scroll-smooth;
+	}
 }
 
 :not(pre):not(span)::selection {
 	background: rgba(var(--values-secondary-accent), 0.99);
 	color: var(--color-background);
-}
-
-h1,
-h2,
-h3,
-h4 {
-	margin: 0;
-	padding-top: 2rem;
-}
-
-h1 {
-	font-size: 2.5rem;
-}
-h2 {
-	font-size: 2rem;
-}
-h3 {
-	font-size: 1.5rem;
-}
-
-a {
-	text-decoration: none;
-	color: var(--color-primary-accent);
-	cursor: pointer;
-}
-a:visited {
-	text-decoration: none;
-}
-a:hover {
-	text-decoration-color: currentColor;
-	text-decoration-line: underline;
-	text-decoration-style: solid;
-	text-decoration-thickness: 2px;
-}
-
-.js-focus-visible a:focus,
-.js-focus-visible button:focus {
-	outline: none;
-}
-
-a:focus-visible,
-a:focus.focus-visible,
-button:focus-visible,
-button:focus.focus-visible {
-	outline: 2px dashed var(--color-secondary-accent) !important;
-	outline-offset: 2px;
 }
 
 code,
