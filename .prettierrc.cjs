@@ -5,6 +5,7 @@ module.exports = {
 	semi: true,
 	singleQuote: false,
 	printWidth: 100,
+	plugins: ["prettier-plugin-tailwindcss"],
 	overrides: [
 		{
 			files: "*.mdx",

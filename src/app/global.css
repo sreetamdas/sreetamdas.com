@@ -21,7 +21,7 @@
 	}
 
 	body {
-		@apply bg-background text-foreground min-h-screen scroll-py-16 scroll-smooth;
+		@apply min-h-screen scroll-py-16 scroll-smooth bg-background text-foreground;
 	}
 }
 

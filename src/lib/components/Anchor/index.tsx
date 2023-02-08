@@ -26,7 +26,7 @@ export const LinkTo = ({ className, ...props }: LinkToProps) => {
 		<Link
 			{...props}
 			{...overrideProps}
-			className={`text-primary hover:decoration-2 hover:decoration-current hover:decoration-solid hover:underline visited:no-underline focus-visible:outline-2 focus-visible:outline-dashed focus-visible:outline-secondary ${className}`}
+			className={`text-primary visited:no-underline hover:underline hover:decoration-current hover:decoration-solid hover:decoration-2 focus-visible:outline-dashed focus-visible:outline-2 focus-visible:outline-secondary ${className}`}
 		/>
 	);
 };
