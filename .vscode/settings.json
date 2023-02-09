@@ -6,6 +6,7 @@
 		"*.css": "tailwindcss"
 	},
 	"workbench.colorCustomizations": {
-		"statusBar.background": "#20005470"
+		"statusBar.background": "#6200ff",
+		"statusBar.foreground": "#FFF"
 	}
 }

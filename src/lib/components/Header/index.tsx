@@ -1,6 +1,7 @@
 import { Navbar } from "./Navbar";
 
 import { LinkTo } from "@/lib/components/Anchor";
+import { ColorSchemeToggle } from "@/lib/domains/colorScheme";
 
 export const Header = () => (
 	<header className="h-[60px]">
@@ -20,6 +21,7 @@ export const Header = () => (
 			</LinkTo>
 			<div className="grid grid-flow-col place-items-center justify-center gap-x-4 justify-self-end">
 				<Navbar />
+				<ColorSchemeToggle />
 			</div>
 		</div>
 	</header>
