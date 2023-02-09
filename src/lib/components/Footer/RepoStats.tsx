@@ -11,7 +11,7 @@ export const GitHubStats = async () => {
 		<div className="grid grid-cols-[max-content_max-content] justify-center gap-4 py-2.5">
 			<LinkTo
 				href="https://github.com/sreetamdas/sreetamdas.com/stargazers"
-				className="flex w-max items-center gap-1 text-foreground transition-colors hover:text-primary hover:no-underline"
+				className="flex w-max items-center gap-1 text-foreground transition-[color] hover:text-primary hover:no-underline"
 			>
 				<span className="text-lg leading-4">
 					<FaRegStar title="star" aria-label="star" className="h-[18px] w-[18px] text-current" />
@@ -20,7 +20,7 @@ export const GitHubStats = async () => {
 			</LinkTo>
 			<LinkTo
 				href="https://github.com/sreetamdas/sreetamdas.com/network/members"
-				className="flex w-max items-center gap-1 text-foreground transition-colors hover:text-primary hover:no-underline"
+				className="flex w-max items-center gap-1 text-foreground transition-[color] hover:text-primary hover:no-underline"
 			>
 				<span className="text-lg leading-4">
 					<VscRepoForked
