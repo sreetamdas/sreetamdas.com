@@ -1,7 +1,11 @@
 {
-  "typescript.tsdk": "node_modules/.pnpm/typescript@4.9.5/node_modules/typescript/lib",
-  "typescript.enablePromptUseWorkspaceTsdk": true,
-  "workbench.colorCustomizations": {
-    "statusBar.background": "#20005470"
-  }
+	"typescript.tsdk": "node_modules/.pnpm/typescript@4.9.5/node_modules/typescript/lib",
+	"typescript.enablePromptUseWorkspaceTsdk": true,
+	"files.associations": {
+		"*.module.css": "postcss",
+		"*.css": "tailwindcss"
+	},
+	"workbench.colorCustomizations": {
+		"statusBar.background": "#20005470"
+	}
 }

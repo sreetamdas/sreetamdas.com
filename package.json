@@ -4,7 +4,7 @@
 	"type": "module",
 	"scripts": {
 		"dev": "next dev",
-		"turbo": "next dev --turbo",
+		"turbo": "next dev --turbo --show-all",
 		"start": "next start",
 		"build": "next build",
 		"build:analyze": "ANALYZE=true next build",
@@ -74,7 +74,7 @@
 		"postcss": "^8.4.21",
 		"prettier": "^2.8.4",
 		"prettier-plugin-tailwindcss": "^0.2.2",
-		"tailwindcss": "^3.2.4",
+		"tailwindcss": "^3.2.6",
 		"typescript": "^4.9.5",
 		"vscode-textmate": "^8.0.0"
 	},
