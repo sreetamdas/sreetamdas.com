@@ -2,6 +2,7 @@ import styles from "./styles.module.css";
 import "./global.css";
 
 import { Footer } from "@/lib/components/Footer";
+import { Header } from "@/lib/components/Header";
 import { interFont, iosevkaFont, madeMellowFont } from "@/lib/styles/typography";
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -13,7 +14,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 			<head />
 			<body>
 				<main className={`${styles["main-wrapper"]}`}>
-					<nav>Navbar</nav>
+					<Header />
 					<div id="main-content">{children}</div>
 					<Footer />
 				</main>

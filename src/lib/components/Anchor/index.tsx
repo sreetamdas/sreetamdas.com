@@ -1,7 +1,7 @@
 import Link, { LinkProps } from "next/link";
 
 type AdditionalLinkProps = {
-	noRedirect?: true;
+	unStyled?: true;
 };
 
 type LinkToProps = Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, keyof LinkProps> &
@@ -10,23 +10,26 @@ type LinkToProps = Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, keyof Lin
 	} & React.RefAttributes<HTMLAnchorElement> &
 	AdditionalLinkProps;
 
-export const LinkTo = ({ className, ...props }: LinkToProps) => {
+export const LinkTo = (props: LinkToProps) => {
+	const { unStyled, className: passedClasses, ...restProps } = props;
 	const overrideProps: Partial<LinkToProps> = {};
 
 	if (typeof props.href === "string") {
 		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-		const isExternalLink = !props.href.startsWith(process.env.SITE_URL!);
+		const isExternalLink = !props.href.startsWith(process.env.SITE_URL!) && props.href[0] !== "/";
 
 		if (isExternalLink) {
 			overrideProps.target = "_blank";
 		}
 	}
 
-	return (
-		<Link
-			{...props}
-			{...overrideProps}
-			className={`text-primary visited:no-underline hover:underline hover:decoration-current hover:decoration-solid hover:decoration-2 focus-visible:outline-dashed focus-visible:outline-2 focus-visible:outline-secondary ${className}`}
-		/>
-	);
+	let classes = "";
+	if (!unStyled) {
+		classes = "link-base ";
+	}
+	if (passedClasses) {
+		classes += `${passedClasses} `;
+	}
+
+	return <Link {...restProps} {...overrideProps} className={classes.trimEnd()} />;
 };

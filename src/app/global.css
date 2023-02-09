@@ -25,6 +25,12 @@
 	}
 }
 
+@layer components {
+	.link-base {
+		@apply text-primary visited:no-underline hover:underline hover:decoration-current hover:decoration-solid hover:decoration-2 focus-visible:outline-dashed focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-secondary;
+	}
+}
+
 :not(pre):not(span)::selection {
 	background: rgba(var(--values-secondary-accent), 0.99);
 	color: var(--color-background);
