@@ -1,6 +1,6 @@
 module.exports = {
 	root: true,
-	plugins: ["react", "@typescript-eslint", "react-hooks", "jsx-a11y"],
+	plugins: ["react", "@typescript-eslint", "react-hooks", "jsx-a11y", "prettier"],
 	parser: "@typescript-eslint/parser",
 	parserOptions: {
 		ecmaFeatures: {
@@ -31,7 +31,6 @@ module.exports = {
 		SharedArrayBuffer: "readonly",
 	},
 	rules: {
-		indent: ["error", "tab", { SwitchCase: 1 }],
 		"linebreak-style": ["error", "unix"],
 		quotes: ["error", "double"],
 		semi: ["error", "always"],
@@ -64,6 +63,7 @@ module.exports = {
 		"jsx-a11y/anchor-is-valid": ["warn", { aspects: ["invalidHref"] }],
 
 		"import/order": ["error", { "newlines-between": "always", alphabetize: { order: "asc" } }],
+		"prettier/prettier": ["error"],
 	},
 	settings: {
 		react: {
