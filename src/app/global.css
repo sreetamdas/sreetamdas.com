@@ -13,7 +13,7 @@
 		--border-radius: 5px;
 		--transition-duration: 0.1s;
 	}
-	[data-theme="dark"] {
+	[data-color-scheme="dark"] {
 		--color-primary: 157 134 233;
 		--color-secondary: 97 218 251;
 		--color-foreground: 247 241 255;
