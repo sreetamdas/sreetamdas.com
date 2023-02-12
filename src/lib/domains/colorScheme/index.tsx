@@ -11,7 +11,7 @@ import { useBoundStore } from "@/lib/domains/global";
 function getDocumentColorScheme() {
 	const documentColorScheme = window.document.documentElement.style.getPropertyValue(
 		"--initial-color-scheme"
-	) as NonNullable<ColorSchemeSliceType["colorScheme"]>;
+	) as NonNullable<ColorSchemeSliceType["colorScheme"]> | "";
 
 	return documentColorScheme;
 }
@@ -55,7 +55,9 @@ export const ColorSchemeToggle = () => {
 		setColorScheme: state.setColorScheme,
 	}));
 
-	function handleColorSchemeToggle(override?: ColorSchemeSliceType["colorScheme"]) {
+	function handleColorSchemeToggle(
+		override?: Exclude<ReturnType<typeof getDocumentColorScheme>, "">
+	) {
 		const { value } = colorSchemeIterator.next(override);
 
 		setColorScheme(value);
@@ -64,7 +66,12 @@ export const ColorSchemeToggle = () => {
 
 	useEffect(() => {
 		const documentColorScheme = getDocumentColorScheme();
-		handleColorSchemeToggle(documentColorScheme);
+
+		if (documentColorScheme === "") {
+			handleColorSchemeToggle("system");
+		} else {
+			handleColorSchemeToggle(documentColorScheme);
+		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
@@ -72,8 +79,10 @@ export const ColorSchemeToggle = () => {
 		switch (colorScheme) {
 			case "system":
 				if (getSystemColorSchemePreference() === "light") {
+					document.documentElement.removeAttribute("data-color-scheme");
 					break;
 				}
+			// when system color scheme preference is "dark"
 			// falls through
 			case "dark":
 				document.documentElement.setAttribute("data-color-scheme", "dark");
@@ -99,12 +108,15 @@ export const ColorSchemeToggle = () => {
 const ToggleIcon = ({ colorScheme }: Pick<ColorSchemeSliceType, "colorScheme">) => {
 	switch (colorScheme) {
 		case "light":
-			return <FiSun aria-label="Switch to Dark Mode" title="Switch to Dark mode" />;
+			return <FiSun aria-label="Currently Dark Mode" title="Currently Dark mode" />;
 		case "dark":
-			return <IoMdMoon aria-label="Switch to Light Mode" title="Switch to Light mode" />;
+			return <IoMdMoon aria-label="Currently Light Mode" title="Currently Light mode" />;
 		case "system":
 			return (
-				<FiMonitor aria-label="Switch to Light Mode" title="Switch to using System preference" />
+				<FiMonitor
+					aria-label="Currently using System preference"
+					title="Currently using System preference"
+				/>
 			);
 		default:
 			return <span className="inline-block" />;
