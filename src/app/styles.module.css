@@ -12,7 +12,3 @@
 .main-wrapper > * {
 	grid-column: 2;
 }
-
-#main-content {
-	display: contents;
-}

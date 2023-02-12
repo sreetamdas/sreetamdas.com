@@ -5,6 +5,15 @@ import { ColorSchemeToggle } from "@/lib/domains/colorScheme";
 
 export const Header = () => (
 	<header className="h-[60px]">
+		<LinkTo
+			id="skip-link"
+			href="#main-content"
+			className="absolute top-8 left-8 h-px w-px -translate-y-full overflow-hidden rounded-md
+			bg-primary p-2 text-background [clip:rect(1px_1px_1px_1px)] focus:block focus:h-auto 
+			focus:w-auto focus:translate-y-0 focus:[clip:auto] dark:text-foreground"
+		>
+			Skip to main content
+		</LinkTo>
 		<div className="grid h-full grid-cols-[max-content_auto] content-center">
 			<LinkTo href="/">
 				<svg

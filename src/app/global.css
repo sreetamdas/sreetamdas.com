@@ -27,7 +27,9 @@
 
 @layer components {
 	.link-base {
-		@apply text-primary visited:no-underline hover:underline hover:decoration-current hover:decoration-solid hover:decoration-2 focus-visible:outline-dashed focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-secondary;
+		@apply text-primary visited:no-underline hover:underline hover:decoration-current
+		hover:decoration-solid hover:decoration-2 focus-visible:outline-dashed focus-visible:outline-2
+		focus-visible:outline-offset-2 focus-visible:outline-secondary;
 	}
 }
 
