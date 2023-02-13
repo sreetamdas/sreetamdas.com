@@ -1,3 +1,5 @@
+import PlausibleProvider from "next-plausible";
+
 import styles from "./styles.module.css";
 import "./global.css";
 
@@ -19,6 +21,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 				<meta name="apple-mobile-web-app-status-bar-style" content="default" />
 				<meta name="apple-mobile-web-app-capable" content="yes" />
 				<meta name="mobile-web-app-capable" content="yes" />
+
+				<PlausibleProvider
+					domain="sreetamdas.com"
+					customDomain="sreetamdas.com"
+					trackOutboundLinks
+					trackFileDownloads
+				/>
 				<DocumentHead title="Hello hello!" />
 			</head>
 			<body>
