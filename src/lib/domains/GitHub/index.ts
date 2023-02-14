@@ -1,6 +1,6 @@
 import { Octokit } from "@octokit/core";
 
-import { DEFAULT_REPO } from "@/lib/config";
+import { DEFAULT_REPO } from "@/config";
 
 export const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
 

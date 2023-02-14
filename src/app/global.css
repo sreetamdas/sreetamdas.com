@@ -33,6 +33,12 @@
 	}
 }
 
+@layer utilities {
+	.font-code {
+		font-family: var(--font-iosevka);
+	}
+}
+
 :not(pre):not(span)::selection {
 	background: rgba(var(--values-secondary-accent), 0.99);
 	color: var(--color-background);

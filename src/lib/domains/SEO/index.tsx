@@ -1,4 +1,4 @@
-import { SITE_URL } from "@/lib/config";
+import { SITE_URL } from "@/config";
 
 type DocumentHeadProps = {
 	title: string;
