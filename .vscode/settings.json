@@ -1,10 +1,18 @@
 {
-	"typescript.tsdk": "node_modules/.pnpm/typescript@4.9.5/node_modules/typescript/lib",
-	"typescript.enablePromptUseWorkspaceTsdk": true,
+	"editor.quickSuggestions": {
+		"strings": true
+	},
 	"files.associations": {
 		"*.module.css": "postcss",
 		"*.css": "tailwindcss"
 	},
+	"tailwindCSS.includeLanguages": {
+		"plaintext": "html"
+	},
+	"mdx.experimentalLanguageServer": true,
+	"tailwindCSS.experimental.classRegex": [["clsx\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"]],
+	"typescript.tsdk": "node_modules/.pnpm/typescript@4.9.5/node_modules/typescript/lib",
+	"typescript.enablePromptUseWorkspaceTsdk": true,
 	"workbench.colorCustomizations": {
 		"statusBar.background": "#6200ff",
 		"statusBar.foreground": "#FFF"
