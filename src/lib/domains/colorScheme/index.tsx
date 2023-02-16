@@ -64,6 +64,26 @@ export const ColorSchemeToggle = () => {
 		window.localStorage.setItem("color-scheme", value);
 	}
 
+	function handleSystemColorSchemePreference(isColorSchemeDark?: boolean) {
+		const preference =
+			isColorSchemeDark === undefined
+				? getSystemColorSchemePreference()
+				: isColorSchemeDark === true
+				? "dark"
+				: "light";
+
+		switch (preference) {
+			case "dark":
+				document.documentElement.setAttribute("data-color-scheme", "dark");
+				break;
+
+			case "light":
+			default:
+				document.documentElement.removeAttribute("data-color-scheme");
+				break;
+		}
+	}
+
 	useEffect(() => {
 		const documentColorScheme = getDocumentColorScheme();
 
@@ -72,22 +92,26 @@ export const ColorSchemeToggle = () => {
 		} else {
 			handleColorSchemeToggle(documentColorScheme);
 		}
+
+		const colorSchemeDarkMediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+		function colorSchemeChangeListener() {
+			handleSystemColorSchemePreference(colorSchemeDarkMediaQuery.matches);
+		}
+
+		colorSchemeDarkMediaQuery.addEventListener("change", colorSchemeChangeListener);
+
+		return () => colorSchemeDarkMediaQuery.removeEventListener("change", colorSchemeChangeListener);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	useEffect(() => {
 		switch (colorScheme) {
 			case "system":
-				if (getSystemColorSchemePreference() === "light") {
-					document.documentElement.removeAttribute("data-color-scheme");
-					break;
-				}
-			// when system color scheme preference is "dark"
-			// falls through
+				handleSystemColorSchemePreference();
+				break;
 			case "dark":
 				document.documentElement.setAttribute("data-color-scheme", "dark");
 				break;
-
 			case "light":
 			default:
 				document.documentElement.removeAttribute("data-color-scheme");

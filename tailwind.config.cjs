@@ -23,5 +23,6 @@ module.exports = {
 			},
 		},
 	},
+	darkMode: ["class", '[data-color-scheme="dark"]'],
 	plugins: [],
 };
