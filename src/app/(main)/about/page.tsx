@@ -1,4 +1,4 @@
-import AboutContent from "./content.mdx";
+import AboutContent from "./about.mdx";
 
 import { ViewsCounter } from "@/lib/domains/Supabase";
 

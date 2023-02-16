@@ -21,7 +21,7 @@
 	}
 
 	body {
-		@apply min-h-screen scroll-py-16 scroll-smooth bg-background text-foreground;
+		@apply min-h-screen scroll-py-16 scroll-smooth bg-background text-foreground selection:bg-secondary selection:text-background;
 	}
 }
 
@@ -42,24 +42,4 @@
 :not(pre):not(span)::selection {
 	background: rgba(var(--values-secondary-accent), 0.99);
 	color: var(--color-background);
-}
-
-code,
-pre {
-	font-family: var(--font-family-code);
-	font-size: 0.85em;
-}
-
-code {
-	background-color: var(--color-inlineCode-bg);
-	padding: 0.2em;
-	border-radius: 3px;
-	/* prevent our code block from being broken into different sections on linebreak
-			https://developer.mozilla.org/en-US/docs/Web/CSS/box-decoration-break */
-	box-decoration-break: clone;
-	white-space: nowrap;
-
-	transition-duration: var(--transition-duration);
-	transition-timing-function: var(--transition-timing-function, linear);
-	transition-property: color, background-color;
 }

@@ -7,7 +7,7 @@ import { Footer } from "@/lib/components/Footer";
 import { Header } from "@/lib/components/Header";
 import { DocumentHead } from "@/lib/domains/SEO";
 import { blockingScriptSetInitialColorScheme } from "@/lib/domains/colorScheme/blockingScript";
-import { interFont, iosevkaFont, madeMellowFont } from "@/lib/styles/typography";
+import { interFont, iosevkaFont, madeMellowFont } from "@/lib/styles/fonts";
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
 	return (
