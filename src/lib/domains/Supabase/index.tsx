@@ -3,7 +3,6 @@ import { clsx } from "clsx";
 import { getSupabaseClient } from "./client";
 
 import { IS_DEV } from "@/config";
-import { dog } from "@/lib/helpers";
 
 type ViewsCounterProps = {
 	slug: string;
@@ -20,12 +19,12 @@ export const ViewsCounter = async ({
 	const { enabled: supabaseEnabled, supabaseClient } = getSupabaseClient();
 
 	if (!supabaseEnabled) {
-		dog("Supabase is not enabled");
+		console.error("Supabase is not enabled");
 		return null;
 	}
 
 	if (disabled) {
-		dog("ViewsCounter is disabled", { IS_DEV });
+		console.warn("ViewsCounter is disabled", { IS_DEV });
 	}
 
 	const getPageViews = async () =>
@@ -42,7 +41,7 @@ export const ViewsCounter = async ({
 
 	const { data, error } = await getPageViews();
 
-	dog({ data, error });
+	console.log({ data, error });
 
 	return (
 		<div
