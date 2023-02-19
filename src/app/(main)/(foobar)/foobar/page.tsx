@@ -1,5 +1,6 @@
 "use client";
 
+import { Custom404 } from "@/lib/components/404";
 import { useBoundStore } from "@/lib/domains/global";
 
 /**
@@ -11,7 +12,7 @@ const FoobarSchrodinger = () => {
 		unlocked: state.foobarData.unlocked,
 	}));
 
-	if (~unlocked) {
+	if (!unlocked) {
 		return <FoobarButLocked />;
 	}
 	return null;
@@ -19,12 +20,4 @@ const FoobarSchrodinger = () => {
 
 export default FoobarSchrodinger;
 
-const FoobarButLocked = () => (
-	<span>
-		<small>
-			<code>
-				<em>psst, you should check the console!</em>
-			</code>
-		</small>
-	</span>
-);
+const FoobarButLocked = () => <Custom404 message="psst, you should check the console!" />;
