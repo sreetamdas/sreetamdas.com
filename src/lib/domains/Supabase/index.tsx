@@ -19,11 +19,13 @@ export const ViewsCounter = async ({
 	const { enabled: supabaseEnabled, supabaseClient } = getSupabaseClient();
 
 	if (!supabaseEnabled) {
+		// eslint-disable-next-line no-console
 		console.error("Supabase is not enabled");
 		return null;
 	}
 
 	if (disabled) {
+		// eslint-disable-next-line no-console
 		console.warn("ViewsCounter is disabled", { IS_DEV });
 	}
 
