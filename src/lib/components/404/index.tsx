@@ -67,11 +67,7 @@ export const Custom404 = ({ message }: T404PageMessage) => {
 						from The Guardian
 					</LinkTo>
 				</span>
-				{message ? (
-					<p className="py-12 text-sm">
-						<em>{message}</em>
-					</p>
-				) : null}
+				{message ? <em className="py-12 text-sm">{message}</em> : null}
 			</p>
 		</>
 	);

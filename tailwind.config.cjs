@@ -6,12 +6,11 @@ module.exports = {
 	content: ["./src/**/*.{js,ts,jsx,tsx}"],
 	theme: {
 		fontFamily: {
+			sans: ["var(--font-inter)", ...defaultTheme.fontFamily.sans],
+			serif: ["var(--font-made-mellow)", ...defaultTheme.fontFamily.serif],
 			mono: ["var(--font-iosevka)", ...defaultTheme.fontFamily.mono],
 		},
 		extend: {
-			fontFamily: {
-				mellow: "var(--font-made-mellow)",
-			},
 			colors: {
 				primary: "rgb(var(--color-primary))",
 				secondary: "rgb(var(--color-secondary))",

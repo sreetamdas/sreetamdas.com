@@ -14,7 +14,7 @@ export default function FoobarCompletedPage({ params: { slug } }: PageParams) {
 		notFound();
 	}
 
-	return <h1 className="font-heading font-mellow text-8xl">/{slug}</h1>;
+	return <h1 className="font-heading font-serif text-8xl">/{slug}</h1>;
 }
 
 export function generateStaticParams() {

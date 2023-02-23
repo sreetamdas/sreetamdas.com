@@ -7,12 +7,12 @@ export const Navbar = () => (
 	<nav className="contents w-min">
 		<ul className="contents">
 			<li>
-				<LinkTo href="/about" className="text-lg text-foreground hover:text-primary">
+				<LinkTo href="/about" className="text-foreground hover:text-primary">
 					about
 				</LinkTo>
 			</li>
 			<li>
-				<LinkTo href="/uses" className="text-lg text-foreground hover:text-primary">
+				<LinkTo href="/uses" className="text-foreground hover:text-primary">
 					uses
 				</LinkTo>
 			</li>

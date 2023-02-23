@@ -12,7 +12,7 @@ type UnknownChildren = {
 export function useMDXComponents(components: MDXComponents) {
 	// Allows customizing built-in components, e.g. to add styling.
 	return {
-		p: ({ children }: UnknownChildren) => <p className="py-2.5 text-lg">{children}</p>,
+		p: ({ children }: UnknownChildren) => <p className="py-2.5">{children}</p>,
 		a: LinkTo,
 		code: Code,
 		ul: UnorderedList,

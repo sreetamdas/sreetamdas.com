@@ -13,7 +13,7 @@ export const GitHubStats = async () => {
 				href="https://github.com/sreetamdas/sreetamdas.com/stargazers"
 				className="flex w-max items-center gap-1 text-foreground transition-[color] hover:text-primary hover:no-underline"
 			>
-				<span className="text-lg leading-4">
+				<span className="leading-4">
 					<FaRegStar title="star" aria-label="star" className="h-[18px] w-[18px] text-current" />
 				</span>
 				<span>{data?.stars ?? "—"}</span>
@@ -22,7 +22,7 @@ export const GitHubStats = async () => {
 				href="https://github.com/sreetamdas/sreetamdas.com/network/members"
 				className="flex w-max items-center gap-1 text-foreground transition-[color] hover:text-primary hover:no-underline"
 			>
-				<span className="text-lg leading-4">
+				<span className="leading-4">
 					<VscRepoForked
 						title="fork"
 						aria-label="fork"
