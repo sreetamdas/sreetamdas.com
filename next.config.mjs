@@ -11,10 +11,8 @@ process.env.SITE_URL = process.env.SITE_URL || process.env.VERCEL_URL || "http:/
 const moduleExports = withPlausibleProxy()({
 	experimental: {
 		appDir: true,
-	},
-	compiler: {
-		// ssr and displayName are configured by default
-		styledComponents: true,
+		mdxRs: true,
+		typedRoutes: true,
 	},
 	// sentry: {
 	// 	hideSourceMaps: false,
