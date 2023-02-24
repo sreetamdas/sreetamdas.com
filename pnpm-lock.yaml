@@ -3,7 +3,6 @@ lockfileVersion: 5.4
 specifiers:
   '@next/bundle-analyzer': ^13.2.1
   '@next/eslint-plugin-next': ^13.2.1
-  '@next/font': ^13.2.1
   '@next/mdx': ^13.2.1
   '@octokit/core': ^4.2.0
   '@sentry/nextjs': ^7.38.0
@@ -48,7 +47,6 @@ specifiers:
   zustand: 4.3.3
 
 dependencies:
-  '@next/font': 13.2.1
   '@next/mdx': 13.2.1
   '@octokit/core': 4.2.0
   '@sentry/nextjs': 7.38.0_next@13.2.1+react@18.2.0
@@ -185,10 +183,6 @@ packages:
     dependencies:
       glob: 7.1.7
     dev: true
-
-  /@next/font/13.2.1:
-    resolution: {integrity: sha512-4sergLt7xp9+mZuKME/xM4tLlHGTcmL7naCq0qCTcAlof6NnttshYgiLOdhSiy0NcI+/yM3BjvdEk++O96UzTg==}
-    dev: false
 
   /@next/mdx/13.2.1:
     resolution: {integrity: sha512-kWriuAxU3euPUugwoOI7WEo596QeHsxrbneKvItwrfu4YYZZLKNPHSnkLHvF7tlO9TjiPbFqYlK2xHK02Lp2SA==}
