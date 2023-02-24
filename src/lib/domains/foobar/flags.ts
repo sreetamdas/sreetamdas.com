@@ -19,6 +19,7 @@ export const FOOBAR_PAGES = {
 } as const;
 
 export type FoobarPageSlug = (typeof FOOBAR_PAGES)[keyof typeof FOOBAR_PAGES];
+export type FoobarAchievement = FoobarPageSlug | "completed";
 
 export type FoobarDataType = {
 	visitedPages: Array<string>;
