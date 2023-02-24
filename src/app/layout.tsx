@@ -7,6 +7,7 @@ import { Footer } from "@/lib/components/Footer";
 import { Header } from "@/lib/components/Header";
 import { DocumentHead } from "@/lib/domains/SEO";
 import { blockingScriptSetInitialColorScheme } from "@/lib/domains/colorScheme/blockingScript";
+import { FoobarPixel } from "@/lib/domains/foobar";
 import { interFont, iosevkaFont, madeMellowFont } from "@/lib/styles/fonts";
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -40,6 +41,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 				<main className={`${styles["main-wrapper"]}`}>
 					<Header />
 					<div id="main-content">{children}</div>
+					<FoobarPixel />
 					<Footer />
 				</main>
 			</body>
