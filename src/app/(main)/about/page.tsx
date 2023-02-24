@@ -1,6 +1,7 @@
 import AboutContent from "./about.mdx";
 
 import { ViewsCounter } from "@/lib/domains/Supabase";
+import { FoobarEntry } from "@/lib/domains/foobar/Entry";
 
 export default function AboutPage() {
 	return (
@@ -9,6 +10,7 @@ export default function AboutPage() {
 			<AboutContent />
 			{/* @ts-expect-error async Server Component */}
 			<ViewsCounter slug="/" />
+			<FoobarEntry />
 		</>
 	);
 }
