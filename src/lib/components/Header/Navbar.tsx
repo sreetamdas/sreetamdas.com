@@ -12,6 +12,11 @@ export const Navbar = () => (
 				</LinkTo>
 			</li>
 			<li>
+				<LinkTo href="/newsletter" className="text-foreground hover:text-primary">
+					newsletter
+				</LinkTo>
+			</li>
+			<li>
 				<LinkTo href="/uses" className="text-foreground hover:text-primary">
 					uses
 				</LinkTo>
