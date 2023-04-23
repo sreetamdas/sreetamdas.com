@@ -1,29 +1,40 @@
-import Link, { LinkProps } from "next/link";
+import type { UrlObject } from "url";
 
-type AdditionalLinkProps = {
-	unStyled?: true;
+import { Route } from "next";
+import NextLink from "next/link";
+import type { LinkRestProps } from "next/link";
+
+type LinkAdditionalProps = {
+	replaceClasses?: true;
 };
 
-type LinkToProps = Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, keyof LinkProps> &
-	LinkProps & {
-		children?: React.ReactNode;
-	} & React.RefAttributes<HTMLAnchorElement> &
-	AdditionalLinkProps;
-
+type LinkToProps = LinkRestProps &
+	LinkAdditionalProps & {
+		href?: Route | UrlObject | string;
+	};
 export const LinkTo = (props: LinkToProps) => {
-	const { unStyled, className: passedClasses, ...restProps } = props;
+	const { href, className: passedClasses, replaceClasses = false, ...restProps } = props;
 	const overrideProps: Partial<LinkToProps> = {};
 	let isExternalLink;
+	let classes = "";
 
-	if (typeof props.href === "string") {
+	if (!replaceClasses) {
+		classes = "link-base ";
+	}
+	if (passedClasses) {
+		classes += `${passedClasses} `;
+	}
+
+	if (typeof href === "string") {
 		if (
 			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-			props.href.startsWith(process.env.SITE_URL!) &&
-			props.href.startsWith("/") &&
-			props.href.startsWith("#")
+			href.startsWith(process.env.SITE_URL!) &&
+			href.startsWith("/") &&
+			href.startsWith("?") &&
+			href.startsWith("#")
 		) {
 			isExternalLink = false;
-		} else if (props.href.startsWith("https://")) {
+		} else if (href.startsWith("https://")) {
 			isExternalLink = true;
 		}
 	}
@@ -31,13 +42,21 @@ export const LinkTo = (props: LinkToProps) => {
 	if (isExternalLink) {
 		overrideProps.target = "_blank";
 	}
-	let classes = "";
-	if (!unStyled) {
-		classes = "link-base ";
-	}
-	if (passedClasses) {
-		classes += `${passedClasses} `;
+
+	if (!isExternalLink && typeof href !== "undefined") {
+		return (
+			<NextLink
+				{...restProps}
+				{...overrideProps}
+				href={href as Route}
+				className={classes.trimEnd()}
+			/>
+		);
 	}
 
-	return <Link {...restProps} {...overrideProps} className={classes.trimEnd()} />;
+	return (
+		<a {...restProps} {...overrideProps} href={href as string} className={classes.trimEnd()}>
+			{props.children}
+		</a>
+	);
 };
