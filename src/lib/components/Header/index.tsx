@@ -8,7 +8,7 @@ export const Header = () => (
 		<LinkTo
 			id="skip-link"
 			href="#main-content"
-			className="absolute top-8 left-8 h-px w-px -translate-y-full overflow-hidden rounded-global
+			className="absolute left-8 top-8 h-px w-px -translate-y-full overflow-hidden rounded-global
 			bg-primary p-2 text-background [clip:rect(1px_1px_1px_1px)] focus:block focus:h-auto 
 			focus:w-auto focus:translate-y-0 focus:[clip:auto] dark:text-foreground"
 		>

@@ -43,6 +43,7 @@ export const ViewsCounter = async ({
 
 	const { data, error } = await getPageViews();
 
+	// eslint-disable-next-line no-console
 	console.log({ data, error });
 
 	return (

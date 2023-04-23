@@ -2,7 +2,7 @@ import { Children, HTMLAttributes, isValidElement } from "react";
 import { FaLongArrowAltRight } from "react-icons/fa";
 
 export const UnorderedList = (props: HTMLAttributes<HTMLUListElement>) => (
-	<ul className="my-3 mx-0 pl-0" {...props}>
+	<ul className="mx-0 my-3 pl-0" {...props}>
 		{Children.map(props.children, (child) => {
 			if (isValidElement(child)) {
 				return (
