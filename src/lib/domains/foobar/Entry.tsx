@@ -2,11 +2,11 @@
 
 import { LinkTo } from "@/lib/components/Anchor";
 import { useCustomPlausible } from "@/lib/domains/Plausible";
-import { useBoundStore } from "@/lib/domains/global";
+import { useGlobalStore } from "@/lib/domains/global";
 
 export const FoobarEntry = () => {
 	const plausible = useCustomPlausible();
-	const { setFoobarData, unlocked } = useBoundStore((state) => ({
+	const { setFoobarData, unlocked } = useGlobalStore((state) => ({
 		unlocked: state.foobarData.unlocked,
 		setFoobarData: state.setFoobarData,
 	}));

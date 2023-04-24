@@ -4,13 +4,13 @@
 // import { useEffect } from "react";
 
 // import { logConsoleMessages } from "./console";
-import { FoobarSliceType } from "./flags";
+import type { FoobarSliceType } from "./flags";
 // import { addFoobarToLocalStorage, checkIfAllAchievementsAreDone } from "./helpers";
 
 // import { IS_DEV } from "@/config";
 import { LinkTo } from "@/lib/components/Anchor";
 // import { useCustomPlausible } from "@/lib/domains/Plausible";
-import { useBoundStore } from "@/lib/domains/global";
+import { useGlobalStore } from "@/lib/domains/global";
 import { useHasMounted } from "@/lib/helpers/hooks";
 
 const foobarDataSelector = (state: FoobarSliceType) => ({
@@ -27,7 +27,7 @@ export const FoobarPixel = () => {
 	// const pathname = usePathname();
 	const hasMounted = useHasMounted();
 	// const plausibleEvent = useCustomPlausible();
-	const { foobarStoreData } = useBoundStore(foobarDataSelector);
+	const { foobarStoreData } = useGlobalStore(foobarDataSelector);
 	const { unlocked } = foobarStoreData;
 
 	// useEffect(() => {

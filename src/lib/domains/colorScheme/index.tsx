@@ -6,7 +6,7 @@ import { IoMdMoon } from "react-icons/io";
 
 import type { ColorSchemeSliceType } from "./store";
 
-import { useBoundStore } from "@/lib/domains/global";
+import { useGlobalStore } from "@/lib/domains/global";
 
 function getDocumentColorScheme() {
 	const documentColorScheme = window.document.documentElement.style.getPropertyValue(
@@ -50,7 +50,7 @@ function* colorSchemeGenerator(): Generator<COLOR_SCHEMES, never, COLOR_SCHEMES 
 
 const colorSchemeIterator = colorSchemeGenerator();
 export const ColorSchemeToggle = () => {
-	const { colorScheme, setColorScheme } = useBoundStore((state) => ({
+	const { colorScheme, setColorScheme } = useGlobalStore((state) => ({
 		colorScheme: state.colorScheme,
 		setColorScheme: state.setColorScheme,
 	}));

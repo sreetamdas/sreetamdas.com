@@ -45,8 +45,16 @@ export type FoobarSchrodingerProps = {
 export type FoobarSliceType = {
 	foobarData: FoobarDataType;
 	setFoobarData: (data: Partial<FoobarDataType>) => void;
+	_hasHydrated: boolean;
+	setHasHydrated: (hasHydrated: boolean) => void;
 };
-export const createFoobarSlice: StateCreator<FoobarSliceType> = (set) => ({
+export const createFoobarSlice: StateCreator<FoobarSliceType> = (set, _get) => ({
 	foobarData: initialFoobarData,
 	setFoobarData: (data) => set((state) => ({ foobarData: merge(state.foobarData, data) })),
+	_hasHydrated: false,
+	setHasHydrated: (state) => {
+		set({
+			_hasHydrated: state,
+		});
+	},
 });
