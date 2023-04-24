@@ -1,8 +1,11 @@
+import type { ReactNode } from "react";
+import { Suspense } from "react";
+
 import { LinkTo } from "@/lib/components/Anchor";
 import { NotFoundDogsLink, NotFoundFoobarTracker } from "@/lib/components/error";
 
 export type GlobalNotFoundPageProps = {
-	message?: string;
+	message?: ReactNode;
 };
 export default function GlobalNotFound({ message }: GlobalNotFoundPageProps) {
 	return (
@@ -12,7 +15,7 @@ export default function GlobalNotFound({ message }: GlobalNotFoundPageProps) {
 				The page you&apos;re looking for does not exist.
 			</p>
 
-			{message ? message : null}
+			{message ? <Suspense>{message}</Suspense> : null}
 
 			<p className="pt-40 text-center">
 				<LinkTo href="/">Go back home</LinkTo>
