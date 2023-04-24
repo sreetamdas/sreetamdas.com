@@ -1,19 +1,21 @@
 "use client";
 
+import { IS_DEV } from "@/config";
 import { useCustomPlausible } from "@/lib/domains/Plausible";
 import { DocumentHead } from "@/lib/domains/SEO";
-import { ViewsCounter } from "@/lib/domains/Supabase";
-import { FoobarSchrodingerProps, initialFoobarData } from "@/lib/domains/foobar/flags";
-import { useBoundStore } from "@/lib/domains/global";
+import type { FoobarSchrodingerProps } from "@/lib/domains/foobar/flags";
+import { initialFoobarData } from "@/lib/domains/foobar/flags";
+import { useGlobalStore } from "@/lib/domains/global";
 
-export const FoobarDashboard = ({ completedPage }: FoobarSchrodingerProps) => {
+export const FoobarDashboard = ({ completedPage, unlocked }: FoobarSchrodingerProps) => {
 	// const router = useRouter();
 	const plausibleEvent = useCustomPlausible();
-	const { foobarData, setFoobarData } = useBoundStore((state) => ({
+	const { foobarData, setFoobarData } = useGlobalStore((state) => ({
 		foobarData: state.foobarData,
 		setFoobarData: state.setFoobarData,
 	}));
 
+	// TODO cleanup
 	// function handleUserIsOffline() {
 	// 	router.push("/foobar/offline");
 	// }
@@ -23,6 +25,7 @@ export const FoobarDashboard = ({ completedPage }: FoobarSchrodingerProps) => {
 		setFoobarData(initialFoobarData);
 		// console.log("cleared");
 	}
+	if (!unlocked) return <div>LOCKED</div>;
 
 	return (
 		<>
@@ -30,20 +33,28 @@ export const FoobarDashboard = ({ completedPage }: FoobarSchrodingerProps) => {
 			<UnlockedBanner {...{ completedPage }} />
 			{/* <ShowCompletedBadges /> */}
 
-			<button onClick={handleClearFoobarData}>Clear everything and Restart</button>
+			<button
+				className="rounded-global border-2 border-solid border-primary bg-background px-6 py-1 text-sm text-foreground transition-[color,background-color] hover:bg-primary hover:text-background"
+				onClick={handleClearFoobarData}
+			>
+				Clear everything and Restart
+			</button>
 
 			{/* <SupportSreetamDas /> */}
 
-			{process.env.NODE_ENV === "development" && (
-				<pre>
+			{IS_DEV && (
+				<pre
+					className="mx-0.5 rounded bg-foreground/10 p-6 font-mono text-sm 
+		transition-[color,background-color] dark:bg-foreground/20"
+				>
 					<h2>DEV</h2>
 					{JSON.stringify(foobarData, null, 2)}
 				</pre>
 			)}
 			{/* {!terminalVisible && <KonamiWrapper />} */}
 			{/* <XMarksTheSpot foobar={"/foobar/devtools"} /> */}
-			{/* @ts-expect-error async Server Component */}
-			<ViewsCounter slug="/foobar" />
+
+			{/* <ViewsCounter slug="/foobar" /> */}
 		</>
 	);
 };
