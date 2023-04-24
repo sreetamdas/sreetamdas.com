@@ -45,7 +45,7 @@ module.exports = {
 		"react/jsx-no-useless-fragment": "warn",
 		"react/jsx-fragments": "warn",
 		"@typescript-eslint/explicit-module-boundary-types": "off",
-		// "@typescript-eslint/no-explicit-any": "off",
+		"@typescript-eslint/consistent-type-imports": "warn",
 		"@typescript-eslint/no-unused-vars": [
 			"error",
 			{ argsIgnorePattern: "^_", destructuredArrayIgnorePattern: "^_" },

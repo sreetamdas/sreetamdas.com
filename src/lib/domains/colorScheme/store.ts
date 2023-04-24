@@ -1,4 +1,4 @@
-import { StateCreator } from "zustand";
+import type { StateCreator } from "zustand";
 
 export type ColorSchemeSliceType = {
 	colorScheme: "light" | "dark" | "system" | undefined;

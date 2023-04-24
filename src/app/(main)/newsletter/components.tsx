@@ -1,9 +1,9 @@
-import { bundleMDX } from "mdx-bundler";
+import type { bundleMDX } from "mdx-bundler";
 import { getMDXComponent } from "mdx-bundler/client";
 import { micromark } from "micromark";
 import { HiOutlineCalendar, HiOutlineNewspaper } from "react-icons/hi";
 
-import { ButtondownAPIEmailsResponse } from "./helpers";
+import type { ButtondownAPIEmailsResponse } from "./helpers";
 
 import { LinkTo } from "@/lib/components/Anchor";
 import { customMDXComponents } from "@/lib/domains/mdx";

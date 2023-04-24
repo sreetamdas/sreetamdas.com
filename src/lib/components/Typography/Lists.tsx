@@ -1,4 +1,5 @@
-import { Children, HTMLAttributes, isValidElement } from "react";
+import type { HTMLAttributes } from "react";
+import { Children, isValidElement } from "react";
 import { FaLongArrowAltRight } from "react-icons/fa";
 
 export const UnorderedList = (props: HTMLAttributes<HTMLUListElement>) => (

@@ -1,6 +1,6 @@
 import type { UrlObject } from "url";
 
-import { Route } from "next";
+import type { Route } from "next";
 import NextLink from "next/link";
 import type { LinkRestProps } from "next/link";
 

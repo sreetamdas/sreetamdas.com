@@ -1,4 +1,4 @@
-import { ColorSchemeSliceType } from "@/lib/domains/colorScheme/store";
+import type { ColorSchemeSliceType } from "@/lib/domains/colorScheme/store";
 
 function setInitialColorScheme() {
 	function getInitialColorScheme(): NonNullable<ColorSchemeSliceType["colorScheme"]> {

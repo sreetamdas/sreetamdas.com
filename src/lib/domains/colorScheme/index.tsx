@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { FiSun, FiMonitor } from "react-icons/fi";
 import { IoMdMoon } from "react-icons/io";
 
-import { ColorSchemeSliceType } from "./store";
+import type { ColorSchemeSliceType } from "./store";
 
 import { useBoundStore } from "@/lib/domains/global";
 
