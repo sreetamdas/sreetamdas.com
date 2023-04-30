@@ -9,7 +9,7 @@ export default function AboutPage() {
 			<h1 className="py-10 font-serif text-8xl">/about</h1>
 			<AboutContent />
 			{/* @ts-expect-error async Server Component */}
-			<ViewsCounter slug="/" />
+			<ViewsCounter slug="/about" />
 			<FoobarEntry />
 		</>
 	);
