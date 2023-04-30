@@ -1,6 +1,7 @@
 import { clsx } from "clsx";
 
 import { getSupabaseClient } from "./client";
+export { getSupabaseClient } from "./client";
 
 import { IS_DEV } from "@/config";
 
