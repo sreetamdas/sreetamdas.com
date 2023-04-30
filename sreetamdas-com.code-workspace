@@ -1,0 +1,24 @@
+{
+	"folders": [
+		{
+			"name": "root",
+			"path": "."
+		},
+		{
+			"name": "supabase",
+			"path": "supabase"
+		}
+	],
+	"settings": {
+		"files.exclude": {
+			// "node_modules/": true,
+			// "src/": true,
+			"supabase/": true
+		},
+		"deno.importMap": "./supabase/functions/import_map.json",
+		"workbench.colorCustomizations": {
+			"statusBar.background": "#6200ff",
+			"statusBar.foreground": "#FFF"
+		}
+	}
+}

@@ -78,4 +78,5 @@ module.exports = {
 			extends: "plugin:mdx/recommended",
 		},
 	],
+	ignorePatterns: ["supabase/functions/**/*.ts"],
 };

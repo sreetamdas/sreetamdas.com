@@ -29,7 +29,7 @@
 			}
 		]
 	},
-	"exclude": ["node_modules", "public"],
+	"exclude": ["node_modules", "public", "supabase"],
 	"include": [
 		"next-env.d.ts",
 		"src/**/*.ts",
