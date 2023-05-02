@@ -5,16 +5,20 @@ import type dynamic from "next/dynamic";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
+import { ViewsCounter } from "@/lib/components/ViewsCounter";
+
 export async function generateStaticParams() {
 	const MDX_PAGES_DIR = path.resolve(process.cwd(), "src", "app", "(main)", "[mdxPageSlug]");
 	const files = (await fs.readdir(MDX_PAGES_DIR)).filter((file) => file.endsWith(".mdx"));
 
-	return files.map((fileName) => {
+	const params = files.map((fileName) => {
 		const pageName = fileName.replace(/\.mdx?$/, "");
 		return {
 			mdxPageSlug: pageName,
 		};
 	});
+
+	return params;
 }
 
 type MDXContentFrontmatterType = {
@@ -23,7 +27,12 @@ type MDXContentFrontmatterType = {
 	published: boolean;
 	updatedAt: string;
 };
-export default async function MDXContentPage() {
+type PageParamsType = {
+	params: {
+		mdxPageSlug: string;
+	};
+};
+export default async function MDXContentPage({ params: { mdxPageSlug: slug } }: PageParamsType) {
 	const {
 		default: MDXContent,
 		title,
@@ -39,12 +48,12 @@ export default async function MDXContentPage() {
 	}
 
 	return (
-		<>
+		<Suspense fallback={<p>Loading...</p>}>
 			<h1 className="font-heading py-10 font-serif text-8xl">/{title.toLowerCase()}</h1>
-			<Suspense fallback={<p>Loading...</p>}>
-				<MDXContent />
-				<p className="flex justify-center pb-10 pt-20 text-sm italic">Last updated: {updatedAt}</p>
-			</Suspense>
-		</>
+			<MDXContent />
+			<p className="flex justify-center pb-10 pt-20 text-sm italic">Last updated: {updatedAt}</p>
+			{/* @ts-expect-error Async Server Component */}
+			<ViewsCounter slug={`/${slug}`} />
+		</Suspense>
 	);
 }
