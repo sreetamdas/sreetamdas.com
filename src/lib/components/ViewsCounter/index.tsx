@@ -1,9 +1,7 @@
 import { clsx } from "clsx";
 
-import { getSupabaseClient } from "./client";
-export { getSupabaseClient } from "./client";
-
 import { IS_DEV } from "@/config";
+import { getSupabaseClient } from "@/lib/domains/Supabase";
 
 type ViewsCounterProps = {
 	slug: string;
@@ -50,7 +48,7 @@ export const ViewsCounter = async ({
 	return (
 		<div
 			className={clsx(
-				"mx-auto w-fit flex-row justify-center gap-2 pb-10 pt-20",
+				"mx-auto w-fit flex-row  items-center gap-2 pb-10 pt-20",
 				hidden ? "hidden" : "flex"
 			)}
 		>

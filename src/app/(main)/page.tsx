@@ -1,4 +1,6 @@
-import { ViewsCounter } from "@/lib/domains/Supabase";
+import { Suspense } from "react";
+
+import { ViewsCounter } from "@/lib/components/ViewsCounter";
 
 export default function Home() {
 	return (
@@ -9,8 +11,10 @@ export default function Home() {
 					👋
 				</span>
 			</h1>
-			{/* @ts-expect-error async Server Component */}
-			<ViewsCounter slug="/" hidden />
+			<Suspense>
+				{/* @ts-expect-error async Server Component */}
+				<ViewsCounter slug="/" hidden />
+			</Suspense>
 		</>
 	);
 }
