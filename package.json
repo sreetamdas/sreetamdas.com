@@ -17,7 +17,7 @@
 		"prettier": "prettier --write 'src/**/*.{js,jsx,ts,tsx}'"
 	},
 	"dependencies": {
-		"@next/mdx": "^13.3.2",
+		"@next/mdx": "^13.3.4",
 		"@octokit/core": "^4.2.0",
 		"@sentry/nextjs": "^7.50.0",
 		"@sreetamdas/karma": "^3.0.0",
@@ -28,7 +28,7 @@
 		"lodash-es": "^4.17.21",
 		"mdx-bundler": "^9.2.1",
 		"micromark": "^3.1.0",
-		"next": "^13.3.2",
+		"next": "^13.3.4",
 		"next-plausible": "^3.7.2",
 		"react": "^18.2.0",
 		"react-dom": "^18.2.0",
@@ -41,8 +41,8 @@
 		"zustand": "4.3.7"
 	},
 	"devDependencies": {
-		"@next/bundle-analyzer": "^13.3.2",
-		"@next/eslint-plugin-next": "^13.3.2",
+		"@next/bundle-analyzer": "^13.3.4",
+		"@next/eslint-plugin-next": "^13.3.4",
 		"@types/eslint": "^8.37.0",
 		"@types/eslint-plugin-prettier": "^3.1.0",
 		"@types/lodash-es": "^4.17.7",
@@ -51,11 +51,11 @@
 		"@types/prettier": "^2.7.2",
 		"@types/react": "^18.2.0",
 		"@types/react-dom": "^18.2.1",
-		"@typescript-eslint/eslint-plugin": "^5.59.1",
-		"@typescript-eslint/parser": "^5.59.1",
+		"@typescript-eslint/eslint-plugin": "^5.59.2",
+		"@typescript-eslint/parser": "^5.59.2",
 		"autoprefixer": "^10.4.14",
 		"eslint": "^8.39.0",
-		"eslint-config-next": "^13.3.2",
+		"eslint-config-next": "^13.3.4",
 		"eslint-config-prettier": "^8.8.0",
 		"eslint-import-resolver-typescript": "^3.5.5",
 		"eslint-plugin-import": "^2.27.5",
