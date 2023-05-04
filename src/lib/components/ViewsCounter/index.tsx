@@ -1,7 +1,7 @@
 import { clsx } from "clsx";
 
 import { IS_DEV } from "@/config";
-import { getSupabaseClient } from "@/lib/domains/Supabase";
+import { getPageViews, upsertPageViews } from "@/lib/domains/Supabase";
 
 type ViewsCounterProps = {
 	slug: string;
@@ -15,32 +15,12 @@ export const ViewsCounter = async ({
 	hidden = false,
 	disabled = IS_DEV,
 }: ViewsCounterProps) => {
-	const { enabled: supabaseEnabled, supabaseClient } = getSupabaseClient();
-
-	if (!supabaseEnabled) {
-		// eslint-disable-next-line no-console
-		console.error("Supabase is not enabled");
-		return null;
-	}
-
 	if (disabled) {
 		// eslint-disable-next-line no-console
 		console.warn("ViewsCounter is disabled", { IS_DEV });
 	}
 
-	const getPageViews = async () =>
-		disabled
-			? await supabaseClient
-					.from("page_details")
-					.select("view_count")
-					.eq("slug", slug)
-					.limit(1)
-					.single()
-			: await supabaseClient.rpc("upsert_page_view", {
-					page_slug: slug,
-			  });
-
-	const { data, error } = await getPageViews();
+	const { data, error } = disabled ? await getPageViews(slug) : await upsertPageViews(slug);
 
 	// eslint-disable-next-line no-console
 	console.log({ data, error });
@@ -55,7 +35,6 @@ export const ViewsCounter = async ({
 			<span role="img" aria-label="eyes">
 				👀
 			</span>
-			{/* @ts-expect-error view_count is number here, not number[] */}
 			<p className="m-0 text-xs">{getViewCountCopy(data?.view_count ?? 0, page_type)}</p>
 		</div>
 	);
