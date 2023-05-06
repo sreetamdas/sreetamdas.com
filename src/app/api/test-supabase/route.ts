@@ -56,14 +56,8 @@ async function fetchViewsSupabaseClient(slug: string) {
 	return { data, error };
 }
 async function fetchViewsSupabaseAPI(slug: string) {
-	const params = new URLSearchParams({
-		slug: `eq.${slug}`,
-		select: "view_count",
-		limit: "1",
-	});
-
 	const request = await fetch(
-		`${process.env.NEXT_PUBLIC_SUPABASE_URL}/rest/v1/page_details?${params.toString()}`,
+		`${process.env.NEXT_PUBLIC_SUPABASE_URL}/rest/v1/page_details?slug=eq.${slug}&select=view_count&limit=1`,
 		{
 			method: "GET",
 			headers: {
