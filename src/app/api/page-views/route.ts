@@ -4,6 +4,8 @@ import { NextResponse } from "next/server";
 
 import { getSupabaseClient } from "@/lib/domains/Supabase";
 
+export const runtime = "edge";
+
 export async function GET(request: NextRequest) {
 	const { enabled: supabaseEnabled, supabaseClient } = getSupabaseClient();
 
