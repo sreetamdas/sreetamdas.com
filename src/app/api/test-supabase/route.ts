@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { captureException } from "@sentry/nextjs";
 import { createClient } from "@supabase/supabase-js";
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
@@ -40,7 +39,8 @@ export async function POST(request: NextRequest) {
 
 		return NextResponse.json(results);
 	} catch (error) {
-		captureException(error);
+		// eslint-disable-next-line no-console
+		console.warn("error, slug:", slug);
 	}
 }
 
