@@ -12,7 +12,9 @@ const supabaseClient = createClient<Database>(
 	process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 );
 
-export async function POST(_: NextRequest, { params: { slug } }: { params: { slug: string } }) {
+export async function POST(request: NextRequest) {
+	const { slug } = await request.json();
+
 	const methods = [
 		["JS client", () => fetchViewsSupabaseClient(slug!)],
 		["API", () => fetchViewsSupabaseAPI(slug!)],
