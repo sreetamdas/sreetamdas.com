@@ -1,4 +1,3 @@
-import { captureException } from "@sentry/nextjs";
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
@@ -30,7 +29,8 @@ export async function GET(request: NextRequest) {
 
 			if (error) {
 				if (error.code === "PGRST116") {
-					captureException(error);
+					// TODO add exception handler
+					// captureException(error);
 					return NextResponse.json(
 						{
 							view_count: 0,
@@ -39,7 +39,8 @@ export async function GET(request: NextRequest) {
 						{ status: 200 }
 					);
 				} else {
-					captureException(error);
+					// TODO add exception handler
+					// captureException(error);
 					return NextResponse.json({ error }, { status: 500 });
 				}
 			} else {
