@@ -68,11 +68,6 @@ serve(async (request: Request) => {
 				return Response.json({ view_count }, { headers: corsHeaders, status: 200 });
 			}
 		}
-
-		// return new Response(JSON.stringify({ user, data }), {
-		// 	headers: { ...corsHeaders, "Content-Type": "application/json" },
-		// 	status: 200,
-		// });
 	} catch (error) {
 		return new Response(JSON.stringify({ error: error.message }), {
 			headers: { ...corsHeaders, "Content-Type": "application/json" },
