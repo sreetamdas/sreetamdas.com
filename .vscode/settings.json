@@ -1,4 +1,7 @@
 {
+	"deno.enablePaths": ["./supabase"],
+	"deno.unstable": true,
+	"deno.importMap": "./supabase/import_map.json",
 	"editor.quickSuggestions": {
 		"strings": true
 	},
@@ -6,11 +9,11 @@
 		"*.module.css": "postcss",
 		"*.css": "tailwindcss"
 	},
+	"mdx.experimentalLanguageServer": true,
+	"tailwindCSS.experimental.classRegex": [["clsx\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"]],
 	"tailwindCSS.includeLanguages": {
 		"plaintext": "html"
 	},
-	"mdx.experimentalLanguageServer": true,
-	"tailwindCSS.experimental.classRegex": [["clsx\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"]],
 	"typescript.tsdk": "node_modules/.pnpm/typescript@5.0.4/node_modules/typescript/lib",
 	"typescript.enablePromptUseWorkspaceTsdk": true,
 	"workbench.colorCustomizations": {

@@ -17,8 +17,6 @@ serve(async (request: Request) => {
 	}
 
 	try {
-		console.log("HELLO! Trying ==>");
-
 		// Create a Supabase client with the Auth context of the logged in user.
 		const supabaseClient = createClient(
 			// Supabase API URL - env var exported by default.
