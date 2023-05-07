@@ -7,6 +7,8 @@ import { Suspense } from "react";
 
 import { ViewsCounter } from "@/lib/components/ViewsCounter";
 
+export const dynamicParams = false;
+
 export async function generateStaticParams() {
 	const MDX_PAGES_DIR = path.resolve(process.cwd(), "src", "app", "(main)", "[mdxPageSlug]");
 	const files = (await fs.readdir(MDX_PAGES_DIR)).filter((file) => file.endsWith(".mdx"));
