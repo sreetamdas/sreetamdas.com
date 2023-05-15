@@ -1,11 +1,10 @@
 import { promises as fs } from "fs";
 import path from "path";
 
-import type dynamic from "next/dynamic";
-import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
-import { ViewsCounter } from "@/lib/components/ViewsCounter";
+import type { MDXPagePaths } from "./MDXPage";
+import { getComponentFromSlug } from "./MDXPage";
 
 export const dynamicParams = false;
 
@@ -23,39 +22,19 @@ export async function generateStaticParams() {
 	return params;
 }
 
-type MDXContentFrontmatterType = {
-	title: string;
-	description: string;
-	published: boolean;
-	updatedAt: string;
-};
 type PageParamsType = {
 	params: {
-		mdxPageSlug: string;
+		mdxPageSlug: MDXPagePaths;
 	};
 };
-export default async function MDXContentPage({ params: { mdxPageSlug: slug } }: PageParamsType) {
-	const {
-		default: MDXContent,
-		title,
-		// description,
-		published,
-		updatedAt,
-	} = (await import("./credits.mdx")) as unknown as {
-		default: ReturnType<typeof dynamic>;
-	} & MDXContentFrontmatterType;
 
-	if (!published) {
-		notFound();
-	}
+export default async function MDXContentPage({ params: { mdxPageSlug: slug } }: PageParamsType) {
+	const { default: MDXContent, title } = await getComponentFromSlug(slug);
 
 	return (
 		<Suspense fallback={<p>Loading...</p>}>
 			<h1 className="font-heading py-10 font-serif text-8xl">/{title.toLowerCase()}</h1>
 			<MDXContent />
-			<p className="flex justify-center pb-10 pt-20 text-sm italic">Last updated: {updatedAt}</p>
-			{/* @ts-expect-error Async Server Component */}
-			<ViewsCounter slug={`/${slug}`} />
 		</Suspense>
 	);
 }

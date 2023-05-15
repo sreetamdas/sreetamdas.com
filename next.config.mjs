@@ -40,11 +40,8 @@ const moduleExports = withPlausibleProxy()({
 	},
 });
 
-// const sentryWebpackPluginOptions = {
-// 	silent: true, // Suppresses all logs
-// };
 const withMDX = withNextMDX({
-	// Optionally provide remark and rehype plugins
+	extension: /\.mdx?$/,
 	options: {
 		remarkPlugins: [],
 		rehypePlugins: [remarkGfm, remarkSlug, [remarkToc, { tight: true }]],
