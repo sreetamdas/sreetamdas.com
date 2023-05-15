@@ -1,13 +1,10 @@
 import { captureException } from "@sentry/nextjs";
 
-import { supabaseEnabled } from "./client";
-
 type PageViewCount = {
 	view_count: number;
 };
 
 type SuccessResponse<Type = unknown> = { data: Type };
-
 type ErrorResponse<Type = unknown> = {
 	errorCode?: number;
 	error: Type;
@@ -15,6 +12,12 @@ type ErrorResponse<Type = unknown> = {
 type PageViewCountResponse =
 	| (SuccessResponse<PageViewCount> & ErrorResponse<null>)
 	| (ErrorResponse & SuccessResponse<null>);
+
+const supabaseEnabled =
+	typeof process.env.NEXT_PUBLIC_SUPABASE_URL !== "undefined" &&
+	process.env.NEXT_PUBLIC_SUPABASE_URL !== "" &&
+	typeof process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY !== "undefined" &&
+	process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY !== "";
 
 const supabaseHeaders = {
 	// eslint-disable-next-line @typescript-eslint/no-non-null-assertion

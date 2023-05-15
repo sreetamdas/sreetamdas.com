@@ -1,6 +1,0 @@
-{
-	"imports": {
-		"std/server": "https://deno.land/std@0.184.0/http/server.ts",
-		"@supabase/supabase-js": "https://esm.sh/@supabase/supabase-js@2.21.0"
-	}
-}
