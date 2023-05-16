@@ -60,7 +60,7 @@ module.exports = {
 		"jsx-a11y/label-has-associated-control": ["error", { assert: "either" }],
 		"jsx-a11y/anchor-is-valid": ["warn", { aspects: ["invalidHref"] }],
 
-		"import/order": ["error", { "newlines-between": "always", alphabetize: { order: "asc" } }],
+		"import/order": ["warn", { "newlines-between": "always", alphabetize: { order: "asc" } }],
 		"prettier/prettier": ["error"],
 	},
 	settings: {
@@ -78,5 +78,4 @@ module.exports = {
 			extends: "plugin:mdx/recommended",
 		},
 	],
-	ignorePatterns: ["supabase/functions/**/*.ts"],
 };

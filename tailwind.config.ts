@@ -8,7 +8,6 @@ export default {
 			sans: ["var(--font-inter)", ...defaultTheme.fontFamily.sans],
 			serif: ["var(--font-eb-garamond)", ...defaultTheme.fontFamily.serif],
 			mono: ["var(--font-iosevka)", ...defaultTheme.fontFamily.mono],
-			"soft-serif": ["var(--font-made-dillan"],
 		},
 		extend: {
 			colors: {

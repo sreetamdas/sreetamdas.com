@@ -1,7 +1,4 @@
 {
-	"deno.enablePaths": ["./supabase"],
-	"deno.unstable": true,
-	"deno.importMap": "./supabase/import_map.json",
 	"editor.quickSuggestions": {
 		"strings": true
 	},

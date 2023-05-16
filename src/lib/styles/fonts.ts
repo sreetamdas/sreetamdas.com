@@ -24,18 +24,3 @@ export const iosevka_font = localFont({
 		},
 	],
 });
-export const made_dillan_font = localFont({
-	variable: "--font-made-dillan",
-	src: [
-		{
-			path: "../../../public/fonts/made-dillan/MADE-Dillan.otf",
-			weight: "400",
-			style: "normal",
-		},
-		{
-			path: "../../../public/fonts/made-dillan/MADE-Dillan.otf",
-			weight: "700",
-			style: "normal",
-		},
-	],
-});
