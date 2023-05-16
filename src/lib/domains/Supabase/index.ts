@@ -50,7 +50,7 @@ export async function getPageViews(slug: string): Promise<PageViewCountResponse>
 					"Content-Type": "application/json",
 					...supabaseHeaders,
 				},
-				cache: "no-cache",
+				cache: "no-store",
 			}
 		);
 
@@ -85,6 +85,7 @@ export async function upsertPageViews(slug: string): Promise<PageViewCountRespon
 					"Content-Type": "application/json",
 					...supabaseHeaders,
 				},
+				cache: "no-store",
 				body: JSON.stringify({
 					page_slug: slug,
 				}),
