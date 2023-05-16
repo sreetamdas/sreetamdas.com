@@ -1,11 +1,15 @@
-import { Inter } from "next/font/google";
+import { Inter, EB_Garamond } from "next/font/google";
 import localFont from "next/font/local";
 
-export const interFont = Inter({
+export const inter_font = Inter({
 	variable: "--font-inter",
 	subsets: ["latin"],
 });
-export const iosevkaFont = localFont({
+export const eb_garamond_font = EB_Garamond({
+	variable: "--font-eb-garamond",
+	subsets: ["latin"],
+});
+export const iosevka_font = localFont({
 	variable: "--font-iosevka",
 	src: [
 		{
@@ -20,7 +24,7 @@ export const iosevkaFont = localFont({
 		},
 	],
 });
-export const madeDillanFont = localFont({
+export const made_dillan_font = localFont({
 	variable: "--font-made-dillan",
 	src: [
 		{

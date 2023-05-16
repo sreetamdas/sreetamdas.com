@@ -8,14 +8,14 @@ import { Header } from "@/lib/components/Header";
 import { DocumentHead } from "@/lib/domains/SEO";
 import { blockingScriptSetInitialColorScheme } from "@/lib/domains/colorScheme/blockingScript";
 import { FoobarPixel } from "@/lib/domains/foobar";
-import { interFont, iosevkaFont, madeDillanFont } from "@/lib/styles/fonts";
+import { inter_font, iosevka_font, eb_garamond_font } from "@/lib/styles/fonts";
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
 	return (
 		<html
 			lang="en"
 			dir="ltr"
-			className={`${interFont.variable} ${iosevkaFont.variable} ${madeDillanFont.variable}`}
+			className={`${inter_font.variable} ${iosevka_font.variable} ${eb_garamond_font.variable}`}
 		>
 			<head>
 				<link rel="icon" href="/favicon.png" />
