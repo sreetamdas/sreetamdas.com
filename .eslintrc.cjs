@@ -19,11 +19,11 @@ module.exports = {
 		"plugin:react/recommended",
 		"plugin:react-hooks/recommended",
 		"plugin:@typescript-eslint/recommended",
-		"plugin:import/errors",
-		"plugin:import/warnings",
+		"plugin:import/recommended",
 		"plugin:import/typescript",
 		"plugin:jsx-a11y/recommended",
 		"prettier",
+		"plugin:prettier/recommended",
 		"plugin:@next/next/recommended",
 	],
 	globals: {
