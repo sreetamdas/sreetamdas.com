@@ -25,6 +25,7 @@ module.exports = {
 		"prettier",
 		"plugin:prettier/recommended",
 		"plugin:@next/next/recommended",
+		"plugin:mdx/recommended",
 	],
 	globals: {
 		Atomics: "readonly",
@@ -70,11 +71,10 @@ module.exports = {
 		"import/resolver": {
 			typescript: {},
 		},
-		"mdx/code-blocks": true,
 	},
 	overrides: [
 		{
-			files: ["*.mdx", "*.md"],
+			files: ["*.md", "*.mdx", "**/*.mdx/**"],
 			extends: "plugin:mdx/recommended",
 		},
 	],
