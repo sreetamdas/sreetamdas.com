@@ -42,3 +42,6 @@ tsconfig.tsbuildinfo
 
 # Sentry
 .sentryclirc
+
+# Contentlayer
+.contentlayer

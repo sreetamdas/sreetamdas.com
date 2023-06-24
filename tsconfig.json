@@ -9,7 +9,7 @@
 		"isolatedModules": true,
 		"jsx": "preserve",
 		"lib": ["dom", "dom.iterable", "esnext"],
-		"module": "esnext",
+		"module": "ESNext",
 		"moduleResolution": "node",
 		"noEmit": true,
 		"noImplicitAny": true,
@@ -18,10 +18,11 @@
 		"resolveJsonModule": true,
 		"skipLibCheck": true,
 		"strict": true,
-		"target": "es5",
+		"target": "ESNext",
 		"paths": {
 			"@/*": ["./*"],
-			"@/public/*": ["../public/*"]
+			"@/public/*": ["../public/*"],
+			"contentlayer/generated": ["../.contentlayer/generated"]
 		},
 		"plugins": [
 			{
@@ -29,15 +30,16 @@
 			}
 		]
 	},
-	"exclude": ["node_modules", "public", "supabase"],
+	"exclude": ["node_modules", "public"],
 	"include": [
 		"next-env.d.ts",
 		"src/**/*.ts",
 		"src/**/*.tsx",
 		".next/types/**/*.ts",
-		"mdx-components.tsx"
-	],
-	"mdx": {
-		"plugins": ["remark-gfm", "remark-slug", ["remark-toc", { "tight": true }]]
-	}
+		// "mdx-components.tsx",
+		".contentlayer/generated"
+	]
+	// "mdx": {
+	// 	"plugins": ["remark-gfm", "remark-slug", ["remark-toc", { "tight": true }]]
+	// }
 }
