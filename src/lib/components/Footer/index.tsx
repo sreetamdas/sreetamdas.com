@@ -4,7 +4,6 @@ import { LinkTo } from "@/lib/components/Anchor";
 
 export const Footer = () => (
 	<footer className="sticky top-[100vh] pb-5 pt-20 text-center text-sm">
-		{/* @ts-expect-error async Server Component */}
 		<GitHubStats />
 		Made with <LinkTo href="https://nextjs.org">Next.js</LinkTo> &bull; View source on{" "}
 		<LinkTo href="https://github.com/sreetamdas/sreetamdas.com">GitHub</LinkTo>{" "}

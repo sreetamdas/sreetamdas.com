@@ -16,7 +16,6 @@ export default async function LocalhostPage() {
 			<h1 className="py-10 font-serif text-8xl">/localhost</h1>
 			<MDXContent />
 			<Suspense>
-				{/* @ts-expect-error async Server Component */}
 				<ViewsCounter slug="/localhost" />
 			</Suspense>
 		</>

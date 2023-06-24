@@ -11,7 +11,7 @@
 	"tailwindCSS.includeLanguages": {
 		"plaintext": "html"
 	},
-	"typescript.tsdk": "node_modules/.pnpm/typescript@5.0.4/node_modules/typescript/lib",
+	"typescript.tsdk": "node_modules/.pnpm/typescript@5.1.3/node_modules/typescript/lib",
 	"typescript.enablePromptUseWorkspaceTsdk": true,
 	"workbench.colorCustomizations": {
 		"statusBar.background": "#6200ff",

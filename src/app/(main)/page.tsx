@@ -12,7 +12,6 @@ export default function Home() {
 				</span>
 			</h1>
 			<Suspense>
-				{/* @ts-expect-error async Server Component */}
 				<ViewsCounter slug="/" hidden />
 			</Suspense>
 		</>
