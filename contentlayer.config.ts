@@ -17,6 +17,15 @@ export const BlogPost = defineDocumentType(() => ({
 	},
 	computedFields: {
 		// url: { type: "string", resolve: (post) => `/posts/${post._raw.flattenedPath}` },
+		page_path: {
+			type: "string",
+			resolve: (post) => {
+				const flattened_path = post._raw.flattenedPath;
+				const cleaned_path = flattened_path.replace("(main)/blog/[slug]/", "blog/");
+
+				return `/${cleaned_path}`;
+			},
+		},
 	},
 }));
 export const Page = defineDocumentType(() => ({
@@ -30,9 +39,27 @@ export const Page = defineDocumentType(() => ({
 		publishedAt: { type: "date", required: true },
 		updatedAt: { type: "date", required: false },
 		published: { type: "boolean", required: true },
+		skipPage: { type: "boolean", required: false, default:false },
 	},
 	computedFields: {
-		// url: { type: "string", resolve: (post) => `/posts/${post._raw.flattenedPath}` },
+		page_path: {
+			type: "string",
+			resolve: (post) => {
+				const flattened_path = post._raw.flattenedPath;
+				const cleaned_path = flattened_path.replace("(main)/[mdxPageSlug]/", "");
+
+				return `/${cleaned_path}`;
+			},
+		},
+		page_slug: {
+			type: "string",
+			resolve: (post) => {
+				const flattened_path = post._raw.flattenedPath;
+				const cleaned_path = flattened_path.replace("(main)/[mdxPageSlug]/", "");
+
+				return cleaned_path;
+			},
+		},
 	},
 }));
 
@@ -42,5 +69,13 @@ export default makeSource({
 	mdx: {
 		remarkPlugins: [],
 		rehypePlugins: [remarkGfm, remarkSlug, [remarkToc, { tight: true }]],
+		esbuildOptions(options) {
+			options.platform = "node";
+			options.define = {
+				"process.env": JSON.stringify(process.env),
+			};
+
+			return options;
+		},
 	},
 });
