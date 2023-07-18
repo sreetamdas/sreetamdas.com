@@ -1,4 +1,5 @@
-module.exports = {
+/** @type {import('prettier').Config} */
+export default {
 	trailingComma: "es5",
 	useTabs: true,
 	tabWidth: 2,
