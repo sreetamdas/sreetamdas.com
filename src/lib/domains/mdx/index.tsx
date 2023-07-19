@@ -1,4 +1,6 @@
+import type { MDX } from "contentlayer/core";
 import type { MDXContentProps } from "mdx-bundler/client";
+import { useMDXComponent } from "next-contentlayer/hooks";
 import type { HTMLAttributes } from "react";
 
 import { LinkTo } from "@/lib/components/Anchor";
@@ -30,4 +32,13 @@ export const customMDXComponents: MDXContentProps["components"] = {
 	code: Code,
 	ul: UnorderedList,
 	hr: () => <hr className="my-3" />,
+};
+
+type MDXContentCodeType = Pick<MDX, "code"> & {
+	components?: MDXContentProps["components"];
+};
+export const MDXContent = ({ code, components = customMDXComponents }: MDXContentCodeType) => {
+	const Content = useMDXComponent(code);
+
+	return <Content components={components} />;
 };

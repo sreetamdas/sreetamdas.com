@@ -20,6 +20,7 @@ export const ViewsCounter = async ({
 		console.warn("ViewsCounter is disabled", { IS_DEV });
 	}
 
+	// when disabled, only read, not update and get
 	const { data, error } = disabled ? await getPageViews(slug) : await upsertPageViews(slug);
 
 	// eslint-disable-next-line no-console
