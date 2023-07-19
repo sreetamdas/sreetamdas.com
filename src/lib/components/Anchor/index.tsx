@@ -2,19 +2,22 @@ import type { UrlObject } from "url";
 
 import type { Route } from "next";
 import NextLink from "next/link";
-import type { LinkRestProps } from "next/link";
+import type { LinkProps } from "next/link";
+import type { AnchorHTMLAttributes, ReactNode } from "react";
 
 type LinkAdditionalProps = {
 	replaceClasses?: true;
 };
 
-type LinkToProps = LinkRestProps &
-	LinkAdditionalProps & {
+type LinkToPropss = Omit<AnchorHTMLAttributes<HTMLAnchorElement>, keyof LinkProps> &
+	Omit<LinkProps, "href"> & {
+		children?: ReactNode;
+	} & LinkAdditionalProps & {
 		href?: Route | UrlObject | string;
 	};
-export const LinkTo = (props: LinkToProps) => {
-	const { href, className: passedClasses, replaceClasses = false, ...restProps } = props;
-	const overrideProps: Partial<LinkToProps> = {};
+export const LinkTo = (linkToProps: LinkToPropss) => {
+	const { href, className: passedClasses, replaceClasses = false, ...restProps } = linkToProps;
+	const overrideProps: Partial<LinkToPropss> = {};
 	let isExternalLink;
 	let classes = "";
 
@@ -56,7 +59,7 @@ export const LinkTo = (props: LinkToProps) => {
 
 	return (
 		<a {...restProps} {...overrideProps} href={href as string} className={classes.trimEnd()}>
-			{props.children}
+			{linkToProps.children}
 		</a>
 	);
 };
