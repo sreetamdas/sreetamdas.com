@@ -11,4 +11,4 @@ export default async function BlogIndexPage() {
 	);
 }
 
-function getAllBlogPostsPreviews() {}
+// function getAllBlogPostsPreviews() {}

@@ -18,8 +18,6 @@ type PageParams = {
 	};
 };
 export default function MDXPageSlugPage({ params }: PageParams) {
-	console.log({ allPages: allPages.map((page) => page.page_slug), params });
-
 	const post = allPages.find((page) => page.page_slug === params.mdxPageSlug);
 
 	if (!post) notFound();
