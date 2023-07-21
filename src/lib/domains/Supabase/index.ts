@@ -11,7 +11,9 @@ type ErrorResponse<Type = unknown> = {
 	error: Type;
 	message?: string;
 };
-type PageViewCountResponse = SuccessResponse<PageViewCount> | ErrorResponse;
+type PageViewCountResponse =
+	| (SuccessResponse<PageViewCount> & ErrorResponse<null>)
+	| (SuccessResponse<null> & ErrorResponse);
 
 const supabaseEnabled =
 	typeof process.env.NEXT_PUBLIC_SUPABASE_URL !== "undefined" &&
@@ -43,18 +45,18 @@ export async function getPageViews(slug: string): Promise<PageViewCountResponse>
 					new Error(`Page ${slug} has not been added to the database yet`, { cause: error })
 				);
 
-				return { data: { view_count: 0 } };
+				return { data: { view_count: 0 }, error: null };
 			} else {
 				captureException(error);
-				return { error, errorCode: 500 };
+				return { data: null, error, errorCode: 500 };
 			}
 		} else {
 			const { view_count } = data;
-			return { data: { view_count } };
+			return { data: { view_count }, error: null };
 		}
 	} catch (error) {
 		captureException(error);
-		return { error, errorCode: 500 };
+		return { data: null, error, errorCode: 500 };
 	}
 }
 
@@ -76,9 +78,9 @@ export async function upsertPageViews(slug: string): Promise<PageViewCountRespon
 		if (error) {
 			throw new Error(`Supabase error while adding page view for ${slug}`, { cause: error });
 		}
-		return { data: { view_count } };
+		return { data: { view_count }, error: null };
 	} catch (error) {
 		captureException(error);
-		return { error, errorCode: 500 };
+		return { data: null, error, errorCode: 500 };
 	}
 }
