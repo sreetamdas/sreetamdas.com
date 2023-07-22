@@ -1,6 +1,5 @@
 import { captureException } from "@sentry/nextjs";
 
-import { supabaseClient } from "./client";
 type PageViewCount = {
 	view_count: number;
 };
@@ -21,6 +20,12 @@ const supabaseEnabled =
 	typeof process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY !== "undefined" &&
 	process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY !== "";
 
+const supabaseHeaders = {
+	// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+	apiKey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+	Authorization: `Bearer ${process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY}`,
+};
+
 /**
  * Get page view_count
  * @param slug page slug
@@ -32,31 +37,34 @@ export async function getPageViews(slug: string): Promise<PageViewCountResponse>
 			throw new Error("Supabase is not initialized");
 		}
 
-		const { data, error } = await supabaseClient
-			.from("page_details")
-			.select("view_count")
-			.eq("slug", slug)
-			.limit(1)
-			.single();
+		const params = new URLSearchParams({
+			slug: `eq.${slug}`,
+			select: "view_count",
+			limit: "1",
+		});
 
-		if (error) {
-			if (error.code === "PGRST116") {
-				captureException(
-					new Error(`Page ${slug} has not been added to the database yet`, { cause: error })
-				);
-
-				return { data: { view_count: 0 }, error: null };
-			} else {
-				captureException(error);
-				return { data: null, error, errorCode: 500 };
+		const request = await fetch(
+			`${process.env.NEXT_PUBLIC_SUPABASE_URL}/rest/v1/page_details?${params.toString()}`,
+			{
+				method: "GET",
+				headers: {
+					"Content-Type": "application/json",
+					...supabaseHeaders,
+				},
+				cache: "no-store",
 			}
-		} else {
-			const { view_count } = data;
-			return { data: { view_count }, error: null };
-		}
+		);
+
+		const response: Array<PageViewCount> = await request.json();
+		const view_count = response[0];
+
+		if (typeof view_count === "undefined")
+			throw new Error("Page has not been added to the database yet", { cause: { view_count } });
+
+		return { data: view_count, error: null };
 	} catch (error) {
 		captureException(error);
-		return { data: null, error, errorCode: 500 };
+		return { error, data: null };
 	}
 }
 
@@ -71,16 +79,25 @@ export async function upsertPageViews(slug: string): Promise<PageViewCountRespon
 			throw new Error("Supabase is not initialized");
 		}
 
-		const { data: view_count, error } = await supabaseClient.rpc("upsert_page_view", {
-			page_slug: slug,
-		});
+		const request = await fetch(
+			`${process.env.NEXT_PUBLIC_SUPABASE_URL}/rest/v1/rpc/upsert_page_view`,
+			{
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+					...supabaseHeaders,
+				},
+				cache: "no-store",
+				body: JSON.stringify({
+					page_slug: slug,
+				}),
+			}
+		);
 
-		if (error) {
-			throw new Error(`Supabase error while adding page view for ${slug}`, { cause: error });
-		}
+		const view_count: number = await request.json();
 		return { data: { view_count }, error: null };
 	} catch (error) {
 		captureException(error);
-		return { data: null, error, errorCode: 500 };
+		return { error, data: null };
 	}
 }
