@@ -18,4 +18,8 @@ export const supabaseEnabled =
 	typeof process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY !== "undefined" &&
 	process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY !== "";
 
-export const supabaseClient = createClient<Database>(supabaseUrl, supabaseAnonKey);
+export const supabaseClient = createClient<Database>(supabaseUrl, supabaseAnonKey, {
+	auth: {
+		persistSession: false,
+	},
+});
