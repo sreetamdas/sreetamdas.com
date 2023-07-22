@@ -23,7 +23,7 @@ export default function Home() {
 			<MDXContent code={post.body.code} />
 
 			<Suspense>
-				<ViewsCounter slug="/" hidden />
+				<ViewsCounter slug="/" />
 			</Suspense>
 		</>
 	);
