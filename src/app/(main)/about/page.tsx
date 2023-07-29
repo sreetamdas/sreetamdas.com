@@ -25,6 +25,7 @@ export default function AboutPage() {
 
 	return (
 		<>
+			<h1 className="py-10 font-serif text-8xl">/about</h1>
 			<MDXContent
 				code={post.body.code}
 				components={{
