@@ -7,6 +7,12 @@
 	grid-template-rows: auto 1fr max-content;
 	grid-auto-flow: column;
 	column-gap: 20px;
+
+	& .main-content {
+		position: relative;
+		display: flex;
+		flex-direction: column;
+	}
 }
 
 .main-wrapper > * {

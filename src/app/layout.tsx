@@ -41,7 +41,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 				></script>
 				<main className={`${styles["main-wrapper"]}`}>
 					<Header />
-					<div id="main-content">{children}</div>
+					<div id="main-content" className={`${styles["main-content"]}`}>
+						{children}
+					</div>
 					<FoobarPixel />
 					<Footer />
 				</main>
