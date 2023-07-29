@@ -74,8 +74,11 @@ module.exports = {
 	},
 	overrides: [
 		{
-			files: ["*.md", "*.mdx", "**/*.mdx/**"],
+			files: ["*.mdx", "**/*.mdx/**"],
 			extends: "plugin:mdx/recommended",
+			rules: {
+				"react/jsx-no-undef": "warn",
+			},
 		},
 	],
 };
