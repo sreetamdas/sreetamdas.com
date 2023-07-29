@@ -1,13 +1,14 @@
 import type { MDX } from "contentlayer/core";
-import type { MDXContentProps } from "mdx-bundler/client";
+import type { MDXComponents } from "mdx/types";
 import { useMDXComponent } from "next-contentlayer/hooks";
 import type { HTMLAttributes } from "react";
 
 import { LinkTo } from "@/lib/components/Anchor";
+import { Image } from "@/lib/components/Image";
 import { Code } from "@/lib/components/Typography/Code";
 import { UnorderedList } from "@/lib/components/Typography/Lists";
 
-export const customMDXComponents: MDXContentProps["components"] = {
+export const customMDXComponents: MDXComponents = {
 	h1: ({ children, ...props }: HTMLAttributes<HTMLHeadingElement>) => (
 		<h1 className="pt-12 font-serif text-8xl" {...props}>
 			{children}
@@ -31,14 +32,15 @@ export const customMDXComponents: MDXContentProps["components"] = {
 	a: LinkTo,
 	code: Code,
 	ul: UnorderedList,
+	img: Image,
 	hr: () => <hr className="my-3" />,
 };
 
 type MDXContentCodeType = Pick<MDX, "code"> & {
-	components?: MDXContentProps["components"];
+	components?: MDXComponents;
 };
-export const MDXContent = ({ code, components = customMDXComponents }: MDXContentCodeType) => {
+export const MDXContent = ({ code, components = {} }: MDXContentCodeType) => {
 	const Content = useMDXComponent(code);
 
-	return <Content components={components} />;
+	return <Content components={{ ...customMDXComponents, ...components }} />;
 };

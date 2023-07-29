@@ -26,6 +26,15 @@ export const BlogPost = defineDocumentType(() => ({
 				return `/${cleaned_path}`;
 			},
 		},
+		page_slug: {
+			type: "string",
+			resolve: (post) => {
+				const flattened_path = post._raw.flattenedPath;
+				const cleaned_path = flattened_path.replace("(main)/blog/[slug]/", "");
+
+				return cleaned_path;
+			},
+		},
 	},
 }));
 export const Page = defineDocumentType(() => ({
@@ -39,7 +48,7 @@ export const Page = defineDocumentType(() => ({
 		publishedAt: { type: "date", required: true },
 		updatedAt: { type: "date", required: false },
 		published: { type: "boolean", required: true },
-		skipPage: { type: "boolean", required: false, default:false },
+		skipPage: { type: "boolean", required: false, default: false },
 	},
 	computedFields: {
 		page_path: {
@@ -67,6 +76,7 @@ export default makeSource({
 	contentDirPath: "src/app",
 	documentTypes: [BlogPost, Page],
 	mdx: {
+		resolveCwd: "relative",
 		remarkPlugins: [],
 		rehypePlugins: [remarkGfm, remarkSlug, [remarkToc, { tight: true }]],
 		esbuildOptions(options) {

@@ -1,6 +1,5 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
-const { withContentlayer } = require("next-contentlayer");
-const { withPlausibleProxy } = require("next-plausible");
+import { withContentlayer } from "next-contentlayer";
+import { withPlausibleProxy } from "next-plausible";
 
 process.env.SITE_URL = process.env.SITE_URL || process.env.VERCEL_URL || "http://localhost:3000";
 
@@ -29,4 +28,4 @@ const moduleExports = withPlausibleProxy()({
 	},
 });
 
-module.exports = withContentlayer(moduleExports);
+export default withContentlayer(moduleExports);
