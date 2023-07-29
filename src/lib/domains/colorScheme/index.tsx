@@ -132,14 +132,16 @@ export const ColorSchemeToggle = () => {
 const ToggleIcon = ({ colorScheme }: Pick<ColorSchemeSliceType, "colorScheme">) => {
 	switch (colorScheme) {
 		case "light":
-			return <FiSun aria-label="Currently Dark Mode" title="Currently Dark mode" />;
+			return <FiSun aria-label="Currently using dark mode" title="Currently using dark mode" />;
 		case "dark":
-			return <IoMdMoon aria-label="Currently Light Mode" title="Currently Light mode" />;
+			return (
+				<IoMdMoon aria-label="Currently using light mode" title="Currently using light mode" />
+			);
 		case "system":
 			return (
 				<FiMonitor
-					aria-label="Currently using System preference"
-					title="Currently using System preference"
+					aria-label="Currently using system preference"
+					title="Currently using system preference"
 				/>
 			);
 		default:
