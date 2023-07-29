@@ -16,6 +16,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 			lang="en"
 			dir="ltr"
 			className={`${inter_font.variable} ${iosevka_font.variable} ${eb_garamond_font.variable}`}
+			suppressHydrationWarning
 		>
 			<head>
 				<link rel="icon" href="/favicon.png" />
