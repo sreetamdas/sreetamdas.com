@@ -4,21 +4,32 @@ import type { Route } from "next";
 import NextLink from "next/link";
 import type { LinkProps } from "next/link";
 import type { AnchorHTMLAttributes, ReactNode } from "react";
+import { ImArrowUpRight2 } from "react-icons/im";
 
 type LinkAdditionalProps = {
 	replaceClasses?: true;
+	showExternalLinkIndicator?: true;
 };
 
-type LinkToPropss = Omit<AnchorHTMLAttributes<HTMLAnchorElement>, keyof LinkProps> &
-	Omit<LinkProps, "href"> & {
+type LinkToProps<RouteType extends string = string> = Omit<
+	AnchorHTMLAttributes<HTMLAnchorElement>,
+	keyof LinkProps<RouteType>
+> &
+	Omit<LinkProps<RouteType>, "href"> & {
 		children?: ReactNode;
 	} & LinkAdditionalProps & {
-		href?: Route | UrlObject | string;
+		href?: Route<RouteType> | UrlObject | string;
 	};
-export const LinkTo = (linkToProps: LinkToPropss) => {
-	const { href, className: passedClasses, replaceClasses = false, ...restProps } = linkToProps;
-	const overrideProps: Partial<LinkToPropss> = {};
-	let isExternalLink;
+export function LinkTo<RouteType extends string = string>(linkToProps: LinkToProps<RouteType>) {
+	const {
+		href,
+		className: passedClasses,
+		replaceClasses = false,
+		showExternalLinkIndicator = false,
+		...restProps
+	} = linkToProps;
+	const overrideProps: Partial<LinkToProps> = {};
+	let isExternalLink = false;
 	let classes = "";
 
 	if (!replaceClasses) {
@@ -60,6 +71,16 @@ export const LinkTo = (linkToProps: LinkToPropss) => {
 	return (
 		<a {...restProps} {...overrideProps} href={href as string} className={classes.trimEnd()}>
 			{linkToProps.children}
+			{isExternalLink && showExternalLinkIndicator && (
+				<>
+					{" "}
+					<span className="sr-only">(opens in a new tab)</span>
+					<ImArrowUpRight2
+						className="-ml-0.5 inline-block text-xs"
+						aria-label="opens in a new tab"
+					/>
+				</>
+			)}
 		</a>
 	);
-};
+}
