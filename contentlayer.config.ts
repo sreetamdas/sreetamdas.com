@@ -9,10 +9,10 @@ export const BlogPost = defineDocumentType(() => ({
 	contentType: "mdx",
 	fields: {
 		title: { type: "string", required: true },
-		seoTitle: { type: "string", required: false },
+		seo_title: { type: "string", required: false },
 		description: { type: "string", required: true },
-		publishedAt: { type: "date", required: true },
-		updatedAt: { type: "date", required: false },
+		published_at: { type: "date", required: true },
+		updated_at: { type: "date", required: false },
 		published: { type: "boolean", required: true },
 	},
 	computedFields: {
@@ -43,12 +43,12 @@ export const Page = defineDocumentType(() => ({
 	contentType: "mdx",
 	fields: {
 		title: { type: "string", required: true },
-		seoTitle: { type: "string", required: false },
+		seo_title: { type: "string", required: false },
 		description: { type: "string", required: true },
-		publishedAt: { type: "date", required: true },
-		updatedAt: { type: "date", required: false },
+		published_at: { type: "date", required: true },
+		updated_at: { type: "date", required: false },
 		published: { type: "boolean", required: true },
-		skipPage: { type: "boolean", required: false, default: false },
+		skip_page: { type: "boolean", required: false, default: false },
 	},
 	computedFields: {
 		page_path: {

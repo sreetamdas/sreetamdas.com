@@ -8,9 +8,13 @@ import { allPages } from "contentlayer/generated";
 export const dynamicParams = false;
 
 export async function generateStaticParams() {
-	return allPages.map((post) => ({
-		slug: post.page_slug,
-	}));
+	return allPages.flatMap(({ page_slug, skip_page }) => {
+		if (skip_page) return [];
+
+		return {
+			slug: page_slug,
+		};
+	});
 }
 
 type PageParams = {

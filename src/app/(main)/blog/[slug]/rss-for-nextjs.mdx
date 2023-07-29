@@ -1,10 +1,10 @@
 ---
 title: "RSS Feed in a Next.js site"
-seoTitle: "How to add an RSS Feed in a Next.js site"
+seo_title: "How to add an RSS Feed in a Next.js site"
 description: "RSS feeds are a great way for people to notify their readers that they've published new content! Here's how to add an RSS feed for a Next.js site"
 published: true
-publishedAt: "2021-04-19"
-updatedAt: "2022-04-16"
+published_at: "2021-04-19"
+updated_at: "2022-04-16"
 ---
 
 RSS feeds are a great way for people to notify their readers that they've published new content! Instead of having to actively go and visit the websites to check if there are any new posts, the RSS alerts you when a website has been updated.
@@ -114,7 +114,7 @@ const generateRssFeed = async () => {
       content: post.summary,
       author: [author],
       contributor: [author],
-      date: new Date(post.publishedAt),
+      date: new Date(post.published_at),
     });
   });
 };
@@ -168,7 +168,7 @@ const generateRssFeed = async () => {
       content: post.summary,
       author: [author],
       contributor: [author],
-      date: new Date(post.publishedAt),
+      date: new Date(post.published_at),
     });
   });
 
