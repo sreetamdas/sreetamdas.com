@@ -18,7 +18,7 @@ type LinkToProps<RouteType extends string = string> = Omit<
 	Omit<LinkProps<RouteType>, "href"> & {
 		children?: ReactNode;
 	} & LinkAdditionalProps & {
-		href?: Route<RouteType> | UrlObject | string;
+		href: Route<RouteType> | UrlObject | string;
 	};
 export function LinkTo<RouteType extends string = string>(linkToProps: LinkToProps<RouteType>) {
 	const {
