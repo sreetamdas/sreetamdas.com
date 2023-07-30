@@ -1,8 +1,8 @@
 import { isUndefined } from "lodash-es";
 import { Suspense } from "react";
 
+import { MDXContent } from "@/lib/components/MDX";
 import { ViewsCounter } from "@/lib/components/ViewsCounter";
-import { MDXContent } from "@/lib/domains/mdx";
 import { allPages } from "contentlayer/generated";
 
 export default function Home() {

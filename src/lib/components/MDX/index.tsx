@@ -8,6 +8,8 @@ import { Image } from "@/lib/components/Image";
 import { Code } from "@/lib/components/Typography/Code";
 import { UnorderedList } from "@/lib/components/Typography/Lists";
 
+export * from "./utilities";
+
 export const customMDXComponents: MDXComponents = {
 	h1: ({ children, ...props }: HTMLAttributes<HTMLHeadingElement>) => (
 		<h1 className="pt-12 font-serif text-8xl" {...props}>

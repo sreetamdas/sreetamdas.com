@@ -1,8 +1,9 @@
 import { notFound } from "next/navigation";
+import { Balancer } from "react-wrap-balancer";
 
+import { MDXContent, Gradient, InfoBlock } from "@/lib/components/MDX";
+import { ReadingProgress } from "@/lib/components/ProgressBar";
 import { ViewsCounter } from "@/lib/components/ViewsCounter";
-import { MDXContent } from "@/lib/domains/mdx";
-import { Highlight, Gradient } from "@/lib/domains/mdx/utilities";
 import { allBlogPosts } from "contentlayer/generated";
 
 export const dynamicParams = false;
@@ -25,8 +26,13 @@ export default function BlogPage({ params }: PageParams) {
 
 	return (
 		<>
-			<h1 className="py-10 font-serif text-8xl">{post.title}</h1>
-			<MDXContent code={post.body.code} components={{ Highlight, Gradient }} />
+			<ReadingProgress />
+			<h1 className="pb-20 pt-10 font-serif text-8xl">
+				<Balancer>
+					<Gradient>{post.title}</Gradient>
+				</Balancer>
+			</h1>
+			<MDXContent code={post.body.code} components={{ Gradient, InfoBlock }} />
 			<ViewsCounter slug={post.page_path} />
 		</>
 	);

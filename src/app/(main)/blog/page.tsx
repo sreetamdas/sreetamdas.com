@@ -7,12 +7,12 @@ export default async function BlogArchivePage() {
 
 	return (
 		<>
-			<h1 className="py-10 font-serif text-8xl">/blog</h1>
+			<h1 className="pb-20 pt-10 font-serif text-8xl">/blog</h1>
 			<section className="grid gap-20">
 				{blog_posts_previews.map(({ page_slug, page_path, title, description, published_at }) => (
 					<article key={page_slug} className="group grid gap-y-2">
 						<LinkTo href={page_path} className="w-fit hover:no-underline">
-							<h3 className="group-hover:gradient w-fit font-serif text-5xl font-bold leading-normal">
+							<h3 className="group-hover:gradient w-fit font-serif text-5xl leading-normal">
 								{title}
 							</h3>
 						</LinkTo>
