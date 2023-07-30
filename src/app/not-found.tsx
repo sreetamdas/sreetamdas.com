@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 
 import { LinkTo } from "@/lib/components/Anchor";
-import { NotFoundDogsLink, NotFoundFoobarTracker } from "@/lib/components/error";
+import { NotFoundDogsLink, NotFoundFoobarTracker } from "@/lib/components/Error";
 
 export type GlobalNotFoundPageProps = {
 	message?: ReactNode;

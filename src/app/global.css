@@ -31,6 +31,10 @@
 		hover:decoration-solid hover:decoration-2 focus-visible:outline-dashed focus-visible:outline-2
 		focus-visible:outline-offset-2 focus-visible:outline-secondary;
 	}
+
+	.gradient {
+		@apply bg-gradient-to-r from-primary to-secondary box-decoration-slice bg-clip-text text-transparent;
+	}
 }
 
 @layer utilities {
