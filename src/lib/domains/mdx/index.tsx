@@ -29,6 +29,7 @@ export const customMDXComponents: MDXComponents = {
 			{children}
 		</p>
 	),
+	// @ts-expect-error href is required
 	a: LinkTo,
 	code: Code,
 	ul: UnorderedList,
