@@ -5,7 +5,7 @@ import remarkToc from "remark-toc";
 
 export const BlogPost = defineDocumentType(() => ({
 	name: "BlogPost",
-	filePathPattern: `**/blog/**/*.mdx`,
+	filePathPattern: `**/blog/[slug]/*.mdx`,
 	contentType: "mdx",
 	fields: {
 		title: { type: "string", required: true },
@@ -39,7 +39,7 @@ export const BlogPost = defineDocumentType(() => ({
 }));
 export const Page = defineDocumentType(() => ({
 	name: "Page",
-	filePathPattern: `**/[mdxPageSlug]/**/*.mdx`,
+	filePathPattern: `**/[mdxPageSlug]/*.mdx`,
 	contentType: "mdx",
 	fields: {
 		title: { type: "string", required: true },
