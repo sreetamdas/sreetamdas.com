@@ -13,6 +13,10 @@
 		display: flex;
 		flex-direction: column;
 	}
+
+	& strong > em {
+		color: rgb(var(--color-primary));
+	}
 }
 
 .main-wrapper > * {

@@ -5,7 +5,7 @@ published: true
 published_at: "2021-05-11"
 ---
 
-I recently created a [new page on this website](/fancy-pants). From an early time in my front-end journey, I have been amazed by the websites that are featured on [awwwards](https://www.awwwards.com/awwwards/collections/freelance-portfolio/) and I wanted to create something <Highlight><Sparkles>fancy</Sparkles></Highlight> like them.
+I recently created a [new page on this website](/fancy-pants). From an early time in my front-end journey, I have been amazed by the websites that are featured on [awwwards](https://www.awwwards.com/awwwards/collections/freelance-portfolio/) and I wanted to create something <Sparkles>**_fancy_**</Sparkles> like them.
 
 Here's how I did it.
 
@@ -13,9 +13,7 @@ Here's how I did it.
 
 Let's take a look again at what we're trying to build here:
 
-<Heavy>
-  <ChromaHighlight>Hello there!</ChromaHighlight>
-</Heavy>
+<ChromaHighlight>**Hello there!**</ChromaHighlight>
 
 let's break down what's happening here:
 
@@ -53,9 +51,9 @@ Let's start writing our little wrapper component for this:
 
 ```jsx
 // usage
-<Highlight>Hello there!</Highlight>;
+<ChameleonHighlight>Hello there!</ChameleonHighlight>;
 
-const Highlight = ({ children }) => <Wave>{children}</Wave>;
+const ChameleonHighlight = ({ children }) => <Wave>{children}</Wave>;
 
 // import styled, { css } from "styled-components";
 const WaveMixin = css`
@@ -72,7 +70,7 @@ const Wave = styled.span`
 And now we change the color once the component has mounted:
 
 ```jsx highlight="3-11,14-19,21-23"
-<Highlight>Hello there!</Highlight>;
+<ChameleonHighlight>Hello there!</ChameleonHighlight>;
 
 let root: HTMLElement;
 
@@ -84,7 +82,7 @@ const getNewColor = () => {
   return `hsl(${h}, ${s}%, ${l}%)`;
 };
 
-const Highlight = ({ children }) => {
+const ChameleonHighlight = ({ children }) => {
   const changeColor = () => {
     const newColor = getNewColor();
 
@@ -111,9 +109,7 @@ const Wave = styled.span`
 `;
 ```
 
-<Heavy>
-  <HighlightWithUseEffect>Hello there!</HighlightWithUseEffect>
-</Heavy>
+<HighlightWithUseEffect>**Hello there!**</HighlightWithUseEffect>
 
 Huh, that didn't seem to work out 🤔 but that's because the transition already ran since the above live example was already "mounted" by the time you scrolled down to it.
 
@@ -145,7 +141,7 @@ Let's now use this hook to change the color of our text just as it completes its
 ```jsx highlight="1,15-17"
 import { useInterval } from "@/utils/hooks";
 
-const Highlight = ({ children }) => {
+const ChameleonHighlight = ({ children }) => {
   const changeColor = () => {
     const newColor = getNewColor();
 
@@ -165,19 +161,13 @@ const Highlight = ({ children }) => {
 };
 ```
 
-<Heavy>
-  <HighlightWithUseInterval>Hello there!</HighlightWithUseInterval>
-</Heavy>
+<HighlightWithUseInterval>**Hello there!**</HighlightWithUseInterval>
 
 Voila! ✨
 
 There we go. What's great is that you can also use this to highlight link, like so:
 
-<Heavy>
-  <ChromaHighlight link>
-    <a href="#">This is a link</a>.
-  </ChromaHighlight>
-</Heavy>
+<ChromaHighlight link>[**This is a link**](#).</ChromaHighlight>
 
 ## Wrapping up
 

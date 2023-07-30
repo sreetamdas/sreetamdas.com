@@ -187,7 +187,7 @@ Great! We've got a toggle working, and we're also able to store and retrieve the
 
 The biggest challenge (surprisingly) was being able to run all these checks _before_ anything is shown to the user. Since we're using Next.js with its [Static Generation](https://nextjs.org/docs/basic-features/data-fetching), there's no way for us to know at code/build time what the user's preference is going to be 🤷‍♂️
 
-Unless...there <Highlight>was</Highlight> a way run some code before all of our page is loaded and rendered to the user!
+Unless...there **_was_** a way run some code before all of our page is loaded and rendered to the user!
 
 Take a look at the code below:
 
@@ -204,10 +204,10 @@ Here's what it looks like:
 
 ![Blocking nature of `<script>` tags in HTML](/blog/the-perfect-dark-mode/perfect-dark-mode-blocking-script.mp4)
 
-<CustomBlockquote>
+<InfoBlock>
   If you'd like to try it out for yourself, [check out this
   sandbox](https://codesandbox.io/s/sleepy-cartwright-ufhxs?file=/index.html).
-</CustomBlockquote>
+</InfoBlock>
 
 When we add a `<script>` in our body before our `<h1>` content, the rendering of the actual content is _blocked_ by the script. This means that we can run code that will be guaranteed to run before any content is shown to the user, which is exactly what we wanna do!
 
@@ -251,9 +251,9 @@ const customScript = `
 `;
 ```
 
-<CustomBlockquote>
+<InfoBlock>
   `<Html>`, `<Head />`, `<Main />` and `<NextScript />` are required for the page to be properly rendered.
-</CustomBlockquote>
+</InfoBlock>
 
 ## Dangerously set whaa?
 
@@ -263,10 +263,10 @@ If a user tries to set their name to `<script>I'm dangerous!</script>`, React en
 
 React also provides a way to override this behaviour using `dangerouslySetInnerHTML`, reminding us that _it is dangerous_. Well, in our use case, we actually _do_ want to inject and run a script.
 
-<CustomBlockquote>
+<InfoBlock>
   Note how it requires us to pass the `innerHTML`, our script, as a
   `string`.
-</CustomBlockquote>
+</InfoBlock>
 
 We're _almost_ there!
 
@@ -383,7 +383,7 @@ There are multiple ways to go about this:
 
 _While all of the options seem like possible solutions, they each require a lot more boilerplate to be added_
 
-<Highlight>or we could CSS variables!</Highlight>{" "}
+**_or we could CSS variables!_**
 
 [CSS Custom Properties](https://developer.mozilla.org/en-US/docs/Web/CSS/Using_CSS_custom_properties) (also referred to as CSS Variables) allow us to reuse specific values throughout a document. These can be set using custom property notation and accessed using [the `var()` function](https://developer.mozilla.org/en-US/docs/Web/CSS/var) like so:
 
@@ -393,14 +393,14 @@ _While all of the options seem like possible solutions, they each require a lot 
 }
 ```
 
-<CustomBlockquote>
+<InfoBlock>
   A common best practice is to define custom properties on the
   [`:root`
   pseudo-class](https://developer.mozilla.org/en-US/docs/Web/CSS/:root),
   so that it can be applied globally across your HTML document
-</CustomBlockquote>
+</InfoBlock>
 
-The best part about CSS variables is that they are <Highlight>reactive</Highlight>, they remain live throughout the lifetime of the page, and updating them updates the HTML that references them _instantly_. _And_ they can be updated using JavaScript!
+The best part about CSS variables is that they are **_reactive_**, they remain live throughout the lifetime of the page, and updating them updates the HTML that references them _instantly_. _And_ they can be updated using JavaScript!
 
 ```jsx
 // setting
@@ -455,19 +455,19 @@ Finally, we're now able to pass on the computed dark mode state from our blockin
 
 Before we put together everything we have so far, let's recap:
 
-- As soon as the webpage is being loaded, we inject and run a blocking script using <Highlight>Next.js' Document</Highlight> and <Highlight>IIFEs</Highlight>.
+- As soon as the webpage is being loaded, we inject and run a blocking script using **_Next.js' Document_** and **_IIFEs_**.
 
-- Check for user's saved preference from a previous visit using <Highlight>localStorage</Highlight>.
+- Check for user's saved preference from a previous visit using **_localStorage_**.
 
-- Check if the user has a system-wide dark mode preference using a <Highlight>CSS media query</Highlight>.
+- Check if the user has a system-wide dark mode preference using a **_CSS media query_**.
 
 - If both above checks are inconclusive, we default to a light theme.
 
-- Pass this preference as a <Highlight>CSS variable</Highlight>, which we can read in our toggle component.
+- Pass this preference as a **_CSS variable_**, which we can read in our toggle component.
 
 - The theme can be toggled, and upon toggling we save the preference for future visits.
 
-- We should _never_ have the <Highlight>flicker</Highlight> on the first load, even if the user has a preference for the non-default theme.
+- We should _never_ have the **_flicker_** on the first load, even if the user has a preference for the non-default theme.
 
 - We should _always_ show the correct state of our toggle, and defer rendering the toggle if the correct state is unknown.
 
@@ -637,14 +637,14 @@ const IndexPage = () => {
 export default IndexPage;
 ```
 
-<CustomBlockquote>
+<InfoBlock>
   One caveat of our approach using vanilla CSS is that during
   development, we still experience the "flicker", but once the
   application is compiled and built, we no longer do and everything
   works as intended
-</CustomBlockquote>
+</InfoBlock>
 
-<CustomBlockquote type="success">
+<InfoBlock type="success">
   If you're using [Styled-components](https://styled-components.com), then this isn't an
   issue since we can use `ServerStyleSheet()` which makes sure that the CSS being
   imported in `App` is correctly collected and added to the `Document` itself,
@@ -653,7 +653,7 @@ export default IndexPage;
   You can [refer to the official docs](https://styled-components.com/docs/advanced#nextjs) or
   check out [my implementation](https://github.com/sreetamdas/sreetamdas.com/blob/b9d7fab48655dff52895ef58b5de21254815539f/src/pages/_document.tsx#L5-L28).
 
-</CustomBlockquote>
+</InfoBlock>
 
 Of course, there are [packages which can handle all of this for you](https://github.com/donavon/use-dark-mode#that-flash) including "the flash" which differ only slightly in their implementation (Donavon here uses the `.class` method). Also, here's a great article about the [Principles of Dark UI Design](https://www.toptal.com/designers/ui/dark-ui-design) that I would recommend you check out — it is a great read about the multiple challenges that one needs to take care of while implementing the perfect dark mode.
 
