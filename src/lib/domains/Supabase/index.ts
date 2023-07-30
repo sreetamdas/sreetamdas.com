@@ -14,13 +14,13 @@ type PageViewCountResponse =
 	| (SuccessResponse<PageViewCount> & ErrorResponse<null>)
 	| (SuccessResponse<null> & ErrorResponse);
 
-const supabaseEnabled =
+const SUPABASE_ENABLED =
 	typeof process.env.NEXT_PUBLIC_SUPABASE_URL !== "undefined" &&
 	process.env.NEXT_PUBLIC_SUPABASE_URL !== "" &&
 	typeof process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY !== "undefined" &&
 	process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY !== "";
 
-const supabaseHeaders = {
+const supabase_headers = {
 	// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 	apiKey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
 	Authorization: `Bearer ${process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY}`,
@@ -33,7 +33,7 @@ const supabaseHeaders = {
  */
 export async function getPageViews(slug: string): Promise<PageViewCountResponse> {
 	try {
-		if (!supabaseEnabled) {
+		if (!SUPABASE_ENABLED) {
 			throw new Error("Supabase is not initialized");
 		}
 
@@ -49,7 +49,7 @@ export async function getPageViews(slug: string): Promise<PageViewCountResponse>
 				method: "GET",
 				headers: {
 					"Content-Type": "application/json",
-					...supabaseHeaders,
+					...supabase_headers,
 				},
 				cache: "no-store",
 			}
@@ -75,7 +75,7 @@ export async function getPageViews(slug: string): Promise<PageViewCountResponse>
  */
 export async function upsertPageViews(slug: string): Promise<PageViewCountResponse> {
 	try {
-		if (!supabaseEnabled) {
+		if (!SUPABASE_ENABLED) {
 			throw new Error("Supabase is not initialized");
 		}
 
@@ -85,7 +85,7 @@ export async function upsertPageViews(slug: string): Promise<PageViewCountRespon
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",
-					...supabaseHeaders,
+					...supabase_headers,
 				},
 				cache: "no-store",
 				body: JSON.stringify({

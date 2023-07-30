@@ -44,7 +44,7 @@ type ExternalLinksArrayType = Array<{
 	icon: JSX.Element;
 }>;
 const ExternalLinksOverlay = () => {
-	const externalLinks: ExternalLinksArrayType = [
+	const external_links: ExternalLinksArrayType = [
 		{
 			link: "https://github.com/sreetamdas",
 			title: "Sreetam Das' GitHub",
@@ -98,7 +98,7 @@ const ExternalLinksOverlay = () => {
 
 	return (
 		<ul className="flex flex-wrap place-items-center justify-center gap-4 px-12 py-4 sm:p-4">
-			{externalLinks.map(({ link, ...props }) => (
+			{external_links.map(({ link, ...props }) => (
 				<li key={props.title} className="text-2xl">
 					<LinkTo href={link}>
 						<IconWithProps {...props} />

@@ -6,11 +6,11 @@ type PageParams = {
 	params: { slug: string };
 };
 export default function FoobarCompletedPage({ params: { slug } }: PageParams) {
-	const allFoobarPageSlugs = getAllFoobarPageSlugs();
+	const all_foobar_pages_slugs = getAllFoobarPagesSlugs();
 
 	// FIXME expand string union
 	// @ts-expect-error expand string union
-	if (!allFoobarPageSlugs.includes(slug)) {
+	if (!all_foobar_pages_slugs.includes(slug)) {
 		notFound();
 	}
 
@@ -18,12 +18,12 @@ export default function FoobarCompletedPage({ params: { slug } }: PageParams) {
 }
 
 export function generateStaticParams() {
-	const allPages = getAllFoobarPageSlugs();
-	const paths = allPages.map((slug) => ({ slug }));
+	const all_foobar_pages_slugs = getAllFoobarPagesSlugs();
+	const paths = all_foobar_pages_slugs.map((slug) => ({ slug }));
 
 	return paths;
 }
 
-function getAllFoobarPageSlugs() {
+function getAllFoobarPagesSlugs() {
 	return Object.values(FOOBAR_PAGES);
 }
