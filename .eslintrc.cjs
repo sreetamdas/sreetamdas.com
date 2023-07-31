@@ -62,6 +62,8 @@ module.exports = {
 		"jsx-a11y/anchor-is-valid": ["warn", { aspects: ["invalidHref"] }],
 
 		"import/order": ["warn", { "newlines-between": "always", alphabetize: { order: "asc" } }],
+		"import/consistent-type-specifier-style": ["warn", "prefer-inline"],
+		"import/no-duplicates": ["warn", { "prefer-inline": true }],
 		"prettier/prettier": ["error"],
 	},
 	settings: {
