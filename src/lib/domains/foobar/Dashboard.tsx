@@ -3,8 +3,7 @@
 import { IS_DEV } from "@/config";
 import { useCustomPlausible } from "@/lib/domains/Plausible";
 import { DocumentHead } from "@/lib/domains/SEO";
-import type { FoobarSchrodingerProps } from "@/lib/domains/foobar/flags";
-import { initialFoobarData } from "@/lib/domains/foobar/flags";
+import { type FoobarSchrodingerProps, initialFoobarData } from "@/lib/domains/foobar/flags";
 import { useGlobalStore } from "@/lib/domains/global";
 
 export const FoobarDashboard = ({ completedPage, unlocked }: FoobarSchrodingerProps) => {

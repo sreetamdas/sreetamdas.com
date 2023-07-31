@@ -1,5 +1,5 @@
 import { merge } from "lodash-es";
-import type { StateCreator } from "zustand";
+import { type StateCreator } from "zustand";
 
 export const FOOBAR_PAGES = {
 	sourceCode: "source-code",

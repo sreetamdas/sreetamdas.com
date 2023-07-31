@@ -1,5 +1,5 @@
 import NextImage from "next/image";
-import type { DetailedHTMLProps, ImgHTMLAttributes } from "react";
+import { type DetailedHTMLProps, type ImgHTMLAttributes } from "react";
 
 // export const ImageWrapper = styled.span`
 // 	& img {

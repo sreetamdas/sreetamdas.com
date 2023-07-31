@@ -1,5 +1,4 @@
-import type { FoobarSliceType } from "./flags";
-import { FOOBAR_PAGES } from "./flags";
+import { type FoobarSliceType, FOOBAR_PAGES } from "./flags";
 
 export function checkIfAllAchievementsAreDone(
 	completed: FoobarSliceType["foobarData"]["completed"]

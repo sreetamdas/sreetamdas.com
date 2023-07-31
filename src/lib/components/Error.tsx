@@ -4,8 +4,7 @@ import { useEffect } from "react";
 
 import { LinkTo } from "@/lib/components/Anchor";
 import { useCustomPlausible } from "@/lib/domains/Plausible";
-import { FOOBAR_PAGES } from "@/lib/domains/foobar/flags";
-import type { FoobarPageSlug } from "@/lib/domains/foobar/flags";
+import { FOOBAR_PAGES, type FoobarPageSlug } from "@/lib/domains/foobar/flags";
 import { useGlobalStore } from "@/lib/domains/global";
 
 export const NotFoundDogsLink = () => {

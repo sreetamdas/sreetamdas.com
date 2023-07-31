@@ -4,7 +4,7 @@
 // import { useEffect } from "react";
 
 // import { logConsoleMessages } from "./console";
-import type { FoobarSliceType } from "./flags";
+import { type FoobarSliceType } from "./flags";
 // import { addFoobarToLocalStorage, checkIfAllAchievementsAreDone } from "./helpers";
 
 // import { IS_DEV } from "@/config";
