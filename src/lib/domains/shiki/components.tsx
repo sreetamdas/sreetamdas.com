@@ -1,11 +1,12 @@
-import { type ReactNode } from "react";
+import { isNull, isObject, isUndefined } from "lodash-es";
+import { type DetailedHTMLProps, type HTMLAttributes, type ReactNode } from "react";
 
-type CodeBlockProps = {
-	children: string | { props: { children: ReactNode } };
-	style?: { [styleProp: string]: string };
+type CodeBlockProps = DetailedHTMLProps<HTMLAttributes<HTMLPreElement>, HTMLPreElement> & {
+	children?: ReactNode | string | null;
 	language?: string;
 	highlight?: string;
 };
+
 export const CodeBlock = (props: CodeBlockProps) => {
 	const { language = "js", children: codeElement, highlight, style } = props;
 	const shouldHighlightLine = calculateLinesToHighlight(highlight);
@@ -14,8 +15,13 @@ export const CodeBlock = (props: CodeBlockProps) => {
 
 	if (typeof codeElement === "string") {
 		children = codeElement;
-	} else {
-		children = codeElement.props.children;
+	} else if (
+		!isUndefined(codeElement) &&
+		!isNull(codeElement) &&
+		isObject(codeElement) &&
+		"props" in codeElement
+	) {
+		children = codeElement?.props.children;
 	}
 	if (!Array.isArray(children)) {
 		children = [children];
