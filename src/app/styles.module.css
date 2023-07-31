@@ -1,7 +1,4 @@
 .main-wrapper {
-	min-height: 100vh;
-	padding: 0;
-
 	display: grid;
 	grid-template-columns: 1fr min(var(--max-width), calc(100% - 2rem)) 1fr;
 	grid-template-rows: auto 1fr max-content;
