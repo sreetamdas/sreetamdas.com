@@ -6,26 +6,26 @@ import { type HTMLAttributes } from "react";
 
 import { LinkTo } from "@/lib/components/Anchor";
 import { Image } from "@/lib/components/Image";
-import { Code, UnorderedList } from "@/lib/components/Typography";
+import { Code, Heading, UnorderedList } from "@/lib/components/Typography";
 import { CodeBlock } from "@/lib/domains/shiki/components";
 
 export * from "./utilities";
 
 export const customMDXComponents: MDXComponents = {
 	h1: ({ children, ...props }: HTMLAttributes<HTMLHeadingElement>) => (
-		<h1 className="pt-12 font-serif text-8xl leading-normal text-primary" {...props}>
+		<Heading.h1 className="group pt-10 font-serif text-8xl leading-normal text-primary" {...props}>
 			{children}
-		</h1>
+		</Heading.h1>
 	),
 	h2: ({ children, ...props }: HTMLAttributes<HTMLHeadingElement>) => (
-		<h2 className="pt-9 font-serif text-4xl leading-normal text-primary" {...props}>
+		<Heading.h2 className="group pt-10 font-serif text-4xl leading-normal text-primary" {...props}>
 			{children}
-		</h2>
+		</Heading.h2>
 	),
 	h3: ({ children, ...props }: HTMLAttributes<HTMLHeadingElement>) => (
-		<h3 className="pt-6 font-serif text-2xl leading-normal text-primary" {...props}>
+		<Heading.h3 className="group pt-10 font-serif text-2xl leading-normal text-primary" {...props}>
 			{children}
-		</h3>
+		</Heading.h3>
 	),
 	p: ({ children, ...props }: HTMLAttributes<HTMLParagraphElement>) => (
 		<p className="py-2.5 first:pt-0 last:pb-0" {...props}>

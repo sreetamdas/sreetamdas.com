@@ -1,5 +1,41 @@
-import { type HTMLAttributes, Children, isValidElement } from "react";
+import {
+	type DetailedHTMLProps,
+	type ReactHTML,
+	type HTMLAttributes,
+	Children,
+	isValidElement,
+	createElement,
+} from "react";
 import { FaLongArrowAltRight } from "react-icons/fa";
+import { FiLink } from "react-icons/fi";
+
+import { LinkTo } from "@/lib/components/Anchor";
+
+type HeadingProps = DetailedHTMLProps<HTMLAttributes<HTMLHeadingElement>, HTMLHeadingElement>;
+const getHeading = (
+	// TODO narrow type here
+	el: keyof ReactHTML,
+	// propsWithoutChildren contains `id` attr here
+	{ children, ...propsWithoutChildren }: HeadingProps
+) => {
+	const LinkIcons = (
+		<LinkTo
+			href={`#${propsWithoutChildren.id ?? ""}`}
+			replaceClasses
+			className="absolute -translate-x-[125%] translate-y-2 text-primary opacity-0 transition-opacity group-hover:opacity-75 max-md:hidden"
+		>
+			<FiLink aria-label={propsWithoutChildren.id} />
+		</LinkTo>
+	);
+	const ActualHeading = createElement(el, propsWithoutChildren, LinkIcons, children);
+
+	return ActualHeading;
+};
+export const Heading = {
+	h1: (props: HeadingProps) => getHeading("h1", props),
+	h2: (props: HeadingProps) => getHeading("h2", props),
+	h3: (props: HeadingProps) => getHeading("h3", props),
+};
 
 export const UnorderedList = (props: HTMLAttributes<HTMLUListElement>) => (
 	<ul className="mx-0 my-3 pl-0" {...props}>
