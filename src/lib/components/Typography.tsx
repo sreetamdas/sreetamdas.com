@@ -1,5 +1,4 @@
-import type { HTMLAttributes } from "react";
-import { Children, isValidElement } from "react";
+import { type HTMLAttributes, Children, isValidElement } from "react";
 import { FaLongArrowAltRight } from "react-icons/fa";
 
 export const UnorderedList = (props: HTMLAttributes<HTMLUListElement>) => (
@@ -16,4 +15,14 @@ export const UnorderedList = (props: HTMLAttributes<HTMLUListElement>) => (
 			return null;
 		})}
 	</ul>
+);
+
+export const Code = ({ children, ...props }: HTMLAttributes<HTMLUListElement>) => (
+	<code
+		className="mx-0.5 rounded bg-foreground/10 p-1 font-mono text-sm 
+		transition-[color,background-color] dark:bg-foreground/20"
+		{...props}
+	>
+		{children}
+	</code>
 );
