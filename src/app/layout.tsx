@@ -33,20 +33,18 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 				/>
 				<DocumentHead title="Hello hello!" />
 			</head>
-			<body>
+			<body className={`${styles["main-wrapper"]}`}>
 				<script
 					dangerouslySetInnerHTML={{
 						__html: blockingScriptSetInitialColorScheme,
 					}}
 				></script>
-				<main className={`${styles["main-wrapper"]}`}>
-					<Header />
-					<div id="main-content" className={`${styles["main-content"]}`}>
-						{children}
-					</div>
-					<FoobarPixel />
-					<Footer />
+				<Header />
+				<main id="main-content" className={`${styles["main-content"]}`}>
+					{children}
 				</main>
+				<FoobarPixel />
+				<Footer />
 			</body>
 		</html>
 	);

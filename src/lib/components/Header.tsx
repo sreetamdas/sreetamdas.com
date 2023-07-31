@@ -5,7 +5,7 @@ import { LinkTo } from "@/lib/components/Anchor";
 import { ColorSchemeToggle } from "@/lib/domains/colorScheme";
 
 export const Header = () => (
-	<header className="sticky top-0 z-10 h-[60px] bg-background">
+	<div className="sticky top-0 z-10 col-span-full h-[60px] w-full bg-background">
 		<a
 			id="skip-link"
 			href="#main-content"
@@ -13,7 +13,7 @@ export const Header = () => (
 		>
 			Skip to main content
 		</a>
-		<div className="grid h-full grid-cols-[max-content_auto] content-center">
+		<header className="mx-auto grid h-full w-full max-w-[--max-width] grid-cols-[max-content_auto] content-center gap-8 py-4">
 			<LinkTo href="/">
 				<svg
 					aria-label="Home"
@@ -31,8 +31,8 @@ export const Header = () => (
 				<Navbar />
 				<ColorSchemeToggle />
 			</div>
-		</div>
-	</header>
+		</header>
+	</div>
 );
 
 export const Navbar = () => (
