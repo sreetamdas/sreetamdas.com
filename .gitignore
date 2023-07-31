@@ -40,6 +40,9 @@ public/rss/
 public/sitemap*.xml
 tsconfig.tsbuildinfo
 
+# shiki assets
+public/shiki
+
 # Sentry
 .sentryclirc
 

@@ -1,7 +1,11 @@
 import { defineDocumentType, makeSource } from "contentlayer/source-files";
+import rehypeRaw from "rehype-raw";
+import remarkFrontmatter from "remark-frontmatter";
 import remarkGfm from "remark-gfm";
 import remarkSlug from "remark-slug";
 import remarkToc from "remark-toc";
+
+import { remarkShiki } from "./src/lib/domains/shiki";
 
 export const BlogPost = defineDocumentType(() => ({
 	name: "BlogPost",
@@ -77,8 +81,27 @@ export default makeSource({
 	documentTypes: [BlogPost, Page],
 	mdx: {
 		resolveCwd: "relative",
-		remarkPlugins: [],
-		rehypePlugins: [remarkGfm, remarkSlug, [remarkToc, { tight: true }]],
+		remarkPlugins: [
+			remarkFrontmatter,
+			remarkShiki,
+			remarkGfm,
+			remarkSlug,
+			[remarkToc, { tight: true }],
+		],
+		rehypePlugins: [
+			[
+				rehypeRaw,
+				{
+					passThrough: [
+						"mdxFlowExpression",
+						"mdxJsxFlowElement",
+						"mdxJsxTextElement",
+						"mdxTextExpression",
+						"mdxjsEsm",
+					],
+				},
+			],
+		],
 		esbuildOptions(options) {
 			options.platform = "node";
 			options.define = {

@@ -1,12 +1,13 @@
-import type { MDX } from "contentlayer/core";
-import type { MDXComponents } from "mdx/types";
+import { type MDX } from "contentlayer/core";
+// eslint-disable-next-line import/no-unresolved
+import { type MDXComponents } from "mdx/types";
 import { useMDXComponent } from "next-contentlayer/hooks";
-import type { HTMLAttributes } from "react";
+import { type HTMLAttributes } from "react";
 
 import { LinkTo } from "@/lib/components/Anchor";
 import { Image } from "@/lib/components/Image";
-import { Code } from "@/lib/components/Typography/Code";
-import { UnorderedList } from "@/lib/components/Typography/Lists";
+import { Code, UnorderedList } from "@/lib/components/Typography";
+import { CodeBlock } from "@/lib/domains/shiki/components";
 
 export * from "./utilities";
 
@@ -34,6 +35,7 @@ export const customMDXComponents: MDXComponents = {
 	// @ts-expect-error href is required
 	a: LinkTo,
 	code: Code,
+	pre: CodeBlock,
 	ul: UnorderedList,
 	img: Image,
 	hr: () => <hr className="my-3" />,
