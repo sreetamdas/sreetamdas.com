@@ -20,6 +20,9 @@ dependencies:
   '@mdx-js/react':
     specifier: ^2.3.0
     version: 2.3.0(react@18.2.0)
+  '@notionhq/client':
+    specifier: ^2.2.9
+    version: 2.2.9
   '@octokit/core':
     specifier: ^5.0.0
     version: 5.0.0
@@ -35,9 +38,6 @@ dependencies:
   '@tanstack/react-query':
     specifier: 5.0.0-alpha.88
     version: 5.0.0-alpha.88(react-dom@18.2.0)(react@18.2.0)
-  axios:
-    specifier: ^1.4.0
-    version: 1.4.0
   clsx:
     specifier: ^2.0.0
     version: 2.0.0
@@ -967,6 +967,16 @@ packages:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.15.0
 
+  /@notionhq/client@2.2.9:
+    resolution: {integrity: sha512-g/JKWTELNhe4SdJj5nBXNGB0tkOkOlOH81QSa3oG1855QWiRhOv/ti6LeWNWEPR3BettNztDv5zC/I05wDkFtg==}
+    engines: {node: '>=12'}
+    dependencies:
+      '@types/node-fetch': 2.6.4
+      node-fetch: 2.6.12
+    transitivePeerDependencies:
+      - encoding
+    dev: false
+
   /@npmcli/config@6.1.6:
     resolution: {integrity: sha512-TM5dwgaz3Un2T5rdHQ6lX+Jj3TQxK6aV1U5OLByZiUS5qnA0NgC6U0aSESQVy80emToz8dtX3aniXD24wRnBaw==}
     engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
@@ -1688,6 +1698,13 @@ packages:
   /@types/ms@0.7.31:
     resolution: {integrity: sha512-iiUgKzV9AuaEkZqkOLDIvlQiL6ltuZd9tGcW3gwpnX8JbuiuhFlEGmmFXEXkN50Cvq7Os88IY2v0dkDqXYWVgA==}
 
+  /@types/node-fetch@2.6.4:
+    resolution: {integrity: sha512-1ZX9fcN4Rvkvgv4E6PAY5WXUFWFcRWxZa3EW83UjycOB9ljJCedb2CupIP4RZMEwF/M3eTcCihbBRgwtGbg5Rg==}
+    dependencies:
+      '@types/node': 20.4.5
+      form-data: 3.0.1
+    dev: false
+
   /@types/node@18.17.1:
     resolution: {integrity: sha512-xlR1jahfizdplZYRU59JlUx9uzF1ARa8jbhM11ccpCJya8kvos5jwdm2ZAgxSCwOl0fq21svP18EVwPBXMQudw==}
     dev: true
@@ -2306,16 +2323,6 @@ packages:
     resolution: {integrity: sha512-b1WlTV8+XKLj9gZy2DZXgQiyDp9xkkoe2a6U6UbYccScq2wgH/YwCeI2/Jq2mgo0HzQxqJOjWZBLeA/mqsk5Mg==}
     engines: {node: '>=4'}
     dev: true
-
-  /axios@1.4.0:
-    resolution: {integrity: sha512-S4XCWMEmzvo64T9GfvQDOXgYRDJ/wsSZc7Jvdgx5u1sd0JwsuPLqb3SYmusag+edF6ziyMensPVqLTSc1PiSEA==}
-    dependencies:
-      follow-redirects: 1.15.2
-      form-data: 4.0.0
-      proxy-from-env: 1.1.0
-    transitivePeerDependencies:
-      - debug
-    dev: false
 
   /axobject-query@3.1.1:
     resolution: {integrity: sha512-goKlv8DZrK9hUh975fnHzhNIO4jUnFCfv/dszV5VwUGDFjI6vQ2VwoyjYjYNEbBE8AH87TduWP5uyDR1D+Iteg==}
@@ -3777,16 +3784,6 @@ packages:
     resolution: {integrity: sha512-5nqDSxl8nn5BSNxyR3n4I6eDmbolI6WT+QqR547RwxQapgjQBmtktdP+HTBb/a/zLsbzERTONyUB5pefh5TtjQ==}
     dev: true
 
-  /follow-redirects@1.15.2:
-    resolution: {integrity: sha512-VQLG33o04KaQ8uYi2tVNbdrWp1QWxNNea+nmIB4EVM28v0hmP17z7aG1+wAkNzVq4KeXTq3221ye5qTJP91JwA==}
-    engines: {node: '>=4.0'}
-    peerDependencies:
-      debug: '*'
-    peerDependenciesMeta:
-      debug:
-        optional: true
-    dev: false
-
   /for-each@0.3.3:
     resolution: {integrity: sha512-jqYfLp7mo9vIyQf8ykW2v7A+2N4QjeCeI5+Dz9XraiO1ign81wjiH7Fb9vSOWvQfNtmSa4H2RoQTrrXivdUZmw==}
     dependencies:
@@ -3801,8 +3798,8 @@ packages:
       signal-exit: 4.0.1
     dev: true
 
-  /form-data@4.0.0:
-    resolution: {integrity: sha512-ETEklSGi5t0QMZuiXoA/Q6vcnxcLQP5vdugSpuAyi6SVGi2clPPp+xgEhuMaHC+zGgn31Kd235W35f7Hykkaww==}
+  /form-data@3.0.1:
+    resolution: {integrity: sha512-RHkBKtLWUVwd7SqRIvCZMEvAMoGUp0XU+seQiZejj0COz3RI3hWP4sCv3gZWWLjJTd7rGwcsF5eKZGii0r/hbg==}
     engines: {node: '>= 6'}
     dependencies:
       asynckit: 0.4.0
