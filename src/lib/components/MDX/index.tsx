@@ -13,17 +13,17 @@ export * from "./utilities";
 
 export const customMDXComponents: MDXComponents = {
 	h1: ({ children, ...props }: HTMLAttributes<HTMLHeadingElement>) => (
-		<h1 className="pt-12 font-serif text-8xl" {...props}>
+		<h1 className="pt-12 font-serif text-8xl leading-normal text-primary" {...props}>
 			{children}
 		</h1>
 	),
 	h2: ({ children, ...props }: HTMLAttributes<HTMLHeadingElement>) => (
-		<h2 className="pt-9 font-serif text-4xl" {...props}>
+		<h2 className="pt-9 font-serif text-4xl leading-normal text-primary" {...props}>
 			{children}
 		</h2>
 	),
 	h3: ({ children, ...props }: HTMLAttributes<HTMLHeadingElement>) => (
-		<h3 className="pt-6 font-serif text-2xl" {...props}>
+		<h3 className="pt-6 font-serif text-2xl leading-normal text-primary" {...props}>
 			{children}
 		</h3>
 	),

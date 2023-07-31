@@ -8,7 +8,9 @@ export const UnorderedList = (props: HTMLAttributes<HTMLUListElement>) => (
 				return (
 					<li className="mb-3 flex list-none items-start p-0 last:mb-0 only:mt-3" {...child.props}>
 						<FaLongArrowAltRight aria-label="marker" className="mr-2.5 mt-1 text-primary" />
-						<span className="shrink grow basis-0">{child.props.children}</span>
+						<span className="shrink grow basis-0 [&>ul>li]:m-0 [&>ul]:my-0">
+							{child.props.children}
+						</span>
 					</li>
 				);
 			}
