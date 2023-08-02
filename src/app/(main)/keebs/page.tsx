@@ -77,58 +77,43 @@ async function getKeebsFromNotion() {
 		},
 	});
 
-	const keebsDetailsFormatted = (results as Array<PageObjectResponse>)
-		.slice(0, 3)
-		?.map((keebDetails) => {
-			const keebDetailsFormatted = (
-				Object.keys(keebDetails.properties) as Array<
-					PropertiesToRetrieve | (string & Record<never, never>)
-				>
-			).reduce((details, property) => {
-				const propertyValue = keebDetails.properties[property];
+	const keebsDetailsFormatted = (results as Array<PageObjectResponse>)?.map((keebDetails) => {
+		const keebDetailsFormatted = (
+			Object.keys(keebDetails.properties) as Array<
+				PropertiesToRetrieve | (string & Record<never, never>)
+			>
+		).reduce((details, property) => {
+			const propertyValue = keebDetails.properties[property];
 
-				if (propertyValue.type === "title") {
-					details.name = getTitlePlainText(propertyValue);
-				}
-				if (propertyValue?.type === "files") {
-					details.image = { url: getFiles(propertyValue)[0] };
-				}
-				if (propertyValue?.type === "multi_select") {
-					details.tags = getMultiSelectNames(propertyValue);
-				}
+			if (propertyValue.type === "title") {
+				details.name = getTitlePlainText(propertyValue);
+			}
+			if (propertyValue?.type === "files") {
+				details.image = { url: getFiles(propertyValue)[0] };
+			}
+			if (propertyValue?.type === "multi_select") {
+				details.tags = getMultiSelectNames(propertyValue);
+			}
 
-				return details;
-			}, {} as KeebDetailsFromNotion);
+			return details;
+		}, {} as KeebDetailsFromNotion);
 
-			return keebDetailsFormatted;
-		});
+		return keebDetailsFormatted;
+	});
 
 	return await imgurClient.addImgurImagesData(keebsDetailsFormatted);
 }
 
-function getTitlePlainText(
-	input: Extract<
-		PageObjectResponse["properties"][keyof PageObjectResponse["properties"]],
-		{ type: "title" }
-	>
-) {
+type PageObjectResponseProperty =
+	PageObjectResponse["properties"][keyof PageObjectResponse["properties"]];
+function getTitlePlainText(input: Extract<PageObjectResponseProperty, { type: "title" }>) {
 	return input.title[0].plain_text;
 }
 
-function getMultiSelectNames(
-	input: Extract<
-		PageObjectResponse["properties"][keyof PageObjectResponse["properties"]],
-		{ type: "multi_select" }
-	>
-) {
+function getMultiSelectNames(input: Extract<PageObjectResponseProperty, { type: "multi_select" }>) {
 	return input.multi_select.map(({ name }) => ({ name }));
 }
 
-function getFiles(
-	input: Extract<
-		PageObjectResponse["properties"][keyof PageObjectResponse["properties"]],
-		{ type: "files" }
-	>
-) {
+function getFiles(input: Extract<PageObjectResponseProperty, { type: "files" }>) {
 	return input.files.map((item) => item.name);
 }
