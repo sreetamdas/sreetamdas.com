@@ -42,3 +42,7 @@
 		font-family: var(--font-iosevka);
 	}
 }
+
+strong > em {
+	@apply text-primary;
+}
