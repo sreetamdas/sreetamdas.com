@@ -13,7 +13,9 @@ import { type DetailedHTMLProps, type ImgHTMLAttributes } from "react";
 type SafeNumber = number | `${number}`;
 type ImageProps = DetailedHTMLProps<ImgHTMLAttributes<HTMLImageElement>, HTMLImageElement>;
 
-export const Image = ({ alt = " ", src, height, width }: ImageProps) => {
+export const Image = (props: ImageProps) => {
+	const { alt = " ", src, height, width } = props;
+
 	if (typeof src === "undefined") return null;
 	const type = src.slice(-3);
 
