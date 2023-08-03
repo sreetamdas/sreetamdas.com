@@ -24,7 +24,7 @@ export const ViewsCounter = async ({
 	const { data, error } = disabled ? await getPageViews(slug) : await upsertPageViews(slug);
 
 	// eslint-disable-next-line no-console
-	console.log({ data, error });
+	console.log({ data, slug, CI: process.env.CI, error });
 
 	return (
 		<div
