@@ -9,7 +9,7 @@ import { remarkShiki } from "./src/lib/domains/shiki";
 
 export const BlogPost = defineDocumentType(() => ({
 	name: "BlogPost",
-	filePathPattern: `**/blog/[slug]/*.mdx`,
+	filePathPattern: `**/blog/[slug]/**/*.mdx`,
 	contentType: "mdx",
 	fields: {
 		title: { type: "string", required: true },
@@ -18,9 +18,15 @@ export const BlogPost = defineDocumentType(() => ({
 		published_at: { type: "date", required: true },
 		updated_at: { type: "date", required: false },
 		published: { type: "boolean", required: true },
+		url: { type: "string", required: false },
+		use_client: {
+			type: "boolean",
+			description: "If MDX has client components",
+			required: false,
+			default: false,
+		},
 	},
 	computedFields: {
-		// url: { type: "string", resolve: (post) => `/posts/${post._raw.flattenedPath}` },
 		page_path: {
 			type: "string",
 			resolve: (post) => {
@@ -34,9 +40,9 @@ export const BlogPost = defineDocumentType(() => ({
 			type: "string",
 			resolve: (post) => {
 				const flattened_path = post._raw.flattenedPath;
-				const cleaned_path = flattened_path.replace("(main)/blog/[slug]/", "");
+				const cleaned_slug = flattened_path.split("/").at(-1);
 
-				return cleaned_path;
+				return cleaned_slug;
 			},
 		},
 	},
@@ -68,9 +74,9 @@ export const Page = defineDocumentType(() => ({
 			type: "string",
 			resolve: (post) => {
 				const flattened_path = post._raw.flattenedPath;
-				const cleaned_path = flattened_path.replace("(main)/[mdxPageSlug]/", "");
+				const cleaned_slug = flattened_path.split("/").at(-1);
 
-				return cleaned_path;
+				return cleaned_slug;
 			},
 		},
 	},

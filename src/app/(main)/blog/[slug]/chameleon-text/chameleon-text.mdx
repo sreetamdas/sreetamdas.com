@@ -3,6 +3,8 @@ title: "Creating a chameleon text effect"
 description: "How to add a moving RGB effect to your text using styled-components"
 published: true
 published_at: "2021-05-11"
+url: "/blog/chameleon-text"
+use_client: true
 ---
 
 I recently created a [new page on this website](/fancy-pants). From an early time in my front-end journey, I have been amazed by the websites that are featured on [awwwards](https://www.awwwards.com/awwwards/collections/freelance-portfolio/) and I wanted to create something <Sparkles>**_fancy_**</Sparkles> like them.
@@ -13,12 +15,16 @@ Here's how I did it.
 
 Let's take a look again at what we're trying to build here:
 
-<ChromaHighlight>**Hello there!**</ChromaHighlight>
+{/* prettier-ignore */}
+<ChameleonHighlight className="font-bold leading-normal -tracking-[0.065em] [font-size:clamp(4rem,_10vw,_10rem)]">Hello there!</ChameleonHighlight>
 
-let's break down what's happening here:
+<InfoBlock>
+Let's break down what's happening here:
 
 - Text color transitions from one color to another.
 - As soon as it reaches the "target" color, we change it again to keep it changing.
+
+</InfoBlock>
 
 ## Changing colors
 
@@ -109,7 +115,8 @@ const Wave = styled.span`
 `;
 ```
 
-<HighlightWithUseEffect>**Hello there!**</HighlightWithUseEffect>
+{/* prettier-ignore */}
+<HighlightWithUseEffect className="font-bold leading-normal -tracking-[0.065em] [font-size:clamp(4rem,_10vw,_10rem)]">Hello there!</HighlightWithUseEffect>
 
 Huh, that didn't seem to work out 🤔 but that's because the transition already ran since the above live example was already "mounted" by the time you scrolled down to it.
 
@@ -161,13 +168,18 @@ const ChameleonHighlight = ({ children }) => {
 };
 ```
 
-<HighlightWithUseInterval>**Hello there!**</HighlightWithUseInterval>
+{/* prettier-ignore */}
+<HighlightWithUseInterval className="font-bold leading-normal -tracking-[0.065em] [font-size:clamp(4rem,_10vw,_10rem)]">**Hello there!**</HighlightWithUseInterval>
 
 Voila! ✨
 
 There we go. What's great is that you can also use this to highlight link, like so:
 
-<ChromaHighlight link>[**This is a link**](#).</ChromaHighlight>
+{/* prettier-ignore */}
+<ChameleonHighlight className="font-bold leading-normal -tracking-[0.065em] [font-size:clamp(4rem,_10vw,_10rem)]">
+{/* prettier-ignore */}
+  <a href="#" className="visited:no-underline hover:underline hover:decoration-current hover:decoration-solid focus-visible:outline-dashed focus-visible:outline-8 focus-visible:outline-secondary">This is a link.</a>
+</ChameleonHighlight>
 
 ## Wrapping up
 

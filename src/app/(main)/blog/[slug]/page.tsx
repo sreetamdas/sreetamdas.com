@@ -1,9 +1,22 @@
 import { notFound } from "next/navigation";
 import { Balancer } from "react-wrap-balancer";
 
-import { MDXContent, Gradient, InfoBlock } from "@/lib/components/MDX";
+import {
+	HighlightWithUseEffect,
+	HighlightWithUseInterval,
+} from "./chameleon-text/components.client";
+
+import { MDXContent, MDXClientContent } from "@/lib/components/MDX";
 import { ReadingProgress } from "@/lib/components/ProgressBar";
+import { Gradient } from "@/lib/components/Typography";
+import {
+	ChameleonHighlight,
+	Sparkles,
+	Gradient as GradientClient,
+} from "@/lib/components/Typography.client";
 import { ViewsCounter } from "@/lib/components/ViewsCounter";
+import { InfoBlock } from "@/lib/components/sink";
+import { InfoBlock as InfoBlockClient } from "@/lib/components/sink.client";
 import { allBlogPosts } from "contentlayer/generated";
 
 export const dynamicParams = false;
@@ -19,7 +32,7 @@ type PageParams = {
 		slug: string;
 	};
 };
-export default function BlogPage({ params }: PageParams) {
+const BlogPage = ({ params }: PageParams) => {
 	const post = allBlogPosts.find((page) => page.page_slug === params.slug);
 
 	if (!post) notFound();
@@ -32,8 +45,36 @@ export default function BlogPage({ params }: PageParams) {
 					<Gradient>{post.title}</Gradient>
 				</Balancer>
 			</h1>
-			<MDXContent code={post.body.code} components={{ Gradient, InfoBlock }} />
-			<ViewsCounter slug={post.page_path} />
+			{post.use_client ? (
+				<MDXClientContent
+					code={post.body.code}
+					components={{
+						ChameleonHighlight,
+						Gradient: GradientClient,
+						InfoBlock: InfoBlockClient,
+						Sparkles,
+
+						// Post specific components
+						HighlightWithUseEffect,
+						HighlightWithUseInterval,
+					}}
+				/>
+			) : (
+				<MDXContent
+					code={post.body.code}
+					components={{
+						ChameleonHighlight,
+						Gradient,
+						InfoBlock,
+						Sparkles,
+
+						// Post specific components
+					}}
+				/>
+			)}
+			<ViewsCounter slug={post.url ?? post.page_path} />
 		</>
 	);
-}
+};
+
+export default BlogPage;
