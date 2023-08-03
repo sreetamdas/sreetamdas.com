@@ -29,7 +29,7 @@ export const ViewsCounter = async ({
 	return (
 		<div
 			className={clsx(
-				"mx-auto mt-auto w-full flex-row items-center justify-center gap-2 pt-40",
+				"mx-auto mb-5 mt-auto w-full flex-row items-center justify-center gap-2 pt-40",
 				hidden ? "hidden" : "flex"
 			)}
 		>
