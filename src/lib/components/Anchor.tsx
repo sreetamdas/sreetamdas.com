@@ -19,7 +19,7 @@ type LinkToProps<RouteType extends string = string> = Omit<
 	} & LinkAdditionalProps & {
 		href: Route<RouteType> | UrlObject | string;
 	};
-export function LinkTo<RouteType extends string = string>(linkToProps: LinkToProps<RouteType>) {
+export const LinkTo = <RouteType extends string = string>(linkToProps: LinkToProps<RouteType>) => {
 	const {
 		href,
 		className: passedClasses,
@@ -82,4 +82,4 @@ export function LinkTo<RouteType extends string = string>(linkToProps: LinkToPro
 			)}
 		</a>
 	);
-}
+};
