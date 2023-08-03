@@ -1,4 +1,5 @@
 import {
+	type ReactNode,
 	type DetailedHTMLProps,
 	type ReactHTML,
 	type HTMLAttributes,
@@ -63,4 +64,10 @@ export const Code = ({ children, ...props }: HTMLAttributes<HTMLUListElement>) =
 	>
 		{children}
 	</code>
+);
+
+export const Gradient = ({ children }: { children: ReactNode }) => (
+	<span className="w-fit bg-gradient-to-r from-primary to-secondary box-decoration-slice bg-clip-text text-transparent">
+		{children}
+	</span>
 );
