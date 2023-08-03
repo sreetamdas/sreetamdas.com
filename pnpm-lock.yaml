@@ -21,8 +21,8 @@ dependencies:
     specifier: ^2.3.0
     version: 2.3.0(react@18.2.0)
   '@notionhq/client':
-    specifier: ^2.2.9
-    version: 2.2.9
+    specifier: ^2.2.10
+    version: 2.2.10
   '@octokit/core':
     specifier: ^5.0.0
     version: 5.0.0
@@ -134,8 +134,8 @@ devDependencies:
     specifier: ^2.0.5
     version: 2.0.5
   '@types/node':
-    specifier: ^20.4.5
-    version: 20.4.5
+    specifier: ^20.4.6
+    version: 20.4.6
   '@types/react':
     specifier: ^18.2.18
     version: 18.2.18
@@ -158,8 +158,8 @@ devDependencies:
     specifier: ^13.4.12
     version: 13.4.12(eslint@8.46.0)(typescript@5.1.6)
   eslint-config-prettier:
-    specifier: ^8.9.0
-    version: 8.9.0(eslint@8.46.0)
+    specifier: ^8.10.0
+    version: 8.10.0(eslint@8.46.0)
   eslint-import-resolver-typescript:
     specifier: ^3.5.5
     version: 3.5.5(@typescript-eslint/parser@6.2.1)(eslint-plugin-import@2.28.0)(eslint@8.46.0)
@@ -174,7 +174,7 @@ devDependencies:
     version: 2.1.0(eslint@8.46.0)
   eslint-plugin-prettier:
     specifier: ^5.0.0
-    version: 5.0.0(@types/eslint@8.44.1)(eslint-config-prettier@8.9.0)(eslint@8.46.0)(prettier@3.0.0)
+    version: 5.0.0(@types/eslint@8.44.1)(eslint-config-prettier@8.10.0)(eslint@8.46.0)(prettier@3.0.1)
   eslint-plugin-react:
     specifier: ^7.33.1
     version: 7.33.1(eslint@8.46.0)
@@ -185,11 +185,11 @@ devDependencies:
     specifier: ^8.4.27
     version: 8.4.27
   prettier:
-    specifier: ^3.0.0
-    version: 3.0.0
+    specifier: ^3.0.1
+    version: 3.0.1
   prettier-plugin-tailwindcss:
     specifier: ^0.4.1
-    version: 0.4.1(prettier@3.0.0)
+    version: 0.4.1(prettier@3.0.1)
   tailwindcss:
     specifier: ^3.3.3
     version: 3.3.3
@@ -695,7 +695,7 @@ packages:
     engines: {node: ^8.13.0 || >=10.10.0}
     dependencies:
       '@grpc/proto-loader': 0.7.8
-      '@types/node': 20.4.5
+      '@types/node': 20.4.6
     dev: false
 
   /@grpc/proto-loader@0.7.8:
@@ -792,7 +792,7 @@ packages:
     dependencies:
       '@mdx-js/mdx': 2.3.0
       esbuild: 0.18.17
-      node-fetch: 3.3.1
+      node-fetch: 3.3.2
       vfile: 5.3.7
     transitivePeerDependencies:
       - supports-color
@@ -962,8 +962,8 @@ packages:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.15.0
 
-  /@notionhq/client@2.2.9:
-    resolution: {integrity: sha512-g/JKWTELNhe4SdJj5nBXNGB0tkOkOlOH81QSa3oG1855QWiRhOv/ti6LeWNWEPR3BettNztDv5zC/I05wDkFtg==}
+  /@notionhq/client@2.2.10:
+    resolution: {integrity: sha512-MggdzjB320UI2fUFR5XmUBbRBaqNr3QCBHQyK2CqbiO2T29p8RzzQBm5c7RJqvFhi7P0MaLjuY1CI8ypGEYssg==}
     engines: {node: '>=12'}
     dependencies:
       '@types/node-fetch': 2.6.4
@@ -1590,7 +1590,7 @@ packages:
   /@types/concat-stream@2.0.0:
     resolution: {integrity: sha512-t3YCerNM7NTVjLuICZo5gYAXYoDvpuuTceCcFQWcDQz26kxUR5uIWolxbIR5jRNIXpMqhOpW/b8imCR1LEmuJw==}
     dependencies:
-      '@types/node': 20.4.5
+      '@types/node': 20.4.6
     dev: true
 
   /@types/debug@4.1.7:
@@ -1696,7 +1696,7 @@ packages:
   /@types/node-fetch@2.6.4:
     resolution: {integrity: sha512-1ZX9fcN4Rvkvgv4E6PAY5WXUFWFcRWxZa3EW83UjycOB9ljJCedb2CupIP4RZMEwF/M3eTcCihbBRgwtGbg5Rg==}
     dependencies:
-      '@types/node': 20.4.5
+      '@types/node': 20.4.6
       form-data: 3.0.1
     dev: false
 
@@ -1704,8 +1704,8 @@ packages:
     resolution: {integrity: sha512-xlR1jahfizdplZYRU59JlUx9uzF1ARa8jbhM11ccpCJya8kvos5jwdm2ZAgxSCwOl0fq21svP18EVwPBXMQudw==}
     dev: true
 
-  /@types/node@20.4.5:
-    resolution: {integrity: sha512-rt40Nk13II9JwQBdeYqmbn2Q6IVTA5uPhvSO+JVqdXw/6/4glI6oR9ezty/A9Hg5u7JH4OmYmuQ+XvjKm0Datg==}
+  /@types/node@20.4.6:
+    resolution: {integrity: sha512-q0RkvNgMweWWIvSMDiXhflGUKMdIxBo2M2tYM/0kEGDueQByFzK4KZAgu5YHGFNxziTlppNpTIBcqHQAxlfHdA==}
 
   /@types/parse5@6.0.3:
     resolution: {integrity: sha512-SuT16Q1K51EAVPz1K29DJ/sXjhSQ0zjvsypYJ6tlwVsRV9jwW5Adq2ch8Dq8kDBCkYnELS7N7VNCSB5nC56t/g==}
@@ -1759,7 +1759,7 @@ packages:
   /@types/websocket@1.0.5:
     resolution: {integrity: sha512-NbsqiNX9CnEfC1Z0Vf4mE1SgAJ07JnRYcNex7AJ9zAVzmiGHmjKFEk7O4TJIsgv2B1sLEb6owKFZrACwdYngsQ==}
     dependencies:
-      '@types/node': 20.4.5
+      '@types/node': 20.4.6
     dev: false
 
   /@typescript-eslint/eslint-plugin@6.2.1(@typescript-eslint/parser@6.2.1)(eslint@8.46.0)(typescript@5.1.6):
@@ -2362,8 +2362,8 @@ packages:
     engines: {node: ^6 || ^7 || ^8 || ^9 || ^10 || ^11 || ^12 || >=13.7}
     hasBin: true
     dependencies:
-      caniuse-lite: 1.0.30001518
-      electron-to-chromium: 1.4.479
+      caniuse-lite: 1.0.30001519
+      electron-to-chromium: 1.4.482
       node-releases: 2.0.13
       update-browserslist-db: 1.0.11(browserslist@4.21.10)
     dev: false
@@ -2429,8 +2429,8 @@ packages:
     resolution: {integrity: sha512-Vdhm5S11DaFVLlyiKu4hiUTkpZu+y1KA/rZZqVQfOD5YdDT/eQKlkt7NaE0WGOFgX32diqt9MiP9CAiFeRklaA==}
     dev: false
 
-  /caniuse-lite@1.0.30001518:
-    resolution: {integrity: sha512-rup09/e3I0BKjncL+FesTayKtPrdwKhUufQFd3riFw1hHg8JmIFoInYfB102cFcY/pPgGmdyl/iy+jgiDi2vdA==}
+  /caniuse-lite@1.0.30001519:
+    resolution: {integrity: sha512-0QHgqR+Jv4bxHMp8kZ1Kn8CH55OikjKJ6JmKkZYP1F3D7w+lnFXF70nG5eNfsZS89jadi5Ywy5UCSKLAglIRkg==}
     dev: false
 
   /ccount@2.0.1:
@@ -2829,8 +2829,8 @@ packages:
     resolution: {integrity: sha512-DIk2H4g/3ZhjgiABJjVdQvUdMlSABOsjeCm6gmUzIdKxAuFrGiJ8QXMm3i09grZdDBMC/d8MELMrdwYRC0+YHg==}
     dev: true
 
-  /electron-to-chromium@1.4.479:
-    resolution: {integrity: sha512-ABv1nHMIR8I5n3O3Een0gr6i0mfM+YcTZqjHy3pAYaOjgFG+BMquuKrSyfYf5CbEkLr9uM05RA3pOk4udNB/aQ==}
+  /electron-to-chromium@1.4.482:
+    resolution: {integrity: sha512-h+UqpfmEr1Qkk0zp7ej/jid7CXoq4m4QzW6wNTb0ELJ/BZCpA4wgUylBIMGCe621tnr4l5VmoHjdoSx2lbnNJA==}
     dev: false
 
   /emoji-regex@8.0.0:
@@ -3086,8 +3086,8 @@ packages:
       - supports-color
     dev: true
 
-  /eslint-config-prettier@8.9.0(eslint@8.46.0):
-    resolution: {integrity: sha512-+sbni7NfVXnOpnRadUA8S28AUlsZt9GjgFvABIRL9Hkn8KqNzOp+7Lw4QWtrwn20KzU3wqu1QoOj2m+7rKRqkA==}
+  /eslint-config-prettier@8.10.0(eslint@8.46.0):
+    resolution: {integrity: sha512-SM8AMJdeQqRYT9O9zguiruQZaN7+z+E4eAP9oiLNGKMtomwaB1E9dcgUD6ZAn/eQAb52USbvezbiljfZUhbJcg==}
     hasBin: true
     peerDependencies:
       eslint: '>=7.0.0'
@@ -3425,7 +3425,7 @@ packages:
       - supports-color
     dev: true
 
-  /eslint-plugin-prettier@5.0.0(@types/eslint@8.44.1)(eslint-config-prettier@8.9.0)(eslint@8.46.0)(prettier@3.0.0):
+  /eslint-plugin-prettier@5.0.0(@types/eslint@8.44.1)(eslint-config-prettier@8.10.0)(eslint@8.46.0)(prettier@3.0.1):
     resolution: {integrity: sha512-AgaZCVuYDXHUGxj/ZGu1u8H8CYgDY3iG6w5kUFw4AzMVXzB7VvbKgYR4nATIN+OvUrghMbiDLeimVjVY5ilq3w==}
     engines: {node: ^14.18.0 || >=16.0.0}
     peerDependencies:
@@ -3441,8 +3441,8 @@ packages:
     dependencies:
       '@types/eslint': 8.44.1
       eslint: 8.46.0
-      eslint-config-prettier: 8.9.0(eslint@8.46.0)
-      prettier: 3.0.0
+      eslint-config-prettier: 8.10.0(eslint@8.46.0)
+      prettier: 3.0.1
       prettier-linter-helpers: 1.0.0
       synckit: 0.8.5
     dev: true
@@ -4569,7 +4569,7 @@ packages:
     resolution: {integrity: sha512-7vuh85V5cdDofPyxn58nrPjBktZo0u9x1g8WtjQol+jZDaE+fhN+cIvTj11GndBnMnyfrUOG1sZQxCdjKh+DKg==}
     engines: {node: '>= 10.13.0'}
     dependencies:
-      '@types/node': 20.4.5
+      '@types/node': 20.4.6
       merge-stream: 2.0.0
       supports-color: 8.1.1
     dev: false
@@ -5892,8 +5892,8 @@ packages:
       whatwg-url: 5.0.0
     dev: false
 
-  /node-fetch@3.3.1:
-    resolution: {integrity: sha512-cRVc/kyto/7E5shrWca1Wsea4y6tL9iYJE5FBCius3JQfb/4P4I295PfhgbJQBLTx6lATE4z+wK0rPM4VS2uow==}
+  /node-fetch@3.3.2:
+    resolution: {integrity: sha512-dRB78srN/l6gqWulah9SrxeYnxeddIG30+GOqK/9OlLVyLg3HPnr6SqOWTWOXKRwC2eGYCkZ59NNuSgvSrpgOA==}
     engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
     dependencies:
       data-uri-to-buffer: 4.0.1
@@ -6264,7 +6264,7 @@ packages:
       fast-diff: 1.3.0
     dev: true
 
-  /prettier-plugin-tailwindcss@0.4.1(prettier@3.0.0):
+  /prettier-plugin-tailwindcss@0.4.1(prettier@3.0.1):
     resolution: {integrity: sha512-hwn2EiJmv8M+AW4YDkbjJ6HlZCTzLyz1QlySn9sMuKV/Px0fjwldlB7tol8GzdgqtkdPtzT3iJ4UzdnYXP25Ag==}
     engines: {node: '>=12.17.0'}
     peerDependencies:
@@ -6316,11 +6316,11 @@ packages:
       prettier-plugin-twig-melody:
         optional: true
     dependencies:
-      prettier: 3.0.0
+      prettier: 3.0.1
     dev: true
 
-  /prettier@3.0.0:
-    resolution: {integrity: sha512-zBf5eHpwHOGPC47h0zrPyNn+eAEIdEzfywMoYn2XPi0P44Zp0tSq64rq0xAREh4auw2cJZHo9QUob+NqCQky4g==}
+  /prettier@3.0.1:
+    resolution: {integrity: sha512-fcOWSnnpCrovBsmFZIGIy9UqK2FaI7Hqax+DIO0A9UxeVoY4iweyaFjS5TavZN97Hfehph0nhsZnjlVKzEQSrQ==}
     engines: {node: '>=14'}
     hasBin: true
     dev: true
@@ -6362,7 +6362,7 @@ packages:
       '@protobufjs/path': 1.1.2
       '@protobufjs/pool': 1.1.0
       '@protobufjs/utf8': 1.1.0
-      '@types/node': 20.4.5
+      '@types/node': 20.4.6
       long: 5.2.3
     dev: false
 
