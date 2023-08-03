@@ -77,7 +77,7 @@ export const FoobarPixel = () => {
 	// }, [pathname]);
 
 	return hasMounted && unlocked ? (
-		<span>
+		<span className="col-start-2 col-end-3">
 			<code>
 				<LinkTo href="/foobar" style={{ border: "none" }}>
 					resume /foobar
