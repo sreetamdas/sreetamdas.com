@@ -1,4 +1,5 @@
-import { useEffect, useRef, useState } from "react";
+import { random } from "lodash-es";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 export function useHasMounted() {
 	const [hasMounted, setHasMounted] = useState(false);
@@ -33,4 +34,73 @@ export function useInterval(callback: CallbackFn, delay: Delay) {
 			return () => clearInterval(intervalId);
 		}
 	}, [delay]);
+}
+
+export function useRandomInterval(
+	callback: () => void,
+	minDelay: null | number,
+	maxDelay: null | number
+) {
+	const timeoutId = useRef<number | undefined>();
+	const savedCallback = useRef(callback);
+	useEffect(() => {
+		savedCallback.current = callback;
+	});
+	useEffect(() => {
+		if (typeof minDelay === "number" && typeof maxDelay === "number") {
+			const handleTick = () => {
+				const nextTickAt = random(minDelay, maxDelay);
+				timeoutId.current = window.setTimeout(() => {
+					savedCallback.current();
+					handleTick();
+				}, nextTickAt);
+			};
+			handleTick();
+		}
+
+		return () => window.clearTimeout(timeoutId.current);
+	}, [minDelay, maxDelay]);
+	const cancel = useCallback(function () {
+		window.clearTimeout(timeoutId.current);
+	}, []);
+	return cancel;
+}
+
+const QUERY = "(prefers-reduced-motion: no-preference)";
+const isRenderingOnServer = typeof window === "undefined";
+function getInitialState() {
+	// For our initial server render, we won't know if the user
+	// prefers reduced motion, but it doesn't matter. This value
+	// will be overwritten on the client, before any animations
+	// occur.
+	return isRenderingOnServer ? true : !window.matchMedia(QUERY).matches;
+}
+/**
+ * Get user's preference for reduced-motion
+ * @returns preference for reduced-motion
+ */
+export function usePrefersReducedMotion() {
+	const [prefersReducedMotion, setPrefersReducedMotion] = useState(getInitialState);
+
+	useEffect(() => {
+		const mediaQueryList = window.matchMedia(QUERY);
+		function listener(event: MediaQueryListEvent) {
+			setPrefersReducedMotion(!event.matches);
+		}
+
+		if (mediaQueryList.addEventListener) {
+			mediaQueryList.addEventListener("change", listener);
+		} else {
+			mediaQueryList.addListener(listener);
+		}
+		return () => {
+			if (mediaQueryList.removeEventListener) {
+				mediaQueryList.removeEventListener("change", listener);
+			} else {
+				mediaQueryList.removeListener(listener);
+			}
+		};
+	}, []);
+
+	return prefersReducedMotion;
 }
