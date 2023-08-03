@@ -19,6 +19,12 @@ export default {
 			borderRadius: {
 				global: "var(--border-radius)",
 			},
+			keyframes: {
+				"grow-shrink": {
+					"0%, 100%": { transform: "scale(0)" },
+					"50%": { transform: "scale(1)" },
+				},
+			},
 		},
 	},
 	darkMode: ["class", '[data-color-scheme="dark"]'],
