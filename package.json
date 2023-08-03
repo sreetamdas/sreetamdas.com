@@ -78,6 +78,7 @@
 		"eslint-plugin-prettier": "^5.0.0",
 		"eslint-plugin-react": "^7.33.1",
 		"eslint-plugin-react-hooks": "^4.6.0",
+		"next-sitemap": "^4.1.8",
 		"postcss": "^8.4.27",
 		"prettier": "^3.0.1",
 		"prettier-plugin-tailwindcss": "^0.4.1",
