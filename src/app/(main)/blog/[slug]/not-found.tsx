@@ -1,4 +1,4 @@
-export default function NewsletterEmailNotFound() {
+export default function BlogPostNotFound() {
 	return (
 		<>
 			<h1>Not Found</h1>
