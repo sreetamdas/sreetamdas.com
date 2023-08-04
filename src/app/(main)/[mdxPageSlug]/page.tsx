@@ -12,7 +12,7 @@ export async function generateStaticParams() {
 		if (skip_page) return [];
 
 		return {
-			slug: page_slug,
+			mdxPageSlug: page_slug,
 		};
 	});
 }
