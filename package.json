@@ -23,7 +23,6 @@
 	"dependencies": {
 		"@mdx-js/loader": "^2.3.0",
 		"@mdx-js/react": "^2.3.0",
-		"@notionhq/client": "^2.2.10",
 		"@octokit/core": "^5.0.0",
 		"@sentry/nextjs": "^7.61.0",
 		"@sreetamdas/karma": "3.1.1",
@@ -58,6 +57,7 @@
 	"devDependencies": {
 		"@next/bundle-analyzer": "^13.4.12",
 		"@next/eslint-plugin-next": "^13.4.12",
+		"@notionhq/client": "^2.2.10",
 		"@types/eslint": "^8.44.1",
 		"@types/eslint-plugin-prettier": "^3.1.0",
 		"@types/lodash-es": "^4.17.8",
