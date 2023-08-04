@@ -1,4 +1,3 @@
-import { Client as NotionClient } from "@notionhq/client";
 import { type PageObjectResponse } from "@notionhq/client/build/src/api-endpoints";
 import { isEmpty, isUndefined } from "lodash-es";
 import { Suspense } from "react";
@@ -6,6 +5,7 @@ import { Suspense } from "react";
 import { Image } from "@/lib/components/Image";
 import { ViewsCounter } from "@/lib/components/ViewsCounter";
 import { type KeebDetails, ImgurClient } from "@/lib/domains/Imgur";
+import { NotionClient } from "@/lib/domains/Notion";
 
 const KEEBS_DATABASE_ID = process.env.NOTION_KEEBS_PAGE_ID;
 
@@ -54,10 +54,9 @@ export default async function KeebsPage() {
 	);
 }
 
-const propertiesToRetrieve = ["Name", "Image", "Type"] as const;
-type PropertiesToRetrieve = (typeof propertiesToRetrieve)[number];
+const propertiesToRetrieve = ["Name", "Type", "Image"];
 async function getKeebsFromNotion() {
-	const notionClient = new NotionClient({ auth: process.env.NOTION_TOKEN });
+	const notionClient = new NotionClient({ token: process.env.NOTION_TOKEN });
 	const imgurClient = new ImgurClient({
 		client_id: process.env.IMGUR_API_CLIENT_ID,
 		album_url: process.env.IMGUR_KEEBS_ALBUM_HASH,
@@ -67,22 +66,18 @@ async function getKeebsFromNotion() {
 		throw new Error("Keebs database ID is undefined");
 	}
 
-	const { results } = await notionClient.databases.query({
-		database_id: KEEBS_DATABASE_ID,
+	const { results } = await notionClient.queryDatabase(KEEBS_DATABASE_ID, {
 		filter: {
 			and: [
 				{ property: "Bought", checkbox: { equals: true } },
 				{ property: "Type", multi_select: { does_not_contain: "Switches" } },
 			],
 		},
+		filter_properties: propertiesToRetrieve,
 	});
 
-	const keebsDetailsFormatted = (results as Array<PageObjectResponse>)?.map((keebDetails) => {
-		const keebDetailsFormatted = (
-			Object.keys(keebDetails.properties) as Array<
-				PropertiesToRetrieve | (string & Record<never, never>)
-			>
-		).reduce((details, property) => {
+	const keebsDetailsFormatted = results?.map((keebDetails) => {
+		const keebDetailsFormatted = Object.keys(keebDetails.properties).reduce((details, property) => {
 			const propertyValue = keebDetails.properties[property];
 
 			if (propertyValue.type === "title") {
