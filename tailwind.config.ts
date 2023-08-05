@@ -1,5 +1,6 @@
 import { type Config } from "tailwindcss";
 import defaultTheme from "tailwindcss/defaultTheme";
+import plugin from "tailwindcss/plugin";
 
 export default {
 	content: ["./src/**/*.{js,ts,jsx,tsx}"],
@@ -28,5 +29,9 @@ export default {
 		},
 	},
 	darkMode: ["class", '[data-color-scheme="dark"]'],
-	plugins: [],
+	plugins: [
+		plugin(function ({ addVariant }) {
+			addVariant("children", "&>*");
+		}),
+	],
 } satisfies Config;
