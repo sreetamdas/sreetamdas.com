@@ -33,6 +33,7 @@ export const customMDXComponents: MDXComponents = {
 	code: Code,
 	pre: CodeBlock,
 	ul: UnorderedList,
+	// @ts-expect-error safer img
 	img: Image,
 	hr: () => <hr className="my-3" />,
 };
