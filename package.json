@@ -24,6 +24,7 @@
 		"@mdx-js/loader": "^2.3.0",
 		"@mdx-js/react": "^2.3.0",
 		"@octokit/core": "^5.0.0",
+		"@radix-ui/react-switch": "^1.0.3",
 		"@sentry/nextjs": "^7.61.0",
 		"@sreetamdas/karma": "3.1.1",
 		"@supabase/supabase-js": "^2.31.0",
