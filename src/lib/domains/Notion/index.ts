@@ -63,7 +63,7 @@ export class NotionClient {
 			const property_ids = await this.getPropertiesIDs(database_id, filter_properties);
 
 			filter_properties_query =
-				"?" + property_ids?.map(({ id }) => `filter_properties=[${id}]`).join("&");
+				"?" + property_ids?.map(({ id }) => `filter_properties=${id}`).join("&");
 		}
 
 		const query_string = `https://api.notion.com/v1/databases/${database_id}/query${filter_properties_query}`;
