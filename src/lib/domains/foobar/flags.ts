@@ -38,8 +38,7 @@ export const initialFoobarData: FoobarDataType = {
 };
 
 export type FoobarSchrodingerProps = {
-	completedPage?: FoobarPageSlug;
-	unlocked?: boolean;
+	completedPage: FoobarPageSlug;
 };
 
 export type FoobarSliceType = {

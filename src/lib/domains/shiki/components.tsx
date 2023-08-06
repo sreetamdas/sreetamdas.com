@@ -29,41 +29,46 @@ export const CodeBlock = (props: CodeBlockProps) => {
 	}
 
 	return (
-		<pre
-			className="my-5 -ml-12 -mr-5 overflow-x-scroll rounded-global p-5 text-sm max-md:-ml-6"
-			style={style}
-		>
-			<span className="float-right -mt-5 rounded-b-global bg-zinc-800 px-1 py-2 text-zinc-400">
-				{language.toLocaleUpperCase()}
-			</span>
-			{Array.isArray(children) ? (
-				<code>
-					{children
-						?.filter((line) => line !== "\n")
-						.map((line, i) => (
-							<span
-								key={i}
-								className={clsx(
-									"block",
-									shouldHighlightLine(i) && "-mx-5 border-l-4 border-[#a86efd] bg-[#FFFFFF20] px-4"
-								)}
-							>
+		<div className="my-5 flex flex-col">
+			<div className="flex items-end">
+				<span className="rounded-t-global bg-zinc-800 px-2 py-1 font-mono text-zinc-400">
+					{language.toLocaleUpperCase()}
+				</span>
+			</div>
+			<pre
+				className="-ml-12 -mr-5 overflow-x-scroll rounded-global p-5 text-sm max-md:-ml-6"
+				style={style}
+			>
+				{Array.isArray(children) ? (
+					<code>
+						{children
+							?.filter((line) => line !== "\n")
+							.map((line, i) => (
 								<span
+									key={i}
 									className={clsx(
-										"-ml-2 mr-2 hidden w-[2rem] select-none pr-2 text-right text-zinc-600 md:inline-block",
-										shouldHighlightLine(i) && "text-[#a86efd]"
+										"block",
+										shouldHighlightLine(i) &&
+											"-mx-5 border-l-4 border-[#a86efd] bg-[#a86efd15] px-4"
 									)}
 								>
-									{i + 1}
+									<span
+										className={clsx(
+											"-ml-2 mr-2 hidden w-[2rem] select-none pr-2 text-right text-zinc-600 md:inline-block",
+											shouldHighlightLine(i) && "text-[#a86efd]"
+										)}
+									>
+										{i + 1}
+									</span>
+									{line}
 								</span>
-								{line}
-							</span>
-						))}
-				</code>
-			) : (
-				"asd"
-			)}
-		</pre>
+							))}
+					</code>
+				) : (
+					"asd"
+				)}
+			</pre>
+		</div>
 	);
 };
 

@@ -1,27 +1,13 @@
-"use client";
+import { Suspense } from "react";
 
-import GlobalNotFound from "@/app/not-found";
-import { useGlobalStore } from "@/lib/domains/global";
+import { ViewsCounter } from "@/lib/components/ViewsCounter";
+import { FoobarSchrodinger } from "@/lib/domains/foobar/Dashboard";
 
-/**
- * Foobar page, that is only shown once foobar is unlocked
- * @param completedPage foobar page that is being currently accessed
- */
-const FoobarSchrodinger = () => {
-	const { unlocked } = useGlobalStore((state) => ({
-		unlocked: state.foobarData.unlocked,
-	}));
-
-	if (!unlocked) {
-		return <FoobarButLocked />;
-	}
-	return <h1>UNLOCKED</h1>;
-};
-
-export default FoobarSchrodinger;
-
-const FoobarButLocked = () => (
-	<GlobalNotFound
-		message={<p className="pt-5 text-center text-xs">psst, you should check the console!</p>}
-	/>
-);
+export default function FoobarArchivePage() {
+	return (
+		<Suspense>
+			<FoobarSchrodinger completedPage="/" />
+			<ViewsCounter slug="/foobar" />
+		</Suspense>
+	);
+}
