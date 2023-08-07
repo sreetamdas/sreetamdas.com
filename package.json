@@ -24,15 +24,17 @@
 		"@mdx-js/loader": "^2.3.0",
 		"@mdx-js/react": "^2.3.0",
 		"@octokit/core": "^5.0.0",
+		"@radix-ui/react-alert-dialog": "^1.0.4",
 		"@radix-ui/react-switch": "^1.0.3",
+		"@radix-ui/react-toast": "^1.1.4",
 		"@sentry/nextjs": "^7.61.1",
 		"@sreetamdas/karma": "3.1.1",
-		"@supabase/supabase-js": "^2.31.0",
+		"@supabase/supabase-js": "^2.32.0",
 		"@tanstack/react-query": "5.0.0-alpha.88",
 		"clsx": "^2.0.0",
 		"contentlayer": "^0.3.4",
 		"date-fns": "^2.30.0",
-		"esbuild": "^0.18.18",
+		"esbuild": "^0.18.19",
 		"framer-motion": "^10.15.0",
 		"lodash-es": "^4.17.21",
 		"markdown-wasm": "^1.2.0",
@@ -53,7 +55,7 @@
 		"server-only": "^0.0.1",
 		"shiki": "^0.14.3",
 		"unist-util-visit": "^5.0.0",
-		"zustand": "4.4.0"
+		"zustand": "4.4.1"
 	},
 	"devDependencies": {
 		"@next/bundle-analyzer": "^13.4.12",
