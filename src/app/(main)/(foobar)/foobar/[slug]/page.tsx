@@ -1,20 +1,19 @@
 import { notFound } from "next/navigation";
 
-import { FOOBAR_PAGES } from "@/lib/domains/foobar/flags";
+import { FoobarSchrodinger } from "@/lib/domains/foobar/Dashboard";
+import { type FoobarPageSlug, FOOBAR_PAGES } from "@/lib/domains/foobar/flags";
 
 type PageParams = {
-	params: { slug: string };
+	params: { slug: Exclude<FoobarPageSlug, "/"> };
 };
 export default function FoobarCompletedPage({ params: { slug } }: PageParams) {
 	const all_foobar_pages_slugs = getAllFoobarPagesSlugs();
 
-	// FIXME expand string union
-	// @ts-expect-error expand string union
 	if (!all_foobar_pages_slugs.includes(slug)) {
 		notFound();
 	}
 
-	return <h1 className="font-heading font-serif text-8xl">/{slug}</h1>;
+	return <FoobarSchrodinger completedPage={slug} />;
 }
 
 export function generateStaticParams() {
