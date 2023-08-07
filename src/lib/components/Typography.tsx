@@ -11,6 +11,7 @@ import { FaLongArrowAltRight } from "react-icons/fa";
 import { FiLink } from "react-icons/fi";
 
 import { LinkTo } from "@/lib/components/Anchor";
+import { cn } from "@/lib/helpers/utils";
 
 type HeadingProps = DetailedHTMLProps<HTMLAttributes<HTMLHeadingElement>, HTMLHeadingElement>;
 const getHeading = (
@@ -56,10 +57,12 @@ export const UnorderedList = (props: HTMLAttributes<HTMLUListElement>) => (
 	</ul>
 );
 
-export const Code = ({ children, ...props }: HTMLAttributes<HTMLUListElement>) => (
+export const Code = ({ children, className, ...props }: HTMLAttributes<HTMLSpanElement>) => (
 	<code
-		className="mx-0.5 rounded bg-foreground/10 p-1 font-mono text-sm 
-		transition-[color,background-color] dark:bg-foreground/20"
+		className={cn(
+			"mx-0.5 rounded bg-foreground/10 p-1 font-mono text-sm transition-[color,background-color] dark:bg-foreground/20",
+			className
+		)}
 		{...props}
 	>
 		{children}

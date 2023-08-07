@@ -54,6 +54,12 @@ export const FoobarDashboard = ({ completedPage }: FoobarSchrodingerProps) => {
 	return (
 		<>
 			<UnlockedAchievementBanner completedPage={completedPage} />
+			{IS_DEV && (
+				<pre className="my-5 rounded-global bg-foreground/10 p-6 font-mono text-sm transition-colors dark:bg-foreground/20">
+					<h2 className="text-4xl font-bold">DEV</h2>
+					{JSON.stringify(foobarData, null, 2)}
+				</pre>
+			)}
 			<ShowCompletedBadges
 				completed={foobarData.completed}
 				allAchievements={foobarData.allAchievements}
@@ -62,12 +68,6 @@ export const FoobarDashboard = ({ completedPage }: FoobarSchrodingerProps) => {
 			{/* <Center>
 				<SupportSreetamDas />
 			</Center> */}
-			{IS_DEV && (
-				<pre className="mx-0.5 rounded bg-foreground/10 p-6 font-mono text-sm transition-[color,background-color] dark:bg-foreground/20">
-					<h2>DEV</h2>
-					{JSON.stringify(foobarData, null, 2)}
-				</pre>
-			)}
 			{/* <Terminal {...{ visible: terminalVisible, toggleTerminal }} /> */}
 			{/* {!terminalVisible && <KonamiWrapper />} */}
 			<XMarksTheSpot foobar="/foobar/devtools" />
@@ -77,18 +77,16 @@ export const FoobarDashboard = ({ completedPage }: FoobarSchrodingerProps) => {
 
 const UnlockedAchievementBanner = ({ completedPage }: FoobarSchrodingerProps) =>
 	completedPage && completedPage !== "/" ? (
-		<h1>
+		<h1 className="pb-5 pt-20 text-center text-6xl font-bold leading-normal">
 			— You&apos;ve unlocked —
 			<br />
-			<code>
-				<span role="img" aria-label="sparkle">
-					✨
-				</span>{" "}
-				{completedPage}{" "}
-				<span role="img" aria-label="sparkle">
-					✨
-				</span>
-			</code>
+			<span role="img" aria-label="sparkle">
+				✨
+			</span>{" "}
+			<Code className="text-5xl">{completedPage}</Code>{" "}
+			<span role="img" aria-label="sparkle">
+				✨
+			</span>
 		</h1>
 	) : null;
 
