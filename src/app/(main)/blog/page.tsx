@@ -1,6 +1,10 @@
-import { IS_DEV } from "@/config";
+import { IS_DEV, SITE_TITLE_APPEND } from "@/config";
 import { LinkTo } from "@/lib/components/Anchor";
 import { allBlogPosts } from "contentlayer/generated";
+
+export const metadata = {
+	title: `Blog ${SITE_TITLE_APPEND}`,
+};
 
 export default async function BlogArchivePage() {
 	const blog_posts_previews = await getAllBlogPostsPreviewsData();

@@ -12,11 +12,16 @@ import {
 	FaDiscord,
 } from "react-icons/fa";
 
+import { SITE_TITLE_APPEND } from "@/config";
 import { LinkTo } from "@/lib/components/Anchor";
 import { MDXContent } from "@/lib/components/MDX";
 import { ViewsCounter } from "@/lib/components/ViewsCounter";
 import { FoobarEntry } from "@/lib/domains/foobar/Entry";
 import { allPages } from "contentlayer/generated";
+
+export const metadata = {
+	title: `About ${SITE_TITLE_APPEND}`,
+};
 
 export default function AboutPage() {
 	const post = allPages.find((page) => page.page_path === "/about");

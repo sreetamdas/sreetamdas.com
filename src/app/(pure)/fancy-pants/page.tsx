@@ -1,6 +1,12 @@
 import { ImArrowUpRight2 } from "react-icons/im";
 
+import { SITE_TITLE_APPEND } from "@/config";
 import { ChameleonHighlight } from "@/lib/components/Typography.client";
+
+export const metadata = {
+	title: `Fancy Pants ${SITE_TITLE_APPEND}`,
+	description: "Sreetam Das' fancy-shmancy landing page",
+};
 
 export default function FancyPantsPage() {
 	// TODO Set dark mode

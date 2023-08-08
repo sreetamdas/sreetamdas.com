@@ -2,12 +2,17 @@ import { type PageObjectResponse } from "@notionhq/client/build/src/api-endpoint
 import { isEmpty, isUndefined } from "lodash-es";
 import { Suspense } from "react";
 
+import { SITE_TITLE_APPEND } from "@/config";
 import { Image } from "@/lib/components/Image";
 import { ViewsCounter } from "@/lib/components/ViewsCounter";
 import { type KeebDetails, ImgurClient } from "@/lib/domains/Imgur";
 import { NotionClient } from "@/lib/domains/Notion";
 
 const KEEBS_DATABASE_ID = process.env.NOTION_KEEBS_PAGE_ID;
+
+export const metadata = {
+	title: `Keebs ${SITE_TITLE_APPEND}`,
+};
 
 export type KeebDetailsFromNotion = Omit<KeebDetails, "image"> & {
 	image: Omit<KeebDetails["image"], "height" | "width">;

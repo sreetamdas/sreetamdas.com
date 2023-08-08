@@ -1,3 +1,4 @@
+import { type Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { MDXContent } from "@/lib/components/MDX";
@@ -6,16 +7,6 @@ import { RepoContributors } from "@/lib/domains/GitHub";
 import { allPages } from "contentlayer/generated";
 
 export const dynamicParams = false;
-
-export async function generateStaticParams() {
-	return allPages.flatMap(({ page_slug, skip_page }) => {
-		if (skip_page) return [];
-
-		return {
-			mdxPageSlug: page_slug,
-		};
-	});
-}
 
 type PageParams = {
 	params: {
@@ -35,4 +26,24 @@ export default async function MDXPageSlugPage({ params: { mdxPageSlug } }: PageP
 			<ViewsCounter slug={`/${mdxPageSlug}`} />
 		</>
 	);
+}
+
+export async function generateStaticParams() {
+	return allPages.flatMap(({ page_slug, skip_page }) => {
+		if (skip_page) return [];
+
+		return {
+			mdxPageSlug: page_slug,
+		};
+	});
+}
+
+export async function generateMetadata({ params: { mdxPageSlug } }: PageParams): Promise<Metadata> {
+	const post = allPages.find((page) => page.page_slug === mdxPageSlug);
+
+	return {
+		title: post?.seo_title ?? post?.title,
+		description: post?.description,
+		// TODO add image
+	};
 }

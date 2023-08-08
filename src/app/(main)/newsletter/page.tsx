@@ -1,7 +1,15 @@
 import { NewsletterEmailsPreviews } from "./components";
 import { fetchNewsletterEmails } from "./helpers";
 
+import { SITE_TITLE_APPEND } from "@/config";
+
 // import { useSupabaseSession } from "@/domains/Supabase";
+
+export const metadata = {
+	title: `Newsletter ${SITE_TITLE_APPEND}`,
+	description:
+		"Curated links keeping up with the JavaScript, React and webdev world. And mechanical keyboards!",
+};
 
 export default async function NewsletterEmailsPage() {
 	const newsletter_emails_previews_data = await getNewsletterEmailsPreviewsData();

@@ -1,3 +1,4 @@
+import { type Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Balancer } from "react-wrap-balancer";
 
@@ -21,6 +22,16 @@ import { allBlogPosts } from "contentlayer/generated";
 
 export const dynamicParams = false;
 
+export async function generateMetadata({ params }: PageParams): Promise<Metadata> {
+	const post = allBlogPosts.find((page) => page.page_slug === params.slug);
+
+	return {
+		title: post?.seo_title ?? post?.title,
+		description: post?.description,
+		// TODO add image
+	};
+}
+
 export async function generateStaticParams() {
 	return allBlogPosts.map((post) => ({
 		slug: post.page_slug,
@@ -32,7 +43,7 @@ type PageParams = {
 		slug: string;
 	};
 };
-const BlogPage = ({ params }: PageParams) => {
+export default function BlogPage({ params }: PageParams) {
 	const post = allBlogPosts.find((page) => page.page_slug === params.slug);
 
 	if (!post) notFound();
@@ -75,6 +86,4 @@ const BlogPage = ({ params }: PageParams) => {
 			<ViewsCounter slug={post.url ?? post.page_path} />
 		</>
 	);
-};
-
-export default BlogPage;
+}

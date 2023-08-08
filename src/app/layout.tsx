@@ -2,7 +2,7 @@ import "./global.css";
 
 import PlausibleProvider from "next-plausible";
 
-import { SITE_URL } from "@/config";
+import { SITE_TITLE_APPEND, SITE_URL } from "@/config";
 import { blockingScriptSetInitialColorScheme } from "@/lib/domains/colorScheme/blockingScript";
 import { inter_font, iosevka_font, eb_garamond_font } from "@/lib/styles/fonts";
 
@@ -37,18 +37,19 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 }
 
 export const metadata = {
-	title: "Hello hello! | Sreetam Das",
+	metadataBase: new URL(SITE_URL),
+	title: `Hello hello! ${SITE_TITLE_APPEND}`,
 	description:
 		"Senior software tinkerer from India. 💜 React, Elixir and TypeScript, CS:GO and mechanical keyboards!",
 	openGraph: {
-		title: "👋 Hello! | Sreetam Das",
+		title: `👋 Hello! ${SITE_TITLE_APPEND}`,
 		description:
 			"Senior software tinkerer from India. 💜 React, Elixir and TypeScript, CS:GO and mechanical keyboards!",
 		url: SITE_URL,
 		type: "website",
 	},
 	twitter: {
-		title: "👋 Hello! | Sreetam Das",
+		title: `👋 Hello! ${SITE_TITLE_APPEND}`,
 		description:
 			"Senior software tinkerer from India. 💜 React, Elixir and TypeScript, CS:GO and mechanical keyboards!",
 		card: "summary_large_image",

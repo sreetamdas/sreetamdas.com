@@ -2,7 +2,14 @@ import { Suspense } from "react";
 
 import { KarmaShowcase } from "./Showcase";
 
+import { SITE_TITLE_APPEND } from "@/config";
 import { ViewsCounter } from "@/lib/components/ViewsCounter";
+
+export const metadata = {
+	title: `Karma ${SITE_TITLE_APPEND}`,
+	description: "A colorful VS Code theme by Sreetam Das",
+	// TODO add image for /karma
+};
 
 export default function KarmaPage() {
 	return (
