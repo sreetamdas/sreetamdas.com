@@ -27,7 +27,7 @@ async function getNewsletterEmailsSlugs() {
 async function getNewsletterEmailsDataBySlug(slug: string) {
 	const buttondown_api_emails_response = await fetchNewsletterEmails();
 	const newsletter_email_by_slug = buttondown_api_emails_response.results.find(
-		(issue) => issue.slug === slug
+		(issue) => issue.slug === slug,
 	);
 
 	if (typeof newsletter_email_by_slug === "undefined") {
