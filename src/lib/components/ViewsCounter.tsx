@@ -1,6 +1,6 @@
 import { clsx } from "clsx";
 
-import { IS_DEV } from "@/config";
+import { IS_CI, IS_DEV } from "@/config";
 import { getPageViews, upsertPageViews } from "@/lib/domains/Supabase";
 
 type ViewsCounterProps = {
@@ -24,7 +24,7 @@ export const ViewsCounter = async ({
 	const { data, error } = disabled ? await getPageViews(slug) : await upsertPageViews(slug);
 
 	// eslint-disable-next-line no-console
-	console.log({ data, slug, CI: process.env.CI, error });
+	console.log({ data, slug, CI: IS_CI, error });
 
 	return (
 		<div
