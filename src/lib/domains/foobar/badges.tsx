@@ -67,7 +67,7 @@ const Badge = ({ badge, completed, allAchievements }: BadgeProps) => {
 			onClick={() => setClicks(clicks + 1)}
 			className={clsx(
 				"group grid grid-cols-[max-content_1fr] items-center gap-4 rounded-global border-2 p-4 text-4xl transition-colors",
-				isUnlocked ? "border-primary text-primary" : "border-zinc-400 text-zinc-400"
+				isUnlocked ? "border-primary text-primary" : "border-zinc-400 text-zinc-400",
 			)}
 		>
 			<FoobarBadge badge={badge} />

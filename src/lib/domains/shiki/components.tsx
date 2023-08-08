@@ -49,13 +49,13 @@ export const CodeBlock = (props: CodeBlockProps) => {
 									className={clsx(
 										"block",
 										shouldHighlightLine(i) &&
-											"-mx-5 border-l-4 border-[#a86efd] bg-[#a86efd15] px-4"
+											"-mx-5 border-l-4 border-[#a86efd] bg-[#a86efd15] px-4",
 									)}
 								>
 									<span
 										className={clsx(
 											"-ml-2 mr-2 hidden w-[2rem] select-none pr-2 text-right text-zinc-600 md:inline-block",
-											shouldHighlightLine(i) && "text-[#a86efd]"
+											shouldHighlightLine(i) && "text-[#a86efd]",
 										)}
 									>
 										{i + 1}
@@ -90,7 +90,7 @@ function calculateLinesToHighlight(meta = "") {
 		return (index: number) => {
 			const lineNumber = index + 1;
 			const inRange = lineNumbers.some(([start, end]) =>
-				end ? lineNumber >= start && lineNumber <= end : lineNumber === start
+				end ? lineNumber >= start && lineNumber <= end : lineNumber === start,
 			);
 
 			return inRange;

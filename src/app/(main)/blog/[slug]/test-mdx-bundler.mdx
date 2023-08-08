@@ -54,7 +54,7 @@ const htmlEscapes = {
 function escapeHtml(html: string) {
   return html.replace(
     /[&<>"']/g,
-    (chr) => htmlEscapes[chr as keyof typeof htmlEscapes]
+    (chr) => htmlEscapes[chr as keyof typeof htmlEscapes],
   );
 }
 ```

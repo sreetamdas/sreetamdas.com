@@ -51,7 +51,7 @@ export async function getPageViews(slug: string): Promise<PageViewCountResponse>
 					"Content-Type": "application/json",
 					...supabase_headers,
 				},
-			}
+			},
 		);
 
 		const response: Array<PageViewCount> = await request.json();
@@ -90,7 +90,7 @@ export async function upsertPageViews(slug: string): Promise<PageViewCountRespon
 				body: JSON.stringify({
 					page_slug: slug,
 				}),
-			}
+			},
 		);
 
 		const view_count: number = await request.json();

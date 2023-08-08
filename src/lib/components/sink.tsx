@@ -11,7 +11,7 @@ export const InfoBlock = (props: InfoBlockProps) => {
 		<aside
 			className={clsx(
 				"my-5 -ml-12 -mr-5 rounded-global py-5 pl-12 pr-5",
-				type === "info" ? "border-l-4 border-l-indigo-500 bg-indigo-100 dark:bg-indigo-950" : ""
+				type === "info" ? "border-l-4 border-l-indigo-500 bg-indigo-100 dark:bg-indigo-950" : "",
 			)}
 		>
 			{children}

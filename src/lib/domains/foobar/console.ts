@@ -7,11 +7,11 @@ export function logConsoleMessages() {
 		font-weight: bold;
 		font-size: 1.1em;
 		background-color: black;
-		line-height: 1.1`
+		line-height: 1.1`,
 	);
 	console.log(
 		`        %c${CONSOLE_GREETING}`,
-		"font-size: 1.5em; font-family: monospace; font-weight: bold;"
+		"font-size: 1.5em; font-family: monospace; font-weight: bold;",
 	);
 
 	console.log(`%c${CONSOLE_MESSAGE}`, "font-size: 1.1em; font-family: monospace");
@@ -24,7 +24,7 @@ export function logConsoleMessages() {
 		`%c${CONSOLE_X2}`,
 		"font-family: monospace",
 		"font-weight: bold; font-size: 1.5em;",
-		"font-weight: normal; font-size: unset;"
+		"font-weight: normal; font-size: unset;",
 	);
 
 	console.groupCollapsed("Need some more help?");

@@ -18,7 +18,7 @@ const getHeading = (
 	// TODO narrow type here
 	el: keyof ReactHTML,
 	// propsWithoutChildren contains `id` attr here
-	{ children, ...propsWithoutChildren }: HeadingProps
+	{ children, ...propsWithoutChildren }: HeadingProps,
 ) => {
 	const LinkIcons = (
 		<LinkTo
@@ -61,7 +61,7 @@ export const Code = ({ children, className, ...props }: HTMLAttributes<HTMLSpanE
 	<code
 		className={cn(
 			"mx-0.5 rounded bg-foreground/10 p-1 font-mono text-sm transition-[color,background-color] dark:bg-foreground/20",
-			className
+			className,
 		)}
 		{...props}
 	>

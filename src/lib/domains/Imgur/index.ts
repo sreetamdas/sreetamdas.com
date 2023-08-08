@@ -59,7 +59,7 @@ export class ImgurClient {
 	}
 
 	async addImgurImagesData(
-		imagesData: Array<KeebDetailsFromNotion>
+		imagesData: Array<KeebDetailsFromNotion>,
 	): Promise<Array<KeebDetails | KeebDetailsFromNotion>> {
 		const albumImagesData = await this.getImgurAlbumImages();
 

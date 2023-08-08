@@ -39,7 +39,7 @@ export function useInterval(callback: CallbackFn, delay: Delay) {
 export function useRandomInterval(
 	callback: () => void,
 	minDelay: null | number,
-	maxDelay: null | number
+	maxDelay: null | number,
 ) {
 	const timeoutId = useRef<number | undefined>();
 	const savedCallback = useRef(callback);

@@ -598,7 +598,7 @@ const IndexPage = () => {
   const root = document.documentElement;
   useEffect(() => {
     const initialColorValue = root.style.getPropertyValue(
-      "--initial-color-mode"
+      "--initial-color-mode",
     );
     setDarkTheme(initialColorValue === "dark");
   }, []);

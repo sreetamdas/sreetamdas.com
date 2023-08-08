@@ -10,7 +10,7 @@ import { useGlobalStore } from "@/lib/domains/global";
 
 function getDocumentColorScheme() {
 	const documentColorScheme = window.document.documentElement.style.getPropertyValue(
-		"--initial-color-scheme"
+		"--initial-color-scheme",
 	) as NonNullable<ColorSchemeSliceType["colorScheme"]> | "";
 
 	return documentColorScheme;
@@ -56,7 +56,7 @@ export const ColorSchemeToggle = () => {
 	}));
 
 	function handleColorSchemeToggle(
-		override?: Exclude<ReturnType<typeof getDocumentColorScheme>, "">
+		override?: Exclude<ReturnType<typeof getDocumentColorScheme>, "">,
 	) {
 		const { value } = colorSchemeIterator.next(override);
 

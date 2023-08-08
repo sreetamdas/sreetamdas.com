@@ -30,7 +30,7 @@ export const ViewsCounter = async ({
 		<div
 			className={clsx(
 				"mx-auto mb-5 mt-auto w-full flex-row items-center justify-center gap-2 pt-40",
-				hidden ? "hidden" : "flex"
+				hidden ? "hidden" : "flex",
 			)}
 		>
 			<span role="img" aria-label="eyes">

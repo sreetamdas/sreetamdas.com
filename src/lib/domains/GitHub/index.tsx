@@ -50,7 +50,7 @@ export const RepoContributors = async () => {
 								<p className="m-0 pb-2 text-sm">{login}</p>
 							</div>
 						</LinkTo>
-					)
+					),
 			)}
 		</div>
 	);

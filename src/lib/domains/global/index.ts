@@ -17,5 +17,5 @@ export const useGlobalStore = create<CombinedState>()(
 		onRehydrateStorage: () => (state) => {
 			state?.setHasHydrated(true);
 		},
-	})
+	}),
 );

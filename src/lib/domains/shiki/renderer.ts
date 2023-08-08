@@ -22,7 +22,7 @@ const defaultElements: NonNullable<HtmlRendererOptions["elements"]> = {
 export function renderToHtml(
 	lines: IThemedToken[][],
 	options: HtmlRendererOptions = {},
-	meta: string | null
+	meta: string | null,
 ) {
 	const bg = options.bg || "#fff";
 	// const optionsByLineNumber = groupBy(options.lineOptions ?? [], (option) => option.line);
@@ -81,11 +81,11 @@ export function renderToHtml(
 							return h("token", { style: cssDeclarations.join("; "), tokens: line, token, index }, [
 								escapeHtml(token.content),
 							]);
-						})
-					)
-				)
+						}),
+					),
+				),
 			),
-		]
+		],
 	);
 }
 

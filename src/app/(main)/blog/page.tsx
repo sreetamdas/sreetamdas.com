@@ -29,7 +29,7 @@ export default async function BlogArchivePage() {
 								</p>
 							</div>
 						</article>
-					)
+					),
 				)}
 			</section>
 		</>

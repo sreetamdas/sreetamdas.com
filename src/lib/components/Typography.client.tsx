@@ -49,7 +49,7 @@ export const ChameleonHighlight = ({
 		<span
 			className={clsx(
 				"transition-colors duration-[3000ms] ease-linear [color:var(--color-fancy-pants,rgb(var(--color-primary)))]",
-				passedClasses
+				passedClasses,
 			)}
 		>
 			{children}
@@ -101,7 +101,7 @@ export const Sparkles = ({
 			setSparkles(nextSparkles);
 		},
 		prefersReducedMotion ? null : 50,
-		prefersReducedMotion ? null : 450
+		prefersReducedMotion ? null : 450,
 	);
 	return (
 		<span {...props} className="relative inline-block">

@@ -18,7 +18,7 @@
 		"lint": "eslint 'src/**/*.{js,jsx,ts,tsx}' --cache",
 		"lint:next": "next lint",
 		"lint:fix": "eslint 'src/**/*.{js,jsx,ts,tsx}' --cache --fix",
-		"prettier": "prettier --write 'src/**/*.{js,jsx,ts,tsx}'"
+		"prettier": "prettier 'src/**/*.{js,jsx,ts,tsx,mdx}' --write --cache"
 	},
 	"dependencies": {
 		"@mdx-js/loader": "^2.3.0",
