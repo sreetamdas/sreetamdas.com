@@ -84,6 +84,18 @@ export const Page = defineDocumentType(() => ({
 
 export default makeSource({
 	contentDirPath: "src/app",
+	contentDirExclude: [
+		"node_modules",
+		".git",
+		".yarn",
+		".cache",
+		".next",
+		".contentlayer",
+		"package.json",
+		"tsconfig.json",
+		"*/**/*.ts",
+		"*/**/*.tsx",
+	],
 	documentTypes: [BlogPost, Page],
 	mdx: {
 		resolveCwd: "relative",
