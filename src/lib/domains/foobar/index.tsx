@@ -18,6 +18,8 @@ const foobarDataSelector = (state: FoobarSliceType) => ({
 	setFoobarStoreData: state.setFoobarData,
 });
 
+// TODO: complete FoobarPixel
+
 /**
  * Entry point into /foobar
  * - Adds link to resume /foobar

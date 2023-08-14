@@ -1,3 +1,4 @@
+import { captureException } from "@sentry/nextjs";
 import { clsx } from "clsx";
 
 import { IS_CI, IS_DEV } from "@/config";
@@ -13,18 +14,14 @@ export const ViewsCounter = async ({
 	slug,
 	page_type = "page",
 	hidden = false,
-	disabled = IS_DEV,
+	disabled = IS_DEV || IS_CI,
 }: ViewsCounterProps) => {
-	if (disabled) {
-		// eslint-disable-next-line no-console
-		console.warn("ViewsCounter is disabled", { IS_DEV });
-	}
-
 	// when disabled, only read, not update and get
 	const { data, error } = disabled ? await getPageViews(slug) : await upsertPageViews(slug);
 
-	// eslint-disable-next-line no-console
-	console.log({ data, slug, CI: IS_CI, error });
+	if (error) {
+		captureException(error, { extra: { slug } });
+	}
 
 	return (
 		<div
