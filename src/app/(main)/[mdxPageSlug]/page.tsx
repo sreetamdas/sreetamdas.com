@@ -21,7 +21,6 @@ export default async function MDXPageSlugPage({ params: { mdxPageSlug } }: PageP
 	return (
 		<>
 			<h1 className="pb-20 pt-10 font-serif text-8xl">/{mdxPageSlug}</h1>
-			{/* @ts-expect-error async server component */}
 			<MDXContent code={post.body.code} components={{ RepoContributors }} />
 			<ViewsCounter slug={`/${mdxPageSlug}`} />
 		</>
