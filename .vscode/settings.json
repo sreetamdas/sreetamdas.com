@@ -7,7 +7,8 @@
 		"*.css": "tailwindcss"
 	},
 	"mdx.experimentalLanguageServer": true,
-	"tailwindCSS.experimental.classRegex": [["clsx\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"]],
+	// "tailwindCSS.experimental.classRegex": [["clsx\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"]],
+	"tailwindCSS.classAttributes": ["class", "className", "ngClass", "tw"],
 	"tailwindCSS.includeLanguages": {
 		"plaintext": "html"
 	},
