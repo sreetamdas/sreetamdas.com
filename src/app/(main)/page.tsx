@@ -5,7 +5,7 @@ import { MDXContent } from "@/lib/components/MDX";
 import { ViewsCounter } from "@/lib/components/ViewsCounter";
 import { allPages } from "contentlayer/generated";
 
-export default function Home() {
+export default function HomePage() {
 	const post = allPages.find((page) => page.page_slug === "introduction");
 
 	if (isUndefined(post)) {
