@@ -51,20 +51,24 @@ export const BlogPost = defineDocumentType(() => ({
 		},
 		structuredData: {
 			type: "json",
-			resolve: (post) => ({
-				"@context": "https://schema.org",
-				"@type": "BlogPosting",
-				headline: post.title,
-				datePublished: post.published_at,
-				dateModified: post.updated_at,
-				description: post.description,
-				image: post.image ? `${SITE_URL}${post.image}` : `${SITE_URL}${SITE_OG_IMAGE}`,
-				url: `${SITE_URL}${post.url ?? post.page_path}`,
-				author: {
-					"@type": "Person",
-					name: OWNER_NAME,
-				},
-			}),
+			resolve: (post) => {
+				const cleaned_path = `/${post._raw.flattenedPath.replace("(main)/blog/[slug]/", "blog/")}`;
+
+				return {
+					"@context": "https://schema.org",
+					"@type": "BlogPosting",
+					headline: post.title,
+					datePublished: post.published_at,
+					dateModified: post.updated_at,
+					description: post.description,
+					image: post.image ? `${SITE_URL}${post.image}` : `${SITE_URL}${SITE_OG_IMAGE}`,
+					url: `${SITE_URL}${post?.url ?? cleaned_path}`,
+					author: {
+						"@type": "Person",
+						name: OWNER_NAME,
+					},
+				};
+			},
 		},
 	},
 }));
