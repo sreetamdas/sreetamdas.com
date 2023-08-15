@@ -20,18 +20,19 @@ type ImageProps = Omit<
 	loading?: "eager" | "lazy";
 	placeholder?: PlaceholderValue;
 	unoptimized?: boolean;
-} & RefAttributes<HTMLImageElement | null> &
+} & RefAttributes<HTMLImageElement> &
 	CustomImageProps;
 export const Image = (props: ImageProps) => {
-	const { alt = " ", src, height, width, isWrapped = false } = props;
+	const { alt = " ", src, height, width, isWrapped = false, ...restProps } = props;
 
 	if (typeof src === "undefined") return null;
+
 	if ((typeof height !== "undefined" && typeof width !== "undefined") || isObject(src)) {
 		return isWrapped ? (
-			<NextImage alt={alt} src={src} height={height} width={width} quality="100" />
+			<NextImage alt={alt} src={src} height={height} width={width} quality="100" {...restProps} />
 		) : (
 			<span className="[&_img]:h-auto [&_img]:w-full [&_img]:max-w-[--max-width] [&_img]:rounded-global">
-				<NextImage alt={alt} src={src} height={height} width={width} quality="100" />
+				<NextImage alt={alt} src={src} height={height} width={width} quality="100" {...restProps} />
 			</span>
 		);
 	}
@@ -59,11 +60,11 @@ export const Image = (props: ImageProps) => {
 	// for external images
 	return isWrapped ? (
 		// eslint-disable-next-line @next/next/no-img-element
-		<img src={src} alt={alt} loading="lazy" />
+		<img src={src} alt={alt} loading="lazy" {...restProps} />
 	) : (
 		<span className="[&_img]:h-auto [&_img]:w-full [&_img]:max-w-[--max-width] [&_img]:rounded-global">
 			{/* eslint-disable-next-line @next/next/no-img-element */}
-			<img src={src} alt={alt} loading="lazy" />
+			<img src={src} alt={alt} loading="lazy" {...restProps} />
 		</span>
 	);
 };
