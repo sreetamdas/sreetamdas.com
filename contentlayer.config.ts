@@ -6,6 +6,7 @@ import remarkSlug from "remark-slug";
 import remarkToc from "remark-toc";
 
 import { OWNER_NAME, SITE_OG_IMAGE, SITE_URL } from "./src/config";
+import { rehypeImgSize } from "./src/lib/components/MDX/plugins";
 import { remarkShiki } from "./src/lib/domains/shiki";
 
 export const BlogPost = defineDocumentType(() => ({
@@ -151,6 +152,7 @@ export default makeSource({
 					],
 				},
 			],
+			[rehypeImgSize, { dir: "public" }],
 		],
 		esbuildOptions(options) {
 			options.platform = "node";
