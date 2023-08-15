@@ -7,6 +7,7 @@ import {
 	HighlightWithUseInterval,
 } from "./chameleon-text/components.client";
 
+import { SITE_OG_IMAGE, SITE_TITLE_APPEND, SITE_URL } from "@/config";
 import { MDXContent, MDXClientContent } from "@/lib/components/MDX";
 import { ReadingProgress } from "@/lib/components/ProgressBar";
 import { Gradient } from "@/lib/components/Typography";
@@ -26,9 +27,21 @@ export async function generateMetadata({ params }: PageParams): Promise<Metadata
 	const post = allBlogPosts.find((page) => page.page_slug === params.slug);
 
 	return {
-		title: post?.seo_title ?? post?.title,
+		title: `${post?.seo_title ?? post?.title} ${SITE_TITLE_APPEND}`,
 		description: post?.description,
-		// TODO add image
+		openGraph: {
+			title: `${post?.seo_title ?? post?.title} ${SITE_TITLE_APPEND}`,
+			description: post?.description,
+			type: "article",
+			url: `${SITE_URL}/blog/${params.slug}`,
+			images: [{ url: post?.image ?? SITE_OG_IMAGE }],
+		},
+		twitter: {
+			card: "summary_large_image",
+			title: `${post?.seo_title ?? post?.title} ${SITE_TITLE_APPEND}`,
+			description: post?.description,
+			images: [post?.image ?? SITE_OG_IMAGE],
+		},
 	};
 }
 

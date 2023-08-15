@@ -19,6 +19,7 @@ export const BlogPost = defineDocumentType(() => ({
 		updated_at: { type: "date", required: false },
 		published: { type: "boolean", required: true },
 		url: { type: "string", required: false },
+		image: { type: "string", required: false },
 		use_client: {
 			type: "boolean",
 			description: "If MDX has client components",
