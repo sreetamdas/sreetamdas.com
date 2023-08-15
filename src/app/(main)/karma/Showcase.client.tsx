@@ -50,7 +50,7 @@ export const KarmaShowcase = ({ examples }: Props) => {
 					<div
 						key={color}
 						data-dark-theme={isDefaultTheme ? isDefaultTheme : undefined}
-						className="grid h-28 w-20 place-content-center rounded-global font-mono text-background data-[dark-theme=true]:text-foreground"
+						className="grid h-28 w-20 place-content-center rounded-global font-mono text-foreground data-[dark-theme=true]:text-background"
 						style={{ backgroundColor: color }}
 					>
 						{color}
