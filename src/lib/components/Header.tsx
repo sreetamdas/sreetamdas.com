@@ -2,7 +2,7 @@ import { FaGithub, FaTwitter } from "react-icons/fa";
 import { FiRss } from "react-icons/fi";
 
 import { LinkTo } from "@/lib/components/Anchor";
-import { ColorSchemeToggle } from "@/lib/domains/colorScheme";
+import { ColorSchemeToggle } from "@/lib/domains/colorScheme/client";
 
 export const Header = () => (
 	<div className="sticky top-0 z-10 h-[60px] w-screen bg-background">

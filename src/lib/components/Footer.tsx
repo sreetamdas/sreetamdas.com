@@ -3,7 +3,7 @@ import { VscRepoForked } from "react-icons/vsc";
 
 import { LinkTo } from "@/lib/components/Anchor";
 import { getGitHubStats } from "@/lib/domains/GitHub";
-import { FoobarPixel } from "@/lib/domains/foobar";
+import { FoobarPixel } from "@/lib/domains/foobar/Pixel.client";
 
 export const Footer = () => (
 	<footer className="sticky top-[100vh] col-start-2 col-end-3 pb-5 pt-20 text-center text-sm">

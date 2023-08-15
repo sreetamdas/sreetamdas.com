@@ -9,7 +9,7 @@ import {
 
 import { SITE_OG_IMAGE, SITE_TITLE_APPEND, SITE_URL } from "@/config";
 import { MDXContent, MDXClientContent } from "@/lib/components/MDX";
-import { ReadingProgress } from "@/lib/components/ProgressBar";
+import { ReadingProgress } from "@/lib/components/ProgressBar.client";
 import { Gradient } from "@/lib/components/Typography";
 import {
 	ChameleonHighlight,
@@ -34,13 +34,13 @@ export async function generateMetadata({ params }: PageParams): Promise<Metadata
 			description: post?.description,
 			type: "article",
 			url: `${SITE_URL}/blog/${params.slug}`,
-			images: [{ url: post?.image ?? SITE_OG_IMAGE }],
+			images: { url: post?.image ?? SITE_OG_IMAGE },
 		},
 		twitter: {
 			card: "summary_large_image",
 			title: `${post?.seo_title ?? post?.title} ${SITE_TITLE_APPEND}`,
 			description: post?.description,
-			images: [post?.image ?? SITE_OG_IMAGE],
+			images: { url: post?.image ?? SITE_OG_IMAGE },
 		},
 	};
 }
