@@ -1,4 +1,5 @@
-export const OWNER = process.env.OWNER;
+export const OWNER_EMAIL = "sreetamdas@gmail.com";
+export const OWNER_NAME = "Sreetam Das";
 export const DEFAULT_REPO = {
 	owner: "sreetamdas",
 	repo: "sreetamdas.com",
@@ -6,7 +7,7 @@ export const DEFAULT_REPO = {
 
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 export const SITE_URL = process.env.SITE_URL!;
-export const SITE_TITLE_APPEND = "| Sreetam Das";
+export const SITE_TITLE_APPEND = `| ${OWNER_NAME}`;
 export const SITE_DESCRIPTION =
 	"Senior software tinkerer from India. 💜 React, Elixir and TypeScript, CS:GO and mechanical keyboards!";
 export const SITE_OG_IMAGE = "/og-image.png";

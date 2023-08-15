@@ -63,6 +63,9 @@ export default function BlogPage({ params }: PageParams) {
 
 	return (
 		<>
+			<script type="application/ld+json" suppressHydrationWarning>
+				{JSON.stringify(post.structuredData)}
+			</script>
 			<ReadingProgress />
 			<h1 className="pb-20 pt-10 font-serif text-8xl">
 				<Balancer>
