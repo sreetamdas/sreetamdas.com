@@ -15,8 +15,7 @@ import { cn } from "@/lib/helpers/utils";
 
 type HeadingProps = DetailedHTMLProps<HTMLAttributes<HTMLHeadingElement>, HTMLHeadingElement>;
 const getHeading = (
-	// TODO narrow type here
-	el: keyof ReactHTML,
+	el: Extract<keyof ReactHTML, "h1" | "h2" | "h3">,
 	// propsWithoutChildren contains `id` attr here
 	{ children, ...propsWithoutChildren }: HeadingProps,
 ) => {

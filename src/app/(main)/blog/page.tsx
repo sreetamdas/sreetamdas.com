@@ -3,7 +3,7 @@ import { LinkTo } from "@/lib/components/Anchor";
 import { allBlogPosts } from "contentlayer/generated";
 
 export const metadata = {
-	title: `Blog ${SITE_TITLE_APPEND}`,
+	title: `Blog archive ${SITE_TITLE_APPEND}`,
 };
 
 export default async function BlogArchivePage() {
