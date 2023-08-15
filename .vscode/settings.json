@@ -13,9 +13,5 @@
 		"plaintext": "html"
 	},
 	"typescript.tsdk": "node_modules/.pnpm/typescript@5.1.6/node_modules/typescript/lib",
-	"typescript.enablePromptUseWorkspaceTsdk": true,
-	"workbench.colorCustomizations": {
-		"statusBar.background": "#6200ff",
-		"statusBar.foreground": "#FFF"
-	}
+	"typescript.enablePromptUseWorkspaceTsdk": true
 }
