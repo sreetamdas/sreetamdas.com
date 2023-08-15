@@ -23,7 +23,19 @@ export const KARMA_LIGHT_COLOR_PALETTE = [
 	"#FA8D3E",
 ] as const;
 
-export const KarmaShowcase = () => {
+type ThemeExample = {
+	src: string;
+	height?: number;
+	width?: number;
+};
+type Props = {
+	examples: Array<{
+		name: string;
+		dark: ThemeExample;
+		light: ThemeExample;
+	}>;
+};
+export const KarmaShowcase = ({ examples }: Props) => {
 	// default is dark mode :)
 	const [isDefaultTheme, setIsDefaultTheme] = useState(true);
 
@@ -55,7 +67,7 @@ export const KarmaShowcase = () => {
 			<div className="flex gap-8 pb-12">
 				<p className="sm:shrink-0">Check out examples:</p>
 				<ul className="flex flex-wrap gap-x-8 gap-y-2">
-					{themeLanguageMap.map(({ name }) => (
+					{examples.map(({ name }) => (
 						<li key={name.toLowerCase()} className="inline list-none">
 							<LinkTo href={`#${name.toLowerCase()}`}>{name}</LinkTo>
 						</li>
@@ -79,8 +91,8 @@ export const KarmaShowcase = () => {
 				</label>
 			</div>
 			<div className="!col-span-full flex flex-col gap-y-24 pt-24">
-				{themeLanguageMap.map(({ name, defaultImage, lightImage }, index) => {
-					const image = isDefaultTheme ? defaultImage : lightImage;
+				{examples.map(({ name, dark, light }, index) => {
+					const image = isDefaultTheme ? dark : light;
 
 					return (
 						<article key={name.toLowerCase()} className="flex flex-col items-center">
@@ -89,11 +101,12 @@ export const KarmaShowcase = () => {
 							</h2>
 							<span className="h-auto w-full max-w-[95vw] rounded-global sm:max-w-[75vw]">
 								<Image
-									src={image}
+									src={image.src}
 									alt={`Karma ${isDefaultTheme ? "" : "Light "}theme screenshot for ${name}`}
+									height={image.height}
+									width={image.width}
 									priority={index === 0}
 									quality={100}
-									placeholder="blur"
 									unoptimized
 									isWrapped
 								/>
@@ -105,56 +118,3 @@ export const KarmaShowcase = () => {
 		</>
 	);
 };
-
-const themeLanguageMap = [
-	{
-		name: "React",
-		defaultImage: "/karma/default/react.webp",
-		lightImage: "/karma/light/react.webp",
-	},
-	{
-		name: "Elixir",
-		defaultImage: "/karma/default/elixir.webp",
-		lightImage: "/karma/light/elixir.webp",
-	},
-	{
-		name: "CSS",
-		defaultImage: "/karma/default/css.webp",
-		lightImage: "/karma/light/css.webp",
-	},
-	{
-		name: "Go",
-		defaultImage: "/karma/default/go.webp",
-		lightImage: "/karma/light/go.webp",
-	},
-	{
-		name: "Phoenix",
-		defaultImage: "/karma/default/phoenix.webp",
-		lightImage: "/karma/light/phoenix.webp",
-	},
-	{
-		name: "Python",
-		defaultImage: "/karma/default/python.webp",
-		lightImage: "/karma/light/python.webp",
-	},
-	{
-		name: "Rust",
-		defaultImage: "/karma/default/rust.webp",
-		lightImage: "/karma/light/rust.webp",
-	},
-	{
-		name: "Svelte",
-		defaultImage: "/karma/default/svelte.webp",
-		lightImage: "/karma/light/svelte.webp",
-	},
-	{
-		name: "TypeScript",
-		defaultImage: "/karma/default/typescript.webp",
-		lightImage: "/karma/light/typescript.webp",
-	},
-	{
-		name: "Vue",
-		defaultImage: "/karma/default/vue.webp",
-		lightImage: "/karma/light/vue.webp",
-	},
-];
