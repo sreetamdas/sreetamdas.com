@@ -9,7 +9,7 @@ export default function MainLayout({ children }: { children: ReactNode }) {
 			<Header />
 			<main
 				id="main-content"
-				className="relative col-span-full grid grid-flow-col grid-cols-[1fr_min(var(--max-width),_calc(100%_-_2rem))_1fr] gap-x-5 children:[grid-column:2]"
+				className="relative grid grid-flow-col grid-cols-[1fr_min(var(--max-width),_calc(100%_-_2rem))_1fr] gap-x-5 children:[grid-column:2]"
 			>
 				{children}
 			</main>

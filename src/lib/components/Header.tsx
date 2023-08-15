@@ -5,7 +5,7 @@ import { LinkTo } from "@/lib/components/Anchor";
 import { ColorSchemeToggle } from "@/lib/domains/colorScheme";
 
 export const Header = () => (
-	<div className="sticky top-0 z-10 col-span-full h-[60px] w-full bg-background">
+	<div className="sticky top-0 z-10 h-[60px] w-screen bg-background">
 		<a
 			id="skip-link"
 			href="#main-content"
