@@ -5,26 +5,6 @@ import { useState } from "react";
 
 import { LinkTo } from "@/lib/components/Anchor";
 import { Image } from "@/lib/components/Image";
-import ImageCSS from "@/public/karma/default/css.webp";
-import ImageElixir from "@/public/karma/default/elixir.webp";
-import ImageGo from "@/public/karma/default/go.webp";
-import ImagePhoenix from "@/public/karma/default/phoenix.webp";
-import ImagePython from "@/public/karma/default/python.webp";
-import ImageReact from "@/public/karma/default/react.webp";
-import ImageRust from "@/public/karma/default/rust.webp";
-import ImageSvelte from "@/public/karma/default/svelte.webp";
-import ImageTypeScript from "@/public/karma/default/typescript.webp";
-import ImageVue from "@/public/karma/default/vue.webp";
-import ImageCSSLight from "@/public/karma/light/css.webp";
-import ImageElixirLight from "@/public/karma/light/elixir.webp";
-import ImageGoLight from "@/public/karma/light/go.webp";
-import ImagePhoenixLight from "@/public/karma/light/phoenix.webp";
-import ImagePythonLight from "@/public/karma/light/python.webp";
-import ImageReactLight from "@/public/karma/light/react.webp";
-import ImageRustLight from "@/public/karma/light/rust.webp";
-import ImageSvelteLight from "@/public/karma/light/svelte.webp";
-import ImageTypeScriptLight from "@/public/karma/light/typescript.webp";
-import ImageVueLight from "@/public/karma/light/vue.webp";
 
 export const KARMA_COLOR_PALETTE = [
 	"#FC618D",
@@ -129,52 +109,52 @@ export const KarmaShowcase = () => {
 const themeLanguageMap = [
 	{
 		name: "React",
-		defaultImage: ImageReact,
-		lightImage: ImageReactLight,
+		defaultImage: "/karma/default/react.webp",
+		lightImage: "/karma/light/react.webp",
 	},
 	{
 		name: "Elixir",
-		defaultImage: ImageElixir,
-		lightImage: ImageElixirLight,
+		defaultImage: "/karma/default/elixir.webp",
+		lightImage: "/karma/light/elixir.webp",
 	},
 	{
 		name: "CSS",
-		defaultImage: ImageCSS,
-		lightImage: ImageCSSLight,
+		defaultImage: "/karma/default/css.webp",
+		lightImage: "/karma/light/css.webp",
 	},
 	{
 		name: "Go",
-		defaultImage: ImageGo,
-		lightImage: ImageGoLight,
+		defaultImage: "/karma/default/go.webp",
+		lightImage: "/karma/light/go.webp",
 	},
 	{
 		name: "Phoenix",
-		defaultImage: ImagePhoenix,
-		lightImage: ImagePhoenixLight,
+		defaultImage: "/karma/default/phoenix.webp",
+		lightImage: "/karma/light/phoenix.webp",
 	},
 	{
 		name: "Python",
-		defaultImage: ImagePython,
-		lightImage: ImagePythonLight,
+		defaultImage: "/karma/default/python.webp",
+		lightImage: "/karma/light/python.webp",
 	},
 	{
 		name: "Rust",
-		defaultImage: ImageRust,
-		lightImage: ImageRustLight,
+		defaultImage: "/karma/default/rust.webp",
+		lightImage: "/karma/light/rust.webp",
 	},
 	{
 		name: "Svelte",
-		defaultImage: ImageSvelte,
-		lightImage: ImageSvelteLight,
+		defaultImage: "/karma/default/svelte.webp",
+		lightImage: "/karma/light/svelte.webp",
 	},
 	{
 		name: "TypeScript",
-		defaultImage: ImageTypeScript,
-		lightImage: ImageTypeScriptLight,
+		defaultImage: "/karma/default/typescript.webp",
+		lightImage: "/karma/light/typescript.webp",
 	},
 	{
 		name: "Vue",
-		defaultImage: ImageVue,
-		lightImage: ImageVueLight,
+		defaultImage: "/karma/default/vue.webp",
+		lightImage: "/karma/light/vue.webp",
 	},
 ];
