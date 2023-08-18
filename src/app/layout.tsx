@@ -11,7 +11,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 		<html
 			lang="en"
 			dir="ltr"
-			className={`${inter_font.variable} ${iosevka_font.variable} ${eb_garamond_font.variable}`}
+			className={`scroll-pt-16 scroll-smooth ${inter_font.variable} ${iosevka_font.variable} ${eb_garamond_font.variable}`}
 			suppressHydrationWarning
 		>
 			<head>
@@ -24,7 +24,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 					trackFileDownloads
 				/>
 			</head>
-			<body>
+			<body className="min-h-screen bg-background text-foreground selection:bg-secondary selection:text-background">
 				<script
 					dangerouslySetInnerHTML={{
 						__html: blockingScriptSetInitialColorScheme,

@@ -19,10 +19,6 @@
 		--color-foreground: 247 241 255;
 		--color-background: 0 0 0;
 	}
-
-	body {
-		@apply min-h-screen scroll-py-16 scroll-smooth bg-background text-foreground selection:bg-secondary selection:text-background;
-	}
 }
 
 @layer components {
