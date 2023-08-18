@@ -1,8 +1,8 @@
 import { defineDocumentType, makeSource } from "contentlayer/source-files";
 import rehypeRaw from "rehype-raw";
+import rehypeSlug from "rehype-slug";
 import remarkFrontmatter from "remark-frontmatter";
 import remarkGfm from "remark-gfm";
-import remarkSlug from "remark-slug";
 import remarkToc from "remark-toc";
 
 import { OWNER_NAME, SITE_OG_IMAGE, SITE_URL } from "./src/config";
@@ -132,13 +132,7 @@ export default makeSource({
 	documentTypes: [BlogPost, Page],
 	mdx: {
 		resolveCwd: "relative",
-		remarkPlugins: [
-			remarkFrontmatter,
-			remarkShiki,
-			remarkGfm,
-			remarkSlug,
-			[remarkToc, { tight: true }],
-		],
+		remarkPlugins: [remarkFrontmatter, remarkShiki, remarkGfm, [remarkToc, { tight: true }]],
 		rehypePlugins: [
 			[
 				rehypeRaw,
@@ -152,6 +146,7 @@ export default makeSource({
 					],
 				},
 			],
+			rehypeSlug,
 			[rehypeImgSize, { dir: "public" }],
 		],
 		esbuildOptions(options) {
