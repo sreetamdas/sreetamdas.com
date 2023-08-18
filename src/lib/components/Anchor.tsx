@@ -5,6 +5,8 @@ import NextLink, { type LinkProps } from "next/link";
 import { type AnchorHTMLAttributes, type ReactNode } from "react";
 import { ImArrowUpRight2 } from "react-icons/im";
 
+import { cn } from "@/lib/helpers/utils";
+
 type LinkAdditionalProps = {
 	replaceClasses?: true;
 	showExternalLinkIndicator?: true;
@@ -27,16 +29,8 @@ export const LinkTo = <RouteType extends string = string>(linkToProps: LinkToPro
 		showExternalLinkIndicator = false,
 		...restProps
 	} = linkToProps;
-	const overrideProps: Partial<LinkToProps> = {};
+	const extraProps: Partial<LinkToProps> = {};
 	let isExternalLink = false;
-	let classes = "";
-
-	if (!replaceClasses) {
-		classes = "link-base ";
-	}
-	if (passedClasses) {
-		classes += `${passedClasses} `;
-	}
 
 	if (typeof href === "string") {
 		if (
@@ -53,22 +47,27 @@ export const LinkTo = <RouteType extends string = string>(linkToProps: LinkToPro
 	}
 
 	if (isExternalLink) {
-		overrideProps.target = "_blank";
+		extraProps.target = "_blank";
 	}
 
 	if (!isExternalLink && typeof href !== "undefined") {
 		return (
 			<NextLink
 				{...restProps}
-				{...overrideProps}
+				{...extraProps}
 				href={href as Route}
-				className={classes.trimEnd()}
+				className={cn(!replaceClasses && "link-base", passedClasses)}
 			/>
 		);
 	}
 
 	return (
-		<a {...restProps} {...overrideProps} href={href as string} className={classes.trimEnd()}>
+		<a
+			{...restProps}
+			{...extraProps}
+			href={href as string}
+			className={cn(!replaceClasses && "link-base", passedClasses)}
+		>
 			{linkToProps.children}
 			{isExternalLink && showExternalLinkIndicator && (
 				<>
