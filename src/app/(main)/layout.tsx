@@ -5,7 +5,7 @@ import { Header } from "@/lib/components/Header";
 
 export default function MainLayout({ children }: { children: ReactNode }) {
 	return (
-		<div className="min-h-screen">
+		<>
 			<Header />
 			<main
 				id="main-content"
@@ -14,6 +14,6 @@ export default function MainLayout({ children }: { children: ReactNode }) {
 				{children}
 			</main>
 			<Footer />
-		</div>
+		</>
 	);
 }
