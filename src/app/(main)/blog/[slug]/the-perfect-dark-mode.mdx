@@ -85,7 +85,7 @@ Let's begin by adding the ability to store and retrieve the preference if the us
 
 Here's how we can save and load our `theme` preference using `localStorage`:
 
-```js
+```javascript
 window.localStorage.setItem("theme", "dark"); // or "light"
 
 const userPreference = window.localStorage.getItem("theme"); // "dark"
@@ -99,7 +99,7 @@ All we need to do is run a CSS media query, and the [browser provides us with `m
 
 Here's what a media query to check if the user has set any preference looks like:
 
-```js
+```javascript
 const mql = window.matchMedia("(prefers-color-scheme: dark)");
 ```
 
@@ -287,7 +287,7 @@ An IIFE is simply a JavaScript function that is executed as soon as it is define
 
 Here's what an IIFE looks like:
 
-```js
+```javascript
 (function () {
   var name = "Sreetam Das";
   console.log(name);
