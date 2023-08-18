@@ -30,9 +30,9 @@ export const CodeBlock = (props: CodeBlockProps) => {
 
 	return (
 		<div className="my-5 flex flex-col">
-			<div className="flex items-end">
-				<span className="rounded-t-global bg-zinc-800 px-2 py-1 font-mono text-zinc-400">
-					{language.toLocaleUpperCase()}
+			<div className="flex justify-end">
+				<span className="rounded-t-global px-2 py-1 font-mono text-zinc-400" style={style}>
+					{language}
 				</span>
 			</div>
 			<pre

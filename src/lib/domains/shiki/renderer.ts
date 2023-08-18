@@ -1,3 +1,4 @@
+import { defaultTheme } from "@sreetamdas/karma";
 import { isNull } from "lodash-es";
 import { type HtmlRendererOptions, type IThemedToken, FontStyle } from "shiki";
 
@@ -22,9 +23,9 @@ const defaultElements: NonNullable<HtmlRendererOptions["elements"]> = {
 export function renderToHtml(
 	lines: IThemedToken[][],
 	options: HtmlRendererOptions = {},
-	meta: string | null,
+	meta?: string | null,
 ) {
-	const bg = options.bg || "#fff";
+	const bg = options.bg || defaultTheme.colors["editor.background"];
 	// const optionsByLineNumber = groupBy(options.lineOptions ?? [], (option) => option.line);
 	const userElements = options.elements || {};
 
