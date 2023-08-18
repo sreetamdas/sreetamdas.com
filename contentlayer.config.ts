@@ -126,8 +126,10 @@ export default makeSource({
 		".contentlayer",
 		"package.json",
 		"tsconfig.json",
-		"*/**/*.ts",
-		"*/**/*.tsx",
+		"*.ts",
+		"*.tsx",
+		// "*/**/*.ts",
+		// "*/**/*.tsx",
 	],
 	documentTypes: [BlogPost, Page],
 	mdx: {
