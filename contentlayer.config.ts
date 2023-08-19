@@ -128,8 +128,8 @@ export default makeSource({
 		"tsconfig.json",
 		"*.ts",
 		"*.tsx",
-		// "*/**/*.ts",
-		// "*/**/*.tsx",
+		"*.css",
+		"*.png",
 	],
 	documentTypes: [BlogPost, Page],
 	mdx: {
