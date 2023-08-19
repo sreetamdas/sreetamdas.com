@@ -5,6 +5,7 @@ import NextLink, { type LinkProps } from "next/link";
 import { type AnchorHTMLAttributes, type ReactNode } from "react";
 import { ImArrowUpRight2 } from "react-icons/im";
 
+import { SITE_URL } from "@/config";
 import { cn } from "@/lib/helpers/utils";
 
 type LinkAdditionalProps = {
@@ -34,8 +35,7 @@ export const LinkTo = <RouteType extends string = string>(linkToProps: LinkToPro
 
 	if (typeof href === "string") {
 		if (
-			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-			href.startsWith(process.env.SITE_URL!) &&
+			href.startsWith(SITE_URL) &&
 			href.startsWith("/") &&
 			href.startsWith("?") &&
 			href.startsWith("#")

@@ -36,10 +36,6 @@
 		"src/**/*.ts",
 		"src/**/*.tsx",
 		".next/types/**/*.ts",
-		// "mdx-components.tsx",
 		".contentlayer/generated"
 	]
-	// "mdx": {
-	// 	"plugins": ["remark-gfm", "remark-slug", ["remark-toc", { "tight": true }]]
-	// }
 }

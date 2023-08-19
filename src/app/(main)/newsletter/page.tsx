@@ -3,8 +3,6 @@ import { fetchNewsletterEmails } from "./helpers";
 
 import { SITE_TITLE_APPEND } from "@/config";
 
-// import { useSupabaseSession } from "@/domains/Supabase";
-
 export const metadata = {
 	title: `Newsletter ${SITE_TITLE_APPEND}`,
 	description:

@@ -5,7 +5,6 @@ export const DEFAULT_REPO = {
 	repo: "sreetamdas.com",
 };
 
-// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 export const SITE_URL = process.env.SITE_URL!;
 export const SITE_TITLE_APPEND = `| ${OWNER_NAME}`;
 export const SITE_DESCRIPTION =

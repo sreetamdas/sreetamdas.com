@@ -47,7 +47,6 @@ export type ButtondownAPIEmailsResponse = {
 
 export async function fetchNewsletterEmails(): Promise<ButtondownAPIEmailsResponse> {
 	try {
-		// const response = (await axiosButtondownClient.get<ButtondownIssues>("/emails")).data;
 		const response = await fetch(`${BUTTONDOWN_BASE_URL}/emails`, {
 			headers: {
 				...(BUTTONDOWN_API_KEY !== "" && { Authorization: `Token ${BUTTONDOWN_API_KEY}` }),

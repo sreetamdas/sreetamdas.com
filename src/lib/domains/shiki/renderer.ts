@@ -26,7 +26,6 @@ export function renderToHtml(
 	meta?: string | null,
 ) {
 	const bg = options.bg || defaultTheme.colors["editor.background"];
-	// const optionsByLineNumber = groupBy(options.lineOptions ?? [], (option) => option.line);
 	const userElements = options.elements || {};
 
 	function h(type = "", props = {}, children: string[]): string {
@@ -66,15 +65,15 @@ export function renderToHtml(
 						{ className: "line", lines, line, index },
 						line.map((token, index) => {
 							const cssDeclarations = [`color: ${token.color || options.fg}`];
-							// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+
 							if (token.fontStyle! & FontStyle.Italic) {
 								cssDeclarations.push("font-style: italic");
 							}
-							// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+
 							if (token.fontStyle! & FontStyle.Bold) {
 								cssDeclarations.push("font-weight: bold");
 							}
-							// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+
 							if (token.fontStyle! & FontStyle.Underline) {
 								cssDeclarations.push("text-decoration: underline");
 							}
@@ -94,7 +93,6 @@ const htmlEscapes = {
 	"&": "&amp;",
 	"<": "&lt;",
 	">": "&gt;",
-	// eslint-disable-next-line quotes
 	'"': "&quot;",
 	"'": "&#39;",
 } as const;

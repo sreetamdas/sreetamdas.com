@@ -36,11 +36,9 @@ export const FoobarDashboard = ({ completedPage }: FoobarSchrodingerProps) => {
 	}
 
 	useEffect(() => {
-		// window.addEventListener("keydown", handleGotoToggle);
 		window.addEventListener("offline", handleUserIsOffline);
 
 		return () => {
-			// window.removeEventListener("keydown", handleGotoToggle);
 			window.removeEventListener("offline", handleUserIsOffline);
 		};
 		// eslint-disable-next-line react-hooks/exhaustive-deps

@@ -23,7 +23,6 @@ const SUPABASE_ENABLED =
 export const SUPABASE_API_BASE_URL = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/rest/v1`;
 
 const supabase_headers = {
-	// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 	apiKey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
 	Authorization: `Bearer ${process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY}`,
 };
