@@ -1,6 +1,7 @@
 "use client";
 
 import * as AlertDialogPrimitive from "@radix-ui/react-alert-dialog";
+import { type Route } from "next";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
@@ -30,7 +31,8 @@ export const FoobarDashboard = ({ completedPage }: FoobarSchrodingerProps) => {
 	}));
 
 	function handleUserIsOffline() {
-		router.push("/foobar/offline");
+		// TODO look into typedRoutes not working properly
+		router.push("/foobar/offline" as Route);
 	}
 
 	useEffect(() => {
