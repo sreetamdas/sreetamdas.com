@@ -3,6 +3,7 @@ import { type Highlighter } from "shiki";
 
 import module_css from "./CodeSnippet.module.css";
 
+import { ViewsCounter } from "@/lib/components/ViewsCounter";
 import { octokit } from "@/lib/domains/GitHub";
 import { getKarmaHighlighter } from "@/lib/domains/shiki";
 
@@ -26,6 +27,8 @@ export default async function RWCPage() {
 					code={file_object?.content}
 				/>
 			))}
+
+			<ViewsCounter slug="/rwc" />
 		</>
 	);
 }
