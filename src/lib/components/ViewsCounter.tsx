@@ -1,7 +1,7 @@
 import { captureException } from "@sentry/nextjs";
 import { clsx } from "clsx";
 
-import { IS_CI, IS_DEV } from "@/config";
+import { IS_DEV } from "@/config";
 import { getPageViews, upsertPageViews } from "@/lib/domains/Supabase";
 
 /**
@@ -10,7 +10,7 @@ import { getPageViews, upsertPageViews } from "@/lib/domains/Supabase";
  * @returns page views response
  */
 async function isomorphicFetchPageViews(slug: string) {
-	if (IS_DEV || IS_CI) {
+	if (IS_DEV || process.env.CI === "1") {
 		return await getPageViews(slug);
 	}
 	return await upsertPageViews(slug);
