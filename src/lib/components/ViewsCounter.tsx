@@ -1,7 +1,7 @@
 import { captureException } from "@sentry/nextjs";
 import { clsx } from "clsx";
 
-import { IS_DEV } from "@/config";
+import { IS_CI, IS_DEV } from "@/config";
 import { getPageViews, upsertPageViews } from "@/lib/domains/Supabase";
 
 /**
@@ -9,27 +9,36 @@ import { getPageViews, upsertPageViews } from "@/lib/domains/Supabase";
  * @param slug page slug
  * @returns page views response
  */
-async function isomorphicFetchPageViews(slug: string) {
-	if (IS_DEV || process.env.CI === "1") {
-		return await getPageViews(slug);
-	}
-	return await upsertPageViews(slug);
-}
+// async function isomorphicFetchPageViews(slug: string) {
+// 	if (IS_DEV || process.env.CI === "1") {
+// 		return await getPageViews(slug);
+// 	}
+// 	return await upsertPageViews(slug);
+// }
 
 type ViewsCounterProps = {
 	slug: string;
 	page_type?: "post" | "page";
 	hidden?: boolean;
+	disabled?: boolean;
 };
 export const ViewsCounter = async ({
 	slug,
 	page_type = "page",
 	hidden = false,
+	disabled = IS_DEV || IS_CI,
 }: ViewsCounterProps) => {
-	const { data, error } = await isomorphicFetchPageViews(slug);
+	const { data, error } = disabled ? await getPageViews(slug) : await upsertPageViews(slug);
 
 	// eslint-disable-next-line no-console
-	console.log({ data, error, DEV: IS_DEV, CI: process.env.CI === "1" });
+	console.log({
+		data: data?.view_count,
+		slug,
+		CI: process.env.CI === "1",
+		IS_DEV,
+		IS_CI,
+		error,
+	});
 
 	if (error) {
 		captureException(error, { extra: { slug } });
