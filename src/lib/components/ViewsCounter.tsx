@@ -28,6 +28,9 @@ export const ViewsCounter = async ({
 }: ViewsCounterProps) => {
 	const { data, error } = await isomorphicFetchPageViews(slug);
 
+	// eslint-disable-next-line no-console
+	console.log({ data, error, DEV: IS_DEV, CI: process.env.CI === "1" });
+
 	if (error) {
 		captureException(error, { extra: { slug } });
 	}
