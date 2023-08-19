@@ -6,8 +6,6 @@ import { SITE_DESCRIPTION, SITE_TITLE_APPEND, SITE_URL } from "@/config";
 import { blockingScriptSetInitialColorScheme } from "@/lib/domains/colorScheme/blockingScript";
 import { inter_font, iosevka_font, eb_garamond_font } from "@/lib/domains/fonts";
 
-export const runtime = "edge";
-
 export default function RootLayout({ children }: { children: React.ReactNode }) {
 	return (
 		<html
