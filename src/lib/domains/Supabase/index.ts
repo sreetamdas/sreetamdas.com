@@ -51,6 +51,7 @@ export async function getPageViews(slug: string): Promise<PageViewCountResponse>
 				"Content-Type": "application/json",
 				...supabase_headers,
 			},
+			cache: "no-store",
 		});
 
 		const response: Array<PageViewCount> = await request.json();
