@@ -1,12 +1,11 @@
-"use client"; // Error components must be Client components
+"use client";
 
+import { captureException } from "@sentry/nextjs";
 import { useEffect } from "react";
 
 export default function Error({ error, reset }: { error: Error; reset: () => void }) {
 	useEffect(() => {
-		// Log the error to an error reporting service
-		// eslint-disable-next-line no-console
-		console.error(error);
+		captureException(error);
 	}, [error]);
 
 	return (
@@ -14,12 +13,9 @@ export default function Error({ error, reset }: { error: Error; reset: () => voi
 			<h2>Something went wrong!</h2>
 			<button
 				className="link-base text-2xl text-foreground hover:text-primary"
-				onClick={
-					// Attempt to recover by trying to re-render the segment
-					() => reset()
-				}
+				onClick={() => reset()}
 			>
-				Try again
+				Reset and try again
 			</button>
 		</div>
 	);

@@ -1,13 +1,16 @@
 "use client";
 
+import { captureException } from "@sentry/nextjs";
 import PlausibleProvider from "next-plausible";
+import { useEffect } from "react";
 
 import { blockingScriptSetInitialColorScheme } from "@/lib/domains/colorScheme/blockingScript";
 import { inter_font, iosevka_font, eb_garamond_font } from "@/lib/domains/fonts";
 
 export default function GlobalError({ error, reset }: { error: Error; reset: () => void }) {
-	// eslint-disable-next-line no-console
-	console.error("Caught ==>", error);
+	useEffect(() => {
+		captureException(error);
+	}, [error]);
 
 	return (
 		<html
