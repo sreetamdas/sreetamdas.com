@@ -1,9 +1,10 @@
 import { type ReactNode } from "react";
 
 import { LinkTo } from "@/lib/components/Anchor";
-import { NotFoundDogsLink, NotFoundFoobarTracker } from "@/lib/components/Error";
+import { NotFoundDogsLink } from "@/lib/components/Error";
 import { Footer } from "@/lib/components/Footer";
 import { Header } from "@/lib/components/Header";
+import { FoobarPixel } from "@/lib/domains/foobar/Pixel.client";
 
 export type GlobalNotFoundPageProps = {
 	message?: ReactNode;
@@ -28,9 +29,10 @@ export default function GlobalNotFound({ message }: GlobalNotFoundPageProps) {
 				</p>
 
 				<NotFoundDogsLink />
-				<NotFoundFoobarTracker />
 			</main>
-			<Footer />
+			<Footer>
+				<FoobarPixel path="/404" />
+			</Footer>
 		</>
 	);
 }

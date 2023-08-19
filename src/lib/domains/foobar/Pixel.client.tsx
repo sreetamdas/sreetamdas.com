@@ -1,84 +1,98 @@
 "use client";
 
-// import { usePathname } from "next/navigation";
-// import { useEffect } from "react";
+import { usePathname } from "next/navigation";
+import { useEffect } from "react";
 
-// import { logConsoleMessages } from "./console";
-import { type FoobarSliceType } from "./flags";
-// import { addFoobarToLocalStorage, checkIfAllAchievementsAreDone } from "./helpers";
+import { FOOBAR_PAGES, type FoobarSliceType } from "./flags";
 
-// import { IS_DEV } from "@/config";
+import { IS_DEV } from "@/config";
 import { LinkTo } from "@/lib/components/Anchor";
-// import { useCustomPlausible } from "@/lib/domains/Plausible";
+import { useCustomPlausible } from "@/lib/domains/Plausible";
+import { logConsoleMessages } from "@/lib/domains/foobar/console";
+import {
+	addFoobarToLocalStorage,
+	checkIfAllAchievementsAreDone,
+} from "@/lib/domains/foobar/helpers";
 import { useGlobalStore } from "@/lib/domains/global";
 import { useHasMounted } from "@/lib/helpers/hooks";
 
 const foobarDataSelector = (state: FoobarSliceType) => ({
-	foobarStoreData: state.foobarData,
-	setFoobarStoreData: state.setFoobarData,
+	foobarData: state.foobarData,
+	setFoobarData: state.setFoobarData,
 });
 
-// TODO: complete FoobarPixel
+type FoobarPixelProps = {
+	path?: "/404";
+};
 
 /**
  * Entry point into /foobar
  * - Adds link to resume /foobar
  * - Adds required console messages and other helpers
+ * - Track navigation for corresponding achievements
  */
-export const FoobarPixel = () => {
-	// const pathname = usePathname();
-	const hasMounted = useHasMounted();
-	// const plausibleEvent = useCustomPlausible();
-	const { foobarStoreData } = useGlobalStore(foobarDataSelector);
-	const { unlocked } = foobarStoreData;
+export const FoobarPixel = (props: FoobarPixelProps) => {
+	const pathname = usePathname();
+	const has_mounted = useHasMounted();
+	const plausibleEvent = useCustomPlausible();
+	const { foobarData, setFoobarData } = useGlobalStore(foobarDataSelector);
+	const { unlocked, visitedPages, completed } = foobarData;
 
-	// useEffect(() => {
-	// 	// Add functions for Foobar badges
-	// 	addFoobarToLocalStorage();
+	useEffect(() => {
+		// Add functions for Foobar badges
+		addFoobarToLocalStorage();
 
-	// 	// @ts-expect-error add custom function
-	// 	window.hack = () => {
-	// 		// eslint-disable-next-line no-console
-	// 		console.warn("/foobar/hack");
-	// 	};
+		// @ts-expect-error add custom function
+		window.hack = () => {
+			// eslint-disable-next-line no-console
+			console.warn("/foobar/hack");
+		};
 
-	// 	if (!IS_DEV) logConsoleMessages();
-	// }, []);
+		if (!IS_DEV) {
+			logConsoleMessages();
+		}
+	}, []);
 
-	// useEffect(() => {
-	// 	let pageName = pathname;
-	// 	if (pathname === "/404") pageName = "/404";
+	useEffect(() => {
+		let page_name = pathname;
+		if (props.path === "/404") {
+			page_name = "/404";
 
-	// 	if (!visitedPages?.includes(pageName)) {
-	// 		setFoobarStoreData({
-	// 			visitedPages: [...visitedPages, pageName],
-	// 		});
-	// 	}
+			if (!completed.includes(FOOBAR_PAGES.notFound)) {
+				setFoobarData({
+					completed: completed.concat([FOOBAR_PAGES.notFound]),
+				});
+			}
+		}
 
-	// 	// for the `navigator` achievement
-	// 	if (visitedPages.length >= 5 && !completed.includes(FOOBAR_PAGES.navigator)) {
-	// 		plausibleEvent("foobar", { props: { achievement: FOOBAR_PAGES.navigator } });
-	// 		setFoobarStoreData({
-	// 			completed: [...completed, FOOBAR_PAGES.navigator],
-	// 		});
-	// 	}
-	// }, [completed, visitedPages, pathname]);
+		if (!visitedPages?.includes(page_name)) {
+			setFoobarData({
+				visitedPages: visitedPages.concat([page_name]),
+			});
+		}
 
-	// useEffect(() => {
-	// 	// for the `completed` achievement
-	// 	if (checkIfAllAchievementsAreDone(completed)) {
-	// 		plausibleEvent("foobar", { props: { achievement: "completed" } });
-	// 		setFoobarStoreData({
-	// 			allAchievements: true,
-	// 		});
-	// 	}
-	// }, [completed]);
+		// for the `navigator` achievement
+		if (visitedPages.length >= 5 && !completed.includes(FOOBAR_PAGES.navigator)) {
+			plausibleEvent("foobar", { props: { achievement: FOOBAR_PAGES.navigator } });
+			setFoobarData({
+				completed: completed.concat([FOOBAR_PAGES.navigator]),
+			});
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [completed, visitedPages, pathname]);
 
-	// useEffect(() => {
-	// 	console.log("pathname", pathname);
-	// }, [pathname]);
+	useEffect(() => {
+		// for the `completed` achievement
+		if (checkIfAllAchievementsAreDone(completed)) {
+			plausibleEvent("foobar", { props: { achievement: "completed" } });
+			setFoobarData({
+				allAchievements: true,
+			});
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [completed]);
 
-	return hasMounted && unlocked ? (
+	return has_mounted && unlocked ? (
 		<span className="col-start-2 col-end-3">
 			<code>
 				<LinkTo href="/foobar" style={{ border: "none" }}>

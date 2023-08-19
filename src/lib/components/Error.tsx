@@ -1,7 +1,5 @@
 "use client";
 
-import { useEffect } from "react";
-
 import { LinkTo } from "@/lib/components/Anchor";
 import { useCustomPlausible } from "@/lib/domains/Plausible";
 import { FOOBAR_PAGES, type FoobarPageSlug } from "@/lib/domains/foobar/flags";
@@ -39,26 +37,4 @@ export const NotFoundDogsLink = () => {
 			</LinkTo>
 		</p>
 	);
-};
-
-export const NotFoundFoobarTracker = () => {
-	const { setFoobarData, completed } = useGlobalStore((state) => ({
-		completed: state.foobarData.completed,
-		setFoobarData: state.setFoobarData,
-	}));
-
-	useEffect(() => {
-		const updatedPages: Array<FoobarPageSlug> = [...completed];
-
-		if (!updatedPages.includes(FOOBAR_PAGES.notFound)) {
-			updatedPages.push(FOOBAR_PAGES.notFound);
-			setFoobarData({
-				completed: updatedPages,
-			});
-		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [completed]);
-
-	// eslint-disable-next-line react/jsx-no-useless-fragment
-	return <></>;
 };

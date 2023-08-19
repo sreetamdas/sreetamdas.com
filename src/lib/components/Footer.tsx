@@ -1,13 +1,17 @@
+import { type ReactNode } from "react";
 import { FaRegStar } from "react-icons/fa";
 import { VscRepoForked } from "react-icons/vsc";
 
 import { LinkTo } from "@/lib/components/Anchor";
 import { getGitHubStats } from "@/lib/domains/GitHub";
-import { FoobarPixel } from "@/lib/domains/foobar/Pixel.client";
 
-export const Footer = () => (
+/**
+ * Allow passing `FoobarPixel` as a child so that we can optionally set the `path` prop for it
+ */
+type Props = { children: ReactNode };
+export const Footer = ({ children }: Props) => (
 	<footer className="sticky top-[100vh] col-start-2 col-end-3 pb-5 pt-20 text-center text-sm">
-		<FoobarPixel />
+		{children}
 		<GitHubStats />
 		Made with <LinkTo href="https://nextjs.org">Next.js</LinkTo> &bull; View source on{" "}
 		<LinkTo href="https://github.com/sreetamdas/sreetamdas.com">GitHub</LinkTo>{" "}
