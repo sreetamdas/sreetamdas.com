@@ -4,20 +4,29 @@ import { clsx } from "clsx";
 import { IS_CI, IS_DEV } from "@/config";
 import { getPageViews, upsertPageViews } from "@/lib/domains/Supabase";
 
+/**
+ * Wrapper for Supabase page views for both only fetching and upserting
+ * @param slug page slug
+ * @returns page views response
+ */
+async function isomorphicFetchPageViews(slug: string) {
+	if (IS_DEV || IS_CI) {
+		return await getPageViews(slug);
+	}
+	return await upsertPageViews(slug);
+}
+
 type ViewsCounterProps = {
 	slug: string;
 	page_type?: "post" | "page";
 	hidden?: boolean;
-	disabled?: boolean;
 };
 export const ViewsCounter = async ({
 	slug,
 	page_type = "page",
 	hidden = false,
-	disabled = IS_DEV || IS_CI,
 }: ViewsCounterProps) => {
-	// when disabled, only read, not update and get
-	const { data, error } = disabled ? await getPageViews(slug) : await upsertPageViews(slug);
+	const { data, error } = await isomorphicFetchPageViews(slug);
 
 	if (error) {
 		captureException(error, { extra: { slug } });
