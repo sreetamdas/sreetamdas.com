@@ -127,9 +127,13 @@ export default makeSource({
 		"package.json",
 		"tsconfig.json",
 		"*.ts",
+		"*/**/*.ts",
 		"*.tsx",
+		"*/**/*.tsx",
 		"*.css",
+		"*/**/*.css",
 		"*.png",
+		"*/**/*.png",
 	],
 	documentTypes: [BlogPost, Page],
 	mdx: {
