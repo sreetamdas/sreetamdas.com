@@ -7,7 +7,7 @@ import { useGlobalStore } from "@/lib/domains/global";
 export const FoobarEntry = () => {
 	const plausible = useCustomPlausible();
 	const { setFoobarData, unlocked } = useGlobalStore((state) => ({
-		unlocked: state.foobarData.unlocked,
+		unlocked: state.foobar_data.unlocked,
 		setFoobarData: state.setFoobarData,
 	}));
 

@@ -10,11 +10,8 @@ import { IS_DEV } from "@/config";
 import { Code } from "@/lib/components/Typography";
 import { useCustomPlausible } from "@/lib/domains/Plausible";
 import { ShowCompletedBadges } from "@/lib/domains/foobar/badges";
-import {
-	type FoobarPageSlug,
-	initialFoobarData,
-	type FoobarSchrodingerProps,
-} from "@/lib/domains/foobar/flags";
+import { type FoobarPageSlug } from "@/lib/domains/foobar/flags";
+import { initialFoobarData, type FoobarSchrodingerProps } from "@/lib/domains/foobar/store";
 import { useGlobalStore } from "@/lib/domains/global";
 import { useHasMounted } from "@/lib/helpers/hooks";
 
@@ -25,8 +22,8 @@ import { useHasMounted } from "@/lib/helpers/hooks";
 export const FoobarDashboard = ({ completedPage }: FoobarSchrodingerProps) => {
 	const router = useRouter();
 	const plausibleEvent = useCustomPlausible();
-	const { foobarData, setFoobarData } = useGlobalStore((state) => ({
-		foobarData: state.foobarData,
+	const { foobar_data, setFoobarData } = useGlobalStore((state) => ({
+		foobar_data: state.foobar_data,
 		setFoobarData: state.setFoobarData,
 	}));
 
@@ -57,12 +54,12 @@ export const FoobarDashboard = ({ completedPage }: FoobarSchrodingerProps) => {
 			{IS_DEV && (
 				<pre className="my-5 rounded-global bg-foreground/10 p-6 font-mono text-sm transition-colors dark:bg-foreground/20">
 					<h2 className="text-4xl font-bold">DEV</h2>
-					{JSON.stringify(foobarData, null, 2)}
+					{JSON.stringify(foobar_data, null, 2)}
 				</pre>
 			)}
 			<ShowCompletedBadges
-				completed={foobarData.completed}
-				allAchievements={foobarData.allAchievements}
+				completed={foobar_data.completed}
+				all_achievements={foobar_data.all_achievements}
 			/>
 			<ResetFoobar handleClearFoobarData={handleClearFoobarData} />
 			{/* <Center>
@@ -138,8 +135,8 @@ const FoobarButLocked = () => (
 
 export const FoobarSchrodinger = ({ completedPage }: FoobarSchrodingerProps) => {
 	const { unlocked, setFoobarData, completed } = useGlobalStore((state) => ({
-		unlocked: state.foobarData.unlocked,
-		completed: state.foobarData.completed,
+		unlocked: state.foobar_data.unlocked,
+		completed: state.foobar_data.completed,
 		setFoobarData: state.setFoobarData,
 	}));
 	const hasMounted = useHasMounted();

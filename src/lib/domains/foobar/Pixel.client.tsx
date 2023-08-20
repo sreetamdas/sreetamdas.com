@@ -3,7 +3,8 @@
 import { usePathname } from "next/navigation";
 import { useEffect } from "react";
 
-import { FOOBAR_PAGES, type FoobarSliceType } from "./flags";
+import { FOOBAR_PAGES } from "./flags";
+import { type FoobarSliceType } from "./store";
 
 import { IS_DEV } from "@/config";
 import { LinkTo } from "@/lib/components/Anchor";
@@ -17,7 +18,7 @@ import { useGlobalStore } from "@/lib/domains/global";
 import { useHasMounted } from "@/lib/helpers/hooks";
 
 const foobarDataSelector = (state: FoobarSliceType) => ({
-	foobarData: state.foobarData,
+	foobar_data: state.foobar_data,
 	setFoobarData: state.setFoobarData,
 });
 
@@ -35,8 +36,8 @@ export const FoobarPixel = (props: FoobarPixelProps) => {
 	const pathname = usePathname();
 	const has_mounted = useHasMounted();
 	const plausibleEvent = useCustomPlausible();
-	const { foobarData, setFoobarData } = useGlobalStore(foobarDataSelector);
-	const { unlocked, visitedPages, completed } = foobarData;
+	const { foobar_data, setFoobarData } = useGlobalStore(foobarDataSelector);
+	const { unlocked, visited_pages, completed } = foobar_data;
 
 	useEffect(() => {
 		// Add functions for Foobar badges
@@ -65,28 +66,28 @@ export const FoobarPixel = (props: FoobarPixelProps) => {
 			}
 		}
 
-		if (!visitedPages?.includes(page_name)) {
+		if (!visited_pages?.includes(page_name)) {
 			setFoobarData({
-				visitedPages: visitedPages.concat([page_name]),
+				visited_pages: visited_pages.concat([page_name]),
 			});
 		}
 
 		// for the `navigator` achievement
-		if (visitedPages.length >= 5 && !completed.includes(FOOBAR_PAGES.navigator)) {
+		if (visited_pages.length >= 5 && !completed.includes(FOOBAR_PAGES.navigator)) {
 			plausibleEvent("foobar", { props: { achievement: FOOBAR_PAGES.navigator } });
 			setFoobarData({
 				completed: completed.concat([FOOBAR_PAGES.navigator]),
 			});
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [completed, visitedPages, pathname]);
+	}, [completed, visited_pages, pathname]);
 
 	useEffect(() => {
 		// for the `completed` achievement
 		if (checkIfAllAchievementsAreDone(completed)) {
 			plausibleEvent("foobar", { props: { achievement: "completed" } });
 			setFoobarData({
-				allAchievements: true,
+				all_achievements: true,
 			});
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps

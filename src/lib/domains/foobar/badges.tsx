@@ -1,29 +1,14 @@
 import { clsx } from "clsx";
 import { useState } from "react";
-import { type IconBaseProps } from "react-icons";
-import { BsEgg } from "react-icons/bs";
-import {
-	FaCode,
-	FaCompass,
-	FaDatabase,
-	FaDog,
-	FaGamepad,
-	FaHeading,
-	FaRegFlag,
-	FaSkull,
-} from "react-icons/fa";
-import { GiTeapot } from "react-icons/gi";
-import { IoIosRocket } from "react-icons/io";
-import { MdDns } from "react-icons/md";
-import { RiWifiOffLine } from "react-icons/ri";
-import { VscDebug, VscTelescope } from "react-icons/vsc";
+
+import { type FoobarAchievement, FOOBAR_CHALLENGES } from "./flags";
+import { type FoobarDataType } from "./store";
 
 import { LinkTo } from "@/lib/components/Anchor";
-import { type FoobarAchievement, type FoobarDataType } from "@/lib/domains/foobar/flags";
 
-type ShowCompletedBadgesProps = Pick<FoobarDataType, "completed" | "allAchievements">;
-export const ShowCompletedBadges = ({ completed, allAchievements }: ShowCompletedBadgesProps) => {
-	const allBadges = Object.keys(FOOBAR_BADGES) as Array<FoobarAchievement>;
+type ShowCompletedBadgesProps = Pick<FoobarDataType, "completed" | "all_achievements">;
+export const ShowCompletedBadges = ({ completed, all_achievements }: ShowCompletedBadgesProps) => {
+	const allBadges = Object.keys(FOOBAR_CHALLENGES) as Array<FoobarAchievement>;
 
 	return (
 		<div>
@@ -47,7 +32,7 @@ export const ShowCompletedBadges = ({ completed, allAchievements }: ShowComplete
 						key={badge}
 						badge={badge}
 						completed={completed}
-						allAchievements={allAchievements}
+						all_achievements={all_achievements}
 					/>
 				))}
 			</div>
@@ -57,10 +42,10 @@ export const ShowCompletedBadges = ({ completed, allAchievements }: ShowComplete
 
 type BadgeProps = {
 	badge: FoobarAchievement;
-} & Pick<FoobarDataType, "completed" | "allAchievements">;
-const Badge = ({ badge, completed, allAchievements }: BadgeProps) => {
+} & Pick<FoobarDataType, "completed" | "all_achievements">;
+const Badge = ({ badge, completed, all_achievements }: BadgeProps) => {
 	const [clicks, setClicks] = useState(0);
-	const isUnlocked = badge === "completed" ? allAchievements : completed.includes(badge);
+	const isUnlocked = badge === "completed" ? all_achievements : completed.includes(badge);
 
 	return (
 		<button
@@ -72,86 +57,13 @@ const Badge = ({ badge, completed, allAchievements }: BadgeProps) => {
 		>
 			<FoobarBadge badge={badge} />
 			<p className={clsx("text-sm", isUnlocked || clicks >= 5 ? "inline" : "hidden")}>
-				{FOOBAR_BADGES[badge].description}
+				{FOOBAR_CHALLENGES[badge].description}
 			</p>
 		</button>
 	);
 };
 
 const FoobarBadge = ({ badge }: { badge: FoobarAchievement }) => {
-	const { icon: Icon } = FOOBAR_BADGES[badge];
+	const { icon: Icon } = FOOBAR_CHALLENGES[badge];
 	return <Icon aria-label={badge} className="text-5xl" />;
 };
-
-type FoobarBadgeRecord = {
-	icon: (props: IconBaseProps) => JSX.Element;
-	description: string | JSX.Element;
-};
-type FoobarBadges = Readonly<Record<FoobarAchievement, FoobarBadgeRecord>>;
-
-export const FOOBAR_BADGES: FoobarBadges = {
-	"/": {
-		icon: (props) => <FaRegFlag {...props} />,
-		description: "Discover the foobar homepage (you're here!)",
-	},
-	"source-code": {
-		icon: (props) => <FaCode {...props} />,
-		description: "View the source code",
-	},
-	headers: {
-		icon: (props) => <FaHeading {...props} />,
-		description: "Check out the headers of a /foobar page",
-	},
-	"dns-txt": {
-		icon: (props) => <MdDns {...props} />,
-		description: "Lookup the DNS TXT records",
-	},
-	devtools: {
-		icon: (props) => <VscDebug {...props} />,
-		description: "Check out the React Devtools",
-	},
-	konami: {
-		icon: (props) => <FaGamepad {...props} />,
-		description: "Use the Konami code",
-	},
-	offline: {
-		icon: (props) => <RiWifiOffLine {...props} />,
-		description: "Go offline while viewing a /foobar page",
-	},
-	hack: {
-		icon: (props) => <FaSkull {...props} />,
-		description: "Hack the console",
-	},
-	error404: {
-		icon: (props) => <VscTelescope {...props} />,
-		description: "Hit a 404 error page",
-	},
-	dogs: {
-		icon: (props) => <FaDog {...props} />,
-		description: "Check out the link on the 404 page",
-	},
-	navigator: {
-		icon: (props) => <FaCompass {...props} />,
-		description: "Visit 5 unique pages",
-	},
-	"easter-egg": {
-		icon: (props) => <BsEgg {...props} />,
-		description: "Hmm, what could this one be?",
-	},
-	localforage: {
-		icon: (props) => <FaDatabase {...props} />,
-		description: "Check the localStorage/indexedDB",
-	},
-	teapot: {
-		icon: (props) => <GiTeapot {...props} />,
-		description: (
-			<>
-				Brew some <code>/api/coffee</code>
-			</>
-		),
-	},
-	completed: {
-		icon: (props) => <IoIosRocket {...props} />,
-		description: "Complete all the tasks",
-	},
-} as const;

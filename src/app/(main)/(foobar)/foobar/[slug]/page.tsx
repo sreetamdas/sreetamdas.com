@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 
 import { FoobarSchrodinger } from "@/lib/domains/foobar/Dashboard.client";
-import { type FoobarPageSlug, FOOBAR_PAGES } from "@/lib/domains/foobar/flags";
+import { FOOBAR_PAGES, type FoobarPageSlug } from "@/lib/domains/foobar/flags";
 
 type PageParams = {
 	params: { slug: Exclude<FoobarPageSlug, "/"> };

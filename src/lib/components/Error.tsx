@@ -2,12 +2,12 @@
 
 import { LinkTo } from "@/lib/components/Anchor";
 import { useCustomPlausible } from "@/lib/domains/Plausible";
-import { FOOBAR_PAGES, type FoobarPageSlug } from "@/lib/domains/foobar/flags";
+import { type FoobarPageSlug, FOOBAR_PAGES } from "@/lib/domains/foobar/flags";
 import { useGlobalStore } from "@/lib/domains/global";
 
 export const NotFoundDogsLink = () => {
 	const { setFoobarData, completed } = useGlobalStore((state) => ({
-		completed: state.foobarData.completed,
+		completed: state.foobar_data.completed,
 		setFoobarData: state.setFoobarData,
 	}));
 	const plausibleEvent = useCustomPlausible();

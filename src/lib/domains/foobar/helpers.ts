@@ -1,7 +1,8 @@
-import { type FoobarSliceType, FOOBAR_PAGES } from "./flags";
+import { FOOBAR_PAGES } from "./flags";
+import { type FoobarSliceType } from "./store";
 
 export function checkIfAllAchievementsAreDone(
-	completed: FoobarSliceType["foobarData"]["completed"],
+	completed: FoobarSliceType["foobar_data"]["completed"],
 ) {
 	const allPages = Object.values(FOOBAR_PAGES);
 	if (completed.length !== allPages.length) return false;
@@ -86,9 +87,9 @@ To start, how /about you get to know me better?
 Cheers, Good Luck, and most importantly, Have Fun!`;
 const CONSOLE_X = `storytime!
 
-I loved playing video games since I was a kid, and one of my all time favorites was Age of Empires III. Sometimes (read: almost every single time) when I'd get stuck (or was at a disadvantage against NPCs LOL), I'd just go ahead and use the inbuilt cheats! (remember Medium Rare Please?)
+I loved playing video games since I was a kid, and one of my all time favorites was Age of Empires III. Sometimes (read: almost every single time) when I'd get stuck (or was at a disadvantage against NPCs LOL), I'd just go ahead and use the inbuilt cheats!
 
-Anyway, cheats might not work (yet) on here, but "revealing the map" will guide you to what you seek :D
+Anyway, cheats might not work (yet) on here, but "revealing the map" will guide you to what you seek :)
 
 `;
 const CONSOLE_X2 = `
