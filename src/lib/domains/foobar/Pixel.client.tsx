@@ -8,10 +8,10 @@ import { FOOBAR_PAGES, type FoobarSliceType } from "./flags";
 import { IS_DEV } from "@/config";
 import { LinkTo } from "@/lib/components/Anchor";
 import { useCustomPlausible } from "@/lib/domains/Plausible";
-import { logConsoleMessages } from "@/lib/domains/foobar/console";
 import {
 	addFoobarToLocalStorage,
 	checkIfAllAchievementsAreDone,
+	logConsoleMessages,
 } from "@/lib/domains/foobar/helpers";
 import { useGlobalStore } from "@/lib/domains/global";
 import { useHasMounted } from "@/lib/helpers/hooks";

@@ -5,6 +5,7 @@ import PlausibleProvider from "next-plausible";
 import { SITE_DESCRIPTION, SITE_TITLE_APPEND, SITE_URL } from "@/config";
 import { blockingScriptSetInitialColorScheme } from "@/lib/domains/colorScheme/blockingScript";
 import { inter_font, iosevka_font, eb_garamond_font } from "@/lib/domains/fonts";
+import { FOOBAR_SOURCE_CODE } from "@/lib/domains/foobar/helpers";
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
 	return (
@@ -31,6 +32,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 					}}
 				></script>
 				{children}
+				<script
+					dangerouslySetInnerHTML={{
+						__html: FOOBAR_SOURCE_CODE,
+					}}
+				></script>
 			</body>
 		</html>
 	);

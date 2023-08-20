@@ -6,6 +6,7 @@ import { useEffect } from "react";
 
 import { blockingScriptSetInitialColorScheme } from "@/lib/domains/colorScheme/blockingScript";
 import { inter_font, iosevka_font, eb_garamond_font } from "@/lib/domains/fonts";
+import { FOOBAR_SOURCE_CODE } from "@/lib/domains/foobar/helpers";
 
 export default function GlobalError({ error, reset }: { error: Error; reset: () => void }) {
 	useEffect(() => {
@@ -37,6 +38,11 @@ export default function GlobalError({ error, reset }: { error: Error; reset: () 
 				></script>
 				<h2>Something went wrong!</h2>
 				<button onClick={() => reset()}>Try again</button>
+				<script
+					dangerouslySetInnerHTML={{
+						__html: FOOBAR_SOURCE_CODE,
+					}}
+				></script>
 			</body>
 		</html>
 	);
