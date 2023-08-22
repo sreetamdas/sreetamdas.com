@@ -1,10 +1,10 @@
 import { notFound } from "next/navigation";
 
 import { FoobarSchrodinger } from "@/lib/domains/foobar/Dashboard.client";
-import { FOOBAR_PAGES, type FoobarPageSlug } from "@/lib/domains/foobar/flags";
+import { FOOBAR_FLAGS, type FoobaFlagPageSlug } from "@/lib/domains/foobar/flags";
 
 type PageParams = {
-	params: { slug: Exclude<FoobarPageSlug, "/"> };
+	params: { slug: Exclude<FoobaFlagPageSlug, "/"> };
 };
 export default function FoobarCompletedPage({ params: { slug } }: PageParams) {
 	const all_foobar_pages_slugs = getAllFoobarPagesSlugs();
@@ -13,7 +13,7 @@ export default function FoobarCompletedPage({ params: { slug } }: PageParams) {
 		notFound();
 	}
 
-	return <FoobarSchrodinger completedPage={slug} />;
+	return <FoobarSchrodinger completed_page={slug} />;
 }
 
 export function generateStaticParams() {
@@ -24,5 +24,5 @@ export function generateStaticParams() {
 }
 
 function getAllFoobarPagesSlugs() {
-	return Object.values(FOOBAR_PAGES);
+	return Object.keys(FOOBAR_FLAGS);
 }

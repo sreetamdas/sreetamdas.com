@@ -2,7 +2,7 @@
 
 import { LinkTo } from "@/lib/components/Anchor";
 import { useCustomPlausible } from "@/lib/domains/Plausible";
-import { type FoobarPageSlug, FOOBAR_PAGES } from "@/lib/domains/foobar/flags";
+import { FOOBAR_FLAGS } from "@/lib/domains/foobar/flags";
 import { useGlobalStore } from "@/lib/domains/global";
 
 export const NotFoundDogsLink = () => {
@@ -13,12 +13,10 @@ export const NotFoundDogsLink = () => {
 	const plausibleEvent = useCustomPlausible();
 
 	function handleDogsLinkClicked() {
-		const updatedPages: Array<FoobarPageSlug> = [...completed];
-		if (!updatedPages.includes(FOOBAR_PAGES.dogs)) {
-			updatedPages.push(FOOBAR_PAGES.dogs);
-			plausibleEvent("foobar", { props: { achievement: FOOBAR_PAGES.dogs } });
+		if (!completed.includes(FOOBAR_FLAGS.dogs.name)) {
+			plausibleEvent("foobar", { props: { achievement: FOOBAR_FLAGS.dogs.name } });
 			setFoobarData({
-				completed: updatedPages,
+				completed: completed.concat([FOOBAR_FLAGS.dogs.name]),
 			});
 		}
 	}

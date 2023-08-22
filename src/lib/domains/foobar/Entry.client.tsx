@@ -2,6 +2,7 @@
 
 import { LinkTo } from "@/lib/components/Anchor";
 import { useCustomPlausible } from "@/lib/domains/Plausible";
+import { FOOBAR_FLAGS } from "@/lib/domains/foobar/flags";
 import { useGlobalStore } from "@/lib/domains/global";
 
 export const FoobarEntry = () => {
@@ -13,7 +14,7 @@ export const FoobarEntry = () => {
 
 	function handleXDiscovery() {
 		if (!unlocked) {
-			plausible("foobar", { props: { achievement: "/" } });
+			plausible("foobar", { props: { achievement: FOOBAR_FLAGS.unlocked.name } });
 			setFoobarData({ unlocked: true });
 		}
 	}

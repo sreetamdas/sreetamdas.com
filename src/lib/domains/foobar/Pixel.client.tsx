@@ -3,7 +3,7 @@
 import { usePathname } from "next/navigation";
 import { useEffect } from "react";
 
-import { FOOBAR_PAGES } from "./flags";
+import { type FoobaFlagPageSlug, FOOBAR_FLAGS } from "./flags";
 import { type FoobarSliceType } from "./store";
 
 import { IS_DEV } from "@/config";
@@ -23,7 +23,7 @@ const foobarDataSelector = (state: FoobarSliceType) => ({
 });
 
 type FoobarPixelProps = {
-	path?: "/404";
+	path?: `/${Extract<FoobaFlagPageSlug, "404">}`;
 };
 
 /**
@@ -56,12 +56,12 @@ export const FoobarPixel = (props: FoobarPixelProps) => {
 
 	useEffect(() => {
 		let page_name = pathname;
-		if (props.path === "/404") {
-			page_name = "/404";
+		if (props.path === `/${FOOBAR_FLAGS.error404.slug}`) {
+			page_name = `/${FOOBAR_FLAGS.error404.slug}`;
 
-			if (!completed.includes(FOOBAR_PAGES.notFound)) {
+			if (!completed.includes(FOOBAR_FLAGS.error404.name)) {
 				setFoobarData({
-					completed: completed.concat([FOOBAR_PAGES.notFound]),
+					completed: completed.concat([FOOBAR_FLAGS.error404.name]),
 				});
 			}
 		}
@@ -73,10 +73,10 @@ export const FoobarPixel = (props: FoobarPixelProps) => {
 		}
 
 		// for the `navigator` achievement
-		if (visited_pages.length >= 5 && !completed.includes(FOOBAR_PAGES.navigator)) {
-			plausibleEvent("foobar", { props: { achievement: FOOBAR_PAGES.navigator } });
+		if (visited_pages.length >= 5 && !completed.includes(FOOBAR_FLAGS.navigator.name)) {
+			plausibleEvent("foobar", { props: { achievement: FOOBAR_FLAGS.navigator.name } });
 			setFoobarData({
-				completed: completed.concat([FOOBAR_PAGES.navigator]),
+				completed: completed.concat([FOOBAR_FLAGS.navigator.name]),
 			});
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps

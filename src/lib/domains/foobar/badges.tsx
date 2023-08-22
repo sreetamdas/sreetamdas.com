@@ -1,14 +1,14 @@
 import { clsx } from "clsx";
 import { useState } from "react";
 
-import { type FoobarAchievement, FOOBAR_CHALLENGES } from "./flags";
+import { type FoobarFlag, FOOBAR_FLAGS } from "./flags";
 import { type FoobarDataType } from "./store";
 
 import { LinkTo } from "@/lib/components/Anchor";
 
 type ShowCompletedBadgesProps = Pick<FoobarDataType, "completed" | "all_achievements">;
 export const ShowCompletedBadges = ({ completed, all_achievements }: ShowCompletedBadgesProps) => {
-	const allBadges = Object.keys(FOOBAR_CHALLENGES) as Array<FoobarAchievement>;
+	const all_badges = Object.values(FOOBAR_FLAGS).map(({ name }) => name);
 
 	return (
 		<div>
@@ -27,7 +27,7 @@ export const ShowCompletedBadges = ({ completed, all_achievements }: ShowComplet
 				</span>
 			</p>
 			<div className="grid gap-6 py-12 md:grid-cols-2">
-				{allBadges.map((badge) => (
+				{all_badges.map((badge) => (
 					<Badge
 						key={badge}
 						badge={badge}
@@ -41,29 +41,29 @@ export const ShowCompletedBadges = ({ completed, all_achievements }: ShowComplet
 };
 
 type BadgeProps = {
-	badge: FoobarAchievement;
+	badge: FoobarFlag;
 } & Pick<FoobarDataType, "completed" | "all_achievements">;
 const Badge = ({ badge, completed, all_achievements }: BadgeProps) => {
 	const [clicks, setClicks] = useState(0);
-	const isUnlocked = badge === "completed" ? all_achievements : completed.includes(badge);
+	const is_unlocked = badge === "completed" ? all_achievements : completed.includes(badge);
 
 	return (
 		<button
 			onClick={() => setClicks(clicks + 1)}
 			className={clsx(
 				"group grid grid-cols-[max-content_1fr] items-center gap-4 rounded-global border-2 p-4 text-4xl transition-colors",
-				isUnlocked ? "border-primary text-primary" : "border-zinc-400 text-zinc-400",
+				is_unlocked ? "border-primary text-primary" : "border-zinc-400 text-zinc-400",
 			)}
 		>
 			<FoobarBadge badge={badge} />
-			<p className={clsx("text-sm", isUnlocked || clicks >= 5 ? "inline" : "hidden")}>
-				{FOOBAR_CHALLENGES[badge].description}
+			<p className={clsx("text-sm", is_unlocked || clicks >= 5 ? "inline" : "hidden")}>
+				{FOOBAR_FLAGS[badge].description}
 			</p>
 		</button>
 	);
 };
 
-const FoobarBadge = ({ badge }: { badge: FoobarAchievement }) => {
-	const { icon: Icon } = FOOBAR_CHALLENGES[badge];
+const FoobarBadge = ({ badge }: { badge: FoobarFlag }) => {
+	const { icon: Icon } = FOOBAR_FLAGS[badge];
 	return <Icon aria-label={badge} className="text-5xl" />;
 };

@@ -1,13 +1,13 @@
 import { merge } from "lodash-es";
 import { type StateCreator } from "zustand";
 
-import { type FoobarPageSlug } from "./flags";
+import { type FoobarFlag, type FoobaFlagPageSlug } from "./flags";
 
 export type FoobarDataType = {
 	visited_pages: Array<string>;
 	konami: boolean;
 	unlocked: boolean;
-	completed: Array<FoobarPageSlug>;
+	completed: Array<FoobarFlag>;
 	all_achievements: boolean;
 };
 
@@ -20,7 +20,7 @@ export const initialFoobarData: FoobarDataType = {
 };
 
 export type FoobarSchrodingerProps = {
-	completedPage: FoobarPageSlug;
+	completed_page: FoobaFlagPageSlug;
 };
 
 export type FoobarSliceType = {

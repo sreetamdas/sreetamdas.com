@@ -1,13 +1,19 @@
-import { FOOBAR_PAGES } from "./flags";
 import { type FoobarSliceType } from "./store";
+
+import { FOOBAR_FLAGS } from "@/lib/domains/foobar/flags";
 
 export function checkIfAllAchievementsAreDone(
 	completed: FoobarSliceType["foobar_data"]["completed"],
 ) {
-	const allPages = Object.values(FOOBAR_PAGES);
-	if (completed.length !== allPages.length) return false;
+	const all_navigable_flag_pages = Object.values(FOOBAR_FLAGS).flatMap((challenge_obj) => {
+		if ("slug" in challenge_obj) {
+			return challenge_obj.name;
+		}
+		return [];
+	});
+	if (completed.length < all_navigable_flag_pages.length) return false;
 
-	return allPages.every((page) => completed.includes(page));
+	return all_navigable_flag_pages.every((page) => completed.includes(page));
 }
 
 export function addFoobarToLocalStorage() {
@@ -15,7 +21,6 @@ export function addFoobarToLocalStorage() {
 }
 
 /* eslint-disable no-console */
-
 export function logConsoleMessages() {
 	console.log(
 		`%c${CONSOLE_REACT}`,
