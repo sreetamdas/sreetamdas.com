@@ -3,6 +3,8 @@ import { notFound } from "next/navigation";
 import { FoobarSchrodinger } from "@/lib/domains/foobar/Dashboard.client";
 import { FOOBAR_FLAGS, type FoobaFlagPageSlug } from "@/lib/domains/foobar/flags";
 
+export const dynamicParams = false;
+
 type PageParams = {
 	params: { slug: Exclude<FoobaFlagPageSlug, "/"> };
 };
@@ -24,5 +26,13 @@ export function generateStaticParams() {
 }
 
 function getAllFoobarPagesSlugs() {
-	return Object.keys(FOOBAR_FLAGS);
+	return Object.values(FOOBAR_FLAGS).flatMap((challenge_obj) => {
+		if ("slug" in challenge_obj) {
+			if (challenge_obj.slug === "/") {
+				return [];
+			}
+			return challenge_obj.slug;
+		}
+		return [];
+	});
 }
