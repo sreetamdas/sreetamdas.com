@@ -16,7 +16,9 @@ import { MdDns } from "react-icons/md";
 import { RiWifiOffLine } from "react-icons/ri";
 import { VscDebug, VscTelescope } from "react-icons/vsc";
 
-export type FoobarFlags = typeof FOOBAR_FLAGS;
+import { Code } from "@/lib/components/Typography";
+
+type FoobarFlags = typeof FOOBAR_FLAGS;
 
 /**
  * All flags, _including_ the "completed" achievement
@@ -109,7 +111,7 @@ export const FOOBAR_FLAGS = {
 		name: "localforage",
 		slug: "localforage",
 		icon: (props: IconBaseProps) => <FaDatabase {...props} />,
-		description: "Check the localStorage/indexedDB",
+		description: "Check storage",
 	},
 	teapot: {
 		name: "teapot",
@@ -117,7 +119,7 @@ export const FOOBAR_FLAGS = {
 		icon: (props: IconBaseProps) => <GiTeapot {...props} />,
 		description: (
 			<>
-				Brew some <code>/api/coffee</code>
+				Brew some <Code>/api/coffee</Code>
 			</>
 		),
 	},

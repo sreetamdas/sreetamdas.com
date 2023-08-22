@@ -4,7 +4,7 @@ export const runtime = "edge";
 
 export async function POST() {
 	return NextResponse.json(
-		{ message: "Cannot brew coffeee, I'm a teapot", foobar: "/foobar/teapot" },
+		{ message: "Cannot brew coffee, I'm a teapot", foobar: "/foobar/teapot" },
 		{ status: 418 },
 	);
 }

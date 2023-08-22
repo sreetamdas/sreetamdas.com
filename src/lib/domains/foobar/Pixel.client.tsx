@@ -8,6 +8,7 @@ import { type FoobarSliceType } from "./store";
 
 import { IS_DEV } from "@/config";
 import { LinkTo } from "@/lib/components/Anchor";
+import { Code } from "@/lib/components/Typography";
 import { useCustomPlausible } from "@/lib/domains/Plausible";
 import {
 	addFoobarToLocalStorage,
@@ -95,11 +96,11 @@ export const FoobarPixel = (props: FoobarPixelProps) => {
 
 	return has_mounted && unlocked ? (
 		<span className="col-start-2 col-end-3">
-			<code>
+			<Code>
 				<LinkTo href="/foobar" style={{ border: "none" }}>
 					resume /foobar
 				</LinkTo>
-			</code>
+			</Code>
 		</span>
 	) : null;
 };
