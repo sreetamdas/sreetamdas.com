@@ -11,7 +11,6 @@ export function checkIfAllAchievementsAreDone(
 		}
 		return [];
 	});
-	if (completed.length < all_navigable_flag_pages.length) return false;
 
 	return all_navigable_flag_pages.every((page) => completed.includes(page));
 }
