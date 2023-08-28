@@ -1,18 +1,16 @@
 import { FiLink } from "react-icons/fi";
-import { type Highlighter } from "shiki";
+// import { type Highlighter } from "shiki";
 
 import module_css from "./CodeSnippet.module.css";
 
 import { ViewsCounter } from "@/lib/components/ViewsCounter";
 import { fetchGist } from "@/lib/domains/GitHub";
-import { getKarmaHighlighter } from "@/lib/domains/shiki";
+// import { getKarmaHighlighter } from "@/lib/domains/shiki";
 
 const GITHUB_RWC_GIST_ID = process.env.GITHUB_RWC_GIST_ID!;
 
 export default async function RWCPage() {
 	const gist = await fetchGist(GITHUB_RWC_GIST_ID);
-
-	const karma_highlighter = await getKarmaHighlighter();
 
 	return (
 		<>
@@ -22,7 +20,6 @@ export default async function RWCPage() {
 				<CodeSnippetBlock
 					key={file_object?.filename}
 					filename={file_object?.filename}
-					highlighter={karma_highlighter}
 					lang={file_object?.language?.toLowerCase()}
 					code={file_object?.content}
 				/>
@@ -35,18 +32,18 @@ export default async function RWCPage() {
 
 type Props = {
 	code?: string;
-	highlighter: Highlighter;
+	// highlighter: Highlighter;
 	lang?: string;
 	filename?: string;
 };
 function CodeSnippetBlock(props: Props) {
-	const { code, lang, highlighter, filename } = props;
+	const { code, lang, filename } = props;
 
 	if (!code) return null;
 
-	const backgroundColor = highlighter.getBackgroundColor();
-	const html = highlighter.codeToHtml(code, { lang });
-	const cleaned_html = html.replace(/(^<pre [^>]*>)/, "").replace(/(<\/pre>$)/, "");
+	// const backgroundColor = highlighter.getBackgroundColor();
+	// const html = highlighter.codeToHtml(code, { lang });
+	// const cleaned_html = html.replace(/(^<pre [^>]*>)/, "").replace(/(<\/pre>$)/, "");
 
 	const slug = filename?.replaceAll(/[\s.]/g, "_").toLowerCase();
 
@@ -64,15 +61,15 @@ function CodeSnippetBlock(props: Props) {
 				</h2>
 				<span
 					className="rounded-t-global px-2 py-1 font-mono text-zinc-400"
-					style={{ backgroundColor }}
+					// style={{ backgroundColor }}
 				>
 					{lang}
 				</span>
 			</div>
 			<pre
 				className={module_css["code-snippet"]}
-				style={{ backgroundColor }}
-				dangerouslySetInnerHTML={{ __html: cleaned_html }}
+				// style={{ backgroundColor }}
+				dangerouslySetInnerHTML={{ __html: code }}
 			/>
 		</article>
 	);
