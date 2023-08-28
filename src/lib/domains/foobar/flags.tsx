@@ -57,13 +57,13 @@ export const FOOBAR_FLAGS = {
 		name: "dns-txt",
 		slug: "dns-txt",
 		icon: (props: IconBaseProps) => <MdDns {...props} />,
-		description: "Lookup the DNS TXT records",
+		description: "Lookup TXT records",
 	},
 	devtools: {
 		name: "devtools",
 		slug: "devtools",
 		icon: (props: IconBaseProps) => <VscDebug {...props} />,
-		description: "Check out the React Devtools",
+		description: "Explore React devtools",
 	},
 	konami: {
 		name: "konami",
@@ -93,7 +93,7 @@ export const FOOBAR_FLAGS = {
 		name: "dogs",
 		slug: "dogs",
 		icon: (props: IconBaseProps) => <FaDog {...props} />,
-		description: "Check out the link on the 404 page",
+		description: "Explore the 404 page",
 	},
 	navigator: {
 		name: "navigator",
@@ -122,6 +122,11 @@ export const FOOBAR_FLAGS = {
 				Brew some <Code>/api/coffee</Code>
 			</>
 		),
+	},
+	restart: {
+		name: "restart",
+		icon: (props: IconBaseProps) => <IoIosRocket {...props} />,
+		description: "Reset",
 	},
 	completed: {
 		name: "completed",

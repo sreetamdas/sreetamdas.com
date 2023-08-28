@@ -4,13 +4,13 @@ import { type Highlighter } from "shiki";
 import module_css from "./CodeSnippet.module.css";
 
 import { ViewsCounter } from "@/lib/components/ViewsCounter";
-import { octokit } from "@/lib/domains/GitHub";
+import { fetchGist } from "@/lib/domains/GitHub";
 import { getKarmaHighlighter } from "@/lib/domains/shiki";
 
+const GITHUB_RWC_GIST_ID = process.env.GITHUB_RWC_GIST_ID!;
+
 export default async function RWCPage() {
-	const gist = await octokit.request("GET /gists/{gist_id}", {
-		gist_id: "5c6d921605493f5e0a8877aa716b02d4",
-	});
+	const gist = await fetchGist(GITHUB_RWC_GIST_ID);
 
 	const karma_highlighter = await getKarmaHighlighter();
 
@@ -18,7 +18,7 @@ export default async function RWCPage() {
 		<>
 			<h1 className="pb-20 pt-10 font-serif text-8xl">/rwc</h1>
 
-			{Object.values(gist.data.files!).map((file_object) => (
+			{Object.values(gist.files!).map((file_object) => (
 				<CodeSnippetBlock
 					key={file_object?.filename}
 					filename={file_object?.filename}

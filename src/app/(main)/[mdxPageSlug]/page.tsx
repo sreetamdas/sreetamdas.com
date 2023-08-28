@@ -1,10 +1,12 @@
 import { type Metadata } from "next";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 
 import { SITE_TITLE_APPEND, SITE_URL, SITE_OG_IMAGE } from "@/config";
+import { LinkTo } from "@/lib/components/Anchor";
 import { MDXContent } from "@/lib/components/MDX";
 import { ViewsCounter } from "@/lib/components/ViewsCounter";
-import { RepoContributors } from "@/lib/domains/GitHub";
+import { fetchRepoContributors } from "@/lib/domains/GitHub";
 import { allPages } from "contentlayer/generated";
 
 export const dynamicParams = false;
@@ -59,3 +61,27 @@ export async function generateMetadata({ params }: PageParams): Promise<Metadata
 		},
 	};
 }
+
+const RepoContributors = async () => {
+	const contributors = await fetchRepoContributors();
+
+	return (
+		<div className="flex flex-wrap gap-6 pt-4">
+			{contributors?.map(
+				({ login, avatar_url, html_url }) =>
+					html_url && (
+						<LinkTo href={html_url} key={login} target="_blank">
+							<div className="flex flex-col items-center gap-1">
+								{avatar_url ? (
+									<span className="overflow-hidden rounded-global">
+										<Image src={avatar_url} alt={login ?? ""} height={128} width={128} />
+									</span>
+								) : null}
+								<p className="m-0 pb-2 text-sm">{login}</p>
+							</div>
+						</LinkTo>
+					),
+			)}
+		</div>
+	);
+};

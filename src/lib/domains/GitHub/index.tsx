@@ -1,24 +1,31 @@
-import { Octokit } from "@octokit/core";
+import { type Endpoints } from "@octokit/types";
 import { captureException } from "@sentry/nextjs";
-import Image from "next/image";
-import { cache } from "react";
 
 import { DEFAULT_REPO } from "@/config";
-import { LinkTo } from "@/lib/components/Anchor";
 
-export const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
+export const GITHUB_API_BASE_URL = `https://api.github.com`;
+const octokit_headers = {
+	Accept: "application/vnd.github+json",
+	Authorization: `Bearer ${process.env.GITHUB_TOKEN}`,
+	"X-GitHub-Api-Version": "2022-11-28",
+};
 
-const fetchGitHubStats = cache(async (owner: string, repo: string) => {
-	const {
-		data: { stargazers_count: stars, forks },
-	} = await octokit.request("GET /repos/{owner}/{repo}", { owner, repo });
+async function fetchGitHubStats() {
+	const request = await fetch(
+		`${GITHUB_API_BASE_URL}/repos/${DEFAULT_REPO.owner}/${DEFAULT_REPO.repo}`,
+		{
+			headers: octokit_headers,
+		},
+	);
+	const data: Endpoints["GET /repos/{owner}/{repo}"]["response"]["data"] = await request.json();
+	const { stargazers_count: stars, forks_count: forks } = data;
 
 	return { stars, forks };
-});
+}
 
 export async function getGitHubStats() {
 	try {
-		return await fetchGitHubStats(DEFAULT_REPO.owner, DEFAULT_REPO.repo);
+		return await fetchGitHubStats();
 	} catch (error) {
 		captureException(error);
 
@@ -26,32 +33,24 @@ export async function getGitHubStats() {
 	}
 }
 
-const fetchRepoContributors = cache(async (owner: string, repo: string) => {
-	const { data } = await octokit.request("GET /repos/{owner}/{repo}/contributors", { owner, repo });
+export async function fetchRepoContributors() {
+	const request = await fetch(
+		`${GITHUB_API_BASE_URL}/repos/${DEFAULT_REPO.owner}/${DEFAULT_REPO.repo}/contributors`,
+		{
+			headers: octokit_headers,
+		},
+	);
+	const data: Endpoints["GET /repos/{owner}/{repo}/contributors"]["response"]["data"] =
+		await request.json();
 
 	return data.filter(({ type, login }) => type !== "Bot" && login !== DEFAULT_REPO.owner);
-});
+}
 
-export const RepoContributors = async () => {
-	const contributors = await fetchRepoContributors(DEFAULT_REPO.owner, DEFAULT_REPO.repo);
+export async function fetchGist(gist_id: string) {
+	const request = await fetch(`${GITHUB_API_BASE_URL}/gists/${gist_id}`, {
+		headers: octokit_headers,
+	});
+	const data: Endpoints["GET /gists/{gist_id}"]["response"]["data"] = await request.json();
 
-	return (
-		<div className="flex flex-wrap gap-6 pt-4">
-			{contributors?.map(
-				({ login, avatar_url, html_url }) =>
-					html_url && (
-						<LinkTo href={html_url} key={login} target="_blank">
-							<div className="flex flex-col items-center gap-1">
-								{avatar_url ? (
-									<span className="overflow-hidden rounded-global">
-										<Image src={avatar_url} alt={login ?? ""} height={128} width={128} />
-									</span>
-								) : null}
-								<p className="m-0 pb-2 text-sm">{login}</p>
-							</div>
-						</LinkTo>
-					),
-			)}
-		</div>
-	);
-};
+	return data;
+}
