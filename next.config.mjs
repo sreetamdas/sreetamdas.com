@@ -6,6 +6,7 @@ process.env.SITE_URL = process.env.SITE_URL || process.env.VERCEL_URL || "http:/
 const moduleExports = withPlausibleProxy()({
 	experimental: {
 		typedRoutes: true,
+		logging: "verbose",
 	},
 	images: {
 		domains: ["avatars.githubusercontent.com", "i.imgur.com"],
