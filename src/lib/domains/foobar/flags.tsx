@@ -14,7 +14,7 @@ import { GiTeapot } from "react-icons/gi";
 import { IoIosRocket } from "react-icons/io";
 import { MdDns } from "react-icons/md";
 import { RiWifiOffLine } from "react-icons/ri";
-import { VscDebug, VscTelescope } from "react-icons/vsc";
+import { VscDebug, VscDebugRestart, VscTelescope } from "react-icons/vsc";
 
 import { Code } from "@/lib/components/Typography";
 
@@ -125,7 +125,7 @@ export const FOOBAR_FLAGS = {
 	},
 	restart: {
 		name: "restart",
-		icon: (props: IconBaseProps) => <IoIosRocket {...props} />,
+		icon: (props: IconBaseProps) => <VscDebugRestart {...props} />,
 		description: "Reset",
 	},
 	completed: {
