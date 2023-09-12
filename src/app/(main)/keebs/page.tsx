@@ -1,10 +1,8 @@
 import { type PageObjectResponse } from "@notionhq/client/build/src/api-endpoints";
 import { isEmpty, isUndefined } from "lodash-es";
-import { Suspense } from "react";
 
 import { SITE_TITLE_APPEND } from "@/config";
 import { Image } from "@/lib/components/Image";
-import { ViewsCounter } from "@/lib/components/ViewsCounter";
 import { type KeebDetails, ImgurClient } from "@/lib/domains/Imgur";
 import { NotionClient } from "@/lib/domains/Notion";
 
@@ -51,10 +49,6 @@ export default async function KeebsPage() {
 					</article>
 				))}
 			</section>
-
-			<Suspense>
-				<ViewsCounter slug="/keebs" />
-			</Suspense>
 		</>
 	);
 }
