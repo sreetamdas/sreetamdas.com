@@ -10,6 +10,7 @@ import { getPageViews, upsertPageViews } from "@/lib/domains/Supabase";
  * @param slug page slug
  * @returns page views response
  */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 async function isomorphicFetchPageViews(slug: string) {
 	if (IS_DEV) {
 		return await getPageViews(slug);
@@ -37,7 +38,7 @@ export const ViewsCounter = ({ slug, page_type = "page", hidden = false }: Views
 );
 
 const Views = async ({ slug, page_type }: Omit<ViewsCounterProps, "hidden">) => {
-	const { data, error } = await isomorphicFetchPageViews(slug);
+	const { data, error } = await upsertPageViews(slug);
 
 	if (error) {
 		captureException(error, { extra: { slug } });
