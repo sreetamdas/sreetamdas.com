@@ -2,21 +2,20 @@ import { captureException } from "@sentry/nextjs";
 import { clsx } from "clsx";
 import { Suspense } from "react";
 
-import { IS_DEV } from "@/config";
-import { getPageViews, upsertPageViews } from "@/lib/domains/Supabase";
+// import { IS_DEV } from "@/config";
+import { upsertPageViews } from "@/lib/domains/Supabase";
 
 /**
  * Wrapper for Supabase page views for both only fetching and upserting
  * @param slug page slug
  * @returns page views response
  */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-async function isomorphicFetchPageViews(slug: string) {
-	if (IS_DEV) {
-		return await getPageViews(slug);
-	}
-	return await upsertPageViews(slug);
-}
+// async function isomorphicFetchPageViews(slug: string) {
+// 	if (IS_DEV) {
+// 		return await getPageViews(slug);
+// 	}
+// 	return await upsertPageViews(slug);
+// }
 
 type ViewsCounterProps = {
 	slug: string;
