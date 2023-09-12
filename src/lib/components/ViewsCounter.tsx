@@ -1,5 +1,6 @@
 import { captureException } from "@sentry/nextjs";
 import { clsx } from "clsx";
+import { Suspense } from "react";
 
 import { IS_DEV } from "@/config";
 import { getPageViews, upsertPageViews } from "@/lib/domains/Supabase";
@@ -21,11 +22,21 @@ type ViewsCounterProps = {
 	page_type?: "post" | "page";
 	hidden?: boolean;
 };
-export const ViewsCounter = async ({
-	slug,
-	page_type = "page",
-	hidden = false,
-}: ViewsCounterProps) => {
+export const ViewsCounter = ({ slug, page_type = "page", hidden = false }: ViewsCounterProps) => (
+	<div
+		className={clsx(
+			"mx-auto mb-5 mt-auto w-full flex-row items-center justify-center gap-2 pt-40",
+			hidden ? "hidden" : "flex",
+		)}
+	>
+		<span role="img" aria-label="eyes">
+			👀
+		</span>
+		<Views slug={slug} page_type={page_type} />
+	</div>
+);
+
+const Views = async ({ slug, page_type }: Omit<ViewsCounterProps, "hidden">) => {
 	const { data, error } = await isomorphicFetchPageViews(slug);
 
 	if (error) {
@@ -33,17 +44,9 @@ export const ViewsCounter = async ({
 	}
 
 	return (
-		<div
-			className={clsx(
-				"mx-auto mb-5 mt-auto w-full flex-row items-center justify-center gap-2 pt-40",
-				hidden ? "hidden" : "flex",
-			)}
-		>
-			<span role="img" aria-label="eyes">
-				👀
-			</span>
+		<Suspense fallback={<p className="m-0 text-xs">Getting view count</p>}>
 			<p className="m-0 text-xs">{getViewCountCopy(data?.view_count ?? 0, page_type)}</p>
-		</div>
+		</Suspense>
 	);
 };
 
