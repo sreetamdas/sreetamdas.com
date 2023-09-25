@@ -141,6 +141,7 @@ export default makeSource({
 		remarkPlugins: [remarkFrontmatter, remarkShiki, remarkGfm, [remarkToc, { tight: true }]],
 		rehypePlugins: [
 			[
+				// @ts-expect-error TS shush
 				rehypeRaw,
 				{
 					passThrough: [

@@ -10,6 +10,7 @@ import { NotionClient } from "@/lib/domains/Notion";
 
 const KEEBS_DATABASE_ID = process.env.NOTION_KEEBS_PAGE_ID;
 
+export const runtime = "edge";
 export const metadata = {
 	title: `Keebs ${SITE_TITLE_APPEND}`,
 };
