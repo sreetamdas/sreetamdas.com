@@ -1,4 +1,3 @@
-import { captureException } from "@sentry/nextjs";
 import { clsx } from "clsx";
 import { Suspense } from "react";
 
@@ -37,11 +36,7 @@ export const ViewsCounter = ({ slug, page_type = "page", hidden = false }: Views
 );
 
 const Views = async ({ slug, page_type }: Omit<ViewsCounterProps, "hidden">) => {
-	const { data, error } = await upsertPageViews(slug);
-
-	if (error) {
-		captureException(error, { extra: { slug } });
-	}
+	const { data } = await upsertPageViews(slug);
 
 	return (
 		<Suspense fallback={<p className="m-0 text-xs">Getting view count</p>}>

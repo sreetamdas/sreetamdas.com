@@ -1,5 +1,3 @@
-import { captureException } from "@sentry/nextjs";
-
 import { IS_DEV } from "@/config";
 
 type PageViewCount = {
@@ -63,7 +61,6 @@ export async function getPageViews(slug: string): Promise<PageViewCountResponse>
 
 		return { data: view_count, error: null };
 	} catch (error) {
-		captureException(error);
 		return { error, data: null };
 	}
 }
@@ -94,7 +91,6 @@ export async function upsertPageViews(slug: string): Promise<PageViewCountRespon
 		const view_count: number = await request.json();
 		return { data: { view_count }, error: null };
 	} catch (error) {
-		captureException(error);
 		return { error, data: null };
 	}
 }
