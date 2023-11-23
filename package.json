@@ -56,7 +56,7 @@
 	},
 	"devDependencies": {
 		"@next/eslint-plugin-next": "^13.1.6",
-		"@svgr/webpack": "^6.5.1",
+		"@svgr/webpack": "^8.0.0",
 		"@tanstack/react-query-devtools": "^4.24.4",
 		"@types/eslint": "^8.4.10",
 		"@types/lodash-es": "^4.17.6",
