@@ -137,8 +137,8 @@ devDependencies:
     specifier: ^18.0.10
     version: 18.0.10
   '@types/react-is':
-    specifier: ^17.0.3
-    version: 17.0.3
+    specifier: ^18.0.0
+    version: 18.2.4
   '@types/styled-components':
     specifier: ^5.1.26
     version: 5.1.26
@@ -3101,8 +3101,8 @@ packages:
       '@types/react': 18.0.27
     dev: true
 
-  /@types/react-is@17.0.3:
-    resolution: {integrity: sha512-aBTIWg1emtu95bLTLx0cpkxwGW3ueZv71nE2YFBpL8k/z5czEW8yYpOo8Dp+UUAFAtKwNaOsh/ioSeQnWlZcfw==}
+  /@types/react-is@18.2.4:
+    resolution: {integrity: sha512-wBc7HgmbCcrvw0fZjxbgz/xrrlZKzEqmABBMeSvpTvdm25u6KI6xdIi9pRE2G0C1Lw5ETFdcn4UbYZ4/rpqUYw==}
     dependencies:
       '@types/react': 18.0.27
     dev: true
