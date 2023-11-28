@@ -52,7 +52,7 @@
 		"shiki": "^0.14.0",
 		"styled-components": "^5.3.6",
 		"unist-util-visit": "^4.1.2",
-		"zustand": "4.3.2"
+		"zustand": "4.4.7"
 	},
 	"devDependencies": {
 		"@next/eslint-plugin-next": "^13.1.6",
