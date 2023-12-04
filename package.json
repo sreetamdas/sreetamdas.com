@@ -20,7 +20,7 @@
 	},
 	"dependencies": {
 		"@next/font": "^13.1.6",
-		"@notionhq/client": "2.2.3",
+		"@notionhq/client": "2.2.14",
 		"@octokit/core": "^4.2.0",
 		"@radix-ui/react-switch": "^1.0.1",
 		"@sentry/nextjs": "^7.35.0",
