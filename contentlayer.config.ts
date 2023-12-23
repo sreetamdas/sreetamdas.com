@@ -7,7 +7,6 @@ import remarkToc from "remark-toc";
 
 import { OWNER_NAME, SITE_OG_IMAGE, SITE_URL } from "./src/config";
 import { rehypeImgSize } from "./src/lib/components/MDX/plugins";
-import { remarkShiki } from "./src/lib/domains/shiki";
 
 export const BlogPost = defineDocumentType(() => ({
 	name: "BlogPost",
@@ -138,7 +137,7 @@ export default makeSource({
 	documentTypes: [BlogPost, Page],
 	mdx: {
 		resolveCwd: "relative",
-		remarkPlugins: [remarkFrontmatter, remarkShiki, remarkGfm, [remarkToc, { tight: true }]],
+		remarkPlugins: [remarkFrontmatter, remarkGfm, [remarkToc, { tight: true }]],
 		rehypePlugins: [
 			[
 				// @ts-expect-error TS shush

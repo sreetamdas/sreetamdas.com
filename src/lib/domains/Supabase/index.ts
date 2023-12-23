@@ -56,12 +56,16 @@ export async function getPageViews(slug: string): Promise<PageViewCountResponse>
 		const response: Array<PageViewCount> = await request.json();
 		const view_count = response[0];
 
-		if (typeof view_count === "undefined")
-			throw new Error("Page has not been added to the database yet", { cause: { view_count } });
+		if (typeof view_count === "undefined") {
+			throw new Error("Page has not been added to the database yet", {
+				cause: { view_count: "undefined" },
+			});
+		}
 
 		return { data: view_count, error: null };
 	} catch (error) {
-		return { error, data: null };
+		// @ts-expect-error error shape
+		return { error: { message: error.message, cause: error.cause }, data: null };
 	}
 }
 

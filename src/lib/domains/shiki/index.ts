@@ -1,3 +1,1 @@
-export { getKarmaHighlighter } from "./highlighter";
-export { remarkShiki } from "./plugin";
-export { renderToHtml } from "./renderer";
+export { preloaded_langs, getKarmaHighlighter, getKarmaTheme } from "./highlighter";

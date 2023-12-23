@@ -1,27 +1,37 @@
 import { clsx } from "clsx";
 import { Suspense } from "react";
 
-// import { IS_DEV } from "@/config";
-import { upsertPageViews } from "@/lib/domains/Supabase";
+import { IS_DEV } from "@/config";
+import { getPageViews, upsertPageViews } from "@/lib/domains/Supabase";
+
+type IsomorphicFetchOptions = {
+	disabled?: boolean;
+};
 
 /**
  * Wrapper for Supabase page views for both only fetching and upserting
  * @param slug page slug
  * @returns page views response
  */
-// async function isomorphicFetchPageViews(slug: string) {
-// 	if (IS_DEV) {
-// 		return await getPageViews(slug);
-// 	}
-// 	return await upsertPageViews(slug);
-// }
+async function isomorphicFetchPageViews(slug: string, options: IsomorphicFetchOptions) {
+	if (IS_DEV || options.disabled) {
+		return await getPageViews(slug);
+	}
+	return await upsertPageViews(slug);
+}
 
 type ViewsCounterProps = {
 	slug: string;
 	page_type?: "post" | "page";
 	hidden?: boolean;
+	disabled?: boolean;
 };
-export const ViewsCounter = ({ slug, page_type = "page", hidden = false }: ViewsCounterProps) => (
+export const ViewsCounter = ({
+	slug,
+	page_type = "page",
+	hidden = false,
+	disabled = IS_DEV,
+}: ViewsCounterProps) => (
 	<div
 		className={clsx(
 			"mx-auto mb-5 mt-auto w-full flex-row items-center justify-center gap-2 pt-40",
@@ -31,12 +41,12 @@ export const ViewsCounter = ({ slug, page_type = "page", hidden = false }: Views
 		<span role="img" aria-label="eyes">
 			👀
 		</span>
-		<Views slug={slug} page_type={page_type} />
+		<Views slug={slug} page_type={page_type} disabled={disabled} />
 	</div>
 );
 
-const Views = async ({ slug, page_type }: Omit<ViewsCounterProps, "hidden">) => {
-	const { data } = await upsertPageViews(slug);
+const Views = async ({ slug, page_type, disabled }: Omit<ViewsCounterProps, "hidden">) => {
+	const { data } = await isomorphicFetchPageViews(slug, { disabled });
 
 	return (
 		<Suspense fallback={<p className="m-0 text-xs">Getting view count</p>}>
