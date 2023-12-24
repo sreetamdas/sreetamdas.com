@@ -4,15 +4,13 @@ type PageViewCount = {
 	view_count: number;
 };
 
-type SuccessResponse<Type = unknown> = { data: Type };
-type ErrorResponse<Type = unknown> = {
-	errorCode?: number;
-	error: Type;
-	message?: string;
+type SuccessResponse<Type = undefined> = { data: Type };
+type ErrorResponse<Type = undefined> = {
+	error?: Type;
 };
 type PageViewCountResponse =
-	| (SuccessResponse<PageViewCount> & ErrorResponse<null>)
-	| (SuccessResponse<null> & ErrorResponse);
+	| (SuccessResponse<PageViewCount> & ErrorResponse & { type: "success" })
+	| ((SuccessResponse & ErrorResponse<{ message: string; cause: string }>) & { type: "error" });
 
 const SUPABASE_ENABLED =
 	typeof process.env.NEXT_PUBLIC_SUPABASE_URL !== "undefined" &&
@@ -62,10 +60,10 @@ export async function getPageViews(slug: string): Promise<PageViewCountResponse>
 			});
 		}
 
-		return { data: view_count, error: null };
+		return { data: view_count, type: "success" };
 	} catch (error) {
 		// @ts-expect-error error shape
-		return { error: { message: error.message, cause: error.cause }, data: null };
+		return { error: { message: error.message, cause: error.cause }, type: "error" };
 	}
 }
 
@@ -93,8 +91,16 @@ export async function upsertPageViews(slug: string): Promise<PageViewCountRespon
 		});
 
 		const view_count: number = await request.json();
-		return { data: { view_count }, error: null };
+
+		if (typeof view_count === "undefined") {
+			throw new Error("Page has not been added to the database yet", {
+				cause: { view_count: "undefined" },
+			});
+		}
+
+		return { data: { view_count }, type: "success" };
 	} catch (error) {
-		return { error, data: null };
+		// @ts-expect-error error shape
+		return { error: { message: error.message, cause: error.cause }, type: "error" };
 	}
 }
