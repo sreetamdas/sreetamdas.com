@@ -37,7 +37,9 @@ function setInitialColorScheme() {
 	}
 
 	const colorScheme = getInitialColorScheme();
-	if (colorScheme === "dark") document.documentElement.setAttribute("data-color-scheme", "dark");
+	if (colorScheme === "dark") {
+		document.documentElement.setAttribute("data-color-scheme", "dark");
+	}
 }
 
 export const blockingScriptSetInitialColorScheme = `(function() {
