@@ -70,7 +70,7 @@ function CodeSnippetBlock(props: Props) {
 					{filename}
 				</h2>
 				<span
-					className="rounded-t-global px-2 py-1 font-mono text-zinc-400"
+					className="rounded-t-global px-2 py-1 font-mono uppercase text-zinc-400"
 					style={{ backgroundColor }}
 				>
 					{lang}

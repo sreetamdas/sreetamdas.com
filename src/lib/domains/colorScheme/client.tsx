@@ -69,8 +69,8 @@ export const ColorSchemeToggle = () => {
 			isColorSchemeDark === undefined
 				? getSystemColorSchemePreference()
 				: isColorSchemeDark === true
-				? "dark"
-				: "light";
+					? "dark"
+					: "light";
 
 		switch (preference) {
 			case "dark":
