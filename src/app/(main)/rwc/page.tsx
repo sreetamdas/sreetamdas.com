@@ -7,7 +7,7 @@ import {
 
 import module_css from "./CodeSnippet.module.css";
 
-// import { ViewsCounter } from "@/lib/components/ViewsCounter";
+import { ViewsCounter } from "@/lib/components/ViewsCounter";
 import { fetchGist } from "@/lib/domains/GitHub";
 import { type preloaded_langs, getKarmaHighlighter, getKarmaTheme } from "@/lib/domains/shiki";
 
@@ -36,7 +36,7 @@ export default async function RWCPage() {
 				/>
 			))}
 
-			{/* <ViewsCounter slug="/rwc" /> */}
+			<ViewsCounter slug="/rwc" />
 		</>
 	);
 }

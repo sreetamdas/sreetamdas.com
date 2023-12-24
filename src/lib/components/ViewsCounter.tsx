@@ -41,18 +41,16 @@ export const ViewsCounter = ({
 		<span role="img" aria-label="eyes">
 			👀
 		</span>
-		<Views slug={slug} page_type={page_type} disabled={disabled} />
+		<Suspense fallback={<p className="m-0 text-xs">Getting view count</p>}>
+			<Views slug={slug} page_type={page_type} disabled={disabled} />
+		</Suspense>
 	</div>
 );
 
 const Views = async ({ slug, page_type, disabled }: Omit<ViewsCounterProps, "hidden">) => {
 	const { data } = await isomorphicFetchPageViews(slug, { disabled });
 
-	return (
-		<Suspense fallback={<p className="m-0 text-xs">Getting view count</p>}>
-			<p className="m-0 text-xs">{getViewCountCopy(data?.view_count ?? 0, page_type)}</p>
-		</Suspense>
-	);
+	return <p className="m-0 text-xs">{getViewCountCopy(data?.view_count ?? 0, page_type)}</p>;
 };
 
 function getViewCountCopy(view_count: number, page_type: ViewsCounterProps["page_type"]) {
