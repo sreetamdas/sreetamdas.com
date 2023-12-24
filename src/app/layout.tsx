@@ -64,14 +64,17 @@ export const metadata = {
 		statusBarStyle: "default",
 		capable: true,
 	},
-	themeColor: [
-		{ media: "(prefers-color-scheme: light)", color: "#5B34DA" },
-		{ media: "(prefers-color-scheme: dark)", color: "#9D86E9" },
-	],
 	icons: {
 		icon: "/favicon.png",
 	},
 	other: {
 		"mobile-web-app-capable": "yes",
 	},
+};
+
+export const viewport = {
+	themeColor: [
+		{ media: "(prefers-color-scheme: light)", color: "#5B34DA" },
+		{ media: "(prefers-color-scheme: dark)", color: "#9D86E9" },
+	],
 };
