@@ -44,7 +44,7 @@ export async function generateMetadata({ params }: PageParams): Promise<Metadata
 	const post = allPages.find((page) => page.page_slug === params.mdxPageSlug);
 
 	return {
-		title: post?.seo_title ?? post?.title,
+		title: `${post?.seo_title ?? post?.title} ${SITE_TITLE_APPEND}`,
 		description: post?.description,
 		openGraph: {
 			title: `${post?.seo_title ?? post?.title} ${SITE_TITLE_APPEND}`,
