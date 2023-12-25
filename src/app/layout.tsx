@@ -1,10 +1,9 @@
 import "./global.css";
 
-import Script from "next/script";
 import PlausibleProvider from "next-plausible";
 
 import { SITE_DESCRIPTION, SITE_TITLE_APPEND, SITE_URL } from "@/config";
-import { type ColorSchemeSliceType } from "@/lib/domains/colorScheme/store";
+// import { type ColorSchemeSliceType } from "@/lib/domains/colorScheme/store";
 import { inter_font, iosevka_font, eb_garamond_font } from "@/lib/domains/fonts";
 import { FOOBAR_SOURCE_CODE } from "@/lib/domains/foobar/helpers";
 // import { blockingScriptSetInitialColorScheme } from "@/lib/domains/colorScheme/blockingScript";
@@ -28,13 +27,58 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 				/>
 			</head>
 			<body className="min-h-screen bg-background text-foreground selection:bg-secondary selection:text-background">
-				<Script
-					id="blocking-script-set-initial-color-scheme"
-					strategy="beforeInteractive"
+				<script
 					dangerouslySetInnerHTML={{
-						__html: blockingScriptSetInitialColorScheme,
+						__html: `
+(function() {						
+	function setInitialColorScheme() {
+		function getInitialColorScheme(): NonNullable<ColorSchemeSliceType["colorScheme"]> {
+			const persistedColorScheme = window.localStorage.getItem("color-scheme") as NonNullable<
+				ColorSchemeSliceType["colorScheme"]
+			>;
+			const hasPersistedColorScheme = typeof persistedColorScheme === "string";
+
+			/**
+			 * If the user has explicitly chosen light or dark, use it
+			 */
+			if (hasPersistedColorScheme) {
+				const root = window.document.documentElement;
+				root.style.setProperty("--initial-color-scheme", persistedColorScheme);
+
+				if (persistedColorScheme !== "system") {
+					return persistedColorScheme;
+				}
+			}
+
+			/**
+			 * If they haven't been explicit, check the media query
+			 */
+			const mql = window.matchMedia("(prefers-color-scheme: dark)");
+			const hasSystemColorSchemePreference = typeof mql.matches === "boolean";
+
+			if (hasSystemColorSchemePreference) {
+				return mql.matches ? "dark" : "light";
+			}
+
+			/**
+			 * If they are using a browser/OS that doesn't support
+			 * color themes, default to 'light'.
+			 */
+			return "light";
+		}
+
+		const colorScheme = getInitialColorScheme();
+		if (colorScheme === "dark") {
+			document.documentElement.setAttribute("data-color-scheme", "dark");
+		}
+	}
+	setInitialColorScheme();
+})()
+
+// IIFE!
+						`,
 					}}
-				></Script>
+				></script>
 				{children}
 				<script
 					dangerouslySetInnerHTML={{
@@ -83,52 +127,52 @@ export const viewport = {
 	],
 };
 
-function setInitialColorScheme() {
-	function getInitialColorScheme(): NonNullable<ColorSchemeSliceType["colorScheme"]> {
-		const persistedColorScheme = window.localStorage.getItem("color-scheme") as NonNullable<
-			ColorSchemeSliceType["colorScheme"]
-		>;
-		const hasPersistedColorScheme = typeof persistedColorScheme === "string";
+// function setInitialColorScheme() {
+// 	function getInitialColorScheme(): NonNullable<ColorSchemeSliceType["colorScheme"]> {
+// 		const persistedColorScheme = window.localStorage.getItem("color-scheme") as NonNullable<
+// 			ColorSchemeSliceType["colorScheme"]
+// 		>;
+// 		const hasPersistedColorScheme = typeof persistedColorScheme === "string";
 
-		/**
-		 * If the user has explicitly chosen light or dark, use it
-		 */
-		if (hasPersistedColorScheme) {
-			const root = window.document.documentElement;
-			root.style.setProperty("--initial-color-scheme", persistedColorScheme);
+// 		/**
+// 		 * If the user has explicitly chosen light or dark, use it
+// 		 */
+// 		if (hasPersistedColorScheme) {
+// 			const root = window.document.documentElement;
+// 			root.style.setProperty("--initial-color-scheme", persistedColorScheme);
 
-			if (persistedColorScheme !== "system") {
-				return persistedColorScheme;
-			}
-		}
+// 			if (persistedColorScheme !== "system") {
+// 				return persistedColorScheme;
+// 			}
+// 		}
 
-		/**
-		 * If they haven't been explicit, check the media query
-		 */
-		const mql = window.matchMedia("(prefers-color-scheme: dark)");
-		const hasSystemColorSchemePreference = typeof mql.matches === "boolean";
+// 		/**
+// 		 * If they haven't been explicit, check the media query
+// 		 */
+// 		const mql = window.matchMedia("(prefers-color-scheme: dark)");
+// 		const hasSystemColorSchemePreference = typeof mql.matches === "boolean";
 
-		if (hasSystemColorSchemePreference) {
-			return mql.matches ? "dark" : "light";
-		}
+// 		if (hasSystemColorSchemePreference) {
+// 			return mql.matches ? "dark" : "light";
+// 		}
 
-		/**
-		 * If they are using a browser/OS that doesn't support
-		 * color themes, default to 'light'.
-		 */
-		return "light";
-	}
+// 		/**
+// 		 * If they are using a browser/OS that doesn't support
+// 		 * color themes, default to 'light'.
+// 		 */
+// 		return "light";
+// 	}
 
-	const colorScheme = getInitialColorScheme();
-	if (colorScheme === "dark") {
-		document.documentElement.setAttribute("data-color-scheme", "dark");
-	}
-}
+// 	const colorScheme = getInitialColorScheme();
+// 	if (colorScheme === "dark") {
+// 		document.documentElement.setAttribute("data-color-scheme", "dark");
+// 	}
+// }
 
-const blockingScriptSetInitialColorScheme = `(function() {
-	${setInitialColorScheme.toString()}
-	setInitialColorScheme();
-})()
+// const blockingScriptSetInitialColorScheme = `(function() {
+// 	${setInitialColorScheme.toString()}
+// 	setInitialColorScheme();
+// })()
 
-// IIFE!
-`;
+// // IIFE!
+// `;
