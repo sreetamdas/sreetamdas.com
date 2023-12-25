@@ -1,10 +1,6 @@
-import { type ColorSchemeSliceType } from "@/lib/domains/colorScheme/store";
-
 function setInitialColorScheme() {
-	function getInitialColorScheme(): NonNullable<ColorSchemeSliceType["colorScheme"]> {
-		const persistedColorScheme = window.localStorage.getItem("color-scheme") as NonNullable<
-			ColorSchemeSliceType["colorScheme"]
-		>;
+	function getInitialColorScheme() {
+		const persistedColorScheme = window.localStorage.getItem("color-scheme");
 		const hasPersistedColorScheme = typeof persistedColorScheme === "string";
 
 		/**
