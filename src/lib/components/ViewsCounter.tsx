@@ -75,12 +75,10 @@ export const ViewsCounter = ({
 				hidden ? "hidden" : "flex",
 			)}
 		>
-			<p className="m-0 text-xs">
-				<span role="img" aria-label="eyes">
-					👀
-				</span>
-				{getViewCountCopy(pageViews ?? 0, page_type)}
-			</p>
+			<span role="img" aria-label="eyes">
+				👀
+			</span>
+			<p className="m-0 text-xs">{getViewCountCopy(pageViews, page_type)}</p>
 		</div>
 	);
 };
@@ -89,8 +87,10 @@ export const ViewsCounter = ({
 // 	return <p className="m-0 text-xs">{getViewCountCopy(data?.view_count ?? 0, page_type)}</p>;
 // };
 
-function getViewCountCopy(view_count: number, page_type: ViewsCounterProps["page_type"]) {
+function getViewCountCopy(view_count: number | null, page_type: ViewsCounterProps["page_type"]) {
 	switch (view_count) {
+		case null:
+			return "Getting page views";
 		case 0:
 			return "No views yet. Wait what, HOW? 🤔";
 		case 1:
