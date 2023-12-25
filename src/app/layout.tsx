@@ -32,10 +32,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 						__html: `
 (function() {						
 	function setInitialColorScheme() {
-		function getInitialColorScheme(): NonNullable<ColorSchemeSliceType["colorScheme"]> {
-			const persistedColorScheme = window.localStorage.getItem("color-scheme") as NonNullable<
-				ColorSchemeSliceType["colorScheme"]
-			>;
+		function getInitialColorScheme() {
+			const persistedColorScheme = window.localStorage.getItem("color-scheme");
 			const hasPersistedColorScheme = typeof persistedColorScheme === "string";
 
 			/**
@@ -128,10 +126,8 @@ export const viewport = {
 };
 
 // function setInitialColorScheme() {
-// 	function getInitialColorScheme(): NonNullable<ColorSchemeSliceType["colorScheme"]> {
-// 		const persistedColorScheme = window.localStorage.getItem("color-scheme") as NonNullable<
-// 			ColorSchemeSliceType["colorScheme"]
-// 		>;
+// 	function getInitialColorScheme() {
+// 		const persistedColorScheme = window.localStorage.getItem("color-scheme");
 // 		const hasPersistedColorScheme = typeof persistedColorScheme === "string";
 
 // 		/**
