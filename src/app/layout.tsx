@@ -1,5 +1,6 @@
 import "./global.css";
 
+import Script from "next/script";
 import PlausibleProvider from "next-plausible";
 
 import { SITE_DESCRIPTION, SITE_TITLE_APPEND, SITE_URL } from "@/config";
@@ -27,11 +28,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 				/>
 			</head>
 			<body className="min-h-screen bg-background text-foreground selection:bg-secondary selection:text-background">
-				<script
+				<Script
+					id="blocking-script-set-initial-color-scheme"
+					strategy="beforeInteractive"
 					dangerouslySetInnerHTML={{
 						__html: blockingScriptSetInitialColorScheme,
 					}}
-				></script>
+				></Script>
 				{children}
 				<script
 					dangerouslySetInnerHTML={{
