@@ -21,8 +21,6 @@ async function isomorphicFetchPageViews(slug: string, options: IsomorphicFetchOp
 			method: "GET",
 		});
 		const response = await request.json();
-		// eslint-disable-next-line no-console
-		console.log("GET", { response });
 
 		return response;
 	}
@@ -31,8 +29,6 @@ async function isomorphicFetchPageViews(slug: string, options: IsomorphicFetchOp
 		body: JSON.stringify({ slug }),
 	});
 	const response = await request.json();
-	// eslint-disable-next-line no-console
-	console.log("POST", { response });
 
 	return response;
 }
@@ -82,10 +78,6 @@ export const ViewsCounter = ({
 		</div>
 	);
 };
-
-// const Views = async ({ slug, page_type, disabled }: Omit<ViewsCounterProps, "hidden">) => {
-// 	return <p className="m-0 text-xs">{getViewCountCopy(data?.view_count ?? 0, page_type)}</p>;
-// };
 
 function getViewCountCopy(view_count: number | null, page_type: ViewsCounterProps["page_type"]) {
 	switch (view_count) {
