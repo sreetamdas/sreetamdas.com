@@ -3,7 +3,6 @@
  * - Loading keebs' images info from Imgur API
  */
 
-import { captureException } from "@sentry/nextjs";
 import { isEmpty, isUndefined } from "lodash-es";
 
 import { type KeebDetailsFromNotion } from "@/app/(main)/keebs/page";
@@ -42,20 +41,16 @@ export class ImgurClient {
 	}
 
 	async getImgurAlbumImages() {
-		try {
-			const request = await fetch(`${this.base_url}/album/${this.album_url}/images`, {
-				method: "GET",
-				headers: {
-					Authorization: `Client-ID ${this.client_id}`,
-				},
-				cache: "default",
-			});
+		const request = await fetch(`${this.base_url}/album/${this.album_url}/images`, {
+			method: "GET",
+			headers: {
+				Authorization: `Client-ID ${this.client_id}`,
+			},
+			cache: "default",
+		});
 
-			const response: ImgurAPIResponse<Array<ImgurImage>> = await request.json();
-			return response.data;
-		} catch (error) {
-			captureException(error);
-		}
+		const response: ImgurAPIResponse<Array<ImgurImage>> = await request.json();
+		return response.data;
 	}
 
 	async addImgurImagesData(

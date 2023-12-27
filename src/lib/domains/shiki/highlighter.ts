@@ -1,15 +1,13 @@
 import { defaultTheme } from "@sreetamdas/karma";
 import {
+	type BundledLanguage,
+	type ThemeRegistration,
 	type Highlighter,
-	type Lang,
-	type IShikiTheme,
 	toShikiTheme,
 	getHighlighter,
-	setWasm,
-	setCDN,
-} from "shiki";
+} from "shikiji";
 
-const preloadedLangs: Array<Lang> = [
+export const preloaded_langs: Array<BundledLanguage> = [
 	"javascript",
 	"jsx",
 	"typescript",
@@ -22,12 +20,31 @@ const preloadedLangs: Array<Lang> = [
 	"elixir",
 ];
 
-export async function getKarmaHighlighter(): Promise<Highlighter> {
-	setWasm("/shiki/dist/onigasm.wasm");
-	setCDN("/shiki/");
+function convertToThemeRegistration(theme: typeof defaultTheme): ThemeRegistration {
+	return {
+		name: theme.name.toLowerCase(),
+		displayName: theme.name,
+		semanticHighlighting: theme.semanticHighlighting,
+		// @ts-expect-error possibly wrong type
+		semanticTokenColors: theme.semanticTokenColors,
+		colors: theme.colors,
+		type: theme.type as "light" | "dark",
+		tokenColors: theme.tokenColors as Array<{
+			scope: Array<string>;
+			settings: { fontStyle: string; foreground?: string; background?: string };
+		}>,
+	};
+}
 
-	const theme = toShikiTheme(defaultTheme as unknown as IShikiTheme);
-	const highlighter = await getHighlighter({ theme, langs: preloadedLangs });
+export async function getKarmaHighlighter(): Promise<Highlighter> {
+	const karma_shiki_theme = convertToThemeRegistration(defaultTheme);
+	const theme = toShikiTheme(karma_shiki_theme);
+	const highlighter = await getHighlighter({ langs: preloaded_langs, themes: [theme] });
 
 	return highlighter;
+}
+
+export async function getKarmaTheme(): Promise<ThemeRegistration> {
+	const theme = toShikiTheme(defaultTheme as unknown as ThemeRegistration);
+	return theme;
 }

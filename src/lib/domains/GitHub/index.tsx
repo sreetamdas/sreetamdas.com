@@ -1,5 +1,4 @@
 import { type Endpoints } from "@octokit/types";
-import { captureException } from "@sentry/nextjs";
 
 import { DEFAULT_REPO } from "@/config";
 
@@ -27,8 +26,6 @@ export async function getGitHubStats() {
 	try {
 		return await fetchGitHubStats();
 	} catch (error) {
-		captureException(error);
-
 		return { stars: 0, forks: 0 };
 	}
 }

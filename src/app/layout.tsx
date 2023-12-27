@@ -3,7 +3,6 @@ import "./global.css";
 import PlausibleProvider from "next-plausible";
 
 import { SITE_DESCRIPTION, SITE_TITLE_APPEND, SITE_URL } from "@/config";
-import { blockingScriptSetInitialColorScheme } from "@/lib/domains/colorScheme/blockingScript";
 import { inter_font, iosevka_font, eb_garamond_font } from "@/lib/domains/fonts";
 import { FOOBAR_SOURCE_CODE } from "@/lib/domains/foobar/helpers";
 
@@ -64,10 +63,6 @@ export const metadata = {
 		statusBarStyle: "default",
 		capable: true,
 	},
-	themeColor: [
-		{ media: "(prefers-color-scheme: light)", color: "#5B34DA" },
-		{ media: "(prefers-color-scheme: dark)", color: "#9D86E9" },
-	],
 	icons: {
 		icon: "/favicon.png",
 	},
@@ -75,3 +70,56 @@ export const metadata = {
 		"mobile-web-app-capable": "yes",
 	},
 };
+
+export const viewport = {
+	themeColor: [
+		{ media: "(prefers-color-scheme: light)", color: "#5B34DA" },
+		{ media: "(prefers-color-scheme: dark)", color: "#9D86E9" },
+	],
+};
+
+const blockingScriptSetInitialColorScheme = `(function() {
+	function setInitialColorScheme() {
+		function getInitialColorScheme() {
+			const persistedColorScheme = window.localStorage.getItem("color-scheme");
+			const hasPersistedColorScheme = typeof persistedColorScheme === "string";
+
+			/**
+			 * If the user has explicitly chosen light or dark, use it
+			 */
+			if (hasPersistedColorScheme) {
+				const root = window.document.documentElement;
+				root.style.setProperty("--initial-color-scheme", persistedColorScheme);
+
+				if (persistedColorScheme !== "system") {
+					return persistedColorScheme;
+				}
+			}
+
+			/**
+			 * If they haven't been explicit, check the media query
+			 */
+			const mql = window.matchMedia("(prefers-color-scheme: dark)");
+			const hasSystemColorSchemePreference = typeof mql.matches === "boolean";
+
+			if (hasSystemColorSchemePreference) {
+				return mql.matches ? "dark" : "light";
+			}
+
+			/**
+			 * If they are using a browser/OS that doesn't support
+			 * color themes, default to 'light'.
+			 */
+			return "light";
+		}
+
+		const colorScheme = getInitialColorScheme();
+		if (colorScheme === "dark") {
+			document.documentElement.setAttribute("data-color-scheme", "dark");
+		}
+	}
+	setInitialColorScheme();
+})()
+
+// IIFE!
+`;

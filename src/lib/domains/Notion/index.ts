@@ -1,6 +1,6 @@
 /**
  * Used for:
- * - Loading keebs' images info from Imgur API
+ * - Loading keebs' info usin Notion API
  */
 
 import {
@@ -9,7 +9,6 @@ import {
 	type QueryDatabaseResponse,
 	type QueryDatabaseParameters,
 } from "@notionhq/client/build/src/api-endpoints";
-import { captureException } from "@sentry/nextjs";
 import { isEmpty, isUndefined } from "lodash-es";
 
 type NotionClientOptions = {
@@ -28,22 +27,18 @@ export class NotionClient {
 
 	async retrieveDatabase(database_id: string) {
 		const query_string = `https://api.notion.com/v1/databases/${database_id}`;
-		try {
-			const response = await fetch(query_string, {
-				method: "GET",
-				headers: {
-					Authorization: `Bearer ${this.#token}`,
-					"Notion-Version": "2022-06-28",
-					"Content-Type": "application/json",
-				},
-				cache: "default",
-			});
-			const data: DatabaseObjectResponse = await response.json();
+		const response = await fetch(query_string, {
+			method: "GET",
+			headers: {
+				Authorization: `Bearer ${this.#token}`,
+				"Notion-Version": "2022-06-28",
+				"Content-Type": "application/json",
+			},
+			cache: "default",
+		});
+		const data: DatabaseObjectResponse = await response.json();
 
-			return data;
-		} catch (error) {
-			captureException(error);
-		}
+		return data;
 	}
 
 	async getPropertiesIDs(database_id: string, filter_properties: Array<string>) {
