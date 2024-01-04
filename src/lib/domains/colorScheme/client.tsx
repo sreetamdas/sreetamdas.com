@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect } from "react";
-import { FiSun, FiMonitor } from "react-icons/fi";
 import { IoMdMoon } from "react-icons/io";
+import { LuMonitor, LuSun } from "react-icons/lu";
 
 import { type ColorSchemeSliceType } from "./store";
 
@@ -132,14 +132,14 @@ export const ColorSchemeToggle = () => {
 const ToggleIcon = ({ colorScheme }: Pick<ColorSchemeSliceType, "colorScheme">) => {
 	switch (colorScheme) {
 		case "light":
-			return <FiSun aria-label="Currently using dark mode" title="Currently using dark mode" />;
+			return <LuSun aria-label="Currently using dark mode" title="Currently using dark mode" />;
 		case "dark":
 			return (
 				<IoMdMoon aria-label="Currently using light mode" title="Currently using light mode" />
 			);
 		case "system":
 			return (
-				<FiMonitor
+				<LuMonitor
 					aria-label="Currently using system preference"
 					title="Currently using system preference"
 				/>
