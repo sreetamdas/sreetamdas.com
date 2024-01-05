@@ -22,6 +22,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 					customDomain="sreetamdas.com"
 					trackOutboundLinks
 					trackFileDownloads
+					enabled={process.env.NODE_ENV === "production"}
 				/>
 			</head>
 			<body className="min-h-screen bg-background text-foreground selection:bg-secondary selection:text-background">
