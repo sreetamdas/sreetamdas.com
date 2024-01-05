@@ -1,6 +1,6 @@
 module.exports = {
 	root: true,
-	plugins: ["react", "@typescript-eslint", "react-hooks", "jsx-a11y", "prettier"],
+	plugins: ["react", "@typescript-eslint", "react-hooks", "jsx-a11y"],
 	parser: "@typescript-eslint/parser",
 	parserOptions: {
 		ecmaFeatures: {
@@ -22,10 +22,9 @@ module.exports = {
 		"plugin:import/recommended",
 		"plugin:import/typescript",
 		"plugin:jsx-a11y/recommended",
-		"prettier",
-		"plugin:prettier/recommended",
 		"plugin:@next/next/recommended",
 		"plugin:mdx/recommended",
+		"plugin:prettier/recommended",
 	],
 	globals: {
 		Atomics: "readonly",
@@ -64,7 +63,7 @@ module.exports = {
 		"import/order": ["warn", { "newlines-between": "always", alphabetize: { order: "asc" } }],
 		"import/consistent-type-specifier-style": ["warn", "prefer-inline"],
 		"import/no-duplicates": ["warn", { "prefer-inline": true }],
-		"prettier/prettier": ["error"],
+		"prettier/prettier": ["warn"],
 	},
 	settings: {
 		react: {
