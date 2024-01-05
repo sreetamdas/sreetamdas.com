@@ -6,8 +6,6 @@ import { notFound } from "next/navigation";
 import { NewsletterEmailDetail } from "../components";
 import { fetchNewsletterEmails } from "../helpers";
 
-export const runtime = "edge";
-
 export async function generateStaticParams() {
 	const newsletter_emails_slugs = await getNewsletterEmailsSlugs();
 
