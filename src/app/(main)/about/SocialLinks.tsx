@@ -12,6 +12,7 @@ import {
 	FaSpotify,
 	FaDiscord,
 } from "react-icons/fa";
+import { SiPeerlist } from "react-icons/si";
 
 import { LinkTo } from "@/lib/components/Anchor";
 
@@ -40,6 +41,11 @@ export const SocialLinks = () => {
 			link: "https://stackoverflow.com/users/5283213",
 			title: "Sreetam Das' StackOverflow",
 			icon: <FaStackOverflow />,
+		},
+		{
+			link: "https://peerlist.io/sreetamdas",
+			title: "Sreetam Das' LinkedIn",
+			icon: <SiPeerlist />,
 		},
 		{
 			link: "https://www.linkedin.com/in/sreetamdas",
