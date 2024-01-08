@@ -14,6 +14,7 @@ async function fetchGitHubStats() {
 		`${GITHUB_API_BASE_URL}/repos/${DEFAULT_REPO.owner}/${DEFAULT_REPO.repo}`,
 		{
 			headers: octokit_headers,
+			next: { revalidate: 3600 },
 		},
 	);
 	const data: Endpoints["GET /repos/{owner}/{repo}"]["response"]["data"] = await request.json();
