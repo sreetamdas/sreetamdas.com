@@ -54,7 +54,6 @@
 		"zustand": "4.4.7"
 	},
 	"devDependencies": {
-		"@next/bundle-analyzer": "^14.0.4",
 		"@next/eslint-plugin-next": "^14.0.4",
 		"@notionhq/client": "^2.2.14",
 		"@octokit/types": "^12.4.0",
