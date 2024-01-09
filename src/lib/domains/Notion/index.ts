@@ -34,7 +34,7 @@ export class NotionClient {
 				"Notion-Version": "2022-06-28",
 				"Content-Type": "application/json",
 			},
-			cache: "default",
+			next: { revalidate: 3600 },
 		});
 		const data: DatabaseObjectResponse = await response.json();
 
@@ -71,7 +71,7 @@ export class NotionClient {
 				"Content-Type": "application/json",
 			},
 			body: JSON.stringify(filter),
-			cache: "default",
+			next: { revalidate: 3600 },
 		});
 
 		const data: QueryDatabasePageObjectResponse = await response.json();

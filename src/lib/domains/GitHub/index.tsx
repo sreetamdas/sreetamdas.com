@@ -36,6 +36,7 @@ export async function fetchRepoContributors() {
 		`${GITHUB_API_BASE_URL}/repos/${DEFAULT_REPO.owner}/${DEFAULT_REPO.repo}/contributors`,
 		{
 			headers: octokit_headers,
+			next: { revalidate: 3600 },
 		},
 	);
 	const data: Endpoints["GET /repos/{owner}/{repo}/contributors"]["response"]["data"] =
@@ -47,6 +48,7 @@ export async function fetchRepoContributors() {
 export async function fetchGist(gist_id: string) {
 	const request = await fetch(`${GITHUB_API_BASE_URL}/gists/${gist_id}`, {
 		headers: octokit_headers,
+		next: { revalidate: 3600 },
 	});
 	const data: Endpoints["GET /gists/{gist_id}"]["response"]["data"] = await request.json();
 

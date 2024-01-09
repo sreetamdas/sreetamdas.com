@@ -46,7 +46,7 @@ export class ImgurClient {
 			headers: {
 				Authorization: `Client-ID ${this.client_id}`,
 			},
-			cache: "default",
+			next: { revalidate: 86400 },
 		});
 
 		const response: ImgurAPIResponse<Array<ImgurImage>> = await request.json();
