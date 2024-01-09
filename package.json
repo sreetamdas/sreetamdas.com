@@ -54,6 +54,7 @@
 		"zustand": "4.4.7"
 	},
 	"devDependencies": {
+		"@cloudflare/next-on-pages": "^1.8.5",
 		"@next/eslint-plugin-next": "^14.0.4",
 		"@notionhq/client": "^2.2.14",
 		"@octokit/types": "^12.4.0",

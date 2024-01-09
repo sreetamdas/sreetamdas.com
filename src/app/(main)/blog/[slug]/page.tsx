@@ -23,6 +23,12 @@ import { allBlogPosts } from "contentlayer/generated";
 
 export const dynamicParams = false;
 
+export async function generateStaticParams() {
+	return allBlogPosts.map((post) => ({
+		slug: post.page_slug,
+	}));
+}
+
 export async function generateMetadata({ params }: PageParams): Promise<Metadata> {
 	const post = allBlogPosts.find((page) => page.page_slug === params.slug);
 
@@ -43,12 +49,6 @@ export async function generateMetadata({ params }: PageParams): Promise<Metadata
 			images: { url: post?.image ?? SITE_OG_IMAGE },
 		},
 	};
-}
-
-export async function generateStaticParams() {
-	return allBlogPosts.map((post) => ({
-		slug: post.page_slug,
-	}));
 }
 
 type PageParams = {

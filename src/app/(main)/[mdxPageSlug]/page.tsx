@@ -11,6 +11,16 @@ import { allPages } from "contentlayer/generated";
 
 export const dynamicParams = false;
 
+export async function generateStaticParams() {
+	return allPages.flatMap(({ page_slug, skip_page }) => {
+		if (skip_page) return [];
+
+		return {
+			mdxPageSlug: page_slug,
+		};
+	});
+}
+
 type PageParams = {
 	params: {
 		mdxPageSlug: string;
@@ -28,16 +38,6 @@ export default async function MDXPageSlugPage({ params: { mdxPageSlug } }: PageP
 			<ViewsCounter slug={`/${mdxPageSlug}`} />
 		</>
 	);
-}
-
-export async function generateStaticParams() {
-	return allPages.flatMap(({ page_slug, skip_page }) => {
-		if (skip_page) return [];
-
-		return {
-			mdxPageSlug: page_slug,
-		};
-	});
 }
 
 export async function generateMetadata({ params }: PageParams): Promise<Metadata> {

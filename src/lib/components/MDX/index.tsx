@@ -9,7 +9,7 @@ export { MDXClientContent } from "./client";
 export { customMDXComponents };
 
 type MDXContentCodeType = Pick<MDX, "code"> & {
-	components?: MDXComponents;
+	components?: MDXComponents | (() => Promise<JSX.Element>);
 };
 export const MDXContent = ({ code, components = {} }: MDXContentCodeType) => {
 	const Content = useMDXComponent(code);

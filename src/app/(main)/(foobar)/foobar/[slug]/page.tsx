@@ -5,6 +5,13 @@ import { FOOBAR_FLAGS, type FoobaFlagPageSlug } from "@/lib/domains/foobar/flags
 
 export const dynamicParams = false;
 
+export function generateStaticParams() {
+	const all_foobar_pages_slugs = getAllFoobarPagesSlugs();
+	const paths = all_foobar_pages_slugs.map((slug) => ({ slug }));
+
+	return paths;
+}
+
 type PageParams = {
 	params: { slug: Exclude<FoobaFlagPageSlug, "/"> };
 };
@@ -16,13 +23,6 @@ export default function FoobarCompletedPage({ params: { slug } }: PageParams) {
 	}
 
 	return <FoobarSchrodinger completed_page={slug} />;
-}
-
-export function generateStaticParams() {
-	const all_foobar_pages_slugs = getAllFoobarPagesSlugs();
-	const paths = all_foobar_pages_slugs.map((slug) => ({ slug }));
-
-	return paths;
 }
 
 function getAllFoobarPagesSlugs() {
