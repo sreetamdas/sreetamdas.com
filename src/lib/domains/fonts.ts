@@ -22,5 +22,15 @@ export const iosevka_font = localFont({
 			weight: "400",
 			style: "italic",
 		},
+		{
+			path: "../../../public/fonts/iosevka/iosevka-das-version-bold.subset.woff2",
+			weight: "700",
+			style: "normal",
+		},
+		{
+			path: "../../../public/fonts/iosevka/iosevka-das-version-bold-italic.subset.woff2",
+			weight: "700",
+			style: "italic",
+		},
 	],
 });
