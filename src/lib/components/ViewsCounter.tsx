@@ -57,6 +57,7 @@ export const ViewsCounter = ({
 			} else {
 				// eslint-disable-next-line no-console
 				console.error(error);
+				setPageViews(0);
 			}
 		}
 
