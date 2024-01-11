@@ -8,9 +8,9 @@ export const metadata = {
 export default function ResumePage() {
 	return (
 		<div className="min-h-full">
-			<div className="mx-auto my-5 w-fit rounded-global border-2 border-primary px-5 py-5 font-mono text-sm print:my-0 print:border-none">
-				<div className="max-w-3xl ">
-					<section className="grid grid-cols-[minmax(450px,_500px)_minmax(200px,_1fr)] gap-5 pb-5">
+			<div className="mx-auto my-5 w-fit max-w-sm rounded-global border-2 border-primary px-5 py-5 font-mono text-sm md:max-w-none print:my-0 print:border-none">
+				<div className="md:max-w-3xl">
+					<section className="grid gap-5 pb-5 md:grid-cols-[minmax(450px,_500px)_minmax(200px,_1fr)]">
 						<header>
 							<h1 className="text-5xl font-bold leading-normal tracking-tight">Sreetam Das</h1>
 							<p className="leading-tight">
@@ -43,7 +43,8 @@ export default function ResumePage() {
 							</div>
 						</div>
 					</section>
-					<section className="grid grid-cols-[minmax(450px,_500px)_minmax(200px,_1fr)] gap-5 border-t-2 border-primary/20 pt-5">
+
+					<section className="grid gap-5 border-t-2 border-primary/20 pt-5 md:grid-cols-[minmax(450px,_500px)_minmax(200px,_1fr)]">
 						<div id="main">
 							<div id="experience">
 								<h2 className="mb-4 font-bold uppercase text-secondary">Experience</h2>
