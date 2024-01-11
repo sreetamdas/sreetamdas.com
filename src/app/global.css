@@ -19,6 +19,12 @@
 		--color-foreground: 247 241 255;
 		--color-background: 0 0 0;
 	}
+
+	@media print {
+		@page {
+			margin: 0;
+		}
+	}
 }
 
 @layer components {

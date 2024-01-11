@@ -7,7 +7,7 @@ export default function MainLayout({ children }: { children: ReactNode }) {
 	return (
 		<>
 			<main id="main-content">{children}</main>
-			<Footer>
+			<Footer className="print:hidden">
 				<FoobarPixel />
 			</Footer>
 		</>
