@@ -113,7 +113,7 @@ export default function ResumePage() {
 								<ul className="list-outside list-disc pl-4">
 									<li>
 										Module Lead for UI development: Rewrote codebase with React, Redux and
-										TypeScript, as well as Websockets, Styled components and Jest
+										TypeScript, as well as Websockets, Styled-components and Jest
 									</li>
 									<li>
 										Handled product pipeline across Google Cloud Platform using Python and Google
@@ -191,9 +191,18 @@ export default function ResumePage() {
 									Advent of Code
 								</a>
 							</h3>
-							<p>Solved with Elixir and TypeScript</p>
+							<p>
+								<a href="https://github.com/sreetamdas/advent-of-code" className="link-base">
+									Solved
+								</a>{" "}
+								in Elixir and TypeScript
+							</p>
 
-							<h3 className="mt-4 font-bold">React Day, India</h3>
+							<h3 className="mt-4 font-bold">
+								<a href="https://reactday.in/" className="link-base">
+									React Day, India
+								</a>
+							</h3>
 							<p>
 								<a href="https://youtu.be/vBO9jwotDgs?si=KWDcJ3COzzI0wF52" className="link-base">
 									Building a greenscreen with React and HTML elements
@@ -229,6 +238,7 @@ export default function ResumePage() {
 								</a>
 							</h3>
 							<p>Bronze and Silver in Week of Code</p>
+
 							<h2 className="mt-6 font-bold uppercase text-secondary">Languages</h2>
 							<p className="mb-2 mt-4">Fluent in English, Hindi and Odia</p>
 						</div>
