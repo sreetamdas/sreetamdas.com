@@ -22,7 +22,7 @@ module.exports = {
 		"plugin:import/recommended",
 		"plugin:import/typescript",
 		"plugin:jsx-a11y/recommended",
-		"plugin:@next/next/recommended",
+		"next",
 		"plugin:mdx/recommended",
 		"plugin:prettier/recommended",
 	],
@@ -58,7 +58,7 @@ module.exports = {
 		"no-param-reassign": ["error", { props: false }],
 		"import/prefer-default-export": 0,
 		"jsx-a11y/label-has-associated-control": ["error", { assert: "either" }],
-		"jsx-a11y/anchor-is-valid": ["warn", { aspects: ["invalidHref"] }],
+		"jsx-a11y/anchor-is-valid": ["warn", { aspects: ["noHref", "invalidHref", "preferButton"] }],
 
 		"import/order": ["warn", { "newlines-between": "always", alphabetize: { order: "asc" } }],
 		"import/consistent-type-specifier-style": ["warn", "prefer-inline"],
