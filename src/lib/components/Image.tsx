@@ -11,8 +11,8 @@ type ImageProps = Omit<
 	DetailedHTMLProps<ImgHTMLAttributes<HTMLImageElement>, HTMLImageElement>,
 	"height" | "width" | "loading" | "ref" | "alt" | "src" | "srcSet"
 > & {
-	src: string | StaticImport;
-	alt: string;
+	src?: string | StaticImport;
+	alt?: string;
 	width?: SafeNumber;
 	height?: SafeNumber;
 	quality?: SafeNumber;

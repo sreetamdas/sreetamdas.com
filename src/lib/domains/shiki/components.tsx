@@ -1,24 +1,30 @@
 import { clsx } from "clsx";
 import { isObject } from "lodash-es";
 import {
+	type ReactNode,
 	type CSSProperties,
-	type ReactElement,
 	Children,
 	type DetailedHTMLProps,
 	type HTMLAttributes,
+	isValidElement,
 } from "react";
 
 type CodeBlockProps = DetailedHTMLProps<HTMLAttributes<HTMLPreElement>, HTMLPreElement> & {
-	children?: ReactElement;
+	children?: ReactNode;
 	language?: string;
 	highlight?: string;
 
 	className?: string;
-	style: CSSProperties;
+	style?: CSSProperties;
 };
 
 export const CodeBlock = (props: CodeBlockProps) => {
 	const { children: code_element, style } = props;
+
+	if (!isValidElement(code_element)) {
+		return null;
+	}
+
 	const lang = code_element?.props["data-language"];
 
 	return (
