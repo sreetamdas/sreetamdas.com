@@ -1,10 +1,10 @@
-import { clsx } from "clsx";
 import { useState } from "react";
 
 import { type FoobarFlag, FOOBAR_FLAGS } from "./flags";
 import { type FoobarDataType } from "./store";
 
 import { LinkTo } from "@/lib/components/Anchor";
+import { cn } from "@/lib/helpers/utils";
 
 type ShowCompletedBadgesProps = Pick<FoobarDataType, "completed" | "all_achievements">;
 export const ShowCompletedBadges = ({ completed, all_achievements }: ShowCompletedBadgesProps) => {
@@ -50,13 +50,13 @@ const Badge = ({ badge, completed, all_achievements }: BadgeProps) => {
 	return (
 		<button
 			onClick={() => setClicks(clicks + 1)}
-			className={clsx(
+			className={cn(
 				"group grid grid-cols-[max-content_1fr] items-center gap-4 rounded-global border-2 p-4 text-4xl transition-colors",
 				is_unlocked ? "border-primary text-primary" : "border-zinc-400 text-zinc-400",
 			)}
 		>
 			<FoobarBadge badge={badge} />
-			<p className={clsx("text-sm", is_unlocked || clicks >= 5 ? "inline" : "hidden")}>
+			<p className={cn("text-sm", is_unlocked || clicks >= 5 ? "inline" : "hidden")}>
 				{FOOBAR_FLAGS[badge].description}
 			</p>
 		</button>

@@ -137,7 +137,9 @@ const IndexPage = () => {
   const storeUserSetPreference = (pref) => {
     localStorage.setItem("theme", pref);
   };
-  const getUserSetPreference = () => localStorage.getItem("theme");
+  const getUserSetPreference = () => {
+    localStorage.getItem("theme");
+  };
 
   useEffect(() => {
     const userSetPreference = getUserSetPreference();

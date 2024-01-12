@@ -1,9 +1,9 @@
 "use client";
 
-import { clsx } from "clsx";
 import { useEffect, useState } from "react";
 
 import { IS_DEV } from "@/config";
+import { cn } from "@/lib/helpers/utils";
 
 type IsomorphicFetchOptions = {
 	disabled?: boolean;
@@ -67,7 +67,7 @@ export const ViewsCounter = ({
 
 	return (
 		<div
-			className={clsx(
+			className={cn(
 				"mx-auto mb-5 mt-auto w-full flex-row items-center justify-center gap-2 pt-40",
 				hidden ? "hidden" : "flex",
 			)}

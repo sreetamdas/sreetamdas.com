@@ -1,4 +1,4 @@
-import { clsx } from "clsx";
+import { cn } from "@/lib/helpers/utils";
 import { isObject } from "lodash-es";
 import {
 	type ReactNode,
@@ -51,14 +51,14 @@ export const CodeBlock = (props: CodeBlockProps) => {
 							return (
 								<span
 									key={i}
-									className={clsx(
+									className={cn(
 										"block",
 										should_line_highlight &&
 											"-mx-5 border-l-4 border-[#a86efd] bg-[#a86efd15] px-4",
 									)}
 								>
 									<span
-										className={clsx(
+										className={cn(
 											"-ml-2 mr-2 hidden w-[2rem] select-none pr-2 text-right text-zinc-600 md:inline-block",
 											should_line_highlight && "text-[#a86efd]",
 										)}

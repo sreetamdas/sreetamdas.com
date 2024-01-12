@@ -1,6 +1,5 @@
 "use client";
 
-import { clsx } from "clsx";
 import { random } from "lodash-es";
 import {
 	type HTMLAttributes,
@@ -11,6 +10,7 @@ import {
 } from "react";
 
 import { useInterval, usePrefersReducedMotion, useRandomInterval } from "@/lib/helpers/hooks";
+import { cn } from "@/lib/helpers/utils";
 
 export * from "./Typography";
 
@@ -47,7 +47,7 @@ export const ChameleonHighlight = ({
 
 	return (
 		<span
-			className={clsx(
+			className={cn(
 				"duration-[3000ms] transition-colors ease-linear [color:var(--color-fancy-pants,rgb(var(--color-primary)))]",
 				passedClasses,
 			)}
