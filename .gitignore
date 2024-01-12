@@ -38,8 +38,10 @@ pages/foobar/spec.md
 
 public/rss/
 public/sitemap*.xml
-public/shiki
 tsconfig.tsbuildinfo
 
 # Sentry
 .sentryclirc
+
+# Contentlayer
+.contentlayer

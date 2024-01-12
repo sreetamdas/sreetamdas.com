@@ -1,0 +1,189 @@
+---
+title: "Creating a chameleon text effect"
+description: "How to add a moving RGB effect to your text using styled-components"
+published: true
+published_at: "2021-05-11"
+url: "/blog/chameleon-text"
+use_client: true
+---
+
+I recently created a [new page on this website](/fancy-pants). From an early time in my front-end journey, I have been amazed by the websites that are featured on [awwwards](https://www.awwwards.com/awwwards/collections/freelance-portfolio/) and I wanted to create something <Sparkles>**_fancy_**</Sparkles> like them.
+
+Here's how I did it.
+
+## What we want to build
+
+Let's take a look again at what we're trying to build here:
+
+{/* prettier-ignore */}
+<ChameleonHighlight className="font-bold leading-normal -tracking-[0.065em] [font-size:clamp(4rem,_10vw,_10rem)]">Hello there!</ChameleonHighlight>
+
+<InfoBlock>
+Let's break down what's happening here:
+
+- Text color transitions from one color to another.
+- As soon as it reaches the "target" color, we change it again to keep it changing.
+
+</InfoBlock>
+
+## Changing colors
+
+We can animate the color changing of the text by using `transition`:
+
+```css
+transition-property: color;
+transition-duration: 5s;
+transition-timing-function: linear;
+
+/* or in one line */
+transition: color 5s linear;
+```
+
+And since I'm using `styled-components`, we can put this in a re-usable CSS string:
+
+```jsx
+import { css } from "styled-components";
+
+const WaveMixin = css`
+  transition-property: color;
+  transition-duration: 5s;
+  transition-timing-function: linear;
+`;
+```
+
+But this doesn't do anything at the moment — to actually change the color, we will need to update the color of the `<span>` that we are targeting _after_ it has been rendered to the screen.
+
+Let's start writing our little wrapper component for this:
+
+```jsx
+// usage
+<ChameleonHighlight>Hello there!</ChameleonHighlight>;
+
+const ChameleonHighlight = ({ children }) => <Wave>{children}</Wave>;
+
+// import styled, { css } from "styled-components";
+const WaveMixin = css`
+  transition-property: color;
+  transition-duration: 5s;
+  transition-timing-function: linear;
+`;
+
+const Wave = styled.span`
+  ${WaveMixin}
+`;
+```
+
+And now we change the color once the component has mounted:
+
+```jsx highlight="3-11,14-19,21-23"
+<ChameleonHighlight>Hello there!</ChameleonHighlight>;
+
+let root: HTMLElement;
+
+const getNewColor = () => {
+  const h = random(1, 360);
+  const s = random(80, 90);
+  const l = random(50, 60);
+
+  return `hsl(${h}, ${s}%, ${l}%)`;
+};
+
+const ChameleonHighlight = ({ children }) => {
+  const changeColor = () => {
+    const newColor = getNewColor();
+
+    if (root === undefined) root = document?.documentElement;
+    root.style.setProperty("--color-chameleon", newColor);
+  };
+
+  useEffect(() => {
+    changeColor();
+  }, []);
+
+  return <Wave>{children}</Wave>;
+};
+
+const WaveMixin = css`
+  color: var(--color-chameleon);
+  transition-property: color;
+  transition-duration: 5s;
+  transition-timing-function: linear;
+`;
+
+const Wave = styled.span`
+  ${WaveMixin}
+`;
+```
+
+{/* prettier-ignore */}
+<HighlightWithUseEffect className="font-bold leading-normal -tracking-[0.065em] [font-size:clamp(4rem,_10vw,_10rem)]">Hello there!</HighlightWithUseEffect>
+
+Huh, that didn't seem to work out 🤔 but that's because the transition already ran since the above live example was already "mounted" by the time you scrolled down to it.
+
+## A wild custom hook appeared!
+
+To keep changing the color after a pre-defined interval, we'll be defining our very own `useInterval` custom hook:
+
+```jsx
+const useInterval = (callback, delay) => {
+  const savedCallback = useRef();
+
+  useEffect(() => {
+    savedCallback.current = callback;
+  }, [callback]);
+
+  useEffect(() => {
+    const handler = (...args) => savedCallback.current(...args);
+
+    if (delay !== null) {
+      const intervalId = setInterval(handler, delay);
+      return () => clearInterval(intervalId);
+    }
+  }, [delay]);
+};
+```
+
+Let's now use this hook to change the color of our text just as it completes its transition.
+
+```jsx highlight="1,15-17"
+import { useInterval } from "@/utils/hooks";
+
+const ChameleonHighlight = ({ children }) => {
+  const changeColor = () => {
+    const newColor = getNewColor();
+
+    if (root === undefined) root = document?.documentElement;
+    root.style.setProperty("--color-chameleon", newColor);
+  };
+
+  useEffect(() => {
+    changeColor();
+  }, []);
+
+  useInterval(() => {
+    changeColor();
+  }, 5000);
+
+  return <Wave>{children}</Wave>;
+};
+```
+
+{/* prettier-ignore */}
+<HighlightWithUseInterval className="font-bold leading-normal -tracking-[0.065em] [font-size:clamp(4rem,_10vw,_10rem)]">**Hello there!**</HighlightWithUseInterval>
+
+Voila! ✨
+
+There we go. What's great is that you can also use this to highlight link, like so:
+
+{/* prettier-ignore */}
+<ChameleonHighlight className="font-bold leading-normal -tracking-[0.065em] [font-size:clamp(4rem,_10vw,_10rem)]">
+{/* prettier-ignore */}
+  <a href="#" className="visited:no-underline hover:underline hover:decoration-current hover:decoration-solid focus-visible:outline-dashed focus-visible:outline-8 focus-visible:outline-secondary">This is a link.</a>
+</ChameleonHighlight>
+
+## Wrapping up
+
+I'm really glad with how the effect turned out, and it was also easier to accomplish because I was using CSS-in-JS. It's great to see how powerful tools like [styled-components](https://styled-components.com) can be!
+You can [check the effect out in action](/fancy-pants) and see it in all its glory 😄
+
+Have a good one 👋

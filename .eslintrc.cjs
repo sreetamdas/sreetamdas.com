@@ -19,22 +19,19 @@ module.exports = {
 		"plugin:react/recommended",
 		"plugin:react-hooks/recommended",
 		"plugin:@typescript-eslint/recommended",
-		"plugin:import/errors",
-		"plugin:import/warnings",
+		"plugin:import/recommended",
 		"plugin:import/typescript",
 		"plugin:jsx-a11y/recommended",
-		"prettier",
-		"plugin:@next/next/recommended",
+		"next",
+		"plugin:mdx/recommended",
+		"plugin:prettier/recommended",
 	],
 	globals: {
 		Atomics: "readonly",
 		SharedArrayBuffer: "readonly",
 	},
 	rules: {
-		indent: ["error", "tab", { SwitchCase: 1 }],
 		"linebreak-style": ["error", "unix"],
-		quotes: ["error", "double"],
-		semi: ["error", "always"],
 		"no-console": "error",
 		"no-unused-vars": "off",
 		"react/prop-types": "off",
@@ -48,6 +45,7 @@ module.exports = {
 		"react/jsx-no-useless-fragment": "warn",
 		"react/jsx-fragments": "warn",
 		"@typescript-eslint/explicit-module-boundary-types": "off",
+		"@typescript-eslint/consistent-type-imports": "warn",
 		"@typescript-eslint/no-unused-vars": [
 			"error",
 			{ argsIgnorePattern: "^_", destructuredArrayIgnorePattern: "^_" },
@@ -60,23 +58,28 @@ module.exports = {
 		"no-param-reassign": ["error", { props: false }],
 		"import/prefer-default-export": 0,
 		"jsx-a11y/label-has-associated-control": ["error", { assert: "either" }],
-		"jsx-a11y/anchor-is-valid": ["warn", { aspects: ["invalidHref"] }],
+		"jsx-a11y/anchor-is-valid": ["warn", { aspects: ["noHref", "invalidHref", "preferButton"] }],
 
-		"import/order": [
-			"warn",
-			{
-				"newlines-between": "always",
-				alphabetize: { order: "asc" },
-			},
-		],
+		"import/order": ["warn", { "newlines-between": "always", alphabetize: { order: "asc" } }],
+		"import/consistent-type-specifier-style": ["warn", "prefer-inline"],
+		"import/no-duplicates": ["warn", { "prefer-inline": true }],
+		"prettier/prettier": ["warn"],
 	},
 	settings: {
 		react: {
 			version: "detect",
 		},
 		"import/resolver": {
-			typescript: true,
-			node: true,
+			typescript: {},
 		},
 	},
+	overrides: [
+		{
+			files: ["*.mdx", "**/*.mdx/**"],
+			extends: "plugin:mdx/recommended",
+			rules: {
+				"react/jsx-no-undef": "warn",
+			},
+		},
+	],
 };

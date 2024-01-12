@@ -1,0 +1,50 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+	:root {
+		--color-primary: 91 52 218;
+		--color-secondary: 53 142 241;
+		--color-foreground: 10 14 20;
+		--color-background: 247 241 255;
+
+		--max-width: 650px;
+		--border-radius: 5px;
+		--transition-duration: 0.1s;
+	}
+	[data-color-scheme="dark"] {
+		--color-primary: 157 134 233;
+		--color-secondary: 97 218 251;
+		--color-foreground: 247 241 255;
+		--color-background: 0 0 0;
+	}
+
+	@media print {
+		@page {
+			margin: 0;
+		}
+	}
+}
+
+@layer components {
+	.link-base {
+		@apply text-primary visited:no-underline hover:underline hover:decoration-current
+		hover:decoration-solid hover:decoration-2 focus-visible:outline-dashed focus-visible:outline-2
+		focus-visible:outline-offset-2 focus-visible:outline-secondary;
+	}
+
+	.gradient {
+		@apply bg-gradient-to-r from-primary to-secondary box-decoration-slice bg-clip-text text-transparent;
+	}
+}
+
+@layer utilities {
+	.font-code {
+		font-family: var(--font-iosevka);
+	}
+}
+
+strong > em {
+	@apply text-primary;
+}
