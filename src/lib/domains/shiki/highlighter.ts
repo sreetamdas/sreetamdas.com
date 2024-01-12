@@ -15,8 +15,9 @@ export const preloaded_langs: Array<BundledLanguage> = [
 	"json",
 	"mdx",
 	"markdown",
+	"html",
 	"css",
-	"shellscript",
+	"shell",
 	"elixir",
 ];
 
