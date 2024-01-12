@@ -49,14 +49,6 @@ And mechanical keyboards! Check it out at [sreetamdas.com/newsletter](https://sr
 You can also [view previous issues](https://buttondown.email/sreetamdas/archive),
 and [subscribe via RSS](https://buttondown.email/sreetamdas/rss)!
 
-### Lighthouse scores
-
-<img src="public/lighthouse_scores.png" align="center" alt="Lighthouse scores' screenshot: 100, 100, 100, 100" />
-
-<p align="center">
-	perfect lighthouse scores!
-</p>
-
 ## License
 
 Licensed under the [MIT License](LICENSE). Feel free to use in your own projects, with attribution please. A 🌟star on the repository would be super cool too! 😄
