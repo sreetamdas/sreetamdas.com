@@ -8,7 +8,7 @@ export const DEFAULT_REPO = {
 export const SITE_URL = process.env.SITE_URL!;
 export const SITE_TITLE_APPEND = `| ${OWNER_NAME}`;
 export const SITE_DESCRIPTION =
-	"Senior software tinkerer from India. 💜 React, Elixir and TypeScript, CS:GO and mechanical keyboards!";
+	"Senior software tinkerer from India. 💜 React, Elixir and TypeScript, CS and mechanical keyboards!";
 export const SITE_OG_IMAGE = "/og-image.png";
 
 export const IS_DEV = process.env.NODE_ENV === "development";
