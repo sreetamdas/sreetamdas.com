@@ -1,4 +1,3 @@
-export const OWNER_EMAIL = "sreetamdas@gmail.com";
 export const OWNER_NAME = "Sreetam Das";
 export const DEFAULT_REPO = {
 	owner: "sreetamdas",
