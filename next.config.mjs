@@ -10,7 +10,7 @@ const moduleExports = withPlausibleProxy()({
 		},
 	},
 	experimental: {
-		typedRoutes: true,
+		// typedRoutes: true,
 		mdxRs: true,
 	},
 	images: {

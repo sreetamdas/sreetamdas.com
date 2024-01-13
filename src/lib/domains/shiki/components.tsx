@@ -1,4 +1,3 @@
-import { cn } from "@/lib/helpers/utils";
 import { isObject } from "lodash-es";
 import {
 	type ReactNode,
@@ -8,6 +7,8 @@ import {
 	type HTMLAttributes,
 	isValidElement,
 } from "react";
+
+import { cn } from "@/lib/helpers/utils";
 
 type CodeBlockProps = DetailedHTMLProps<HTMLAttributes<HTMLPreElement>, HTMLPreElement> & {
 	children?: ReactNode;
@@ -54,7 +55,7 @@ export const CodeBlock = (props: CodeBlockProps) => {
 									className={cn(
 										"block",
 										should_line_highlight &&
-											"-mx-5 border-l-4 border-[#a86efd] bg-[#a86efd15] px-4",
+											"-mx-5 border-l-4 border-[#a86efd] bg-[#d0b2ff1a] px-4",
 									)}
 								>
 									<span
