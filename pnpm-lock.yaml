@@ -188,8 +188,8 @@ devDependencies:
     specifier: ^0.5.11
     version: 0.5.11(prettier@3.1.1)
   shikiji:
-    specifier: ^0.9.18
-    version: 0.9.18
+    specifier: ^0.10.0
+    version: 0.10.0
   tailwindcss:
     specifier: ^3.4.1
     version: 3.4.1
@@ -7340,14 +7340,14 @@ packages:
       vscode-textmate: 8.0.0
     dev: false
 
-  /shikiji-core@0.9.18:
-    resolution: {integrity: sha512-PKTXptbrp/WEDjNHV8OFG9KkfhmR0pSd161kzlDDlgQ0HXAnqJYNDSjqsy1CYZMx5bSvLMy42yJj9oFTqmkNTQ==}
+  /shikiji-core@0.10.0:
+    resolution: {integrity: sha512-imG+bvRkuNlZUi2q9tMVfegRRouTpDxMFejpfF/6J+bFX3NDKtlW9T9iIAkBYnw4pcCtSwirW0AvkwlQR4wyxg==}
     dev: true
 
-  /shikiji@0.9.18:
-    resolution: {integrity: sha512-/tFMIdV7UQklzN13VjF0/XFzmii6C606Jc878hNezvB8ZR8FG8FW9j0I4J9EJre0owlnPntgLVPpHqy27Gs+DQ==}
+  /shikiji@0.10.0:
+    resolution: {integrity: sha512-1dAzIOWbtM7B4Sem5BvE+CEdsebDsRA34SfCxM4qJ4PLgR73ZD92VEtNfbcoZ3xOLSqvtV0J9i4WpCgVsmQteg==}
     dependencies:
-      shikiji-core: 0.9.18
+      shikiji-core: 0.10.0
     dev: true
 
   /side-channel@1.0.4:
