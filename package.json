@@ -50,7 +50,7 @@
 		"shiki": "^0.14.7",
 		"tailwind-merge": "^2.2.0",
 		"unist-util-visit": "^5.0.0",
-		"zustand": "4.4.7"
+		"zustand": "4.5.2"
 	},
 	"devDependencies": {
 		"@next/eslint-plugin-next": "^14.0.4",
