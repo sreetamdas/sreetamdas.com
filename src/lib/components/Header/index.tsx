@@ -1,10 +1,13 @@
+import { type HTMLAttributes } from "react";
+
 import { NavbarDesktop, NavbarMobile } from "./Nav";
 
 import { LinkTo } from "@/lib/components/Anchor";
 import { ColorSchemeToggle } from "@/lib/domains/colorScheme/client";
+import { cn } from "@/lib/helpers/utils";
 
-export const Header = () => (
-	<div className="sticky top-0 z-10 h-[60px] w-screen bg-background">
+export const Header = ({ className }: HTMLAttributes<HTMLDivElement>) => (
+	<div className={cn("sticky top-0 z-10 h-[60px] w-screen bg-background", className)}>
 		<a
 			id="skip-link"
 			href="#main-content"

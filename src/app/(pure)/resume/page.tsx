@@ -199,7 +199,7 @@ export default function ResumePage() {
 							</p>
 
 							<h3 className="mt-4 font-bold">
-								<a href="https://reactday.in/" className="link-base">
+								<a href="https://reactday.in" className="link-base">
 									React Day, India
 								</a>
 							</h3>
