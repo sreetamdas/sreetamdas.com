@@ -40,7 +40,7 @@ export default {
 			},
 		},
 	},
-	darkMode: ["class", '[data-color-scheme="dark"]'],
+	darkMode: ["selector", '[data-color-scheme="dark"]'],
 	plugins: [
 		plugin(function ({ addVariant }) {
 			addVariant("children", "&>*");
