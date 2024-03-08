@@ -1,15 +1,11 @@
 import { FiLink } from "react-icons/fi";
-import {
-	type BundledTheme,
-	type ThemeRegistration,
-	type HighlighterGeneric,
-} from "shikiji/types.mjs";
+import { type ThemeRegistration } from "shiki";
 
 import module_css from "./CodeSnippet.module.css";
 
 import { ViewsCounter } from "@/lib/components/ViewsCounter";
 import { fetchGist } from "@/lib/domains/GitHub";
-import { type preloaded_langs, getKarmaHighlighter, getKarmaTheme } from "@/lib/domains/shiki";
+import { getKarmaHighlighter } from "@/lib/domains/shiki";
 
 // export const runtime = "edge";
 
@@ -19,7 +15,6 @@ export default async function RWCPage() {
 	const gist = await fetchGist(GITHUB_RWC_GIST_ID);
 
 	const karma_highlighter = await getKarmaHighlighter();
-	const karma_theme = await getKarmaTheme();
 
 	return (
 		<>
@@ -30,7 +25,6 @@ export default async function RWCPage() {
 					key={file_object?.filename}
 					filename={file_object?.filename}
 					highlighter={karma_highlighter}
-					theme={karma_theme}
 					lang={file_object?.language?.toLowerCase()}
 					code={file_object?.content}
 				/>
@@ -43,17 +37,17 @@ export default async function RWCPage() {
 
 type Props = {
 	code?: string;
-	highlighter: HighlighterGeneric<(typeof preloaded_langs)[number], BundledTheme | "karma">;
+	highlighter: Awaited<ReturnType<typeof getKarmaHighlighter>>;
 	theme?: ThemeRegistration;
 	lang?: string;
 	filename?: string;
 };
 function CodeSnippetBlock(props: Props) {
-	const { code, filename, highlighter, lang = "js", theme } = props;
+	const { code, filename, highlighter, lang = "js" } = props;
 
 	if (!code) return null;
 
-	const backgroundColor = theme?.bg;
+	const backgroundColor = highlighter.getTheme("karma").bg;
 	const html = highlighter.codeToHtml(code, { theme: "karma", lang });
 	const cleaned_html = html.replace(/(^<pre [^>]*>)/, "").replace(/(<\/pre>$)/, "");
 

@@ -1,13 +1,14 @@
 import { defaultTheme } from "@sreetamdas/karma";
 import {
+	type HighlighterGeneric,
 	type BundledLanguage,
 	type ThemeRegistration,
-	type Highlighter,
-	toShikiTheme,
 	getHighlighter,
-} from "shikiji";
+	normalizeTheme,
+} from "shiki";
 
-export const preloaded_langs: Array<BundledLanguage> = [
+export type BundledLangs = (typeof preloaded_langs)[number];
+export const preloaded_langs = [
 	"javascript",
 	"jsx",
 	"typescript",
@@ -19,7 +20,7 @@ export const preloaded_langs: Array<BundledLanguage> = [
 	"css",
 	"shell",
 	"elixir",
-];
+] satisfies Array<BundledLanguage>;
 
 function convertToThemeRegistration(theme: typeof defaultTheme): ThemeRegistration {
 	return {
@@ -37,15 +38,19 @@ function convertToThemeRegistration(theme: typeof defaultTheme): ThemeRegistrati
 	};
 }
 
-export async function getKarmaHighlighter(): Promise<Highlighter> {
+type KarmaHighlighter = HighlighterGeneric<BundledLangs, "karma">;
+export async function getKarmaHighlighter(): Promise<KarmaHighlighter> {
 	const karma_shiki_theme = convertToThemeRegistration(defaultTheme);
-	const theme = toShikiTheme(karma_shiki_theme);
-	const highlighter = await getHighlighter({ langs: preloaded_langs, themes: [theme] });
+	const theme = normalizeTheme(karma_shiki_theme);
+	const highlighter = (await getHighlighter({
+		langs: preloaded_langs,
+		themes: [theme],
+	})) as unknown as KarmaHighlighter;
 
 	return highlighter;
 }
 
 export async function getKarmaTheme(): Promise<ThemeRegistration> {
-	const theme = toShikiTheme(defaultTheme as unknown as ThemeRegistration);
+	const theme = normalizeTheme(defaultTheme as unknown as ThemeRegistration);
 	return theme;
 }
