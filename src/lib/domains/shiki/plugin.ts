@@ -1,11 +1,11 @@
-import { type Lang } from "shiki";
+import { type BundledLanguage } from "shiki/langs";
 import { visit } from "unist-util-visit";
 import { type UnistNode } from "unist-util-visit/lib";
 
 import { getKarmaHighlighter } from "./highlighter";
 
 type TreeNode = UnistNode & {
-	lang: Lang;
+	lang: BundledLanguage;
 	meta: string;
 	value: string;
 };
