@@ -8,6 +8,7 @@ import { KarmaShowcase } from "./Showcase.client";
 import { SITE_TITLE_APPEND, SITE_URL } from "@/config";
 import { ViewsCounter } from "@/lib/components/ViewsCounter";
 
+export const runtime = "edge";
 export const metadata = {
 	title: `Karma ${SITE_TITLE_APPEND}`,
 	description: "A colorful VS Code theme by Sreetam Das",

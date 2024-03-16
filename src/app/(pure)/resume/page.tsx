@@ -1,6 +1,7 @@
 import { SITE_TITLE_APPEND } from "@/config";
 import { ViewsCounter } from "@/lib/components/ViewsCounter";
 
+export const runtime = "edge";
 export const metadata = {
 	title: `Resume ${SITE_TITLE_APPEND}`,
 };
