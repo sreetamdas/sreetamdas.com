@@ -10,6 +10,7 @@ import { fetchRepoContributors } from "@/lib/domains/GitHub";
 import { allPages } from "contentlayer/generated";
 
 export const dynamicParams = false;
+export const runtime = "edge";
 
 export async function generateStaticParams() {
 	return allPages.flatMap(({ page_slug, skip_page }) => {

@@ -1,9 +1,10 @@
 import { isUndefined } from "lodash-es";
-import { Suspense } from "react";
 
 import { MDXContent } from "@/lib/components/MDX";
 import { ViewsCounter } from "@/lib/components/ViewsCounter";
 import { allPages } from "contentlayer/generated";
+
+export const runtime = "edge";
 
 export default function HomePage() {
 	const post = allPages.find((page) => page.page_slug === "introduction");
@@ -22,9 +23,7 @@ export default function HomePage() {
 			</h1>
 			<MDXContent code={post.body.code} />
 
-			<Suspense>
-				<ViewsCounter slug="/" hidden />
-			</Suspense>
+			<ViewsCounter slug="/" hidden />
 		</>
 	);
 }

@@ -1,5 +1,3 @@
-import { Suspense } from "react";
-
 import { KarmaShowcase } from "./Showcase.client";
 
 import { SITE_TITLE_APPEND, SITE_URL } from "@/config";
@@ -76,9 +74,7 @@ export default function KarmaPage() {
 
 			<KarmaShowcase examples={examples} />
 
-			<Suspense>
-				<ViewsCounter slug="/karma" />
-			</Suspense>
+			<ViewsCounter slug="/karma" />
 		</>
 	);
 }

@@ -22,6 +22,7 @@ import { InfoBlock as InfoBlockClient } from "@/lib/components/sink.client";
 import { allBlogPosts } from "contentlayer/generated";
 
 export const dynamicParams = false;
+export const runtime = "edge";
 
 export async function generateStaticParams() {
 	return allBlogPosts.map((post) => ({
