@@ -5,9 +5,10 @@ import {
 	type ThemeRegistration,
 	getHighlighter,
 	normalizeTheme,
-} from "shiki";
+} from "shiki/bundle-web.mjs";
+import elixirLang from "shiki/langs/elixir.mjs";
 
-export type BundledLangs = (typeof preloaded_langs)[number];
+export type BundledLangs = (typeof preloaded_langs)[number] | "elixir";
 export const preloaded_langs = [
 	"javascript",
 	"jsx",
@@ -19,7 +20,6 @@ export const preloaded_langs = [
 	"html",
 	"css",
 	"shell",
-	"elixir",
 ] satisfies Array<BundledLanguage>;
 
 function convertToThemeRegistration(theme: typeof defaultTheme): ThemeRegistration {
@@ -46,6 +46,8 @@ export async function getKarmaHighlighter(): Promise<KarmaHighlighter> {
 		langs: preloaded_langs,
 		themes: [theme],
 	})) as unknown as KarmaHighlighter;
+
+	await highlighter.loadLanguage(elixirLang);
 
 	return highlighter;
 }
