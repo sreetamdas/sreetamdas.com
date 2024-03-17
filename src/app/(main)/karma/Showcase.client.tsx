@@ -1,6 +1,7 @@
 "use client";
 
 import * as SwitchPrimitive from "@radix-ui/react-switch";
+import { type StaticImageData } from "next/image";
 import { useState } from "react";
 
 import { LinkTo } from "@/lib/components/Anchor";
@@ -24,9 +25,7 @@ export const KARMA_LIGHT_COLOR_PALETTE = [
 ] as const;
 
 type ThemeExample = {
-	src: string;
-	height?: number;
-	width?: number;
+	src: StaticImageData;
 };
 type Props = {
 	examples: Array<{
@@ -103,8 +102,6 @@ export const KarmaShowcase = ({ examples }: Props) => {
 								<Image
 									src={image.src}
 									alt={`Karma ${isDefaultTheme ? "" : "Light "}theme screenshot for ${name}`}
-									height={image.height}
-									width={image.width}
 									priority={index === 0}
 									quality={100}
 									unoptimized
