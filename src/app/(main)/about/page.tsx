@@ -8,7 +8,6 @@ import { ViewsCounter } from "@/lib/components/ViewsCounter";
 import { FoobarEntry } from "@/lib/domains/foobar/Entry.client";
 import { allPages } from "contentlayer/generated";
 
-export const runtime = "edge";
 export const metadata = {
 	title: `About ${SITE_TITLE_APPEND}`,
 };
