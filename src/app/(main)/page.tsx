@@ -4,6 +4,7 @@ import { MDXContent } from "@/lib/components/MDX";
 import { ViewsCounter } from "@/lib/components/ViewsCounter";
 import { allPages } from "contentlayer/generated";
 
+export const runtime = "edge";
 export default function HomePage() {
 	const post = allPages.find((page) => page.page_slug === "introduction");
 
