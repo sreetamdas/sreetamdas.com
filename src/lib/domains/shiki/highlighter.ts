@@ -55,12 +55,11 @@ export async function getKarmaHighlighter(): Promise<KarmaHighlighter> {
 	return highlighter;
 }
 
+// @ts-expect-error WASM
+await loadWasm(import("shiki/onig.wasm"));
 async function getPureKarmaHighlighter(): Promise<KarmaHighlighter> {
 	const karma_shiki_theme = convertToThemeRegistration(defaultTheme);
 	const theme = normalizeTheme(karma_shiki_theme);
-
-	// @ts-expect-error WASM
-	await loadWasm(import("shiki/onig.wasm"));
 
 	const highlighter = (await getHighlighterCore({
 		langs: [elixirLang, typeScriptLang, markdownLang],
