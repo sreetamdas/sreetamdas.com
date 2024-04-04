@@ -4,7 +4,7 @@ import module_css from "./CodeSnippet.module.css";
 
 import { ViewsCounter } from "@/lib/components/ViewsCounter";
 import { fetchGist } from "@/lib/domains/GitHub";
-import { getKarmaHighlighter } from "@/lib/domains/shiki";
+// import { getKarmaHighlighter } from "@/lib/domains/shiki";
 
 export const runtime = "edge";
 
@@ -17,13 +17,13 @@ export default async function RWCPage() {
 		<>
 			<h1 className="pb-20 pt-10 font-serif text-8xl">/rwc</h1>
 
-			{parsed_gist_content.map(({ parsed_html, lang, filename, background_color }) => (
+			{parsed_gist_content.map(({ parsed_html, lang, filename }) => (
 				<CodeSnippetBlock
 					key={filename}
 					parsed_html={parsed_html}
 					lang={lang}
 					filename={filename}
-					background_color={background_color}
+					// background_color={background_color}
 				/>
 			))}
 
@@ -34,22 +34,22 @@ export default async function RWCPage() {
 
 async function parseGistContents(gist_id: string) {
 	const gist = await fetchGist(gist_id);
-	const karma_highlighter = await getKarmaHighlighter();
+	// const karma_highlighter = await getKarmaHighlighter();
 
 	const parsed_contents = Object.values(gist.files!).flatMap((file_object) => {
 		const code = file_object?.content;
 		if (!code) return [];
 
 		const lang = file_object?.language?.toLowerCase() ?? "js";
-		const background_color = karma_highlighter.getTheme("karma").bg;
-		const html = karma_highlighter.codeToHtml(code, { theme: "karma", lang });
-		const parsed_html = html.replace(/(^<pre [^>]*>)/, "").replace(/(<\/pre>$)/, "");
+		// const background_color = karma_highlighter.getTheme("karma").bg;
+		// const html = karma_highlighter.codeToHtml(code, { theme: "karma", lang });
+		// const parsed_html = html.replace(/(^<pre [^>]*>)/, "").replace(/(<\/pre>$)/, "");
 
 		return {
-			parsed_html,
+			parsed_html: code,
 			lang,
 			filename: file_object.filename,
-			background_color,
+			// background_color,
 		};
 	});
 
@@ -63,7 +63,7 @@ type Props = {
 	background_color?: string;
 };
 function CodeSnippetBlock(props: Props) {
-	const { parsed_html, lang = "js", filename, background_color: backgroundColor } = props;
+	const { parsed_html, lang = "js", filename } = props;
 
 	const slug = filename?.replaceAll(/[\s.]/g, "_").toLowerCase();
 
@@ -81,14 +81,14 @@ function CodeSnippetBlock(props: Props) {
 				</h2>
 				<span
 					className="rounded-t-global px-2 py-1 font-mono uppercase text-zinc-400"
-					style={{ backgroundColor }}
+					// style={{ backgroundColor }}
 				>
 					{lang}
 				</span>
 			</div>
 			<pre
 				className={module_css["code-snippet"]}
-				style={{ backgroundColor }}
+				// style={{ backgroundColor }}
 				dangerouslySetInnerHTML={{ __html: parsed_html }}
 			/>
 		</article>
