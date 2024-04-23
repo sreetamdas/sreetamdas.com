@@ -3,6 +3,7 @@ import { withPlausibleProxy } from "next-plausible";
 
 process.env.SITE_URL = process.env.SITE_URL || process.env.VERCEL_URL || "http://localhost:3000";
 
+/** @type {import("next").NextConfig} */
 const moduleExports = withPlausibleProxy()({
 	logging: {
 		fetches: {
