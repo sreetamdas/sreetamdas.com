@@ -23,7 +23,7 @@
 		"@radix-ui/react-dialog": "^1.0.5",
 		"@radix-ui/react-switch": "^1.0.3",
 		"@radix-ui/react-toast": "^1.1.5",
-		"@sentry/nextjs": "^7.105.0",
+		"@sentry/nextjs": "^8.0.0",
 		"@sreetamdas/karma": "3.1.1",
 		"@supabase/supabase-js": "^2.39.7",
 		"clsx": "^2.1.0",
