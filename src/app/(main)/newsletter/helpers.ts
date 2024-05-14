@@ -1,4 +1,4 @@
-import { captureException } from "@sentry/nextjs";
+import * as Sentry from "@sentry/nextjs";
 
 import { BUTTONDOWN_EMAIL_MOCKS } from "./mocks";
 
@@ -57,7 +57,7 @@ export async function fetchNewsletterEmails(): Promise<ButtondownAPIEmailsRespon
 		});
 		return await response.json();
 	} catch (error: unknown) {
-		captureException(error);
+		Sentry.captureException(error);
 
 		return BUTTONDOWN_EMAIL_MOCKS;
 	}

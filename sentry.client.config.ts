@@ -1,6 +1,4 @@
 import * as Sentry from "@sentry/nextjs";
-import { SupabaseIntegration } from "@supabase/sentry-js-integration";
-import { SupabaseClient } from "@supabase/supabase-js";
 
 const SENTRY_DSN = process.env.SENTRY_DSN || process.env.NEXT_PUBLIC_SENTRY_DSN;
 const ENVIRONMENT = process.env.VERCEL_ENV || process.env.NODE_ENV;
@@ -16,15 +14,10 @@ if (ENVIRONMENT !== "development" && SENTRY_DSN !== "") {
 		replaysOnErrorSampleRate: 1.0,
 
 		integrations: [
-			new Sentry.BrowserProfilingIntegration(),
+			Sentry.browserProfilingIntegration(),
 			Sentry.replayIntegration({
 				maskAllText: true,
 				blockAllMedia: true,
-			}),
-			new SupabaseIntegration(SupabaseClient, {
-				tracing: true,
-				breadcrumbs: true,
-				errors: true,
 			}),
 			Sentry.browserTracingIntegration({
 				shouldCreateSpanForRequest: (url) => !url.startsWith(`${SUPABASE_URL}/rest`),
