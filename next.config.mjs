@@ -5,10 +5,7 @@ import { withPlausibleProxy } from "next-plausible";
 process.env.SITE_URL = process.env.SITE_URL || process.env.VERCEL_URL || "http://localhost:3000";
 
 /** @type {import("next").NextConfig} */
-let nextConfig = withPlausibleProxy({
-	subdirectory: "prxy",
-	scriptName: "plsbl",
-})({
+let nextConfig = {
 	logging: {
 		fetches: {
 			fullUrl: true,
@@ -36,14 +33,23 @@ let nextConfig = withPlausibleProxy({
 			},
 		];
 	},
-});
+};
+
+nextConfig = withPlausibleProxy({
+	subdirectory: "prxy",
+	scriptName: "plsbl",
+})(nextConfig);
 
 nextConfig = withContentlayer(nextConfig);
 
-export default withSentryConfig(nextConfig, {
-	project: process.env.SENTRY_PROJECT,
-	org: process.env.SENTRY_ORG,
-	authToken: process.env.SENTRY_AUTH_TOKEN,
-	silent: false,
-	tunnelRoute: "/prxy/sntry",
-});
+if (process.env.NODE_ENV === "production") {
+	nextConfig = withSentryConfig(nextConfig, {
+		project: process.env.SENTRY_PROJECT,
+		org: process.env.SENTRY_ORG,
+		authToken: process.env.SENTRY_AUTH_TOKEN,
+		silent: false,
+		tunnelRoute: "/prxy/sntry",
+	});
+}
+
+export default nextConfig;
