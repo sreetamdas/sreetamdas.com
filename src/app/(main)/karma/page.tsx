@@ -27,8 +27,8 @@ export default function KarmaPage() {
 	const examples = theme_language_map.map((example) => {
 		const { name, defaultImage, lightImage } = example;
 
-		const default_image_path = path.join("public", defaultImage);
-		const light_image_path = path.join("public", lightImage);
+		const default_image_path = path.join(path.resolve(), "public", defaultImage);
+		const light_image_path = path.join(path.resolve(), "public", lightImage);
 		// eslint-disable-next-line no-console
 		console.log({ default_image_path });
 
