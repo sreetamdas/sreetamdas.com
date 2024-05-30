@@ -47,6 +47,9 @@ export default function KarmaPage() {
 		};
 	});
 
+	// eslint-disable-next-line no-console
+	console.log({ examples });
+
 	return (
 		<>
 			<h1 className="pb-20 pt-10 text-center font-serif text-9xl leading-none">Karma</h1>
