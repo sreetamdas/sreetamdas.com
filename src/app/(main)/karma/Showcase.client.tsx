@@ -1,7 +1,7 @@
 "use client";
 
 import * as SwitchPrimitive from "@radix-ui/react-switch";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import { LinkTo } from "@/lib/components/Anchor";
 import { Image } from "@/lib/components/Image";
@@ -42,11 +42,6 @@ export const KarmaShowcase = ({ examples }: Props) => {
 	function handleThemeToggle(checked: boolean) {
 		setIsDefaultTheme(checked);
 	}
-
-	useEffect(() => {
-		// eslint-disable-next-line no-console
-		console.log("examples:", { examples });
-	}, [examples]);
 
 	return (
 		<>

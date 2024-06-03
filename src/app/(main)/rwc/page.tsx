@@ -3,12 +3,14 @@ import { type ThemeRegistration } from "shiki";
 
 import module_css from "./CodeSnippet.module.css";
 
+import { SITE_TITLE_APPEND } from "@/config";
 import { ViewsCounter } from "@/lib/components/ViewsCounter";
 import { fetchGist } from "@/lib/domains/GitHub";
 import { getKarmaHighlighter } from "@/lib/domains/shiki";
 
-// export const runtime = "edge";
-
+export const metadata = {
+	title: `Keebs ${SITE_TITLE_APPEND}`,
+};
 const GITHUB_RWC_GIST_ID = process.env.GITHUB_RWC_GIST_ID!;
 
 export default async function RWCPage() {

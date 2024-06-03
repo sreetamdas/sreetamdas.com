@@ -29,8 +29,6 @@ export default function KarmaPage() {
 
 		const default_image_path = path.join(path.resolve(), "public", defaultImage);
 		const light_image_path = path.join(path.resolve(), "public", lightImage);
-		// eslint-disable-next-line no-console
-		console.log({ default_image_path });
 
 		const default_dimensions = sizeOf(default_image_path);
 		const light_dimensions = sizeOf(light_image_path);
@@ -49,9 +47,6 @@ export default function KarmaPage() {
 			},
 		};
 	});
-
-	// eslint-disable-next-line no-console
-	console.log({ examples });
 
 	return (
 		<>
