@@ -1,7 +1,6 @@
 import path from "path";
 
 import sizeOf from "image-size";
-import { Suspense } from "react";
 
 import { KarmaShowcase } from "./Showcase.client";
 
@@ -55,9 +54,7 @@ export default function KarmaPage() {
 
 			<KarmaShowcase examples={examples} />
 
-			<Suspense>
-				<ViewsCounter slug="/karma" />
-			</Suspense>
+			<ViewsCounter slug="/karma" />
 		</>
 	);
 }
