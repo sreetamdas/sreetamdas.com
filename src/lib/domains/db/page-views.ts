@@ -3,7 +3,7 @@ import { eq, sql } from "drizzle-orm";
 import { db } from "@/lib/domains/db";
 import { page_details_table } from "@/lib/domains/db/schema";
 
-type PageViewCount = {
+export type PageViewCount = {
 	view_count: number;
 };
 
@@ -11,9 +11,9 @@ type SuccessResponse<Type = undefined> = { data: Type };
 type ErrorResponse<Type = undefined> = {
 	error?: Type;
 };
-type PageViewCountResponse =
+export type PageViewCountResponse =
 	| (SuccessResponse<PageViewCount> & ErrorResponse & { type: "success" })
-	| (ErrorResponse<{ message: string; cause: string }> & { type: "error" });
+	| (SuccessResponse<null> & ErrorResponse<{ message: string; cause: string }> & { type: "error" });
 
 /**
  * Get page view_count
@@ -40,6 +40,7 @@ export async function getPageViews(slug: string): Promise<PageViewCountResponse>
 			type: "error",
 			// @ts-expect-error error shape
 			error: { message: error.message, cause: error.cause },
+			data: null,
 		};
 	}
 }
@@ -67,7 +68,11 @@ export async function upsertPageViews(slug: string): Promise<PageViewCountRespon
 
 		return { data: { view_count }, type: "success" };
 	} catch (error) {
-		// @ts-expect-error error shape
-		return { error: { message: error.message, cause: error.cause }, type: "error" };
+		return {
+			type: "error",
+			// @ts-expect-error error shape
+			error: { message: error?.message, cause: error?.cause },
+			data: null,
+		};
 	}
 }

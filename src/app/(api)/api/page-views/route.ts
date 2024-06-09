@@ -1,11 +1,13 @@
 import { isEmpty, isNull } from "lodash-es";
 import { type NextRequest, NextResponse } from "next/server";
 
-import { getPageViews, upsertPageViews } from "@/lib/domains/db/page-views";
+import { getPageViews, upsertPageViews, type PageViewCount } from "@/lib/domains/db/page-views";
 
-export const runtime = "edge";
+type MaybeErrorResponse<SuccessResult> = NextResponse<
+	SuccessResult | { data: null; error: { message: string; cause: string } }
+>;
 
-export async function POST(request: NextRequest) {
+export async function POST(request: NextRequest): Promise<MaybeErrorResponse<PageViewCount>> {
 	try {
 		const { slug } = await request.json<{ slug: string | null }>();
 
@@ -13,8 +15,12 @@ export async function POST(request: NextRequest) {
 			throw new Error("Page slug param is missing", { cause: { slug } });
 		}
 
-		const page_views = await upsertPageViews(slug);
-		return NextResponse.json(page_views);
+		const result = await upsertPageViews(slug);
+
+		if (result.type === "error") {
+			throw new Error(result?.error?.message, { cause: result.error?.cause });
+		}
+		return NextResponse.json(result.data);
 	} catch (error) {
 		return NextResponse.json(
 			// @ts-expect-error error shape
@@ -24,7 +30,7 @@ export async function POST(request: NextRequest) {
 	}
 }
 
-export async function GET(request: NextRequest) {
+export async function GET(request: NextRequest): Promise<MaybeErrorResponse<PageViewCount>> {
 	try {
 		const slug = request.nextUrl.searchParams.get("slug");
 
@@ -32,8 +38,11 @@ export async function GET(request: NextRequest) {
 			throw new Error("Page slug param is missing", { cause: { slug } });
 		}
 
-		const page_views = await getPageViews(slug);
-		return NextResponse.json(page_views);
+		const result = await getPageViews(slug);
+		if (result.type === "error") {
+			throw new Error(result?.error?.message, { cause: result.error?.cause });
+		}
+		return NextResponse.json(result.data);
 	} catch (error) {
 		return NextResponse.json(
 			// @ts-expect-error error shape

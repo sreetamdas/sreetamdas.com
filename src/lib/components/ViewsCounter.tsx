@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 
 import { IS_CI, IS_DEV } from "@/config";
-import { getPageViews, upsertPageViews } from "@/lib/domains/Supabase";
+import { getPageViews, upsertPageViews } from "@/lib/domains/db/page-views";
 import { cn } from "@/lib/helpers/utils";
 
 type IsomorphicFetchOptions = {
@@ -111,10 +111,7 @@ function getViewCountCopy(view_count: number | null, page_type: ViewsCounterProp
 	}
 }
 const ViewCount = ({ children }: { children: string }) => (
-	<span
-		className="rounded-global border-2 border-solid border-primary bg-background p-1 font-mono 
-	text-base text-primary transition-colors"
-	>
+	<span className="rounded-global border-2 border-solid border-primary bg-background p-1 font-mono text-base text-primary transition-colors">
 		{children}
 	</span>
 );
