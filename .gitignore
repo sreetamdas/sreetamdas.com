@@ -45,3 +45,6 @@ tsconfig.tsbuildinfo
 
 # Contentlayer
 .contentlayer
+
+# Local files
+TODO.md
