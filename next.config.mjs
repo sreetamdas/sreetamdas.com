@@ -1,6 +1,11 @@
+import { setupDevPlatform } from "@cloudflare/next-on-pages/next-dev";
 import { withSentryConfig } from "@sentry/nextjs";
 import { withContentlayer } from "next-contentlayer2";
 import { withPlausibleProxy } from "next-plausible";
+
+if (process.env.NODE_ENV === "development") {
+	await setupDevPlatform();
+}
 
 process.env.SITE_URL = process.env.SITE_URL || process.env.VERCEL_URL || "http://localhost:3000";
 

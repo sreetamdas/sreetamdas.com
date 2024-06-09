@@ -9,8 +9,8 @@
 		"isolatedModules": true,
 		"jsx": "preserve",
 		"lib": ["dom", "dom.iterable", "esnext"],
-		"module": "ESNext",
-		"moduleResolution": "node",
+		"module": "esnext",
+		"moduleResolution": "bundler",
 		"noEmit": true,
 		"noImplicitAny": true,
 		"noUnusedLocals": true,
@@ -18,7 +18,7 @@
 		"resolveJsonModule": true,
 		"skipLibCheck": true,
 		"strict": true,
-		"target": "ESNext",
+		"target": "esnext",
 		"paths": {
 			"@/*": ["./*"],
 			"@/public/*": ["../public/*"],
@@ -28,7 +28,8 @@
 			{
 				"name": "next"
 			}
-		]
+		],
+		"types": ["@cloudflare/workers-types"]
 	},
 	"exclude": ["node_modules", "public"],
 	"include": [

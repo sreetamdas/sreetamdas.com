@@ -1,0 +1,8 @@
+#:schema node_modules/wrangler/config-schema.json
+
+
+[[d1_databases]]
+binding = "D1_DB"                                    # i.e. available in your Worker on env.DB
+database_name = "sreetamdas_com"
+database_id = "94e03c24-095b-47e2-bdba-a53027348100"
+# preview_database_id = "PREVIEW_LOCAL_DB"

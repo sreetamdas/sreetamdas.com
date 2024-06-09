@@ -1,13 +1,13 @@
 import { isEmpty, isNull } from "lodash-es";
 import { type NextRequest, NextResponse } from "next/server";
 
-import { getPageViews, upsertPageViews } from "@/lib/domains/Supabase";
+import { getPageViews, upsertPageViews } from "@/lib/domains/db/page-views";
 
 export const runtime = "edge";
 
 export async function POST(request: NextRequest) {
 	try {
-		const { slug } = await request.json();
+		const { slug } = await request.json<{ slug: string | null }>();
 
 		if (isNull(slug) || isEmpty(slug)) {
 			throw new Error("Page slug param is missing", { cause: { slug } });

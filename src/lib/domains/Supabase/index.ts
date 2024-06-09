@@ -4,12 +4,24 @@ type PageViewCount = {
 	view_count: number;
 };
 
+type PageDetail = PageViewCount & {
+	id: number;
+	slug: string;
+	likes: number;
+	created_at: string;
+	updated_at: string;
+};
+
 type SuccessResponse<Type = undefined> = { data: Type };
 type ErrorResponse<Type = undefined> = {
 	error?: Type;
 };
 type PageViewCountResponse =
 	| (SuccessResponse<PageViewCount> & ErrorResponse & { type: "success" })
+	| ((SuccessResponse & ErrorResponse<{ message: string; cause: string }>) & { type: "error" });
+
+type PageDetailsResponse =
+	| (SuccessResponse<Array<PageDetail>> & ErrorResponse & { type: "success" })
 	| ((SuccessResponse & ErrorResponse<{ message: string; cause: string }>) & { type: "error" });
 
 const SUPABASE_ENABLED =
@@ -64,6 +76,39 @@ export async function getPageViews(slug: string): Promise<PageViewCountResponse>
 		}
 
 		return { data: view_count, type: "success" };
+	} catch (error) {
+		// @ts-expect-error error shape
+		return { error: { message: error.message, cause: error.cause }, type: "error" };
+	}
+}
+
+/**
+ * Get all pages' view_count
+ */
+export async function getAllPageViews(): Promise<PageDetailsResponse> {
+	try {
+		if (!SUPABASE_ENABLED) {
+			throw new Error("Supabase is not initialized");
+		}
+
+		const request = await fetch(`${SUPABASE_API_BASE_URL}/page_details?select=*`, {
+			method: "GET",
+			headers: {
+				"Content-Type": "application/json",
+				...supabase_headers,
+			},
+			...(!IS_DEV && { cache: "no-store" }),
+		});
+
+		const response: Array<PageDetail> = await request.json();
+
+		if (typeof response === "undefined") {
+			throw new Error("Page has not been added to the database yet", {
+				cause: { response: "undefined" },
+			});
+		}
+
+		return { data: response, type: "success" };
 	} catch (error) {
 		// @ts-expect-error error shape
 		return { error: { message: error.message, cause: error.cause }, type: "error" };
