@@ -21,14 +21,22 @@ export type PageViewCountResponse =
  * @returns Get page view_count
  */
 export async function getPageViews(slug: string): Promise<PageViewCountResponse> {
+	console.log("Start getPageViews");
+
 	try {
+		console.log("Trying");
+
 		const db = getDB();
+
+		console.log("Got DB");
 
 		const [view_count] = await db
 			.select({ view_count: page_details_table.view_count })
 			.from(page_details_table)
 			.where(eq(page_details_table.slug, slug))
 			.limit(1);
+
+		console.log({ slug, view_count });
 
 		if (typeof view_count === "undefined") {
 			throw new Error("Page has not been added to the database yet", {
