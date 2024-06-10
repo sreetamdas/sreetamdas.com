@@ -2,8 +2,9 @@
 
 import { useEffect, useState } from "react";
 
+import { type Response } from "@/app/(api)/api/page-views/route";
 import { IS_CI, IS_DEV } from "@/config";
-import { type PageViewCountResponse } from "@/lib/domains/db/page-views";
+import { type PageViewCount } from "@/lib/domains/db/page-views";
 import { cn } from "@/lib/helpers/utils";
 
 type IsomorphicFetchOptions = {
@@ -18,13 +19,14 @@ type IsomorphicFetchOptions = {
 async function isomorphicFetchPageViews(
 	slug: string,
 	options: IsomorphicFetchOptions,
-): Promise<PageViewCountResponse> {
+): Promise<Response<PageViewCount>> {
 	if (options.disabled) {
 		const params = new URLSearchParams({ slug });
 		const request = await fetch(`/api/page-views?${params.toString()}`, {
 			method: "GET",
 		});
-		const response = await request.json<PageViewCountResponse>();
+
+		const response = await request.json<Response<PageViewCount>>();
 
 		return response;
 	}
@@ -32,7 +34,8 @@ async function isomorphicFetchPageViews(
 		method: "POST",
 		body: JSON.stringify({ slug }),
 	});
-	const response = await request.json<PageViewCountResponse>();
+
+	const response = await request.json<Response<PageViewCount>>();
 
 	return response;
 }
@@ -53,15 +56,15 @@ export const ViewsCounter = ({
 
 	useEffect(() => {
 		async function fetchPageViews() {
-			const { data, error, type } = await isomorphicFetchPageViews(slug, { disabled });
+			const { data, error } = await isomorphicFetchPageViews(slug, { disabled });
 
-			if (type === "success") {
-				const { view_count } = data;
+			if (data !== null) {
+				const { view_count = 0 } = data;
 				setPageViews(view_count);
-			} else {
+			}
+			if (error !== null) {
 				// eslint-disable-next-line no-console
 				console.error(error);
-				setPageViews(0);
 			}
 		}
 

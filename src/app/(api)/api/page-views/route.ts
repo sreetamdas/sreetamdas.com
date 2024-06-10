@@ -1,11 +1,12 @@
 import { isEmpty, isNull } from "lodash-es";
 import { type NextRequest, NextResponse } from "next/server";
 
-import { getPageViews, upsertPageViews, type PageViewCount } from "@/lib/domains/db/page-views";
+import { type PageViewCount, getPageViews, upsertPageViews } from "@/lib/domains/db/page-views";
 
-type MaybeErrorResponse<SuccessResult> = NextResponse<
-	SuccessResult | { data: null; error: { message: string; cause: string } }
->;
+export type Response<SuccessResult> =
+	| { data: SuccessResult; error: null }
+	| { error: { message: string; cause: string }; data: null };
+export type MaybeErrorResponse<SuccessResult> = NextResponse<Response<SuccessResult>>;
 
 export async function POST(request: NextRequest): Promise<MaybeErrorResponse<PageViewCount>> {
 	try {
@@ -20,7 +21,7 @@ export async function POST(request: NextRequest): Promise<MaybeErrorResponse<Pag
 		if (result.type === "error") {
 			throw new Error(result?.error?.message, { cause: result.error?.cause });
 		}
-		return NextResponse.json(result.data);
+		return NextResponse.json({ data: result.data, error: null });
 	} catch (error) {
 		return NextResponse.json(
 			// @ts-expect-error error shape
@@ -42,7 +43,7 @@ export async function GET(request: NextRequest): Promise<MaybeErrorResponse<Page
 		if (result.type === "error") {
 			throw new Error(result?.error?.message, { cause: result.error?.cause });
 		}
-		return NextResponse.json(result.data);
+		return NextResponse.json({ data: result.data, error: null });
 	} catch (error) {
 		return NextResponse.json(
 			// @ts-expect-error error shape
