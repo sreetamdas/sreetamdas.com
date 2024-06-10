@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 
 import { IS_CI, IS_DEV } from "@/config";
-import { getPageViews, upsertPageViews } from "@/lib/domains/db/page-views";
+import { type PageViewCountResponse } from "@/lib/domains/db/page-views";
 import { cn } from "@/lib/helpers/utils";
 
 type IsomorphicFetchOptions = {
@@ -15,12 +15,25 @@ type IsomorphicFetchOptions = {
  * @param slug page slug
  * @returns page views response
  */
-async function isomorphicFetchPageViews(slug: string, options: IsomorphicFetchOptions) {
+async function isomorphicFetchPageViews(
+	slug: string,
+	options: IsomorphicFetchOptions,
+): Promise<PageViewCountResponse> {
 	if (options.disabled) {
-		const response = await getPageViews(slug);
+		const params = new URLSearchParams({ slug });
+		const request = await fetch(`/api/page-views?${params.toString()}`, {
+			method: "GET",
+		});
+		const response = await request.json<PageViewCountResponse>();
+
 		return response;
 	}
-	const response = await upsertPageViews(slug);
+	const request = await fetch("/api/page-views", {
+		method: "POST",
+		body: JSON.stringify({ slug }),
+	});
+	const response = await request.json<PageViewCountResponse>();
+
 	return response;
 }
 
