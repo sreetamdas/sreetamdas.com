@@ -6,7 +6,7 @@ import module_css from "./CodeSnippet.module.css";
 import { SITE_TITLE_APPEND } from "@/config";
 import { ViewsCounter } from "@/lib/components/ViewsCounter";
 import { fetchGist } from "@/lib/domains/GitHub";
-import { getKarmaHighlighter } from "@/lib/domains/shiki";
+import { getSlimKarmaHighlighter } from "@/lib/domains/shiki";
 
 export const metadata = {
 	title: `RWC ${SITE_TITLE_APPEND}`,
@@ -16,7 +16,7 @@ const GITHUB_RWC_GIST_ID = process.env.GITHUB_RWC_GIST_ID!;
 export default async function RWCPage() {
 	const gist = await fetchGist(GITHUB_RWC_GIST_ID);
 
-	const karma_highlighter = await getKarmaHighlighter();
+	const karma_highlighter = await getSlimKarmaHighlighter();
 
 	return (
 		<>
@@ -39,7 +39,7 @@ export default async function RWCPage() {
 
 type Props = {
 	code?: string;
-	highlighter: Awaited<ReturnType<typeof getKarmaHighlighter>>;
+	highlighter: Awaited<ReturnType<typeof getSlimKarmaHighlighter>>;
 	theme?: ThemeRegistration;
 	lang?: string;
 	filename?: string;

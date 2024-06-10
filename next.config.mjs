@@ -1,4 +1,5 @@
 import { setupDevPlatform } from "@cloudflare/next-on-pages/next-dev";
+import withBundleAnalyzer from "@next/bundle-analyzer";
 import { withSentryConfig } from "@sentry/nextjs";
 import { withContentlayer } from "next-contentlayer2";
 import { withPlausibleProxy } from "next-plausible";
@@ -56,5 +57,9 @@ if (process.env.NODE_ENV === "production") {
 		tunnelRoute: "/prxy/sntry",
 	});
 }
+
+nextConfig = withBundleAnalyzer({
+	enabled: process.env.ANALYZE === "true",
+})(nextConfig);
 
 export default nextConfig;
