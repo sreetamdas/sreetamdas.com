@@ -7,6 +7,7 @@ import { NewsletterEmailDetail } from "../components";
 import { fetchNewsletterEmails } from "../helpers";
 
 export const dynamicParams = false;
+export const runtime = "nodejs";
 
 export async function generateStaticParams() {
 	const newsletter_emails_slugs = await getNewsletterEmailsSlugs();

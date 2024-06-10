@@ -1,9 +1,9 @@
 import { type BundledLanguage } from "shiki/langs";
 import { visit } from "unist-util-visit";
-import { type UnistNode } from "unist-util-visit/lib";
 
 import { getKarmaHighlighter } from "./highlighter";
 
+type UnistNode = Parameters<typeof visit>[0];
 type TreeNode = UnistNode & {
 	lang: BundledLanguage;
 	meta: string;

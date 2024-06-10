@@ -1,6 +1,6 @@
 import { eq, sql } from "drizzle-orm";
 
-import { db } from "@/lib/domains/db";
+import { getDB } from "@/lib/domains/db";
 import { page_details_table } from "@/lib/domains/db/schema";
 
 export type PageViewCount = {
@@ -22,6 +22,8 @@ export type PageViewCountResponse =
  */
 export async function getPageViews(slug: string): Promise<PageViewCountResponse> {
 	try {
+		const db = getDB();
+
 		const [view_count] = await db
 			.select({ view_count: page_details_table.view_count })
 			.from(page_details_table)
@@ -52,6 +54,8 @@ export async function getPageViews(slug: string): Promise<PageViewCountResponse>
  */
 export async function upsertPageViews(slug: string): Promise<PageViewCountResponse> {
 	try {
+		const db = getDB();
+
 		const [{ view_count }] = await db
 			.update(page_details_table)
 			.set({

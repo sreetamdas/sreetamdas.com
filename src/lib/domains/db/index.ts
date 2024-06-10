@@ -3,10 +3,8 @@ import { drizzle } from "drizzle-orm/d1";
 
 import * as schema from "./schema";
 
-function initD1() {
+export function getDB() {
 	const { env } = getRequestContext();
 
 	return drizzle(env.D1_DB, { schema });
 }
-
-export const db = initD1();
