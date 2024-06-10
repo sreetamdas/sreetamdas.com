@@ -1,3 +1,4 @@
+import withBundleAnalyzer from "@next/bundle-analyzer";
 import { withContentlayer } from "next-contentlayer";
 import { withPlausibleProxy } from "next-plausible";
 
@@ -32,4 +33,6 @@ const moduleExports = withPlausibleProxy()({
 	},
 });
 
-export default withContentlayer(moduleExports);
+export default withBundleAnalyzer({
+	enabled: process.env.ANALYZE === "true",
+})(withContentlayer(moduleExports));

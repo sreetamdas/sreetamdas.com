@@ -16,7 +16,8 @@
 		"lint": "eslint 'src/**/*.{js,jsx,ts,tsx}' --cache",
 		"lint:next": "next lint",
 		"lint:fix": "eslint 'src/**/*.{js,jsx,ts,tsx}' --cache --fix",
-		"prettier": "prettier 'src/**/*.{js,jsx,ts,tsx,mdx}' --write --cache"
+		"prettier": "prettier 'src/**/*.{js,jsx,ts,tsx,mdx}' --write --cache",
+		"cf:build": "pnpm next-on-pages"
 	},
 	"dependencies": {
 		"@radix-ui/react-alert-dialog": "^1.0.5",
@@ -51,6 +52,8 @@
 		"zustand": "4.5.2"
 	},
 	"devDependencies": {
+		"@cloudflare/next-on-pages": "^1.11.3",
+		"@next/bundle-analyzer": "^14.2.3",
 		"@next/eslint-plugin-next": "^14.1.3",
 		"@notionhq/client": "^2.2.14",
 		"@octokit/types": "^12.6.0",
