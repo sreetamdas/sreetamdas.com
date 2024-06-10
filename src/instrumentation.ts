@@ -5,12 +5,14 @@ const ENVIRONMENT = process.env.VERCEL_ENV || process.env.NODE_ENV;
 
 export function register() {
 	if (process.env.NEXT_RUNTIME === "nodejs") {
-		Sentry.init({
-			dsn: SENTRY_DSN,
-			environment: ENVIRONMENT,
-			tracesSampleRate: 0.25,
-			profilesSampleRate: 1.0,
-		});
+		if (ENVIRONMENT !== "development" && SENTRY_DSN !== "") {
+			Sentry.init({
+				dsn: SENTRY_DSN,
+				environment: ENVIRONMENT,
+				tracesSampleRate: 0.25,
+				profilesSampleRate: 1.0,
+			});
+		}
 	}
 
 	if (process.env.NEXT_RUNTIME === "edge") {
