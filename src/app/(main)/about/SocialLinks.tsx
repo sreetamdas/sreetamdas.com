@@ -44,7 +44,7 @@ export const SocialLinks = () => {
 		},
 		{
 			link: "https://peerlist.io/sreetamdas",
-			title: "Sreetam Das' LinkedIn",
+			title: "Sreetam Das' Peerlist",
 			icon: <SiPeerlist />,
 		},
 		{
