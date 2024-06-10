@@ -8,6 +8,7 @@
 		"turbo": "next dev --turbo",
 		"dev": "next dev",
 		"build": "next build",
+		"cf:build": "pnpm next-on-pages",
 		"build:analyze": "contentlayer2 build & ANALYZE=true next build",
 		"postbuild": "next-sitemap --config next-sitemap.config.cjs",
 		"export": "contentlayer2 build & next build && next export",
