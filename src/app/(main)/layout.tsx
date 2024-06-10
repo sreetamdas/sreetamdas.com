@@ -4,6 +4,8 @@ import { Footer } from "@/lib/components/Footer";
 import { Header } from "@/lib/components/Header";
 import { FoobarPixel } from "@/lib/domains/foobar/Pixel.client";
 
+export const runtime = "edge";
+
 export default function MainLayout({ children }: { children: ReactNode }) {
 	return (
 		<>

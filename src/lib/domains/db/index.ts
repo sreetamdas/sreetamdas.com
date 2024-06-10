@@ -4,7 +4,14 @@ import { drizzle } from "drizzle-orm/d1";
 import * as schema from "./schema";
 
 export function getDB() {
-	const { env } = getRequestContext();
+	console.log("Getting DB");
 
-	return drizzle(env.D1_DB, { schema });
+	try {
+		const { env } = getRequestContext();
+
+		return drizzle(env.D1_DB, { schema });
+	} catch (error) {
+		console.error({ error });
+		return;
+	}
 }

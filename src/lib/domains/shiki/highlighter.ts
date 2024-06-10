@@ -5,8 +5,8 @@ import {
 	type ThemeRegistration,
 	normalizeTheme,
 	getHighlighterCore,
+	loadWasm,
 } from "shiki";
-import getWasm from "shiki/wasm";
 
 type BundledLangs = (typeof preloaded_langs)[number];
 const preloaded_langs = [
@@ -36,6 +36,9 @@ function convertToThemeRegistration(theme: typeof defaultTheme): ThemeRegistrati
 	};
 }
 
+// @ts-expect-error WASM
+await loadWasm(import("shiki/onig.wasm"));
+
 type KarmaHighlighter = HighlighterGeneric<BundledLangs, "karma">;
 export async function getSlimKarmaHighlighter(): Promise<KarmaHighlighter> {
 	const karma_shiki_theme = convertToThemeRegistration(defaultTheme);
@@ -53,7 +56,6 @@ export async function getSlimKarmaHighlighter(): Promise<KarmaHighlighter> {
 			import("shiki/langs/elixir.mjs"),
 		],
 		themes: [theme],
-		loadWasm: getWasm,
 	})) as KarmaHighlighter;
 
 	return highlighter;
