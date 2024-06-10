@@ -36,13 +36,14 @@ function convertToThemeRegistration(theme: typeof defaultTheme): ThemeRegistrati
 	};
 }
 
+// @ts-expect-error WASM
+await loadWasm(import("shiki/onig.wasm"));
+
 type KarmaHighlighter = HighlighterGeneric<BundledLangs, "karma">;
 export async function getSlimKarmaHighlighter(): Promise<KarmaHighlighter> {
 	const karma_shiki_theme = convertToThemeRegistration(defaultTheme);
 	const theme = normalizeTheme(karma_shiki_theme);
 
-	// @ts-expect-error WASM
-	await loadWasm(import("shiki/onig.wasm"));
 	const highlighter = (await getHighlighterCore({
 		langs: [
 			import("shiki/langs/typescript.mjs"),
