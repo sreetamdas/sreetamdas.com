@@ -1,6 +1,6 @@
 import { setupDevPlatform } from "@cloudflare/next-on-pages/next-dev";
 import withBundleAnalyzer from "@next/bundle-analyzer";
-import { withSentryConfig } from "@sentry/nextjs";
+// import { withSentryConfig } from "@sentry/nextjs";
 import { withContentlayer } from "next-contentlayer2";
 import { withPlausibleProxy } from "next-plausible";
 
@@ -48,15 +48,15 @@ nextConfig = withPlausibleProxy({
 
 nextConfig = withContentlayer(nextConfig);
 
-if (process.env.NODE_ENV === "production") {
-	nextConfig = withSentryConfig(nextConfig, {
-		project: process.env.SENTRY_PROJECT,
-		org: process.env.SENTRY_ORG,
-		authToken: process.env.SENTRY_AUTH_TOKEN,
-		silent: false,
-		tunnelRoute: "/prxy/sntry",
-	});
-}
+// if (process.env.NODE_ENV === "production") {
+// 	nextConfig = withSentryConfig(nextConfig, {
+// 		project: process.env.SENTRY_PROJECT,
+// 		org: process.env.SENTRY_ORG,
+// 		authToken: process.env.SENTRY_AUTH_TOKEN,
+// 		silent: false,
+// 		tunnelRoute: "/prxy/sntry",
+// 	});
+// }
 
 nextConfig = withBundleAnalyzer({
 	enabled: process.env.ANALYZE === "true",

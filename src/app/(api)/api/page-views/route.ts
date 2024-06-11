@@ -1,4 +1,4 @@
-import * as Sentry from "@sentry/nextjs";
+// import * as Sentry from "@sentry/nextjs";
 import { isEmpty, isNull } from "lodash-es";
 import { type NextRequest, NextResponse } from "next/server";
 
@@ -24,7 +24,7 @@ export async function POST(request: NextRequest): Promise<MaybeErrorResponse<Pag
 		}
 		return NextResponse.json({ data: result.data, error: null });
 	} catch (error) {
-		Sentry.captureException(error, { data: { request } });
+		// Sentry.captureException(error, { data: { request } });
 
 		return NextResponse.json(
 			// @ts-expect-error error shape

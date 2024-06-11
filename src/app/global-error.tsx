@@ -1,6 +1,6 @@
 "use client";
 
-import * as Sentry from "@sentry/nextjs";
+// import * as Sentry from "@sentry/nextjs";
 import PlausibleProvider from "next-plausible";
 import { useEffect } from "react";
 
@@ -15,7 +15,7 @@ export default function GlobalError({
 	reset: () => void;
 }) {
 	useEffect(() => {
-		Sentry.captureException(error);
+		// Sentry.captureException(error);
 	}, [error]);
 
 	return (
