@@ -57,10 +57,12 @@ export const ViewsCounter = ({
 	useEffect(() => {
 		async function fetchPageViews() {
 			const { data, error } = await isomorphicFetchPageViews(slug, { disabled });
+			console.log({ data, error });
 
 			if (data !== null) {
 				const { view_count = 0 } = data;
 				setPageViews(view_count);
+				console.log("Set to", view_count);
 			}
 			if (error !== null) {
 				// eslint-disable-next-line no-console
