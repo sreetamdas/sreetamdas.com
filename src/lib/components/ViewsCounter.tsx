@@ -1,10 +1,7 @@
-"use client";
+import { Suspense } from "react";
 
-import { useEffect, useState } from "react";
-
-import { type Response } from "@/app/(api)/api/page-views/route";
 import { IS_CI, IS_DEV } from "@/config";
-import { type PageViewCount } from "@/lib/domains/db/page-views";
+import { getPageViews, upsertPageViews } from "@/lib/domains/db/page-views";
 import { cn } from "@/lib/helpers/utils";
 
 type IsomorphicFetchOptions = {
@@ -16,27 +13,12 @@ type IsomorphicFetchOptions = {
  * @param slug page slug
  * @returns page views response
  */
-async function isomorphicFetchPageViews(
-	slug: string,
-	options: IsomorphicFetchOptions,
-): Promise<Response<PageViewCount>> {
+async function isomorphicFetchPageViews(slug: string, options: IsomorphicFetchOptions) {
 	if (options.disabled) {
-		const params = new URLSearchParams({ slug });
-		const request = await fetch(`/api/page-views?${params.toString()}`, {
-			method: "GET",
-		});
-
-		const response = await request.json<Response<PageViewCount>>();
-
+		const response = await getPageViews(slug);
 		return response;
 	}
-	const request = await fetch("/api/page-views", {
-		method: "POST",
-		body: JSON.stringify({ slug }),
-	});
-
-	const response = await request.json<Response<PageViewCount>>();
-
+	const response = await upsertPageViews(slug);
 	return response;
 }
 
@@ -51,44 +33,26 @@ export const ViewsCounter = ({
 	page_type = "page",
 	hidden = false,
 	disabled = IS_DEV || IS_CI,
-}: ViewsCounterProps) => {
-	const [page_views, setPageViews] = useState<number | null>(null);
+}: ViewsCounterProps) => (
+	<div
+		className={cn(
+			"mx-auto mb-5 mt-auto w-full flex-row items-center justify-center gap-2 pt-40",
+			hidden ? "hidden" : "flex",
+		)}
+	>
+		<span role="img" aria-label="eyes">
+			👀
+		</span>
+		<Suspense fallback={<p className="m-0 text-xs">Getting view count</p>}>
+			<Views slug={slug} page_type={page_type} disabled={disabled} />
+		</Suspense>
+	</div>
+);
 
-	useEffect(() => {
-		async function fetchPageViews() {
-			const { data, error } = await isomorphicFetchPageViews(slug, { disabled });
-			// eslint-disable-next-line no-console
-			console.log({ data, error });
+const Views = async ({ slug, page_type, disabled }: Omit<ViewsCounterProps, "hidden">) => {
+	const { data } = await isomorphicFetchPageViews(slug, { disabled });
 
-			if (data !== null) {
-				const { view_count = 0 } = data;
-				setPageViews(view_count);
-				// eslint-disable-next-line no-console
-				console.log("Set to", view_count);
-			}
-			if (error !== null) {
-				// eslint-disable-next-line no-console
-				console.error(error);
-			}
-		}
-
-		fetchPageViews();
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
-
-	return (
-		<div
-			className={cn(
-				"mx-auto mb-5 mt-auto w-full flex-row items-center justify-center gap-2 pt-40",
-				hidden ? "hidden" : "flex",
-			)}
-		>
-			<span role="img" aria-label="eyes">
-				👀
-			</span>
-			<p className="m-0 text-xs">{getViewCountCopy(page_views ?? 0, page_type)}</p>
-		</div>
-	);
+	return <p className="m-0 text-xs">{getViewCountCopy(data?.view_count ?? 0, page_type)}</p>;
 };
 
 function getViewCountCopy(view_count: number | null, page_type: ViewsCounterProps["page_type"]) {
