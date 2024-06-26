@@ -48,7 +48,7 @@
 		"remark-toc": "^9.0.0",
 		"server-only": "^0.0.1",
 		"unist-util-visit": "^5.0.0",
-		"zustand": "4.5.2"
+		"zustand": "4.5.4"
 	},
 	"devDependencies": {
 		"@next/eslint-plugin-next": "^14.1.3",
