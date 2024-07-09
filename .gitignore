@@ -45,3 +45,9 @@ tsconfig.tsbuildinfo
 
 # Contentlayer
 .contentlayer
+
+# Wrangler
+.wrangler
+
+# Local files
+TODO.md

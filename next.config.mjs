@@ -1,9 +1,17 @@
-import { withContentlayer } from "next-contentlayer";
+import { setupDevPlatform } from "@cloudflare/next-on-pages/next-dev";
+import withBundleAnalyzer from "@next/bundle-analyzer";
+// import { withSentryConfig } from "@sentry/nextjs";
+import { withContentlayer } from "next-contentlayer2";
 import { withPlausibleProxy } from "next-plausible";
+
+if (process.env.NODE_ENV === "development") {
+	await setupDevPlatform();
+}
 
 process.env.SITE_URL = process.env.SITE_URL || process.env.VERCEL_URL || "http://localhost:3000";
 
-const moduleExports = withPlausibleProxy()({
+/** @type {import("next").NextConfig} */
+let nextConfig = {
 	logging: {
 		fetches: {
 			fullUrl: true,
@@ -12,6 +20,7 @@ const moduleExports = withPlausibleProxy()({
 	experimental: {
 		// typedRoutes: true,
 		mdxRs: true,
+		instrumentationHook: true,
 	},
 	images: {
 		domains: ["avatars.githubusercontent.com", "i.imgur.com"],
@@ -30,6 +39,27 @@ const moduleExports = withPlausibleProxy()({
 			},
 		];
 	},
-});
+};
 
-export default withContentlayer(moduleExports);
+nextConfig = withPlausibleProxy({
+	subdirectory: "prxy",
+	scriptName: "plsbl",
+})(nextConfig);
+
+nextConfig = withContentlayer(nextConfig);
+
+// if (process.env.NODE_ENV === "production") {
+// 	nextConfig = withSentryConfig(nextConfig, {
+// 		project: process.env.SENTRY_PROJECT,
+// 		org: process.env.SENTRY_ORG,
+// 		authToken: process.env.SENTRY_AUTH_TOKEN,
+// 		silent: false,
+// 		tunnelRoute: "/prxy/sntry",
+// 	});
+// }
+
+nextConfig = withBundleAnalyzer({
+	enabled: process.env.ANALYZE === "true",
+})(nextConfig);
+
+export default nextConfig;

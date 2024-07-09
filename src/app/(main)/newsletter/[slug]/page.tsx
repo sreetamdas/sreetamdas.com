@@ -1,4 +1,4 @@
-import { captureMessage } from "@sentry/nextjs";
+// import * as Sentry from "@sentry/nextjs";
 import { bundleMDX } from "mdx-bundler";
 import { type Metadata } from "next";
 import { notFound } from "next/navigation";
@@ -7,6 +7,7 @@ import { NewsletterEmailDetail } from "../components";
 import { fetchNewsletterEmails } from "../helpers";
 
 export const dynamicParams = false;
+export const runtime = "nodejs";
 
 export async function generateStaticParams() {
 	const newsletter_emails_slugs = await getNewsletterEmailsSlugs();
@@ -42,7 +43,7 @@ async function getNewsletterEmailsDataBySlug(slug: string) {
 	);
 
 	if (typeof newsletter_email_by_slug === "undefined") {
-		captureMessage(`Newsletter email not found`, "warning");
+		// Sentry.captureMessage(`Newsletter email not found`, "warning");
 		notFound();
 	}
 

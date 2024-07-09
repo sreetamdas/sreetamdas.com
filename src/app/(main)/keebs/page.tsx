@@ -1,6 +1,5 @@
 import { type PageObjectResponse } from "@notionhq/client/build/src/api-endpoints";
 import { isEmpty, isUndefined } from "lodash-es";
-import { Suspense } from "react";
 
 import { SITE_TITLE_APPEND } from "@/config";
 import { Image } from "@/lib/components/Image";
@@ -52,9 +51,7 @@ export default async function KeebsPage() {
 				))}
 			</section>
 
-			<Suspense>
-				<ViewsCounter slug="/keebs" />
-			</Suspense>
+			<ViewsCounter slug="/keebs" />
 		</>
 	);
 }

@@ -1,13 +1,13 @@
 import path from "path";
 
 import sizeOf from "image-size";
-import { Suspense } from "react";
 
 import { KarmaShowcase } from "./Showcase.client";
 
 import { SITE_TITLE_APPEND, SITE_URL } from "@/config";
 import { ViewsCounter } from "@/lib/components/ViewsCounter";
 
+export const runtime = "nodejs";
 export const metadata = {
 	title: `Karma ${SITE_TITLE_APPEND}`,
 	description: "A colorful VS Code theme by Sreetam Das",
@@ -27,8 +27,9 @@ export default function KarmaPage() {
 	const examples = theme_language_map.map((example) => {
 		const { name, defaultImage, lightImage } = example;
 
-		const default_image_path = path.join("public", defaultImage);
-		const light_image_path = path.join("public", lightImage);
+		const default_image_path = path.join(path.resolve(), "public", defaultImage);
+		const light_image_path = path.join(path.resolve(), "public", lightImage);
+
 		const default_dimensions = sizeOf(default_image_path);
 		const light_dimensions = sizeOf(light_image_path);
 
@@ -54,9 +55,7 @@ export default function KarmaPage() {
 
 			<KarmaShowcase examples={examples} />
 
-			<Suspense>
-				<ViewsCounter slug="/karma" />
-			</Suspense>
+			<ViewsCounter slug="/karma" />
 		</>
 	);
 }
