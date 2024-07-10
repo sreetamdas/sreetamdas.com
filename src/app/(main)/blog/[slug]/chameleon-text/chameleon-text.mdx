@@ -41,7 +41,7 @@ transition: color 5s linear;
 
 And since I'm using `styled-components`, we can put this in a re-usable CSS string:
 
-```jsx
+```tsx
 import { css } from "styled-components";
 
 const WaveMixin = css`
@@ -55,7 +55,7 @@ But this doesn't do anything at the moment — to actually change the color, we 
 
 Let's start writing our little wrapper component for this:
 
-```jsx
+```tsx
 // usage
 <ChameleonHighlight>Hello there!</ChameleonHighlight>;
 
@@ -75,7 +75,7 @@ const Wave = styled.span`
 
 And now we change the color once the component has mounted:
 
-```jsx highlight="3-11,14-19,21-23"
+```tsx highlight="3-11,14-19,21-23"
 <ChameleonHighlight>Hello there!</ChameleonHighlight>;
 
 let root: HTMLElement;
@@ -124,7 +124,7 @@ Huh, that didn't seem to work out 🤔 but that's because the transition already
 
 To keep changing the color after a pre-defined interval, we'll be defining our very own `useInterval` custom hook:
 
-```jsx
+```tsx
 const useInterval = (callback, delay) => {
   const savedCallback = useRef();
 
@@ -145,7 +145,7 @@ const useInterval = (callback, delay) => {
 
 Let's now use this hook to change the color of our text just as it completes its transition.
 
-```jsx highlight="1,15-17"
+```tsx highlight="1,15-17"
 import { useInterval } from "@/utils/hooks";
 
 const ChameleonHighlight = ({ children }) => {

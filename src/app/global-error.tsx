@@ -1,15 +1,21 @@
 "use client";
 
-import { captureException } from "@sentry/nextjs";
 import PlausibleProvider from "next-plausible";
 import { useEffect } from "react";
 
 import { inter_font, iosevka_font, eb_garamond_font } from "@/lib/domains/fonts";
 import { FOOBAR_SOURCE_CODE } from "@/lib/domains/foobar/helpers";
 
-export default function GlobalError({ error, reset }: { error: Error; reset: () => void }) {
+export default function GlobalError({
+	error,
+	reset,
+}: {
+	error: Error & { digest?: string };
+	reset: () => void;
+}) {
 	useEffect(() => {
-		captureException(error);
+		// eslint-disable-next-line no-console
+		console.error(error);
 	}, [error]);
 
 	return (

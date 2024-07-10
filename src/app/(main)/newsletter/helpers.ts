@@ -1,5 +1,3 @@
-import { captureException } from "@sentry/nextjs";
-
 import { BUTTONDOWN_EMAIL_MOCKS } from "./mocks";
 
 const BUTTONDOWN_BASE_URL = "https://api.buttondown.email/v1";
@@ -57,7 +55,8 @@ export async function fetchNewsletterEmails(): Promise<ButtondownAPIEmailsRespon
 		});
 		return await response.json();
 	} catch (error: unknown) {
-		captureException(error);
+		// eslint-disable-next-line no-console
+		console.error(error);
 
 		return BUTTONDOWN_EMAIL_MOCKS;
 	}

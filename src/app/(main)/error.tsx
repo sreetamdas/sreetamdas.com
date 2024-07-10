@@ -1,11 +1,11 @@
 "use client";
 
-import { captureException } from "@sentry/nextjs";
 import { useEffect } from "react";
 
 export default function Error({ error, reset }: { error: Error; reset: () => void }) {
 	useEffect(() => {
-		captureException(error);
+		// eslint-disable-next-line no-console
+		console.error(error);
 	}, [error]);
 
 	return (

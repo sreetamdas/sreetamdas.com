@@ -3,25 +3,22 @@ import {
 	type HighlighterGeneric,
 	type BundledLanguage,
 	type ThemeRegistration,
-	getHighlighter,
 	normalizeTheme,
+	getSingletonHighlighterCore,
 } from "shiki";
+import getWasm from "shiki/wasm";
 
-export type BundledLangs = (typeof preloaded_langs)[number];
-export const preloaded_langs = [
-	"javascript",
-	"jsx",
+type BundledLangs = (typeof preloaded_langs)[number];
+const preloaded_langs = [
 	"typescript",
 	"tsx",
 	"json",
-	"mdx",
 	"markdown",
 	"html",
 	"css",
 	"shell",
 	"elixir",
 ] satisfies Array<BundledLanguage>;
-
 function convertToThemeRegistration(theme: typeof defaultTheme): ThemeRegistration {
 	return {
 		name: theme.name.toLowerCase(),
@@ -39,18 +36,24 @@ function convertToThemeRegistration(theme: typeof defaultTheme): ThemeRegistrati
 }
 
 type KarmaHighlighter = HighlighterGeneric<BundledLangs, "karma">;
-export async function getKarmaHighlighter(): Promise<KarmaHighlighter> {
+export async function getSlimKarmaHighlighter(): Promise<KarmaHighlighter> {
 	const karma_shiki_theme = convertToThemeRegistration(defaultTheme);
 	const theme = normalizeTheme(karma_shiki_theme);
-	const highlighter = (await getHighlighter({
-		langs: preloaded_langs,
+
+	const highlighter = (await getSingletonHighlighterCore({
+		langs: [
+			import("shiki/langs/typescript.mjs"),
+			import("shiki/langs/tsx.mjs"),
+			import("shiki/langs/json.mjs"),
+			import("shiki/langs/markdown.mjs"),
+			import("shiki/langs/html.mjs"),
+			import("shiki/langs/css.mjs"),
+			import("shiki/langs/shell.mjs"),
+			import("shiki/langs/elixir.mjs"),
+		],
 		themes: [theme],
-	})) as unknown as KarmaHighlighter;
+		loadWasm: getWasm,
+	})) as KarmaHighlighter;
 
 	return highlighter;
-}
-
-export async function getKarmaTheme(): Promise<ThemeRegistration> {
-	const theme = normalizeTheme(defaultTheme as unknown as ThemeRegistration);
-	return theme;
 }

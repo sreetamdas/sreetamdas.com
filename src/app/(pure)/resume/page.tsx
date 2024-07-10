@@ -187,6 +187,18 @@ export default function ResumePage() {
 							<h2 className="mt-6 font-bold uppercase text-secondary">Achievements</h2>
 
 							<h3 className="mt-4 font-bold">
+								<a href="https://www.awwwards.com" className="link-base">
+									Awwwards
+								</a>
+							</h3>
+							<p>
+								Site of the Day -{" "}
+								<a href="https://www.awwwards.com/sites/remote" className="link-base">
+									Mar 30, 2024
+								</a>
+							</p>
+
+							<h3 className="mt-4 font-bold">
 								<a href="https://adventofcode.com" className="link-base">
 									Advent of Code
 								</a>
@@ -225,12 +237,6 @@ export default function ResumePage() {
 
 							<h3 className="mt-4 font-bold">Quiz club, NIT Warangal</h3>
 							<p>General Secretary, authored and proctored dozens of quizzes</p>
-
-							<h3 className="mt-4 font-bold">Model United Nations</h3>
-							<p>Technical coordinator, NITMUN ’16</p>
-
-							<h3 className="mt-4 font-bold">Talks at college workshops</h3>
-							<p>HTML, CSS, Git and GitHub</p>
 
 							<h3 className="mt-4 font-bold">
 								<a href="https://www.hackerrank.com/profile/sreetamdas" className="link-base">

@@ -2,7 +2,7 @@ import { type BundledLanguage } from "shiki/langs";
 import { visit } from "unist-util-visit";
 import { type UnistNode } from "unist-util-visit/lib";
 
-import { getKarmaHighlighter } from "./highlighter";
+import { getSlimKarmaHighlighter } from "./highlighter";
 
 type TreeNode = UnistNode & {
 	lang: BundledLanguage;
@@ -12,7 +12,7 @@ type TreeNode = UnistNode & {
 
 export function remarkShiki() {
 	return async (tree: TreeNode) => {
-		const karma_highlighter = await getKarmaHighlighter();
+		const karma_highlighter = await getSlimKarmaHighlighter();
 		const loadedLanguages = karma_highlighter.getLoadedLanguages();
 
 		function visitor(node: TreeNode) {
