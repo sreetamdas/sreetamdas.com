@@ -1,9 +1,9 @@
 "use client";
 
-import { type MDX } from "contentlayer/core";
+import { type MDX } from "contentlayer2/core";
 // eslint-disable-next-line import/no-unresolved
 import { type MDXComponents } from "mdx/types";
-import { useMDXComponent } from "next-contentlayer/hooks";
+import { useMDXComponent } from "next-contentlayer2/hooks";
 
 import { customMDXComponents } from "./components";
 

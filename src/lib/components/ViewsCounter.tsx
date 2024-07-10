@@ -111,10 +111,7 @@ function getViewCountCopy(view_count: number | null, page_type: ViewsCounterProp
 	}
 }
 const ViewCount = ({ children }: { children: string }) => (
-	<span
-		className="rounded-global border-2 border-solid border-primary bg-background p-1 font-mono 
-	text-base text-primary transition-colors"
-	>
+	<span className="rounded-global border-2 border-solid border-primary bg-background p-1 font-mono text-base text-primary transition-colors">
 		{children}
 	</span>
 );
