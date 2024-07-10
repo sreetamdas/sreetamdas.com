@@ -13,6 +13,7 @@ let nextConfig = {
 	experimental: {
 		// typedRoutes: true,
 		mdxRs: true,
+		ppr: true,
 	},
 	images: {
 		domains: ["avatars.githubusercontent.com", "i.imgur.com"],
