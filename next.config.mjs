@@ -1,4 +1,3 @@
-import { withSentryConfig } from "@sentry/nextjs";
 import { withContentlayer } from "next-contentlayer2";
 import { withPlausibleProxy } from "next-plausible";
 
@@ -14,7 +13,6 @@ let nextConfig = {
 	experimental: {
 		// typedRoutes: true,
 		mdxRs: true,
-		instrumentationHook: true,
 	},
 	images: {
 		domains: ["avatars.githubusercontent.com", "i.imgur.com"],
@@ -35,21 +33,10 @@ let nextConfig = {
 	},
 };
 
+nextConfig = withContentlayer(nextConfig);
 nextConfig = withPlausibleProxy({
-	subdirectory: "prxy",
+	subdirectory: "prxy/plsbl",
 	scriptName: "plsbl",
 })(nextConfig);
-
-nextConfig = withContentlayer(nextConfig);
-
-if (process.env.NODE_ENV === "production") {
-	nextConfig = withSentryConfig(nextConfig, {
-		project: process.env.SENTRY_PROJECT,
-		org: process.env.SENTRY_ORG,
-		authToken: process.env.SENTRY_AUTH_TOKEN,
-		silent: false,
-		tunnelRoute: "/prxy/sntry",
-	});
-}
 
 export default nextConfig;

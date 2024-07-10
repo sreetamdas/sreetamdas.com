@@ -1,4 +1,3 @@
-import * as Sentry from "@sentry/nextjs";
 import { bundleMDX } from "mdx-bundler";
 import { type Metadata } from "next";
 import { notFound } from "next/navigation";
@@ -42,7 +41,8 @@ async function getNewsletterEmailsDataBySlug(slug: string) {
 	);
 
 	if (typeof newsletter_email_by_slug === "undefined") {
-		Sentry.captureMessage(`Newsletter email not found`, "warning");
+		// eslint-disable-next-line no-console
+		console.error("Newsletter email not found", "warning");
 		notFound();
 	}
 

@@ -1,6 +1,5 @@
 "use client";
 
-import * as Sentry from "@sentry/nextjs";
 import PlausibleProvider from "next-plausible";
 import { useEffect } from "react";
 
@@ -15,7 +14,8 @@ export default function GlobalError({
 	reset: () => void;
 }) {
 	useEffect(() => {
-		Sentry.captureException(error);
+		// eslint-disable-next-line no-console
+		console.error(error);
 	}, [error]);
 
 	return (
