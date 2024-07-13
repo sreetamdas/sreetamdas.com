@@ -27,7 +27,7 @@
 		"@supabase/sentry-js-integration": "0.2.0",
 		"@supabase/supabase-js": "^2.44.3",
 		"clsx": "^2.1.1",
-		"contentlayer2": "^0.4.6",
+		"contentlayer2": "^0.5.0",
 		"esbuild": "^0.23.0",
 		"framer-motion": "^11.2.14",
 		"image-size": "^1.1.1",
