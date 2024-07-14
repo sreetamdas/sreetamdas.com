@@ -23,7 +23,16 @@ let nextConfig = {
 		ppr: true,
 	},
 	images: {
-		domains: ["avatars.githubusercontent.com", "i.imgur.com"],
+		remotePatterns: [
+			{
+				protocol: "https",
+				hostname: "avatars.githubusercontent.com",
+			},
+			{
+				protocol: "https",
+				hostname: "i.imgur.com",
+			},
+		],
 	},
 
 	async headers() {

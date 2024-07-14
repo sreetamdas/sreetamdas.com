@@ -35,6 +35,7 @@ export default defineConfig({
 				.transform((data, { meta }) => ({
 					...data,
 					// computed fields
+					page_path: `/${data.page_path}`,
 					page_slug: data.page_path.split("/").at(-1),
 					structured_data: {
 						type: "json",
@@ -76,7 +77,7 @@ export default defineConfig({
 				.transform((data) => ({
 					...data,
 					// computed fields
-					page_path: data.raw_path.split("/").at(-1),
+					page_path: `/${data.raw_path.split("/").at(-1)}`,
 					page_slug: data.raw_path.split("/").at(-1),
 				})),
 		},

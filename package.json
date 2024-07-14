@@ -4,10 +4,10 @@
 	"type": "module",
 	"license": "MIT",
 	"scripts": {
-		"dev:next": "next dev",
 		"dev:content": "velite --watch",
-		"build:next": "next build",
+		"dev:next": "next dev",
 		"build:content": "velite --clean",
+		"build:next": "next build",
 		"analyze": "ANALYZE=true next build",
 		"dev": "run-p dev:*",
 		"build": "run-s build:*",
