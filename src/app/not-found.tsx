@@ -1,4 +1,4 @@
-import { type ReactNode } from "react";
+import type { ReactNode } from "react";
 
 import { LinkTo } from "@/lib/components/Anchor";
 import { NotFoundDogsLink } from "@/lib/components/Error";

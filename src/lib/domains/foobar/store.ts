@@ -1,7 +1,7 @@
 import { merge } from "lodash-es";
-import { type StateCreator } from "zustand";
+import type { StateCreator } from "zustand";
 
-import { type FoobarFlag, type FoobaFlagPageSlug } from "./flags";
+import type { FoobaFlagPageSlug, FoobarFlag } from "./flags";
 
 export type FoobarDataType = {
 	visited_pages: Array<string>;

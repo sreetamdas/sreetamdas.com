@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useTransform, useScroll } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 
 export const ReadingProgress = () => {
 	const { scrollYProgress } = useScroll();
@@ -8,7 +8,7 @@ export const ReadingProgress = () => {
 
 	return (
 		<motion.span
-			className="fixed left-0 top-0 z-20 h-1 bg-gradient-to-r from-primary to-secondary duration-200 ease-out"
+			className="fixed top-0 left-0 z-20 h-1 bg-gradient-to-r from-primary to-secondary duration-200 ease-out"
 			style={{ width: progressValue }}
 		/>
 	);

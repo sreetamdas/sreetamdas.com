@@ -1,8 +1,8 @@
-import { type Endpoints } from "@octokit/types";
+import type { Endpoints } from "@octokit/types";
 
 import { DEFAULT_REPO } from "@/config";
 
-export const GITHUB_API_BASE_URL = `https://api.github.com`;
+export const GITHUB_API_BASE_URL = "https://api.github.com";
 const octokit_headers = {
 	Accept: "application/vnd.github+json",
 	Authorization: `Bearer ${process.env.GITHUB_TOKEN}`,
@@ -26,7 +26,7 @@ async function fetchGitHubStats() {
 export async function getGitHubStats() {
 	try {
 		return await fetchGitHubStats();
-	} catch (error) {
+	} catch (_error) {
 		return { stars: 0, forks: 0 };
 	}
 }

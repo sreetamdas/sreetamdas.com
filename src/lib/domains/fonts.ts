@@ -1,4 +1,4 @@
-import { Inter, EB_Garamond } from "next/font/google";
+import { EB_Garamond, Inter } from "next/font/google";
 import localFont from "next/font/local";
 
 export const inter_font = Inter({

@@ -1,4 +1,4 @@
-import { type HTMLAttributes } from "react";
+import type { HTMLAttributes } from "react";
 
 import { NavbarDesktop, NavbarMobile } from "./Nav";
 
@@ -11,7 +11,7 @@ export const Header = ({ className }: HTMLAttributes<HTMLDivElement>) => (
 		<a
 			id="skip-link"
 			href="#main-content"
-			className="absolute left-8 top-8 h-px w-px -translate-y-full overflow-hidden rounded-global bg-primary p-2 text-background [clip:rect(1px_1px_1px_1px)] visited:no-underline hover:underline hover:decoration-current hover:decoration-solid hover:decoration-2 focus:block focus:h-auto focus:w-auto focus:translate-y-0 focus:[clip:auto] focus-visible:outline-dashed focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-secondary dark:text-foreground"
+			className="-translate-y-full absolute top-8 left-8 h-px w-px overflow-hidden rounded-global bg-primary p-2 text-background [clip:rect(1px_1px_1px_1px)] visited:no-underline hover:underline hover:decoration-2 hover:decoration-current hover:decoration-solid focus:block focus:h-auto focus:w-auto focus:translate-y-0 focus-visible:outline-dashed focus-visible:outline-2 focus-visible:outline-secondary focus-visible:outline-offset-2 dark:text-foreground focus:[clip:auto]"
 		>
 			Skip to main content
 		</a>

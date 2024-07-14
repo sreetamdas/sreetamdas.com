@@ -1,13 +1,14 @@
-import { type MDXComponents } from "mdx/types";
+import type { MDXComponents } from "mdx/types";
 import * as runtime from "react/jsx-runtime";
 
+import type { ReactElement } from "react";
 import { customMDXComponents } from "./components";
 
 export { customMDXComponents };
 
 type MDXContentCodeType = {
 	code: string;
-	components?: MDXComponents | (() => Promise<JSX.Element>);
+	components?: MDXComponents | (() => Promise<ReactElement>);
 };
 export const MDXContent = ({ code, components = {} }: MDXContentCodeType) => {
 	const Content = useMDXComponent(code);

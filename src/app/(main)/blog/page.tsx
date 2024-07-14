@@ -11,7 +11,7 @@ export default async function BlogArchivePage() {
 
 	return (
 		<>
-			<h1 className="pb-20 pt-10 font-serif text-8xl">/blog</h1>
+			<h1 className="pt-10 pb-20 font-serif text-8xl">/blog</h1>
 			<section className="grid gap-20">
 				{blog_posts_previews.map(
 					({ title, description, page_slug, page_path, published_at, url }) => (

@@ -1,6 +1,6 @@
 import { HiOutlineCalendar, HiOutlineNewspaper } from "react-icons/hi";
 
-import { type ButtondownAPIEmailsResponse } from "./helpers";
+import type { ButtondownAPIEmailsResponse } from "./helpers";
 
 import { LinkTo } from "@/lib/components/Anchor";
 import { MDXContent } from "@/lib/components/MDX";
@@ -24,7 +24,7 @@ const NewsletterEmailPreview = async ({
 	isAdminUser = false,
 }: NewsletterEmailPreviewProps) => (
 	<article>
-		<h2 className="p-0 font-sans text-2xl font-bold text-primary">
+		<h2 className="p-0 font-bold font-sans text-2xl text-primary">
 			<LinkTo href={`/newsletter/${email.slug}`} scroll={false}>
 				{email.subject}
 			</LinkTo>
@@ -64,6 +64,7 @@ type NewsletterEmailsPreviewsProps = {
 export const NewsletterEmailsPreviews = ({ emails }: NewsletterEmailsPreviewsProps) => (
 	<section className="grid gap-20">
 		{emails.map((email, index) => (
+			// biome-ignore lint/suspicious/noArrayIndexKey: index does not change
 			<NewsletterEmailPreview key={index} email={email} />
 		))}
 	</section>
@@ -81,7 +82,7 @@ export const NewsletterEmailDetail = ({ email }: NewsletterEmailDetailProps) => 
 		<section>
 			<article>
 				<h1 className="pt-20 font-serif text-6xl">{email.subject}</h1>
-				<div className="mb-12 mt-5 flex justify-end gap-5">
+				<div className="mt-5 mb-12 flex justify-end gap-5">
 					<span className="flex items-center gap-1.5 text-base">
 						<HiOutlineNewspaper className="text-2xl" /> #{email.secondary_id}
 					</span>

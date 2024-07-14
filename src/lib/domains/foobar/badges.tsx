@@ -1,7 +1,7 @@
 import { useState } from "react";
 
-import { type FoobarFlag, FOOBAR_FLAGS } from "./flags";
-import { type FoobarDataType } from "./store";
+import { FOOBAR_FLAGS, type FoobarFlag } from "./flags";
+import type { FoobarDataType } from "./store";
 
 import { LinkTo } from "@/lib/components/Anchor";
 import { cn } from "@/lib/helpers/utils";
@@ -54,6 +54,7 @@ const Badge = ({ badge, completed, all_achievements }: BadgeProps) => {
 				"group grid grid-cols-[max-content_1fr] items-center gap-4 rounded-global border-2 p-4 text-4xl transition-colors",
 				is_unlocked ? "border-primary text-primary" : "border-zinc-400 text-zinc-400",
 			)}
+			type="button"
 		>
 			<FoobarBadge badge={badge} />
 			<p className={cn("text-sm", is_unlocked || clicks >= 5 ? "inline" : "hidden")}>

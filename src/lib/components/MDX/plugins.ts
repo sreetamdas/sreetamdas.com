@@ -1,7 +1,15 @@
-import path from "path";
+import path from "node:path";
 
 import sizeOf from "image-size";
 import { visit } from "unist-util-visit";
+import type { UnistNode } from "unist-util-visit/lib";
+
+type TreeNode = UnistNode & {
+	tagName: string;
+	properties: Record<string, string | number | undefined> & {
+		src: string;
+	};
+};
 
 /**
  * Customized for use case from https://github.com/ksoichiro/rehype-img-size
@@ -10,10 +18,8 @@ export function rehypeImgSize(options: { dir?: string }) {
 	const opts = options || {};
 	const dir = opts.dir;
 
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	return (tree: any) => {
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		function visitor(node: any) {
+	return (tree: TreeNode) => {
+		function visitor(node: TreeNode) {
 			if (node.tagName === "img" && node.properties.src.slice(-3) !== "mp4") {
 				let src = node.properties.src;
 				if (src.startsWith("http")) {

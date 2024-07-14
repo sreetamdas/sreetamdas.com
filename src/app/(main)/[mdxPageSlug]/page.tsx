@@ -1,8 +1,8 @@
-import { type Metadata } from "next";
+import type { Metadata } from "next";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 
-import { SITE_TITLE_APPEND, SITE_URL, SITE_OG_IMAGE } from "@/config";
+import { SITE_OG_IMAGE, SITE_TITLE_APPEND, SITE_URL } from "@/config";
 import { rootPages } from "@/generated";
 import { LinkTo } from "@/lib/components/Anchor";
 import { MDXContent } from "@/lib/components/MDX";
@@ -33,7 +33,7 @@ export default async function MDXPageSlugPage({ params: { mdxPageSlug } }: PageP
 
 	return (
 		<>
-			<h1 className="pb-20 pt-10 font-serif text-8xl">/{mdxPageSlug}</h1>
+			<h1 className="pt-10 pb-20 font-serif text-8xl">/{mdxPageSlug}</h1>
 			<MDXContent code={post.code} components={{ RepoContributors }} />
 			<ViewsCounter slug={`/${mdxPageSlug}`} />
 		</>

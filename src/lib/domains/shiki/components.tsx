@@ -1,10 +1,10 @@
 import { isObject } from "lodash-es";
 import {
-	type ReactNode,
 	type CSSProperties,
 	Children,
 	type DetailedHTMLProps,
 	type HTMLAttributes,
+	type ReactNode,
 	isValidElement,
 } from "react";
 
@@ -36,7 +36,7 @@ export const CodeBlock = (props: CodeBlockProps) => {
 				</span>
 			</div>
 			<pre
-				className="-ml-12 -mr-5 overflow-x-scroll rounded-global p-5 text-sm max-md:-ml-6"
+				className="-ml-12 -mr-5 max-md:-ml-6 overflow-x-scroll rounded-global p-5 text-sm"
 				style={style}
 			>
 				<code {...code_element?.props}>
@@ -51,11 +51,12 @@ export const CodeBlock = (props: CodeBlockProps) => {
 
 							return (
 								<span
+									// biome-ignore lint/suspicious/noArrayIndexKey: this will not change
 									key={i}
 									className={cn(
 										"block",
 										should_line_highlight &&
-											"-mx-5 border-l-4 border-[#a86efd] bg-[#d0b2ff1a] px-4",
+											"-mx-5 border-[#a86efd] border-l-4 bg-[#d0b2ff1a] px-4",
 									)}
 								>
 									<span

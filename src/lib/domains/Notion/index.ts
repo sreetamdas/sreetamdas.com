@@ -3,11 +3,11 @@
  * - Loading keebs' info usin Notion API
  */
 
-import {
-	type DatabaseObjectResponse,
-	type PageObjectResponse,
-	type QueryDatabaseResponse,
-	type QueryDatabaseParameters,
+import type {
+	DatabaseObjectResponse,
+	PageObjectResponse,
+	QueryDatabaseParameters,
+	QueryDatabaseResponse,
 } from "@notionhq/client/build/src/api-endpoints";
 import { isEmpty, isUndefined } from "lodash-es";
 
@@ -57,8 +57,7 @@ export class NotionClient {
 		if (!isUndefined(filter_properties) && !isEmpty(filter_properties)) {
 			const property_ids = await this.getPropertiesIDs(database_id, filter_properties);
 
-			filter_properties_query =
-				"?" + property_ids?.map(({ id }) => `filter_properties=${id}`).join("&");
+			filter_properties_query = `?${property_ids?.map(({ id }) => `filter_properties=${id}`).join("&")}`;
 		}
 
 		const query_string = `https://api.notion.com/v1/databases/${database_id}/query${filter_properties_query}`;

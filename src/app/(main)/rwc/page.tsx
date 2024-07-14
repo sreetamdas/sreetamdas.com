@@ -1,5 +1,5 @@
 import { FiLink } from "react-icons/fi";
-import { type ThemeRegistration } from "shiki";
+import type { ThemeRegistration } from "shiki";
 
 import module_css from "./CodeSnippet.module.css";
 
@@ -11,18 +11,22 @@ import { getSlimKarmaHighlighter } from "@/lib/domains/shiki";
 export const metadata = {
 	title: `RWC ${SITE_TITLE_APPEND}`,
 };
-const GITHUB_RWC_GIST_ID = process.env.GITHUB_RWC_GIST_ID!;
+const GITHUB_RWC_GIST_ID = process.env.GITHUB_RWC_GIST_ID as string;
 
 export default async function RWCPage() {
 	const gist = await fetchGist(GITHUB_RWC_GIST_ID);
+
+	if (typeof gist.files === "undefined") {
+		return null;
+	}
 
 	const karma_highlighter = await getSlimKarmaHighlighter();
 
 	return (
 		<>
-			<h1 className="pb-20 pt-10 font-serif text-8xl">/rwc</h1>
+			<h1 className="pt-10 pb-20 font-serif text-8xl">/rwc</h1>
 
-			{Object.values(gist.files!).map((file_object) => (
+			{Object.values(gist.files).map((file_object) => (
 				<CodeSnippetBlock
 					key={file_object?.filename}
 					filename={file_object?.filename}
@@ -61,14 +65,14 @@ function CodeSnippetBlock(props: Props) {
 				<h2 className="group font-mono text-2xl text-primary" id={slug}>
 					<a
 						href={`#${slug}`}
-						className="absolute -translate-x-[125%] translate-y-1 text-primary opacity-0 transition-opacity group-hover:opacity-75 max-md:hidden"
+						className="-translate-x-[125%] absolute translate-y-1 text-primary opacity-0 transition-opacity group-hover:opacity-75 max-md:hidden"
 					>
 						<FiLink aria-label={slug} />
 					</a>
 					{filename}
 				</h2>
 				<span
-					className="rounded-t-global px-2 py-1 font-mono uppercase text-zinc-400"
+					className="rounded-t-global px-2 py-1 font-mono text-zinc-400 uppercase"
 					style={{ backgroundColor }}
 				>
 					{lang}
@@ -77,6 +81,7 @@ function CodeSnippetBlock(props: Props) {
 			<pre
 				className={module_css["code-snippet"]}
 				style={{ backgroundColor }}
+				// biome-ignore lint/security/noDangerouslySetInnerHtml: safe html
 				dangerouslySetInnerHTML={{ __html: cleaned_html }}
 			/>
 		</article>

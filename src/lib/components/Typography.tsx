@@ -1,11 +1,11 @@
 import {
-	type ReactNode,
-	type DetailedHTMLProps,
-	type ReactHTML,
-	type HTMLAttributes,
 	Children,
-	isValidElement,
+	type DetailedHTMLProps,
+	type HTMLAttributes,
+	type ReactHTML,
+	type ReactNode,
 	createElement,
+	isValidElement,
 } from "react";
 import { FaLongArrowAltRight } from "react-icons/fa";
 import { FiLink } from "react-icons/fi";
@@ -23,7 +23,7 @@ const getHeading = (
 		<LinkTo
 			href={`#${propsWithoutChildren.id ?? ""}`}
 			replaceClasses
-			className="absolute -translate-x-[125%] translate-y-2 text-primary opacity-0 transition-opacity group-hover:opacity-75 max-md:hidden"
+			className="-translate-x-[125%] absolute translate-y-2 text-primary opacity-0 transition-opacity group-hover:opacity-75 max-md:hidden"
 		>
 			<FiLink aria-label={propsWithoutChildren.id} />
 		</LinkTo>
@@ -44,7 +44,7 @@ export const UnorderedList = (props: HTMLAttributes<HTMLUListElement>) => (
 			if (isValidElement(child)) {
 				return (
 					<li className="mb-3 flex list-none items-start p-0 last:mb-0 only:mt-3" {...child.props}>
-						<FaLongArrowAltRight aria-label="marker" className="mr-2.5 mt-1 text-primary" />
+						<FaLongArrowAltRight aria-label="marker" className="mt-1 mr-2.5 text-primary" />
 						<span className="shrink grow basis-0 [&>ul>li]:m-0 [&>ul]:my-0">
 							{child.props.children}
 						</span>

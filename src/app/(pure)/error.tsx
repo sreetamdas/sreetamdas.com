@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 
-export default function Error({ error, reset }: { error: Error; reset: () => void }) {
+export default function PureRouteGroupError({ error, reset }: { error: Error; reset: () => void }) {
 	useEffect(() => {
 		// eslint-disable-next-line no-console
 		console.error(error);
@@ -17,6 +17,7 @@ export default function Error({ error, reset }: { error: Error; reset: () => voi
 			<button
 				className="link-base text-2xl text-foreground hover:text-primary"
 				onClick={() => reset()}
+				type="button"
 			>
 				Reset and try again
 			</button>

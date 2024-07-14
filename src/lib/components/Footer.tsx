@@ -1,4 +1,4 @@
-import { type HTMLAttributes } from "react";
+import type { HTMLAttributes } from "react";
 import { FaRegStar } from "react-icons/fa";
 import { VscRepoForked } from "react-icons/vsc";
 
@@ -13,7 +13,7 @@ import { cn } from "@/lib/helpers/utils";
 export const Footer = ({ children, className }: HTMLAttributes<HTMLDivElement>) => (
 	<footer
 		className={cn(
-			"sticky top-[100vh] col-start-2 col-end-3 pb-5 pt-20 text-center text-sm",
+			"sticky top-[100vh] col-start-2 col-end-3 pt-20 pb-5 text-center text-sm",
 			className,
 		)}
 	>

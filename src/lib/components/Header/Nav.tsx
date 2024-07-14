@@ -75,7 +75,7 @@ export const NavbarMobile = () => (
 	<Drawer>
 		<div className="contents md:hidden">
 			<DrawerTrigger asChild>
-				<button className="text-2xl">
+				<button className="text-2xl" type="button">
 					<LuMenu />
 				</button>
 			</DrawerTrigger>
