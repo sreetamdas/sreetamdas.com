@@ -12,7 +12,8 @@ export default function RootLayout({ children }: { children: ReactNode }) {
 		<html
 			lang="en"
 			dir="ltr"
-			className={`scroll-pt-16 scroll-smooth ${inter_font.variable}${iosevka_font.variable}${eb_garamond_font.variable}`}
+			// biome-ignore lint/nursery/useSortedClasses: needed
+			className={`scroll-pt-16 scroll-smooth ${inter_font.variable} ${iosevka_font.variable} ${eb_garamond_font.variable}`}
 			suppressHydrationWarning
 		>
 			<head>
