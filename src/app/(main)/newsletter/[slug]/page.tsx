@@ -1,4 +1,4 @@
-import { bundleMDX } from "mdx-bundler";
+import { compile } from "@mdx-js/mdx";
 import { type Metadata } from "next";
 import { notFound } from "next/navigation";
 
@@ -46,6 +46,10 @@ async function getNewsletterEmailsDataBySlug(slug: string) {
 		notFound();
 	}
 
-	const bodyParsed = await bundleMDX({ source: newsletter_email_by_slug.body });
-	return { ...newsletter_email_by_slug, bodyParsed };
+	const bodyCompiled = String(
+		await compile(newsletter_email_by_slug.body, {
+			outputFormat: "function-body",
+		}),
+	);
+	return { ...newsletter_email_by_slug, bodyCompiled };
 }

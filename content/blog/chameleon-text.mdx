@@ -4,7 +4,6 @@ description: "How to add a moving RGB effect to your text using styled-component
 published: true
 published_at: "2021-05-11"
 url: "/blog/chameleon-text"
-use_client: true
 ---
 
 I recently created a [new page on this website](/fancy-pants). From an early time in my front-end journey, I have been amazed by the websites that are featured on [awwwards](https://www.awwwards.com/awwwards/collections/freelance-portfolio/) and I wanted to create something <Sparkles>**_fancy_**</Sparkles> like them.
@@ -169,7 +168,9 @@ const ChameleonHighlight = ({ children }) => {
 ```
 
 {/* prettier-ignore */}
-<HighlightWithUseInterval className="font-bold leading-normal -tracking-[0.065em] [font-size:clamp(4rem,_10vw,_10rem)]">**Hello there!**</HighlightWithUseInterval>
+<HighlightWithUseInterval className="font-bold leading-normal -tracking-[0.065em] [font-size:clamp(4rem,_10vw,_10rem)]">
+<strong>Hello there!</strong>
+</HighlightWithUseInterval>
 
 Voila! ✨
 

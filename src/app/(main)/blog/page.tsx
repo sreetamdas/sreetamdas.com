@@ -1,6 +1,6 @@
 import { IS_DEV, SITE_TITLE_APPEND } from "@/config";
+import { blogPosts } from "@/generated";
 import { LinkTo } from "@/lib/components/Anchor";
-import { allBlogPosts } from "contentlayer/generated";
 
 export const metadata = {
 	title: `Blog archive ${SITE_TITLE_APPEND}`,
@@ -41,7 +41,7 @@ export default async function BlogArchivePage() {
 }
 
 async function getAllBlogPostsPreviewsData() {
-	return allBlogPosts
+	return blogPosts
 		.flatMap(({ title, description, page_slug, page_path, url, published, published_at }) => {
 			if (!IS_DEV && !published) {
 				return [];

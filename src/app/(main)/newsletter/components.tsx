@@ -1,12 +1,9 @@
-import { type bundleMDX } from "mdx-bundler";
-import { getMDXComponent } from "mdx-bundler/client";
-import { micromark } from "micromark";
 import { HiOutlineCalendar, HiOutlineNewspaper } from "react-icons/hi";
 
 import { type ButtondownAPIEmailsResponse } from "./helpers";
 
 import { LinkTo } from "@/lib/components/Anchor";
-import { customMDXComponents } from "@/lib/components/MDX";
+import { MDXContent } from "@/lib/components/MDX";
 
 export const BUTTONDOWN_EMAIL_STATS_URL_PREFIX = "https://buttondown.email/emails/analytics";
 
@@ -22,7 +19,10 @@ type NewsletterEmailPreviewProps = {
 	email: EmailPreviewProps;
 	isAdminUser?: boolean;
 };
-const NewsletterEmailPreview = ({ email, isAdminUser = false }: NewsletterEmailPreviewProps) => (
+const NewsletterEmailPreview = async ({
+	email,
+	isAdminUser = false,
+}: NewsletterEmailPreviewProps) => (
 	<article>
 		<h2 className="p-0 font-sans text-2xl font-bold text-primary">
 			<LinkTo href={`/newsletter/${email.slug}`} scroll={false}>
@@ -30,12 +30,9 @@ const NewsletterEmailPreview = ({ email, isAdminUser = false }: NewsletterEmailP
 			</LinkTo>
 		</h2>
 
-		<div
-			className="[mask-image:linear-gradient(to_bottom,_black_50%,_transparent_100%)]"
-			dangerouslySetInnerHTML={{
-				__html: micromark(email.body),
-			}}
-		></div>
+		<div className="[mask-image:linear-gradient(to_bottom,_black_50%,_transparent_100%)]">
+			<MDXContent code={email.body} />
+		</div>
 		<div className="grid grid-cols-[1fr_max-content] justify-between pt-2.5">
 			<span className="flex items-center justify-end gap-5">
 				<span className="flex gap-1.5 text-base">
@@ -43,7 +40,7 @@ const NewsletterEmailPreview = ({ email, isAdminUser = false }: NewsletterEmailP
 				</span>
 				<span className="flex gap-1.5 text-base">
 					<HiOutlineCalendar className="text-2xl" />{" "}
-					{new Date(email.publish_date).toLocaleDateString(undefined, {
+					{new Date(email.publish_date).toLocaleDateString("en-US", {
 						year: "numeric",
 						month: "long",
 						day: "numeric",
@@ -74,15 +71,11 @@ export const NewsletterEmailsPreviews = ({ emails }: NewsletterEmailsPreviewsPro
 
 type NewsletterEmailDetailProps = {
 	email: ButtondownAPIEmailsResponse["results"][number] & {
-		bodyParsed: Awaited<ReturnType<typeof bundleMDX>>;
+		bodyCompiled: string;
 	};
 };
 export const NewsletterEmailDetail = ({ email }: NewsletterEmailDetailProps) => {
-	const {
-		bodyParsed: { code: bodyContent },
-	} = email;
-
-	const NewsletterEmailMDXContent = getMDXComponent(bodyContent);
+	const { bodyCompiled } = email;
 
 	return (
 		<section>
@@ -101,7 +94,8 @@ export const NewsletterEmailDetail = ({ email }: NewsletterEmailDetailProps) => 
 						})}
 					</span>
 				</div>
-				<NewsletterEmailMDXContent components={customMDXComponents} />
+
+				<MDXContent code={bodyCompiled} />
 			</article>
 		</section>
 	);

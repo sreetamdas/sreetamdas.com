@@ -3,16 +3,16 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 
 import { SITE_TITLE_APPEND, SITE_URL, SITE_OG_IMAGE } from "@/config";
+import { rootPages } from "@/generated";
 import { LinkTo } from "@/lib/components/Anchor";
 import { MDXContent } from "@/lib/components/MDX";
 import { ViewsCounter } from "@/lib/components/ViewsCounter";
 import { fetchRepoContributors } from "@/lib/domains/GitHub";
-import { allPages } from "contentlayer/generated";
 
 export const dynamicParams = false;
 
 export async function generateStaticParams() {
-	return allPages.flatMap(({ page_slug, skip_page }) => {
+	return rootPages.flatMap(({ page_slug, skip_page }) => {
 		if (skip_page) return [];
 
 		return {
@@ -27,21 +27,21 @@ type PageParams = {
 	};
 };
 export default async function MDXPageSlugPage({ params: { mdxPageSlug } }: PageParams) {
-	const post = allPages.find((page) => page.page_slug === mdxPageSlug);
+	const post = rootPages.find((page) => page.page_slug === mdxPageSlug);
 
 	if (!post) notFound();
 
 	return (
 		<>
 			<h1 className="pb-20 pt-10 font-serif text-8xl">/{mdxPageSlug}</h1>
-			<MDXContent code={post.body.code} components={{ RepoContributors }} />
+			<MDXContent code={post.code} components={{ RepoContributors }} />
 			<ViewsCounter slug={`/${mdxPageSlug}`} />
 		</>
 	);
 }
 
 export async function generateMetadata({ params }: PageParams): Promise<Metadata> {
-	const post = allPages.find((page) => page.page_slug === params.mdxPageSlug);
+	const post = rootPages.find((page) => page.page_slug === params.mdxPageSlug);
 
 	return {
 		title: `${post?.seo_title ?? post?.title} ${SITE_TITLE_APPEND}`,

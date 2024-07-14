@@ -43,5 +43,5 @@ tsconfig.tsbuildinfo
 # Sentry
 .sentryclirc
 
-# Contentlayer
-.contentlayer
+# Velite
+.velite
