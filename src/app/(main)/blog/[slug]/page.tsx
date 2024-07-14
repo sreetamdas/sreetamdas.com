@@ -8,29 +8,24 @@ import {
 } from "./chameleon-text/components.client";
 
 import { SITE_OG_IMAGE, SITE_TITLE_APPEND, SITE_URL } from "@/config";
-import { MDXContent, MDXClientContent } from "@/lib/components/MDX";
+import { blogPosts } from "@/generated";
+import { MDXContent } from "@/lib/components/MDX";
 import { ReadingProgress } from "@/lib/components/ProgressBar.client";
 import { Gradient } from "@/lib/components/Typography";
-import {
-	ChameleonHighlight,
-	Sparkles,
-	Gradient as GradientClient,
-} from "@/lib/components/Typography.client";
+import { ChameleonHighlight, Sparkles } from "@/lib/components/Typography.client";
 import { ViewsCounter } from "@/lib/components/ViewsCounter";
 import { InfoBlock } from "@/lib/components/sink";
-import { InfoBlock as InfoBlockClient } from "@/lib/components/sink.client";
-import { allBlogPosts } from "contentlayer/generated";
 
 export const dynamicParams = false;
 
 export async function generateStaticParams() {
-	return allBlogPosts.map((post) => ({
+	return blogPosts.map((post) => ({
 		slug: post.page_slug,
 	}));
 }
 
 export async function generateMetadata({ params }: PageParams): Promise<Metadata> {
-	const post = allBlogPosts.find((page) => page.page_slug === params.slug);
+	const post = blogPosts.find((page) => page.page_slug === params.slug);
 
 	return {
 		title: `${post?.seo_title ?? post?.title} ${SITE_TITLE_APPEND}`,
@@ -57,7 +52,7 @@ type PageParams = {
 	};
 };
 export default function BlogPage({ params }: PageParams) {
-	const post = allBlogPosts.find((page) => page.page_slug === params.slug);
+	const post = blogPosts.find((page) => page.page_slug === params.slug);
 
 	if (!post) notFound();
 
@@ -66,7 +61,7 @@ export default function BlogPage({ params }: PageParams) {
 			<script
 				type="application/ld+json"
 				suppressHydrationWarning
-				dangerouslySetInnerHTML={{ __html: JSON.stringify(post.structuredData) }}
+				dangerouslySetInnerHTML={{ __html: JSON.stringify(post.structured_data) }}
 			></script>
 			<ReadingProgress />
 			<h1 className="pb-20 pt-10 font-serif text-8xl">
@@ -74,33 +69,21 @@ export default function BlogPage({ params }: PageParams) {
 					<Gradient>{post.title}</Gradient>
 				</Balancer>
 			</h1>
-			{post.use_client ? (
-				<MDXClientContent
-					code={post.body.code}
-					components={{
-						ChameleonHighlight,
-						Gradient: GradientClient,
-						InfoBlock: InfoBlockClient,
-						Sparkles,
 
-						// Post specific components
-						HighlightWithUseEffect,
-						HighlightWithUseInterval,
-					}}
-				/>
-			) : (
-				<MDXContent
-					code={post.body.code}
-					components={{
-						ChameleonHighlight,
-						Gradient,
-						InfoBlock,
-						Sparkles,
+			<MDXContent
+				code={post.code}
+				components={{
+					ChameleonHighlight,
+					Gradient,
+					InfoBlock,
+					Sparkles,
 
-						// Post specific components
-					}}
-				/>
-			)}
+					// Post specific components
+					HighlightWithUseEffect,
+					HighlightWithUseInterval,
+				}}
+			/>
+
 			<ViewsCounter slug={post.url ?? post.page_path} />
 		</>
 	);

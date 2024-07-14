@@ -48,7 +48,7 @@ export const ChameleonHighlight = ({
 	return (
 		<span
 			className={cn(
-				"duration-[3000ms] transition-colors ease-linear [color:var(--color-fancy-pants,rgb(var(--color-primary)))]",
+				"transition-colors duration-[3000ms] ease-linear [color:var(--color-fancy-pants,rgb(var(--color-primary)))]",
 				passedClasses,
 			)}
 		>

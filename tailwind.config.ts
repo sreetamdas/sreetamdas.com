@@ -45,6 +45,5 @@ export default {
 		plugin(function ({ addVariant }) {
 			addVariant("children", "&>*");
 		}),
-		require("tailwindcss-animate"),
 	],
 } satisfies Config;

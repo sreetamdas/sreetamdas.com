@@ -1,3 +1,5 @@
+import { compile } from "@mdx-js/mdx";
+
 import { NewsletterEmailsPreviews } from "./components";
 import { fetchNewsletterEmails } from "./helpers";
 
@@ -27,14 +29,18 @@ function getEmailPreviewContent(content: string) {
 async function getNewsletterEmailsPreviewsData() {
 	const buttondown_api_emails_response = await fetchNewsletterEmails();
 
-	return buttondown_api_emails_response.results
-		.reverse()
-		.map(({ body, subject, publish_date, id, secondary_id, slug }) => ({
-			slug,
-			subject,
-			publish_date,
-			id,
-			secondary_id,
-			body: getEmailPreviewContent(body),
-		}));
+	return await Promise.all(
+		buttondown_api_emails_response.results
+			.reverse()
+			.map(async ({ body, subject, publish_date, id, secondary_id, slug }) => ({
+				slug,
+				subject,
+				publish_date,
+				id,
+				secondary_id,
+				body: String(
+					await compile(getEmailPreviewContent(body), { outputFormat: "function-body" }),
+				),
+			})),
+	);
 }

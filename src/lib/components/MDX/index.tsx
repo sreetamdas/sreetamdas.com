@@ -1,14 +1,12 @@
-import { type MDX } from "contentlayer2/core";
-// eslint-disable-next-line import/no-unresolved
 import { type MDXComponents } from "mdx/types";
-import { useMDXComponent } from "next-contentlayer2/hooks";
+import * as runtime from "react/jsx-runtime";
 
 import { customMDXComponents } from "./components";
 
-export { MDXClientContent } from "./client";
 export { customMDXComponents };
 
-type MDXContentCodeType = Pick<MDX, "code"> & {
+type MDXContentCodeType = {
+	code: string;
 	components?: MDXComponents | (() => Promise<JSX.Element>);
 };
 export const MDXContent = ({ code, components = {} }: MDXContentCodeType) => {
@@ -16,3 +14,8 @@ export const MDXContent = ({ code, components = {} }: MDXContentCodeType) => {
 
 	return <Content components={{ ...customMDXComponents, ...components }} />;
 };
+
+function useMDXComponent(code: string) {
+	const fn = new Function(code);
+	return fn({ ...runtime }).default;
+}

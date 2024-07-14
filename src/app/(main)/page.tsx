@@ -1,11 +1,11 @@
 import { isUndefined } from "lodash-es";
 
+import { rootPages } from "@/generated";
 import { MDXContent } from "@/lib/components/MDX";
 import { ViewsCounter } from "@/lib/components/ViewsCounter";
-import { allPages } from "contentlayer/generated";
 
 export default function HomePage() {
-	const post = allPages.find((page) => page.page_slug === "introduction");
+	const post = rootPages.find((page) => page.page_slug === "introduction");
 
 	if (isUndefined(post)) {
 		throw new Error("introduction.mdx is missing");
@@ -19,7 +19,7 @@ export default function HomePage() {
 					👋
 				</span>
 			</h1>
-			<MDXContent code={post.body.code} />
+			<MDXContent code={post.code} />
 
 			<ViewsCounter slug="/" hidden />
 		</>

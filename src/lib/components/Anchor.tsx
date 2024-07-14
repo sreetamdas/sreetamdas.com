@@ -34,7 +34,9 @@ export const LinkTo = <RouteType extends string = string>(linkToProps: LinkToPro
 	let isExternalLink = false;
 
 	if (typeof href === "string") {
-		if (
+		if (href === "/resume.pdf") {
+			isExternalLink = true;
+		} else if (
 			href.startsWith(SITE_URL) &&
 			href.startsWith("/") &&
 			href.startsWith("?") &&
