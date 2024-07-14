@@ -1,6 +1,6 @@
 import { usePlausible } from "next-plausible";
 
-import { type FoobarFlag } from "@/lib/domains/foobar/flags";
+import type { FoobarFlag } from "@/lib/domains/foobar/flags";
 
 export type PlausibleEventsType = {
 	foobar: { achievement: FoobarFlag };

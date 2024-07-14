@@ -1,4 +1,4 @@
-import { type IconBaseProps } from "react-icons";
+import type { IconBaseProps } from "react-icons";
 import { BsEgg } from "react-icons/bs";
 import {
 	FaCode,

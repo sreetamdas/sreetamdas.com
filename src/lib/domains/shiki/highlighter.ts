@@ -1,10 +1,10 @@
 import { defaultTheme } from "@sreetamdas/karma";
 import {
-	type HighlighterGeneric,
 	type BundledLanguage,
+	type HighlighterGeneric,
 	type ThemeRegistration,
-	normalizeTheme,
 	getSingletonHighlighterCore,
+	normalizeTheme,
 } from "shiki";
 import getWasm from "shiki/wasm";
 

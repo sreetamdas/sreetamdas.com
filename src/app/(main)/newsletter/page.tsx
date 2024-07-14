@@ -16,7 +16,7 @@ export default async function NewsletterEmailsPage() {
 
 	return (
 		<>
-			<h1 className="pb-20 pt-10 font-serif text-8xl">/newsletter</h1>
+			<h1 className="pt-10 pb-20 font-serif text-8xl">/newsletter</h1>
 			<NewsletterEmailsPreviews emails={newsletter_emails_previews_data} />
 		</>
 	);

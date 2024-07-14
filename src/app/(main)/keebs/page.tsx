@@ -1,10 +1,10 @@
-import { type PageObjectResponse } from "@notionhq/client/build/src/api-endpoints";
+import type { PageObjectResponse } from "@notionhq/client/build/src/api-endpoints";
 import { isEmpty, isUndefined } from "lodash-es";
 
 import { SITE_TITLE_APPEND } from "@/config";
 import { Image } from "@/lib/components/Image";
 import { ViewsCounter } from "@/lib/components/ViewsCounter";
-import { type KeebDetails, ImgurClient } from "@/lib/domains/Imgur";
+import { ImgurClient, type KeebDetails } from "@/lib/domains/Imgur";
 import { NotionClient } from "@/lib/domains/Notion";
 
 const KEEBS_DATABASE_ID = process.env.NOTION_KEEBS_PAGE_ID;
@@ -22,7 +22,7 @@ export default async function KeebsPage() {
 
 	return (
 		<>
-			<h1 className="pb-20 pt-10 font-serif text-8xl">/keebs</h1>
+			<h1 className="pt-10 pb-20 font-serif text-8xl">/keebs</h1>
 
 			<section className="grid gap-16">
 				{keebs.map(({ name, tags, image }) => (
@@ -33,7 +33,7 @@ export default async function KeebsPage() {
 								{tags.map((tag) => (
 									<span
 										key={tag.name}
-										className="rounded-global bg-primary px-2 py-0 font-mono text-sm text-background"
+										className="rounded-global bg-primary px-2 py-0 font-mono text-background text-sm"
 									>
 										{tag.name}
 									</span>

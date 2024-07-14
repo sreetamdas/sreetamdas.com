@@ -1,4 +1,4 @@
-import { type ReactNode } from "react";
+import type { ReactNode } from "react";
 
 import { Footer } from "@/lib/components/Footer";
 import { Header } from "@/lib/components/Header";

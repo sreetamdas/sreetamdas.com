@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { IoMdMoon } from "react-icons/io";
 import { LuMonitor, LuSun } from "react-icons/lu";
 
-import { type ColorSchemeSliceType } from "./store";
+import type { ColorSchemeSliceType } from "./store";
 
 import { useGlobalStore } from "@/lib/domains/global";
 
@@ -30,9 +30,9 @@ function getSystemColorSchemePreference(): Extract<
 }
 
 enum COLOR_SCHEME {
-	system,
-	light,
-	dark,
+	system = 0,
+	light = 1,
+	dark = 2,
 }
 type COLOR_SCHEMES = keyof typeof COLOR_SCHEME;
 function* colorSchemeGenerator(): Generator<COLOR_SCHEMES, never, COLOR_SCHEMES | undefined> {
@@ -77,13 +77,13 @@ export const ColorSchemeToggle = () => {
 				document.documentElement.setAttribute("data-color-scheme", "dark");
 				break;
 
-			case "light":
-			default:
+			default: // "light"
 				document.documentElement.removeAttribute("data-color-scheme");
 				break;
 		}
 	}
 
+	// biome-ignore lint/correctness/useExhaustiveDependencies: callback function
 	useEffect(() => {
 		const documentColorScheme = getDocumentColorScheme();
 
@@ -101,9 +101,9 @@ export const ColorSchemeToggle = () => {
 		colorSchemeDarkMediaQuery.addEventListener("change", colorSchemeChangeListener);
 
 		return () => colorSchemeDarkMediaQuery.removeEventListener("change", colorSchemeChangeListener);
-		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
+	// biome-ignore lint/correctness/useExhaustiveDependencies: callback function
 	useEffect(() => {
 		switch (colorScheme) {
 			case "system":
@@ -112,8 +112,8 @@ export const ColorSchemeToggle = () => {
 			case "dark":
 				document.documentElement.setAttribute("data-color-scheme", "dark");
 				break;
-			case "light":
-			default:
+
+			default: // "light"
 				document.documentElement.removeAttribute("data-color-scheme");
 				break;
 		}
@@ -123,6 +123,7 @@ export const ColorSchemeToggle = () => {
 		<button
 			onClick={() => handleColorSchemeToggle()}
 			className="link-base flex h-6 w-6 items-center text-2xl text-foreground hover:text-primary"
+			type="button"
 		>
 			<ToggleIcon colorScheme={colorScheme} />
 		</button>

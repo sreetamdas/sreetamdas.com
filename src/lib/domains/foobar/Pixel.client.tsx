@@ -3,8 +3,8 @@
 import { usePathname } from "next/navigation";
 import { useEffect } from "react";
 
-import { type FoobaFlagPageSlug, FOOBAR_FLAGS } from "./flags";
-import { type FoobarSliceType } from "./store";
+import { FOOBAR_FLAGS, type FoobaFlagPageSlug } from "./flags";
+import type { FoobarSliceType } from "./store";
 
 import { IS_DEV } from "@/config";
 import { LinkTo } from "@/lib/components/Anchor";
@@ -55,6 +55,7 @@ export const FoobarPixel = (props: FoobarPixelProps) => {
 		}
 	}, []);
 
+	// biome-ignore lint/correctness/useExhaustiveDependencies: needed
 	useEffect(() => {
 		let page_name = pathname;
 		if (props.path === `/${FOOBAR_FLAGS.error404.slug}`) {
@@ -80,9 +81,9 @@ export const FoobarPixel = (props: FoobarPixelProps) => {
 				completed: completed.concat([FOOBAR_FLAGS.navigator.name]),
 			});
 		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [completed, visited_pages, pathname]);
 
+	// biome-ignore lint/correctness/useExhaustiveDependencies: needed
 	useEffect(() => {
 		// for the `completed` achievement
 		if (checkIfAllAchievementsAreDone(completed)) {
@@ -91,7 +92,6 @@ export const FoobarPixel = (props: FoobarPixelProps) => {
 				all_achievements: true,
 			});
 		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [completed]);
 
 	return has_mounted && unlocked ? (

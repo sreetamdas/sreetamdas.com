@@ -36,7 +36,7 @@ export const ViewsCounter = ({
 }: ViewsCounterProps) => (
 	<div
 		className={cn(
-			"mx-auto mb-5 mt-auto w-full flex-row items-center justify-center gap-2 pt-40",
+			"mx-auto mt-auto mb-5 w-full flex-row items-center justify-center gap-2 pt-40",
 			hidden ? "hidden" : "flex",
 		)}
 	>
@@ -86,14 +86,16 @@ function getViewCountCopy(view_count: number | null, page_type: ViewsCounterProp
 						times. Wow.
 					</>
 				);
-			} else if (view_count > 1000) {
+			}
+			if (view_count > 1000) {
 				return (
 					<>
 						This {page_type} has been viewed <ViewCount>{view_count.toLocaleString()}</ViewCount>{" "}
 						times. Holy crap. 🤯
 					</>
 				);
-			} else if (view_count > 10000) {
+			}
+			if (view_count > 10000) {
 				return (
 					<>
 						This {page_type} has been viewed <ViewCount>{view_count.toLocaleString()}</ViewCount>{" "}
@@ -111,7 +113,7 @@ function getViewCountCopy(view_count: number | null, page_type: ViewsCounterProp
 	}
 }
 const ViewCount = ({ children }: { children: string }) => (
-	<span className="rounded-global border-2 border-solid border-primary bg-background p-1 font-mono text-base text-primary transition-colors">
+	<span className="rounded-global border-2 border-primary border-solid bg-background p-1 font-mono text-base text-primary transition-colors">
 		{children}
 	</span>
 );

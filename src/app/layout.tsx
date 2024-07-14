@@ -3,15 +3,16 @@ import "./global.css";
 import PlausibleProvider from "next-plausible";
 
 import { SITE_DESCRIPTION, SITE_TITLE_APPEND, SITE_URL } from "@/config";
-import { inter_font, iosevka_font, eb_garamond_font } from "@/lib/domains/fonts";
+import { eb_garamond_font, inter_font, iosevka_font } from "@/lib/domains/fonts";
 import { FOOBAR_SOURCE_CODE } from "@/lib/domains/foobar/helpers";
+import type { ReactNode } from "react";
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({ children }: { children: ReactNode }) {
 	return (
 		<html
 			lang="en"
 			dir="ltr"
-			className={`scroll-pt-16 scroll-smooth ${inter_font.variable} ${iosevka_font.variable} ${eb_garamond_font.variable}`}
+			className={`scroll-pt-16 scroll-smooth ${inter_font.variable}${iosevka_font.variable}${eb_garamond_font.variable}`}
 			suppressHydrationWarning
 		>
 			<head>
@@ -27,16 +28,18 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 			</head>
 			<body className="min-h-screen bg-background text-foreground selection:bg-secondary selection:text-background">
 				<script
+					// biome-ignore lint/security/noDangerouslySetInnerHtml: needed
 					dangerouslySetInnerHTML={{
 						__html: blockingScriptSetInitialColorScheme,
 					}}
-				></script>
+				/>
 				{children}
 				<script
+					// biome-ignore lint/security/noDangerouslySetInnerHtml: needed
 					dangerouslySetInnerHTML={{
 						__html: FOOBAR_SOURCE_CODE,
 					}}
-				></script>
+				/>
 			</body>
 		</html>
 	);

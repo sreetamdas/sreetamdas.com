@@ -1,6 +1,6 @@
-import { type BundledLanguage } from "shiki/langs";
+import type { BundledLanguage } from "shiki/langs";
 import { visit } from "unist-util-visit";
-import { type UnistNode } from "unist-util-visit/lib";
+import type { UnistNode } from "unist-util-visit/lib";
 
 import { getSlimKarmaHighlighter } from "./highlighter";
 
@@ -54,15 +54,14 @@ function calculateLinesToHighlight(meta = "") {
 
 	if (!RE_LINE_HIGHLIGHT.test(meta) || reg_exp_exec_array === null) {
 		return false;
-	} else {
-		const lineNumbers = reg_exp_exec_array[1]
-			.split(",")
-			.map((v) => v.split("-").map((v) => parseInt(v, 10)));
-
-		return lineNumbers.reduce(
-			(result, [start, end = start]) =>
-				result.concat(Array.from({ length: end - start + 1 }, (_, i) => start + i)),
-			[],
-		);
 	}
+	const lineNumbers = reg_exp_exec_array[1]
+		.split(",")
+		.map((v) => v.split("-").map((v) => Number.parseInt(v, 10)));
+
+	return lineNumbers.reduce(
+		(result, [start, end = start]) =>
+			result.concat(Array.from({ length: end - start + 1 }, (_, i) => start + i)),
+		[],
+	);
 }

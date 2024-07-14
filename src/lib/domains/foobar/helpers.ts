@@ -1,4 +1,4 @@
-import { type FoobarSliceType } from "./store";
+import type { FoobarSliceType } from "./store";
 
 import { FOOBAR_FLAGS } from "@/lib/domains/foobar/flags";
 
@@ -19,8 +19,8 @@ export function addFoobarToLocalStorage() {
 	localStorage.setItem("foobar", "/foobar/localforage");
 }
 
-/* eslint-disable no-console */
 export function logConsoleMessages() {
+	// biome-ignore lint/suspicious/noConsoleLog: needed
 	console.log(
 		`%c${CONSOLE_REACT}`,
 		`color: #61DAFB;
@@ -29,17 +29,21 @@ export function logConsoleMessages() {
 		background-color: black;
 		line-height: 1.1`,
 	);
+	// biome-ignore lint/suspicious/noConsoleLog: needed
 	console.log(
 		`        %c${CONSOLE_GREETING}`,
 		"font-size: 1.5em; font-family: monospace; font-weight: bold;",
 	);
 
+	// biome-ignore lint/suspicious/noConsoleLog: needed
 	console.log(`%c${CONSOLE_MESSAGE}`, "font-size: 1.1em; font-family: monospace");
 
 	console.groupCollapsed("Need a hint?");
+	// biome-ignore lint/suspicious/noConsoleLog: needed
 	console.log(`%c${CONSOLE_X}`, "font-family: monospace");
 
 	console.groupCollapsed("Need a another hint?");
+	// biome-ignore lint/suspicious/noConsoleLog: needed
 	console.log(
 		`%c${CONSOLE_X2}`,
 		"font-family: monospace",
@@ -49,6 +53,7 @@ export function logConsoleMessages() {
 
 	console.groupCollapsed("Need some more help?");
 	console.groupCollapsed("Are you sure?\n\n\nTo confirm, you'll need to open this disclosure 👀");
+	// biome-ignore lint/suspicious/noConsoleLog: needed
 	console.log(`%c${CONSOLE_X3}`, "font-family: monospace");
 
 	console.groupEnd();

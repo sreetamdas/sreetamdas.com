@@ -1,28 +1,28 @@
 "use client";
 
-import { cloneElement } from "react";
+import { type ReactElement, cloneElement } from "react";
 import {
-	FaGithub,
-	FaTwitter,
-	FaStackOverflow,
-	FaLinkedin,
+	FaDiscord,
 	FaEnvelope,
-	FaSteam,
+	FaGithub,
+	FaLinkedin,
 	FaRedditAlien,
 	FaSpotify,
-	FaDiscord,
+	FaStackOverflow,
+	FaSteam,
+	FaTwitter,
 } from "react-icons/fa";
 import { SiPeerlist } from "react-icons/si";
 
 import { LinkTo } from "@/lib/components/Anchor";
 
-const IconWithProps = ({ icon, title }: { icon: JSX.Element; title: string }) =>
+const IconWithProps = ({ icon, title }: { icon: ReactElement; title: string }) =>
 	cloneElement(icon, { title });
 
 type ExternalLinksArrayType = Array<{
 	link: string;
 	title: string;
-	icon: JSX.Element;
+	icon: ReactElement;
 	onClick?: () => void;
 }>;
 export const SocialLinks = () => {
@@ -67,10 +67,10 @@ export const SocialLinks = () => {
 			title: "Sreetam Das' Reddit",
 			icon: <FaRedditAlien />,
 			onClick: () => {
-				// eslint-disable-next-line no-console
+				// TODO: add Plausible event to track this as a new foobar badge
+				// biome-ignore lint/suspicious/noConsoleLog: temp
 				console.log("Rick-rolled");
 			},
-			// TODO: add Plausible event to track this as a new foobar badge
 		},
 		{
 			link: "https://open.spotify.com/user/22nkuerb2tgjpqwhy4tp4aecq",

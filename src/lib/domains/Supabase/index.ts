@@ -21,7 +21,7 @@ const SUPABASE_ENABLED =
 export const SUPABASE_API_BASE_URL = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/rest/v1`;
 
 const supabase_headers = {
-	apiKey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+	apiKey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY as string,
 	Authorization: `Bearer ${process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY}`,
 };
 
@@ -42,7 +42,7 @@ export async function getPageViews(slug: string): Promise<PageViewCountResponse>
 			limit: "1",
 		});
 
-		// eslint-disable-next-line no-console
+		// biome-ignore lint/suspicious/noConsoleLog: needed
 		console.log("GET", slug);
 
 		const request = await fetch(`${SUPABASE_API_BASE_URL}/page_details?${params.toString()}`, {
@@ -81,7 +81,7 @@ export async function upsertPageViews(slug: string): Promise<PageViewCountRespon
 			throw new Error("Supabase is not initialized");
 		}
 
-		// eslint-disable-next-line no-console
+		// biome-ignore lint/suspicious/noConsoleLog: needed
 		console.log("UPSERT", slug);
 
 		const request = await fetch(`${SUPABASE_API_BASE_URL}/rpc/upsert_page_view`, {

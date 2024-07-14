@@ -12,5 +12,31 @@
 		"plaintext": "html"
 	},
 	"typescript.tsdk": "node_modules/typescript/lib",
-	"typescript.enablePromptUseWorkspaceTsdk": true
+	"typescript.enablePromptUseWorkspaceTsdk": true,
+	"editor.codeActionsOnSave": {
+		"source.organizeImports.biome": "explicit",
+		"quickfix.biome": "explicit"
+	},
+	"editor.formatOnSave": true,
+	"[typescript]": {
+		"editor.defaultFormatter": "biomejs.biome"
+	},
+	"[javascript]": {
+		"editor.defaultFormatter": "biomejs.biome"
+	},
+	"[json]": {
+		"editor.defaultFormatter": "biomejs.biome"
+	},
+	"[jsonc]": {
+		"editor.defaultFormatter": "biomejs.biome"
+	},
+	"[javascriptreact]": {
+		"editor.defaultFormatter": "biomejs.biome"
+	},
+	"[typescriptreact]": {
+		"editor.defaultFormatter": "biomejs.biome"
+	},
+	"[markdown]": {
+		"editor.defaultFormatter": "biomejs.biome"
+	}
 }

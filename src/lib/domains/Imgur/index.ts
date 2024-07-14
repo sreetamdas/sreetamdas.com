@@ -5,7 +5,7 @@
 
 import { isEmpty, isUndefined } from "lodash-es";
 
-import { type KeebDetailsFromNotion } from "@/app/(main)/keebs/page";
+import type { KeebDetailsFromNotion } from "@/app/(main)/keebs/page";
 
 export type KeebDetails = {
 	name: string;
