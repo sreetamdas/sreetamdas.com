@@ -1,6 +1,8 @@
 "use client";
 
+import { cn } from "@/lib/helpers/utils";
 import * as DrawerPrimitive from "@radix-ui/react-dialog";
+import * as VisuallyHidden from "@radix-ui/react-visually-hidden";
 import {
 	type ComponentPropsWithoutRef,
 	type ElementRef,
@@ -9,9 +11,7 @@ import {
 } from "react";
 import { LuX } from "react-icons/lu";
 
-import { cn } from "@/lib/helpers/utils";
-
-const Drawer = DrawerPrimitive.Root;
+const DrawerRoot = DrawerPrimitive.Root;
 const DrawerTrigger = DrawerPrimitive.Trigger;
 const DrawerClose = DrawerPrimitive.Close;
 const DrawerPortal = DrawerPrimitive.Portal;
@@ -40,7 +40,7 @@ const DrawerContent = forwardRef<ElementRef<typeof DrawerPrimitive.Content>, Dra
 			<DrawerPrimitive.Content
 				ref={ref}
 				className={cn(
-					"data-[state=closed]:slide-out-to-left data-[state=open]:slide-in-from-left fixed inset-y-0 left-0 z-50 h-full w-3/4 gap-4 border-r bg-background p-6 shadow-lg transition ease-in-out data-[state=closed]:animate-out data-[state=open]:animate-in data-[state=closed]:duration-300 data-[state=open]:duration-500 sm:max-w-sm",
+					"data-[state=closed]:slide-out-to-left data-[state=open]:slide-in-from-left fixed inset-y-0 left-0 z-50 h-full w-3/4 gap-4 border-r bg-background p-6 shadow-lg transition ease-in-out data-[state=closed]:animate-duration-300 data-[state=closed]:animate-out data-[state=open]:animate-duration-500 data-[state=open]:animate-in sm:max-w-sm",
 					className,
 				)}
 				{...props}
@@ -71,13 +71,15 @@ DrawerFooter.displayName = "DrawerFooter";
 
 const DrawerTitle = forwardRef<
 	ElementRef<typeof DrawerPrimitive.Title>,
-	ComponentPropsWithoutRef<typeof DrawerPrimitive.Title>
->(({ className, ...props }, ref) => (
-	<DrawerPrimitive.Title
-		ref={ref}
-		className={cn("font-semibold text-foreground text-lg", className)}
-		{...props}
-	/>
+	ComponentPropsWithoutRef<typeof DrawerPrimitive.Title> & { hidden?: boolean }
+>(({ className, hidden = true, ...props }, ref) => (
+	<VisuallyHidden.Root asChild>
+		<DrawerPrimitive.Title
+			ref={ref}
+			className={cn("font-semibold text-foreground text-lg", className)}
+			{...props}
+		/>
+	</VisuallyHidden.Root>
 ));
 DrawerTitle.displayName = DrawerPrimitive.Title.displayName;
 
@@ -94,7 +96,7 @@ const DrawerDescription = forwardRef<
 DrawerDescription.displayName = DrawerPrimitive.Description.displayName;
 
 export {
-	Drawer,
+	DrawerRoot,
 	DrawerPortal,
 	DrawerOverlay,
 	DrawerTrigger,

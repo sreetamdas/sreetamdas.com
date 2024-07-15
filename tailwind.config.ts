@@ -42,8 +42,98 @@ export default {
 	},
 	darkMode: ["selector", '[data-color-scheme="dark"]'],
 	plugins: [
-		plugin(function ({ addVariant }) {
+		plugin(({ addVariant }) => {
 			addVariant("children", "&>*");
 		}),
+
+		plugin(
+			/**
+			 * from tailwindcss-animate
+			 * @see https://github.com/jamiebuilds/tailwindcss-animate
+			 */
+			({ addUtilities, matchUtilities, theme }) => {
+				addUtilities({
+					"@keyframes enter": theme("keyframes.enter"),
+					"@keyframes exit": theme("keyframes.exit"),
+					".animate-in": {
+						animationName: "enter",
+						// animationDuration: theme("animationDuration.DEFAULT"),
+						"--tw-enter-opacity": "initial",
+						"--tw-enter-scale": "initial",
+						"--tw-enter-rotate": "initial",
+						"--tw-enter-translate-x": "initial",
+						"--tw-enter-translate-y": "initial",
+					},
+					".animate-out": {
+						animationName: "exit",
+						// // animationDuration: theme("animationDuration.DEFAULT"),
+						"--tw-exit-opacity": "initial",
+						"--tw-exit-scale": "initial",
+						"--tw-exit-rotate": "initial",
+						"--tw-exit-translate-x": "initial",
+						"--tw-exit-translate-y": "initial",
+					},
+				});
+
+				matchUtilities(
+					{
+						"fade-in": (value) => ({ "--tw-enter-opacity": value }),
+						"fade-out": (value) => ({ "--tw-exit-opacity": value }),
+					},
+					{ values: theme("animationOpacity") },
+				);
+
+				matchUtilities(
+					{
+						"slide-in-from-left": (value) => ({
+							"--tw-enter-translate-x": `-${value}`,
+						}),
+						"slide-out-to-left": (value) => ({
+							"--tw-exit-translate-x": `-${value}`,
+						}),
+					},
+					{ values: theme("animationTranslate") },
+				);
+
+				matchUtilities(
+					{ "animate-duration": (value) => ({ animationDuration: value }) },
+					{ values: theme("animationDuration") },
+				);
+			},
+			{
+				theme: {
+					extend: {
+						animationDuration: ({ theme }) => ({
+							0: "0ms",
+							...theme("transitionDuration"),
+						}),
+						animationOpacity: ({ theme }) => ({
+							DEFAULT: 0,
+							...theme("opacity"),
+						}),
+						animationTranslate: ({ theme }) => ({
+							DEFAULT: "100%",
+							...theme("translate"),
+						}),
+						keyframes: {
+							enter: {
+								from: {
+									opacity: "var(--tw-enter-opacity, 1)",
+									transform:
+										"translate3d(var(--tw-enter-translate-x, 0), var(--tw-enter-translate-y, 0), 0) scale3d(var(--tw-enter-scale, 1), var(--tw-enter-scale, 1), var(--tw-enter-scale, 1)) rotate(var(--tw-enter-rotate, 0))",
+								},
+							},
+							exit: {
+								to: {
+									opacity: "var(--tw-exit-opacity, 1)",
+									transform:
+										"translate3d(var(--tw-exit-translate-x, 0), var(--tw-exit-translate-y, 0), 0) scale3d(var(--tw-exit-scale, 1), var(--tw-exit-scale, 1), var(--tw-exit-scale, 1)) rotate(var(--tw-exit-rotate, 0))",
+								},
+							},
+						},
+					},
+				},
+			},
+		),
 	],
 } satisfies Config;
