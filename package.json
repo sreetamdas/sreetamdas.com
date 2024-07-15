@@ -27,6 +27,7 @@
 		"@radix-ui/react-dialog": "^1.1.1",
 		"@radix-ui/react-switch": "^1.1.0",
 		"@radix-ui/react-toast": "^1.2.1",
+		"@radix-ui/react-visually-hidden": "^1.1.0",
 		"@sreetamdas/karma": "3.1.1",
 		"@supabase/sentry-js-integration": "0.2.0",
 		"@supabase/supabase-js": "^2.44.3",

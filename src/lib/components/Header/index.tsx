@@ -1,10 +1,9 @@
-import type { HTMLAttributes } from "react";
-
-import { NavbarDesktop, NavbarMobile } from "./Nav";
-
 import { LinkTo } from "@/lib/components/Anchor";
 import { ColorSchemeToggle } from "@/lib/domains/colorScheme/client";
 import { cn } from "@/lib/helpers/utils";
+import { type HTMLAttributes, Suspense } from "react";
+import { NavbarDesktop } from "./Nav";
+import { NavbarMobile } from "./Nav.mobile.client";
 
 export const Header = ({ className }: HTMLAttributes<HTMLDivElement>) => (
 	<div className={cn("sticky top-0 z-10 h-[60px] w-screen bg-background", className)}>
@@ -15,7 +14,7 @@ export const Header = ({ className }: HTMLAttributes<HTMLDivElement>) => (
 		>
 			Skip to main content
 		</a>
-		<header className="mx-auto grid h-full w-full max-w-[--max-width] grid-cols-[max-content_auto] content-center gap-8 py-4">
+		<header className="mx-auto grid h-full w-full max-w-[--max-width] grid-cols-[max-content_auto] content-center gap-8 px-4 py-4 sm:px-0">
 			<LinkTo href="/">
 				<svg
 					aria-label="Home"
@@ -31,8 +30,10 @@ export const Header = ({ className }: HTMLAttributes<HTMLDivElement>) => (
 			</LinkTo>
 			<div className="grid grid-flow-col place-items-center justify-center gap-x-4 justify-self-end">
 				<NavbarDesktop />
-				<NavbarMobile />
 				<ColorSchemeToggle />
+				<Suspense>
+					<NavbarMobile />
+				</Suspense>
 			</div>
 		</header>
 	</div>
