@@ -1,15 +1,47 @@
 "use client";
 
-import { motion, useScroll, useTransform } from "framer-motion";
+import { useEffect, useRef } from "react";
 
 export const ReadingProgress = () => {
-	const { scrollYProgress } = useScroll();
-	const progressValue = useTransform(scrollYProgress, (value) => `${value * 100}%`);
+	const spanRef = useRef<HTMLSpanElement>(null);
+
+	function scrollListener(_event?: Event) {
+		const scrollPercent = getScrollPercentage();
+
+		if (spanRef?.current !== null) {
+			spanRef.current.style.width = `${scrollPercent}%`;
+		}
+	}
+
+	useEffect(() => {
+		window.addEventListener("scroll", scrollListener, { passive: true });
+		scrollListener();
+
+		return () => {
+			window.removeEventListener("scroll", scrollListener);
+		};
+	});
 
 	return (
-		<motion.span
-			className="fixed top-0 left-0 z-20 h-1 bg-gradient-to-r from-primary to-secondary duration-200 ease-out"
-			style={{ width: progressValue }}
+		<span
+			ref={spanRef}
+			className="fixed top-0 left-0 z-20 h-1 bg-gradient-to-r from-primary to-secondary duration-300 ease-out"
 		/>
 	);
 };
+
+function getScrollPercentage() {
+	if (typeof window === "undefined") return 0;
+
+	return Math.ceil(
+		Math.max(
+			0,
+			Math.min(
+				100,
+				(window.scrollY /
+					(document.documentElement.scrollHeight - document.documentElement.clientHeight)) *
+					100,
+			),
+		),
+	);
+}

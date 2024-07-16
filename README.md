@@ -6,11 +6,10 @@ Thanks for checking out my personal website and blog! Here's the source code for
 
 - [React](https://reactjs.org) + [Next.js](https://nextjs.org)
 - [TypeScript](https://www.typescriptlang.org)
-- [styled-components](https://styled-components.com)
+- [Tailwind CSS](https://tailwindcss.com)
 - [mdx](https://mdxjs.com)
 - [Plausible](https://plausible.io)
 - [React Icons](https://react-icons.github.io/react-icons)
-- [Framer Motion](https://www.framer.com/motion)
 
 ## Overview
 
