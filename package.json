@@ -32,7 +32,6 @@
 		"@supabase/sentry-js-integration": "0.2.0",
 		"@supabase/supabase-js": "^2.44.3",
 		"clsx": "^2.1.1",
-		"framer-motion": "^11.3.2",
 		"image-size": "^1.1.1",
 		"lodash-es": "^4.17.21",
 		"next": "15.0.0-canary.61",
