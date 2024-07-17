@@ -16,6 +16,7 @@
 		"export": "next build && next export",
 		"compile": "tsc --watch",
 		"typecheck": "tsc -p tsconfig.json",
+		"check": "biome check --fix ./src",
 		"lint": "eslint 'src/**/*.{js,jsx,ts,tsx}' --cache",
 		"lint:next": "next lint",
 		"lint:fix": "eslint 'src/**/*.{js,jsx,ts,tsx}' --cache --fix",

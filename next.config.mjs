@@ -18,7 +18,7 @@ let nextConfig = {
 		},
 	},
 	experimental: {
-		// typedRoutes: true,
+		typedRoutes: true,
 		mdxRs: true,
 		ppr: true,
 	},

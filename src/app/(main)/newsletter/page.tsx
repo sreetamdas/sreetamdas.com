@@ -4,6 +4,7 @@ import { NewsletterEmailsPreviews } from "./components";
 import { fetchNewsletterEmails } from "./helpers";
 
 import { SITE_TITLE_APPEND } from "@/config";
+import { ViewsCounter } from "@/lib/components/ViewsCounter";
 
 export const metadata = {
 	title: `Newsletter ${SITE_TITLE_APPEND}`,
@@ -18,6 +19,7 @@ export default async function NewsletterEmailsPage() {
 		<>
 			<h1 className="pt-10 pb-20 font-serif text-8xl">/newsletter</h1>
 			<NewsletterEmailsPreviews emails={newsletter_emails_previews_data} />
+			<ViewsCounter slug="/newsletter" />
 		</>
 	);
 }

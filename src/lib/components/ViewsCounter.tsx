@@ -3,6 +3,7 @@ import { Suspense } from "react";
 import { IS_CI, IS_DEV } from "@/config";
 import { getPageViews, upsertPageViews } from "@/lib/domains/Supabase";
 import { cn } from "@/lib/helpers/utils";
+import type { Route } from "next";
 
 type IsomorphicFetchOptions = {
 	disabled?: boolean;
@@ -23,7 +24,7 @@ async function isomorphicFetchPageViews(slug: string, options: IsomorphicFetchOp
 }
 
 type ViewsCounterProps = {
-	slug: string;
+	slug: Route;
 	page_type?: "post" | "page";
 	hidden?: boolean;
 	disabled?: boolean;
