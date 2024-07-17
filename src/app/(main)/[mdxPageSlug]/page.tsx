@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Route } from "next";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 
@@ -33,9 +33,9 @@ export default async function MDXPageSlugPage({ params: { mdxPageSlug } }: PageP
 
 	return (
 		<>
-			<h1 className="pt-10 pb-20 font-serif text-8xl">/{mdxPageSlug}</h1>
+			<h1 className="pt-10 pb-20 font-serif text-8xl">/{post.page_slug}</h1>
 			<MDXContent code={post.code} components={{ RepoContributors }} />
-			<ViewsCounter slug={`/${mdxPageSlug}`} />
+			<ViewsCounter slug={post.page_path as Route} />
 		</>
 	);
 }
