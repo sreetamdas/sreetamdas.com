@@ -1,0 +1,74 @@
+{
+    "version": "https://jsonfeed.org/version/1",
+    "title": "Sreetam Das' blog",
+    "home_page_url": "http://localhost:3000",
+    "feed_url": "http://localhost:3000/rss/feed.json",
+    "description": "Beginner friendly developer content, with a focus on React, TypeScript, Next.js and Styled-components",
+    "icon": "http://localhost:3000/logo.svg",
+    "author": {
+        "name": "Sreetam Das",
+        "url": "https://twitter.com/_SreetamDas"
+    },
+    "items": [
+        {
+            "id": "http://localhost:3000/blog/chameleon-text",
+            "content_html": "How to add a moving RGB effect to your text using styled-components",
+            "url": "http://localhost:3000/blog/chameleon-text",
+            "title": "Creating a chameleon text effect",
+            "summary": "How to add a moving RGB effect to your text using styled-components",
+            "date_modified": "2021-05-11T00:00:00.000Z",
+            "author": {
+                "name": "Sreetam Das",
+                "url": "https://twitter.com/_SreetamDas"
+            }
+        },
+        {
+            "id": "http://localhost:3000/blog/rss-for-nextjs",
+            "content_html": "RSS feeds are a great way for people to notify their readers that they've published new content! Here's how to add an RSS feed for a Next.js site",
+            "url": "http://localhost:3000/blog/rss-for-nextjs",
+            "title": "RSS Feed in a Next.js site",
+            "summary": "RSS feeds are a great way for people to notify their readers that they've published new content! Here's how to add an RSS feed for a Next.js site",
+            "date_modified": "2021-04-19T00:00:00.000Z",
+            "author": {
+                "name": "Sreetam Das",
+                "url": "https://twitter.com/_SreetamDas"
+            }
+        },
+        {
+            "id": "http://localhost:3000/blog/year-in-review-2020",
+            "content_html": "A look back at 2020, and everything that came with it.",
+            "url": "http://localhost:3000/blog/year-in-review-2020",
+            "title": "Year in Review — 2020",
+            "summary": "A look back at 2020, and everything that came with it.",
+            "date_modified": "2021-01-17T00:00:00.000Z",
+            "author": {
+                "name": "Sreetam Das",
+                "url": "https://twitter.com/_SreetamDas"
+            }
+        },
+        {
+            "id": "http://localhost:3000/blog/the-perfect-dark-mode",
+            "content_html": "How hard can implementing the perfect dark mode be? A journey through blocking scripts, IIFEs, CSS variables and much more.",
+            "url": "http://localhost:3000/blog/the-perfect-dark-mode",
+            "title": "The Perfect Dark Mode",
+            "summary": "How hard can implementing the perfect dark mode be? A journey through blocking scripts, IIFEs, CSS variables and much more.",
+            "date_modified": "2020-11-22T00:00:00.000Z",
+            "author": {
+                "name": "Sreetam Das",
+                "url": "https://twitter.com/_SreetamDas"
+            }
+        },
+        {
+            "id": "http://localhost:3000/blog/over-engineering-a-blog",
+            "content_html": "Building this website with Next.js, TypeScript and Styled-components",
+            "url": "http://localhost:3000/blog/over-engineering-a-blog",
+            "title": "Over-engineering a Blog",
+            "summary": "Building this website with Next.js, TypeScript and Styled-components",
+            "date_modified": "2020-05-25T00:00:00.000Z",
+            "author": {
+                "name": "Sreetam Das",
+                "url": "https://twitter.com/_SreetamDas"
+            }
+        }
+    ]
+}

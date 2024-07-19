@@ -1,53 +1,40 @@
-# [sreetamdas.com](https://sreetamdas.com)
+# Welcome to Remix!
 
-Thanks for checking out my personal website and blog! Here's the source code for it :)
+- 📖 [Remix docs](https://remix.run/docs)
 
-## Tech stack
+## Development
 
-- [React](https://reactjs.org) + [Next.js](https://nextjs.org)
-- [TypeScript](https://www.typescriptlang.org)
-- [Tailwind CSS](https://tailwindcss.com)
-- [mdx](https://mdxjs.com)
-- [Plausible](https://plausible.io)
-- [React Icons](https://react-icons.github.io/react-icons)
+Run the dev server:
 
-## Overview
+```shellscript
+npm run dev
+```
 
-For a while, I had trouble following up on my side-projects so I rebuilt my website: I could now play around with pretty much everything.
+## Deployment
 
-The website is pretty minimal, and should hopefully provide a seamless experience. If you notice anything that you'd like to improve, feel free to [create an issue](https://github.com/sreetamdas/sreetamdas.com/issues/new) and/or send a pull request!
+First, build your app for production:
 
-### The mini-game
+```sh
+npm run build
+```
 
-If you don't know what I am referring to, that's great! You haven't discovered the mini-game yet. If you'd like to check it out, please open up the browser console on [sreetamdas.com](https://sreetamdas.com). 😉
+Then run the app in production mode:
 
-You can check out some more details below ⬇️
+```sh
+npm start
+```
 
----
+Now you'll need to pick a host to deploy it to.
 
-<details>
-	<summary><strong>❗❗ HERE BE SPOILERS ❗❗</strong></summary>
+### DIY
 
-Well, the cat's out of the bag: there's a mini-game on <a href="https://sreetamdas.com">sreetamdas.com</a>! If you're forking this repository for yourself, be aware that you will be forking that as well. 😅 It isn't a "module" as such that you can just remove from the website — though the game lies in the <code>/foobar</code> subdirectory.
+If you're familiar with deploying Node applications, the built-in Remix app server is production-ready.
 
-Pretty much wherever the mini-game is present in the repo, it's placed under a <code>foobar</code> subfolder (eg. in <code>components</code>) so you'll know when you're about to come across mini-game related code. 😄
+Make sure to deploy the output of `npm run build`
 
-</details>
+- `build/server`
+- `build/client`
 
----
+## Styling
 
-## Development/Contributing
-
-Please check out the [Contributing guide](CONTRIBUTING.md)
-
-### Newsletter
-
-I also run a _very awesome_ newsletter! It's got curated links keeping up with the JavaScript, React and webdev world.
-And mechanical keyboards! Check it out at [sreetamdas.com/newsletter](https://sreetamdas.com/newsletter) :)
-
-You can also [view previous issues](https://buttondown.email/sreetamdas/archive),
-and [subscribe via RSS](https://buttondown.email/sreetamdas/rss)!
-
-## License
-
-Licensed under the [MIT License](LICENSE). Feel free to use in your own projects, with attribution please. A 🌟star on the repository would be super cool too! 😄
+This template comes with [Tailwind CSS](https://tailwindcss.com/) already configured for a simple default starting experience. You can use whatever css framework you prefer. See the [Vite docs on css](https://vitejs.dev/guide/features.html#css) for more information.

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+    <channel>
+        <title>Sreetam Das' blog</title>
+        <link>http://localhost:3000</link>
+        <description>Beginner friendly developer content, with a focus on React, TypeScript, Next.js and Styled-components</description>
+        <lastBuildDate>Fri, 20 Jan 2023 13:48:00 GMT</lastBuildDate>
+        <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
+        <generator>Feed for Node.js</generator>
+        <image>
+            <title>Sreetam Das' blog</title>
+            <url>http://localhost:3000/logo.svg</url>
+            <link>http://localhost:3000</link>
+        </image>
+        <copyright>All rights reserved 2023, Sreetam Das</copyright>
+        <item>
+            <title><![CDATA[Creating a chameleon text effect]]></title>
+            <link>http://localhost:3000/blog/chameleon-text</link>
+            <guid>http://localhost:3000/blog/chameleon-text</guid>
+            <pubDate>Tue, 11 May 2021 00:00:00 GMT</pubDate>
+            <description><![CDATA[How to add a moving RGB effect to your text using styled-components]]></description>
+            <content:encoded><![CDATA[How to add a moving RGB effect to your text using styled-components]]></content:encoded>
+            <author>sreetam@sreetamdas.com (Sreetam Das)</author>
+        </item>
+        <item>
+            <title><![CDATA[RSS Feed in a Next.js site]]></title>
+            <link>http://localhost:3000/blog/rss-for-nextjs</link>
+            <guid>http://localhost:3000/blog/rss-for-nextjs</guid>
+            <pubDate>Mon, 19 Apr 2021 00:00:00 GMT</pubDate>
+            <description><![CDATA[RSS feeds are a great way for people to notify their readers that they've published new content! Here's how to add an RSS feed for a Next.js site]]></description>
+            <content:encoded><![CDATA[RSS feeds are a great way for people to notify their readers that they've published new content! Here's how to add an RSS feed for a Next.js site]]></content:encoded>
+            <author>sreetam@sreetamdas.com (Sreetam Das)</author>
+        </item>
+        <item>
+            <title><![CDATA[Year in Review — 2020]]></title>
+            <link>http://localhost:3000/blog/year-in-review-2020</link>
+            <guid>http://localhost:3000/blog/year-in-review-2020</guid>
+            <pubDate>Sun, 17 Jan 2021 00:00:00 GMT</pubDate>
+            <description><![CDATA[A look back at 2020, and everything that came with it.]]></description>
+            <content:encoded><![CDATA[A look back at 2020, and everything that came with it.]]></content:encoded>
+            <author>sreetam@sreetamdas.com (Sreetam Das)</author>
+        </item>
+        <item>
+            <title><![CDATA[The Perfect Dark Mode]]></title>
+            <link>http://localhost:3000/blog/the-perfect-dark-mode</link>
+            <guid>http://localhost:3000/blog/the-perfect-dark-mode</guid>
+            <pubDate>Sun, 22 Nov 2020 00:00:00 GMT</pubDate>
+            <description><![CDATA[How hard can implementing the perfect dark mode be? A journey through blocking scripts, IIFEs, CSS variables and much more.]]></description>
+            <content:encoded><![CDATA[How hard can implementing the perfect dark mode be? A journey through blocking scripts, IIFEs, CSS variables and much more.]]></content:encoded>
+            <author>sreetam@sreetamdas.com (Sreetam Das)</author>
+        </item>
+        <item>
+            <title><![CDATA[Over-engineering a Blog]]></title>
+            <link>http://localhost:3000/blog/over-engineering-a-blog</link>
+            <guid>http://localhost:3000/blog/over-engineering-a-blog</guid>
+            <pubDate>Mon, 25 May 2020 00:00:00 GMT</pubDate>
+            <description><![CDATA[Building this website with Next.js, TypeScript and Styled-components]]></description>
+            <content:encoded><![CDATA[Building this website with Next.js, TypeScript and Styled-components]]></content:encoded>
+            <author>sreetam@sreetamdas.com (Sreetam Das)</author>
+        </item>
+    </channel>
+</rss>

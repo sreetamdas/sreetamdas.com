@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <id>http://localhost:3000</id>
+    <title>Sreetam Das' blog</title>
+    <updated>2023-01-20T13:48:00.372Z</updated>
+    <generator>Feed for Node.js</generator>
+    <author>
+        <name>Sreetam Das</name>
+        <email>sreetam@sreetamdas.com</email>
+        <uri>https://twitter.com/_SreetamDas</uri>
+    </author>
+    <link rel="alternate" href="http://localhost:3000"/>
+    <link rel="self" href="http://localhost:3000/rss/atom.xml"/>
+    <subtitle>Beginner friendly developer content, with a focus on React, TypeScript, Next.js and Styled-components</subtitle>
+    <logo>http://localhost:3000/logo.svg</logo>
+    <icon>http://localhost:3000/favicon.png</icon>
+    <rights>All rights reserved 2023, Sreetam Das</rights>
+    <entry>
+        <title type="html"><![CDATA[Creating a chameleon text effect]]></title>
+        <id>http://localhost:3000/blog/chameleon-text</id>
+        <link href="http://localhost:3000/blog/chameleon-text"/>
+        <updated>2021-05-11T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[How to add a moving RGB effect to your text using styled-components]]></summary>
+        <content type="html"><![CDATA[How to add a moving RGB effect to your text using styled-components]]></content>
+        <author>
+            <name>Sreetam Das</name>
+            <email>sreetam@sreetamdas.com</email>
+            <uri>https://twitter.com/_SreetamDas</uri>
+        </author>
+        <contributor>
+            <name>Sreetam Das</name>
+            <email>sreetam@sreetamdas.com</email>
+            <uri>https://twitter.com/_SreetamDas</uri>
+        </contributor>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[RSS Feed in a Next.js site]]></title>
+        <id>http://localhost:3000/blog/rss-for-nextjs</id>
+        <link href="http://localhost:3000/blog/rss-for-nextjs"/>
+        <updated>2021-04-19T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[RSS feeds are a great way for people to notify their readers that they've published new content! Here's how to add an RSS feed for a Next.js site]]></summary>
+        <content type="html"><![CDATA[RSS feeds are a great way for people to notify their readers that they've published new content! Here's how to add an RSS feed for a Next.js site]]></content>
+        <author>
+            <name>Sreetam Das</name>
+            <email>sreetam@sreetamdas.com</email>
+            <uri>https://twitter.com/_SreetamDas</uri>
+        </author>
+        <contributor>
+            <name>Sreetam Das</name>
+            <email>sreetam@sreetamdas.com</email>
+            <uri>https://twitter.com/_SreetamDas</uri>
+        </contributor>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Year in Review — 2020]]></title>
+        <id>http://localhost:3000/blog/year-in-review-2020</id>
+        <link href="http://localhost:3000/blog/year-in-review-2020"/>
+        <updated>2021-01-17T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[A look back at 2020, and everything that came with it.]]></summary>
+        <content type="html"><![CDATA[A look back at 2020, and everything that came with it.]]></content>
+        <author>
+            <name>Sreetam Das</name>
+            <email>sreetam@sreetamdas.com</email>
+            <uri>https://twitter.com/_SreetamDas</uri>
+        </author>
+        <contributor>
+            <name>Sreetam Das</name>
+            <email>sreetam@sreetamdas.com</email>
+            <uri>https://twitter.com/_SreetamDas</uri>
+        </contributor>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[The Perfect Dark Mode]]></title>
+        <id>http://localhost:3000/blog/the-perfect-dark-mode</id>
+        <link href="http://localhost:3000/blog/the-perfect-dark-mode"/>
+        <updated>2020-11-22T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[How hard can implementing the perfect dark mode be? A journey through blocking scripts, IIFEs, CSS variables and much more.]]></summary>
+        <content type="html"><![CDATA[How hard can implementing the perfect dark mode be? A journey through blocking scripts, IIFEs, CSS variables and much more.]]></content>
+        <author>
+            <name>Sreetam Das</name>
+            <email>sreetam@sreetamdas.com</email>
+            <uri>https://twitter.com/_SreetamDas</uri>
+        </author>
+        <contributor>
+            <name>Sreetam Das</name>
+            <email>sreetam@sreetamdas.com</email>
+            <uri>https://twitter.com/_SreetamDas</uri>
+        </contributor>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Over-engineering a Blog]]></title>
+        <id>http://localhost:3000/blog/over-engineering-a-blog</id>
+        <link href="http://localhost:3000/blog/over-engineering-a-blog"/>
+        <updated>2020-05-25T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Building this website with Next.js, TypeScript and Styled-components]]></summary>
+        <content type="html"><![CDATA[Building this website with Next.js, TypeScript and Styled-components]]></content>
+        <author>
+            <name>Sreetam Das</name>
+            <email>sreetam@sreetamdas.com</email>
+            <uri>https://twitter.com/_SreetamDas</uri>
+        </author>
+        <contributor>
+            <name>Sreetam Das</name>
+            <email>sreetam@sreetamdas.com</email>
+            <uri>https://twitter.com/_SreetamDas</uri>
+        </contributor>
+    </entry>
+</feed>

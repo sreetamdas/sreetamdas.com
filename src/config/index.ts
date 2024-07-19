@@ -10,6 +10,8 @@ export const SITE_DESCRIPTION =
 	"Senior software tinkerer from India. 💜 React, Elixir and TypeScript, CS and mechanical keyboards!";
 export const SITE_OG_IMAGE = "/og-image.png";
 
+export const DEFAULT_LOCALE = "en-IN";
+
 export const IS_DEV = process.env.NODE_ENV === "development";
 export const IS_DEBUG = process.env.DEBUG_MODE === "true";
 
