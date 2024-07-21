@@ -3,7 +3,7 @@
 import PlausibleProvider from "next-plausible";
 import { useEffect } from "react";
 
-import { eb_garamond_font, inter_font, iosevka_font } from "@/lib/domains/fonts";
+import { bricolage_grotesque_font, inter_font, iosevka_font } from "@/lib/domains/fonts";
 import { FOOBAR_SOURCE_CODE } from "@/lib/domains/foobar/helpers";
 
 export default function GlobalError({
@@ -23,7 +23,7 @@ export default function GlobalError({
 			lang="en"
 			dir="ltr"
 			// biome-ignore lint/nursery/useSortedClasses: needed
-			className={`scroll-pt-16 scroll-smooth ${inter_font.variable} ${iosevka_font.variable} ${eb_garamond_font.variable}`}
+			className={`scroll-pt-16 scroll-smooth ${inter_font.variable} ${iosevka_font.variable} ${bricolage_grotesque_font.variable}`}
 			suppressHydrationWarning
 		>
 			<head>

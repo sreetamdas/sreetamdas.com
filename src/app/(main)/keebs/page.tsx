@@ -22,7 +22,7 @@ export default async function KeebsPage() {
 
 	return (
 		<>
-			<h1 className="pt-10 pb-20 font-serif text-8xl">/keebs</h1>
+			<h1 className="pt-10 pb-20 font-bold font-serif text-8xl tracking-tighter">/keebs</h1>
 
 			<section className="grid gap-16">
 				{keebs.map(({ name, tags, image }) => (

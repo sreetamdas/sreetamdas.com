@@ -24,7 +24,7 @@ export default async function RWCPage() {
 
 	return (
 		<>
-			<h1 className="pt-10 pb-20 font-serif text-8xl">/rwc</h1>
+			<h1 className="pt-10 pb-20 font-bold font-serif text-8xl tracking-tighter">/rwc</h1>
 
 			{Object.values(gist.files).map((file_object) => (
 				<CodeSnippetBlock

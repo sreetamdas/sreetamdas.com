@@ -65,7 +65,7 @@ export default function BlogPage({ params }: PageParams) {
 				dangerouslySetInnerHTML={{ __html: JSON.stringify(post.structured_data) }}
 			/>
 			<ReadingProgress />
-			<h1 className="pt-10 pb-20 font-serif text-8xl">
+			<h1 className="pt-10 pb-20 font-bold font-serif text-8xl tracking-tighter">
 				<Balancer>
 					<Gradient>{post.title}</Gradient>
 				</Balancer>

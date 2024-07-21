@@ -33,7 +33,7 @@ export default async function MDXPageSlugPage({ params: { mdxPageSlug } }: PageP
 
 	return (
 		<>
-			<h1 className="pt-10 pb-20 font-serif text-8xl">/{post.page_slug}</h1>
+			<h1 className="pt-10 pb-20 font-bold font-serif text-8xl tracking-tighter">/{post.page_slug}</h1>
 			<MDXContent code={post.code} components={{ RepoContributors }} />
 			<ViewsCounter slug={post.page_path as Route} />
 		</>

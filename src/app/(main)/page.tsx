@@ -13,7 +13,7 @@ export default function HomePage() {
 
 	return (
 		<>
-			<h1 className="py-20 text-center font-serif text-6xl">
+			<h1 className="py-20 text-center font-bold font-serif text-6xl tracking-tighter">
 				Hey, I&apos;m Sreetam!{" "}
 				<span role="img" aria-label="wave">
 					👋

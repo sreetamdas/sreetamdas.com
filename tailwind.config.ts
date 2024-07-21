@@ -3,11 +3,11 @@ import defaultTheme from "tailwindcss/defaultTheme";
 import plugin from "tailwindcss/plugin";
 
 export default {
-	content: ["./src/**/*.{js,ts,jsx,tsx}"],
+	content: ["./src/**/*.{js,ts,jsx,tsx}", "./content/**/*.mdx"],
 	theme: {
 		fontFamily: {
 			sans: ["var(--font-inter)", ...defaultTheme.fontFamily.sans],
-			serif: ["var(--font-eb-garamond)", ...defaultTheme.fontFamily.serif],
+			serif: ["var(--font-bricolage-grotesque)", ...defaultTheme.fontFamily.serif],
 			mono: ["var(--font-iosevka)", ...defaultTheme.fontFamily.mono],
 		},
 		extend: {
