@@ -30,13 +30,16 @@ export const CodeBlock = (props: CodeBlockProps) => {
 
 	return (
 		<div className="my-5 flex flex-col">
-			<div className="flex justify-end">
-				<span className="rounded-t-global px-2 py-1 font-mono text-zinc-400" style={style}>
+			<div
+				className="-ml-12 -mr-5 max-sm:-ml-4 flex justify-end overflow-x-scroll rounded-tl-global rounded-tr-global pr-5 max-sm:pr-2"
+				style={style}
+			>
+				<span className="rounded-t-global px-2 py-1 font-mono text-zinc-400 max-sm:text-xs">
 					{lang}
 				</span>
 			</div>
 			<pre
-				className="-ml-12 -mr-5 max-md:-ml-6 overflow-x-scroll rounded-global p-5 text-sm"
+				className="-ml-12 -mr-5 max-sm:-ml-4 overflow-x-scroll rounded-br-global rounded-bl-global p-5 text-xs max-sm:px-2 sm:text-sm max-sm:[&>code>.block>.line]:whitespace-pre-wrap"
 				style={style}
 			>
 				<code {...code_element?.props}>
