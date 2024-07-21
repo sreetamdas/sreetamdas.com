@@ -35,7 +35,6 @@
 		"clsx": "^2.1.1",
 		"image-size": "^1.1.1",
 		"lodash-es": "^4.17.21",
-		"lucide-react": "^0.411.0",
 		"next": "15.0.0-canary.74",
 		"next-plausible": "^3.12.0",
 		"react": "19.0.0-rc.0",
