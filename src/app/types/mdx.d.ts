@@ -1,4 +1,4 @@
-import type { ReactElement } from "react";
+import { type ReactElement } from "react";
 
 declare module "*.mdx" {
 	let MDXComponent: (props: unknown) => ReactElement;

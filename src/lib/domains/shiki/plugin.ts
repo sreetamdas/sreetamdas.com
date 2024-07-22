@@ -1,7 +1,8 @@
 import { omit } from "lodash-es";
-import type { BundledLanguage } from "shiki/langs";
+import { type BundledLanguage } from "shiki/langs";
 import { visit } from "unist-util-visit";
-import type { UnistNode } from "unist-util-visit/lib";
+import { type UnistNode } from "unist-util-visit/lib";
+
 import { getSlimKarmaHighlighter } from "./highlighter";
 
 type TreeNode = UnistNode & {

@@ -1,4 +1,4 @@
-import type { Metadata, Route } from "next";
+import { type Metadata, type Route } from "next";
 import { notFound } from "next/navigation";
 import { Balancer } from "react-wrap-balancer";
 
@@ -61,11 +61,10 @@ export default function BlogPage({ params }: PageParams) {
 			<script
 				type="application/ld+json"
 				suppressHydrationWarning
-				// biome-ignore lint/security/noDangerouslySetInnerHtml: needed
 				dangerouslySetInnerHTML={{ __html: JSON.stringify(post.structured_data) }}
 			/>
 			<ReadingProgress />
-			<h1 className="pt-10 pb-20 font-bold font-serif text-8xl tracking-tighter">
+			<h1 className="pb-20 pt-10 font-serif text-8xl font-bold tracking-tighter">
 				<Balancer>
 					<Gradient>{post.title}</Gradient>
 				</Balancer>

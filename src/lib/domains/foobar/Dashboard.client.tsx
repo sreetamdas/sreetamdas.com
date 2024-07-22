@@ -2,7 +2,7 @@
 
 import * as AlertDialogPrimitive from "@radix-ui/react-alert-dialog";
 import { isUndefined } from "lodash-es";
-import type { Route } from "next";
+import { type Route } from "next";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
@@ -33,19 +33,20 @@ export const FoobarDashboard = ({ completed_page }: FoobarSchrodingerProps) => {
 		router.push("/foobar/offline" as Route);
 	}
 
-	// biome-ignore lint/correctness/useExhaustiveDependencies: needed
 	useEffect(() => {
 		window.addEventListener("offline", handleUserIsOffline);
 
 		return () => {
 			window.removeEventListener("offline", handleUserIsOffline);
 		};
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	function handleClearFoobarData() {
 		plausibleEvent("foobar", { props: { achievement: "restart" } });
 		setFoobarData(initialFoobarData);
-		// biome-ignore lint/suspicious/noConsoleLog: needed
+
+		// eslint-disable-next-line no-console
 		console.log("cleared");
 	}
 
@@ -54,7 +55,7 @@ export const FoobarDashboard = ({ completed_page }: FoobarSchrodingerProps) => {
 			<UnlockedAchievementBanner completed_page={completed_page} />
 			{IS_DEV && (
 				<pre className="my-5 rounded-global bg-foreground/10 p-6 font-mono text-sm transition-colors dark:bg-foreground/20">
-					<h2 className="font-bold text-4xl">DEV</h2>
+					<h2 className="text-4xl font-bold">DEV</h2>
 					{JSON.stringify(foobar_data, null, 2)}
 				</pre>
 			)}
@@ -75,7 +76,7 @@ export const FoobarDashboard = ({ completed_page }: FoobarSchrodingerProps) => {
 
 const UnlockedAchievementBanner = ({ completed_page }: FoobarSchrodingerProps) =>
 	completed_page && completed_page !== "/" ? (
-		<h1 className="pt-20 pb-5 text-center font-bold text-6xl leading-normal">
+		<h1 className="pb-5 pt-20 text-center text-6xl font-bold leading-normal">
 			— You&apos;ve unlocked —
 			<br />
 			<span role="img" aria-label="sparkle">
@@ -94,7 +95,7 @@ const ResetFoobar = ({ handleClearFoobarData }: { handleClearFoobarData: () => v
 	<AlertDialogPrimitive.Root>
 		<AlertDialogPrimitive.Trigger asChild>
 			<button
-				className="rounded-global border-2 border-primary border-solid bg-background px-6 py-1 text-foreground text-sm transition-[color,background-color] hover:bg-primary hover:text-background"
+				className="rounded-global border-2 border-solid border-primary bg-background px-6 py-1 text-sm text-foreground transition-[color,background-color] hover:bg-primary hover:text-background"
 				type="button"
 			>
 				Clear everything and Restart
@@ -102,11 +103,11 @@ const ResetFoobar = ({ handleClearFoobarData }: { handleClearFoobarData: () => v
 		</AlertDialogPrimitive.Trigger>
 		<AlertDialogPrimitive.Portal>
 			<AlertDialogPrimitive.Overlay className="fixed inset-0 bg-slate-950/40 data-[state=open]:animate-overlayShow" />
-			<AlertDialogPrimitive.Content className="fixed top-[50%] left-[50%] max-h-[85vh] w-[90vw] max-w-[500px] translate-x-[-50%] translate-y-[-50%] rounded-global bg-white p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none data-[state=open]:animate-contentShow">
-				<AlertDialogPrimitive.Title className="m-0 font-medium text-[17px] text-slate-950">
+			<AlertDialogPrimitive.Content className="fixed left-[50%] top-[50%] max-h-[85vh] w-[90vw] max-w-[500px] translate-x-[-50%] translate-y-[-50%] rounded-global bg-white p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none data-[state=open]:animate-contentShow">
+				<AlertDialogPrimitive.Title className="m-0 text-[17px] font-medium text-slate-950">
 					Are you absolutely sure?
 				</AlertDialogPrimitive.Title>
-				<AlertDialogPrimitive.Description className="mt-4 mb-5 text-[15px] text-zinc-500 leading-normal">
+				<AlertDialogPrimitive.Description className="mb-5 mt-4 text-[15px] leading-normal text-zinc-500">
 					This action cannot be undone.
 					<br />
 					This will reset your <Code>/foobar</Code> progress.
@@ -114,7 +115,7 @@ const ResetFoobar = ({ handleClearFoobarData }: { handleClearFoobarData: () => v
 				<div className="flex justify-end gap-[25px]">
 					<AlertDialogPrimitive.Cancel asChild>
 						<button
-							className="inline-flex h-[35px] items-center justify-center rounded-global bg-zinc-100 px-[15px] font-medium text-zinc-500 leading-none outline-none hover:bg-zinc-200 focus:shadow-[0_0_0_2px] focus:shadow-zinc-300"
+							className="inline-flex h-[35px] items-center justify-center rounded-global bg-zinc-100 px-[15px] font-medium leading-none text-zinc-500 outline-none hover:bg-zinc-200 focus:shadow-[0_0_0_2px] focus:shadow-zinc-300"
 							type="button"
 						>
 							Cancel
@@ -122,7 +123,7 @@ const ResetFoobar = ({ handleClearFoobarData }: { handleClearFoobarData: () => v
 					</AlertDialogPrimitive.Cancel>
 					<AlertDialogPrimitive.Action asChild>
 						<button
-							className="inline-flex h-[35px] items-center justify-center rounded-global bg-red-100 px-[15px] font-medium text-red-700 leading-none outline-none hover:bg-red-200 focus:shadow-[0_0_0_2px] focus:shadow-red-300"
+							className="inline-flex h-[35px] items-center justify-center rounded-global bg-red-100 px-[15px] font-medium leading-none text-red-700 outline-none hover:bg-red-200 focus:shadow-[0_0_0_2px] focus:shadow-red-300"
 							onClick={handleClearFoobarData}
 							type="button"
 						>
@@ -150,7 +151,6 @@ export const FoobarSchrodinger = ({ completed_page }: FoobarSchrodingerProps) =>
 	const has_mounted = useHasMounted();
 	const plausibleEvent = useCustomPlausible();
 
-	// biome-ignore lint/correctness/useExhaustiveDependencies: needed
 	useEffect(() => {
 		if (completed_page) {
 			const completed_flag = Object.values(FOOBAR_FLAGS).find((flag_props) => {
@@ -167,6 +167,7 @@ export const FoobarSchrodinger = ({ completed_page }: FoobarSchrodingerProps) =>
 				});
 			}
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [completed, completed_page]);
 
 	if (!has_mounted) return null;

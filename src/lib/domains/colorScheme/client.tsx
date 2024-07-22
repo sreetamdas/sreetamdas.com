@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { IoMdMoon } from "react-icons/io";
 import { LuMonitor, LuSun } from "react-icons/lu";
 
-import type { ColorSchemeSliceType } from "./store";
+import { type ColorSchemeSliceType } from "./store";
 
 import { useGlobalStore } from "@/lib/domains/global";
 
@@ -83,7 +83,6 @@ export const ColorSchemeToggle = () => {
 		}
 	}
 
-	// biome-ignore lint/correctness/useExhaustiveDependencies: callback function
 	useEffect(() => {
 		const documentColorScheme = getDocumentColorScheme();
 
@@ -101,9 +100,9 @@ export const ColorSchemeToggle = () => {
 		colorSchemeDarkMediaQuery.addEventListener("change", colorSchemeChangeListener);
 
 		return () => colorSchemeDarkMediaQuery.removeEventListener("change", colorSchemeChangeListener);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
-	// biome-ignore lint/correctness/useExhaustiveDependencies: callback function
 	useEffect(() => {
 		switch (colorScheme) {
 			case "system":

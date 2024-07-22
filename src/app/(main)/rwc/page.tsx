@@ -1,5 +1,5 @@
 import { FiLink } from "react-icons/fi";
-import type { ThemeRegistration } from "shiki";
+import { type ThemeRegistration } from "shiki";
 
 import module_css from "./CodeSnippet.module.css";
 
@@ -24,7 +24,7 @@ export default async function RWCPage() {
 
 	return (
 		<>
-			<h1 className="pt-10 pb-20 font-bold font-serif text-8xl tracking-tighter">/rwc</h1>
+			<h1 className="pb-20 pt-10 font-serif text-8xl font-bold tracking-tighter">/rwc</h1>
 
 			{Object.values(gist.files).map((file_object) => (
 				<CodeSnippetBlock
@@ -65,14 +65,14 @@ function CodeSnippetBlock(props: Props) {
 				<h2 className="group font-mono text-2xl text-primary" id={slug}>
 					<a
 						href={`#${slug}`}
-						className="-translate-x-[125%] absolute translate-y-1 text-primary opacity-0 transition-opacity group-hover:opacity-75 max-md:hidden"
+						className="absolute -translate-x-[125%] translate-y-1 text-primary opacity-0 transition-opacity group-hover:opacity-75 max-md:hidden"
 					>
 						<FiLink aria-label={slug} />
 					</a>
 					{filename}
 				</h2>
 				<span
-					className="rounded-t-global px-2 py-1 font-mono text-zinc-400 uppercase"
+					className="rounded-t-global px-2 py-1 font-mono uppercase text-zinc-400"
 					style={{ backgroundColor }}
 				>
 					{lang}
@@ -81,7 +81,6 @@ function CodeSnippetBlock(props: Props) {
 			<pre
 				className={module_css["code-snippet"]}
 				style={{ backgroundColor }}
-				// biome-ignore lint/security/noDangerouslySetInnerHtml: safe html
 				dangerouslySetInnerHTML={{ __html: cleaned_html }}
 			/>
 		</article>

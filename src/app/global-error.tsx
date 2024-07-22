@@ -22,7 +22,6 @@ export default function GlobalError({
 		<html
 			lang="en"
 			dir="ltr"
-			// biome-ignore lint/nursery/useSortedClasses: needed
 			className={`scroll-pt-16 scroll-smooth ${inter_font.variable} ${iosevka_font.variable} ${bricolage_grotesque_font.variable}`}
 			suppressHydrationWarning
 		>
@@ -38,7 +37,6 @@ export default function GlobalError({
 			</head>
 			<body className="min-h-screen bg-background text-foreground selection:bg-secondary selection:text-background">
 				<script
-					// biome-ignore lint/security/noDangerouslySetInnerHtml: needed
 					dangerouslySetInnerHTML={{
 						__html: blockingScriptSetInitialColorScheme,
 					}}
@@ -48,7 +46,6 @@ export default function GlobalError({
 					Try again
 				</button>
 				<script
-					// biome-ignore lint/security/noDangerouslySetInnerHtml: needed
 					dangerouslySetInnerHTML={{
 						__html: FOOBAR_SOURCE_CODE,
 					}}

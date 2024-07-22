@@ -68,7 +68,7 @@ export const SocialLinks = () => {
 			icon: <FaRedditAlien />,
 			onClick: () => {
 				// TODO: add Plausible event to track this as a new foobar badge
-				// biome-ignore lint/suspicious/noConsoleLog: temp
+				// eslint-disable-next-line no-console
 				console.log("Rick-rolled");
 			},
 		},

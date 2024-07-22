@@ -1,7 +1,7 @@
 import { isObject } from "lodash-es";
-import type { PlaceholderValue, StaticImport } from "next/dist/shared/lib/get-img-props";
+import { type PlaceholderValue, type StaticImport } from "next/dist/shared/lib/get-img-props";
 import NextImage from "next/image";
-import type { DetailedHTMLProps, ImgHTMLAttributes, RefAttributes } from "react";
+import { type DetailedHTMLProps, type ImgHTMLAttributes, type RefAttributes } from "react";
 
 type SafeNumber = number | `${number}`;
 type CustomImageProps = {
@@ -59,11 +59,11 @@ export const Image = (props: ImageProps) => {
 
 	// for external images
 	return isWrapped ? (
-		// biome-ignore lint/a11y/useAltText: Next.js Image
+		// eslint-disable-next-line @next/next/no-img-element
 		<img src={src} alt={alt} loading="lazy" {...restProps} />
 	) : (
 		<span className="[&_img]:h-auto [&_img]:w-full [&_img]:max-w-[--max-width] [&_img]:rounded-global">
-			{/* biome-ignore lint/a11y/useAltText: Next.js Image */}
+			{/* eslint-disable-next-line @next/next/no-img-element */}
 			<img src={src} alt={alt} loading="lazy" {...restProps} />
 		</span>
 	);

@@ -1,16 +1,18 @@
+import { type HTMLAttributes, Suspense } from "react";
+
+import { NavbarDesktop } from "./Nav";
+import { NavbarMobile } from "./Nav.mobile.client";
+
 import { LinkTo } from "@/lib/components/Anchor";
 import { ColorSchemeToggle } from "@/lib/domains/colorScheme/client";
 import { cn } from "@/lib/helpers/utils";
-import { type HTMLAttributes, Suspense } from "react";
-import { NavbarDesktop } from "./Nav";
-import { NavbarMobile } from "./Nav.mobile.client";
 
 export const Header = ({ className }: HTMLAttributes<HTMLDivElement>) => (
 	<div className={cn("sticky top-0 z-10 h-[60px] w-screen bg-background", className)}>
 		<a
 			id="skip-link"
 			href="#main-content"
-			className="-translate-y-full absolute top-8 left-8 h-px w-px overflow-hidden rounded-global bg-primary p-2 text-background [clip:rect(1px_1px_1px_1px)] visited:no-underline hover:underline hover:decoration-2 hover:decoration-current hover:decoration-solid focus:block focus:h-auto focus:w-auto focus:translate-y-0 focus-visible:outline-dashed focus-visible:outline-2 focus-visible:outline-secondary focus-visible:outline-offset-2 dark:text-foreground focus:[clip:auto]"
+			className="absolute left-8 top-8 h-px w-px -translate-y-full overflow-hidden rounded-global bg-primary p-2 text-background [clip:rect(1px_1px_1px_1px)] visited:no-underline hover:underline hover:decoration-current hover:decoration-solid hover:decoration-2 focus:block focus:h-auto focus:w-auto focus:translate-y-0 focus:[clip:auto] focus-visible:outline-dashed focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-secondary dark:text-foreground"
 		>
 			Skip to main content
 		</a>

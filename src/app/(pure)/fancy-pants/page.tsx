@@ -13,17 +13,17 @@ export default function FancyPantsPage() {
 
 	return (
 		<section className="p-10">
-			<h1 className="-tracking-[0.065em] font-black font-mono leading-normal [font-size:clamp(4rem,_10vw,_10rem)]">
+			<h1 className="font-mono font-black leading-normal -tracking-[0.065em] [font-size:clamp(4rem,_10vw,_10rem)]">
 				<ChameleonHighlight>Sreetam Das</ChameleonHighlight>
 			</h1>
 			<p className="w-3/4 font-serif text-7xl leading-normal">
 				is a{" "}
-				<ChameleonHighlight className="-tracking-[0.065em] font-black font-mono">
+				<ChameleonHighlight className="font-mono font-black -tracking-[0.065em]">
 					Senior Software Tinkerer
 				</ChameleonHighlight>
 				<br />
 				working{" "}
-				<ChameleonHighlight className="-tracking-[0.065em] font-black font-mono">
+				<ChameleonHighlight className="font-mono font-black -tracking-[0.065em]">
 					<a
 						href="https://remote.com"
 						target="_blank"
@@ -35,23 +35,23 @@ export default function FancyPantsPage() {
 					</a>
 				</ChameleonHighlight>{" "}
 				who loves{" "}
-				<ChameleonHighlight className="-tracking-[0.065em] font-black font-mono">
+				<ChameleonHighlight className="font-mono font-black -tracking-[0.065em]">
 					React
 				</ChameleonHighlight>
 				,{" "}
-				<ChameleonHighlight className="-tracking-[0.065em] font-black font-mono">
+				<ChameleonHighlight className="font-mono font-black -tracking-[0.065em]">
 					TypeScript
 				</ChameleonHighlight>
 				,{" "}
-				<ChameleonHighlight className="-tracking-[0.065em] font-black font-mono">
+				<ChameleonHighlight className="font-mono font-black -tracking-[0.065em]">
 					Elixir
 				</ChameleonHighlight>
 				,{" "}
-				<ChameleonHighlight className="-tracking-[0.065em] font-black font-mono">
+				<ChameleonHighlight className="font-mono font-black -tracking-[0.065em]">
 					Svelte
 				</ChameleonHighlight>{" "}
 				and <br />
-				<ChameleonHighlight className="-tracking-[0.065em] font-black font-mono">
+				<ChameleonHighlight className="font-mono font-black -tracking-[0.065em]">
 					Mechanical keyboards
 				</ChameleonHighlight>
 				.

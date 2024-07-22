@@ -1,8 +1,8 @@
-import type { UrlObject } from "node:url";
+import { type UrlObject } from "node:url";
 
-import type { Route } from "next";
+import { type Route } from "next";
 import NextLink, { type LinkProps } from "next/link";
-import type { AnchorHTMLAttributes, ReactNode } from "react";
+import { type AnchorHTMLAttributes, type ReactNode } from "react";
 import { ImArrowUpRight2 } from "react-icons/im";
 
 import { SITE_URL } from "@/config";

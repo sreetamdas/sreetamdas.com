@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { type ReactNode } from "react";
 
 import { LinkTo } from "@/lib/components/Anchor";
 import { NotFoundDogsLink } from "@/lib/components/Error";
@@ -17,10 +17,10 @@ export default function GlobalNotFound({ message }: GlobalNotFoundPageProps) {
 				id="main-content"
 				className="relative grid grid-flow-col grid-cols-[1fr_min(var(--max-width),_calc(100%_-_2rem))_1fr] gap-x-4 children:[grid-column:2]"
 			>
-				<h1 className="pt-10 text-center font-bold font-serif text-[160px] tracking-tighter">
+				<h1 className="pt-10 text-center font-serif text-[160px] font-bold tracking-tighter">
 					404!
 				</h1>
-				<p className="pt-4 text-center font-bold font-serif text-3xl tracking-tighter">
+				<p className="pt-4 text-center font-serif text-3xl font-bold tracking-tighter">
 					The page you&apos;re looking for does not exist.
 				</p>
 

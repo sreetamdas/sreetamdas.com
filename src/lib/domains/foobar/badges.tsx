@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 import { FOOBAR_FLAGS, type FoobarFlag } from "./flags";
-import type { FoobarDataType } from "./store";
+import { type FoobarDataType } from "./store";
 
 import { LinkTo } from "@/lib/components/Anchor";
 import { cn } from "@/lib/helpers/utils";

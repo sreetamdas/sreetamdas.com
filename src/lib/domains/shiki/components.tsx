@@ -1,4 +1,3 @@
-import { cn } from "@/lib/helpers/utils";
 import { isObject } from "lodash-es";
 import {
 	type CSSProperties,
@@ -8,6 +7,8 @@ import {
 	type ReactNode,
 	isValidElement,
 } from "react";
+
+import { cn } from "@/lib/helpers/utils";
 
 type CodeBlockProps = DetailedHTMLProps<HTMLAttributes<HTMLPreElement>, HTMLPreElement> & {
 	children?: ReactNode;
@@ -37,7 +38,7 @@ export const CodeBlock = (props: CodeBlockProps) => {
 	return (
 		<div className="my-5 flex flex-col">
 			<div
-				className="-ml-12 -mr-5 max-sm:-ml-4 flex overflow-x-scroll rounded-tl-global rounded-tr-global pr-5 max-sm:pr-2"
+				className="-ml-12 -mr-5 flex overflow-x-scroll rounded-tl-global rounded-tr-global pr-5 max-sm:-ml-4 max-sm:pr-2"
 				style={style}
 			>
 				{filename !== null ? (
@@ -52,7 +53,7 @@ export const CodeBlock = (props: CodeBlockProps) => {
 				) : null}
 			</div>
 			<pre
-				className="-ml-12 -mr-5 max-sm:-ml-4 overflow-x-scroll rounded-br-global rounded-bl-global p-5 text-xs max-sm:px-2 sm:text-sm max-sm:[&>code>.block>.line]:whitespace-pre-wrap"
+				className="-ml-12 -mr-5 overflow-x-scroll rounded-bl-global rounded-br-global p-5 text-xs max-sm:-ml-4 max-sm:px-2 sm:text-sm max-sm:[&>code>.block>.line]:whitespace-pre-wrap"
 				style={style}
 			>
 				<code {...code_element?.props}>
@@ -67,7 +68,6 @@ type CodeBlockChildrenProps = { children: ReactNode; hide_line_numbers?: boolean
 function CodeBlockChildren({ children, hide_line_numbers }: CodeBlockChildrenProps) {
 	if (typeof children === "string") {
 		return children.split("\n").map((line, index) => (
-			// biome-ignore lint/suspicious/noArrayIndexKey: this will not change
 			<span key={index} className="block">
 				{line}
 			</span>
@@ -82,11 +82,10 @@ function CodeBlockChildren({ children, hide_line_numbers }: CodeBlockChildrenPro
 
 			return (
 				<span
-					// biome-ignore lint/suspicious/noArrayIndexKey: this will not change
 					key={i}
 					className={cn(
 						"block",
-						should_line_highlight && "-mx-5 border-[#a86efd] border-l-4 bg-[#d0b2ff1a] px-4",
+						should_line_highlight && "-mx-5 border-l-4 border-[#a86efd] bg-[#d0b2ff1a] px-4",
 					)}
 				>
 					{hide_line_numbers ? null : (

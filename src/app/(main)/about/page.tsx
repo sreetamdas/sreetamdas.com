@@ -19,7 +19,7 @@ export default function AboutPage() {
 
 	return (
 		<>
-			<h1 className="pt-10 pb-20 font-bold font-serif text-8xl tracking-tighter">/about</h1>
+			<h1 className="pb-20 pt-10 font-serif text-8xl font-bold tracking-tighter">/about</h1>
 			<MDXContent code={post.code} components={{ SocialLinks }} />
 			<ViewsCounter slug="/about" />
 			<FoobarEntry />

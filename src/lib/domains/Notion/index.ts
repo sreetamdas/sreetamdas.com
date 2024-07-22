@@ -3,11 +3,11 @@
  * - Loading keebs' info usin Notion API
  */
 
-import type {
-	DatabaseObjectResponse,
-	PageObjectResponse,
-	QueryDatabaseParameters,
-	QueryDatabaseResponse,
+import {
+	type DatabaseObjectResponse,
+	type PageObjectResponse,
+	type QueryDatabaseParameters,
+	type QueryDatabaseResponse,
 } from "@notionhq/client/build/src/api-endpoints";
 import { isEmpty, isUndefined } from "lodash-es";
 

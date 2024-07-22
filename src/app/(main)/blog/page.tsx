@@ -11,13 +11,13 @@ export default async function BlogArchivePage() {
 
 	return (
 		<>
-			<h1 className="pt-10 pb-20 font-bold font-serif text-8xl tracking-tighter">/blog</h1>
+			<h1 className="pb-20 pt-10 font-serif text-8xl font-bold tracking-tighter">/blog</h1>
 			<section className="grid gap-20">
 				{blog_posts_previews.map(
 					({ title, description, page_slug, page_path, published_at, url }) => (
 						<article key={page_slug} className="group grid gap-y-2">
 							<LinkTo href={url ?? page_path} className="w-fit hover:no-underline">
-								<h3 className="group-hover:gradient w-fit font-semibold font-serif text-[40px] leading-normal tracking-tight">
+								<h3 className="group-hover:gradient w-fit font-serif text-[40px] font-semibold leading-normal tracking-tight">
 									{title}
 								</h3>
 							</LinkTo>

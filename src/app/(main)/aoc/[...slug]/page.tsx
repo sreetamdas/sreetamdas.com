@@ -1,3 +1,8 @@
+import { isEmpty } from "lodash-es";
+import { type Metadata, type Route } from "next";
+import { notFound } from "next/navigation";
+import { Balancer } from "react-wrap-balancer";
+
 import { SITE_OG_IMAGE, SITE_TITLE_APPEND, SITE_URL } from "@/config";
 import { aoc_solutions } from "@/generated";
 import { MDXContent } from "@/lib/components/MDX";
@@ -5,10 +10,6 @@ import { ReadingProgress } from "@/lib/components/ProgressBar.client";
 import { Blockquote } from "@/lib/components/Typography";
 import { ViewsCounter } from "@/lib/components/ViewsCounter";
 import { cn } from "@/lib/helpers/utils";
-import { isEmpty } from "lodash-es";
-import type { Metadata, Route } from "next";
-import { notFound } from "next/navigation";
-import Balancer from "react-wrap-balancer";
 
 export const dynamicParams = false;
 
@@ -59,7 +60,6 @@ export default function AdventOfCodeSolutionPage({ params: { slug } }: PageParam
 			<script
 				type="application/ld+json"
 				suppressHydrationWarning
-				// biome-ignore lint/security/noDangerouslySetInnerHtml: needed
 				dangerouslySetInnerHTML={{ __html: JSON.stringify(post.structured_data) }}
 			/>
 			<ReadingProgress />
@@ -68,14 +68,13 @@ export default function AdventOfCodeSolutionPage({ params: { slug } }: PageParam
 			) : null}
 			<h1
 				className={cn(
-					"hyphens-manual pb-20 font-bold font-serif text-8xl tracking-tighter max-sm:text-7xl",
+					"hyphens-manual pb-20 font-serif text-8xl font-bold tracking-tighter max-sm:text-7xl",
 					!has_subheading && "pt-10",
 				)}
 			>
 				<Balancer>
 					<span
 						className="w-fit bg-gradient-to-r from-primary to-secondary box-decoration-slice bg-clip-text text-transparent"
-						// biome-ignore lint/security/noDangerouslySetInnerHtml: neeeded for &shy;
 						dangerouslySetInnerHTML={{ __html: post.title }}
 					/>
 				</Balancer>
@@ -87,7 +86,7 @@ export default function AdventOfCodeSolutionPage({ params: { slug } }: PageParam
 					blockquote: (props) => (
 						<Blockquote
 							{...props}
-							className="bg-karma-background font-light font-mono text-[#D7D7D7] text-sm [&_strong]:text-[rgb(var(--dark-purple))]"
+							className="bg-karma-background font-mono text-sm font-light text-[#D7D7D7] [&_strong]:text-[rgb(var(--dark-purple))]"
 						/>
 					),
 				}}

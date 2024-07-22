@@ -42,7 +42,7 @@ export async function getPageViews(slug: string): Promise<PageViewCountResponse>
 			limit: "1",
 		});
 
-		// biome-ignore lint/suspicious/noConsoleLog: needed
+		// eslint-disable-next-line no-console
 		console.log("GET", slug);
 
 		const request = await fetch(`${SUPABASE_API_BASE_URL}/page_details?${params.toString()}`, {
@@ -81,7 +81,7 @@ export async function upsertPageViews(slug: string): Promise<PageViewCountRespon
 			throw new Error("Supabase is not initialized");
 		}
 
-		// biome-ignore lint/suspicious/noConsoleLog: needed
+		// eslint-disable-next-line no-console
 		console.log("UPSERT", slug);
 
 		const request = await fetch(`${SUPABASE_API_BASE_URL}/rpc/upsert_page_view`, {
