@@ -1,8 +1,12 @@
+import { SITE_OG_IMAGE, SITE_TITLE_APPEND, SITE_URL } from "@/config";
 import { aoc_solutions } from "@/generated";
 import { MDXContent } from "@/lib/components/MDX";
 import { ReadingProgress } from "@/lib/components/ProgressBar.client";
+import { Blockquote } from "@/lib/components/Typography";
 import { ViewsCounter } from "@/lib/components/ViewsCounter";
-import type { Route } from "next";
+import { cn } from "@/lib/helpers/utils";
+import { isEmpty } from "lodash-es";
+import type { Metadata, Route } from "next";
 import { notFound } from "next/navigation";
 import Balancer from "react-wrap-balancer";
 
@@ -19,11 +23,36 @@ export async function generateStaticParams() {
 	}));
 }
 
+export async function generateMetadata({ params: { slug } }: PageParams): Promise<Metadata> {
+	const full_slug = slug.join("/");
+	const post = aoc_solutions.find((page) => page.page_slug === full_slug);
+
+	return {
+		title: `${post?.seo_title ?? post?.title} ${SITE_TITLE_APPEND}`,
+		description: post?.description,
+		openGraph: {
+			title: `${post?.seo_title ?? post?.title} ${SITE_TITLE_APPEND}`,
+			description: post?.description,
+			type: "article",
+			url: `${SITE_URL}/aoc/${full_slug}`,
+			images: { url: post?.image ?? SITE_OG_IMAGE },
+		},
+		twitter: {
+			card: "summary_large_image",
+			title: `${post?.seo_title ?? post?.title} ${SITE_TITLE_APPEND}`,
+			description: post?.description,
+			images: { url: post?.image ?? SITE_OG_IMAGE },
+		},
+	};
+}
+
 export default function AdventOfCodeSolutionPage({ params: { slug } }: PageParams) {
 	const full_slug = slug.join("/");
 	const post = aoc_solutions.find((page) => page.page_slug === full_slug);
 
 	if (!post) notFound();
+
+	const has_subheading = !isEmpty(post.subheading);
 
 	return (
 		<>
@@ -34,7 +63,15 @@ export default function AdventOfCodeSolutionPage({ params: { slug } }: PageParam
 				dangerouslySetInnerHTML={{ __html: JSON.stringify(post.structured_data) }}
 			/>
 			<ReadingProgress />
-			<h1 className="hyphens-manual pt-10 pb-20 font-bold font-serif text-8xl tracking-tighter max-sm:text-7xl">
+			{has_subheading ? (
+				<small className="pt-10 font-serif text-xl">{post.subheading}</small>
+			) : null}
+			<h1
+				className={cn(
+					"hyphens-manual pb-20 font-bold font-serif text-8xl tracking-tighter max-sm:text-7xl",
+					!has_subheading && "pt-10",
+				)}
+			>
 				<Balancer>
 					<span
 						className="w-fit bg-gradient-to-r from-primary to-secondary box-decoration-slice bg-clip-text text-transparent"
@@ -44,7 +81,17 @@ export default function AdventOfCodeSolutionPage({ params: { slug } }: PageParam
 				</Balancer>
 			</h1>
 
-			<MDXContent code={post.code} components={{}} />
+			<MDXContent
+				code={post.code}
+				components={{
+					blockquote: (props) => (
+						<Blockquote
+							{...props}
+							className="bg-karma-background font-light font-mono text-[#D7D7D7] text-sm [&_strong]:text-[rgb(var(--dark-purple))]"
+						/>
+					),
+				}}
+			/>
 
 			<ViewsCounter slug={(post.url as Route) ?? post.page_path} />
 		</>

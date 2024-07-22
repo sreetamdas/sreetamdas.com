@@ -4,7 +4,7 @@ import type { HTMLAttributes } from "react";
 
 import { LinkTo } from "@/lib/components/Anchor";
 import { Image } from "@/lib/components/Image";
-import { Code, Heading, UnorderedList } from "@/lib/components/Typography";
+import { Blockquote, Code, Heading, UnorderedList } from "@/lib/components/Typography";
 import { CodeBlock } from "@/lib/domains/shiki/components";
 
 export const customMDXComponents: MDXComponents = {
@@ -45,4 +45,5 @@ export const customMDXComponents: MDXComponents = {
 	// @ts-expect-error safer img
 	img: Image,
 	hr: () => <hr className="my-3" />,
+	blockquote: Blockquote,
 };

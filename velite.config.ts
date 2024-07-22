@@ -15,6 +15,8 @@ const aoc_solutions = defineCollection({
 	schema: s
 		.object({
 			title: s.string(),
+			seo_title: s.string().describe("Title shown in search results").optional(),
+			subheading: s.string().describe("Subheading right above the title").optional(),
 			description: s.string().optional(),
 			published_at: s.isodate(),
 			updated_at: s.isodate().optional(),

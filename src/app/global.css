@@ -9,13 +9,14 @@
 		--dark-purple: 157 134 233;
 		--dark-blue: 97 218 251;
 		--not-white: 247 241 255;
-		--not-black: 10 14 20;
+		--karma-background: 10 14 20;
 		--black: 0 0 0;
 
 		--color-primary: var(--light-purple);
 		--color-secondary: var(--light-blue);
-		--color-foreground: var(--not-black);
+		--color-foreground: var(--black);
 		--color-background: var(--not-white);
+		--color-karma-background: var(--karma-background);
 
 		--max-width: 650px;
 		--border-radius: 5px;
@@ -37,7 +38,7 @@
 		[data-color-scheme="dark"] {
 			--color-primary: var(--light-purple);
 			--color-secondary: var(--light-blue);
-			--color-foreground: var(--not-black);
+			--color-foreground: var(--black);
 			--color-background: var(--not-white);
 		}
 	}

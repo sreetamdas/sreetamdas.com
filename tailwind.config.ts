@@ -16,6 +16,7 @@ export default {
 				secondary: "rgb(var(--color-secondary))",
 				foreground: "rgb(var(--color-foreground))",
 				background: "rgb(var(--color-background))",
+				"karma-background": "rgb(var(--color-karma-background))",
 			},
 			borderRadius: {
 				global: "var(--border-radius)",

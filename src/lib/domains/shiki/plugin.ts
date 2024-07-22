@@ -1,7 +1,7 @@
+import { omit } from "lodash-es";
 import type { BundledLanguage } from "shiki/langs";
 import { visit } from "unist-util-visit";
 import type { UnistNode } from "unist-util-visit/lib";
-
 import { getSlimKarmaHighlighter } from "./highlighter";
 
 type TreeNode = UnistNode & {
@@ -13,27 +13,26 @@ type TreeNode = UnistNode & {
 export function remarkShiki() {
 	return async (tree: TreeNode) => {
 		const karma_highlighter = await getSlimKarmaHighlighter();
-		const loadedLanguages = karma_highlighter.getLoadedLanguages();
 
 		function visitor(node: TreeNode) {
 			const lines_to_highlight = calculateLinesToHighlight(node.meta);
-			const lang = !loadedLanguages.includes(node.lang) ? "js" : node.lang;
+			const meta = parseMeta(node.meta);
 			const html = karma_highlighter.codeToHtml(node.value, {
-				lang,
+				lang: node.lang,
 				theme: "karma",
 				transformers: [
 					{
-						code(node) {
-							node.properties["data-language"] = lang;
+						code(code) {
+							code.properties["data-language"] = node.lang;
 						},
-						line(node, line) {
+						line(el, line) {
 							if (Array.isArray(lines_to_highlight) && lines_to_highlight.includes(line)) {
-								node.properties["data-highlight"] = "true";
-								// addClassToHast(node, "highlight");
+								el.properties["data-highlight"] = "true";
 							}
 						},
 					},
 				],
+				meta: meta ?? {},
 			});
 
 			node.type = "html";
@@ -64,4 +63,35 @@ function calculateLinesToHighlight(meta = "") {
 			result.concat(Array.from({ length: end - start + 1 }, (_, i) => start + i)),
 		[],
 	);
+}
+
+const META_REGEX = /^([\w-]+)[=]?(?:"([^"]+)")?/;
+/**
+ * Parse meta string
+ */
+function parseMeta(meta: string | null) {
+	if (meta === null) {
+		return null;
+	}
+	let matches = meta.split(" ").reduce(
+		(matchesObj, string) => {
+			const match = string.match(META_REGEX);
+			if (match === null) {
+				return matchesObj;
+			}
+
+			return Object.assign(matchesObj, {
+				[match[1]]: match[2] ?? "true",
+			});
+		},
+		{} as Record<string, boolean | string>,
+	);
+
+	matches = omit(matches, ["highlight"]);
+
+	if (Object.keys(matches).length === 0) {
+		return null;
+	}
+
+	return matches;
 }

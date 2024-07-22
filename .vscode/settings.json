@@ -6,7 +6,6 @@
 		"*.module.css": "postcss",
 		"*.css": "tailwindcss"
 	},
-	"mdx.experimentalLanguageServer": true,
 	"tailwindCSS.classAttributes": ["class", "className", "ngClass", "tw"],
 	"tailwindCSS.includeLanguages": {
 		"plaintext": "html"
@@ -38,5 +37,12 @@
 	},
 	"[markdown]": {
 		"editor.defaultFormatter": "biomejs.biome"
+	},
+	"[mdx]": {
+		"editor.quickSuggestions": {
+			"other": "off",
+			"comments": "off",
+			"strings": "off"
+		}
 	}
 }

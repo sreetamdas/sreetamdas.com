@@ -73,3 +73,15 @@ export const Gradient = ({ children }: { children: ReactNode }) => (
 		{children}
 	</span>
 );
+
+export const Blockquote = ({ children, className, ...props }: HTMLAttributes<HTMLQuoteElement>) => (
+	<blockquote
+		className={cn(
+			"-mx-4 rounded bg-foreground/10 p-1 px-4 py-8 font-serif text-md transition-[color,background-color] dark:bg-foreground/20",
+			className,
+		)}
+		{...props}
+	>
+		{children}
+	</blockquote>
+);

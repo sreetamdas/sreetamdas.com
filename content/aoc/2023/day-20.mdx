@@ -1,10 +1,87 @@
 ---
 title: "Day 20: Pulse Propaga&shy;tion"
+subheading: "Advent of Code 2023"
+seo_title: "Advent of Code 2023, Day 20: Pulse Propagation"
 published: false
 published_at: "2024-08-01"
 ---
 
-Advent of Code 2023's Day 20 problem: Pulse Propagation is one of my favourite problems. I took quite some time to solve it, and looking back, it's a great way to showcase almost all the things I love about Eli&shy;xir.
+Advent of Code 2023's Day 20 problem: [Pulse Propagation][pulse-propagation] is one of my favourite problems. I took quite some time to solve it, and looking back, it's a great way to showcase almost all the things I love about Elixir.
+
+Here's my approach of solving this problem, accompanied by how Elixir's (mental) model helped me. I skip over some things which are "basic" to Elixir, so you can refer to the [official docs](https://elixir-lang.org) if something doesn't quite make sense. In a gist:
+
+- Elixir is a dynamic and functional language
+- `|>` is the **pipe operator**, pretty central to the language; passes result of the left operation as the first argument for the right operation
+- [Functions. Describe. The World.](https://www.youtube.com/watch?v=PAZTIAfaNr8)
+
+## Table of contents
+
+## Problem statement
+
+You can read the [original statement in full][pulse-propagation], but here's the important bits (emphasis not mine):
+
+
+> Modules communicate using **pulses**. Each pulse is either a **high pulse** or a **low pulse**. When a module sends a pulse, it sends that type of pulse to each module in its list of **destination modules**.
+>
+> There are several different types of modules:
+>
+> **Flip-flop modules** (prefix %) are either **on** or **off**; they are initially **off**. If a flip-flop module receives a high pulse, it is ignored and nothing happens. However, if a flip-flop module receives a low pulse, it **flips between on and off**. If it was off, it turns on and sends a high pulse. If it was on, it turns off and sends a low pulse.
+>
+> **Conjunction** modules (prefix &) **remember** the type of the most recent pulse received from **each** of their connected input modules; they initially default to remembering a **low pulse** for each input. When a pulse is received, the conjunction module first updates its memory for that input. Then, if it remembers **high pulses** for all inputs, it sends a **low pulse**; otherwise, it sends a **high pulse**.
+>
+> There is a single **broadcast module** (named broadcaster). When it receives a pulse, it sends the same pulse to all of its destination modules.
+>
+> Here at Desert Machine Headquarters, there is a module with a **single button** on it called, aptly, the button module. When you push the button, a single **low pulse** is sent directly to the broadcaster module.
+>
+> After pushing the button, you must wait until all pulses have been delivered and fully handled before pushing it again. Never push the button if modules are still processing pulses.
+>
+> Pulses are always processed **in the order they are sent**. So, if a pulse is sent to modules a, b, and c, and then module a processes its pulse and sends more pulses, the pulses sent to modules b and c would have to be handled first.
+
+{/* TODO add more */}
+
+## Parsing input
+
+Here's the sample input:
+
+```plain hide-line-numbers filename="input.txt"
+broadcaster -> a
+%a -> inv, con
+&inv -> b
+%b -> con
+&con -> output
+```
+
+We'll need to parse this and create a `Map` to store our module connections. Looking at our sample input, here's some pseudocode:
+
+```plain hide-line-numbers
+- split input to lines
+- iterate through each line
+- if starts with `%`, flip-flop
+- if starts with `&`, conjunction
+- broadcaster, output
+```
+
+
+```elixir
+defmodule PulsePropagation do
+  defp parse_input(input) do
+    input
+    |> String.split("\n")
+    |> dbg()
+  end
+
+  def part_1(input) do
+    input
+    |> parse_input()
+  end
+end
+
+input = File.read!("input.txt") # Read the local input file, throw error if not present
+
+PulsePropagation.part_1(input)
+```
+
+
 
 ## Result
 
@@ -300,3 +377,6 @@ defmodule PulsePropagation do
   end
 end
 ```
+
+
+[pulse-propagation]: https://adventofcode.com/2023/day/20
