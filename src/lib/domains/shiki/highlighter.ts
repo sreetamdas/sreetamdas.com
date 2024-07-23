@@ -35,7 +35,7 @@ function convertToThemeRegistration(theme: typeof defaultTheme): ThemeRegistrati
 	};
 }
 
-type KarmaHighlighter = HighlighterGeneric<BundledLangs, "karma">;
+export type KarmaHighlighter = HighlighterGeneric<BundledLangs, "karma">;
 export async function getSlimKarmaHighlighter(): Promise<KarmaHighlighter> {
 	const karma_shiki_theme = convertToThemeRegistration(defaultTheme);
 	const theme = normalizeTheme(karma_shiki_theme);

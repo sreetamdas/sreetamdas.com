@@ -6,11 +6,17 @@
 		"*.module.css": "postcss",
 		"*.css": "tailwindcss"
 	},
-	"mdx.experimentalLanguageServer": true,
 	"tailwindCSS.classAttributes": ["class", "className", "ngClass", "tw"],
 	"tailwindCSS.includeLanguages": {
 		"plaintext": "html"
 	},
 	"typescript.tsdk": "node_modules/typescript/lib",
-	"typescript.enablePromptUseWorkspaceTsdk": true
+	"typescript.enablePromptUseWorkspaceTsdk": true,
+	"[mdx]": {
+		"editor.quickSuggestions": {
+			"other": "off",
+			"comments": "off",
+			"strings": "off"
+		}
+	}
 }

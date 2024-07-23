@@ -43,18 +43,18 @@ This is a "normal" [link](https://www.google.com)
 
 ```typescript highlight="1,3-5"
 const htmlEscapes = {
-  "&": "&amp;",
-  "<": "&lt;",
-  ">": "&gt;",
-  // eslint-disable-next-line quotes
-  '"': "&quot;",
-  "'": "&#39;",
+	"&": "&amp;",
+	"<": "&lt;",
+	">": "&gt;",
+	// eslint-disable-next-line quotes
+	'"': "&quot;",
+	"'": "&#39;",
 } as const;
 
 function escapeHtml(html: string) {
-  return html.replace(
-    /[&<>"']/g,
-    (chr) => htmlEscapes[chr as keyof typeof htmlEscapes],
-  );
+	return html.replace(
+		/[&<>"']/g,
+		(chr) => htmlEscapes[chr as keyof typeof htmlEscapes],
+	);
 }
 ```

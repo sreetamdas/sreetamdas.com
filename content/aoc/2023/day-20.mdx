@@ -20,7 +20,6 @@ Here's my approach of solving this problem, accompanied by how Elixir's (mental)
 
 You can read the [original statement in full][pulse-propagation], but here's the important bits (emphasis not mine):
 
-
 > Modules communicate using **pulses**. Each pulse is either a **high pulse** or a **low pulse**. When a module sends a pulse, it sends that type of pulse to each module in its list of **destination modules**.
 >
 > There are several different types of modules:
@@ -39,6 +38,16 @@ You can read the [original statement in full][pulse-propagation], but here's the
 
 {/* TODO add more */}
 
+There's a lot of words to make the problem more thematic, but the takeaways are:
+
+- There's one input, `broadcaster` module
+- Modules can be of two types, flip-flop modules, denoted by `%`, and conjunction modules denoted by `&`.
+- Flip-flop modules switch between `on` and `off`, are initially `off`, but flip only when they receive a `low` pulse. `high` pulses are ignored.
+- Conjunctions modules will store the type of _most recent_ pulse received from _each_ of its inputs, initially `low` for each.
+- When it receives a pulse, it checks if it "remembers" `high` pulses from _all_ its inputs, and forwards a `low` pulse if so, `high` otherwise.
+
+With this in mind, we're ready to begin.
+
 ## Parsing input
 
 Here's the sample input:
@@ -51,7 +60,7 @@ broadcaster -> a
 &con -> output
 ```
 
-We'll need to parse this and create a `Map` to store our module connections. Looking at our sample input, here's some pseudocode:
+We'll need to parse this and create a [`Map`](https://hexdocs.pm/elixir/Map.html) to store our module connections. Looking at our sample input, here's some pseudocode:
 
 ```plain hide-line-numbers
 - split input to lines
@@ -60,7 +69,6 @@ We'll need to parse this and create a `Map` to store our module connections. Loo
 - if starts with `&`, conjunction
 - broadcaster, output
 ```
-
 
 ```elixir
 defmodule PulsePropagation do
@@ -81,7 +89,7 @@ input = File.read!("input.txt") # Read the local input file, throw error if not 
 PulsePropagation.part_1(input)
 ```
 
-
+<ParseInput />
 
 ## Result
 
@@ -132,13 +140,20 @@ defmodule PulsePropagation do
 
               matches ->
                 matches
-                |> Enum.reduce(conjs_map, fn dest_mod, map ->
-                  map
-                  |> Map.update(dest_mod, %{node => :low}, fn input_mods ->
-                    input_mods
-                    |> Map.put(node, :low)
-                  end)
-                end)
+                |> Enum.reduce(
+                  conjs_map,
+                  fn dest_mod, map ->
+                    map
+                    |> Map.update(
+                      dest_mod,
+                      %{node => :low},
+                      fn input_mods ->
+                        input_mods
+                        |> Map.put(node, :low)
+                      end
+                    )
+                  end
+                )
             end
 
           _, conjs_map ->
@@ -150,9 +165,12 @@ defmodule PulsePropagation do
     |> then(fn {entries, conjs_map} ->
       entries
       |> Map.new()
-      |> Map.merge(conjs_map, fn _, {:conj, dest, _}, inputs_map ->
-        {:conj, dest, inputs_map}
-      end)
+      |> Map.merge(
+        conjs_map,
+        fn _, {:conj, dest, _}, inputs_map ->
+          {:conj, dest, inputs_map}
+        end
+      )
     end)
   end
 
@@ -204,7 +222,9 @@ defmodule PulsePropagation do
                 dest_mods
                 |> Enum.map(&{&1, :high, node})
             end
-            |> then(&{&1, {:conj, dest_mods, updated_inputs}})
+            |> then(
+              &{&1, {:conj, dest_mods, updated_inputs}}
+            )
           end)
 
         {:output, _} = x ->
@@ -253,7 +273,10 @@ defmodule PulsePropagation do
     end)
   end
 
-  defp is_high_signal_to_dependents({_node, signal, sender}, dependents) do
+  defp is_high_signal_to_dependents(
+         {_node, signal, sender},
+         dependents
+       ) do
     cond do
       Enum.member?(dependents, sender) and signal == :high ->
         true
@@ -263,11 +286,22 @@ defmodule PulsePropagation do
     end
   end
 
-  defp process_signal(pulses, node_map, dependents \\ [], counts \\ {1, 0})
+  defp process_signal(
+         pulses,
+         node_map,
+         dependents \\ [],
+         counts \\ {1, 0}
+       )
 
-  defp process_signal([], node_map, _, counts), do: {{node_map, counts}, false}
+  defp process_signal([], node_map, _, counts),
+    do: {{node_map, counts}, false}
 
-  defp process_signal([pulse | rest_pulses], node_map, dependents, {low_count, high_count}) do
+  defp process_signal(
+         [pulse | rest_pulses],
+         node_map,
+         dependents,
+         {low_count, high_count}
+       ) do
     pulse_counts =
       case pulse do
         {_, :high, _} -> {low_count, high_count + 1}
@@ -278,9 +312,15 @@ defmodule PulsePropagation do
     |> then(fn {next_modules, updated_map} ->
       rest_pulses
       |> add_lists(next_modules)
-      |> process_signal(updated_map, dependents, pulse_counts)
+      |> process_signal(
+        updated_map,
+        dependents,
+        pulse_counts
+      )
       |> then(fn {result, dependent_high} ->
-        {result, dependent_high || is_high_signal_to_dependents(pulse, dependents)}
+        {result,
+         dependent_high ||
+           is_high_signal_to_dependents(pulse, dependents)}
       end)
     end)
   end
@@ -311,21 +351,31 @@ defmodule PulsePropagation do
     |> Enum.map(&{&1, :low, "broadcast"})
     |> then(fn init_pulses ->
       1..1000
-      |> Enum.reduce({parsed, {0, 0}, 0}, fn _, {map, {low_counts, high_counts}, all_off_count} ->
-        init_pulses
-        |> process_signal(map)
-        |> then(fn {{updated_map, {updated_low_counts, updated_high_counts}}, _} ->
-          cond do
-            check_if_all_flip_flops_are_off?(updated_map) ->
-              {updated_map, {low_counts + updated_low_counts, high_counts + updated_high_counts},
-               all_off_count + 1}
+      |> Enum.reduce(
+        {parsed, {0, 0}, 0},
+        fn _,
+           {map, {low_counts, high_counts}, all_off_count} ->
+          init_pulses
+          |> process_signal(map)
+          |> then(fn {{updated_map,
+                       {updated_low_counts,
+                        updated_high_counts}}, _} ->
+            cond do
+              check_if_all_flip_flops_are_off?(updated_map) ->
+                {updated_map,
+                 {low_counts + updated_low_counts,
+                  high_counts + updated_high_counts},
+                 all_off_count + 1}
 
-            true ->
-              {updated_map, {low_counts + updated_low_counts, high_counts + updated_high_counts},
-               all_off_count}
-          end
-        end)
-      end)
+              true ->
+                {updated_map,
+                 {low_counts + updated_low_counts,
+                  high_counts + updated_high_counts},
+                 all_off_count}
+            end
+          end)
+        end
+      )
       |> then(fn {_, {lows, highs}, _} -> lows * highs end)
     end)
     |> IO.inspect(label: "part_1")
@@ -348,10 +398,12 @@ defmodule PulsePropagation do
     |> then(fn init_pulses ->
       {parsed, [], 0, false}
       |> Stream.unfold(fn
-        {:halt, cycles_list, _, _res} when length(cycles_list) == length(dependents) ->
+        {:halt, cycles_list, _, _res}
+        when length(cycles_list) == length(dependents) ->
           nil
 
-        {_, cycles_list, _, _res} = input when length(cycles_list) == length(dependents) ->
+        {_, cycles_list, _, _res} = input
+        when length(cycles_list) == length(dependents) ->
           {input, {:halt, cycles_list}}
 
         {map, cycles_list, cycle_count, res} ->
@@ -360,15 +412,22 @@ defmodule PulsePropagation do
           |> then(fn
             {{updated_map, _}, true} ->
               {{map, cycles_list, cycle_count, res},
-               {updated_map, [cycle_count + 1 | cycles_list], cycle_count + 1, true}}
+               {updated_map,
+                [cycle_count + 1 | cycles_list],
+                cycle_count + 1, true}}
 
             {{updated_map, _}, false} ->
               {{map, cycles_list, cycle_count, res},
-               {updated_map, cycles_list, cycle_count + 1, false}}
+               {updated_map, cycles_list, cycle_count + 1,
+                false}}
           end)
       end)
-      |> Stream.filter(fn {_, _, _, dependent_high} -> dependent_high end)
-      |> Stream.map(fn {_, cycles_list, _, _} -> cycles_list end)
+      |> Stream.filter(fn {_, _, _, dependent_high} ->
+        dependent_high
+      end)
+      |> Stream.map(fn {_, cycles_list, _, _} ->
+        cycles_list
+      end)
       |> Enum.take(4)
       |> List.last()
       |> Enum.reduce(1, &lcm/2)
@@ -377,6 +436,5 @@ defmodule PulsePropagation do
   end
 end
 ```
-
 
 [pulse-propagation]: https://adventofcode.com/2023/day/20

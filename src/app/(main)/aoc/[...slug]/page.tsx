@@ -3,6 +3,8 @@ import { type Metadata, type Route } from "next";
 import { notFound } from "next/navigation";
 import { Balancer } from "react-wrap-balancer";
 
+import { ParseInput } from "./pulse-propagation";
+
 import { SITE_OG_IMAGE, SITE_TITLE_APPEND, SITE_URL } from "@/config";
 import { aoc_solutions } from "@/generated";
 import { MDXContent } from "@/lib/components/MDX";
@@ -86,9 +88,11 @@ export default function AdventOfCodeSolutionPage({ params: { slug } }: PageParam
 					blockquote: (props) => (
 						<Blockquote
 							{...props}
-							className="bg-karma-background font-mono text-sm font-light text-[#D7D7D7] [&_strong]:text-[rgb(var(--dark-purple))]"
+							className="my-5 bg-karma-background font-mono text-sm font-light text-[#D7D7D7] dark:bg-karma-background [&_strong]:text-[rgb(var(--dark-purple))]"
 						/>
 					),
+
+					ParseInput,
 				}}
 			/>
 

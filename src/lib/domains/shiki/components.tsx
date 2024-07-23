@@ -38,16 +38,16 @@ export const CodeBlock = (props: CodeBlockProps) => {
 	return (
 		<div className="my-5 flex flex-col">
 			<div
-				className="-ml-12 -mr-5 flex overflow-x-scroll rounded-tl-global rounded-tr-global pr-5 max-sm:-ml-4 max-sm:pr-2"
+				className="-ml-12 -mr-5 grid overflow-x-scroll rounded-tl-global rounded-tr-global pl-10 pr-5 max-sm:-ml-4 max-sm:pr-2"
 				style={style}
 			>
 				{filename !== null ? (
-					<span className="self-start rounded-t-global px-2 py-1 font-mono text-zinc-400 max-sm:text-xs">
+					<span className="justify-self-start rounded-t-global px-2 py-1 font-mono text-zinc-400 max-sm:text-xs">
 						{filename}
 					</span>
 				) : null}
 				{lang !== "plain" ? (
-					<span className="self-end rounded-t-global px-2 py-1 font-mono text-zinc-400 max-sm:text-xs">
+					<span className="justify-self-end rounded-t-global px-2 py-1 font-mono text-zinc-400 max-sm:text-xs">
 						{lang}
 					</span>
 				) : null}
@@ -86,6 +86,7 @@ function CodeBlockChildren({ children, hide_line_numbers }: CodeBlockChildrenPro
 					className={cn(
 						"block",
 						should_line_highlight && "-mx-5 border-l-4 border-[#a86efd] bg-[#d0b2ff1a] px-4",
+						hide_line_numbers && "pl-8",
 					)}
 				>
 					{hide_line_numbers ? null : (
