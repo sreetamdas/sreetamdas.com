@@ -2,6 +2,7 @@ import { isEmpty } from "lodash-es";
 import { type Metadata, type Route } from "next";
 import { notFound } from "next/navigation";
 import { Balancer } from "react-wrap-balancer";
+import { codeToKeyedTokens, createMagicMoveMachine } from "shiki-magic-move/core";
 
 import { ParseInput } from "./pulse-propagation";
 
@@ -11,6 +12,7 @@ import { MDXContent } from "@/lib/components/MDX";
 import { ReadingProgress } from "@/lib/components/ProgressBar.client";
 import { Blockquote } from "@/lib/components/Typography";
 import { ViewsCounter } from "@/lib/components/ViewsCounter";
+import { getSlimKarmaHighlighter } from "@/lib/domains/shiki";
 import { cn } from "@/lib/helpers/utils";
 
 export const dynamicParams = false;
@@ -49,13 +51,30 @@ export async function generateMetadata({ params: { slug } }: PageParams): Promis
 	};
 }
 
-export default function AdventOfCodeSolutionPage({ params: { slug } }: PageParams) {
+export default async function AdventOfCodeSolutionPage({ params: { slug } }: PageParams) {
 	const full_slug = slug.join("/");
 	const post = aoc_solutions.find((page) => page.page_slug === full_slug);
 
 	if (!post) notFound();
 
 	const has_subheading = !isEmpty(post.subheading);
+	const highlighter = await getSlimKarmaHighlighter();
+
+	const machine = createMagicMoveMachine(
+		(code) =>
+			codeToKeyedTokens(
+				highlighter,
+				code,
+				{
+					lang: "elixir",
+					theme: "karma",
+				},
+				true,
+			),
+		{},
+	);
+
+	const compiledSteps = stages.map((stage) => machine.commit(stage.code.trim()).current);
 
 	return (
 		<>
@@ -92,7 +111,7 @@ export default function AdventOfCodeSolutionPage({ params: { slug } }: PageParam
 						/>
 					),
 
-					ParseInput,
+					ParseInput: () => <ParseInput compiledSteps={compiledSteps} />,
 				}}
 			/>
 
@@ -100,3 +119,95 @@ export default function AdventOfCodeSolutionPage({ params: { slug } }: PageParam
 		</>
 	);
 }
+
+const stages = [
+	{
+		label: "Split input into lines",
+		code: `
+defp parse_input(input) do
+  input
+  |> String.split("\\n")
+end`,
+	},
+	{
+		label: "iterate through each line",
+		code: `
+defp parse_input(input) do
+  input
+  |> String.split("\\n")
+  |> Enum.map()
+end`,
+	},
+	{
+		label: "if starts with `%`, flip-flop",
+		code: `
+defp parse_input(input) do
+  input
+  |> String.split("\\n")
+  |> Enum.map(fn
+    "%" <> str ->
+      # flip-flop
+      [mod, dest_raw] = String.split(str, " -> ")
+
+      dest = String.split(dest_raw, ", ", trim: true)
+
+      {mod, {:flip, dest, :off}}
+  end)
+end`,
+	},
+	{
+		label: "if starts with `&`, conjunction",
+		code: `
+defp parse_input(input) do
+  input
+  |> String.split("\\n")
+  |> Enum.map(fn
+    "%" <> str ->
+      # flip-flop
+      [mod, dest_raw] = String.split(str, " -> ")
+
+      dest = String.split(dest_raw, ", ", trim: true)
+
+      {mod, {:flip, dest, :off}}
+
+    "&" <> str ->
+      # conjunction
+      [mod, dest_raw] = String.split(str, " -> ")
+
+      dest = String.split(dest_raw, ", ", trim: true)
+
+      {mod, {:conj, dest, %{}}}
+  end)
+end`,
+	},
+	{
+		label: "broadcaster, output",
+		code: `
+defp parse_input(input) do
+  input
+  |> String.split("\\n")
+  |> Enum.map(fn
+    "%" <> str ->
+      # flip-flop
+      [mod, dest_raw] = String.split(str, " -> ")
+
+      dest = String.split(dest_raw, ", ", trim: true)
+
+      {mod, {:flip, dest, :off}}
+
+    "&" <> str ->
+      # conjunction
+      [mod, dest_raw] = String.split(str, " -> ")
+
+      dest = String.split(dest_raw, ", ", trim: true)
+
+      {mod, {:conj, dest, %{}}}
+
+    "broadcaster -> " <> starter_mods ->
+      starter_mods
+      |> String.split(", ")
+      |> then(&{"broadcast", &1})
+  end)
+end`,
+	},
+];
