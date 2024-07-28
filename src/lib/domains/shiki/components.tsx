@@ -36,31 +36,34 @@ export const CodeBlock = (props: CodeBlockProps) => {
 	const lang = code_element?.props["data-language"];
 
 	return (
-		<div className="my-5 flex flex-col">
+		<figure className="my-5 flex flex-col">
 			<div
-				className="-ml-12 -mr-5 grid overflow-x-scroll rounded-tl-global rounded-tr-global pl-10 pr-5 max-sm:-ml-4 max-sm:pr-2"
+				className="-ml-4 -mr-5 grid grid-flow-col overflow-x-scroll rounded-tl-global rounded-tr-global pl-2 pr-2 sm:-ml-12 sm:pl-12 sm:pr-5"
 				style={style}
 			>
 				{filename !== null ? (
-					<span className="justify-self-start rounded-t-global px-2 py-1 font-mono text-zinc-400 max-sm:text-xs">
+					<span className="justify-self-start rounded-t-global py-1 font-mono text-zinc-400 max-sm:text-xs">
 						{filename}
 					</span>
 				) : null}
 				{lang !== "plain" ? (
-					<span className="justify-self-end rounded-t-global px-2 py-1 font-mono text-zinc-400 max-sm:text-xs">
+					<span className="justify-self-end rounded-t-global py-1 font-mono text-zinc-400 max-sm:text-xs">
 						{lang}
 					</span>
 				) : null}
 			</div>
 			<pre
-				className="-ml-12 -mr-5 overflow-x-scroll rounded-bl-global rounded-br-global p-5 text-xs max-sm:-ml-4 max-sm:px-2 sm:text-sm max-sm:[&>code>.block>.line]:whitespace-pre-wrap"
+				className={cn(
+					"-ml-12 -mr-5 overflow-x-scroll rounded-bl-global rounded-br-global p-5 text-xs max-sm:-ml-4 max-sm:px-2 sm:text-sm max-sm:[&>code>.block>.line]:whitespace-pre-wrap",
+					filename === null && lang === "plain" && "rounded-global",
+				)}
 				style={style}
 			>
 				<code {...code_element?.props}>
 					<CodeBlockChildren {...code_element?.props} hide_line_numbers={hide_line_numbers} />
 				</code>
 			</pre>
-		</div>
+		</figure>
 	);
 };
 

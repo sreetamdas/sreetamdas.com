@@ -45,14 +45,12 @@
 }
 
 @layer components {
-	.link-base {
-		@apply text-primary visited:no-underline hover:underline hover:decoration-current
-		hover:decoration-solid hover:decoration-2 focus-visible:outline-dashed focus-visible:outline-2
-		focus-visible:outline-offset-2 focus-visible:outline-secondary;
-	}
-
 	.gradient {
 		@apply bg-gradient-to-r from-primary to-secondary box-decoration-slice bg-clip-text text-transparent;
+	}
+
+	.link-base {
+		@apply relative text-primary after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:origin-bottom-right after:scale-x-0 after:bg-primary after:transition-transform after:duration-300 after:ease-[cubic-bezier(0.65_0.05_0.36_1)] visited:no-underline hover:after:origin-bottom-left hover:after:scale-x-100 focus-visible:outline-dashed focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-secondary;
 	}
 }
 

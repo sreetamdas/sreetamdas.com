@@ -70,30 +70,25 @@ We'll need to parse this and create a [`Map`](https://hexdocs.pm/elixir/Map.html
 - broadcaster, output
 ```
 
+A couple of handy Elixir-isms will help us out here:
+
 ```elixir
-defmodule PulsePropagation do
-  defp parse_input(input) do
-    input
-    |> String.split("\n")
-    |> dbg()
-  end
+# Anonymous functions
+[1, 2, 3]
+|> Enum.map(fn x -> x + 2 end) # [3, 4, 5]
 
-  def part_1(input) do
-    input
-    |> parse_input()
-  end
+# Pattern matching
+case string do # when string is "prefix_test"
+  "prefix_" <> rest = whole -> IO.inspect({whole, rest})
+  # {"prefix_test", "test"}
 end
-
-input = File.read!("input.txt") # Read the local input file, throw error if not present
-
-PulsePropagation.part_1(input)
 ```
 
 <ParseInput />
 
 ## Result
 
-```elixir
+```elixir filename="day_20.ex"
 defmodule PulsePropagation do
   defp parse_input(input) do
     input

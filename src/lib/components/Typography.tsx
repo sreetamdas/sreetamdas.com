@@ -59,7 +59,7 @@ export const UnorderedList = (props: HTMLAttributes<HTMLUListElement>) => (
 export const Code = ({ children, className, ...props }: HTMLAttributes<HTMLSpanElement>) => (
 	<code
 		className={cn(
-			"mx-0.5 rounded bg-foreground/10 p-1 font-mono text-[0.875em] transition-[color,background-color] dark:bg-foreground/20",
+			"mx-0.5 rounded-global bg-foreground/10 p-1 font-mono text-[0.875em] transition-[color,background-color] dark:bg-foreground/20",
 			className,
 		)}
 		{...props}
@@ -77,7 +77,7 @@ export const Gradient = ({ children }: { children: ReactNode }) => (
 export const Blockquote = ({ children, className, ...props }: HTMLAttributes<HTMLQuoteElement>) => (
 	<blockquote
 		className={cn(
-			"text-md -mx-4 rounded bg-foreground/10 p-1 px-4 py-8 font-serif transition-[color,background-color] dark:bg-foreground/20",
+			"text-md -mx-4 rounded-global bg-foreground/10 p-1 px-4 py-8 font-serif transition-[color,background-color] dark:bg-foreground/20",
 			className,
 		)}
 		{...props}
