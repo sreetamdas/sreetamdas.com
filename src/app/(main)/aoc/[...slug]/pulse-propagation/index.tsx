@@ -70,7 +70,7 @@ export const ParseInput = () => {
 						theme="karma"
 						highlighter={highlighter}
 						code={stages[currentStageIndex].code.trim()}
-						options={{ duration: 300, stagger: 0, lineNumbers: true }}
+						options={{ duration: 300, stagger: 0.3, lineNumbers: true }}
 						className="-ml-12 -mr-5 overflow-x-scroll rounded-bl-global rounded-br-global p-5 text-xs max-sm:-ml-4 max-sm:px-2 sm:text-sm [&>.shiki-magic-move-line-number]:mr-2 [&>.shiki-magic-move-line-number]:w-[1.5rem] [&>.shiki-magic-move-line-number]:whitespace-nowrap [&>.shiki-magic-move-line-number]:pr-2 [&>.shiki-magic-move-line-number]:text-right max-sm:[&>.shiki-magic-move-line-number]:hidden"
 					/>
 				)}
@@ -94,7 +94,31 @@ end`,
 defp parse_input(input) do
   input
   |> String.split("\\n")
-  |> Enum.map()
+  |> Enum.map(fn line -> line end)
+end`,
+	},
+	{
+		label: "Pattern match each line",
+		code: `
+defp parse_input(input) do
+  input
+  |> String.split("\\n")
+  |> Enum.map(fn line ->
+    case line do
+      "%" <> str -> line
+    end
+  end)
+end`,
+	},
+	{
+		label: "Pattern match in the anonymous function itself",
+		code: `
+defp parse_input(input) do
+  input
+  |> String.split("\\n")
+  |> Enum.map(fn
+    "%" <> str -> str
+  end)
 end`,
 	},
 	{

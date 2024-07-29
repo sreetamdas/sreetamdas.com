@@ -77,10 +77,19 @@ A couple of handy Elixir-isms will help us out here:
 [1, 2, 3]
 |> Enum.map(fn x -> x + 2 end) # [3, 4, 5]
 
-# Pattern matching
+
+# Pattern matching, and match (=) and capture (&) operator
+# &(&1 + 2) is the same as x -> x + 2
+[first | rest] = Enum.map([1, 2, 3], &(&1 + 2))
+IO.inspect({first, rest}) # {3, [4, 5]}
+
+
+# Compare a variable until we find a match
 case string do # when string is "prefix_test"
-  "prefix_" <> rest = whole -> IO.inspect({whole, rest})
-  # {"prefix_test", "test"}
+  "prefix_" <> rest = whole ->
+    IO.inspect({whole, rest}) # {"prefix_test", "test"}
+
+  _ -> nil # all other cases
 end
 ```
 
