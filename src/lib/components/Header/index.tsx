@@ -8,7 +8,7 @@ import { ColorSchemeToggle } from "@/lib/domains/colorScheme/client";
 import { cn } from "@/lib/helpers/utils";
 
 export const Header = ({ className }: HTMLAttributes<HTMLDivElement>) => (
-	<div className={cn("sticky top-0 z-10 h-[60px] w-screen bg-background", className)}>
+	<div className={cn("sticky top-0 z-10 h-[60px] max-w-full w-screen bg-background", className)}>
 		<a
 			id="skip-link"
 			href="#main-content"
