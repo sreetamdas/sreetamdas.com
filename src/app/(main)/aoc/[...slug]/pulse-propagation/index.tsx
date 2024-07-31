@@ -152,6 +152,7 @@ defp parse_input(input) do
 
       dest = String.split(dest_raw, ", ", trim: true)
 
+      # mod name, mod type, outputs, initial state :off
       {mod, {:flip, dest, :off}}
   end)
 end`,
@@ -169,6 +170,7 @@ defp parse_input(input) do
 
       dest = String.split(dest_raw, ", ", trim: true)
 
+      # mod name, mod type, outputs, initial state :off
       {mod, {:flip, dest, :off}}
 
     "&" <> str ->
@@ -177,6 +179,7 @@ defp parse_input(input) do
 
       dest = String.split(dest_raw, ", ", trim: true)
 
+      # mod name, mod type, outputs, inputs empty/unknown
       {mod, {:conj, dest, %{}}}
   end)
 end`,
@@ -274,7 +277,84 @@ conjunction_modules_input_map =
   end)`,
 	},
 	{
-		label: "Final",
+		label: "Pattern match on entry",
+		code: `
+conjs =
+  init_entries
+  |> Enum.flat_map(fn
+    {node, {:conj, _, _}} -> [node]
+    _ -> []
+  end)
+  
+conjunction_modules_input_map =
+  init_entries
+  |> Enum.reduce(%{}, fn
+# since we need to match exactly, we use _ to match 
+# ignored variables in our tuple
+    {node, {_, destination_modules, _}}, conjs_map ->
+      destination_modules
+
+    _, conjs_map ->
+      conjs_map
+  end)`,
+	},
+	{
+		label: (
+			<>
+				Filter mods which are a part of <Code>conjs</Code>
+			</>
+		),
+		code: `
+conjs =
+  init_entries
+  |> Enum.flat_map(fn
+    {node, {:conj, _, _}} -> [node]
+    _ -> []
+  end)
+  
+conjunction_modules_input_map =
+  init_entries
+  |> Enum.reduce(%{}, fn
+    {node, {_, dest_mods, _}}, conjs_map ->
+      dest_mods
+      |> Enum.filter(&Enum.member?(conjs, &1))
+
+    _, conjs_map ->
+      conjs_map
+  end)`,
+	},
+	{
+		label: "Pattern match, add base (empty) case",
+		code: `
+conjs =
+  init_entries
+  |> Enum.flat_map(fn
+    {node, {:conj, _, _}} -> [node]
+    _ -> []
+  end)
+  
+conjunction_modules_input_map =
+  init_entries
+  |> Enum.reduce(%{}, fn
+    {node, {_, dest_mods, _}}, conjs_map ->
+      dest_mods
+      |> Enum.filter(&Enum.member?(conjs, &1))
+      |> case do
+        [] ->
+          conjs_map
+      end
+
+
+    _, conjs_map ->
+      conjs_map
+  end)`,
+	},
+	{
+		label: (
+			<>
+				Reduce matched <Code>conj</Code> mods
+			</>
+		),
 		code: `
 conjs =
   init_entries
@@ -298,19 +378,150 @@ conjunction_modules_input_map =
           |> Enum.reduce(conjs_map, fn
             dest_mod, map ->
               map
-              |> Map.update(
-                dest_mod,
-                %{node => :low},
-                fn input_mods ->
-                  input_mods
-                  |> Map.put(node, :low)
-                end
-              )
-          end)
-      end
+          end
+      end 
+
 
     _, conjs_map ->
       conjs_map
   end)`,
+	},
+	{
+		label: (
+			<>
+				Update <Code>Map</Code> with init values
+			</>
+		),
+		code: `
+conjs =
+  init_entries
+  |> Enum.flat_map(fn
+    {node, {:conj, _, _}} -> [node]
+    _ -> []
+  end)
+  
+conjunction_modules_input_map =
+  init_entries
+  |> Enum.reduce(%{}, fn
+    {node, {_, dest_mods, _}}, conjs_map ->
+      dest_mods
+      |> Enum.filter(&Enum.member?(conjs, &1))
+      |> case do
+        [] ->
+          conjs_map
+
+        matches ->
+          matches
+          |> Enum.reduce(conjs_map, fn dest_mod, map ->
+            map
+            |> Map.update(
+              dest_mod,
+              # default value when dest_mod key is empty
+              %{node => :low},
+              fn input_mods ->
+                input_mods
+                # all inputs are initially :low
+                |> Map.put(node, :low)
+            end)
+          end) 
+      end 
+
+
+    _, conjs_map ->
+      conjs_map
+  end)`,
+	},
+	{
+		label: (
+			<>
+				Create <Code>Map</Code> from processed list of tuples
+			</>
+		),
+		code: `
+conjs =
+  init_entries
+  |> Enum.flat_map(fn
+    {node, {:conj, _, _}} -> [node]
+    _ -> []
+  end)
+  
+conjunction_modules_input_map =
+  init_entries
+  |> Enum.reduce(%{}, fn
+    {node, {_, dest_mods, _}}, conjs_map ->
+      dest_mods
+      |> Enum.filter(&Enum.member?(conjs, &1))
+      |> case do
+        [] ->
+          conjs_map
+
+        matches ->
+          matches
+          |> Enum.reduce(conjs_map, fn dest_mod, map ->
+            map
+            |> Map.update(
+              dest_mod,
+              %{node => :low},
+              fn input_mods ->
+                input_mods
+                |> Map.put(node, :low)
+            end)
+          end) 
+      end 
+
+    _, conjs_map ->
+      conjs_map
+  end)
+
+
+init_entries
+|> Map.new()`,
+	},
+	{
+		label: <>Merge maps based on keys</>,
+		code: `
+conjs =
+  init_entries
+  |> Enum.flat_map(fn
+    {node, {:conj, _, _}} -> [node]
+    _ -> []
+  end)
+  
+conjunction_modules_input_map =
+  init_entries
+  |> Enum.reduce(%{}, fn
+    {node, {_, dest_mods, _}}, conjs_map ->
+      dest_mods
+      |> Enum.filter(&Enum.member?(conjs, &1))
+      |> case do
+        [] ->
+          conjs_map
+
+        matches ->
+          matches
+          |> Enum.reduce(conjs_map, fn dest_mod, map ->
+            map
+            |> Map.update(
+              dest_mod,
+              %{node => :low},
+              fn input_mods ->
+                input_mods
+                |> Map.put(node, :low)
+            end)
+          end) 
+      end 
+
+    _, conjs_map ->
+      conjs_map
+  end)
+
+
+init_entries
+|> Map.new()
+|> Map.merge(conjunction_modules_input_map, fn
+  # key, map_1 value, map_2 value
+  _, {:conj, dest, _}, inputs_map ->
+    {:conj, dest, inputs_map}
+end)`,
 	},
 ];

@@ -1,5 +1,5 @@
 ---
-title: "Day 20: Pulse Propaga&shy;tion"
+title: "How I solved Day 20: Pulse Propaga&shy;tion in Elixir"
 subheading: "Advent of Code 2023"
 seo_title: "Advent of Code 2023, Day 20: Pulse Propagation"
 published: false
@@ -19,6 +19,8 @@ doesn't quite make sense. In a gist:
 - `|>` is the [pipe operator](https://hexdocs.pm/elixir/enumerable-and-streams.html#the-pipe-operator),
   pretty central to the language; passes result of the left operation as the
   first argument for the right operation
+- There is no `return` keyword, the value returned by a function is the value
+  returned by its last expression
 - [Functions. Describe. The World.](https://www.youtube.com/watch?v=PAZTIAfaNr8)
 
 ## Table of contents
@@ -157,6 +159,94 @@ We'll need to iterate over the modules and create a map of `conj` modules and
 their inputs, and then merge them.
 
 <ParseInput conjunctionInputsStage />
+
+All together now:
+
+```elixir
+defp parse_input(input) do
+  input
+  |> String.split("\n")
+  |> Enum.map(fn
+    "broadcaster -> " <> starter_mods ->
+      starter_mods
+      |> String.split(", ")
+      |> then(&{"broadcast", &1})
+
+    "%" <> str ->
+      [mod, dest_raw] = String.split(str, " -> ")
+
+      dest = String.split(dest_raw, ", ", trim: true)
+
+      {mod, {:flip, dest, :off}}
+
+    "&" <> str ->
+      [mod, dest_raw] = String.split(str, " -> ")
+
+      dest = String.split(dest_raw, ", ", trim: true)
+
+      {mod, {:conj, dest, %{}}}
+  end)
+  |> then(fn init_entries ->
+    conjs =
+      init_entries
+      |> Enum.flat_map(fn
+        {node, {:conj, _, _}} -> [node]
+        _ -> []
+      end)
+
+    conjunction_modules_input_map =
+      init_entries
+      |> Enum.reduce(%{}, fn
+        {node, {_, dest_mods, _}}, conjs_map ->
+          dest_mods
+          |> Enum.filter(&Enum.member?(conjs, &1))
+          |> case do
+            [] ->
+              conjs_map
+
+            matches ->
+              matches
+              |> Enum.reduce(conjs_map, fn
+                dest_mod, map ->
+                  map
+                  |> Map.update(
+                    dest_mod,
+                    %{node => :low},
+                    fn input_mods ->
+                      input_mods
+                      |> Map.put(node, :low)
+                  end)
+              end)
+          end
+
+        _, conjs_map ->
+          conjs_map
+      end)
+
+    {init_entries, conjunction_modules_input_map}
+  end)
+  |> then(fn {entries, conjs_map} ->
+    entries
+    |> Map.new()
+    |> Map.merge(conjs_map, fn
+      _, {:conj, dest, _}, inputs_map ->
+        {:conj, dest, inputs_map}
+    end)
+  end)
+end
+```
+
+Parsing our example input now gives us an accurate map:
+
+```elixir
+%{
+  "a" => {:flip, ["inv", "con"], :off},
+  "b" => {:flip, ["con"], :off},
+  "broadcast" => ["a"],
+  "con" => {:conj, ["output"], %{"a" => :low, "b" => :low}},
+  "inv" => {:conj, ["b"], %{"a" => :low}}
+}
+```
 
 ## Result
 
