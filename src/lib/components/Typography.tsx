@@ -59,7 +59,7 @@ export const UnorderedList = (props: HTMLAttributes<HTMLUListElement>) => (
 export const Code = ({ children, className, ...props }: HTMLAttributes<HTMLSpanElement>) => (
 	<code
 		className={cn(
-			"mx-0.5 rounded-global bg-secondary/20 px-1 py-0.5 font-mono text-[0.9em] transition-[color,background-color] dark:bg-secondary/40",
+			"mx-0.5 rounded-global bg-secondary/20 px-1 py-0.5 font-mono text-[0.9em] transition-[color,background-color] dark:bg-secondary/35",
 			className,
 		)}
 		{...props}
