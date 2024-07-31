@@ -76,7 +76,7 @@ export default function AdventOfCodeSolutionPage({ params: { slug } }: PageParam
 			>
 				<Balancer>
 					<span
-						className="w-fit bg-gradient-to-r from-primary to-secondary box-decoration-slice bg-clip-text text-transparent"
+						className="whitespace-pre-wrap bg-gradient-to-r from-primary to-secondary box-decoration-slice bg-clip-text text-transparent"
 						dangerouslySetInnerHTML={{ __html: post.title }}
 					/>
 				</Balancer>
