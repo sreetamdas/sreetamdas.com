@@ -6,45 +6,74 @@ published: false
 published_at: "2024-08-01"
 ---
 
-Advent of Code 2023's Day 20 problem: [Pulse Propagation][pulse-propagation] is one of my favourite problems. I took quite some time to solve it, and looking back, it's a great way to showcase almost all the things I love about Elixir.
+Advent of Code 2023's Day 20 problem: [Pulse Propagation][pulse-propagation] is
+one of my favourite problems. I took quite some time to solve it, and looking
+back, it's a great way to showcase almost all the things I love about Elixir.
 
-Here's my approach of solving this problem, accompanied by how Elixir's (mental) model helped me. I skip over some things which are "basic" to Elixir, so you can refer to the [official docs](https://elixir-lang.org) if something doesn't quite make sense. In a gist:
+Here's my approach of solving this problem, accompanied by how Elixir's
+(mental) model helped me. I skip over some things which are "basic" to Elixir,
+so you can refer to the [official docs](https://elixir-lang.org) if something
+doesn't quite make sense. In a gist:
 
 - Elixir is a dynamic and functional language
-- `|>` is the **pipe operator**, pretty central to the language; passes result of the left operation as the first argument for the right operation
+- `|>` is the **pipe operator**, pretty central to the language; passes result
+  of the left operation as the first argument for the right operation
 - [Functions. Describe. The World.](https://www.youtube.com/watch?v=PAZTIAfaNr8)
 
 ## Table of contents
 
 ## Problem statement
 
-You can read the [original statement in full][pulse-propagation], but here's the important bits (emphasis not mine):
+You can read the [original statement in full][pulse-propagation], but here's
+the important bits (emphasis not mine):
 
-> Modules communicate using **pulses**. Each pulse is either a **high pulse** or a **low pulse**. When a module sends a pulse, it sends that type of pulse to each module in its list of **destination modules**.
+> Modules communicate using **pulses**. Each pulse is either a **high pulse**
+> or a **low pulse**. When a module sends a pulse, it sends that type of pulse
+> to each module in its list of **destination modules**.
 >
 > There are several different types of modules:
 >
-> **Flip-flop modules** (prefix %) are either **on** or **off**; they are initially **off**. If a flip-flop module receives a high pulse, it is ignored and nothing happens. However, if a flip-flop module receives a low pulse, it **flips between on and off**. If it was off, it turns on and sends a high pulse. If it was on, it turns off and sends a low pulse.
+> **Flip-flop modules** (prefix %) are either **on** or **off**; they are
+> initially **off**. If a flip-flop module receives a high pulse, it is ignored
+> and nothing happens. However, if a flip-flop module receives a low pulse, it
+> **flips between on and off**. If it was off, it turns on and sends a high
+> pulse. If it was on, it turns off and sends a low pulse.
 >
-> **Conjunction** modules (prefix &) **remember** the type of the most recent pulse received from **each** of their connected input modules; they initially default to remembering a **low pulse** for each input. When a pulse is received, the conjunction module first updates its memory for that input. Then, if it remembers **high pulses** for all inputs, it sends a **low pulse**; otherwise, it sends a **high pulse**.
+> **Conjunction** modules (prefix &) **remember** the type of the most recent
+> pulse received from **each** of their connected input modules; they initially
+> default to remembering a **low pulse** for each input. When a pulse is
+> received, the conjunction module first updates its memory for that input.
+> Then, if it remembers **high pulses** for all inputs, it sends a **low pulse**;
+> otherwise, it sends a **high pulse**.
 >
-> There is a single **broadcast module** (named broadcaster). When it receives a pulse, it sends the same pulse to all of its destination modules.
+> There is a single **broadcast module** (named broadcaster). When it receives
+> a pulse, it sends the same pulse to all of its destination modules.
 >
-> Here at Desert Machine Headquarters, there is a module with a **single button** on it called, aptly, the button module. When you push the button, a single **low pulse** is sent directly to the broadcaster module.
+> Here at Desert Machine Headquarters, there is a module with a
+> **single button** on it called, aptly, the button module. When you push the
+> button, a single **low pulse** is sent directly to the broadcaster module.
 >
-> After pushing the button, you must wait until all pulses have been delivered and fully handled before pushing it again. Never push the button if modules are still processing pulses.
+> After pushing the button, you must wait until all pulses have been delivered
+> and fully handled before pushing it again. Never push the button if modules
+> are still processing pulses.
 >
-> Pulses are always processed **in the order they are sent**. So, if a pulse is sent to modules a, b, and c, and then module a processes its pulse and sends more pulses, the pulses sent to modules b and c would have to be handled first.
+> Pulses are always processed **in the order they are sent**. So, if a pulse is
+> sent to modules a, b, and c, and then module a processes its pulse and sends
+> more pulses, the pulses sent to modules b and c would have to be handled first.
 
 {/* TODO add more */}
 
 There's a lot of words to make the problem more thematic, but the takeaways are:
 
 - There's one input, `broadcaster` module
-- Modules can be of two types, flip-flop modules, denoted by `%`, and conjunction modules denoted by `&`.
-- Flip-flop modules switch between `on` and `off`, are initially `off`, but flip only when they receive a `low` pulse. `high` pulses are ignored.
-- Conjunctions modules will store the type of _most recent_ pulse received from _each_ of its inputs, initially `low` for each.
-- When it receives a pulse, it checks if it "remembers" `high` pulses from _all_ its inputs, and forwards a `low` pulse if so, `high` otherwise.
+- Modules can be of two types, flip-flop modules, denoted by `%`, and
+  conjunction modules denoted by `&`.
+- Flip-flop modules switch between `on` and `off`, are initially `off`, but flip
+  only when they receive a `low` pulse. `high` pulses are ignored.
+- Conjunctions modules will store the type of _most recent_ pulse received from
+  _each_ of its inputs, initially `low` for each.
+- When it receives a pulse, it checks if it "remembers" `high` pulses from _all_
+  its inputs, and forwards a `low` pulse if so, `high` otherwise.
 
 With this in mind, we're ready to begin.
 
@@ -60,7 +89,8 @@ broadcaster -> a
 &con -> output
 ```
 
-We'll need to parse this and create a [`Map`](https://hexdocs.pm/elixir/Map.html) to store our module connections. Looking at our sample input, here's some pseudocode:
+We'll need to parse this and create a [`Map`](https://hexdocs.pm/elixir/Map.html)
+to store our module connections. Looking at our sample input, here's some pseudocode:
 
 ```plain hide-line-numbers
 - split input to lines
@@ -102,7 +132,7 @@ case string do # when string is "prefix_test"
   "prefix_" <> rest = whole ->
     IO.inspect({whole, rest}) # {"prefix_test", "test"}
 
-  _ -> nil # _ matches all remaining cases
+  _ -> nil # base case, _ matches all remaining cases
 end
 ```
 
@@ -122,7 +152,8 @@ And processing the given input thus far gives us:
 ```
 
 ...but there's a problem: we don't have the inputs mapped for the `conj` modules.
-We'll need to iterate over the modules and create a map of `conj` modules and their inputs, and then merge them.
+We'll need to iterate over the modules and create a map of `conj` modules and
+their inputs, and then merge them.
 
 <ParseInput conjunctionInputsStage />
 

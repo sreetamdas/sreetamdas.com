@@ -95,7 +95,7 @@ function CodeBlockChildren({ children, hide_line_numbers }: CodeBlockChildrenPro
 					{hide_line_numbers ? null : (
 						<span
 							className={cn(
-								"-ml-2 mr-2 hidden w-[2rem] select-none pr-2 text-right text-zinc-600 md:inline-block",
+								"inline-block w-0 select-none text-right text-zinc-600 max-sm:opacity-0 sm:-ml-2 sm:mr-2 sm:w-[2rem] sm:pr-2",
 								should_line_highlight && "text-[#a86efd]",
 							)}
 							aria-hidden="true"

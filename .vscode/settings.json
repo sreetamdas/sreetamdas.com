@@ -17,6 +17,7 @@
 			"other": "off",
 			"comments": "off",
 			"strings": "off"
-		}
+		},
+		"editor.rulers": [60, 80]
 	}
 }
