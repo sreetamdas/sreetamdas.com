@@ -12,8 +12,9 @@ import { type KarmaHighlighter } from "@/lib/domains/shiki/highlighter";
 type Props = {
 	conjunctionInputsStage?: boolean;
 };
-export const ParseInput = ({ conjunctionInputsStage }: Props) => {
-	const [currentStageIndex, setCurrentStageIndex] = useState(conjunctionInputsStage ? 7 : 0);
+export const ParseInput = ({ conjunctionInputsStage: conjInputsStage }: Props) => {
+	const [currentStageIndex, setCurrentStageIndex] = useState(conjInputsStage ? 7 : 0);
+	const indexBounds = [0, conjInputsStage ? stages.length - 1 : 6];
 	const [highlighter, setHighlighter] = useState<KarmaHighlighter>();
 
 	useEffect(() => {
@@ -28,19 +29,25 @@ export const ParseInput = ({ conjunctionInputsStage }: Props) => {
 		setCurrentStageIndex((i) => Math.max(i - 1, 0));
 	}
 	function moveForward() {
-		setCurrentStageIndex((i) => Math.min(i + 1, conjunctionInputsStage ? stages.length - 1 : 6));
+		setCurrentStageIndex((i) => Math.min(i + 1, conjInputsStage ? stages.length - 1 : 6));
 	}
 
 	return (
 		<figure className="my-10">
 			<div className="flex justify-between gap-2">
 				<button
-					className="group flex items-center gap-x-1 rounded-global bg-primary/20 px-4 py-1 text-xs text-foreground transition-[color,background-color] hover:bg-primary/25"
+					className="group flex items-center gap-x-1 rounded-global bg-primary/20 px-4 py-1 text-xs text-foreground transition-[color,background-color] enabled:hover:bg-primary/25 disabled:cursor-not-allowed disabled:bg-primary/10"
 					onClick={moveBackward}
+					disabled={currentStageIndex === indexBounds[0]}
+					aria-disabled={currentStageIndex === indexBounds[0]}
+					aria-describedby="previous-stage-button-disabled-description"
 				>
+					<span id="previous-stage-button-disabled-description" className="sr-only">
+						Currently at first possible stage
+					</span>
 					<FaLongArrowAltLeft
 						aria-label="Previous step"
-						className="text-primary/50 transition-[color] group-hover:text-primary"
+						className="text-primary/50 transition-[color] enabled:group-hover:text-primary"
 					/>
 					<span className="sr-only sm:not-sr-only">Previous</span>
 				</button>
@@ -48,13 +55,19 @@ export const ParseInput = ({ conjunctionInputsStage }: Props) => {
 					{stages[currentStageIndex].label}
 				</figcaption>
 				<button
-					className="group flex items-center gap-x-1 rounded-global bg-primary/20 px-4 py-1 text-xs text-foreground transition-[color,background-color] hover:bg-primary/25"
+					className="group flex items-center gap-x-1 rounded-global bg-primary/20 px-4 py-1 text-xs text-foreground transition-[color,background-color] enabled:hover:bg-primary/25 disabled:cursor-not-allowed disabled:bg-primary/10"
 					onClick={moveForward}
+					disabled={currentStageIndex === indexBounds[1]}
+					aria-disabled={currentStageIndex === indexBounds[1]}
+					aria-describedby="next-stage-button-disabled-description"
 				>
+					<span id="next-stage-button-disabled-description" className="sr-only">
+						Currently at last possible stage
+					</span>
 					<span className="sr-only sm:not-sr-only">Next</span>
 					<FaLongArrowAltRight
 						aria-label="Next step"
-						className="text-primary/50 transition-[color] group-hover:text-primary"
+						className="text-primary/50 transition-[color] enabled:group-hover:text-primary"
 					/>
 				</button>
 			</div>
