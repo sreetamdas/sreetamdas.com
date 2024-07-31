@@ -36,7 +36,7 @@ export const ParseInput = ({ conjunctionInputsStage: conjInputsStage }: Props) =
 		<figure className="my-10">
 			<div className="flex justify-between gap-2">
 				<button
-					className="group flex items-center gap-x-1 rounded-global bg-primary/20 px-4 py-1 text-xs text-foreground transition-[color,background-color] enabled:hover:bg-primary/25 disabled:cursor-not-allowed disabled:bg-primary/10"
+					className="group flex items-center gap-x-1 rounded-global bg-primary/20 px-2 py-1 text-xs text-foreground transition-[color,background-color] enabled:hover:bg-primary/25 disabled:cursor-not-allowed disabled:bg-primary/10 sm:px-4"
 					onClick={moveBackward}
 					disabled={currentStageIndex === indexBounds[0]}
 					aria-disabled={currentStageIndex === indexBounds[0]}
@@ -47,7 +47,7 @@ export const ParseInput = ({ conjunctionInputsStage: conjInputsStage }: Props) =
 					</span>
 					<FaLongArrowAltLeft
 						aria-label="Previous step"
-						className="text-primary/50 transition-[color] enabled:group-hover:text-primary"
+						className="text-primary/50 transition-[color] group-hover:text-primary"
 					/>
 					<span className="sr-only sm:not-sr-only">Previous</span>
 				</button>
@@ -55,7 +55,7 @@ export const ParseInput = ({ conjunctionInputsStage: conjInputsStage }: Props) =
 					{stages[currentStageIndex].label}
 				</figcaption>
 				<button
-					className="group flex items-center gap-x-1 rounded-global bg-primary/20 px-4 py-1 text-xs text-foreground transition-[color,background-color] enabled:hover:bg-primary/25 disabled:cursor-not-allowed disabled:bg-primary/10"
+					className="group flex items-center gap-x-1 rounded-global bg-primary/20 px-2 py-1 text-xs text-foreground transition-[color,background-color] enabled:hover:bg-primary/25 disabled:cursor-not-allowed disabled:bg-primary/10 sm:px-4"
 					onClick={moveForward}
 					disabled={currentStageIndex === indexBounds[1]}
 					aria-disabled={currentStageIndex === indexBounds[1]}
@@ -67,7 +67,7 @@ export const ParseInput = ({ conjunctionInputsStage: conjInputsStage }: Props) =
 					<span className="sr-only sm:not-sr-only">Next</span>
 					<FaLongArrowAltRight
 						aria-label="Next step"
-						className="text-primary/50 transition-[color] enabled:group-hover:text-primary"
+						className="text-primary/50 transition-[color] group-hover:text-primary"
 					/>
 				</button>
 			</div>
