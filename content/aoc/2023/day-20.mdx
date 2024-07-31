@@ -79,9 +79,22 @@ A couple of handy Elixir-isms will help us out here:
 
 
 # Pattern matching, and match (=) and capture (&) operator
+# = matches the value on the right to the variable
+x = 1
+x = 1 # valid
+1 = x # valid, both are one
+2 = x # ** (MatchError) no match of right hand side value: 1
+
 # &(&1 + 2) is the same as x -> x + 2
 [first | rest] = Enum.map([1, 2, 3], &(&1 + 2))
 IO.inspect({first, rest}) # {3, [4, 5]}
+
+# Atoms are constants whose value is its own name,
+# tuples use curly braces; together they're great
+# for enumerating over specific, known values
+# Commonly used like:
+{:ok, val}
+{:err, error}
 
 
 # Compare a variable until we find a match
@@ -89,11 +102,29 @@ case string do # when string is "prefix_test"
   "prefix_" <> rest = whole ->
     IO.inspect({whole, rest}) # {"prefix_test", "test"}
 
-  _ -> nil # all other cases
+  _ -> nil # _ matches all remaining cases
 end
 ```
 
 <ParseInput />
+
+And processing the given input thus far gives us:
+
+```elixir
+[
+  # module_type, output modules, flip-flop/input modules state
+  {"broadcast", ["a"]},
+  {"a", {:flip, ["inv", "con"], :off}},
+  {"inv", {:conj, ["b"], %{}}},
+  {"b", {:flip, ["con"], :off}},
+  {"con", {:conj, ["output"], %{}}}
+]
+```
+
+...but there's a problem: we don't have the inputs mapped for the `conj` modules.
+We'll need to iterate over the modules and create a map of `conj` modules and their inputs, and then merge them.
+
+<ParseInput conjunctionInputsStage />
 
 ## Result
 

@@ -5,11 +5,15 @@ import { useEffect, useState } from "react";
 import { FaLongArrowAltLeft, FaLongArrowAltRight } from "react-icons/fa";
 import { ShikiMagicMove } from "shiki-magic-move/react";
 
+import { Code } from "@/lib/components/Typography";
 import { getSlimKarmaHighlighter } from "@/lib/domains/shiki";
 import { type KarmaHighlighter } from "@/lib/domains/shiki/highlighter";
 
-export const ParseInput = () => {
-	const [currentStageIndex, setCurrentStageIndex] = useState(0);
+type Props = {
+	conjunctionInputsStage?: boolean;
+};
+export const ParseInput = ({ conjunctionInputsStage }: Props) => {
+	const [currentStageIndex, setCurrentStageIndex] = useState(conjunctionInputsStage ? 7 : 0);
 	const [highlighter, setHighlighter] = useState<KarmaHighlighter>();
 
 	useEffect(() => {
@@ -24,7 +28,7 @@ export const ParseInput = () => {
 		setCurrentStageIndex((i) => Math.max(i - 1, 0));
 	}
 	function moveForward() {
-		setCurrentStageIndex((i) => Math.min(i + 1, stages.length - 1));
+		setCurrentStageIndex((i) => Math.min(i + 1, conjunctionInputsStage ? stages.length - 1 : 6));
 	}
 
 	return (
@@ -165,7 +169,7 @@ defp parse_input(input) do
 end`,
 	},
 	{
-		label: "broadcaster, output",
+		label: "Handle broadcaster module",
 		code: `
 defp parse_input(input) do
   input
@@ -193,5 +197,107 @@ defp parse_input(input) do
       |> then(&{"broadcast", &1})
   end)
 end`,
+	},
+	{
+		label: "Match list to variable",
+		code: `
+defp parse_input(input) do
+  init_entries = input
+    |> String.split("\\n")
+    |> Enum.map(fn
+      "%" <> str ->
+        # flip-flop
+        [mod, dest_raw] = String.split(str, " -> ")
+
+        dest = String.split(dest_raw, ", ", trim: true)
+
+        {mod, {:flip, dest, :off}}
+
+      "&" <> str ->
+        # conjunction
+        [mod, dest_raw] = String.split(str, " -> ")
+
+        dest = String.split(dest_raw, ", ", trim: true)
+
+        {mod, {:conj, dest, %{}}}
+
+      "broadcaster -> " <> starter_mods ->
+        starter_mods
+        |> String.split(", ")
+        |> then(&{"broadcast", &1})
+    end)
+end`,
+	},
+	{
+		label: (
+			<>
+				Get all <Code>conj</Code> modules
+			</>
+		),
+		code: `
+conjs =
+  init_entries
+  |> Enum.flat_map(fn
+    {node, {:conj, _, _}} -> [node]
+    _ -> []
+  end)`,
+	},
+	{
+		label: "Reduce entries to get required Map, add base case",
+		code: `
+conjs =
+  init_entries
+  |> Enum.flat_map(fn
+    {node, {:conj, _, _}} -> [node]
+    _ -> []
+  end)
+  
+conjunction_modules_input_map =
+  init_entries
+  |> Enum.reduce(%{}, fn
+    # current value, accumulator
+    _, conjs_map ->
+      conjs_map
+  end)`,
+	},
+	{
+		label: "Final",
+		code: `
+conjs =
+  init_entries
+  |> Enum.flat_map(fn
+    {node, {:conj, _, _}} -> [node]
+    _ -> []
+  end)
+  
+conjunction_modules_input_map =
+  init_entries
+  |> Enum.reduce(%{}, fn
+    {node, {_, dest_mods, _}}, conjs_map ->
+      dest_mods
+      |> Enum.filter(&Enum.member?(conjs, &1))
+      |> case do
+        [] ->
+          conjs_map
+
+        matches ->
+          matches
+          |> Enum.reduce(conjs_map, fn
+            dest_mod, map ->
+              map
+              |> Map.update(
+                dest_mod,
+                %{node => :low},
+                fn input_mods ->
+                  input_mods
+                  |> Map.put(node, :low)
+                end
+              )
+          end)
+      end
+
+    _, conjs_map ->
+      conjs_map
+  end)`,
 	},
 ];
