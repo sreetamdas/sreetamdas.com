@@ -38,7 +38,7 @@ export const CodeBlock = (props: CodeBlockProps) => {
 	return (
 		<figure className="my-5 flex flex-col">
 			<div
-				className="-ml-4 -mr-5 grid grid-flow-col overflow-x-scroll rounded-tl-global rounded-tr-global pl-2 pr-2 sm:-ml-12 sm:pl-12 sm:pr-5"
+				className="-mx-4 grid grid-flow-col overflow-x-scroll rounded-tl-global rounded-tr-global pl-2 pr-2 sm:-ml-12 sm:-mr-5 sm:pl-12 sm:pr-5"
 				style={style}
 			>
 				{filename !== null ? (
@@ -54,7 +54,7 @@ export const CodeBlock = (props: CodeBlockProps) => {
 			</div>
 			<pre
 				className={cn(
-					"-ml-12 -mr-5 overflow-x-scroll rounded-bl-global rounded-br-global p-5 text-xs max-sm:-ml-4 max-sm:px-2 sm:text-sm max-sm:[&>code>.block>.line]:whitespace-pre-wrap",
+					"-mx-4 overflow-x-scroll rounded-bl-global rounded-br-global p-5 text-xs max-sm:px-2 sm:-ml-12 sm:-mr-5 sm:text-sm max-sm:[&>code>.block>.line]:whitespace-pre-wrap",
 					filename === null && lang === "plain" && "rounded-global",
 				)}
 				style={style}

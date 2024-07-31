@@ -72,7 +72,7 @@ export const ParseInput = ({ conjunctionInputsStage: conjInputsStage }: Props) =
 				</button>
 			</div>
 			<div className="my-2 flex flex-col">
-				<div className="-ml-4 -mr-5 grid grid-flow-col overflow-x-scroll rounded-tl-global rounded-tr-global bg-karma-background pl-2 pr-2 sm:-ml-12 sm:pl-12 sm:pr-5">
+				<div className="-mx-4 grid grid-flow-col overflow-x-scroll rounded-tl-global rounded-tr-global bg-karma-background pl-2 pr-2 sm:-ml-12 sm:-mr-5 sm:pl-12 sm:pr-5">
 					<span className="justify-self-start rounded-t-global py-1 font-mono text-zinc-400 max-sm:text-xs">
 						parse_input.ex
 					</span>
@@ -88,7 +88,7 @@ export const ParseInput = ({ conjunctionInputsStage: conjInputsStage }: Props) =
 						highlighter={highlighter}
 						code={stages[currentStageIndex].code.trim()}
 						options={{ duration: 300, stagger: 0.3, lineNumbers: true }}
-						className="-ml-12 -mr-5 overflow-x-scroll rounded-bl-global rounded-br-global p-5 text-xs max-sm:-ml-4 max-sm:px-2 sm:text-sm [&>.shiki-magic-move-line-number]:mr-2 [&>.shiki-magic-move-line-number]:w-[1.5rem] [&>.shiki-magic-move-line-number]:whitespace-nowrap [&>.shiki-magic-move-line-number]:pr-2 [&>.shiki-magic-move-line-number]:text-right max-sm:[&>.shiki-magic-move-line-number]:hidden"
+						className="-mx-4 overflow-x-scroll rounded-bl-global rounded-br-global p-5 text-xs max-sm:px-2 sm:-ml-12 sm:-mr-5 sm:text-sm [&>.shiki-magic-move-line-number]:mr-2 [&>.shiki-magic-move-line-number]:w-[1.5rem] [&>.shiki-magic-move-line-number]:whitespace-nowrap [&>.shiki-magic-move-line-number]:pr-2 [&>.shiki-magic-move-line-number]:text-right max-sm:[&>.shiki-magic-move-line-number]:hidden"
 					/>
 				)}
 			</div>
@@ -256,7 +256,7 @@ conjs =
   end)`,
 	},
 	{
-		label: "Reduce entries to get required Map, add base case",
+		label: "Reduce entries to Map, add base case",
 		code: `
 conjs =
   init_entries
