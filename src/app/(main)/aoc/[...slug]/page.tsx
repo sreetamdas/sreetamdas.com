@@ -1,7 +1,6 @@
 import { isEmpty } from "lodash-es";
 import { type Metadata, type Route } from "next";
 import { notFound } from "next/navigation";
-import { Balancer } from "react-wrap-balancer";
 
 import { ParseInput } from "./pulse-propagation";
 
@@ -74,12 +73,10 @@ export default function AdventOfCodeSolutionPage({ params: { slug } }: PageParam
 					!has_subheading && "pt-10",
 				)}
 			>
-				<Balancer>
-					<span
-						className="whitespace-pre-wrap bg-gradient-to-r from-primary to-secondary box-decoration-slice bg-clip-text text-transparent"
-						dangerouslySetInnerHTML={{ __html: post.title }}
-					/>
-				</Balancer>
+				<span
+					className="whitespace-pre-wrap text-balance bg-gradient-to-r from-primary to-secondary box-decoration-slice bg-clip-text text-transparent"
+					dangerouslySetInnerHTML={{ __html: post.title }}
+				/>
 			</h1>
 
 			<MDXContent
