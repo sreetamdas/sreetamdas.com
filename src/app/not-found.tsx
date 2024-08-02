@@ -1,4 +1,4 @@
-import { type ReactNode } from "react";
+import { PropsWithChildren, useCallback, type ReactNode } from "react";
 
 import { LinkTo } from "@/lib/components/Anchor";
 import { NotFoundDogsLink } from "@/lib/components/Error";
@@ -9,15 +9,34 @@ import { Gradient } from "@/lib/components/Typography";
 
 export type GlobalNotFoundPageProps = {
 	message?: ReactNode;
+	hasLayout?: boolean;
 };
-export default function GlobalNotFound({ message }: GlobalNotFoundPageProps) {
+export default function GlobalNotFound({ message, hasLayout = false }: GlobalNotFoundPageProps) {
+	const Wrapper = useCallback(
+		({ children }: PropsWithChildren) => {
+			return hasLayout ? (
+				<>{children}</>
+			) : (
+				<>
+					<Header />
+					<main
+						id="main-content"
+						className="relative grid grid-flow-col grid-cols-[1fr_min(var(--max-width),_calc(100%_-_2rem))_1fr] gap-x-4 children:[grid-column:2]"
+					>
+						{children}
+					</main>
+					<Footer>
+						<FoobarPixel path="/404" />
+					</Footer>
+				</>
+			);
+		},
+		[hasLayout],
+	);
+
 	return (
 		<>
-			<Header />
-			<main
-				id="main-content"
-				className="relative grid grid-flow-col grid-cols-[1fr_min(var(--max-width),_calc(100%_-_2rem))_1fr] gap-x-4 children:[grid-column:2]"
-			>
+			<Wrapper>
 				<h1 className="pt-10 text-center font-serif text-[160px] font-bold tracking-tighter">
 					<Gradient>404!</Gradient>
 				</h1>
@@ -32,10 +51,7 @@ export default function GlobalNotFound({ message }: GlobalNotFoundPageProps) {
 				</p>
 
 				<NotFoundDogsLink />
-			</main>
-			<Footer>
-				<FoobarPixel path="/404" />
-			</Footer>
+			</Wrapper>
 		</>
 	);
 }
