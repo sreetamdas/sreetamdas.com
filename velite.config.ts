@@ -4,7 +4,7 @@ import rehypeSlug from "rehype-slug";
 import remarkFrontmatter from "remark-frontmatter";
 import remarkGfm from "remark-gfm";
 import remarkToc from "remark-toc";
-import { type Schema, defineCollection, defineConfig, s } from "velite";
+import { defineCollection, defineConfig, s, type Schema } from "velite";
 
 import { OWNER_NAME, SITE_OG_IMAGE, SITE_URL } from "./src/config";
 import { rehypeImgSize } from "./src/lib/components/MDX/plugins";
