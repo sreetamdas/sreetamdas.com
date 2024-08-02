@@ -20,7 +20,7 @@
 
 		--max-width: 650px;
 		--border-radius: 5px;
-		--transition-duration: 0.1s;
+		--transition-duration: 250ms;
 	}
 	[data-color-scheme="dark"] {
 		--color-primary: var(--dark-purple);

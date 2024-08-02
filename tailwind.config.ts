@@ -21,6 +21,9 @@ export default {
 			borderRadius: {
 				global: "var(--border-radius)",
 			},
+			transitionDuration: {
+				global: "var(--transition-duration)",
+			},
 			keyframes: {
 				"grow-shrink": {
 					"0%, 100%": { transform: "scale(0)" },
@@ -58,7 +61,6 @@ export default {
 					"@keyframes exit": theme("keyframes.exit"),
 					".animate-in": {
 						animationName: "enter",
-						// animationDuration: theme("animationDuration.DEFAULT"),
 						"--tw-enter-opacity": "initial",
 						"--tw-enter-scale": "initial",
 						"--tw-enter-rotate": "initial",
@@ -67,7 +69,6 @@ export default {
 					},
 					".animate-out": {
 						animationName: "exit",
-						// // animationDuration: theme("animationDuration.DEFAULT"),
 						"--tw-exit-opacity": "initial",
 						"--tw-exit-scale": "initial",
 						"--tw-exit-rotate": "initial",

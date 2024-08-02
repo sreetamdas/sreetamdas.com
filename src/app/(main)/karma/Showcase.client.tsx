@@ -84,7 +84,7 @@ export const KarmaShowcase = ({ examples }: Props) => {
 					onCheckedChange={handleThemeToggle}
 					className="relative mx-4 h-[25px] w-[42px] cursor-default rounded-full bg-primary outline-none"
 				>
-					<SwitchPrimitive.Thumb className="block h-[21px] w-[21px] translate-x-0.5 rounded-full bg-primary bg-white transition-transform duration-100 will-change-transform data-[state=checked]:translate-x-[19px]" />
+					<SwitchPrimitive.Thumb className="duration-global block h-[21px] w-[21px] translate-x-0.5 rounded-full bg-primary bg-white transition-transform will-change-transform data-[state=checked]:translate-x-[19px]" />
 				</SwitchPrimitive.Root>
 				<label htmlFor="theme-switch" className="text-[15px] leading-none text-foreground">
 					Dark mode

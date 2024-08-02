@@ -87,7 +87,7 @@ export const ParseInput = ({ conjunctionInputsStage: conjInputsStage }: Props) =
 						theme="karma"
 						highlighter={highlighter}
 						code={stages[currentStageIndex].code.trim()}
-						options={{ duration: 300, stagger: 0.3, lineNumbers: true }}
+						options={{ duration: 500, stagger: 0.3, lineNumbers: true }}
 						className="-mx-4 overflow-x-scroll rounded-bl-global rounded-br-global p-5 text-xs max-sm:px-2 sm:-ml-12 sm:-mr-5 sm:text-sm [&>.shiki-magic-move-line-number]:mr-2 [&>.shiki-magic-move-line-number]:w-[1.5rem] [&>.shiki-magic-move-line-number]:whitespace-nowrap [&>.shiki-magic-move-line-number]:pr-2 [&>.shiki-magic-move-line-number]:text-right max-sm:[&>.shiki-magic-move-line-number]:hidden"
 					/>
 				)}
