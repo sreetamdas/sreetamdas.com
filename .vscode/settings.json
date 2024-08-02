@@ -12,6 +12,17 @@
 	},
 	"typescript.tsdk": "node_modules/typescript/lib",
 	"typescript.enablePromptUseWorkspaceTsdk": true,
+	"workbench.colorCustomizations": {},
+	"tailwindCSS.experimental.classRegex": [
+		["cva\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"],
+		["cx\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"]
+	],
+	"eslint.useFlatConfig": true,
+	"eslint.options": {
+		"overrideConfigFile": "./.config/eslint.config.js"
+	},
+	"prettier.configPath": ".config/.prettierrc.mjs",
+	"prettier.ignorePath": ".config/.prettierignore",
 	"[mdx]": {
 		"editor.quickSuggestions": {
 			"other": "off",
