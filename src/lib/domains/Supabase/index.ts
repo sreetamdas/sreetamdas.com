@@ -67,6 +67,7 @@ export async function getPageViews(slug: string): Promise<PageViewCountResponse>
 		return { data: view_count, type: "success" };
 	} catch (error) {
 		return {
+			data: null,
 			error: { message: `Error while getting page views for ${slug}`, cause: error },
 			type: "error",
 		};
@@ -110,6 +111,7 @@ export async function upsertPageViews(slug: string): Promise<PageViewCountRespon
 		return { data: { view_count }, type: "success" };
 	} catch (error) {
 		return {
+			data: null,
 			error: { message: `Error while upserting page views for ${slug}`, cause: error },
 			type: "error",
 		};
