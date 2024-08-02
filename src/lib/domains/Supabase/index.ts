@@ -10,7 +10,8 @@ type ErrorResponse<Type = undefined> = {
 };
 type PageViewCountResponse =
 	| (SuccessResponse<PageViewCount> & { type: "success" })
-	| (ErrorResponse<{ message: string; cause: unknown }> & { type: "error" });
+	| (SuccessResponse<null> &
+			ErrorResponse<{ message: string; cause: unknown }> & { type: "error" });
 
 const SUPABASE_ENABLED =
 	typeof process.env.NEXT_PUBLIC_SUPABASE_URL !== "undefined" &&
