@@ -94,11 +94,9 @@ export const FoobarPixel = (props: FoobarPixelProps) => {
 
 	return has_mounted && unlocked ? (
 		<span className="col-start-2 col-end-3">
-			<Code>
-				<LinkTo href="/foobar" style={{ border: "none" }}>
-					resume /foobar
-				</LinkTo>
-			</Code>
+			<LinkTo href="/foobar" style={{ border: "none" }}>
+				<Code>resume /foobar</Code>
+			</LinkTo>
 		</span>
 	) : null;
 };
