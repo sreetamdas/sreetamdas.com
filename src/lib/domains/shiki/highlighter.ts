@@ -1,14 +1,15 @@
 import { defaultTheme } from "@sreetamdas/karma";
 import {
 	type BundledLanguage,
-	type HighlighterGeneric,
-	type ThemeRegistration,
 	getSingletonHighlighterCore,
+	type HighlighterGeneric,
 	normalizeTheme,
+	type ThemeRegistration,
 } from "shiki";
 import getWasm from "shiki/wasm";
 
 type BundledLangs = (typeof preloaded_langs)[number];
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const preloaded_langs = [
 	"typescript",
 	"tsx",

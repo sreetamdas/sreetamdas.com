@@ -1,10 +1,10 @@
 import { compile } from "@mdx-js/mdx";
 
-import { NewsletterEmailsPreviews } from "./components";
-import { fetchNewsletterEmails } from "./helpers";
-
 import { SITE_TITLE_APPEND } from "@/config";
 import { ViewsCounter } from "@/lib/components/ViewsCounter";
+
+import { NewsletterEmailsPreviews } from "./components";
+import { fetchNewsletterEmails } from "./helpers";
 
 export const metadata = {
 	title: `Newsletter ${SITE_TITLE_APPEND}`,

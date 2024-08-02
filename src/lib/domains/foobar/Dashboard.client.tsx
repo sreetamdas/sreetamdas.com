@@ -9,11 +9,11 @@ import { useEffect } from "react";
 import GlobalNotFound from "@/app/not-found";
 import { IS_DEV } from "@/config";
 import { Code } from "@/lib/components/Typography";
-import { useCustomPlausible } from "@/lib/domains/Plausible";
 import { ShowCompletedBadges } from "@/lib/domains/foobar/badges";
 import { FOOBAR_FLAGS } from "@/lib/domains/foobar/flags";
 import { type FoobarSchrodingerProps, initialFoobarData } from "@/lib/domains/foobar/store";
 import { useGlobalStore } from "@/lib/domains/global";
+import { useCustomPlausible } from "@/lib/domains/Plausible";
 import { useHasMounted } from "@/lib/helpers/hooks";
 
 /**

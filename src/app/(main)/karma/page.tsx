@@ -2,10 +2,10 @@ import path from "node:path";
 
 import sizeOf from "image-size";
 
-import { KarmaShowcase } from "./Showcase.client";
-
 import { SITE_TITLE_APPEND, SITE_URL } from "@/config";
 import { ViewsCounter } from "@/lib/components/ViewsCounter";
+
+import { KarmaShowcase } from "./Showcase.client";
 
 export const metadata = {
 	title: `Karma ${SITE_TITLE_APPEND}`,

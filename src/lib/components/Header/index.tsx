@@ -1,14 +1,14 @@
 import { type HTMLAttributes, Suspense } from "react";
 
-import { NavbarDesktop } from "./Nav";
-import { NavbarMobile } from "./Nav.mobile.client";
-
 import { LinkTo } from "@/lib/components/Anchor";
 import { ColorSchemeToggle } from "@/lib/domains/colorScheme/client";
 import { cn } from "@/lib/helpers/utils";
 
+import { NavbarDesktop } from "./Nav";
+import { NavbarMobile } from "./Nav.mobile.client";
+
 export const Header = ({ className }: HTMLAttributes<HTMLDivElement>) => (
-	<div className={cn("sticky top-0 z-10 h-[60px] max-w-full w-screen bg-background", className)}>
+	<div className={cn("sticky top-0 z-10 h-[60px] w-screen max-w-full bg-background", className)}>
 		<a
 			id="skip-link"
 			href="#main-content"

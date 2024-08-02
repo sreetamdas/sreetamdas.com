@@ -4,9 +4,9 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { LuMenu } from "react-icons/lu";
 
-import { NavigationItems } from "./NavItems";
-
 import { DrawerContent, DrawerRoot, DrawerTitle, DrawerTrigger } from "@/lib/components/Drawer";
+
+import { NavigationItems } from "./NavItems";
 
 export const NavbarMobile = () => {
 	const pathname = usePathname();

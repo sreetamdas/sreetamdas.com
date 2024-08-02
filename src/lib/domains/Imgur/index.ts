@@ -49,7 +49,7 @@ export class ImgurClient {
 			next: { revalidate: 86400 },
 		});
 
-		const response: ImgurAPIResponse<Array<ImgurImage>> = await request.json();
+		const response = (await request.json()) as ImgurAPIResponse<Array<ImgurImage>>;
 		return response.data;
 	}
 

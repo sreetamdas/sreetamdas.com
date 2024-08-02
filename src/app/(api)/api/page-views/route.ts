@@ -7,7 +7,7 @@ export const runtime = "edge";
 
 export async function POST(request: NextRequest) {
 	try {
-		const { slug } = await request.json();
+		const { slug } = (await request.json()) as { slug: string };
 
 		if (isNull(slug) || isEmpty(slug)) {
 			throw new Error("Page slug param is missing", { cause: { slug } });
@@ -17,8 +17,10 @@ export async function POST(request: NextRequest) {
 		return NextResponse.json(page_views);
 	} catch (error) {
 		return NextResponse.json(
-			// @ts-expect-error error shape
-			{ error: { message: error.message, cause: error.cause }, data: null },
+			{
+				error: { message: "Error while upserting page views", cause: error },
+				data: null,
+			},
 			{ status: 400 },
 		);
 	}
@@ -36,8 +38,10 @@ export async function GET(request: NextRequest) {
 		return NextResponse.json(page_views);
 	} catch (error) {
 		return NextResponse.json(
-			// @ts-expect-error error shape
-			{ error: { message: error.message, cause: error.cause }, data: null },
+			{
+				error: { message: "Error while getting page views", cause: error },
+				data: null,
+			},
 			{ status: 400 },
 		);
 	}

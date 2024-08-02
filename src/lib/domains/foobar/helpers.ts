@@ -1,6 +1,6 @@
-import { type FoobarSliceType } from "./store";
-
 import { FOOBAR_FLAGS } from "@/lib/domains/foobar/flags";
+
+import { type FoobarSliceType } from "./store";
 
 export function checkIfAllAchievementsAreDone(
 	completed: FoobarSliceType["foobar_data"]["completed"],

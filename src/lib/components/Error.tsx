@@ -1,9 +1,9 @@
 "use client";
 
 import { LinkTo } from "@/lib/components/Anchor";
-import { useCustomPlausible } from "@/lib/domains/Plausible";
 import { FOOBAR_FLAGS } from "@/lib/domains/foobar/flags";
 import { useGlobalStore } from "@/lib/domains/global";
+import { useCustomPlausible } from "@/lib/domains/Plausible";
 
 export const NotFoundDogsLink = () => {
 	const { setFoobarData, completed } = useGlobalStore((state) => ({

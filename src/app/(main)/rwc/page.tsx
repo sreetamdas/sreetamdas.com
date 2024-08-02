@@ -1,12 +1,12 @@
 import { FiLink } from "react-icons/fi";
 import { type ThemeRegistration } from "shiki";
 
-import module_css from "./CodeSnippet.module.css";
-
 import { SITE_TITLE_APPEND } from "@/config";
 import { ViewsCounter } from "@/lib/components/ViewsCounter";
 import { fetchGist } from "@/lib/domains/GitHub";
 import { getSlimKarmaHighlighter } from "@/lib/domains/shiki";
+
+import module_css from "./CodeSnippet.module.css";
 
 export const metadata = {
 	title: `RWC ${SITE_TITLE_APPEND}`,

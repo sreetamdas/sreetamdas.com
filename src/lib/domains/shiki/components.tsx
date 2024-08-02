@@ -1,11 +1,11 @@
 import { isObject } from "lodash-es";
 import {
-	type CSSProperties,
 	Children,
+	type CSSProperties,
 	type DetailedHTMLProps,
 	type HTMLAttributes,
-	type ReactNode,
 	isValidElement,
+	type ReactNode,
 } from "react";
 
 import { cn } from "@/lib/helpers/utils";

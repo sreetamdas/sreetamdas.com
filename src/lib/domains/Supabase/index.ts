@@ -9,8 +9,8 @@ type ErrorResponse<Type = undefined> = {
 	error?: Type;
 };
 type PageViewCountResponse =
-	| (SuccessResponse<PageViewCount> & ErrorResponse & { type: "success" })
-	| ((SuccessResponse & ErrorResponse<{ message: string; cause: string }>) & { type: "error" });
+	| (SuccessResponse<PageViewCount> & { type: "success" })
+	| (ErrorResponse<{ message: string; cause: unknown }> & { type: "error" });
 
 const SUPABASE_ENABLED =
 	typeof process.env.NEXT_PUBLIC_SUPABASE_URL !== "undefined" &&
@@ -54,7 +54,7 @@ export async function getPageViews(slug: string): Promise<PageViewCountResponse>
 			...(!IS_DEV && { cache: "no-store" }),
 		});
 
-		const response: Array<PageViewCount> = await request.json();
+		const response = (await request.json()) as Array<PageViewCount>;
 		const view_count = response[0];
 
 		if (typeof view_count === "undefined") {
@@ -65,8 +65,10 @@ export async function getPageViews(slug: string): Promise<PageViewCountResponse>
 
 		return { data: view_count, type: "success" };
 	} catch (error) {
-		// @ts-expect-error error shape
-		return { error: { message: error.message, cause: error.cause }, type: "error" };
+		return {
+			error: { message: `Error while getting page views for ${slug}`, cause: error },
+			type: "error",
+		};
 	}
 }
 
@@ -96,7 +98,7 @@ export async function upsertPageViews(slug: string): Promise<PageViewCountRespon
 			}),
 		});
 
-		const view_count: number = await request.json();
+		const view_count = (await request.json()) as number;
 
 		if (typeof view_count === "undefined") {
 			throw new Error("Page has not been added to the database yet", {
@@ -106,7 +108,9 @@ export async function upsertPageViews(slug: string): Promise<PageViewCountRespon
 
 		return { data: { view_count }, type: "success" };
 	} catch (error) {
-		// @ts-expect-error error shape
-		return { error: { message: error.message, cause: error.cause }, type: "error" };
+		return {
+			error: { message: `Error while upserting page views for ${slug}`, cause: error },
+			type: "error",
+		};
 	}
 }

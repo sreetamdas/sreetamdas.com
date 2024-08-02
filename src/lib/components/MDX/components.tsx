@@ -1,4 +1,3 @@
-// eslint-disable-next-line import/no-unresolved
 import { type MDXComponents } from "mdx/types";
 import { type HTMLAttributes } from "react";
 

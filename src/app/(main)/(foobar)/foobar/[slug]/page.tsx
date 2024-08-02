@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 
 import { FoobarSchrodinger } from "@/lib/domains/foobar/Dashboard.client";
-import { FOOBAR_FLAGS, type FoobaFlagPageSlug } from "@/lib/domains/foobar/flags";
+import { type FoobaFlagPageSlug, FOOBAR_FLAGS } from "@/lib/domains/foobar/flags";
 
 export const dynamicParams = false;
 

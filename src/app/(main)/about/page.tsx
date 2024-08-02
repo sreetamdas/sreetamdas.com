@@ -1,12 +1,12 @@
 import { notFound } from "next/navigation";
 
-import { SocialLinks } from "./SocialLinks";
-
 import { SITE_TITLE_APPEND } from "@/config";
 import { rootPages } from "@/generated";
 import { MDXContent } from "@/lib/components/MDX";
 import { ViewsCounter } from "@/lib/components/ViewsCounter";
 import { FoobarEntry } from "@/lib/domains/foobar/Entry.client";
+
+import { SocialLinks } from "./SocialLinks";
 
 export const metadata = {
 	title: `About ${SITE_TITLE_APPEND}`,

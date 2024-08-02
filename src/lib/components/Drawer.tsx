@@ -5,8 +5,8 @@ import * as VisuallyHidden from "@radix-ui/react-visually-hidden";
 import {
 	type ComponentPropsWithoutRef,
 	type ElementRef,
-	type HTMLAttributes,
 	forwardRef,
+	type HTMLAttributes,
 } from "react";
 import { LuX } from "react-icons/lu";
 

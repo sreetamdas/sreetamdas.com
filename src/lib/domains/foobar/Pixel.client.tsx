@@ -3,20 +3,20 @@
 import { usePathname } from "next/navigation";
 import { useEffect } from "react";
 
-import { FOOBAR_FLAGS, type FoobaFlagPageSlug } from "./flags";
-import { type FoobarSliceType } from "./store";
-
 import { IS_DEV } from "@/config";
 import { LinkTo } from "@/lib/components/Anchor";
 import { Code } from "@/lib/components/Typography";
-import { useCustomPlausible } from "@/lib/domains/Plausible";
 import {
 	addFoobarToLocalStorage,
 	checkIfAllAchievementsAreDone,
 	logConsoleMessages,
 } from "@/lib/domains/foobar/helpers";
 import { useGlobalStore } from "@/lib/domains/global";
+import { useCustomPlausible } from "@/lib/domains/Plausible";
 import { useHasMounted } from "@/lib/helpers/hooks";
+
+import { type FoobaFlagPageSlug, FOOBAR_FLAGS } from "./flags";
+import { type FoobarSliceType } from "./store";
 
 const foobarDataSelector = (state: FoobarSliceType) => ({
 	foobar_data: state.foobar_data,

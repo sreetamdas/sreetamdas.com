@@ -1,11 +1,11 @@
 import { type Route } from "next";
 import { HiOutlineCalendar, HiOutlineNewspaper } from "react-icons/hi";
 
-import { type ButtondownAPIEmailsResponse } from "./helpers";
-
 import { LinkTo } from "@/lib/components/Anchor";
 import { MDXContent } from "@/lib/components/MDX";
 import { ViewsCounter } from "@/lib/components/ViewsCounter";
+
+import { type ButtondownAPIEmailsResponse } from "./helpers";
 
 export const BUTTONDOWN_EMAIL_STATS_URL_PREFIX = "https://buttondown.email/emails/analytics";
 

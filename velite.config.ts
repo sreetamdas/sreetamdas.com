@@ -1,10 +1,11 @@
-import type { Route } from "next";
+import { type Route } from "next";
 import rehypeRaw from "rehype-raw";
 import rehypeSlug from "rehype-slug";
 import remarkFrontmatter from "remark-frontmatter";
 import remarkGfm from "remark-gfm";
 import remarkToc from "remark-toc";
 import { type Schema, defineCollection, defineConfig, s } from "velite";
+
 import { OWNER_NAME, SITE_OG_IMAGE, SITE_URL } from "./src/config";
 import { rehypeImgSize } from "./src/lib/components/MDX/plugins";
 import { remarkShiki } from "./src/lib/domains/shiki";

@@ -4,9 +4,9 @@ import { useEffect } from "react";
 import { IoMdMoon } from "react-icons/io";
 import { LuMonitor, LuSun } from "react-icons/lu";
 
-import { type ColorSchemeSliceType } from "./store";
-
 import { useGlobalStore } from "@/lib/domains/global";
+
+import { type ColorSchemeSliceType } from "./store";
 
 function getDocumentColorScheme() {
 	const documentColorScheme = window.document.documentElement.style.getPropertyValue(

@@ -2,8 +2,6 @@ import { isEmpty } from "lodash-es";
 import { type Metadata, type Route } from "next";
 import { notFound } from "next/navigation";
 
-import { ParseInput } from "./pulse-propagation";
-
 import { SITE_OG_IMAGE, SITE_TITLE_APPEND, SITE_URL } from "@/config";
 import { aoc_solutions } from "@/generated";
 import { MDXContent } from "@/lib/components/MDX";
@@ -12,6 +10,8 @@ import { Blockquote } from "@/lib/components/Typography";
 import { ViewsCounter } from "@/lib/components/ViewsCounter";
 import { cn } from "@/lib/helpers/utils";
 
+import { ParseInput } from "./pulse-propagation";
+
 export const dynamicParams = false;
 
 type PageParams = {
@@ -19,13 +19,13 @@ type PageParams = {
 		slug: Array<string>;
 	};
 };
-export async function generateStaticParams() {
+export function generateStaticParams() {
 	return aoc_solutions.map((post) => ({
 		slug: post.page_slug.split("/"),
 	}));
 }
 
-export async function generateMetadata({ params: { slug } }: PageParams): Promise<Metadata> {
+export function generateMetadata({ params: { slug } }: PageParams): Metadata {
 	const full_slug = slug.join("/");
 	const post = aoc_solutions.find((page) => page.page_slug === full_slug);
 
