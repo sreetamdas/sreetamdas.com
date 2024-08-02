@@ -6,8 +6,8 @@ export const metadata = {
 	title: `Blog archive ${SITE_TITLE_APPEND}`,
 };
 
-export default async function BlogArchivePage() {
-	const blog_posts_previews = await getAllBlogPostsPreviewsData();
+export default function BlogArchivePage() {
+	const blog_posts_previews = getAllBlogPostsPreviewsData();
 
 	return (
 		<>
@@ -40,7 +40,7 @@ export default async function BlogArchivePage() {
 	);
 }
 
-async function getAllBlogPostsPreviewsData() {
+function getAllBlogPostsPreviewsData() {
 	return blogPosts
 		.flatMap(({ title, description, page_slug, page_path, url, published, published_at }) => {
 			if (!IS_DEV && !published) {

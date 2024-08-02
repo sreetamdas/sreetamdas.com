@@ -53,7 +53,7 @@ export async function fetchNewsletterEmails(): Promise<ButtondownAPIEmailsRespon
 				revalidate: 86400,
 			},
 		});
-		return await response.json();
+		return (await response.json()) as ButtondownAPIEmailsResponse;
 	} catch (error: unknown) {
 		// eslint-disable-next-line no-console
 		console.error(error);

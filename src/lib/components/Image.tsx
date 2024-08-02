@@ -59,11 +59,9 @@ export const Image = (props: ImageProps) => {
 
 	// for external images
 	return isWrapped ? (
-		// eslint-disable-next-line @next/next/no-img-element
 		<img src={src} alt={alt} loading="lazy" {...restProps} />
 	) : (
 		<span className="[&_img]:h-auto [&_img]:w-full [&_img]:max-w-[--max-width] [&_img]:rounded-global">
-			{/* eslint-disable-next-line @next/next/no-img-element */}
 			<img src={src} alt={alt} loading="lazy" {...restProps} />
 		</span>
 	);

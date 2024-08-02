@@ -39,7 +39,6 @@ export const FoobarDashboard = ({ completed_page }: FoobarSchrodingerProps) => {
 		return () => {
 			window.removeEventListener("offline", handleUserIsOffline);
 		};
-		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	function handleClearFoobarData() {
@@ -167,7 +166,6 @@ export const FoobarSchrodinger = ({ completed_page }: FoobarSchrodingerProps) =>
 				});
 			}
 		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [completed, completed_page]);
 
 	if (!has_mounted) return null;

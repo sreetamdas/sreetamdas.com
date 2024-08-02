@@ -80,7 +80,6 @@ export const FoobarPixel = (props: FoobarPixelProps) => {
 				completed: completed.concat([FOOBAR_FLAGS.navigator.name]),
 			});
 		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [completed, visited_pages, pathname]);
 
 	useEffect(() => {
@@ -91,7 +90,6 @@ export const FoobarPixel = (props: FoobarPixelProps) => {
 				all_achievements: true,
 			});
 		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [completed]);
 
 	return has_mounted && unlocked ? (

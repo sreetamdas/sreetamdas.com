@@ -7,14 +7,13 @@ import tseslint from "typescript-eslint";
 
 export default tseslint.config(
 	eslint.configs.recommended,
-	...tseslint.configs.recommendedTypeChecked,
-	// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+	...tseslint.configs.recommended,
 	prettier,
 	{
 		languageOptions: {
 			parserOptions: {
 				projectService: {
-					allowDefaultProject: ["./*.js", "./*.mjs", "eslint.config.mjs"],
+					allowDefaultProject: ["eslint.config.mjs"],
 					defaultProject: "./tsconfig.json",
 				},
 				tsconfigRootDir: import.meta.dirname,
@@ -30,16 +29,13 @@ export default tseslint.config(
 			// react: react,
 			// "react-hooks": reactHooks,
 			// "jsx-a11y": jsxA11y,
-			// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 			"simple-import-sort": simpleImportSort,
 		},
 	},
-	// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
 	{
 		// files: ["*.mdx", "**/*.mdx/**"],
 		...mdx.flat,
 		// optional, if you want to lint code blocks at the same
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 		processor: mdx.createRemarkProcessor({
 			lintCodeBlocks: true,
 			// optional, if you want to disable language mapper, set it to `false`
@@ -53,13 +49,22 @@ export default tseslint.config(
 				},
 			},
 		},
-		extends: [tseslint.configs.disableTypeChecked],
+		extends: [tseslint.configs.disableTypeChecked, mdx.configs.recommended],
 	},
 	{
 		rules: {
 			"linebreak-style": ["error", "unix"],
 			"no-console": "error",
 			"no-unused-vars": "off",
+			"@typescript-eslint/no-unused-vars": [
+				"error",
+				{
+					varsIgnorePattern: "^_",
+					argsIgnorePattern: "^_",
+					destructuredArrayIgnorePattern: "^_",
+					caughtErrorsIgnorePattern: "^_",
+				},
+			],
 			// from https://github.com/wesbos/eslint-config-wesbos
 			"prefer-const": ["error", { destructuring: "all" }],
 			"arrow-body-style": ["error", "as-needed"],

@@ -11,7 +11,7 @@ import { fetchRepoContributors } from "@/lib/domains/GitHub";
 
 export const dynamicParams = false;
 
-export async function generateStaticParams() {
+export function generateStaticParams() {
 	return rootPages.flatMap(({ page_slug, skip_page }) => {
 		if (skip_page) return [];
 
@@ -26,7 +26,7 @@ type PageParams = {
 		mdxPageSlug: string;
 	};
 };
-export default async function MDXPageSlugPage({ params: { mdxPageSlug } }: PageParams) {
+export default function MDXPageSlugPage({ params: { mdxPageSlug } }: PageParams) {
 	const post = rootPages.find((page) => page.page_slug === mdxPageSlug);
 
 	if (!post) notFound();
@@ -42,7 +42,7 @@ export default async function MDXPageSlugPage({ params: { mdxPageSlug } }: PageP
 	);
 }
 
-export async function generateMetadata({ params }: PageParams): Promise<Metadata> {
+export function generateMetadata({ params }: PageParams): Metadata {
 	const post = rootPages.find((page) => page.page_slug === params.mdxPageSlug);
 
 	return {

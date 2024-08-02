@@ -8,9 +8,8 @@ import {
 } from "shiki";
 import getWasm from "shiki/wasm";
 
-type BundledLangs = (typeof preloaded_langs)[number];
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const preloaded_langs = [
+type BundledLangs = (typeof _preloaded_langs)[number];
+const _preloaded_langs = [
 	"typescript",
 	"tsx",
 	"json",

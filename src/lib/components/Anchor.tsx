@@ -13,15 +13,14 @@ type LinkAdditionalProps = {
 	showExternalLinkIndicator?: true;
 };
 
-type LinkToProps<RouteType extends string = string> = Omit<
-	AnchorHTMLAttributes<HTMLAnchorElement>,
-	keyof LinkProps<RouteType>
-> &
-	Omit<LinkProps<RouteType>, "href"> & {
-		children?: ReactNode;
-	} & LinkAdditionalProps & {
-		href?: Route<RouteType> | UrlObject | string;
-	};
+type LinkToProps<RouteType extends string = string> =
+	| (Omit<AnchorHTMLAttributes<HTMLAnchorElement>, keyof LinkProps<RouteType>> &
+			Omit<LinkProps<RouteType>, "href"> & {
+				children?: ReactNode;
+			} & LinkAdditionalProps & {
+				href?: Route<RouteType> | UrlObject;
+			})
+	| (AnchorHTMLAttributes<HTMLAnchorElement> & LinkAdditionalProps);
 export const LinkTo = <RouteType extends string = string>(linkToProps: LinkToProps<RouteType>) => {
 	const {
 		href,

@@ -21,10 +21,7 @@ type NewsletterEmailPreviewProps = {
 	email: EmailPreviewProps;
 	isAdminUser?: boolean;
 };
-const NewsletterEmailPreview = async ({
-	email,
-	isAdminUser = false,
-}: NewsletterEmailPreviewProps) => (
+const NewsletterEmailPreview = ({ email, isAdminUser = false }: NewsletterEmailPreviewProps) => (
 	<article>
 		<h2 className="p-0 font-sans text-2xl font-bold text-primary">
 			<LinkTo href={`/newsletter/${email.slug}`} scroll={false}>

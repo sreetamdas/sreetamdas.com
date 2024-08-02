@@ -100,7 +100,6 @@ export const ColorSchemeToggle = () => {
 		colorSchemeDarkMediaQuery.addEventListener("change", colorSchemeChangeListener);
 
 		return () => colorSchemeDarkMediaQuery.removeEventListener("change", colorSchemeChangeListener);
-		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	useEffect(() => {

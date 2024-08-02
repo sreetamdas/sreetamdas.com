@@ -32,7 +32,7 @@ const DrawerOverlay = forwardRef<
 ));
 DrawerOverlay.displayName = DrawerPrimitive.Overlay.displayName;
 
-interface DrawerContentProps extends ComponentPropsWithoutRef<typeof DrawerPrimitive.Content> {}
+type DrawerContentProps = ComponentPropsWithoutRef<typeof DrawerPrimitive.Content>;
 
 const DrawerContent = forwardRef<ElementRef<typeof DrawerPrimitive.Content>, DrawerContentProps>(
 	({ className, children, ...props }, ref) => (
