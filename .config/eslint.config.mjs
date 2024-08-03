@@ -39,13 +39,6 @@ export default tseslint.config(
 			// if you want to override the default language mapper inside, you can provide your own
 			languageMapper: {},
 		}),
-		languageOptions: {
-			parserOptions: {
-				projectService: {
-					allowDefaultProject: ["**/*.mdx"],
-				},
-			},
-		},
 		extends: [tseslint.configs.disableTypeChecked],
 	},
 	{
