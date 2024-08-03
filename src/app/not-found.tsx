@@ -1,11 +1,11 @@
-import { PropsWithChildren, useCallback, type ReactNode } from "react";
+import { PropsWithChildren, type ReactNode, useCallback } from "react";
 
 import { LinkTo } from "@/lib/components/Anchor";
 import { NotFoundDogsLink } from "@/lib/components/Error";
 import { Footer } from "@/lib/components/Footer";
 import { Header } from "@/lib/components/Header";
-import { FoobarPixel } from "@/lib/domains/foobar/Pixel.client";
 import { Gradient } from "@/lib/components/Typography";
+import { FoobarPixel } from "@/lib/domains/foobar/Pixel.client";
 
 export type GlobalNotFoundPageProps = {
 	message?: ReactNode;
@@ -13,8 +13,8 @@ export type GlobalNotFoundPageProps = {
 };
 export default function GlobalNotFound({ message, has_layout = false }: GlobalNotFoundPageProps) {
 	const Wrapper = useCallback(
-		({ children }: PropsWithChildren) => {
-			return has_layout ? (
+		({ children }: PropsWithChildren) =>
+			has_layout ? (
 				<>{children}</>
 			) : (
 				<>
@@ -29,8 +29,7 @@ export default function GlobalNotFound({ message, has_layout = false }: GlobalNo
 						<FoobarPixel path="/404" />
 					</Footer>
 				</>
-			);
-		},
+			),
 		[has_layout],
 	);
 
