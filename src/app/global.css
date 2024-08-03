@@ -50,7 +50,7 @@
 	}
 
 	.link-base {
-		@apply bg-[size:_0_2px] bg-[position:_100%_100%] bg-no-repeat text-primary transition-[background-size] duration-global ease-in-out [background-image:linear-gradient(90deg,_rgb(var(--color-secondary))_0%,_rgb(var(--color-secondary))_100%)] hover:bg-[size:_100%_2px] hover:bg-[position:_0_100%] focus-visible:outline-dashed focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-secondary has-[svg]:bg-none dark:[&>code]:text-secondary;
+		@apply bg-[size:_0_2px] bg-[position:_100%_100%] bg-no-repeat text-primary transition-[background-size] duration-global ease-in-out [background-image:linear-gradient(90deg,_rgb(var(--color-secondary))_0%,_rgb(var(--color-secondary))_100%)] hover:bg-[size:_100%_2px] hover:bg-[position:_0_100%] focus-visible:outline-dashed focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-secondary has-[svg:first-child:last-child]:bg-none dark:[&>code]:text-secondary;
 	}
 }
 
