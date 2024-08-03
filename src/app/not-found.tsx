@@ -9,12 +9,12 @@ import { Gradient } from "@/lib/components/Typography";
 
 export type GlobalNotFoundPageProps = {
 	message?: ReactNode;
-	hasLayout?: boolean;
+	has_layout?: boolean;
 };
-export default function GlobalNotFound({ message, hasLayout = false }: GlobalNotFoundPageProps) {
+export default function GlobalNotFound({ message, has_layout = false }: GlobalNotFoundPageProps) {
 	const Wrapper = useCallback(
 		({ children }: PropsWithChildren) => {
-			return hasLayout ? (
+			return has_layout ? (
 				<>{children}</>
 			) : (
 				<>
@@ -31,7 +31,7 @@ export default function GlobalNotFound({ message, hasLayout = false }: GlobalNot
 				</>
 			);
 		},
-		[hasLayout],
+		[has_layout],
 	);
 
 	return (

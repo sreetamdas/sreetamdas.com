@@ -138,7 +138,7 @@ const ResetFoobar = ({ handleClearFoobarData }: { handleClearFoobarData: () => v
 const FoobarButLocked = () => (
 	<GlobalNotFound
 		message={<p className="pt-5 text-center text-xs">psst, you should check the console!</p>}
-		hasLayout
+		has_layout
 	/>
 );
 
