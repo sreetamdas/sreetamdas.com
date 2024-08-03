@@ -3,7 +3,7 @@ import defaultTheme from "tailwindcss/defaultTheme";
 import plugin from "tailwindcss/plugin";
 
 export default {
-	content: ["./src/**/*.{js,ts,jsx,tsx}", "./content/**/*.mdx"],
+	content: ["./src/**/*.{js,ts,jsx,tsx,mdx}", "./content/**/*.mdx"],
 	theme: {
 		fontFamily: {
 			sans: ["var(--font-inter)", ...defaultTheme.fontFamily.sans],

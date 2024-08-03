@@ -6,9 +6,9 @@ import remarkGfm from "remark-gfm";
 import remarkToc from "remark-toc";
 import { defineCollection, defineConfig, s, type Schema } from "velite";
 
-import { OWNER_NAME, SITE_OG_IMAGE, SITE_URL } from "./src/config";
-import { rehypeImgSize } from "./src/lib/components/MDX/plugins";
-import { remarkShiki } from "./src/lib/domains/shiki";
+import { OWNER_NAME, SITE_OG_IMAGE, SITE_URL } from "../src/config";
+import { rehypeImgSize } from "../src/lib/components/MDX/plugins";
+import { remarkShiki } from "../src/lib/domains/shiki";
 
 const aoc_solutions = defineCollection({
 	name: "AdventOfCode",
@@ -51,6 +51,11 @@ const aoc_solutions = defineCollection({
 });
 
 export default defineConfig({
+	root: "../content",
+	output: {
+		data: "../.velite",
+		assets: "../public/static",
+	},
 	collections: {
 		blogPosts: {
 			name: "BlogPost",
