@@ -249,6 +249,58 @@ Parsing our example input now gives us an accurate map:
 }
 ```
 
+## Processing a button press
+
+We need to process a button press, sending a `:low` pulse from our `broadcast`
+module to its destination modules.
+
+We'll extract the `broadcast` key from the `parsed_input`:
+
+```elixir
+{broadcast, parsed} =
+  input
+  |> parse_input()
+  |> then(fn map ->
+    broadcast = Map.get(map, "broadcast")
+
+    {broadcast, map}
+  end)
+```
+
+...and then loop over the destination modules where we'll send the `:low` pulse.
+
+```elixir
+broadcast
+|> Enum.map(fn destination_module ->
+  {destination_module, :low}
+end)
+
+# or using the capture operator
+|> Enum.map(&{&1, :low})
+```
+
+With all that setup done, it's time to think about how to actually process the
+pulses/signals.
+
+Something important to keep in mind is that there is no `class` in Elixir, no
+objects/instances — so anytime we need to keep track of certain changes, you'll
+need to pass around a variable.
+
+<InfoBlock>
+  It can seem like an impediment at first, but it really simplfies
+  your code at most times; you can be assured that the variable you're
+  working with has not been mutated in any way elsewhere in your
+  program — <Highlight>all data in Elixir is immutable!</Highlight>
+</InfoBlock>
+
+Here's some pseudocode:
+
+```plain
+- each pulse sent a module might produce multiple more pulses to be handled
+- pulses are processed in the order they are sent
+-
+```
+
 ## Result
 
 ```elixir filename="day_20.ex"

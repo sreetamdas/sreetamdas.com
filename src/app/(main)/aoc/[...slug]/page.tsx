@@ -6,7 +6,8 @@ import { SITE_OG_IMAGE, SITE_TITLE_APPEND, SITE_URL } from "@/config";
 import { aoc_solutions } from "@/generated";
 import { MDXContent } from "@/lib/components/MDX";
 import { ReadingProgress } from "@/lib/components/ProgressBar.client";
-import { Blockquote } from "@/lib/components/Typography";
+import { InfoBlock } from "@/lib/components/sink";
+import { Blockquote, Highlight } from "@/lib/components/Typography";
 import { ViewsCounter } from "@/lib/components/ViewsCounter";
 import { cn } from "@/lib/helpers/utils";
 
@@ -88,6 +89,8 @@ export default function AdventOfCodeSolutionPage({ params: { slug } }: PageParam
 							className="my-5 bg-karma-background font-mono font-light text-[#D7D7D7] dark:bg-karma-background [&_strong]:text-[rgb(var(--dark-blue))]"
 						/>
 					),
+					Highlight,
+					InfoBlock,
 
 					ParseInput,
 				}}

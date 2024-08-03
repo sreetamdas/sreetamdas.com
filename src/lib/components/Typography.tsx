@@ -85,3 +85,9 @@ export const Blockquote = ({ children, className, ...props }: HTMLAttributes<HTM
 		{children}
 	</blockquote>
 );
+
+export const Highlight = ({ children, className, ...props }: HTMLAttributes<HTMLSpanElement>) => (
+	<span className={cn("font-serif font-bold text-secondary", className)} {...props}>
+		{children}
+	</span>
+);
