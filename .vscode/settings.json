@@ -19,11 +19,11 @@
 	],
 	"eslint.useFlatConfig": true,
 	"eslint.options": {
-		"overrideConfigFile": "./.config/eslint.config.js"
+		"overrideConfigFile": "./.config/eslint.config.mjs"
 	},
-	"prettier.configPath": ".config/.prettierrc.mjs",
+	"prettier.configPath": ".config/prettier.config.mjs",
 	"prettier.ignorePath": ".config/.prettierignore",
-	"[mdx]": {
+	"[mdx][markdown]": {
 		"editor.quickSuggestions": {
 			"other": "off",
 			"comments": "off",

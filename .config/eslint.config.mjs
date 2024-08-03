@@ -1,6 +1,5 @@
 import eslint from "@eslint/js";
 import * as mdx from "eslint-plugin-mdx";
-import prettier from "eslint-plugin-prettier/recommended";
 import simpleImportSort from "eslint-plugin-simple-import-sort";
 import globals from "globals";
 import tseslint from "typescript-eslint";
@@ -8,7 +7,6 @@ import tseslint from "typescript-eslint";
 export default tseslint.config(
 	eslint.configs.recommended,
 	...tseslint.configs.recommended,
-	prettier,
 	{
 		languageOptions: {
 			parserOptions: {
@@ -33,7 +31,6 @@ export default tseslint.config(
 		},
 	},
 	{
-		// files: ["*.mdx", "**/*.mdx/**"],
 		...mdx.flat,
 		// optional, if you want to lint code blocks at the same
 		processor: mdx.createRemarkProcessor({
@@ -49,7 +46,7 @@ export default tseslint.config(
 				},
 			},
 		},
-		extends: [tseslint.configs.disableTypeChecked, mdx.configs.recommended],
+		extends: [tseslint.configs.disableTypeChecked],
 	},
 	{
 		rules: {
@@ -71,7 +68,6 @@ export default tseslint.config(
 			"no-unused-expressions": ["error", { allowTaggedTemplates: true }],
 			"no-param-reassign": ["error", { props: false }],
 			"simple-import-sort/imports": "warn",
-			"prettier/prettier": ["warn"],
 		},
 	},
 );
