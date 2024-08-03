@@ -1,7 +1,7 @@
 "use client";
 import "shiki-magic-move/dist/style.css";
 
-import { useEffect, useState } from "react";
+import { useEffect, useId, useState } from "react";
 import { FaLongArrowAltLeft, FaLongArrowAltRight } from "react-icons/fa";
 import { ShikiMagicMove } from "shiki-magic-move/react";
 
@@ -16,6 +16,7 @@ export const ParseInput = ({ conjunctionInputsStage: conjInputsStage }: Props) =
 	const [currentStageIndex, setCurrentStageIndex] = useState(conjInputsStage ? 7 : 0);
 	const indexBounds = [0, conjInputsStage ? stages.length - 1 : 6];
 	const [highlighter, setHighlighter] = useState<KarmaHighlighter>();
+	const unique_id = useId();
 
 	useEffect(() => {
 		async function initializeHighlighter() {
@@ -42,7 +43,7 @@ export const ParseInput = ({ conjunctionInputsStage: conjInputsStage }: Props) =
 					aria-disabled={currentStageIndex === indexBounds[0]}
 					aria-describedby="previous-stage-button-disabled-description"
 				>
-					<span id="previous-stage-button-disabled-description" className="sr-only">
+					<span id={`previous-stage-button-disabled-description-${unique_id}`} className="sr-only">
 						Currently at first possible stage
 					</span>
 					<FaLongArrowAltLeft
@@ -61,7 +62,7 @@ export const ParseInput = ({ conjunctionInputsStage: conjInputsStage }: Props) =
 					aria-disabled={currentStageIndex === indexBounds[1]}
 					aria-describedby="next-stage-button-disabled-description"
 				>
-					<span id="next-stage-button-disabled-description" className="sr-only">
+					<span id={`next-stage-button-disabled-description-${unique_id}`} className="sr-only">
 						Currently at last possible stage
 					</span>
 					<span className="sr-only sm:not-sr-only">Next</span>
