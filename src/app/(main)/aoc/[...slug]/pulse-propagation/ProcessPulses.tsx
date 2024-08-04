@@ -5,7 +5,7 @@ type ProcessPulsesProps = {
 	second_stage?: boolean;
 };
 export const ProcessPulses = (_props: ProcessPulsesProps) => (
-	<MagicMove stages={stages} lang="elixir" />
+	<MagicMove stages={stages} lang="elixir" file_name="process_pulses.ex" />
 );
 
 const stages = [

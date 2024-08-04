@@ -44,8 +44,8 @@ export const MagicMove = (props: MagicMoveProps) => {
 	}
 
 	return (
-		<figure className="my-10">
-			<div className="flex justify-between gap-2">
+		<figure className="relative my-10">
+			<div className="sticky top-[60px] z-10 -mx-4 flex justify-between gap-2 bg-background py-1 text-xs max-sm:px-2 sm:-ml-12 sm:-mr-5 sm:pl-12 sm:pr-5">
 				<button
 					className="group flex items-center gap-x-1 rounded-global bg-primary/20 px-2 py-1 text-xs text-foreground transition-[color,background-color] enabled:hover:bg-primary/25 disabled:cursor-not-allowed disabled:bg-primary/10 sm:px-4"
 					onClick={moveBackward}
