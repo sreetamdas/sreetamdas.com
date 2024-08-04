@@ -31,7 +31,7 @@ end
 		label: "Move pattern match to function",
 		code: `
 defp process_pulse(
-       [{module, pulse} | rest_pulses],
+       [{module, pulse, sender} | rest_pulses],
        modules_map
      ) do
 end
@@ -41,11 +41,12 @@ end
 		label: "Get module from map",
 		code: `
 defp process_pulse(
-       [{module, pulse} | rest_pulses],
+       [{module, pulse, sender} | rest_pulses],
        modules_map
      ) do
   modules_map
-  |> Map.get_and_update(node, fn module_details -> nil end)
+  # Get and update key, in one pass
+  |> Map.get_and_update(module, fn module_details -> {nil, nil} end)
 end
 `,
 	},
@@ -57,14 +58,160 @@ end
 		),
 		code: `
 defp process_pulse(
-       [{module, pulse} | rest_pulses],
+       [{module, pulse, sender} | rest_pulses],
        modules_map
      ) do
   modules_map
-  |> Map.get_and_update(node, fn 
+  |> Map.get_and_update(module, fn
+    # flip-flop module, when in :off state
     {:flip, dest_mods, :off} when signal == :low ->
       dest_mods
 	end)
+end
+`,
+	},
+	{
+		label: (
+			<>
+				Create <Code>:high</Code> pulse for all destination modules
+			</>
+		),
+		code: `
+defp process_pulse(
+       [{module, pulse, sender} | rest_pulses],
+       modules_map
+     ) do
+  modules_map
+  |> Map.get_and_update(module, fn
+    # flip-flop module, when in :off state
+    {:flip, dest_mods, :off} when signal == :low ->
+      dest_mods
+      # send :high pulse to all destination modules
+      |> Enum.map(&{&1, :high, module})
+	end)
+end
+`,
+	},
+	{
+		label: (
+			<>
+				Update <Code>module</Code> to <Code>:on</Code> state
+			</>
+		),
+		code: `
+defp process_pulse(
+       [{module, pulse, sender} | rest_pulses],
+       modules_map
+     ) do
+  modules_map
+  |> Map.get_and_update(module, fn
+    # flip-flop module, when in :off state
+    {:flip, dest_mods, :off} when signal == :low ->
+      dest_mods
+      # send :high pulse to all destination modules
+      |> Enum.map(&{&1, :high, module})
+      # second tuple element is updated key value in map
+      |> then(&{&1, {:flip, dest_mods, :on}})
+	end)
+end
+`,
+	},
+	{
+		label: (
+			<>
+				Process flip-flop modules in <Code>:on</Code> state
+			</>
+		),
+		code: `
+defp process_pulse(
+       [{module, pulse, sender} | rest_pulses],
+       modules_map
+     ) do
+  modules_map
+  |> Map.get_and_update(module, fn
+    # flip-flop module, when in :off state
+    {:flip, dest_mods, :off} when signal == :low ->
+      dest_mods
+      # send :high pulse to all destination modules
+      |> Enum.map(&{&1, :high, module})
+      # second tuple element is updated key value in map
+      |> then(&{&1, {:flip, dest_mods, :on}})
+
+    # flip-flop modules, when in :on state
+    {:flip, dest_mods, :on} when signal == :low ->
+      dest_mods
+      |> Enum.map(&{&1, :low, module})
+      |> then(&{&1, {:flip, dest_mods, :off}})
+	end)
+end
+`,
+	},
+	{
+		label: (
+			<>
+				Pattern match <Code>:conj</Code> module
+			</>
+		),
+		code: `
+defp process_pulse(
+       [{module, pulse, sender} | rest_pulses],
+       modules_map
+     ) do
+  modules_map
+  |> Map.get_and_update(module, fn
+    # flip-flop module, when in :off state
+    {:flip, dest_mods, :off} when signal == :low ->
+      dest_mods
+      # send :high pulse to all destination modules
+      |> Enum.map(&{&1, :high, module})
+      # second tuple element is updated key value in map
+      |> then(&{&1, {:flip, dest_mods, :on}})
+
+    # flip-flop modules, when in :on state
+    {:flip, dest_mods, :on} when signal == :low ->
+      dest_mods
+      |> Enum.map(&{&1, :low, module})
+      |> then(&{&1, {:flip, dest_mods, :off}})
+
+    # conjunction module
+    {:conj, dest_mods, inputs} ->
+      inputs
+  end)
+end
+`,
+	},
+	{
+		label: (
+			<>
+				Update <Code>inputs</Code> map with the received pulse
+			</>
+		),
+		code: `
+defp process_pulse(
+       [{module, pulse, sender} | rest_pulses],
+       modules_map
+     ) do
+  modules_map
+  |> Map.get_and_update(module, fn
+    # flip-flop module, when in :off state
+    {:flip, dest_mods, :off} when signal == :low ->
+      dest_mods
+      # send :high pulse to all destination modules
+      |> Enum.map(&{&1, :high, module})
+      # second tuple element is updated key value in map
+      |> then(&{&1, {:flip, dest_mods, :on}})
+
+    # flip-flop modules, when in :on state
+    {:flip, dest_mods, :on} when signal == :low ->
+      dest_mods
+      |> Enum.map(&{&1, :low, module})
+      |> then(&{&1, {:flip, dest_mods, :off}})
+
+    # conjunction module
+    {:conj, dest_mods, inputs} ->
+      inputs
+      |> Map.put(sender, pulse)
+  end)
 end
 `,
 	},

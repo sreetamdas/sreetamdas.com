@@ -249,7 +249,7 @@ Parsing our example input now gives us an accurate map:
 }
 ```
 
-## Processing a button press
+## Processing pulses
 
 We need to process a button press, sending a `:low` pulse from our `broadcast`
 module to its destination modules.
@@ -279,8 +279,15 @@ end)
 |> Enum.map(&{&1, :low})
 ```
 
-With all that setup done, it's time to think about how to actually process the
-pulses/signals.
+Since we'll need to update our `:conj` modules' inputs later, let's add in the
+sender module in the `pulse_details` as well.
+
+```elixir
+broadcast
+|> Enum.map(&{&1, :low, "broadcast"})
+```
+
+With all that setup done, it's time to think about how to actually process the pulses.
 
 Something important to keep in mind is that there is no `class` in Elixir, no
 objects/instances — so anytime we need to keep track of certain changes, you'll
@@ -295,13 +302,32 @@ need to pass around a variable.
 
 Here's some pseudocode:
 
-```plain
+```plain hide-line-numbers
 - each pulse sent a module might produce multiple more pulses to be handled
 - pulses are processed in the order they are sent
--
+- keep track of conjunction modules' inputs
 ```
 
-## Result
+### Guards
+
+At this stage, we'll need to do some more complex checks in our pattern amtching,
+for which we'll use [guards](https://hexdocs.pm/elixir/main/patterns-and-guards.html#guards).
+
+```elixir
+# case expressions
+case n do
+  0 -> :zero
+  n when n > 0 -> :positive
+  _ -> :negative
+end
+
+# function clauses
+
+```
+
+<ProcessPulses />
+
+## Final Result
 
 ```elixir filename="day_20.ex"
 defmodule PulsePropagation do
@@ -405,23 +431,23 @@ defmodule PulsePropagation do
     end)
   end
 
-  defp process_module({node, signal, sender}, node_map) do
+  defp process_module({node, pulse, sender}, node_map) do
     node_map
     |> Map.get_and_update(node, fn node_details ->
       case node_details do
-        {:flip, dest_mods, :off} when signal == :low ->
+        {:flip, dest_mods, :off} when pulse == :low ->
           dest_mods
           |> Enum.map(&{&1, :high, node})
           |> then(&{&1, {:flip, dest_mods, :on}})
 
-        {:flip, dest_mods, :on} when signal == :low ->
+        {:flip, dest_mods, :on} when pulse == :low ->
           dest_mods
           |> Enum.map(&{&1, :low, node})
           |> then(&{&1, {:flip, dest_mods, :off}})
 
         {:conj, dest_mods, inputs} ->
           inputs
-          |> Map.put(sender, signal)
+          |> Map.put(sender, pulse)
           |> then(fn updated_inputs ->
             cond do
               check_if_all_inputs_high?(updated_inputs) ->
@@ -483,12 +509,12 @@ defmodule PulsePropagation do
     end)
   end
 
-  defp is_high_signal_to_dependents(
-         {_node, signal, sender},
+  defp is_high_pulse_to_dependents(
+         {_node, pulse, sender},
          dependents
        ) do
     cond do
-      Enum.member?(dependents, sender) and signal == :high ->
+      Enum.member?(dependents, sender) and pulse == :high ->
         true
 
       true ->
@@ -496,17 +522,17 @@ defmodule PulsePropagation do
     end
   end
 
-  defp process_signal(
+  defp process_pulse(
          pulses,
          node_map,
          dependents \\ [],
          counts \\ {1, 0}
        )
 
-  defp process_signal([], node_map, _, counts),
+  defp process_pulse([], node_map, _, counts),
     do: {{node_map, counts}, false}
 
-  defp process_signal(
+  defp process_pulse(
          [pulse | rest_pulses],
          node_map,
          dependents,
@@ -522,7 +548,7 @@ defmodule PulsePropagation do
     |> then(fn {next_modules, updated_map} ->
       rest_pulses
       |> add_lists(next_modules)
-      |> process_signal(
+      |> process_pulse(
         updated_map,
         dependents,
         pulse_counts
@@ -530,7 +556,7 @@ defmodule PulsePropagation do
       |> then(fn {result, dependent_high} ->
         {result,
          dependent_high ||
-           is_high_signal_to_dependents(pulse, dependents)}
+           is_high_pulse_to_dependents(pulse, dependents)}
       end)
     end)
   end
@@ -566,7 +592,7 @@ defmodule PulsePropagation do
         fn _,
            {map, {low_counts, high_counts}, all_off_count} ->
           init_pulses
-          |> process_signal(map)
+          |> process_pulse(map)
           |> then(fn {{updated_map,
                        {updated_low_counts,
                         updated_high_counts}}, _} ->
@@ -618,7 +644,7 @@ defmodule PulsePropagation do
 
         {map, cycles_list, cycle_count, res} ->
           init_pulses
-          |> process_signal(map, dependents)
+          |> process_pulse(map, dependents)
           |> then(fn
             {{updated_map, _}, true} ->
               {{map, cycles_list, cycle_count, res},
