@@ -58,7 +58,7 @@ export const MagicMove = (props: MagicMoveProps) => {
 					</span>
 					<FaLongArrowAltLeft
 						aria-label="Previous step"
-						className="text-primary/50 transition-[color] group-hover:text-primary"
+						className="text-primary/50 transition-[color] group-enabled:group-hover:text-primary"
 					/>
 					<span className="sr-only sm:not-sr-only">Previous</span>
 				</button>
@@ -78,7 +78,7 @@ export const MagicMove = (props: MagicMoveProps) => {
 					<span className="sr-only sm:not-sr-only">Next</span>
 					<FaLongArrowAltRight
 						aria-label="Next step"
-						className="text-primary/50 transition-[color] group-hover:text-primary"
+						className="text-primary/50 transition-[color] group-enabled:group-hover:text-primary"
 					/>
 				</button>
 			</div>
