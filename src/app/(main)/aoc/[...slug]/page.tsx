@@ -11,7 +11,7 @@ import { Blockquote, Highlight } from "@/lib/components/Typography";
 import { ViewsCounter } from "@/lib/components/ViewsCounter";
 import { cn } from "@/lib/helpers/utils";
 
-import { ParseInput } from "./pulse-propagation";
+import { ParseInput, ProcessPulses } from "./pulse-propagation";
 
 export const dynamicParams = false;
 
@@ -93,6 +93,7 @@ export default function AdventOfCodeSolutionPage({ params: { slug } }: PageParam
 					InfoBlock,
 
 					ParseInput,
+					ProcessPulses,
 				}}
 			/>
 

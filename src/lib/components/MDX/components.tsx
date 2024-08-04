@@ -4,7 +4,7 @@ import { type HTMLAttributes } from "react";
 import { LinkTo } from "@/lib/components/Anchor";
 import { Image } from "@/lib/components/Image";
 import { Blockquote, Code, Heading, UnorderedList } from "@/lib/components/Typography";
-import { CodeBlock } from "@/lib/domains/shiki/components";
+import { CodeBlock } from "@/lib/domains/shiki/CodeBlock";
 
 export const customMDXComponents: MDXComponents = {
 	h1: ({ children, ...props }: HTMLAttributes<HTMLHeadingElement>) => (

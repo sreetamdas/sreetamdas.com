@@ -8,7 +8,7 @@ import {
 } from "shiki";
 import getWasm from "shiki/wasm";
 
-type BundledLangs = (typeof _preloaded_langs)[number];
+export type BundledLangs = (typeof _preloaded_langs)[number];
 const _preloaded_langs = [
 	"typescript",
 	"tsx",
