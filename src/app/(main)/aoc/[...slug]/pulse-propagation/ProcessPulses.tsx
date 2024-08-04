@@ -64,7 +64,7 @@ defp process_pulse(
   modules_map
   |> Map.get_and_update(module, fn
     # flip-flop module, when in :off state
-    {:flip, dest_mods, :off} when signal == :low ->
+    {:flip, dest_mods, :off} when pulse == :low ->
       dest_mods
 	end)
 end
@@ -73,7 +73,7 @@ end
 	{
 		label: (
 			<>
-				Create <Code>:high</Code> pulse for all destination modules
+				<Code>:high</Code> pulse for all <Code>dest_mods</Code>
 			</>
 		),
 		code: `
@@ -84,7 +84,7 @@ defp process_pulse(
   modules_map
   |> Map.get_and_update(module, fn
     # flip-flop module, when in :off state
-    {:flip, dest_mods, :off} when signal == :low ->
+    {:flip, dest_mods, :off} when pulse == :low ->
       dest_mods
       # send :high pulse to all destination modules
       |> Enum.map(&{&1, :high, module})
@@ -106,7 +106,7 @@ defp process_pulse(
   modules_map
   |> Map.get_and_update(module, fn
     # flip-flop module, when in :off state
-    {:flip, dest_mods, :off} when signal == :low ->
+    {:flip, dest_mods, :off} when pulse == :low ->
       dest_mods
       # send :high pulse to all destination modules
       |> Enum.map(&{&1, :high, module})
@@ -130,7 +130,7 @@ defp process_pulse(
   modules_map
   |> Map.get_and_update(module, fn
     # flip-flop module, when in :off state
-    {:flip, dest_mods, :off} when signal == :low ->
+    {:flip, dest_mods, :off} when pulse == :low ->
       dest_mods
       # send :high pulse to all destination modules
       |> Enum.map(&{&1, :high, module})
@@ -138,7 +138,7 @@ defp process_pulse(
       |> then(&{&1, {:flip, dest_mods, :on}})
 
     # flip-flop modules, when in :on state
-    {:flip, dest_mods, :on} when signal == :low ->
+    {:flip, dest_mods, :on} when pulse == :low ->
       dest_mods
       |> Enum.map(&{&1, :low, module})
       |> then(&{&1, {:flip, dest_mods, :off}})
@@ -160,7 +160,7 @@ defp process_pulse(
   modules_map
   |> Map.get_and_update(module, fn
     # flip-flop module, when in :off state
-    {:flip, dest_mods, :off} when signal == :low ->
+    {:flip, dest_mods, :off} when pulse == :low ->
       dest_mods
       # send :high pulse to all destination modules
       |> Enum.map(&{&1, :high, module})
@@ -168,7 +168,7 @@ defp process_pulse(
       |> then(&{&1, {:flip, dest_mods, :on}})
 
     # flip-flop modules, when in :on state
-    {:flip, dest_mods, :on} when signal == :low ->
+    {:flip, dest_mods, :on} when pulse == :low ->
       dest_mods
       |> Enum.map(&{&1, :low, module})
       |> then(&{&1, {:flip, dest_mods, :off}})
@@ -183,7 +183,7 @@ end
 	{
 		label: (
 			<>
-				Update <Code>inputs</Code> map with the received pulse
+				Update <Code>inputs</Code> map with pulse
 			</>
 		),
 		code: `
@@ -194,7 +194,7 @@ defp process_pulse(
   modules_map
   |> Map.get_and_update(module, fn
     # flip-flop module, when in :off state
-    {:flip, dest_mods, :off} when signal == :low ->
+    {:flip, dest_mods, :off} when pulse == :low ->
       dest_mods
       # send :high pulse to all destination modules
       |> Enum.map(&{&1, :high, module})
@@ -202,7 +202,7 @@ defp process_pulse(
       |> then(&{&1, {:flip, dest_mods, :on}})
 
     # flip-flop modules, when in :on state
-    {:flip, dest_mods, :on} when signal == :low ->
+    {:flip, dest_mods, :on} when pulse == :low ->
       dest_mods
       |> Enum.map(&{&1, :low, module})
       |> then(&{&1, {:flip, dest_mods, :off}})
@@ -212,6 +212,204 @@ defp process_pulse(
       inputs
       |> Map.put(sender, pulse)
   end)
+end
+`,
+	},
+	{
+		label: (
+			<>
+				Check if inputs are all <Code>:high</Code>
+			</>
+		),
+		code: `
+defp process_pulse(
+       [{module, pulse, sender} | rest_pulses],
+       modules_map
+     ) do
+  modules_map
+  |> Map.get_and_update(module, fn
+    # flip-flop module, when in :off state
+    {:flip, dest_mods, :off} when pulse == :low ->
+      dest_mods
+      # send :high pulse to all destination modules
+      |> Enum.map(&{&1, :high, module})
+      # second tuple element is updated key value in map
+      |> then(&{&1, {:flip, dest_mods, :on}})
+
+    # flip-flop modules, when in :on state
+    {:flip, dest_mods, :on} when pulse == :low ->
+      dest_mods
+      |> Enum.map(&{&1, :low, module})
+      |> then(&{&1, {:flip, dest_mods, :off}})
+
+    # conjunction module
+    {:conj, dest_mods, inputs} ->
+      inputs
+      |> Map.put(sender, pulse)
+  end)
+end
+
+# ? at the end denotes the function will return a boolean value
+defp check_if_all_inputs_high?(map) do
+  map
+  |> Map.values()
+  |> Enum.all?(&(&1 == :high))
+end
+`,
+	},
+	{
+		label: (
+			<>
+				<Code>:low</Code> pulse for all <Code>dest_mods</Code>
+			</>
+		),
+		code: `
+defp process_pulse(
+       [{module, pulse, sender} | rest_pulses],
+       modules_map
+     ) do
+  modules_map
+  |> Map.get_and_update(module, fn
+    # flip-flop module, when in :off state
+    {:flip, dest_mods, :off} when pulse == :low ->
+      dest_mods
+      # send :high pulse to all destination modules
+      |> Enum.map(&{&1, :high, module})
+      # second tuple element is updated key value in map
+      |> then(&{&1, {:flip, dest_mods, :on}})
+
+    # flip-flop modules, when in :on state
+    {:flip, dest_mods, :on} when pulse == :low ->
+      dest_mods
+      |> Enum.map(&{&1, :low, module})
+      |> then(&{&1, {:flip, dest_mods, :off}})
+
+    # conjunction module
+    {:conj, dest_mods, inputs} ->
+      inputs
+      |> Map.put(sender, pulse)
+      |> then(fn updated_inputs ->
+        cond do
+          check_if_all_inputs_high?(updated_inputs) ->
+            dest_mods
+            |> Enum.map(&{&1, :low, module})
+        end
+      end)
+  end)
+end
+
+# ? at the end denotes the function will return a boolean value
+defp check_if_all_inputs_high?(map) do
+  map
+  |> Map.values()
+  |> Enum.all?(&(&1 == :high))
+end
+`,
+	},
+	{
+		label: (
+			<>
+				Otherwise, <Code>:low</Code> pulse
+			</>
+		),
+		code: `
+defp process_pulse(
+       [{module, pulse, sender} | rest_pulses],
+       modules_map
+     ) do
+  modules_map
+  |> Map.get_and_update(module, fn
+    # flip-flop module, when in :off state
+    {:flip, dest_mods, :off} when pulse == :low ->
+      dest_mods
+      # send :high pulse to all destination modules
+      |> Enum.map(&{&1, :high, module})
+      # second tuple element is updated key value in map
+      |> then(&{&1, {:flip, dest_mods, :on}})
+
+    # flip-flop modules, when in :on state
+    {:flip, dest_mods, :on} when pulse == :low ->
+      dest_mods
+      |> Enum.map(&{&1, :low, module})
+      |> then(&{&1, {:flip, dest_mods, :off}})
+
+    # conjunction module
+    {:conj, dest_mods, inputs} ->
+      inputs
+      |> Map.put(sender, pulse)
+      |> then(fn updated_inputs ->
+        cond do
+          check_if_all_inputs_high?(updated_inputs) ->
+            dest_mods
+            |> Enum.map(&{&1, :low, module})
+
+          true ->
+            dest_mods
+            |> Enum.map(&{&1, :high, module})
+        end
+      end)
+  end)
+end
+
+# ? at the end denotes the function will return a boolean value
+defp check_if_all_inputs_high?(map) do
+  map
+  |> Map.values()
+  |> Enum.all?(&(&1 == :high))
+end
+`,
+	},
+	{
+		label: (
+			<>
+				Update map with <Code>updated_inputs</Code>
+			</>
+		),
+		code: `
+defp process_pulse(
+       [{module, pulse, sender} | rest_pulses],
+       modules_map
+     ) do
+  modules_map
+  |> Map.get_and_update(module, fn
+    # flip-flop module, when in :off state
+    {:flip, dest_mods, :off} when pulse == :low ->
+      dest_mods
+      # send :high pulse to all destination modules
+      |> Enum.map(&{&1, :high, module})
+      # second tuple element is updated key value in map
+      |> then(&{&1, {:flip, dest_mods, :on}})
+
+    # flip-flop modules, when in :on state
+    {:flip, dest_mods, :on} when pulse == :low ->
+      dest_mods
+      |> Enum.map(&{&1, :low, module})
+      |> then(&{&1, {:flip, dest_mods, :off}})
+
+    # conjunction module
+    {:conj, dest_mods, inputs} ->
+      inputs
+      |> Map.put(sender, pulse)
+      |> then(fn updated_inputs ->
+        cond do
+          check_if_all_inputs_high?(updated_inputs) ->
+            dest_mods
+            |> Enum.map(&{&1, :low, module})
+
+          true ->
+            dest_mods
+            |> Enum.map(&{&1, :high, module})
+        end
+        |> then(&{&1, {:conj, dest_mods, updated_inputs}})
+      end)
+  end)
+end
+
+# ? at the end denotes the function will return a boolean value
+defp check_if_all_inputs_high?(map) do
+  map
+  |> Map.values()
+  |> Enum.all?(&(&1 == :high))
 end
 `,
 	},
