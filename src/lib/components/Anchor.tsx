@@ -56,7 +56,7 @@ export const LinkTo = <RouteType extends string = string>(linkToProps: LinkToPro
 			<NextLink
 				{...restProps}
 				{...extraProps}
-				href={href as Route}
+				href={href}
 				className={cn(!replaceClasses && "link-base", passedClasses)}
 			/>
 		);

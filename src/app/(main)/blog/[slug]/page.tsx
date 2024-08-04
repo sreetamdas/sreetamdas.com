@@ -1,4 +1,4 @@
-import { type Metadata, type Route } from "next";
+import { type Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Balancer } from "react-wrap-balancer";
 
@@ -84,7 +84,7 @@ export default function BlogPage({ params }: PageParams) {
 				}}
 			/>
 
-			<ViewsCounter slug={(post.url as Route) ?? post.page_path} />
+			<ViewsCounter slug={post.url ?? post.page_path} />
 		</>
 	);
 }

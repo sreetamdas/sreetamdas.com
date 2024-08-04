@@ -1,4 +1,3 @@
-import { type Route } from "next";
 import { HiOutlineCalendar, HiOutlineNewspaper } from "react-icons/hi";
 
 import { LinkTo } from "@/lib/components/Anchor";
@@ -96,7 +95,7 @@ export const NewsletterEmailDetail = ({ email }: NewsletterEmailDetailProps) => 
 
 				<MDXContent code={bodyCompiled} />
 			</article>
-			<ViewsCounter slug={`/newsletter/${email.slug}` as Route} />
+			<ViewsCounter slug={`/newsletter/${email.slug}`} />
 		</section>
 	);
 };

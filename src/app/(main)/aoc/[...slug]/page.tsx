@@ -1,5 +1,5 @@
 import { isEmpty } from "lodash-es";
-import { type Metadata, type Route } from "next";
+import { type Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { SITE_OG_IMAGE, SITE_TITLE_APPEND, SITE_URL } from "@/config";
@@ -96,7 +96,7 @@ export default function AdventOfCodeSolutionPage({ params: { slug } }: PageParam
 				}}
 			/>
 
-			<ViewsCounter slug={(post.url as Route) ?? post.page_path} />
+			<ViewsCounter slug={post.url ?? post.page_path} />
 		</>
 	);
 }

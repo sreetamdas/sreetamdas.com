@@ -1,4 +1,4 @@
-import { type Metadata, type Route } from "next";
+import { type Metadata } from "next";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 
@@ -37,7 +37,7 @@ export default function MDXPageSlugPage({ params: { mdxPageSlug } }: PageParams)
 				/{post.page_slug}
 			</h1>
 			<MDXContent code={post.code} components={{ RepoContributors }} />
-			<ViewsCounter slug={post.page_path as Route} />
+			<ViewsCounter slug={post.page_path} />
 		</>
 	);
 }
