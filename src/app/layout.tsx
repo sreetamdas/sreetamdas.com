@@ -71,6 +71,9 @@ export const metadata = {
 	other: {
 		"mobile-web-app-capable": "yes",
 	},
+	alternates: {
+		canonical: "./",
+	},
 };
 
 export const viewport = {
