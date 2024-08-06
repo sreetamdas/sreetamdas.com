@@ -4,8 +4,14 @@ import { MagicMove } from "@/lib/domains/shiki/MagicMove";
 type ProcessPulsesProps = {
 	second_stage?: boolean;
 };
-export const ProcessPulses = (_props: ProcessPulsesProps) => (
-	<MagicMove stages={stages} lang="elixir" file_name="process_pulses.ex" />
+export const ProcessPulses = (props: ProcessPulsesProps) => (
+	<MagicMove
+		stages={stages}
+		lang="elixir"
+		file_name="process_pulses.ex"
+		init_index={props.second_stage ? 14 : undefined}
+		last_index={props.second_stage ? undefined : 13}
+	/>
 );
 
 const stages = [

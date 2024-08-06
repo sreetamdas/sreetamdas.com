@@ -3,14 +3,13 @@
 import { ReactElement, useEffect, useId, useState } from "react";
 import { FaLongArrowAltLeft, FaLongArrowAltRight } from "react-icons/fa";
 import { ShikiMagicMove } from "shiki-magic-move/react";
-import { type NonNegativeInteger } from "type-fest";
 
 import { BundledLangs, getSlimKarmaHighlighter, KarmaHighlighter } from "./highlighter";
 
 type MagicMoveProps = {
 	stages: Array<{ label: string | ReactElement; code: string }>;
-	init_index?: NonNegativeInteger<number>;
-	last_index?: NonNegativeInteger<number>;
+	init_index?: number;
+	last_index?: number;
 	file_name?: string;
 	lang: BundledLangs;
 } & Partial<Pick<Parameters<typeof ShikiMagicMove>[0], "options">>;
@@ -24,7 +23,7 @@ export const MagicMove = (props: MagicMoveProps) => {
 		options = { duration: 250, stagger: 0, lineNumbers: true },
 	} = props;
 	const [current_stage_index, setCurrentStageIndex] = useState(init_index);
-	const index_bounds = [0, init_index || stages.length - 1];
+	const index_bounds = [0, last_index || stages.length - 1];
 	const [highlighter, setHighlighter] = useState<KarmaHighlighter>();
 	const unique_id = useId();
 
