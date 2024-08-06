@@ -17,11 +17,6 @@ export const NavigationItems = () => (
 				</LinkTo>
 			</li>
 			<li>
-				<LinkTo href="/newsletter" className="text-foreground hover:text-primary">
-					newsletter
-				</LinkTo>
-			</li>
-			<li>
 				<LinkTo href="/karma" className="text-foreground hover:text-primary">
 					karma
 				</LinkTo>

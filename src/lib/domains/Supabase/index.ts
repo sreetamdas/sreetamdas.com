@@ -9,8 +9,9 @@ type ErrorResponse<Type = undefined> = {
 	error?: Type;
 };
 type PageViewCountResponse =
-	| (SuccessResponse<PageViewCount> & ErrorResponse & { type: "success" })
-	| ((SuccessResponse & ErrorResponse<{ message: string; cause: string }>) & { type: "error" });
+	| (SuccessResponse<PageViewCount> & { type: "success" })
+	| (SuccessResponse<null> &
+			ErrorResponse<{ message: string; cause: unknown }> & { type: "error" });
 
 const SUPABASE_ENABLED =
 	typeof process.env.NEXT_PUBLIC_SUPABASE_URL !== "undefined" &&
@@ -42,7 +43,7 @@ export async function getPageViews(slug: string): Promise<PageViewCountResponse>
 			limit: "1",
 		});
 
-		// biome-ignore lint/suspicious/noConsoleLog: needed
+		// eslint-disable-next-line no-console
 		console.log("GET", slug);
 
 		const request = await fetch(`${SUPABASE_API_BASE_URL}/page_details?${params.toString()}`, {
@@ -54,7 +55,7 @@ export async function getPageViews(slug: string): Promise<PageViewCountResponse>
 			...(!IS_DEV && { cache: "no-store" }),
 		});
 
-		const response: Array<PageViewCount> = await request.json();
+		const response = (await request.json()) as Array<PageViewCount>;
 		const view_count = response[0];
 
 		if (typeof view_count === "undefined") {
@@ -65,8 +66,11 @@ export async function getPageViews(slug: string): Promise<PageViewCountResponse>
 
 		return { data: view_count, type: "success" };
 	} catch (error) {
-		// @ts-expect-error error shape
-		return { error: { message: error.message, cause: error.cause }, type: "error" };
+		return {
+			data: null,
+			error: { message: `Error while getting page views for ${slug}`, cause: error },
+			type: "error",
+		};
 	}
 }
 
@@ -81,7 +85,7 @@ export async function upsertPageViews(slug: string): Promise<PageViewCountRespon
 			throw new Error("Supabase is not initialized");
 		}
 
-		// biome-ignore lint/suspicious/noConsoleLog: needed
+		// eslint-disable-next-line no-console
 		console.log("UPSERT", slug);
 
 		const request = await fetch(`${SUPABASE_API_BASE_URL}/rpc/upsert_page_view`, {
@@ -96,7 +100,7 @@ export async function upsertPageViews(slug: string): Promise<PageViewCountRespon
 			}),
 		});
 
-		const view_count: number = await request.json();
+		const view_count = (await request.json()) as number;
 
 		if (typeof view_count === "undefined") {
 			throw new Error("Page has not been added to the database yet", {
@@ -106,7 +110,10 @@ export async function upsertPageViews(slug: string): Promise<PageViewCountRespon
 
 		return { data: { view_count }, type: "success" };
 	} catch (error) {
-		// @ts-expect-error error shape
-		return { error: { message: error.message, cause: error.cause }, type: "error" };
+		return {
+			data: null,
+			error: { message: `Error while upserting page views for ${slug}`, cause: error },
+			type: "error",
+		};
 	}
 }

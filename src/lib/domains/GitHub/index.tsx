@@ -1,4 +1,4 @@
-import type { Endpoints } from "@octokit/types";
+import { type Endpoints } from "@octokit/types";
 
 import { DEFAULT_REPO } from "@/config";
 

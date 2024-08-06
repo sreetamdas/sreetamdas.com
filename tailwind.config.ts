@@ -1,13 +1,13 @@
-import type { Config } from "tailwindcss";
+import { type Config } from "tailwindcss";
 import defaultTheme from "tailwindcss/defaultTheme";
 import plugin from "tailwindcss/plugin";
 
 export default {
-	content: ["./src/**/*.{js,ts,jsx,tsx}"],
+	content: ["./src/**/*.{js,ts,jsx,tsx,mdx}", "./content/**/*.mdx"],
 	theme: {
 		fontFamily: {
 			sans: ["var(--font-inter)", ...defaultTheme.fontFamily.sans],
-			serif: ["var(--font-eb-garamond)", ...defaultTheme.fontFamily.serif],
+			serif: ["var(--font-bricolage-grotesque)", ...defaultTheme.fontFamily.serif],
 			mono: ["var(--font-iosevka)", ...defaultTheme.fontFamily.mono],
 		},
 		extend: {
@@ -16,9 +16,13 @@ export default {
 				secondary: "rgb(var(--color-secondary))",
 				foreground: "rgb(var(--color-foreground))",
 				background: "rgb(var(--color-background))",
+				"karma-background": "rgb(var(--color-karma-background))",
 			},
 			borderRadius: {
 				global: "var(--border-radius)",
+			},
+			transitionDuration: {
+				global: "var(--transition-duration)",
 			},
 			keyframes: {
 				"grow-shrink": {
@@ -57,7 +61,6 @@ export default {
 					"@keyframes exit": theme("keyframes.exit"),
 					".animate-in": {
 						animationName: "enter",
-						// animationDuration: theme("animationDuration.DEFAULT"),
 						"--tw-enter-opacity": "initial",
 						"--tw-enter-scale": "initial",
 						"--tw-enter-rotate": "initial",
@@ -66,7 +69,6 @@ export default {
 					},
 					".animate-out": {
 						animationName: "exit",
-						// // animationDuration: theme("animationDuration.DEFAULT"),
 						"--tw-exit-opacity": "initial",
 						"--tw-exit-scale": "initial",
 						"--tw-exit-rotate": "initial",

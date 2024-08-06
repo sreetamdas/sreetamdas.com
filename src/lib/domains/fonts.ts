@@ -1,12 +1,12 @@
-import { EB_Garamond, Inter } from "next/font/google";
+import { Bricolage_Grotesque, Inter } from "next/font/google";
 import localFont from "next/font/local";
 
 export const inter_font = Inter({
 	variable: "--font-inter",
 	subsets: ["latin"],
 });
-export const eb_garamond_font = EB_Garamond({
-	variable: "--font-eb-garamond",
+export const bricolage_grotesque_font = Bricolage_Grotesque({
+	variable: "--font-bricolage-grotesque",
 	subsets: ["latin"],
 });
 export const iosevka_font = localFont({

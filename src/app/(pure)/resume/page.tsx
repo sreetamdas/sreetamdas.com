@@ -12,7 +12,7 @@ export default function ResumePage() {
 				<div className="sm:max-w-3xl">
 					<section className="grid gap-5 pb-5 sm:grid-cols-[minmax(350px,_500px)_minmax(200px,_1fr)]">
 						<header>
-							<h1 className="font-bold text-5xl leading-normal tracking-tight">Sreetam Das</h1>
+							<h1 className="text-5xl font-bold leading-normal tracking-tight">Sreetam Das</h1>
 							<p className="leading-tight">
 								Open source aficionado who loves minimalist interfaces and component based,
 								deterministic development.
@@ -28,15 +28,15 @@ export default function ResumePage() {
 								<a href="https://sreetamdas.com" className="link-base">
 									Web
 								</a>
-								<span className="text-primary/50 text-xs">|</span>
+								<span className="text-xs text-primary/50">|</span>
 								<a href="https://github.com/sreetamdas" className="link-base">
 									GitHub
 								</a>
-								<span className="text-primary/50 text-xs">|</span>
+								<span className="text-xs text-primary/50">|</span>
 								<a href="https://twitter.com/_SreetamDas" className="link-base">
 									Twitter
 								</a>
-								<span className="text-primary/50 text-xs">|</span>
+								<span className="text-xs text-primary/50">|</span>
 								<a href="https://linkedin.com/in/sreetamdas" className="link-base">
 									LinkedIn
 								</a>
@@ -44,12 +44,12 @@ export default function ResumePage() {
 						</div>
 					</section>
 
-					<section className="grid gap-5 border-primary/20 border-t-2 pt-5 sm:grid-cols-[minmax(350px,_500px)_minmax(200px,_1fr)]">
+					<section className="grid gap-5 border-t-2 border-primary/20 pt-5 sm:grid-cols-[minmax(350px,_500px)_minmax(200px,_1fr)]">
 						<div id="main">
 							<div id="experience">
-								<h2 className="mb-4 font-bold text-secondary uppercase">Experience</h2>
+								<h2 className="mb-4 font-bold uppercase text-secondary">Experience</h2>
 
-								<p className="mt-4 mb-2">
+								<p className="mb-2 mt-4">
 									<a href="https://remote.com" className="link-base font-bold">
 										Remote
 									</a>
@@ -67,7 +67,7 @@ export default function ResumePage() {
 									</li>
 								</ul>
 
-								<p className="mt-4 mb-2">
+								<p className="mb-2 mt-4">
 									<span className="italic">
 										Senior Frontend Engineer I,{" "}
 										<span className="uppercase">Dec 2021 - Dec 2023</span>
@@ -85,7 +85,7 @@ export default function ResumePage() {
 									<li>Handling timely requests from various stakeholders</li>
 								</ul>
 
-								<p className="mt-4 mb-2">
+								<p className="mb-2 mt-4">
 									<span className="italic">
 										<span className="">Frontend Engineer</span>,{" "}
 										<span className="uppercase">Nov 2020 - Dec 2021</span>
@@ -100,7 +100,7 @@ export default function ResumePage() {
 									<li>Migrated an Elixir/Phoenix app to a modern React/Next.js stack</li>
 								</ul>
 
-								<p className="mt-6 mb-2">
+								<p className="mb-2 mt-6">
 									<a href="https://microland.com" className="link-base font-bold">
 										Microland
 									</a>
@@ -121,7 +121,7 @@ export default function ResumePage() {
 									</li>
 								</ul>
 
-								<p className="mt-4 mb-2">
+								<p className="mb-2 mt-4">
 									<span className="italic">
 										<span className="">Intern</span>,{" "}
 										<span className="uppercase">May 2017 - Jul 2017</span>
@@ -135,7 +135,7 @@ export default function ResumePage() {
 							</div>
 
 							<div id="projects">
-								<h2 className="mt-6 font-bold text-secondary uppercase">Projects</h2>
+								<h2 className="mt-6 font-bold uppercase text-secondary">Projects</h2>
 
 								<ul className="mt-4 list-outside list-disc pl-4">
 									<li>
@@ -174,17 +174,17 @@ export default function ResumePage() {
 						</div>
 
 						<div id="extra">
-							<h2 className="mb-4 font-bold text-secondary uppercase">Skills</h2>
-							<p className="mt-4 mb-2">
+							<h2 className="mb-4 font-bold uppercase text-secondary">Skills</h2>
+							<p className="mb-2 mt-4">
 								React, CSS, Next.js, Redux, NodeJS, TypeScript, Elixir, Python and Styled-components
 							</p>
-							<h2 className="mt-6 font-bold text-secondary uppercase">Interests</h2>
-							<p className="mt-4 mb-2">
+							<h2 className="mt-6 font-bold uppercase text-secondary">Interests</h2>
+							<p className="mb-2 mt-4">
 								Developer experience, local-first offline apps, performance
 								<br />
 								Mechanical keyboards, quizzing & CS
 							</p>
-							<h2 className="mt-6 font-bold text-secondary uppercase">Achievements</h2>
+							<h2 className="mt-6 font-bold uppercase text-secondary">Achievements</h2>
 
 							<h3 className="mt-4 font-bold">
 								<a href="https://www.awwwards.com" className="link-base">
@@ -245,8 +245,8 @@ export default function ResumePage() {
 							</h3>
 							<p>Bronze and Silver in Week of Code</p>
 
-							<h2 className="mt-6 font-bold text-secondary uppercase">Languages</h2>
-							<p className="mt-4 mb-2">Fluent in English, Hindi and Odia</p>
+							<h2 className="mt-6 font-bold uppercase text-secondary">Languages</h2>
+							<p className="mb-2 mt-4">Fluent in English, Hindi and Odia</p>
 						</div>
 					</section>
 				</div>

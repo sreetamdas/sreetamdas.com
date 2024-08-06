@@ -1,9 +1,10 @@
 import { compile } from "@mdx-js/mdx";
 
+import { SITE_TITLE_APPEND } from "@/config";
+import { ViewsCounter } from "@/lib/components/ViewsCounter";
+
 import { NewsletterEmailsPreviews } from "./components";
 import { fetchNewsletterEmails } from "./helpers";
-
-import { SITE_TITLE_APPEND } from "@/config";
 
 export const metadata = {
 	title: `Newsletter ${SITE_TITLE_APPEND}`,
@@ -16,8 +17,9 @@ export default async function NewsletterEmailsPage() {
 
 	return (
 		<>
-			<h1 className="pt-10 pb-20 font-serif text-8xl">/newsletter</h1>
+			<h1 className="pb-20 pt-10 font-serif text-8xl font-bold tracking-tighter">/newsletter</h1>
 			<NewsletterEmailsPreviews emails={newsletter_emails_previews_data} />
+			<ViewsCounter slug="/newsletter" />
 		</>
 	);
 }

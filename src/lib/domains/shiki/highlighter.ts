@@ -1,15 +1,15 @@
 import { defaultTheme } from "@sreetamdas/karma";
 import {
 	type BundledLanguage,
-	type HighlighterGeneric,
-	type ThemeRegistration,
 	getSingletonHighlighterCore,
+	type HighlighterGeneric,
 	normalizeTheme,
+	type ThemeRegistration,
 } from "shiki";
 import getWasm from "shiki/wasm";
 
-type BundledLangs = (typeof preloaded_langs)[number];
-const preloaded_langs = [
+export type BundledLangs = (typeof _preloaded_langs)[number];
+const _preloaded_langs = [
 	"typescript",
 	"tsx",
 	"json",
@@ -35,7 +35,7 @@ function convertToThemeRegistration(theme: typeof defaultTheme): ThemeRegistrati
 	};
 }
 
-type KarmaHighlighter = HighlighterGeneric<BundledLangs, "karma">;
+export type KarmaHighlighter = HighlighterGeneric<BundledLangs, "karma">;
 export async function getSlimKarmaHighlighter(): Promise<KarmaHighlighter> {
 	const karma_shiki_theme = convertToThemeRegistration(defaultTheme);
 	const theme = normalizeTheme(karma_shiki_theme);

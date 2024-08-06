@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { type ReactNode } from "react";
 
 import { cn } from "@/lib/helpers/utils";
 
@@ -11,7 +11,7 @@ export const InfoBlock = (props: InfoBlockProps) => {
 	return (
 		<aside
 			className={cn(
-				"-ml-12 -mr-5 my-5 rounded-global py-5 pr-5 pl-12",
+				"my-5 -ml-12 -mr-5 rounded-global py-5 pl-12 pr-5",
 				type === "info" ? "border-l-4 border-l-indigo-500 bg-indigo-100 dark:bg-indigo-950" : "",
 			)}
 		>

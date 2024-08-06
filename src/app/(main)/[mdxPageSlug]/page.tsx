@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import { type Metadata } from "next";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 
@@ -11,7 +11,7 @@ import { fetchRepoContributors } from "@/lib/domains/GitHub";
 
 export const dynamicParams = false;
 
-export async function generateStaticParams() {
+export function generateStaticParams() {
 	return rootPages.flatMap(({ page_slug, skip_page }) => {
 		if (skip_page) return [];
 
@@ -26,21 +26,23 @@ type PageParams = {
 		mdxPageSlug: string;
 	};
 };
-export default async function MDXPageSlugPage({ params: { mdxPageSlug } }: PageParams) {
+export default function MDXPageSlugPage({ params: { mdxPageSlug } }: PageParams) {
 	const post = rootPages.find((page) => page.page_slug === mdxPageSlug);
 
 	if (!post) notFound();
 
 	return (
 		<>
-			<h1 className="pt-10 pb-20 font-serif text-8xl">/{mdxPageSlug}</h1>
+			<h1 className="pb-20 pt-10 font-serif text-8xl font-bold tracking-tighter">
+				/{post.page_slug}
+			</h1>
 			<MDXContent code={post.code} components={{ RepoContributors }} />
-			<ViewsCounter slug={`/${mdxPageSlug}`} />
+			<ViewsCounter slug={post.page_path} />
 		</>
 	);
 }
 
-export async function generateMetadata({ params }: PageParams): Promise<Metadata> {
+export function generateMetadata({ params }: PageParams): Metadata {
 	const post = rootPages.find((page) => page.page_slug === params.mdxPageSlug);
 
 	return {

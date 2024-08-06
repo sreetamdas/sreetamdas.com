@@ -6,18 +6,18 @@ export const metadata = {
 	title: `Blog archive ${SITE_TITLE_APPEND}`,
 };
 
-export default async function BlogArchivePage() {
-	const blog_posts_previews = await getAllBlogPostsPreviewsData();
+export default function BlogArchivePage() {
+	const blog_posts_previews = getAllBlogPostsPreviewsData();
 
 	return (
 		<>
-			<h1 className="pt-10 pb-20 font-serif text-8xl">/blog</h1>
+			<h1 className="pb-20 pt-10 font-serif text-8xl font-bold tracking-tighter">/blog</h1>
 			<section className="grid gap-20">
 				{blog_posts_previews.map(
 					({ title, description, page_slug, page_path, published_at, url }) => (
 						<article key={page_slug} className="group grid gap-y-2">
 							<LinkTo href={url ?? page_path} className="w-fit hover:no-underline">
-								<h3 className="group-hover:gradient w-fit font-serif text-5xl leading-normal">
+								<h3 className="group-hover:gradient w-fit font-serif text-[40px] font-semibold leading-normal tracking-tight">
 									{title}
 								</h3>
 							</LinkTo>
@@ -40,7 +40,7 @@ export default async function BlogArchivePage() {
 	);
 }
 
-async function getAllBlogPostsPreviewsData() {
+function getAllBlogPostsPreviewsData() {
 	return blogPosts
 		.flatMap(({ title, description, page_slug, page_path, url, published, published_at }) => {
 			if (!IS_DEV && !published) {

@@ -1,7 +1,7 @@
-import type { MDXComponents } from "mdx/types";
+import { type MDXComponents } from "mdx/types";
+import { type ReactElement } from "react";
 import * as runtime from "react/jsx-runtime";
 
-import type { ReactElement } from "react";
 import { customMDXComponents } from "./components";
 
 export { customMDXComponents };
