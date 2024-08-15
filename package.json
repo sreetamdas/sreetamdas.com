@@ -46,7 +46,7 @@
 		"remark-gfm": "4.0.0",
 		"remark-toc": "^9.0.0",
 		"unist-util-visit": "^5.0.0",
-		"zustand": "4.5.4"
+		"zustand": "4.5.5"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "1.8.3",
