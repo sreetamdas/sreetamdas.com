@@ -30,8 +30,8 @@ importers:
         specifier: 3.1.1
         version: 3.1.1
       '@supabase/sentry-js-integration':
-        specifier: 0.2.0
-        version: 0.2.0(@supabase/supabase-js@2.44.3)
+        specifier: 0.3.0
+        version: 0.3.0(@supabase/supabase-js@2.44.3)
       '@supabase/supabase-js':
         specifier: ^2.44.3
         version: 2.44.3
@@ -850,8 +850,8 @@ packages:
   '@supabase/realtime-js@2.10.2':
     resolution: {integrity: sha512-qyCQaNg90HmJstsvr2aJNxK2zgoKh9ZZA8oqb7UT2LCh3mj9zpa3Iwu167AuyNxsxrUE8eEJ2yH6wLCij4EApA==}
 
-  '@supabase/sentry-js-integration@0.2.0':
-    resolution: {integrity: sha512-TNRknjWb442qmNoFoSemrD1uzFSYSwxRAq9vqJIRbAbl13BQyC7Uk8YVWMa3FFtyxMxk13PMfQrCzLO9IvrhLQ==}
+  '@supabase/sentry-js-integration@0.3.0':
+    resolution: {integrity: sha512-L6tr+M9OlYu3Ge3G33Cf5BptYYs30feJmD3zovCSRQezJOdtkbA361WVNyzCpSoIbUo4rcDVY/apklAhBewFBw==}
     peerDependencies:
       '@supabase/supabase-js': 2.x
 
@@ -3325,7 +3325,7 @@ snapshots:
       - bufferutil
       - utf-8-validate
 
-  '@supabase/sentry-js-integration@0.2.0(@supabase/supabase-js@2.44.3)':
+  '@supabase/sentry-js-integration@0.3.0(@supabase/supabase-js@2.44.3)':
     dependencies:
       '@supabase/supabase-js': 2.44.3
 
