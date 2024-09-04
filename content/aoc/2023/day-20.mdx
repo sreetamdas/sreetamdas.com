@@ -123,6 +123,8 @@ to store our module connections. Looking at our sample input, here's some pseudo
 - broadcaster, output
 ```
 
+### Anonymous functions, pattern matching and atoms
+
 A couple of handy Elixir-isms will help us out here:
 
 ```elixir
@@ -496,6 +498,30 @@ defmodule PulsePropagation do
     end)
   end
 end
+```
+
+## Running part 1
+
+For the first part of the puzzle, we need to perform 1000 "button presses". For
+us, this will mean processing 1000 `:low` pulses sent from the `broadcast` module
+and tracking the count of `:low` and `:high` pulses.
+
+This is now straightforward:
+
+```elixir
+broadcast
+|> Enum.map(&{&1, :low, "broadcast"})
+|> then(fn init_pulses ->
+  # enumerator 1 to 1000
+  1..1000
+  # {parsed_input, {low_count, high_count}} = init_values
+  |> Enum.reduce({parsed, {0, 0}}, fn
+    # current element, accumulator
+    _press_index, {map.{low_counts, high_counts}} ->
+      # process pulse
+      nil
+  end)
+end)
 ```
 
 ## Final Result
