@@ -27,6 +27,9 @@ let nextConfig = {
 		mdxRs: true,
 		ppr: true,
 	},
+	devIndicators: {
+		buildActivity: false,
+	},
 	images: {
 		remotePatterns: [
 			{
