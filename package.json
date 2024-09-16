@@ -33,11 +33,11 @@
 		"@radix-ui/react-visually-hidden": "^1.1.0",
 		"@sreetamdas/karma": "^3.1.1",
 		"@supabase/sentry-js-integration": "^0.3.0",
-		"@supabase/supabase-js": "^2.45.3",
+		"@supabase/supabase-js": "^2.45.4",
 		"clsx": "^2.1.1",
 		"image-size": "^1.1.1",
 		"lodash-es": "^4.17.21",
-		"next": "15.0.0-canary.139",
+		"next": "15.0.0-canary.156",
 		"next-plausible": "^3.12.2",
 		"react": "19.0.0-rc.0",
 		"react-dom": "19.0.0-rc.0",
@@ -49,7 +49,7 @@
 		"remark-gfm": "^4.0.0",
 		"remark-toc": "^9.0.0",
 		"shiki-magic-move": "^0.4.4",
-		"type-fest": "^4.26.0",
+		"type-fest": "^4.26.1",
 		"unist-util-visit": "^5.0.0",
 		"zustand": "^4.5.5"
 	},
@@ -59,24 +59,24 @@
 		"@types/eslint": "~9.6.1",
 		"@types/lodash-es": "^4.17.12",
 		"@types/mdx": "^2.0.13",
-		"@types/node": "^22.5.2",
-		"@types/react": "^18.3.5",
+		"@types/node": "^22.5.5",
+		"@types/react": "^18.3.6",
 		"@types/react-dom": "^18.3.0",
 		"autoprefixer": "^10.4.20",
-		"eslint": "^9.9.1",
+		"eslint": "^9.10.0",
 		"eslint-plugin-mdx": "^3.1.5",
 		"eslint-plugin-simple-import-sort": "^12.1.1",
 		"globals": "^15.9.0",
 		"next-sitemap": "^4.2.3",
 		"npm-run-all": "^4.1.5",
-		"postcss": "^8.4.44",
+		"postcss": "^8.4.47",
 		"prettier": "^3.3.3",
 		"prettier-plugin-tailwindcss": "^0.6.6",
-		"shiki": "^1.16.1",
+		"shiki": "^1.17.7",
 		"tailwind-merge": "^2.5.2",
-		"tailwindcss": "^3.4.10",
-		"typescript": "^5.5.4",
-		"typescript-eslint": "^8.4.0",
+		"tailwindcss": "^3.4.11",
+		"typescript": "^5.6.2",
+		"typescript-eslint": "^8.5.0",
 		"velite": "^0.1.1"
 	},
 	"browser": {
@@ -86,6 +86,6 @@
 		"workerDirectory": "public"
 	},
 	"engines": {
-		"node": "20"
+		"node": "22"
 	}
 }
