@@ -61,10 +61,10 @@ export const CodeBlock = (props: CodeBlockProps) => {
 					</span>
 				) : null}
 				{allow_block_expand || code_lang !== "plain" ? (
-					<span className="grid grid-flow-col gap-8 justify-self-end">
+					<span className="grid grid-flow-col items-center gap-8 justify-self-end">
 						{allow_block_expand ? (
 							<button
-								className="justify-self-end rounded-t-global py-1 font-mono text-zinc-400 max-sm:text-xs"
+								className="h-fit justify-self-end rounded-global bg-zinc-600 px-1 font-mono text-xs text-background transition-colors hover:bg-zinc-400 sm:text-sm"
 								onClick={toggleExpand}
 							>
 								toggle expand
@@ -97,7 +97,7 @@ export const CodeBlock = (props: CodeBlockProps) => {
 			{allow_block_expand && !is_block_expanded ? (
 				<div className="rounded-bl-global rounded-br-global sm:-ml-12 sm:-mr-5" style={style}>
 					<button
-						className="flex w-full justify-center px-5 py-2 text-xs text-zinc-400 hover:text-zinc-200 max-sm:px-2"
+						className="flex w-full justify-center px-5 py-2 text-xs text-zinc-400 transition-colors hover:text-zinc-200 max-sm:px-2"
 						onClick={toggleExpand}
 					>
 						<FaChevronDown />
