@@ -58,7 +58,6 @@ let nextConfig = {
 	},
 };
 
-// nextConfig = withContentlayer(nextConfig);
 nextConfig = withPlausibleProxy({
 	subdirectory: "prxy/plsbl",
 	scriptName: "plsbl",

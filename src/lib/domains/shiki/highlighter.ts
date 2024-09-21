@@ -6,6 +6,14 @@ import {
 	normalizeTheme,
 	type ThemeRegistration,
 } from "shiki";
+import css from "shiki/langs/css.mjs";
+import elixir from "shiki/langs/elixir.mjs";
+import html from "shiki/langs/html.mjs";
+import json from "shiki/langs/json.mjs";
+import markdown from "shiki/langs/markdown.mjs";
+import shell from "shiki/langs/shell.mjs";
+import tsx from "shiki/langs/tsx.mjs";
+import typescript from "shiki/langs/typescript.mjs";
 import getWasm from "shiki/wasm";
 
 export type BundledLangs = (typeof _preloaded_langs)[number];
@@ -41,16 +49,7 @@ export async function getSlimKarmaHighlighter(): Promise<KarmaHighlighter> {
 	const theme = normalizeTheme(karma_shiki_theme);
 
 	const highlighter = (await getSingletonHighlighterCore({
-		langs: [
-			import("shiki/langs/typescript.mjs"),
-			import("shiki/langs/tsx.mjs"),
-			import("shiki/langs/json.mjs"),
-			import("shiki/langs/markdown.mjs"),
-			import("shiki/langs/html.mjs"),
-			import("shiki/langs/css.mjs"),
-			import("shiki/langs/shell.mjs"),
-			import("shiki/langs/elixir.mjs"),
-		],
+		langs: [typescript, tsx, json, markdown, html, css, shell, elixir],
 		themes: [theme],
 		loadWasm: getWasm,
 	})) as KarmaHighlighter;
