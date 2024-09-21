@@ -48,7 +48,7 @@ type Props = {
 	lang?: string;
 	filename?: string;
 };
-function CodeSnippetBlock(props: Props) {
+const CodeSnippetBlock = (props: Props) => {
 	const { code, filename, highlighter, lang = "js" } = props;
 
 	if (!code) return null;
@@ -85,4 +85,4 @@ function CodeSnippetBlock(props: Props) {
 			/>
 		</article>
 	);
-}
+};
