@@ -25,8 +25,21 @@ export default async function NewsletterEmailsPage() {
 }
 
 function getEmailPreviewContent(content: string) {
-	// remove salutation, get two paragraphs
-	return content.replace("Hello there!\n", "").split("\n").slice(0, 3).join("\n");
+	return (
+		content
+			/**
+			 * Buttondown now includes a `<!-- buttondown-editor-mode: plaintext -->` at the start of the
+			 * email body, that is cannot be processed by micromark
+			 */
+			.replace("<!-- buttondown-editor-mode: plaintext -->", "")
+			/**
+			 * remove salutation, get two paragraphs
+			 */
+			.replace("Hello there!\n", "")
+			.split("\n")
+			.slice(0, 3)
+			.join("\n")
+	);
 }
 async function getNewsletterEmailsPreviewsData() {
 	const buttondown_api_emails_response = await fetchNewsletterEmails();
