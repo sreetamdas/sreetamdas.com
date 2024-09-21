@@ -46,8 +46,17 @@ async function getNewsletterEmailsDataBySlug(slug: string) {
 		notFound();
 	}
 
+	/**
+	 * Buttondown now includes a `<!-- buttondown-editor-mode: plaintext -->` at the start of the
+	 * email body, that is cannot be processed by micromark
+	 */
+	const trimmed_email_body = newsletter_email_by_slug.body.replace(
+		"<!-- buttondown-editor-mode: plaintext -->",
+		"",
+	);
+
 	const bodyCompiled = String(
-		await compile(newsletter_email_by_slug.body, {
+		await compile(trimmed_email_body, {
 			outputFormat: "function-body",
 		}),
 	);

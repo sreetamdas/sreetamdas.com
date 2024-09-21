@@ -47,7 +47,10 @@ export async function fetchNewsletterEmails(): Promise<ButtondownAPIEmailsRespon
 	try {
 		const response = await fetch(`${BUTTONDOWN_BASE_URL}/emails`, {
 			headers: {
-				...(BUTTONDOWN_API_KEY !== "" && { Authorization: `Token ${BUTTONDOWN_API_KEY}` }),
+				...(BUTTONDOWN_API_KEY !== "" && {
+					"X-API-Version": "2024-08-15",
+					Authorization: `Token ${BUTTONDOWN_API_KEY}`,
+				}),
 			},
 			next: {
 				revalidate: 86400,
