@@ -13,22 +13,30 @@ import { FiLink } from "react-icons/fi";
 import { LinkTo } from "@/lib/components/Anchor";
 import { cn } from "@/lib/helpers/utils";
 
+type LinkAnchorProp = Required<Pick<HTMLAttributes<HTMLHeadElement>, "id">>;
+export const LinkAnchor = ({ id }: LinkAnchorProp) => (
+	<LinkTo
+		href={`#${id}`}
+		replaceClasses
+		className="absolute -translate-x-[125%] translate-y-2 text-primary opacity-0 transition-opacity focus-visible:opacity-75 focus-visible:outline-dashed focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-secondary group-hover:opacity-75 max-md:hidden"
+	>
+		<FiLink aria-label={id} />
+	</LinkTo>
+);
+
 type HeadingProps = DetailedHTMLProps<HTMLAttributes<HTMLHeadingElement>, HTMLHeadingElement>;
 const getHeading = (
 	el: Extract<keyof ReactHTML, "h1" | "h2" | "h3">,
 	// propsWithoutChildren contains `id` attr here
 	{ children, ...propsWithoutChildren }: HeadingProps,
 ) => {
-	const LinkIcons = (
-		<LinkTo
-			href={`#${propsWithoutChildren.id ?? ""}`}
-			replaceClasses
-			className="absolute -translate-x-[125%] translate-y-2 text-primary opacity-0 transition-opacity group-hover:opacity-75 max-md:hidden"
-		>
-			<FiLink aria-label={propsWithoutChildren.id} />
-		</LinkTo>
+	const ActualHeading = createElement(
+		el,
+		propsWithoutChildren,
+		// `id` is always present thanks to rehypeSlug plugin
+		<LinkAnchor id={propsWithoutChildren.id!} />,
+		children,
 	);
-	const ActualHeading = createElement(el, propsWithoutChildren, LinkIcons, children);
 
 	return ActualHeading;
 };

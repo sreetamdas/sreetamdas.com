@@ -1,7 +1,7 @@
-import { FiLink } from "react-icons/fi";
 import { type ThemeRegistration } from "shiki";
 
 import { SITE_TITLE_APPEND } from "@/config";
+import { LinkAnchor } from "@/lib/components/Typography";
 import { ViewsCounter } from "@/lib/components/ViewsCounter";
 import { fetchGist } from "@/lib/domains/GitHub";
 import { getSlimKarmaHighlighter } from "@/lib/domains/shiki";
@@ -57,22 +57,17 @@ const CodeSnippetBlock = (props: Props) => {
 	const html = highlighter.codeToHtml(code, { theme: "karma", lang });
 	const cleaned_html = html.replace(/(^<pre [^>]*>)/, "").replace(/(<\/pre>$)/, "");
 
-	const slug = filename?.replaceAll(/[\s.]/g, "_").toLowerCase();
+	const slug = filename!.replaceAll(/[\s.]/g, "_").toLowerCase();
 
 	return (
 		<article className="my-20 flex flex-col">
 			<div className="flex justify-between">
-				<h2 className="group font-mono text-2xl text-primary" id={slug}>
-					<a
-						href={`#${slug}`}
-						className="absolute -translate-x-[125%] translate-y-1 text-primary opacity-0 transition-opacity group-hover:opacity-75 max-md:hidden"
-					>
-						<FiLink aria-label={slug} />
-					</a>
+				<h2 className="group font-mono text-xl text-primary" id={slug}>
+					<LinkAnchor id={slug} />
 					{filename}
 				</h2>
 				<span
-					className="rounded-t-global px-2 py-1 font-mono uppercase text-zinc-400"
+					className="rounded-t-global px-2 py-1 font-mono text-zinc-400"
 					style={{ backgroundColor }}
 				>
 					{lang}
