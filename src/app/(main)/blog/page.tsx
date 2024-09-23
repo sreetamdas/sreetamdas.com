@@ -16,7 +16,10 @@ export default function BlogArchivePage() {
 				{blog_posts_previews.map(
 					({ title, description, page_slug, page_path, published_at, url }) => (
 						<article key={page_slug} className="group grid gap-y-2">
-							<LinkTo href={url ?? page_path} className="w-fit hover:no-underline">
+							<LinkTo
+								href={url ?? page_path}
+								className="w-fit bg-[size:_0_4px] bg-[position:_100%_85%] hover:bg-[size:_100%_4px] hover:bg-[position:_0_85%] hover:no-underline"
+							>
 								<h3 className="group-hover:gradient w-fit font-serif text-[40px] font-semibold leading-normal tracking-tight">
 									{title}
 								</h3>
