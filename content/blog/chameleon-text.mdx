@@ -15,7 +15,7 @@ Here's how I did it.
 Let's take a look again at what we're trying to build here:
 
 {/* prettier-ignore */}
-<ChameleonHighlight className="font-bold leading-normal -tracking-[0.065em] [font-size:clamp(4rem,_10vw,_10rem)]">Hello there!</ChameleonHighlight>
+<ChameleonHighlight>Hello there!</ChameleonHighlight>
 
 <InfoBlock>
 Let's break down what's happening here:
@@ -34,8 +34,8 @@ transition-property: color;
 transition-duration: 5s;
 transition-timing-function: linear;
 
-/* or in one line */
 transition: color 5s linear;
+/* or in one line */
 ```
 
 And since I'm using `styled-components`, we can put this in a re-usable CSS string:
@@ -115,7 +115,7 @@ const Wave = styled.span`
 ```
 
 {/* prettier-ignore */}
-<HighlightWithUseEffect className="font-bold leading-normal -tracking-[0.065em] [font-size:clamp(4rem,_10vw,_10rem)]">Hello there!</HighlightWithUseEffect>
+<HighlightWithUseEffect>Hello there!</HighlightWithUseEffect>
 
 Huh, that didn't seem to work out 🤔 but that's because the transition already ran since the above live example was already "mounted" by the time you scrolled down to it.
 
@@ -168,18 +168,16 @@ const ChameleonHighlight = ({ children }) => {
 ```
 
 {/* prettier-ignore */}
-<HighlightWithUseInterval className="font-bold leading-normal -tracking-[0.065em] [font-size:clamp(4rem,_10vw,_10rem)]">
-<strong>Hello there!</strong>
-</HighlightWithUseInterval>
+<HighlightWithUseInterval>Hello there</HighlightWithUseInterval>
 
 Voila! ✨
 
 There we go. What's great is that you can also use this to highlight link, like so:
 
 {/* prettier-ignore */}
-<ChameleonHighlight className="font-bold leading-normal -tracking-[0.065em] [font-size:clamp(4rem,_10vw,_10rem)]">
+<ChameleonHighlight>
 {/* prettier-ignore */}
-  <a href="#" className="visited:no-underline hover:underline hover:decoration-current hover:decoration-solid focus-visible:outline-dashed focus-visible:outline-8 focus-visible:outline-secondary">This is a link.</a>
+  <a href="#" className="visited:no-underline hover:underline hover:decoration-current hover:decoration-solid focus-visible:outline-dashed focus-visible:outline-8 focus-visible:outline-secondary [font-size:clamp(4rem,_10vw,_7rem)]">Look, a link!</a>
 </ChameleonHighlight>
 
 ## Wrapping up

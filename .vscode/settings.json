@@ -6,37 +6,32 @@
 		"*.module.css": "postcss",
 		"*.css": "tailwindcss"
 	},
-	"mdx.experimentalLanguageServer": true,
 	"tailwindCSS.classAttributes": ["class", "className", "ngClass", "tw"],
 	"tailwindCSS.includeLanguages": {
 		"plaintext": "html"
 	},
 	"typescript.tsdk": "node_modules/typescript/lib",
 	"typescript.enablePromptUseWorkspaceTsdk": true,
-	"editor.codeActionsOnSave": {
-		"source.organizeImports.biome": "explicit",
-		"quickfix.biome": "explicit"
+	"workbench.colorCustomizations": {
+		"statusBar.background": "#f7f1ff",
+		"statusBar.foreground": "#000"
 	},
-	"editor.formatOnSave": true,
-	"[typescript]": {
-		"editor.defaultFormatter": "biomejs.biome"
+	"tailwindCSS.experimental.classRegex": [
+		["cva\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"],
+		["cx\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"]
+	],
+	"eslint.useFlatConfig": true,
+	"eslint.options": {
+		"overrideConfigFile": "./.config/eslint.config.mjs"
 	},
-	"[javascript]": {
-		"editor.defaultFormatter": "biomejs.biome"
-	},
-	"[json]": {
-		"editor.defaultFormatter": "biomejs.biome"
-	},
-	"[jsonc]": {
-		"editor.defaultFormatter": "biomejs.biome"
-	},
-	"[javascriptreact]": {
-		"editor.defaultFormatter": "biomejs.biome"
-	},
-	"[typescriptreact]": {
-		"editor.defaultFormatter": "biomejs.biome"
-	},
-	"[markdown]": {
-		"editor.defaultFormatter": "biomejs.biome"
+	"prettier.configPath": ".config/prettier.config.mjs",
+	"prettier.ignorePath": ".config/.prettierignore",
+	"[mdx][markdown]": {
+		"editor.quickSuggestions": {
+			"other": "off",
+			"comments": "off",
+			"strings": "off"
+		},
+		"editor.rulers": [60, 80]
 	}
 }

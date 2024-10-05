@@ -1,15 +1,16 @@
 "use client";
 
-import { cn } from "@/lib/helpers/utils";
 import * as DrawerPrimitive from "@radix-ui/react-dialog";
 import * as VisuallyHidden from "@radix-ui/react-visually-hidden";
 import {
 	type ComponentPropsWithoutRef,
 	type ElementRef,
-	type HTMLAttributes,
 	forwardRef,
+	type HTMLAttributes,
 } from "react";
 import { LuX } from "react-icons/lu";
+
+import { cn } from "@/lib/helpers/utils";
 
 const DrawerRoot = DrawerPrimitive.Root;
 const DrawerTrigger = DrawerPrimitive.Trigger;
@@ -22,7 +23,7 @@ const DrawerOverlay = forwardRef<
 >(({ className, ...props }, ref) => (
 	<DrawerPrimitive.Overlay
 		className={cn(
-			"data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 fixed inset-0 z-50 bg-black/80 data-[state=closed]:animate-out data-[state=open]:animate-in",
+			"fixed inset-0 z-50 bg-black/80 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
 			className,
 		)}
 		{...props}
@@ -31,7 +32,7 @@ const DrawerOverlay = forwardRef<
 ));
 DrawerOverlay.displayName = DrawerPrimitive.Overlay.displayName;
 
-interface DrawerContentProps extends ComponentPropsWithoutRef<typeof DrawerPrimitive.Content> {}
+type DrawerContentProps = ComponentPropsWithoutRef<typeof DrawerPrimitive.Content>;
 
 const DrawerContent = forwardRef<ElementRef<typeof DrawerPrimitive.Content>, DrawerContentProps>(
 	({ className, children, ...props }, ref) => (
@@ -40,13 +41,13 @@ const DrawerContent = forwardRef<ElementRef<typeof DrawerPrimitive.Content>, Dra
 			<DrawerPrimitive.Content
 				ref={ref}
 				className={cn(
-					"data-[state=closed]:slide-out-to-left data-[state=open]:slide-in-from-left fixed inset-y-0 left-0 z-50 h-full w-3/4 gap-4 border-r bg-background p-6 shadow-lg transition ease-in-out data-[state=closed]:animate-duration-300 data-[state=closed]:animate-out data-[state=open]:animate-duration-500 data-[state=open]:animate-in sm:max-w-sm",
+					"fixed inset-y-0 left-0 z-50 h-full w-3/4 gap-4 border-r bg-background p-6 shadow-lg transition ease-in-out data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:slide-out-to-left data-[state=open]:slide-in-from-left data-[state=closed]:animate-duration-global data-[state=open]:animate-duration-global sm:max-w-sm",
 					className,
 				)}
 				{...props}
 			>
 				{children}
-				<DrawerPrimitive.Close className="absolute top-4 right-4 rounded-sm text-2xl opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus-visible:outline-dashed focus-visible:outline-2 focus-visible:outline-secondary focus-visible:outline-offset-2 disabled:pointer-events-none data-[state=open]:bg-secondary">
+				<DrawerPrimitive.Close className="absolute right-4 top-4 rounded-sm text-2xl opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus-visible:outline-dashed focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-secondary disabled:pointer-events-none data-[state=open]:bg-secondary">
 					<LuX className="size-6" />
 					<span className="sr-only">Close</span>
 				</DrawerPrimitive.Close>
@@ -72,11 +73,11 @@ DrawerFooter.displayName = "DrawerFooter";
 const DrawerTitle = forwardRef<
 	ElementRef<typeof DrawerPrimitive.Title>,
 	ComponentPropsWithoutRef<typeof DrawerPrimitive.Title> & { hidden?: boolean }
->(({ className, hidden = true, ...props }, ref) => (
+>(({ className, ...props }, ref) => (
 	<VisuallyHidden.Root asChild>
 		<DrawerPrimitive.Title
 			ref={ref}
-			className={cn("font-semibold text-foreground text-lg", className)}
+			className={cn("text-lg font-semibold text-foreground", className)}
 			{...props}
 		/>
 	</VisuallyHidden.Root>

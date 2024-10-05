@@ -2,7 +2,7 @@ import path from "node:path";
 
 import sizeOf from "image-size";
 import { visit } from "unist-util-visit";
-import type { UnistNode } from "unist-util-visit/lib";
+import { type UnistNode } from "unist-util-visit/lib";
 
 type TreeNode = UnistNode & {
 	tagName: string;

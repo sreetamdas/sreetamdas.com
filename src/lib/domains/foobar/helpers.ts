@@ -1,6 +1,6 @@
-import type { FoobarSliceType } from "./store";
-
 import { FOOBAR_FLAGS } from "@/lib/domains/foobar/flags";
+
+import { type FoobarSliceType } from "./store";
 
 export function checkIfAllAchievementsAreDone(
 	completed: FoobarSliceType["foobar_data"]["completed"],
@@ -20,7 +20,7 @@ export function addFoobarToLocalStorage() {
 }
 
 export function logConsoleMessages() {
-	// biome-ignore lint/suspicious/noConsoleLog: needed
+	// eslint-disable-next-line no-console
 	console.log(
 		`%c${CONSOLE_REACT}`,
 		`color: #61DAFB;
@@ -29,21 +29,23 @@ export function logConsoleMessages() {
 		background-color: black;
 		line-height: 1.1`,
 	);
-	// biome-ignore lint/suspicious/noConsoleLog: needed
+	// eslint-disable-next-line no-console
 	console.log(
 		`        %c${CONSOLE_GREETING}`,
 		"font-size: 1.5em; font-family: monospace; font-weight: bold;",
 	);
 
-	// biome-ignore lint/suspicious/noConsoleLog: needed
+	// eslint-disable-next-line no-console
 	console.log(`%c${CONSOLE_MESSAGE}`, "font-size: 1.1em; font-family: monospace");
 
+	// eslint-disable-next-line no-console
 	console.groupCollapsed("Need a hint?");
-	// biome-ignore lint/suspicious/noConsoleLog: needed
+	// eslint-disable-next-line no-console
 	console.log(`%c${CONSOLE_X}`, "font-family: monospace");
 
+	// eslint-disable-next-line no-console
 	console.groupCollapsed("Need a another hint?");
-	// biome-ignore lint/suspicious/noConsoleLog: needed
+	// eslint-disable-next-line no-console
 	console.log(
 		`%c${CONSOLE_X2}`,
 		"font-family: monospace",
@@ -51,14 +53,19 @@ export function logConsoleMessages() {
 		"font-weight: normal; font-size: unset;",
 	);
 
+	// eslint-disable-next-line no-console
 	console.groupCollapsed("Need some more help?");
+	// eslint-disable-next-line no-console
 	console.groupCollapsed("Are you sure?\n\n\nTo confirm, you'll need to open this disclosure 👀");
-	// biome-ignore lint/suspicious/noConsoleLog: needed
+	// eslint-disable-next-line no-console
 	console.log(`%c${CONSOLE_X3}`, "font-family: monospace");
-
+	// eslint-disable-next-line no-console
 	console.groupEnd();
+	// eslint-disable-next-line no-console
 	console.groupEnd();
+	// eslint-disable-next-line no-console
 	console.groupEnd();
+	// eslint-disable-next-line no-console
 	console.groupEnd();
 }
 

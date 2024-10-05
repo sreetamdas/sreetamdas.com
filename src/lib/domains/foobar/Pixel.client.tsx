@@ -3,20 +3,20 @@
 import { usePathname } from "next/navigation";
 import { useEffect } from "react";
 
-import { FOOBAR_FLAGS, type FoobaFlagPageSlug } from "./flags";
-import type { FoobarSliceType } from "./store";
-
 import { IS_DEV } from "@/config";
 import { LinkTo } from "@/lib/components/Anchor";
 import { Code } from "@/lib/components/Typography";
-import { useCustomPlausible } from "@/lib/domains/Plausible";
 import {
 	addFoobarToLocalStorage,
 	checkIfAllAchievementsAreDone,
 	logConsoleMessages,
 } from "@/lib/domains/foobar/helpers";
 import { useGlobalStore } from "@/lib/domains/global";
+import { useCustomPlausible } from "@/lib/domains/Plausible";
 import { useHasMounted } from "@/lib/helpers/hooks";
+
+import { type FoobaFlagPageSlug, FOOBAR_FLAGS } from "./flags";
+import { type FoobarSliceType } from "./store";
 
 const foobarDataSelector = (state: FoobarSliceType) => ({
 	foobar_data: state.foobar_data,
@@ -55,7 +55,6 @@ export const FoobarPixel = (props: FoobarPixelProps) => {
 		}
 	}, []);
 
-	// biome-ignore lint/correctness/useExhaustiveDependencies: needed
 	useEffect(() => {
 		let page_name = pathname;
 		if (props.path === `/${FOOBAR_FLAGS.error404.slug}`) {
@@ -83,7 +82,6 @@ export const FoobarPixel = (props: FoobarPixelProps) => {
 		}
 	}, [completed, visited_pages, pathname]);
 
-	// biome-ignore lint/correctness/useExhaustiveDependencies: needed
 	useEffect(() => {
 		// for the `completed` achievement
 		if (checkIfAllAchievementsAreDone(completed)) {
@@ -96,11 +94,9 @@ export const FoobarPixel = (props: FoobarPixelProps) => {
 
 	return has_mounted && unlocked ? (
 		<span className="col-start-2 col-end-3">
-			<Code>
-				<LinkTo href="/foobar" style={{ border: "none" }}>
-					resume /foobar
-				</LinkTo>
-			</Code>
+			<LinkTo href="/foobar" style={{ border: "none" }}>
+				<Code>resume /foobar</Code>
+			</LinkTo>
 		</span>
 	) : null;
 };

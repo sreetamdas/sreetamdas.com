@@ -1,16 +1,17 @@
 "use client";
 
-import { DrawerContent, DrawerRoot, DrawerTitle, DrawerTrigger } from "@/lib/components/Drawer";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { LuMenu } from "react-icons/lu";
+
+import { DrawerContent, DrawerRoot, DrawerTitle, DrawerTrigger } from "@/lib/components/Drawer";
+
 import { NavigationItems } from "./NavItems";
 
 export const NavbarMobile = () => {
 	const pathname = usePathname();
 	const [open, setOpen] = useState(false);
 
-	// biome-ignore lint/correctness/useExhaustiveDependencies: needed
 	useEffect(() => {
 		setOpen(false);
 	}, [pathname]);
@@ -19,7 +20,7 @@ export const NavbarMobile = () => {
 		<DrawerRoot open={open} onOpenChange={setOpen}>
 			<div className="contents md:hidden">
 				<DrawerTrigger asChild>
-					<button className="text-2xl" type="button">
+					<button className="text-2xl" type="button" aria-label="Close mobile navigation drawer">
 						<LuMenu />
 					</button>
 				</DrawerTrigger>

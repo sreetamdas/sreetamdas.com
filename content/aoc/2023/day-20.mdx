@@ -1,0 +1,518 @@
+---
+title: "How I solved Day 20: Pulse Propaga&shy;tion in Elixir"
+subheading: "Advent of Code 2023"
+seo_title: "Advent of Code 2023, Day 20: Pulse Propagation"
+description: "Solving Advent of Code 2023, Day 20: Pulse Propagation in Elixir"
+published: false
+published_at: "2024-08-01"
+---
+
+Advent of Code 2023's Day 20 problem: [Pulse Propagation][pulse-propagation] is
+one of my favourite problems. I took quite some time to solve it, and looking
+back, it's a great way to showcase almost all the things I love about Elixir.
+
+Here's my approach of solving this problem, accompanied by how Elixir's
+(mental) model helped me. I skip over some things which are "basic" to Elixir,
+so you can refer to the [official docs](https://elixir-lang.org) if something
+doesn't quite make sense. In a gist:
+
+- Elixir is a dynamic and functional language
+- `|>` is the [pipe operator](https://hexdocs.pm/elixir/enumerable-and-streams.html#the-pipe-operator),
+  pretty central to the language; passes result of the left operation as the
+  first argument for the right operation
+- There is no `return` keyword, the value returned by a function is the value
+  returned by its last expression
+- [Functions. Describe. The World.](https://www.youtube.com/watch?v=PAZTIAfaNr8)
+
+## Table of contents
+
+## Problem statement
+
+You can read the [original statement in full][pulse-propagation], but here's
+the important bits (emphasis not mine):
+
+> Modules communicate using **pulses**. Each pulse is either a **high pulse**
+> or a **low pulse**. When a module sends a pulse, it sends that type of pulse
+> to each module in its list of **destination modules**.
+>
+> There are several different types of modules:
+>
+> **Flip-flop modules** (prefix %) are either **on** or **off**; they are
+> initially **off**. If a flip-flop module receives a high pulse, it is ignored
+> and nothing happens. However, if a flip-flop module receives a low pulse, it
+> **flips between on and off**. If it was off, it turns on and sends a high
+> pulse. If it was on, it turns off and sends a low pulse.
+>
+> **Conjunction** modules (prefix &) **remember** the type of the most recent
+> pulse received from **each** of their connected input modules; they initially
+> default to remembering a **low pulse** for each input. When a pulse is
+> received, the conjunction module first updates its memory for that input.
+> Then, if it remembers **high pulses** for all inputs, it sends a **low pulse**;
+> otherwise, it sends a **high pulse**.
+>
+> There is a single **broadcast module** (named broadcaster). When it receives
+> a pulse, it sends the same pulse to all of its destination modules.
+>
+> Here at Desert Machine Headquarters, there is a module with a
+> **single button** on it called, aptly, the button module. When you push the
+> button, a single **low pulse** is sent directly to the broadcaster module.
+>
+> After pushing the button, you must wait until all pulses have been delivered
+> and fully handled before pushing it again. Never push the button if modules
+> are still processing pulses.
+>
+> Pulses are always processed **in the order they are sent**. So, if a pulse is
+> sent to modules a, b, and c, and then module a processes its pulse and sends
+> more pulses, the pulses sent to modules b and c would have to be handled first.
+>
+> [...]
+>
+> To get the cables warmed up, the Elves have pushed the button 1000 times. How
+> many pulses got sent as a result (including the pulses sent by the button itself)?
+>
+> In the first example, the same thing happens every time the button is pushed:
+> 8 low pulses and 4 high pulses are sent. So, after pushing the button 1000
+> times, 8000 low pulses and 4000 high pulses are sent. Multiplying these
+> together gives **32000000**.
+>
+> In the second example, after pushing the button 1000 times, 4250 low pulses
+> and 2750 high pulses are sent. Multiplying these together gives **11687500**.
+>
+> Consult your module configuration; determine the number of low pulses and high
+> pulses that would be sent after pushing the button 1000 times, waiting for all
+> pulses to be fully handled after each push of the button. **What do you get if
+> you multiply the total number of low pulses sent by the total number of high
+> pulses sent?**
+
+{/* TODO add more */}
+
+There's a lot of words to make the problem more thematic, but the takeaways are:
+
+- There's one input, `broadcaster` module
+- Modules can be of two types, flip-flop modules, denoted by `%`, and
+  conjunction modules denoted by `&`.
+- Flip-flop modules switch between `on` and `off`, are initially `off`, but flip
+  only when they receive a `low` pulse. `high` pulses are ignored.
+- Conjunctions modules will store the type of _most recent_ pulse received from
+  _each_ of its inputs, initially `low` for each.
+- When it receives a pulse, it checks if it "remembers" `high` pulses from _all_
+  its inputs, and forwards a `low` pulse if so, `high` otherwise.
+
+With this in mind, we're ready to begin.
+
+## Parsing input
+
+Here's the sample input:
+
+```plain hide-line-numbers filename="input.txt"
+broadcaster -> a
+%a -> inv, con
+&inv -> b
+%b -> con
+&con -> output
+```
+
+We'll need to parse this and create a [`Map`](https://hexdocs.pm/elixir/Map.html)
+to store our module connections. Looking at our sample input, here's some pseudocode:
+
+```plain hide-line-numbers
+- split input to lines
+- iterate through each line
+- if starts with `%`, flip-flop
+- if starts with `&`, conjunction
+- broadcaster, output
+```
+
+### Anonymous functions, pattern matching and atoms
+
+A couple of handy Elixir-isms will help us out here:
+
+{/* TODO explain more */}
+
+```elixir
+# Anonymous functions
+[1, 2, 3]
+|> Enum.map(fn x -> x + 2 end) # [3, 4, 5]
+
+
+# Pattern matching, and match (=) and capture (&) operator
+# = matches the value on the right to the variable
+x = 1
+x = 1 # valid
+1 = x # valid, both are one
+2 = x # ** (MatchError) no match of right hand side value: 1
+
+# &(&1 + 2) is the same as x -> x + 2
+[first | rest] = Enum.map([1, 2, 3], &(&1 + 2))
+IO.inspect({first, rest}) # {3, [4, 5]}
+
+# Atoms are constants whose value is its own name,
+# tuples use curly braces; together they're great
+# for enumerating over specific, known values
+# Commonly used like:
+{:ok, val}
+{:err, error}
+
+
+# Compare a variable until we find a match
+case string do # when string is "prefix_test"
+  "prefix_" <> rest = whole ->
+    IO.inspect({whole, rest}) # {"prefix_test", "test"}
+
+  _ -> nil # base case, _ matches all remaining cases
+end
+```
+
+<ParseInput />
+
+And processing the given input thus far gives us:
+
+```elixir
+[
+  # module_type, output modules, flip-flop/input modules state
+  {"broadcast", ["a"]},
+  {"a", {:flip, ["inv", "con"], :off}},
+  {"inv", {:conj, ["b"], %{}}},
+  {"b", {:flip, ["con"], :off}},
+  {"con", {:conj, ["output"], %{}}}
+]
+```
+
+...but there's a problem: we don't have the inputs mapped for the `conj` modules.
+We'll need to iterate over the modules and create a map of `conj` modules and
+their inputs, and then merge them.
+
+<ParseInput conjunctionInputsStage />
+
+All together now:
+
+```elixir
+defp parse_input(input) do
+  input
+  |> String.split("\n")
+  |> Enum.map(fn
+    "broadcaster -> " <> starter_mods ->
+      starter_mods
+      |> String.split(", ")
+      |> then(&{"broadcast", &1})
+
+    "%" <> str ->
+      [mod, dest_raw] = String.split(str, " -> ")
+
+      dest = String.split(dest_raw, ", ", trim: true)
+
+      {mod, {:flip, dest, :off}}
+
+    "&" <> str ->
+      [mod, dest_raw] = String.split(str, " -> ")
+
+      dest = String.split(dest_raw, ", ", trim: true)
+
+      {mod, {:conj, dest, %{}}}
+  end)
+  |> then(fn init_entries ->
+    conjs =
+      init_entries
+      |> Enum.flat_map(fn
+        {node, {:conj, _, _}} -> [node]
+        _ -> []
+      end)
+
+    conjunction_modules_input_map =
+      init_entries
+      |> Enum.reduce(%{}, fn
+        {node, {_, dest_mods, _}}, conjs_map ->
+          dest_mods
+          |> Enum.filter(&Enum.member?(conjs, &1))
+          |> case do
+            [] ->
+              conjs_map
+
+            matches ->
+              matches
+              |> Enum.reduce(conjs_map, fn
+                dest_mod, map ->
+                  map
+                  |> Map.update(
+                    dest_mod,
+                    %{node => :low},
+                    fn input_mods ->
+                      input_mods
+                      |> Map.put(node, :low)
+                  end)
+              end)
+          end
+
+        _, conjs_map ->
+          conjs_map
+      end)
+
+    {init_entries, conjunction_modules_input_map}
+  end)
+  |> then(fn {entries, conjs_map} ->
+    entries
+    |> Map.new()
+    |> Map.merge(conjs_map, fn
+      _, {:conj, dest, _}, inputs_map ->
+        {:conj, dest, inputs_map}
+    end)
+  end)
+end
+```
+
+Parsing our example input now gives us an accurate map:
+
+```elixir
+%{
+  "a" => {:flip, ["inv", "con"], :off},
+  "b" => {:flip, ["con"], :off},
+  "broadcast" => ["a"],
+  "con" => {:conj, ["output"], %{"a" => :low, "b" => :low}},
+  "inv" => {:conj, ["b"], %{"a" => :low}}
+}
+```
+
+## Processing pulses
+
+We need to process a button press, sending a `:low` pulse from our `broadcast`
+module to its destination modules.
+
+We'll extract the `broadcast` key from the `parsed_input`:
+
+```elixir
+{broadcast, parsed} =
+  input
+  |> parse_input()
+  |> then(fn map ->
+    broadcast = Map.get(map, "broadcast")
+
+    {broadcast, map}
+  end)
+```
+
+...and then loop over the destination modules where we'll send the `:low` pulse.
+
+```elixir
+broadcast
+|> Enum.map(fn destination_module ->
+  {destination_module, :low}
+end)
+
+# or using the capture operator
+|> Enum.map(&{&1, :low})
+```
+
+Since we'll need to update our `:conj` modules' inputs later, let's add in the
+sender module in the `pulse_details` as well.
+
+```elixir
+broadcast
+|> Enum.map(&{&1, :low, "broadcast"})
+```
+
+With all that setup done, it's time to think about how to actually process the pulses.
+
+Something important to keep in mind is that there is no `class` in Elixir, no
+objects/instances — so anytime we need to keep track of certain changes, you'll
+need to pass around a variable.
+
+<InfoBlock>
+  It can seem like an impediment at first, but it really simplfies
+  your code at most times; you can be assured that the variable you're
+  working with has not been mutated in any way elsewhere in your
+  program — <Highlight>all data in Elixir is immutable!</Highlight>
+</InfoBlock>
+
+Here's some pseudocode:
+
+```plain hide-line-numbers
+- each pulse sent a module might produce multiple more pulses to be handled
+- pulses are processed in the order they are sent
+- keep track of conjunction modules' inputs
+```
+
+### Guards
+
+At this stage, we'll need to do some more complex checks in our pattern amtching,
+for which we'll use [guards](https://hexdocs.pm/elixir/main/patterns-and-guards.html#guards).
+
+{/* TODO explain more */}
+
+```elixir
+# case expressions
+case n do
+  0 -> :zero
+  n when n > 0 -> :positive
+  _ -> :negative
+end
+
+# function clauses
+cond do
+
+end
+
+```
+
+<ProcessPulses />
+
+With that, we've handled all the "scenarios" where we need to make/handle a
+change in our `modules_map` and/or send pulses onwards. But there's still some
+cases left to handle:
+
+- `:output` module which is only mentioned as a destination module, and would
+  thus be missing from the parsed input map
+- "If a `:flip` module receives a `:high` pulse, it is ignored and nothing happens"
+
+We can handle both of these by returning an empty list of "next pulses", and
+leaving the `modules_map` unchanged.
+
+Additionally, we also need to handle:
+
+- `rest_pulses`, by calling `process_pulses` recursively
+- base case for when we're done handling all `pulses`
+- Keep track of `:low` and `:high` pulse count
+
+<ProcessPulses second_stage />
+
+Here's what our overall module looks like now:
+
+```elixir file="process_pulses.ex"
+defmodule PulsePropagation do
+  defp parse_input(input) do
+    input
+    |> String.split("\n")
+    |> Enum.map(fn
+      "broadcaster -> " <> starter_mods ->
+        starter_mods
+        |> String.split(", ")
+        |> then(&{"broadcast", &1})
+
+      "%" <> str ->
+        [mod, dest_raw] = String.split(str, " -> ")
+
+        dest = String.split(dest_raw, ", ", trim: true)
+
+        {mod, {:flip, dest, :off}}
+
+      "&" <> str ->
+        [mod, dest_raw] = String.split(str, " -> ")
+
+        dest = String.split(dest_raw, ", ", trim: true)
+
+        {mod, {:conj, dest, %{}}}
+    end)
+    |> then(fn init_entries ->
+      conjs =
+        init_entries
+        |> Enum.flat_map(fn
+          {node, {:conj, _, _}} -> [node]
+          _ -> []
+        end)
+
+      conjunction_modules_input_map =
+        init_entries
+        |> Enum.reduce(%{}, fn
+          {node, {_, dest_mods, _}}, conjs_map ->
+            dest_mods
+            |> Enum.filter(&Enum.member?(conjs, &1))
+            |> case do
+              [] ->
+                conjs_map
+
+              matches ->
+                matches
+                |> Enum.reduce(conjs_map, fn
+                  dest_mod, map ->
+                    map
+                    |> Map.update(
+                      dest_mod,
+                      %{node => :low},
+                      fn input_mods ->
+                        input_mods
+                        |> Map.put(node, :low)
+                    end)
+                end)
+            end
+
+          _, conjs_map ->
+            conjs_map
+        end)
+
+      {init_entries, conjunction_modules_input_map}
+    end)
+    |> then(fn {entries, conjs_map} ->
+      entries
+      |> Map.new()
+      |> Map.merge(conjs_map, fn
+        _, {:conj, dest, _}, inputs_map ->
+          {:conj, dest, inputs_map}
+      end)
+    end)
+  end
+
+
+  defp process_pulse(pulses, modules_map, counts \\ {1, 0})
+  defp process_pulse([], map, counts), do: {map, counts}
+  defp process_pulse(
+        [{module, pulse, sender} | rest_pulses],
+        modules_map,
+        {low_count, high_count}
+      ) do
+    pulse_counts =
+      case pulse do
+        :high -> {low_count, high_count + 1}
+        :low -> {low_count + 1, high_count}
+      end
+
+    modules_map
+    |> Map.get_and_update(module, fn
+      {:flip, dest_mods, :off} when signal == :low ->
+        dest_mods
+        |> Enum.map(&{&1, :high, module})
+        |> then(&{&1, {:flip, dest_mods, :on}})
+
+      {:flip, dest_mods, :on} when signal == :low ->
+        dest_mods
+        |> Enum.map(&{&1, :low, module})
+        |> then(&{&1, {:flip, dest_mods, :off}})
+
+      {:conj, dest_mods, inputs} ->
+        inputs
+        |> Map.put(sender, signal)
+        |> then(fn updated_inputs ->
+          cond do
+            check_if_all_inputs_high?(updated_inputs) ->
+              dest_mods
+              |> Enum.map(&{&1, :low, node})
+
+            true ->
+              dest_mods
+              |> Enum.map(&{&1, :high, node})
+          end
+          |> then(&{&1, {:conj, dest_mods, updated_inputs}})
+        end)
+
+      x ->
+        {[], x}
+    end)
+    |> then(fn {next_modules, updated_map} ->
+      rest_pulses
+      |> Enum.concat(next_modules)
+      |> process_pulse(updated_map, pulse_counts)
+    end)
+  end
+end
+```
+
+## Running part 1
+
+For the first part of the puzzle, we need to perform 1000 "button presses".
+
+This translates to processing 1000 `:low` pulses sent from the `broadcast` module
+and counting the number of `:low` and `:high` pulses.
+
+<Part1 />
+
+## Final Result
+
+[pulse-propagation]: https://adventofcode.com/2023/day/20

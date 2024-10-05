@@ -1,3 +1,4 @@
+import { type Route } from "next";
 import { Suspense } from "react";
 
 import { IS_CI, IS_DEV } from "@/config";
@@ -23,7 +24,7 @@ async function isomorphicFetchPageViews(slug: string, options: IsomorphicFetchOp
 }
 
 type ViewsCounterProps = {
-	slug: string;
+	slug: Route;
 	page_type?: "post" | "page";
 	hidden?: boolean;
 	disabled?: boolean;
@@ -36,7 +37,7 @@ export const ViewsCounter = ({
 }: ViewsCounterProps) => (
 	<div
 		className={cn(
-			"mx-auto mt-auto mb-5 w-full flex-row items-center justify-center gap-2 pt-40",
+			"mx-auto mb-5 mt-auto w-full flex-row items-center justify-center gap-2 pt-40",
 			hidden ? "hidden" : "flex",
 		)}
 	>
@@ -113,7 +114,7 @@ function getViewCountCopy(view_count: number | null, page_type: ViewsCounterProp
 	}
 }
 const ViewCount = ({ children }: { children: string }) => (
-	<span className="rounded-global border-2 border-primary border-solid bg-background p-1 font-mono text-base text-primary transition-colors">
+	<span className="rounded-global border-2 border-solid border-primary bg-background p-1 font-mono text-base text-primary transition-colors">
 		{children}
 	</span>
 );

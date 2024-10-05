@@ -7,7 +7,12 @@ const isBuild = process.argv.indexOf("build") !== -1;
 if (!process.env.VELITE_STARTED && (isDev || isBuild)) {
 	process.env.VELITE_STARTED = "1";
 	const { build } = await import("velite");
-	await build({ watch: isDev, clean: !isDev });
+	await build({
+		watch: isDev,
+		clean: !isDev,
+		inside: "next config",
+		config: ".config/velite.config.ts",
+	});
 }
 
 /** @type {import("next").NextConfig} */
@@ -18,9 +23,12 @@ let nextConfig = {
 		},
 	},
 	experimental: {
-		// typedRoutes: true,
+		typedRoutes: true,
 		mdxRs: true,
 		ppr: true,
+	},
+	devIndicators: {
+		buildActivity: false,
 	},
 	images: {
 		remotePatterns: [
@@ -50,7 +58,6 @@ let nextConfig = {
 	},
 };
 
-// nextConfig = withContentlayer(nextConfig);
 nextConfig = withPlausibleProxy({
 	subdirectory: "prxy/plsbl",
 	scriptName: "plsbl",

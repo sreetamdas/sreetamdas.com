@@ -1,5 +1,0 @@
-root=true
-
-[*.{js,jsx,json,ts,tsx,.eslintrc,.babelrc,.prettierrc}]
-indent_style = tab
-indent_size = 2

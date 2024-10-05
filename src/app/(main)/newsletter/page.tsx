@@ -1,9 +1,10 @@
 import { compile } from "@mdx-js/mdx";
 
+import { SITE_TITLE_APPEND } from "@/config";
+import { ViewsCounter } from "@/lib/components/ViewsCounter";
+
 import { NewsletterEmailsPreviews } from "./components";
 import { fetchNewsletterEmails } from "./helpers";
-
-import { SITE_TITLE_APPEND } from "@/config";
 
 export const metadata = {
 	title: `Newsletter ${SITE_TITLE_APPEND}`,
@@ -16,15 +17,29 @@ export default async function NewsletterEmailsPage() {
 
 	return (
 		<>
-			<h1 className="pt-10 pb-20 font-serif text-8xl">/newsletter</h1>
+			<h1 className="pb-20 pt-10 font-serif text-8xl font-bold tracking-tighter">/newsletter</h1>
 			<NewsletterEmailsPreviews emails={newsletter_emails_previews_data} />
+			<ViewsCounter slug="/newsletter" />
 		</>
 	);
 }
 
 function getEmailPreviewContent(content: string) {
-	// remove salutation, get two paragraphs
-	return content.replace("Hello there!\n", "").split("\n").slice(0, 3).join("\n");
+	return (
+		content
+			/**
+			 * Buttondown now includes a `<!-- buttondown-editor-mode: plaintext -->` at the start of the
+			 * email body, that is cannot be processed by micromark
+			 */
+			.replace("<!-- buttondown-editor-mode: plaintext -->", "")
+			/**
+			 * remove salutation, get two paragraphs
+			 */
+			.replace("Hello there!\n", "")
+			.split("\n")
+			.slice(0, 3)
+			.join("\n")
+	);
 }
 async function getNewsletterEmailsPreviewsData() {
 	const buttondown_api_emails_response = await fetchNewsletterEmails();

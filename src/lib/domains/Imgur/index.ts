@@ -5,7 +5,7 @@
 
 import { isEmpty, isUndefined } from "lodash-es";
 
-import type { KeebDetailsFromNotion } from "@/app/(main)/keebs/page";
+import { type KeebDetailsFromNotion } from "@/app/(main)/keebs/page";
 
 export type KeebDetails = {
 	name: string;
@@ -49,7 +49,7 @@ export class ImgurClient {
 			next: { revalidate: 86400 },
 		});
 
-		const response: ImgurAPIResponse<Array<ImgurImage>> = await request.json();
+		const response = (await request.json()) as ImgurAPIResponse<Array<ImgurImage>>;
 		return response.data;
 	}
 

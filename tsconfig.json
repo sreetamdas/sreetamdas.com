@@ -30,6 +30,6 @@
 			}
 		]
 	},
-	"exclude": ["node_modules", "public"],
+	"exclude": ["node_modules", "public", ".next"],
 	"include": ["next-env.d.ts", "src/**/*.ts", "src/**/*.tsx", ".next/types/**/*.ts"]
 }

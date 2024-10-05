@@ -1,8 +1,8 @@
-import type { UrlObject } from "node:url";
+import { type UrlObject } from "node:url";
 
-import type { Route } from "next";
+import { type Route } from "next";
 import NextLink, { type LinkProps } from "next/link";
-import type { AnchorHTMLAttributes, ReactNode } from "react";
+import { type AnchorHTMLAttributes, type ReactNode } from "react";
 import { ImArrowUpRight2 } from "react-icons/im";
 
 import { SITE_URL } from "@/config";
@@ -13,15 +13,14 @@ type LinkAdditionalProps = {
 	showExternalLinkIndicator?: true;
 };
 
-type LinkToProps<RouteType extends string = string> = Omit<
-	AnchorHTMLAttributes<HTMLAnchorElement>,
-	keyof LinkProps<RouteType>
-> &
-	Omit<LinkProps<RouteType>, "href"> & {
-		children?: ReactNode;
-	} & LinkAdditionalProps & {
-		href?: Route<RouteType> | UrlObject | string;
-	};
+type LinkToProps<RouteType extends string = string> =
+	| (Omit<AnchorHTMLAttributes<HTMLAnchorElement>, keyof LinkProps<RouteType>> &
+			Omit<LinkProps<RouteType>, "href"> & {
+				children?: ReactNode;
+			} & LinkAdditionalProps & {
+				href?: Route<RouteType> | UrlObject;
+			})
+	| (AnchorHTMLAttributes<HTMLAnchorElement> & LinkAdditionalProps);
 export const LinkTo = <RouteType extends string = string>(linkToProps: LinkToProps<RouteType>) => {
 	const {
 		href,
@@ -57,7 +56,7 @@ export const LinkTo = <RouteType extends string = string>(linkToProps: LinkToPro
 			<NextLink
 				{...restProps}
 				{...extraProps}
-				href={href as Route}
+				href={href}
 				className={cn(!replaceClasses && "link-base", passedClasses)}
 			/>
 		);

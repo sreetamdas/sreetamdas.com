@@ -1,20 +1,20 @@
-import type { Metadata } from "next";
+import { type Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Balancer } from "react-wrap-balancer";
-
-import {
-	HighlightWithUseEffect,
-	HighlightWithUseInterval,
-} from "./chameleon-text/components.client";
 
 import { SITE_OG_IMAGE, SITE_TITLE_APPEND, SITE_URL } from "@/config";
 import { blogPosts } from "@/generated";
 import { MDXContent } from "@/lib/components/MDX";
 import { ReadingProgress } from "@/lib/components/ProgressBar.client";
+import { InfoBlock } from "@/lib/components/sink";
 import { Gradient } from "@/lib/components/Typography";
 import { ChameleonHighlight, Sparkles } from "@/lib/components/Typography.client";
 import { ViewsCounter } from "@/lib/components/ViewsCounter";
-import { InfoBlock } from "@/lib/components/sink";
+
+import {
+	HighlightWithUseEffect,
+	HighlightWithUseInterval,
+} from "./chameleon-text/components.client";
 
 export const dynamicParams = false;
 
@@ -61,11 +61,10 @@ export default function BlogPage({ params }: PageParams) {
 			<script
 				type="application/ld+json"
 				suppressHydrationWarning
-				// biome-ignore lint/security/noDangerouslySetInnerHtml: needed
 				dangerouslySetInnerHTML={{ __html: JSON.stringify(post.structured_data) }}
 			/>
 			<ReadingProgress />
-			<h1 className="pt-10 pb-20 font-serif text-8xl">
+			<h1 className="pb-20 pt-10 font-serif text-8xl font-bold tracking-tighter">
 				<Balancer>
 					<Gradient>{post.title}</Gradient>
 				</Balancer>

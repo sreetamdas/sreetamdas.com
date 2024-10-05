@@ -3,7 +3,7 @@
 import PlausibleProvider from "next-plausible";
 import { useEffect } from "react";
 
-import { eb_garamond_font, inter_font, iosevka_font } from "@/lib/domains/fonts";
+import { bricolage_grotesque_font, inter_font, iosevka_font } from "@/lib/domains/fonts";
 import { FOOBAR_SOURCE_CODE } from "@/lib/domains/foobar/helpers";
 
 export default function GlobalError({
@@ -22,8 +22,7 @@ export default function GlobalError({
 		<html
 			lang="en"
 			dir="ltr"
-			// biome-ignore lint/nursery/useSortedClasses: needed
-			className={`scroll-pt-16 scroll-smooth ${inter_font.variable} ${iosevka_font.variable} ${eb_garamond_font.variable}`}
+			className={`scroll-pt-16 scroll-smooth ${inter_font.variable} ${iosevka_font.variable} ${bricolage_grotesque_font.variable}`}
 			suppressHydrationWarning
 		>
 			<head>
@@ -38,7 +37,6 @@ export default function GlobalError({
 			</head>
 			<body className="min-h-screen bg-background text-foreground selection:bg-secondary selection:text-background">
 				<script
-					// biome-ignore lint/security/noDangerouslySetInnerHtml: needed
 					dangerouslySetInnerHTML={{
 						__html: blockingScriptSetInitialColorScheme,
 					}}
@@ -48,7 +46,6 @@ export default function GlobalError({
 					Try again
 				</button>
 				<script
-					// biome-ignore lint/security/noDangerouslySetInnerHtml: needed
 					dangerouslySetInnerHTML={{
 						__html: FOOBAR_SOURCE_CODE,
 					}}

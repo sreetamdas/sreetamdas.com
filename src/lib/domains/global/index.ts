@@ -4,7 +4,7 @@ import { persist } from "zustand/middleware";
 
 import { IS_DEV } from "@/config";
 import { type ColorSchemeSliceType, createColorSchemeSlice } from "@/lib/domains/colorScheme/store";
-import { type FoobarSliceType, createFoobarSlice } from "@/lib/domains/foobar/store";
+import { createFoobarSlice, type FoobarSliceType } from "@/lib/domains/foobar/store";
 
 type CombinedState = FoobarSliceType & ColorSchemeSliceType;
 export const useGlobalStore = create<CombinedState>()(

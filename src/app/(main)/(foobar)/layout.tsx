@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { type ReactNode } from "react";
 
 import { SITE_TITLE_APPEND } from "@/config";
 
