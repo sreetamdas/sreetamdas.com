@@ -55,6 +55,7 @@ export default tseslint.config(
 					caughtErrorsIgnorePattern: "^_",
 				},
 			],
+			"@typescript-eslint/no-floating-promises": "warn",
 			// from https://github.com/wesbos/eslint-config-wesbos
 			"prefer-const": ["error", { destructuring: "all" }],
 			"arrow-body-style": ["error", "as-needed"],
