@@ -16,7 +16,7 @@ export default function FancyPantsPage() {
 			<h1 className="font-mono font-black leading-normal -tracking-[0.065em] [font-size:clamp(4rem,_10vw,_10rem)]">
 				<ChameleonHighlight>Sreetam Das</ChameleonHighlight>
 			</h1>
-			<p className="w-3/4 font-serif text-7xl leading-normal">
+			<p className="w-3/4 font-serif text-7xl font-bold leading-normal tracking-tighter">
 				is a{" "}
 				<ChameleonHighlight className="font-mono font-black -tracking-[0.065em]">
 					Senior Software Tinkerer

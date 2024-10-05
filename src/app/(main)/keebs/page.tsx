@@ -28,7 +28,7 @@ export default async function KeebsPage() {
 				{keebs.map(({ name, tags, image }) => (
 					<article key={name.toLowerCase().replace(" ", "-")} className="grid gap-4">
 						<div className="grid grid-flow-col items-center justify-between gap-8">
-							<h3 className="pt-0 font-serif text-3xl">{name}</h3>
+							<h3 className="pt-0 font-serif text-3xl font-medium tracking-tight">{name}</h3>
 							<span className="flex gap-2">
 								{tags.map((tag) => (
 									<span

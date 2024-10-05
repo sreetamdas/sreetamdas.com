@@ -96,7 +96,7 @@ export const KarmaShowcase = ({ examples }: Props) => {
 
 					return (
 						<article key={name.toLowerCase()} className="flex flex-col items-center">
-							<h2 id={name.toLowerCase()} className="font-serif text-5xl">
+							<h2 id={name.toLowerCase()} className="font-serif text-5xl font-bold tracking-tight">
 								{name}
 							</h2>
 							<span className="h-auto w-full max-w-[95vw] rounded-global sm:max-w-[75vw]">
