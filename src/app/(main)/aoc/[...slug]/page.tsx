@@ -11,14 +11,14 @@ import { Blockquote, Highlight } from "@/lib/components/Typography";
 import { ViewsCounter } from "@/lib/components/ViewsCounter";
 import { cn } from "@/lib/helpers/utils";
 
-import { ParseInput, ProcessPulses } from "./pulse-propagation";
+import { ParseInput, Part1, ProcessPulses } from "./pulse-propagation";
 
 export const dynamicParams = false;
 
 type PageParams = {
-	params: {
+	params: Promise<{
 		slug: Array<string>;
-	};
+	}>;
 };
 export function generateStaticParams() {
 	return aoc_solutions.map((post) => ({
@@ -26,7 +26,8 @@ export function generateStaticParams() {
 	}));
 }
 
-export function generateMetadata({ params: { slug } }: PageParams): Metadata {
+export async function generateMetadata({ params }: PageParams): Promise<Metadata> {
+	const { slug } = await params;
 	const full_slug = slug.join("/");
 	const post = aoc_solutions.find((page) => page.page_slug === full_slug);
 
@@ -49,7 +50,8 @@ export function generateMetadata({ params: { slug } }: PageParams): Metadata {
 	};
 }
 
-export default function AdventOfCodeSolutionPage({ params: { slug } }: PageParams) {
+export default async function AdventOfCodeSolutionPage({ params }: PageParams) {
+	const { slug } = await params;
 	const full_slug = slug.join("/");
 	const post = aoc_solutions.find((page) => page.page_slug === full_slug);
 
@@ -94,6 +96,7 @@ export default function AdventOfCodeSolutionPage({ params: { slug } }: PageParam
 
 					ParseInput,
 					ProcessPulses,
+					Part1,
 				}}
 			/>
 
