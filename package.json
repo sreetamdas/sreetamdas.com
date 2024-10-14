@@ -51,7 +51,7 @@
 		"shiki-magic-move": "^0.4.5",
 		"type-fest": "^4.26.1",
 		"unist-util-visit": "^5.0.0",
-		"zustand": "^4.5.5"
+		"zustand": "^5.0.0"
 	},
 	"devDependencies": {
 		"@notionhq/client": "^2.2.15",
