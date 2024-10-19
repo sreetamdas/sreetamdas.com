@@ -39,7 +39,7 @@ export const NavigationItems = () => (
 			</li>
 			<li>
 				<LinkTo
-					href="https://twitter.com/_SreetamDas"
+					href="https://x.com/_SreetamDas"
 					target="_blank"
 					className="flex items-center text-3xl text-foreground hover:text-primary md:text-2xl"
 				>
