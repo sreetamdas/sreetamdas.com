@@ -10,8 +10,8 @@ import {
 	FaSpotify,
 	FaStackOverflow,
 	FaSteam,
-	FaTwitter,
 } from "react-icons/fa";
+import { FaXTwitter } from "react-icons/fa6";
 import { SiPeerlist } from "react-icons/si";
 
 import { LinkTo } from "@/lib/components/Anchor";
@@ -33,9 +33,9 @@ export const SocialLinks = () => {
 			icon: <FaGithub />,
 		},
 		{
-			link: "https://twitter.com/_SreetamDas",
+			link: "https://x.com/_SreetamDas",
 			title: "Sreetam Das' Twitter",
-			icon: <FaTwitter />,
+			icon: <FaXTwitter />,
 		},
 		{
 			link: "https://stackoverflow.com/users/5283213",
