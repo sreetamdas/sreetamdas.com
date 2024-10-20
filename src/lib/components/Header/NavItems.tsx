@@ -1,4 +1,5 @@
-import { FaGithub, FaTwitter } from "react-icons/fa";
+import { FaGithub } from "react-icons/fa";
+import { FaXTwitter } from "react-icons/fa6";
 import { FiRss } from "react-icons/fi";
 
 import { LinkTo } from "@/lib/components/Anchor";
@@ -43,7 +44,7 @@ export const NavigationItems = () => (
 					target="_blank"
 					className="flex items-center text-3xl text-foreground hover:text-primary md:text-2xl"
 				>
-					<FaTwitter aria-label="Sreetam Das' Twitter" title="Sreetam Das' Twitter" />
+					<FaXTwitter aria-label="Sreetam Das' Twitter" title="Sreetam Das' Twitter" />
 				</LinkTo>
 			</li>
 			<li>
