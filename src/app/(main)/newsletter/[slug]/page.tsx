@@ -13,7 +13,11 @@ export async function generateStaticParams() {
 	return newsletter_emails_slugs;
 }
 
-export async function generateMetadata({ params: { slug } }: PageProps): Promise<Metadata> {
+export async function generateMetadata(props: PageProps): Promise<Metadata> {
+	const params = await props.params;
+
+	const { slug } = params;
+
 	const newsletter_email_data = await getNewsletterEmailsDataBySlug(slug);
 
 	return {
@@ -21,8 +25,12 @@ export async function generateMetadata({ params: { slug } }: PageProps): Promise
 	};
 }
 
-type PageProps = { params: { slug: string } };
-export default async function NewsletterEmailDetailPage({ params: { slug } }: PageProps) {
+type PageProps = { params: Promise<{ slug: string }> };
+export default async function NewsletterEmailDetailPage(props: PageProps) {
+	const params = await props.params;
+
+	const { slug } = params;
+
 	const newsletter_email_data = await getNewsletterEmailsDataBySlug(slug);
 
 	return <NewsletterEmailDetail email={newsletter_email_data} />;

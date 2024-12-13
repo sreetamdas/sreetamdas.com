@@ -24,7 +24,8 @@ export async function generateStaticParams() {
 	}));
 }
 
-export async function generateMetadata({ params }: PageParams): Promise<Metadata> {
+export async function generateMetadata(props: PageParams): Promise<Metadata> {
+	const params = await props.params;
 	const post = blogPosts.find((page) => page.page_slug === params.slug);
 
 	return {
@@ -47,11 +48,12 @@ export async function generateMetadata({ params }: PageParams): Promise<Metadata
 }
 
 type PageParams = {
-	params: {
+	params: Promise<{
 		slug: string;
-	};
+	}>;
 };
-export default function BlogPage({ params }: PageParams) {
+export default async function BlogPage(props: PageParams) {
+	const params = await props.params;
 	const post = blogPosts.find((page) => page.page_slug === params.slug);
 
 	if (!post) notFound();

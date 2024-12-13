@@ -22,11 +22,15 @@ export function generateStaticParams() {
 }
 
 type PageParams = {
-	params: {
+	params: Promise<{
 		mdxPageSlug: string;
-	};
+	}>;
 };
-export default function MDXPageSlugPage({ params: { mdxPageSlug } }: PageParams) {
+export default async function MDXPageSlugPage(props: PageParams) {
+	const params = await props.params;
+
+	const { mdxPageSlug } = params;
+
 	const post = rootPages.find((page) => page.page_slug === mdxPageSlug);
 
 	if (!post) notFound();
@@ -42,7 +46,8 @@ export default function MDXPageSlugPage({ params: { mdxPageSlug } }: PageParams)
 	);
 }
 
-export function generateMetadata({ params }: PageParams): Metadata {
+export async function generateMetadata(props: PageParams): Promise<Metadata> {
+	const params = await props.params;
 	const post = rootPages.find((page) => page.page_slug === params.mdxPageSlug);
 
 	return {

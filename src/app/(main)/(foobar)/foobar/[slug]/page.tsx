@@ -13,9 +13,13 @@ export function generateStaticParams() {
 }
 
 type PageParams = {
-	params: { slug: Exclude<FoobaFlagPageSlug, "/"> };
+	params: Promise<{ slug: Exclude<FoobaFlagPageSlug, "/"> }>;
 };
-export default function FoobarCompletedPage({ params: { slug } }: PageParams) {
+export default async function FoobarCompletedPage(props: PageParams) {
+	const params = await props.params;
+
+	const { slug } = params;
+
 	const all_foobar_pages_slugs = getAllFoobarPagesSlugs();
 
 	if (!all_foobar_pages_slugs.includes(slug)) {
