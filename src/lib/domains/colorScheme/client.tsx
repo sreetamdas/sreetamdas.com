@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { IoMdMoon } from "react-icons/io";
 import { LuMonitor, LuSun } from "react-icons/lu";
+import { useShallow } from "zustand/react/shallow";
 
 import { useGlobalStore } from "@/lib/domains/global";
 
@@ -50,10 +51,12 @@ function* colorSchemeGenerator(): Generator<COLOR_SCHEMES, never, COLOR_SCHEMES 
 
 const colorSchemeIterator = colorSchemeGenerator();
 export const ColorSchemeToggle = () => {
-	const { colorScheme, setColorScheme } = useGlobalStore((state) => ({
-		colorScheme: state.colorScheme,
-		setColorScheme: state.setColorScheme,
-	}));
+	const { colorScheme, setColorScheme } = useGlobalStore(
+		useShallow((state) => ({
+			colorScheme: state.colorScheme,
+			setColorScheme: state.setColorScheme,
+		})),
+	);
 
 	function handleColorSchemeToggle(
 		override?: Exclude<ReturnType<typeof getDocumentColorScheme>, "">,

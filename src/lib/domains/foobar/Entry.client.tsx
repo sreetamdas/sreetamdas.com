@@ -1,5 +1,7 @@
 "use client";
 
+import { useShallow } from "zustand/react/shallow";
+
 import { LinkTo } from "@/lib/components/Anchor";
 import { FOOBAR_FLAGS } from "@/lib/domains/foobar/flags";
 import { useGlobalStore } from "@/lib/domains/global";
@@ -7,10 +9,12 @@ import { useCustomPlausible } from "@/lib/domains/Plausible";
 
 export const FoobarEntry = () => {
 	const plausible = useCustomPlausible();
-	const { setFoobarData, unlocked } = useGlobalStore((state) => ({
-		unlocked: state.foobar_data.unlocked,
-		setFoobarData: state.setFoobarData,
-	}));
+	const { setFoobarData, unlocked } = useGlobalStore(
+		useShallow((state) => ({
+			unlocked: state.foobar_data.unlocked,
+			setFoobarData: state.setFoobarData,
+		})),
+	);
 
 	function handleXDiscovery() {
 		if (!unlocked) {

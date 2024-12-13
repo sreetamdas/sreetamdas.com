@@ -2,6 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import { useEffect } from "react";
+import { useShallow } from "zustand/react/shallow";
 
 import { IS_DEV } from "@/config";
 import { LinkTo } from "@/lib/components/Anchor";
@@ -37,7 +38,7 @@ export const FoobarPixel = (props: FoobarPixelProps) => {
 	const pathname = usePathname();
 	const has_mounted = useHasMounted();
 	const plausibleEvent = useCustomPlausible();
-	const { foobar_data, setFoobarData } = useGlobalStore(foobarDataSelector);
+	const { foobar_data, setFoobarData } = useGlobalStore(useShallow(foobarDataSelector));
 	const { unlocked, visited_pages, completed } = foobar_data;
 
 	useEffect(() => {

@@ -4,6 +4,7 @@ import * as AlertDialogPrimitive from "@radix-ui/react-alert-dialog";
 import { isUndefined } from "lodash-es";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import { useShallow } from "zustand/react/shallow";
 
 import GlobalNotFound from "@/app/not-found";
 import { IS_DEV } from "@/config";
@@ -22,10 +23,12 @@ import { useHasMounted } from "@/lib/helpers/hooks";
 export const FoobarDashboard = ({ completed_page }: FoobarSchrodingerProps) => {
 	const router = useRouter();
 	const plausibleEvent = useCustomPlausible();
-	const { foobar_data, setFoobarData } = useGlobalStore((state) => ({
-		foobar_data: state.foobar_data,
-		setFoobarData: state.setFoobarData,
-	}));
+	const { foobar_data, setFoobarData } = useGlobalStore(
+		useShallow((state) => ({
+			foobar_data: state.foobar_data,
+			setFoobarData: state.setFoobarData,
+		})),
+	);
 
 	function handleUserIsOffline() {
 		router.push("/foobar/offline");
@@ -141,11 +144,13 @@ const FoobarButLocked = () => (
 );
 
 export const FoobarSchrodinger = ({ completed_page }: FoobarSchrodingerProps) => {
-	const { unlocked, setFoobarData, completed } = useGlobalStore((state) => ({
-		unlocked: state.foobar_data.unlocked,
-		completed: state.foobar_data.completed,
-		setFoobarData: state.setFoobarData,
-	}));
+	const { unlocked, setFoobarData, completed } = useGlobalStore(
+		useShallow((state) => ({
+			unlocked: state.foobar_data.unlocked,
+			completed: state.foobar_data.completed,
+			setFoobarData: state.setFoobarData,
+		})),
+	);
 	const has_mounted = useHasMounted();
 	const plausibleEvent = useCustomPlausible();
 
