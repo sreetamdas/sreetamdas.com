@@ -23,9 +23,9 @@ let nextConfig = {
 		},
 	},
 	experimental: {
-		typedRoutes: true,
+		// typedRoutes: true,
 		mdxRs: true,
-		ppr: true,
+		// ppr: "incremental",
 	},
 	devIndicators: {
 		buildActivity: false,
