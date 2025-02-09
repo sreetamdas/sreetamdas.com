@@ -1,6 +1,7 @@
 import { defaultTheme } from "@sreetamdas/karma";
 import {
 	type BundledLanguage,
+	createJavaScriptRegexEngine,
 	getSingletonHighlighterCore,
 	type HighlighterGeneric,
 	normalizeTheme,
@@ -14,7 +15,6 @@ import markdown from "shiki/langs/markdown.mjs";
 import shell from "shiki/langs/shell.mjs";
 import tsx from "shiki/langs/tsx.mjs";
 import typescript from "shiki/langs/typescript.mjs";
-import getWasm from "shiki/wasm";
 
 export type BundledLangs = (typeof _preloaded_langs)[number];
 const _preloaded_langs = [
@@ -51,7 +51,7 @@ export async function getSlimKarmaHighlighter(): Promise<KarmaHighlighter> {
 	const highlighter = (await getSingletonHighlighterCore({
 		langs: [typescript, tsx, json, markdown, html, css, shell, elixir],
 		themes: [theme],
-		loadWasm: getWasm,
+		engine: createJavaScriptRegexEngine(),
 	})) as KarmaHighlighter;
 
 	return highlighter;
