@@ -13,8 +13,8 @@
 	"typescript.tsdk": "node_modules/typescript/lib",
 	"typescript.enablePromptUseWorkspaceTsdk": true,
 	"workbench.colorCustomizations": {
-		"statusBar.background": "#f7f1ff",
-		"statusBar.foreground": "#000"
+		"statusBar.background": "#3f0092",
+		"statusBar.foreground": "#fff"
 	},
 	"tailwindCSS.experimental.classRegex": [
 		["cva\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"],
