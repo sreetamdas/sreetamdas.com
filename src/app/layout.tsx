@@ -7,6 +7,8 @@ import { SITE_DESCRIPTION, SITE_TITLE_APPEND, SITE_URL } from "@/config";
 import { bricolage_grotesque_font, inter_font, iosevka_font } from "@/lib/domains/fonts";
 import { FOOBAR_SOURCE_CODE } from "@/lib/domains/foobar/helpers";
 
+export const runtime = "edge";
+
 export default function RootLayout({ children }: { children: ReactNode }) {
 	return (
 		<html
