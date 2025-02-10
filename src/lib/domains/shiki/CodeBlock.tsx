@@ -38,6 +38,7 @@ export const CodeBlock = (props: CodeBlockProps) => {
 	}
 
 	const {
+		// @ts-expect-error child props is not unknown
 		props: { children: code_children_raw, className: _, "data-language": code_lang },
 	} = code;
 	const code_children = Children.toArray(code_children_raw).filter((line) => line !== "\n");
@@ -123,6 +124,7 @@ const CodeBlockChildren = ({ children, hide_line_numbers }: CodeBlockChildrenPro
 			// .filter((line) => line !== "\n")
 			.map((line, i) => {
 				const should_line_highlight =
+					// @ts-expect-error line props is not unknown
 					isObject(line) && "props" in line && (line.props["data-highlight"] ?? "false") === "true";
 
 				return (

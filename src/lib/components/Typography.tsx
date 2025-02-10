@@ -4,7 +4,6 @@ import {
 	type DetailedHTMLProps,
 	type HTMLAttributes,
 	isValidElement,
-	type ReactHTML,
 	type ReactNode,
 } from "react";
 import { FaLongArrowAltRight } from "react-icons/fa";
@@ -26,7 +25,7 @@ export const LinkAnchor = ({ id }: LinkAnchorProp) => (
 
 type HeadingProps = DetailedHTMLProps<HTMLAttributes<HTMLHeadingElement>, HTMLHeadingElement>;
 const getHeading = (
-	el: Extract<keyof ReactHTML, "h1" | "h2" | "h3">,
+	el: "h1" | "h2" | "h3" | "h4" | "h5" | "h6",
 	// propsWithoutChildren contains `id` attr here
 	{ children, ...propsWithoutChildren }: HeadingProps,
 ) => {
@@ -44,6 +43,9 @@ export const Heading = {
 	h1: (props: HeadingProps) => getHeading("h1", props),
 	h2: (props: HeadingProps) => getHeading("h2", props),
 	h3: (props: HeadingProps) => getHeading("h3", props),
+	h4: (props: HeadingProps) => getHeading("h4", props),
+	h5: (props: HeadingProps) => getHeading("h5", props),
+	h6: (props: HeadingProps) => getHeading("h6", props),
 };
 
 export const UnorderedList = (props: HTMLAttributes<HTMLUListElement>) => (
@@ -51,9 +53,11 @@ export const UnorderedList = (props: HTMLAttributes<HTMLUListElement>) => (
 		{Children.map(props.children, (child) => {
 			if (isValidElement(child)) {
 				return (
+					// @ts-expect-error child props is not unknown
 					<li className="mb-3 flex list-none items-start p-0 last:mb-0 only:mt-3" {...child.props}>
 						<FaLongArrowAltRight aria-label="marker" className="mr-2.5 mt-1 text-primary" />
 						<span className="shrink grow basis-0 [&>ul>li]:m-0 [&>ul]:my-0">
+							{/* @ts-expect-error child props is not unknown */}
 							{child.props.children}
 						</span>
 					</li>
