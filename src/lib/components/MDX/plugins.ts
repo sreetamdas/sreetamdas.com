@@ -1,10 +1,10 @@
 import path from "node:path";
 
 import sizeOf from "image-size";
+import { type Node } from "unist";
 import { visit } from "unist-util-visit";
-import { type UnistNode } from "unist-util-visit/lib";
 
-type TreeNode = UnistNode & {
+type TreeNode = Node & {
 	tagName: string;
 	properties: Record<string, string | number | undefined> & {
 		src: string;
