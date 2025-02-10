@@ -23,16 +23,11 @@ export const KARMA_LIGHT_COLOR_PALETTE = [
 	"#FA8D3E",
 ] as const;
 
-type ThemeExample = {
-	src: string;
-	height?: number;
-	width?: number;
-};
 type Props = {
 	examples: Array<{
 		name: string;
-		dark: ThemeExample;
-		light: ThemeExample;
+		dark: string;
+		light: string;
 	}>;
 };
 export const KarmaShowcase = ({ examples }: Props) => {
@@ -101,11 +96,9 @@ export const KarmaShowcase = ({ examples }: Props) => {
 							</h2>
 							<span className="h-auto w-full max-w-[95vw] rounded-global sm:max-w-[75vw]">
 								<Image
-									src={image.src}
+									src={image}
 									alt={`Karma ${isDefaultTheme ? "" : "Light "}theme screenshot for ${name}`}
-									height={image.height}
-									width={image.width}
-									priority={index === 0}
+									priority={index < 3}
 									quality={100}
 									unoptimized
 									isWrapped

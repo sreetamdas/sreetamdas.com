@@ -1,7 +1,3 @@
-import path from "node:path";
-
-import sizeOf from "image-size";
-
 import { SITE_TITLE_APPEND, SITE_URL } from "@/config";
 import { ViewsCounter } from "@/lib/components/ViewsCounter";
 
@@ -26,24 +22,10 @@ export default function KarmaPage() {
 	const examples = theme_language_map.map((example) => {
 		const { name, defaultImage, lightImage } = example;
 
-		const default_image_path = path.join(path.resolve(), "public", defaultImage);
-		const light_image_path = path.join(path.resolve(), "public", lightImage);
-
-		const default_dimensions = sizeOf(default_image_path);
-		const light_dimensions = sizeOf(light_image_path);
-
 		return {
 			name,
-			dark: {
-				src: defaultImage,
-				height: default_dimensions.height,
-				width: default_dimensions.width,
-			},
-			light: {
-				src: lightImage,
-				height: light_dimensions.height,
-				width: light_dimensions.width,
-			},
+			dark: defaultImage,
+			light: lightImage,
 		};
 	});
 
