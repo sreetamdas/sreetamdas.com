@@ -32,6 +32,16 @@ export function remarkShiki() {
 							}
 						},
 					},
+					transformerColorizedBrackets({
+						themes: {
+							karma: [
+								defaultTheme.colors["editorBracketHighlight.foreground1"],
+								defaultTheme.colors["editorBracketHighlight.foreground2"],
+								defaultTheme.colors["editorBracketHighlight.foreground3"],
+								defaultTheme.colors["editorBracketHighlight.unexpectedBracket.foreground"],
+							],
+						},
+					}),
 				],
 				meta: meta ?? {},
 			});

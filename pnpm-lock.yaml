@@ -26,6 +26,12 @@ importers:
       '@radix-ui/react-visually-hidden':
         specifier: ^1.1.2
         version: 1.1.2(@types/react-dom@19.0.3(@types/react@19.0.8))(@types/react@19.0.8)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+      '@shikijs/colorized-brackets':
+        specifier: ^2.3.2
+        version: 2.3.2
+      '@shikijs/langs-precompiled':
+        specifier: ^2.3.2
+        version: 2.3.2
       '@sreetamdas/karma':
         specifier: ^3.1.1
         version: 3.1.1
@@ -881,6 +887,9 @@ packages:
       '@types/react-dom':
         optional: true
 
+  '@shikijs/colorized-brackets@2.3.2':
+    resolution: {integrity: sha512-N7oyiLbSHkPm+SzOUg8k+Tj1yRebmKkYKJTObMCD+cG86Z1MmjAN13BeQ2TG1iQlRj++X1p1OS+MK+zHnArEIg==}
+
   '@shikijs/core@2.3.2':
     resolution: {integrity: sha512-s7vyL3LzUKm3Qwf36zRWlavX9BQMZTIq9B1almM63M5xBuSldnsTHCmsXzoF/Kyw4k7Xgas7yAyJz9VR/vcP1A==}
 
@@ -889,6 +898,10 @@ packages:
 
   '@shikijs/engine-oniguruma@2.3.2':
     resolution: {integrity: sha512-vikMY1TroyZXUHIXbMnvY/mjtOxMn+tavcfAeQPgWS9FHcgFSUoEtywF5B5sOLb9NXb8P2vb7odkh3nj15/00A==}
+
+  '@shikijs/langs-precompiled@2.3.2':
+    resolution: {integrity: sha512-6zOOdKY1JevHqqsnVIgBqYNPonTLaBx0uIxM2sRZAZfOgaV8JK3tSe8YD+CTyne0/kIfmrre8rWRUxOFN8U+mg==}
+    engines: {node: '>=20'}
 
   '@shikijs/langs@2.3.2':
     resolution: {integrity: sha512-UqI6bSxFzhexIJficZLKeB1L2Sc3xoNiAV0yHpfbg5meck93du+EKQtsGbBv66Ki53XZPhnR/kYkOr85elIuFw==}
@@ -3911,6 +3924,10 @@ snapshots:
       '@types/react': 19.0.8
       '@types/react-dom': 19.0.3(@types/react@19.0.8)
 
+  '@shikijs/colorized-brackets@2.3.2':
+    dependencies:
+      shiki: 2.3.2
+
   '@shikijs/core@2.3.2':
     dependencies:
       '@shikijs/engine-javascript': 2.3.2
@@ -3930,6 +3947,11 @@ snapshots:
     dependencies:
       '@shikijs/types': 2.3.2
       '@shikijs/vscode-textmate': 10.0.1
+
+  '@shikijs/langs-precompiled@2.3.2':
+    dependencies:
+      '@shikijs/types': 2.3.2
+      oniguruma-to-es: 3.1.0
 
   '@shikijs/langs@2.3.2':
     dependencies:
