@@ -1,6 +1,6 @@
 {
 	"name": "sreetamdas.com",
-	"version": "4.0.0",
+	"version": "5.0.0",
 	"type": "module",
 	"license": "MIT",
 	"scripts": {
@@ -23,7 +23,10 @@
 		"prettier:write": "prettier --config ./.config/prettier.config.mjs --ignore-path ./.config/.prettierignore --write ./src",
 		"lint": "pnpm run prettier:check && pnpm run eslint:check",
 		"lint:fix": "pnpm run prettier:write && pnpm run eslint:fix",
-		"format": "pnpm run prettier:write ."
+		"format": "pnpm run prettier:write .",
+		"preview": "opennextjs-cloudflare && wrangler dev",
+		"deploy": "opennextjs-cloudflare && wrangler deploy",
+		"cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts"
 	},
 	"dependencies": {
 		"@mdx-js/mdx": "^3.1.0",
@@ -59,6 +62,7 @@
 	"devDependencies": {
 		"@notionhq/client": "^2.2.15",
 		"@octokit/types": "^13.8.0",
+		"@opennextjs/cloudflare": "^0.5.8",
 		"@types/eslint": "~9.6.1",
 		"@types/lodash-es": "^4.17.12",
 		"@types/mdx": "^2.0.13",
@@ -81,8 +85,8 @@
 		"tailwindcss": "^3.4.17",
 		"typescript": "^5.7.3",
 		"typescript-eslint": "^8.23.0",
-		"unist": "^0.0.1",
-		"velite": "^0.2.2"
+		"velite": "^0.2.2",
+		"wrangler": "^3.113.0"
 	},
 	"browser": {
 		"fs": false

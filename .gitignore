@@ -45,3 +45,6 @@ tsconfig.tsbuildinfo
 
 # Velite
 .velite
+
+# Cloudflare
+.open-next

@@ -3,8 +3,6 @@ import { type NextRequest, NextResponse } from "next/server";
 
 import { getPageViews, upsertPageViews } from "@/lib/domains/Supabase";
 
-export const runtime = "edge";
-
 export async function POST(request: NextRequest) {
 	try {
 		const { slug } = (await request.json()) as { slug: string };

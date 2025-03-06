@@ -1,7 +1,5 @@
 import { NextResponse } from "next/server";
 
-export const runtime = "edge";
-
 export function POST() {
 	return NextResponse.json(
 		{ message: "Cannot brew coffee, I'm a teapot", foobar: "/foobar/teapot" },
