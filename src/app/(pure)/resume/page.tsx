@@ -15,7 +15,7 @@ export default function ResumePage() {
 							<h1 className="text-5xl font-bold leading-normal tracking-tight">Sreetam Das</h1>
 							<p className="leading-tight">
 								Open source aficionado who loves minimalist interfaces and component based,
-								deterministic development.
+								deterministic development — and wordy sentences.
 							</p>
 						</header>
 						<div className="flex flex-col items-end justify-end">
