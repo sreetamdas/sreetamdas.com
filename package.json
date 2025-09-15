@@ -11,7 +11,7 @@
 		"build:next": "next build",
 		"analyze": "ANALYZE=true next build",
 		"dev": "vite dev",
-		"build": "pnpm run build:next",
+		"build": "vite build",
 		"start": "next start",
 		"postbuild": "next-sitemap --config ./.config/next-sitemap.config.cjs",
 		"export": "next build && next export",
