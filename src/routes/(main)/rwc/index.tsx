@@ -1,4 +1,4 @@
-import { type ThemeRegistration } from "shiki";
+import type { ThemeRegistration } from "shiki";
 
 import { SITE_TITLE_APPEND } from "@/config";
 import { LinkAnchor } from "@/lib/components/Typography";
@@ -7,14 +7,23 @@ import { fetchGist } from "@/lib/domains/GitHub";
 import { getSlimKarmaHighlighter } from "@/lib/domains/shiki";
 
 import module_css from "./CodeSnippet.module.css";
+import { createFileRoute } from "@tanstack/react-router";
 
 export const metadata = {
 	title: `RWC ${SITE_TITLE_APPEND}`,
 };
 const GITHUB_RWC_GIST_ID = process.env.GITHUB_RWC_GIST_ID as string;
 
-export default async function RWCPage() {
-	const gist = await fetchGist(GITHUB_RWC_GIST_ID);
+export const Route = createFileRoute("/(main)/rwc/")({
+	component: RWCPage,
+	loader: async () => {
+		const gist = await fetchGist(GITHUB_RWC_GIST_ID);
+		return gist;
+	},
+});
+
+async function RWCPage() {
+	const gist = Route.useLoaderData();
 
 	if (typeof gist.files === "undefined") {
 		return null;
@@ -24,7 +33,7 @@ export default async function RWCPage() {
 
 	return (
 		<>
-			<h1 className="pb-20 pt-10 font-serif text-8xl font-bold tracking-tighter">/rwc</h1>
+			<h1 className="pt-10 pb-20 font-serif text-8xl font-bold tracking-tighter">/rwc</h1>
 
 			{Object.values(gist.files).map((file_object) => (
 				<CodeSnippetBlock
@@ -62,7 +71,7 @@ const CodeSnippetBlock = (props: Props) => {
 	return (
 		<article className="my-20 flex flex-col">
 			<div className="flex justify-between">
-				<h2 className="group font-mono text-xl text-primary" id={slug}>
+				<h2 className="group text-primary font-mono text-xl" id={slug}>
 					<LinkAnchor id={slug} />
 					{filename}
 				</h2>

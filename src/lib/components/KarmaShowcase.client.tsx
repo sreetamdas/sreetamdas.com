@@ -26,8 +26,12 @@ export const KARMA_LIGHT_COLOR_PALETTE = [
 type Props = {
 	examples: Array<{
 		name: string;
-		dark: string;
-		light: string;
+		dark: {
+			src: string;
+		};
+		light: {
+			src: string;
+		};
 	}>;
 };
 export const KarmaShowcase = ({ examples }: Props) => {
@@ -38,6 +42,8 @@ export const KarmaShowcase = ({ examples }: Props) => {
 		setIsDefaultTheme(checked);
 	}
 
+	console.log({ examples });
+
 	return (
 		<>
 			<div className="flex flex-wrap items-center justify-center gap-4 pt-12 sm:justify-between">
@@ -45,7 +51,7 @@ export const KarmaShowcase = ({ examples }: Props) => {
 					<div
 						key={color}
 						data-dark-theme={isDefaultTheme ? isDefaultTheme : undefined}
-						className="grid h-28 w-20 place-content-center rounded-global font-mono text-foreground data-[dark-theme=true]:text-background"
+						className="rounded-global text-foreground data-[dark-theme=true]:text-background grid h-28 w-20 place-content-center font-mono"
 						style={{ backgroundColor: color }}
 					>
 						{color}
@@ -70,22 +76,22 @@ export const KarmaShowcase = ({ examples }: Props) => {
 				</ul>
 			</div>
 			<div className="flex items-center justify-center">
-				<label htmlFor="theme-switch" className="text-[15px] leading-none text-foreground">
+				<label htmlFor="theme-switch" className="text-foreground text-[15px] leading-none">
 					Light mode
 				</label>
 				<SwitchPrimitive.Root
 					id="theme-switch"
 					checked={isDefaultTheme}
 					onCheckedChange={handleThemeToggle}
-					className="relative mx-4 h-[25px] w-[42px] cursor-default rounded-full bg-primary outline-none"
+					className="bg-primary relative mx-4 h-[25px] w-[42px] cursor-default rounded-full outline-none"
 				>
-					<SwitchPrimitive.Thumb className="block h-[21px] w-[21px] translate-x-0.5 rounded-full bg-primary bg-white transition-transform duration-global will-change-transform data-[state=checked]:translate-x-[19px]" />
+					<SwitchPrimitive.Thumb className="block h-[21px] w-[21px] translate-x-0.5 rounded-full bg-white transition-transform duration-(--transition-duration) will-change-transform data-[state=checked]:translate-x-[19px]" />
 				</SwitchPrimitive.Root>
-				<label htmlFor="theme-switch" className="text-[15px] leading-none text-foreground">
+				<label htmlFor="theme-switch" className="text-foreground text-[15px] leading-none">
 					Dark mode
 				</label>
 			</div>
-			<div className="!col-span-full flex flex-col gap-y-24 pt-24">
+			<div className="col-span-full! flex flex-col gap-y-24 pt-24">
 				{examples.map(({ name, dark, light }, index) => {
 					const image = isDefaultTheme ? dark : light;
 
@@ -94,14 +100,11 @@ export const KarmaShowcase = ({ examples }: Props) => {
 							<h2 id={name.toLowerCase()} className="font-serif text-5xl font-bold tracking-tight">
 								{name}
 							</h2>
-							<span className="h-auto w-full max-w-[95vw] rounded-global sm:max-w-[75vw]">
+							<span className="rounded-global h-auto w-full max-w-[95vw] sm:max-w-[75vw]">
 								<Image
-									src={image}
+									src={image.src}
 									alt={`Karma ${isDefaultTheme ? "" : "Light "}theme screenshot for ${name}`}
-									priority={index < 3}
-									quality={100}
-									unoptimized
-									isWrapped
+									fetchPriority={index < 3 ? "high" : "auto"}
 								/>
 							</span>
 						</article>

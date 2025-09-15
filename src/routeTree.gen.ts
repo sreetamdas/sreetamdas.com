@@ -9,50 +9,274 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as IndexRouteImport } from './routes/index'
+import { Route as pureRouteRouteImport } from './routes/(pure)/route'
+import { Route as mainRouteRouteImport } from './routes/(main)/route'
+import { Route as mainIndexRouteImport } from './routes/(main)/index'
+import { Route as pureFancyPantsRouteImport } from './routes/(pure)/fancy-pants'
+import { Route as mainKeebsRouteImport } from './routes/(main)/keebs'
+import { Route as mainKarmaRouteImport } from './routes/(main)/karma'
+import { Route as mainAboutRouteImport } from './routes/(main)/about'
+import { Route as mainSlugRouteImport } from './routes/(main)/$slug'
+import { Route as mainRwcIndexRouteImport } from './routes/(main)/rwc/index'
+import { Route as mainBlogIndexRouteImport } from './routes/(main)/blog/index'
+import { Route as mainBlogSlugRouteImport } from './routes/(main)/blog/$slug'
 
-const IndexRoute = IndexRouteImport.update({
+const pureRouteRoute = pureRouteRouteImport.update({
+  id: '/(pure)',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const mainRouteRoute = mainRouteRouteImport.update({
+  id: '/(main)',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const mainIndexRoute = mainIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => mainRouteRoute,
+} as any)
+const pureFancyPantsRoute = pureFancyPantsRouteImport.update({
+  id: '/fancy-pants',
+  path: '/fancy-pants',
+  getParentRoute: () => pureRouteRoute,
+} as any)
+const mainKeebsRoute = mainKeebsRouteImport.update({
+  id: '/keebs',
+  path: '/keebs',
+  getParentRoute: () => mainRouteRoute,
+} as any)
+const mainKarmaRoute = mainKarmaRouteImport.update({
+  id: '/karma',
+  path: '/karma',
+  getParentRoute: () => mainRouteRoute,
+} as any)
+const mainAboutRoute = mainAboutRouteImport.update({
+  id: '/about',
+  path: '/about',
+  getParentRoute: () => mainRouteRoute,
+} as any)
+const mainSlugRoute = mainSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => mainRouteRoute,
+} as any)
+const mainRwcIndexRoute = mainRwcIndexRouteImport.update({
+  id: '/rwc/',
+  path: '/rwc/',
+  getParentRoute: () => mainRouteRoute,
+} as any)
+const mainBlogIndexRoute = mainBlogIndexRouteImport.update({
+  id: '/blog/',
+  path: '/blog/',
+  getParentRoute: () => mainRouteRoute,
+} as any)
+const mainBlogSlugRoute = mainBlogSlugRouteImport.update({
+  id: '/blog/$slug',
+  path: '/blog/$slug',
+  getParentRoute: () => mainRouteRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
+  '/': typeof mainIndexRoute
+  '/$slug': typeof mainSlugRoute
+  '/about': typeof mainAboutRoute
+  '/karma': typeof mainKarmaRoute
+  '/keebs': typeof mainKeebsRoute
+  '/fancy-pants': typeof pureFancyPantsRoute
+  '/blog/$slug': typeof mainBlogSlugRoute
+  '/blog': typeof mainBlogIndexRoute
+  '/rwc': typeof mainRwcIndexRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
+  '/': typeof mainIndexRoute
+  '/$slug': typeof mainSlugRoute
+  '/about': typeof mainAboutRoute
+  '/karma': typeof mainKarmaRoute
+  '/keebs': typeof mainKeebsRoute
+  '/fancy-pants': typeof pureFancyPantsRoute
+  '/blog/$slug': typeof mainBlogSlugRoute
+  '/blog': typeof mainBlogIndexRoute
+  '/rwc': typeof mainRwcIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
+  '/(main)': typeof mainRouteRouteWithChildren
+  '/(pure)': typeof pureRouteRouteWithChildren
+  '/(main)/$slug': typeof mainSlugRoute
+  '/(main)/about': typeof mainAboutRoute
+  '/(main)/karma': typeof mainKarmaRoute
+  '/(main)/keebs': typeof mainKeebsRoute
+  '/(pure)/fancy-pants': typeof pureFancyPantsRoute
+  '/(main)/': typeof mainIndexRoute
+  '/(main)/blog/$slug': typeof mainBlogSlugRoute
+  '/(main)/blog/': typeof mainBlogIndexRoute
+  '/(main)/rwc/': typeof mainRwcIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/$slug'
+    | '/about'
+    | '/karma'
+    | '/keebs'
+    | '/fancy-pants'
+    | '/blog/$slug'
+    | '/blog'
+    | '/rwc'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/$slug'
+    | '/about'
+    | '/karma'
+    | '/keebs'
+    | '/fancy-pants'
+    | '/blog/$slug'
+    | '/blog'
+    | '/rwc'
+  id:
+    | '__root__'
+    | '/(main)'
+    | '/(pure)'
+    | '/(main)/$slug'
+    | '/(main)/about'
+    | '/(main)/karma'
+    | '/(main)/keebs'
+    | '/(pure)/fancy-pants'
+    | '/(main)/'
+    | '/(main)/blog/$slug'
+    | '/(main)/blog/'
+    | '/(main)/rwc/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
+  mainRouteRoute: typeof mainRouteRouteWithChildren
+  pureRouteRoute: typeof pureRouteRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
+    '/(pure)': {
+      id: '/(pure)'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+      preLoaderRoute: typeof pureRouteRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/(main)': {
+      id: '/(main)'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof mainRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/(main)/': {
+      id: '/(main)/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof mainIndexRouteImport
+      parentRoute: typeof mainRouteRoute
+    }
+    '/(pure)/fancy-pants': {
+      id: '/(pure)/fancy-pants'
+      path: '/fancy-pants'
+      fullPath: '/fancy-pants'
+      preLoaderRoute: typeof pureFancyPantsRouteImport
+      parentRoute: typeof pureRouteRoute
+    }
+    '/(main)/keebs': {
+      id: '/(main)/keebs'
+      path: '/keebs'
+      fullPath: '/keebs'
+      preLoaderRoute: typeof mainKeebsRouteImport
+      parentRoute: typeof mainRouteRoute
+    }
+    '/(main)/karma': {
+      id: '/(main)/karma'
+      path: '/karma'
+      fullPath: '/karma'
+      preLoaderRoute: typeof mainKarmaRouteImport
+      parentRoute: typeof mainRouteRoute
+    }
+    '/(main)/about': {
+      id: '/(main)/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof mainAboutRouteImport
+      parentRoute: typeof mainRouteRoute
+    }
+    '/(main)/$slug': {
+      id: '/(main)/$slug'
+      path: '/$slug'
+      fullPath: '/$slug'
+      preLoaderRoute: typeof mainSlugRouteImport
+      parentRoute: typeof mainRouteRoute
+    }
+    '/(main)/rwc/': {
+      id: '/(main)/rwc/'
+      path: '/rwc'
+      fullPath: '/rwc'
+      preLoaderRoute: typeof mainRwcIndexRouteImport
+      parentRoute: typeof mainRouteRoute
+    }
+    '/(main)/blog/': {
+      id: '/(main)/blog/'
+      path: '/blog'
+      fullPath: '/blog'
+      preLoaderRoute: typeof mainBlogIndexRouteImport
+      parentRoute: typeof mainRouteRoute
+    }
+    '/(main)/blog/$slug': {
+      id: '/(main)/blog/$slug'
+      path: '/blog/$slug'
+      fullPath: '/blog/$slug'
+      preLoaderRoute: typeof mainBlogSlugRouteImport
+      parentRoute: typeof mainRouteRoute
     }
   }
 }
 
+interface mainRouteRouteChildren {
+  mainSlugRoute: typeof mainSlugRoute
+  mainAboutRoute: typeof mainAboutRoute
+  mainKarmaRoute: typeof mainKarmaRoute
+  mainKeebsRoute: typeof mainKeebsRoute
+  mainIndexRoute: typeof mainIndexRoute
+  mainBlogSlugRoute: typeof mainBlogSlugRoute
+  mainBlogIndexRoute: typeof mainBlogIndexRoute
+  mainRwcIndexRoute: typeof mainRwcIndexRoute
+}
+
+const mainRouteRouteChildren: mainRouteRouteChildren = {
+  mainSlugRoute: mainSlugRoute,
+  mainAboutRoute: mainAboutRoute,
+  mainKarmaRoute: mainKarmaRoute,
+  mainKeebsRoute: mainKeebsRoute,
+  mainIndexRoute: mainIndexRoute,
+  mainBlogSlugRoute: mainBlogSlugRoute,
+  mainBlogIndexRoute: mainBlogIndexRoute,
+  mainRwcIndexRoute: mainRwcIndexRoute,
+}
+
+const mainRouteRouteWithChildren = mainRouteRoute._addFileChildren(
+  mainRouteRouteChildren,
+)
+
+interface pureRouteRouteChildren {
+  pureFancyPantsRoute: typeof pureFancyPantsRoute
+}
+
+const pureRouteRouteChildren: pureRouteRouteChildren = {
+  pureFancyPantsRoute: pureFancyPantsRoute,
+}
+
+const pureRouteRouteWithChildren = pureRouteRoute._addFileChildren(
+  pureRouteRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
+  mainRouteRoute: mainRouteRouteWithChildren,
+  pureRouteRoute: pureRouteRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

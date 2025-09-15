@@ -1,56 +1,94 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
-@layer base {
-	:root {
-		--light-purple: 91 52 218;
-		--light-blue: 53 142 241;
-		--dark-purple: 157 134 233;
-		--dark-blue: 97 218 251;
-		--not-white: 247 241 255;
-		--karma-background: 10 14 20;
-		--black: 0 0 0;
+@font-face {
+	font-family: "Iosevka";
+	src: url("/fonts/iosevka/iosevka-das-version-regular.subset.woff2") format("woff2");
+	font-weight: normal;
+	font-style: normal;
+	font-display: swap;
+}
+@font-face {
+	font-family: "Iosevka";
+	src: url("/fonts/iosevka/iosevka-das-version-italic.subset.woff2") format("woff2");
+	font-weight: normal;
+	font-style: italic;
+	font-display: swap;
+}
+@font-face {
+	font-family: "Iosevka";
+	src: url("/fonts/iosevka/iosevka-das-version-bold.subset.woff2") format("woff2");
+	font-weight: 700;
+	font-style: normal;
+	font-display: swap;
+}
+@font-face {
+	font-family: "Iosevka";
+	src: url("/fonts/iosevka/iosevka-das-version-bold-italic.subset.woff2") format("woff2");
+	font-weight: 700;
+	font-style: italic;
+	font-display: swap;
+}
 
-		--color-primary: var(--light-purple);
-		--color-secondary: var(--light-blue);
-		--color-foreground: var(--black);
-		--color-background: var(--not-white);
-		--color-karma-background: var(--karma-background);
+@theme {
+	--light-purple: rgb(91 52 218);
+	--light-blue: rgb(53 142 241);
+	--dark-purple: rgb(157 134 233);
+	--dark-blue: rgb(97 218 251);
+	--not-white: rgb(247 241 255);
+	--karma-background: rgb(10 14 20);
+	--black: rgb(0 0 0);
 
-		--max-width: 650px;
-		--border-radius: 5px;
-		--transition-duration: 250ms;
-	}
-	[data-color-scheme="dark"] {
+	--color-primary: var(--light-purple);
+	--color-secondary: var(--light-blue);
+	--color-foreground: var(--black);
+	--color-background: var(--not-white);
+	--color-karma-background: var(--karma-background);
+
+	--font-serif: "Bricolage Grotesque Variable", serif;
+	--font-mono: "Iosevka", serif;
+
+	--max-width: 650px;
+	--radius-global: 5px;
+	--transition-duration: 250ms;
+}
+
+[data-color-scheme="dark"] {
+	--color-primary: var(--dark-purple);
+	--color-secondary: var(--dark-blue);
+	--color-foreground: var(--not-white);
+	--color-background: var(--black);
+}
+
+@custom-variant dark {
+	&:where([data-color-scheme="dark"], [data-color-scheme="dark"] *) {
 		--color-primary: var(--dark-purple);
 		--color-secondary: var(--dark-blue);
 		--color-foreground: var(--not-white);
 		--color-background: var(--black);
 	}
+}
 
-	@media print {
-		@page {
-			margin: 0;
-		}
+@media print {
+	@page {
+		margin: 0;
+	}
 
-		/* Use light mode when printing */
-		[data-color-scheme="dark"] {
-			--color-primary: var(--light-purple);
-			--color-secondary: var(--light-blue);
-			--color-foreground: var(--black);
-			--color-background: var(--not-white);
-		}
+	/* Use light mode when printing */
+	[data-color-scheme="dark"] {
+		--color-primary: var(--light-purple);
+		--color-secondary: var(--light-blue);
+		--color-foreground: var(--black);
+		--color-background: var(--not-white);
 	}
 }
 
 @layer components {
 	.gradient {
-		@apply bg-gradient-to-r from-primary to-secondary box-decoration-slice bg-clip-text text-transparent;
+		@apply from-primary to-secondary bg-gradient-to-r box-decoration-slice bg-clip-text text-transparent;
 	}
 
 	.link-base {
-		@apply bg-[size:_0_2px] bg-[position:_100%_100%] bg-no-repeat text-primary transition-[background-size] duration-global ease-in-out [background-image:linear-gradient(90deg,_rgb(var(--color-secondary))_0%,_rgb(var(--color-secondary))_100%)] hover:bg-[size:_100%_2px] hover:bg-[position:_0_100%] focus-visible:outline-dashed focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-secondary has-[svg:first-child:last-child]:bg-none dark:[&>code]:text-secondary;
+		@apply text-primary focus-visible:outline-secondary dark:[&>code]:text-secondary [background-image:linear-gradient(90deg,_var(--color-secondary)_0%,_var(--color-secondary)_100%)] bg-[size:_0_2px] bg-[position:_100%_100%] bg-no-repeat transition-[background-size] duration-(--transition-duration) ease-in-out hover:bg-[size:_100%_2px] hover:bg-[position:_0_100%] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-dashed has-[svg:first-child:last-child]:bg-none;
 	}
 }
 
@@ -61,5 +99,6 @@
 }
 
 strong > em {
-	color: theme(colors.primary);
+	/* color: theme(colors.primary); */
+	color: var(--color-primary);
 }

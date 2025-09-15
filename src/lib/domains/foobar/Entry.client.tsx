@@ -24,13 +24,7 @@ export const FoobarEntry = () => {
 	}
 	return (
 		<span className="flex justify-center">
-			<LinkTo
-				href="/foobar"
-				data-testid="Ⅹ"
-				className="text-background"
-				onClick={handleXDiscovery}
-				prefetch={false}
-			>
+			<LinkTo href="/foobar" data-testid="Ⅹ" className="text-background" onClick={handleXDiscovery}>
 				Ⅹ
 			</LinkTo>
 		</span>

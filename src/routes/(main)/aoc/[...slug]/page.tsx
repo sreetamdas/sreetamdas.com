@@ -88,7 +88,7 @@ export default async function AdventOfCodeSolutionPage({ params }: PageParams) {
 					blockquote: (props) => (
 						<Blockquote
 							{...props}
-							className="my-5 bg-karma-background font-mono font-light text-[#D7D7D7] dark:bg-karma-background [&_strong]:text-[rgb(var(--dark-blue))]"
+							className="my-5 bg-karma-background font-mono font-light text-[#D7D7D7] dark:bg-karma-background [&_strong]:text-(--dark-blue)"
 						/>
 					),
 					Highlight,

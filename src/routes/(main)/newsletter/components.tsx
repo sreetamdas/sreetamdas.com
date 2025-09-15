@@ -28,7 +28,7 @@ const NewsletterEmailPreview = ({ email, isAdminUser = false }: NewsletterEmailP
 			</LinkTo>
 		</h2>
 
-		<div className="[mask-image:linear-gradient(to_bottom,_black_50%,_transparent_100%)]">
+		<div className="mask-[linear-gradient(to_bottom,black_50%,transparent_100%)]">
 			<MDXContent code={email.body} />
 		</div>
 		<div className="grid grid-cols-[1fr_max-content] justify-between pt-2.5">

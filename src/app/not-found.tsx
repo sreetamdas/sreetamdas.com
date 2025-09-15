@@ -21,7 +21,7 @@ export default function GlobalNotFound({ message, has_layout = false }: GlobalNo
 					<Header />
 					<main
 						id="main-content"
-						className="relative grid grid-flow-col grid-cols-[1fr_min(var(--max-width),_calc(100%_-_2rem))_1fr] gap-x-4 children:[grid-column:2]"
+						className="relative grid grid-flow-col grid-cols-[1fr_min(var(--max-width),calc(100%-2rem))_1fr] gap-x-4 children:[grid-column:2]"
 					>
 						{children}
 					</main>

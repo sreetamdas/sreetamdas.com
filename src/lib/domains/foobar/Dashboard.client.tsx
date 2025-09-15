@@ -103,7 +103,7 @@ const ResetFoobar = ({ handleClearFoobarData }: { handleClearFoobarData: () => v
 		</AlertDialogPrimitive.Trigger>
 		<AlertDialogPrimitive.Portal>
 			<AlertDialogPrimitive.Overlay className="fixed inset-0 bg-slate-950/40 data-[state=open]:animate-overlayShow" />
-			<AlertDialogPrimitive.Content className="fixed left-[50%] top-[50%] max-h-[85vh] w-[90vw] max-w-[500px] translate-x-[-50%] translate-y-[-50%] rounded-global bg-white p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none data-[state=open]:animate-contentShow">
+			<AlertDialogPrimitive.Content className="fixed left-[50%] top-[50%] max-h-[85vh] w-[90vw] max-w-[500px] translate-x-[-50%] translate-y-[-50%] rounded-global bg-white p-[25px] shadow-[hsl(206_22%_7%/35%)_0px_10px_38px_-10px,hsl(206_22%_7%/20%)_0px_10px_20px_-15px] focus:outline-none data-[state=open]:animate-contentShow">
 				<AlertDialogPrimitive.Title className="m-0 text-[17px] font-medium text-slate-950">
 					Are you absolutely sure?
 				</AlertDialogPrimitive.Title>

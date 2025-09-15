@@ -6,6 +6,7 @@ import { Image } from "@/lib/components/Image";
 import { ViewsCounter } from "@/lib/components/ViewsCounter";
 import { ImgurClient, type KeebDetails } from "@/lib/domains/Imgur";
 import { NotionClient } from "@/lib/domains/Notion";
+import { createFileRoute } from "@tanstack/react-router";
 
 const KEEBS_DATABASE_ID = process.env.NOTION_KEEBS_PAGE_ID;
 
@@ -13,16 +14,24 @@ export const metadata = {
 	title: `Keebs ${SITE_TITLE_APPEND}`,
 };
 
+export const Route = createFileRoute("/(main)/keebs")({
+	component: KeebsPage,
+	loader: async () => {
+		const keebs = await getKeebsFromNotion();
+		return keebs;
+	},
+});
+
 export type KeebDetailsFromNotion = Omit<KeebDetails, "image"> & {
 	image: Omit<KeebDetails["image"], "height" | "width">;
 };
 
-export default async function KeebsPage() {
-	const keebs = await getKeebsFromNotion();
+async function KeebsPage() {
+	const keebs = Route.useLoaderData();
 
 	return (
 		<>
-			<h1 className="pb-20 pt-10 font-serif text-8xl font-bold tracking-tighter">/keebs</h1>
+			<h1 className="pt-10 pb-20 font-serif text-8xl font-bold tracking-tighter">/keebs</h1>
 
 			<section className="grid gap-16">
 				{keebs.map(({ name, tags, image }) => (
@@ -33,7 +42,7 @@ export default async function KeebsPage() {
 								{tags.map((tag) => (
 									<span
 										key={tag.name}
-										className="rounded-global bg-primary px-2 py-0 font-mono text-sm text-background"
+										className="rounded-global bg-primary text-background px-2 py-0 font-mono text-sm"
 									>
 										{tag.name}
 									</span>
@@ -57,7 +66,7 @@ export default async function KeebsPage() {
 }
 
 const propertiesToRetrieve = ["Name", "Type", "Image"];
-async function getKeebsFromNotion() {
+async function getKeebsFromNotion(): Promise<Array<KeebDetails | KeebDetailsFromNotion>> {
 	const notionClient = new NotionClient({ token: process.env.NOTION_TOKEN });
 	const imgurClient = new ImgurClient({
 		client_id: process.env.IMGUR_API_CLIENT_ID,

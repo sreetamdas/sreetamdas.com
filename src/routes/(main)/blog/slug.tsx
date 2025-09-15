@@ -1,3 +1,4 @@
+import { createFileRoute } from "@tanstack/react-router";
 import { type Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Balancer } from "react-wrap-balancer";
@@ -66,7 +67,7 @@ export default async function BlogPage(props: PageParams) {
 				dangerouslySetInnerHTML={{ __html: JSON.stringify(post.structured_data) }}
 			/>
 			<ReadingProgress />
-			<h1 className="pb-20 pt-10 font-serif text-8xl font-bold tracking-tighter">
+			<h1 className="pt-10 pb-20 font-serif text-8xl font-bold tracking-tighter">
 				<Balancer>
 					<Gradient>{post.title}</Gradient>
 				</Balancer>

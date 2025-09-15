@@ -48,7 +48,7 @@ export const ChameleonHighlight = ({
 	return (
 		<span
 			className={cn(
-				"font-serif font-bold leading-none tracking-tighter transition-colors duration-[3000ms] ease-linear [color:var(--color-fancy-pants,rgb(var(--color-primary)))] [font-size:clamp(4rem,_10vw,_8rem)]",
+				"font-serif font-bold leading-none tracking-tighter transition-colors duration-3000 ease-linear text-(--color-fancy-pants,var(--color-primary)) text-[clamp(4rem,10vw,8rem)]",
 				passedClasses,
 			)}
 		>
@@ -108,7 +108,7 @@ export const Sparkles = ({
 			{sparkles.map((sparkle) => (
 				<Sparkle key={sparkle.id} color={sparkle.color} size={sparkle.size} style={sparkle.style} />
 			))}
-			<span className="relative z-[2]">{children}</span>
+			<span className="relative z-2">{children}</span>
 		</span>
 	);
 };

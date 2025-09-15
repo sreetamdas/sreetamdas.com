@@ -2,21 +2,26 @@ import { ImArrowUpRight2 } from "react-icons/im";
 
 import { SITE_TITLE_APPEND } from "@/config";
 import { ChameleonHighlight } from "@/lib/components/Typography.client";
+import { createFileRoute } from "@tanstack/react-router";
 
 export const metadata = {
 	title: `Fancy Pants ${SITE_TITLE_APPEND}`,
 	description: "Sreetam Das' fancy-shmancy landing page",
 };
 
-export default function FancyPantsPage() {
+export const Route = createFileRoute("/(pure)/fancy-pants")({
+	component: FancyPantsPage,
+});
+
+function FancyPantsPage() {
 	// TODO Set dark mode
 
 	return (
 		<section className="p-10">
-			<h1 className="font-mono font-black leading-normal -tracking-[0.065em] [font-size:clamp(4rem,_10vw,_10rem)]">
+			<h1 className="font-mono text-[clamp(4rem,10vw,10rem)] leading-normal font-black -tracking-[0.065em]">
 				<ChameleonHighlight>Sreetam Das</ChameleonHighlight>
 			</h1>
-			<p className="w-3/4 font-serif text-7xl font-bold leading-normal tracking-tighter">
+			<p className="w-3/4 font-serif text-7xl leading-none font-bold tracking-tighter">
 				is a{" "}
 				<ChameleonHighlight className="font-mono font-black -tracking-[0.065em]">
 					Senior Software Tinkerer
@@ -28,7 +33,7 @@ export default function FancyPantsPage() {
 						href="https://remote.com"
 						target="_blank"
 						rel="noreferrer"
-						className="visited:no-underline hover:underline hover:decoration-current hover:decoration-solid focus-visible:outline-dashed focus-visible:outline-8 focus-visible:outline-secondary"
+						className="focus-visible:outline-secondary visited:no-underline hover:underline hover:decoration-current hover:decoration-solid focus-visible:outline-8 focus-visible:outline-dashed"
 					>
 						@Remote<span className="sr-only">(opens in a new tab)</span>
 						<ImArrowUpRight2 className="inline-block text-3xl" aria-label="opens in a new tab" />

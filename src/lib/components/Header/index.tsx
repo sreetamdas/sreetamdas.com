@@ -16,7 +16,7 @@ export const Header = ({ className }: HTMLAttributes<HTMLDivElement>) => (
 		>
 			Skip to main content
 		</a>
-		<header className="mx-auto grid h-full w-full max-w-[--max-width] grid-cols-[max-content_auto] content-center gap-8 px-4 py-4 sm:px-0">
+		<header className="mx-auto grid h-full w-full max-w-(--max-width) grid-cols-[max-content_auto] content-center gap-8 px-4 py-4 sm:px-0">
 			<LinkTo href="/">
 				<svg
 					aria-label="Home"

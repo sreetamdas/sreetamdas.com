@@ -23,9 +23,9 @@ const updateCount = createServerFn({ method: "POST" })
 	.handler(async ({ data }) => {
 		const count = await readCount();
 		await fs.promises.writeFile(filePath, `${count + data}`);
-	});
+	})
 
-export const Route = createFileRoute("/")({
+export const Route = createFileRoute("/(main)/")({
 	component: Home,
 	loader: async () => await getCount(),
 });
@@ -34,7 +34,7 @@ function Home() {
 	const router = useRouter();
 	const state = Route.useLoaderData();
 
-  const post = rootPages.find((page) => page.page_slug === "introduction");
+	const post = rootPages.find((page) => page.page_slug === "introduction");
 
 	if (isUndefined(post)) {
 		throw new Error("introduction.mdx is missing");
@@ -52,18 +52,5 @@ function Home() {
 
 			{/* <ViewsCounter slug="/" hidden /> */}
 		</>
-	);
-
-	return (
-		<button
-			type="button"
-			onClick={() => {
-				updateCount({ data: 1 }).then(() => {
-					router.invalidate();
-				});
-			}}
-		>
-			Add 1 to {state}?
-		</button>
-	);
+	)
 }

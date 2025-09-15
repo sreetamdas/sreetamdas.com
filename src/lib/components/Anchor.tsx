@@ -1,8 +1,5 @@
-import { type UrlObject } from "node:url";
-
-import { type Route } from "next";
-import NextLink, { type LinkProps } from "next/link";
-import { type AnchorHTMLAttributes, type ReactNode } from "react";
+import { Link } from "@tanstack/react-router";
+import { type AnchorHTMLAttributes } from "react";
 import { ImArrowUpRight2 } from "react-icons/im";
 
 import { SITE_URL } from "@/config";
@@ -13,15 +10,8 @@ type LinkAdditionalProps = {
 	showExternalLinkIndicator?: true;
 };
 
-type LinkToProps<RouteType extends string = string> =
-	| (Omit<AnchorHTMLAttributes<HTMLAnchorElement>, keyof LinkProps<RouteType>> &
-			Omit<LinkProps<RouteType>, "href"> & {
-				children?: ReactNode;
-			} & LinkAdditionalProps & {
-				href?: Route<RouteType> | UrlObject;
-			})
-	| (AnchorHTMLAttributes<HTMLAnchorElement> & LinkAdditionalProps);
-export const LinkTo = <RouteType extends string = string>(linkToProps: LinkToProps<RouteType>) => {
+type LinkToProps = AnchorHTMLAttributes<HTMLAnchorElement> & LinkAdditionalProps;
+export const LinkTo = (linkToProps: LinkToProps) => {
 	const {
 		href,
 		className: passedClasses,
@@ -29,6 +19,7 @@ export const LinkTo = <RouteType extends string = string>(linkToProps: LinkToPro
 		showExternalLinkIndicator = false,
 		...restProps
 	} = linkToProps;
+
 	const extraProps: Partial<LinkToProps> = {};
 	let isExternalLink = false;
 
@@ -53,10 +44,10 @@ export const LinkTo = <RouteType extends string = string>(linkToProps: LinkToPro
 
 	if (!isExternalLink && typeof href !== "undefined") {
 		return (
-			<NextLink
+			<Link
 				{...restProps}
 				{...extraProps}
-				href={href}
+				to={href}
 				className={cn(!replaceClasses && "link-base", passedClasses)}
 			/>
 		);
