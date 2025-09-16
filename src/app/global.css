@@ -82,19 +82,40 @@
 	}
 }
 
-@layer components {
-	.gradient {
-		@apply from-primary to-secondary bg-gradient-to-r box-decoration-slice bg-clip-text text-transparent;
-	}
-
-	.link-base {
-		@apply text-primary focus-visible:outline-secondary dark:[&>code]:text-secondary [background-image:linear-gradient(90deg,_var(--color-secondary)_0%,_var(--color-secondary)_100%)] bg-[size:_0_2px] bg-[position:_100%_100%] bg-no-repeat transition-[background-size] duration-(--transition-duration) ease-in-out hover:bg-[size:_100%_2px] hover:bg-[position:_0_100%] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-dashed has-[svg:first-child:last-child]:bg-none;
-	}
+@utility gradient {
+	@apply from-primary to-secondary bg-gradient-to-r box-decoration-slice bg-clip-text text-transparent;
 }
 
-@layer utilities {
-	.font-code {
-		font-family: var(--font-iosevka);
+@utility font-code {
+	font-family: var(--font-iosevka);
+}
+
+@utility link-base {
+	color: var(--color-primary);
+	background-image: linear-gradient(90deg, var(--color-secondary) 0%, var(--color-secondary) 100%);
+	background-size: 0 2px;
+	background-position: 100% 100%;
+	background-repeat: no-repeat;
+	transition: background-size var(--transition-duration) ease-in-out;
+
+	&:hover {
+		background-size: 100% 2px;
+		background-position: 0 100%;
+	}
+
+	&:focus-visible {
+		outline: 2px dashed var(--color-secondary);
+		outline-offset: 2px;
+	}
+
+	&:has(svg:first-child:last-child) {
+		background: none;
+	}
+
+	@media (prefers-color-scheme: dark) {
+		& > code {
+			color: var(--color-secondary);
+		}
 	}
 }
 

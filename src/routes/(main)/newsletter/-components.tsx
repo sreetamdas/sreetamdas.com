@@ -4,7 +4,7 @@ import { LinkTo } from "@/lib/components/Anchor";
 import { MDXContent } from "@/lib/components/MDX";
 import { ViewsCounter } from "@/lib/components/ViewsCounter";
 
-import { type ButtondownAPIEmailsResponse } from "./helpers";
+import { type ButtondownAPIEmailsResponse } from "./-helpers";
 
 export const BUTTONDOWN_EMAIL_STATS_URL_PREFIX = "https://buttondown.email/emails/analytics";
 
@@ -22,8 +22,8 @@ type NewsletterEmailPreviewProps = {
 };
 const NewsletterEmailPreview = ({ email, isAdminUser = false }: NewsletterEmailPreviewProps) => (
 	<article>
-		<h2 className="p-0 font-sans text-2xl font-bold text-primary">
-			<LinkTo href={`/newsletter/${email.slug}`} scroll={false}>
+		<h2 className="text-primary p-0 font-sans text-2xl font-bold">
+			<LinkTo href={`/newsletter/$slug`} params={{ slug: email.slug }}>
 				{email.subject}
 			</LinkTo>
 		</h2>
@@ -45,9 +45,13 @@ const NewsletterEmailPreview = ({ email, isAdminUser = false }: NewsletterEmailP
 					})}
 				</span>
 				{isAdminUser && (
-					<LinkTo href={`${BUTTONDOWN_EMAIL_STATS_URL_PREFIX}/${email.id}`} target="_blank">
+					<a
+						className="link-base"
+						href={`${BUTTONDOWN_EMAIL_STATS_URL_PREFIX}/${email.id}`}
+						target="_blank"
+					>
 						Stats
-					</LinkTo>
+					</a>
 				)}
 			</span>
 		</div>
@@ -79,7 +83,7 @@ export const NewsletterEmailDetail = ({ email }: NewsletterEmailDetailProps) => 
 		<section>
 			<article>
 				<h1 className="pt-20 font-serif text-6xl font-bold tracking-tighter">{email.subject}</h1>
-				<div className="mb-12 mt-5 flex justify-end gap-5">
+				<div className="mt-5 mb-12 flex justify-end gap-5">
 					<span className="flex items-center gap-1.5 text-base">
 						<HiOutlineNewspaper className="text-2xl" /> #{email.secondary_id}
 					</span>

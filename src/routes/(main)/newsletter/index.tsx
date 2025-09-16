@@ -3,8 +3,9 @@ import { compile } from "@mdx-js/mdx";
 import { SITE_TITLE_APPEND } from "@/config";
 import { ViewsCounter } from "@/lib/components/ViewsCounter";
 
-import { NewsletterEmailsPreviews } from "./components";
-import { fetchNewsletterEmails } from "./helpers";
+import { NewsletterEmailsPreviews } from "./-components";
+import { fetchNewsletterEmails } from "./-helpers";
+import { createFileRoute } from "@tanstack/react-router";
 
 export const metadata = {
 	title: `Newsletter ${SITE_TITLE_APPEND}`,
@@ -12,16 +13,24 @@ export const metadata = {
 		"Curated links keeping up with the JavaScript, React and webdev world. And mechanical keyboards!",
 };
 
-export default async function NewsletterEmailsPage() {
-	const newsletter_emails_previews_data = await getNewsletterEmailsPreviewsData();
+export const Route = createFileRoute("/(main)/newsletter/")({
+	component: NewsletterEmailsPage,
+	loader: async () => {
+		const newsletter_emails_previews_data = await getNewsletterEmailsPreviewsData();
+		return { newsletter_emails_previews_data };
+	},
+});
+
+function NewsletterEmailsPage() {
+	const { newsletter_emails_previews_data } = Route.useLoaderData();
 
 	return (
 		<>
-			<h1 className="pb-20 pt-10 font-serif text-8xl font-bold tracking-tighter">/newsletter</h1>
+			<h1 className="pt-10 pb-20 font-serif text-8xl font-bold tracking-tighter">/newsletter</h1>
 			<NewsletterEmailsPreviews emails={newsletter_emails_previews_data} />
 			<ViewsCounter slug="/newsletter" />
 		</>
-	);
+	)
 }
 
 function getEmailPreviewContent(content: string) {
@@ -39,7 +48,7 @@ function getEmailPreviewContent(content: string) {
 			.split("\n")
 			.slice(0, 3)
 			.join("\n")
-	);
+	)
 }
 async function getNewsletterEmailsPreviewsData() {
 	const buttondown_api_emails_response = await fetchNewsletterEmails();
@@ -57,5 +66,5 @@ async function getNewsletterEmailsPreviewsData() {
 					await compile(getEmailPreviewContent(body), { outputFormat: "function-body" }),
 				),
 			})),
-	);
+	)
 }

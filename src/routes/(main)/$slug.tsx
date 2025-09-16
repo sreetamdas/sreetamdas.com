@@ -86,7 +86,7 @@ const RepoContributors = async ({
 			{contributors?.map(
 				({ login, avatar_url, html_url }) =>
 					html_url && (
-						<LinkTo href={html_url} key={login} target="_blank">
+						<a href={html_url} key={login} target="_blank" className="link-base">
 							<div className="flex flex-col items-center gap-1">
 								{avatar_url ? (
 									<span className="rounded-global size-32 overflow-hidden">
@@ -95,7 +95,7 @@ const RepoContributors = async ({
 								) : null}
 								<p className="m-0 pb-2 text-sm">{login}</p>
 							</div>
-						</LinkTo>
+						</a>
 					),
 			)}
 		</div>

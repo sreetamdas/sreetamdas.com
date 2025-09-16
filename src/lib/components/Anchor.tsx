@@ -1,16 +1,19 @@
-import { Link } from "@tanstack/react-router";
-import { type AnchorHTMLAttributes } from "react";
+import { Link, LinkProps } from "@tanstack/react-router";
+import { ReactNode } from "react";
 import { ImArrowUpRight2 } from "react-icons/im";
 
 import { SITE_URL } from "@/config";
 import { cn } from "@/lib/helpers/utils";
 
 type LinkAdditionalProps = {
+	href: LinkProps["to"];
 	replaceClasses?: true;
 	showExternalLinkIndicator?: true;
+	children: ReactNode;
+	className?: string;
 };
 
-type LinkToProps = AnchorHTMLAttributes<HTMLAnchorElement> & LinkAdditionalProps;
+type LinkToProps = LinkProps & LinkAdditionalProps;
 export const LinkTo = (linkToProps: LinkToProps) => {
 	const {
 		href,
@@ -24,6 +27,7 @@ export const LinkTo = (linkToProps: LinkToProps) => {
 	let isExternalLink = false;
 
 	if (typeof href === "string") {
+		// @ts-expect-error resume pdf
 		if (href === "/resume.pdf") {
 			isExternalLink = true;
 		} else if (

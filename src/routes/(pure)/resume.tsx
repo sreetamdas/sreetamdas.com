@@ -1,18 +1,23 @@
 import { SITE_TITLE_APPEND } from "@/config";
 import { ViewsCounter } from "@/lib/components/ViewsCounter";
+import { createFileRoute } from "@tanstack/react-router";
 
 export const metadata = {
 	title: `Resume ${SITE_TITLE_APPEND}`,
 };
 
-export default function ResumePage() {
+export const Route = createFileRoute("/(pure)/resume")({
+	component: ResumePage,
+});
+
+function ResumePage() {
 	return (
 		<div className="min-h-full px-2">
-			<div className="mx-auto my-5 w-fit max-w-sm rounded-global border-2 border-primary px-5 py-5 font-mono text-sm sm:max-w-none print:my-0 print:border-none">
+			<div className="rounded-global border-primary mx-auto my-5 w-fit max-w-sm border-2 px-5 py-5 font-mono text-sm sm:max-w-none print:my-0 print:border-none">
 				<div className="sm:max-w-3xl">
 					<section className="grid gap-5 pb-5 sm:grid-cols-[minmax(350px,500px)_minmax(200px,1fr)]">
 						<header>
-							<h1 className="text-5xl font-bold leading-normal tracking-tight">Sreetam Das</h1>
+							<h1 className="text-5xl leading-normal font-bold tracking-tight">Sreetam Das</h1>
 							<p className="leading-tight">
 								Open source aficionado who loves minimalist interfaces and component based,
 								deterministic development.
@@ -28,15 +33,15 @@ export default function ResumePage() {
 								<a href="https://sreetamdas.com" className="link-base">
 									Web
 								</a>
-								<span className="text-xs text-primary/50">|</span>
+								<span className="text-primary/50 text-xs">|</span>
 								<a href="https://github.com/sreetamdas" className="link-base">
 									GitHub
 								</a>
-								<span className="text-xs text-primary/50">|</span>
+								<span className="text-primary/50 text-xs">|</span>
 								<a href="https://twitter.com/_SreetamDas" className="link-base">
 									Twitter
 								</a>
-								<span className="text-xs text-primary/50">|</span>
+								<span className="text-primary/50 text-xs">|</span>
 								<a href="https://linkedin.com/in/sreetamdas" className="link-base">
 									LinkedIn
 								</a>
@@ -44,12 +49,12 @@ export default function ResumePage() {
 						</div>
 					</section>
 
-					<section className="grid gap-5 border-t-2 border-primary/20 pt-5 sm:grid-cols-[minmax(350px,500px)_minmax(200px,1fr)]">
+					<section className="border-primary/20 grid gap-5 border-t-2 pt-5 sm:grid-cols-[minmax(350px,500px)_minmax(200px,1fr)]">
 						<div id="main">
 							<div id="experience">
-								<h2 className="mb-4 font-bold uppercase text-secondary">Experience</h2>
+								<h2 className="text-secondary mb-4 font-bold uppercase">Experience</h2>
 
-								<p className="mb-2 mt-4">
+								<p className="mt-4 mb-2">
 									<a href="https://remote.com" className="link-base font-bold">
 										Remote
 									</a>
@@ -67,7 +72,7 @@ export default function ResumePage() {
 									</li>
 								</ul>
 
-								<p className="mb-2 mt-4">
+								<p className="mt-4 mb-2">
 									<span className="italic">
 										Senior Frontend Engineer I,{" "}
 										<span className="uppercase">Dec 2021 - Dec 2023</span>
@@ -85,7 +90,7 @@ export default function ResumePage() {
 									<li>Handling timely requests from various stakeholders</li>
 								</ul>
 
-								<p className="mb-2 mt-4">
+								<p className="mt-4 mb-2">
 									<span className="italic">
 										<span className="">Frontend Engineer</span>,{" "}
 										<span className="uppercase">Nov 2020 - Dec 2021</span>
@@ -100,7 +105,7 @@ export default function ResumePage() {
 									<li>Migrated an Elixir/Phoenix app to a modern React/Next.js stack</li>
 								</ul>
 
-								<p className="mb-2 mt-6">
+								<p className="mt-6 mb-2">
 									<a href="https://microland.com" className="link-base font-bold">
 										Microland
 									</a>
@@ -121,7 +126,7 @@ export default function ResumePage() {
 									</li>
 								</ul>
 
-								<p className="mb-2 mt-4">
+								<p className="mt-4 mb-2">
 									<span className="italic">
 										<span className="">Intern</span>,{" "}
 										<span className="uppercase">May 2017 - Jul 2017</span>
@@ -135,7 +140,7 @@ export default function ResumePage() {
 							</div>
 
 							<div id="projects">
-								<h2 className="mt-6 font-bold uppercase text-secondary">Projects</h2>
+								<h2 className="text-secondary mt-6 font-bold uppercase">Projects</h2>
 
 								<ul className="mt-4 list-outside list-disc pl-4">
 									<li>
@@ -174,17 +179,17 @@ export default function ResumePage() {
 						</div>
 
 						<div id="extra">
-							<h2 className="mb-4 font-bold uppercase text-secondary">Skills</h2>
-							<p className="mb-2 mt-4">
+							<h2 className="text-secondary mb-4 font-bold uppercase">Skills</h2>
+							<p className="mt-4 mb-2">
 								React, CSS, Next.js, Redux, NodeJS, TypeScript, Elixir, Python and Styled-components
 							</p>
-							<h2 className="mt-6 font-bold uppercase text-secondary">Interests</h2>
-							<p className="mb-2 mt-4">
+							<h2 className="text-secondary mt-6 font-bold uppercase">Interests</h2>
+							<p className="mt-4 mb-2">
 								Developer experience, local-first offline apps, performance
 								<br />
 								Mechanical keyboards, quizzing & CS
 							</p>
-							<h2 className="mt-6 font-bold uppercase text-secondary">Achievements</h2>
+							<h2 className="text-secondary mt-6 font-bold uppercase">Achievements</h2>
 
 							<h3 className="mt-4 font-bold">
 								<a href="https://www.awwwards.com" className="link-base">
@@ -245,8 +250,8 @@ export default function ResumePage() {
 							</h3>
 							<p>Bronze and Silver in Week of Code</p>
 
-							<h2 className="mt-6 font-bold uppercase text-secondary">Languages</h2>
-							<p className="mb-2 mt-4">Fluent in English, Hindi and Odia</p>
+							<h2 className="text-secondary mt-6 font-bold uppercase">Languages</h2>
+							<p className="mt-4 mb-2">Fluent in English, Hindi and Odia</p>
 						</div>
 					</section>
 				</div>

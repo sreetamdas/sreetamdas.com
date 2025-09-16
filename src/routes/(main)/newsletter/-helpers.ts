@@ -1,5 +1,5 @@
 import { BUTTONDOWN_EMAIL_MOCKS } from "./mocks";
-
+import { createServerFn } from "@tanstack/react-start";
 const BUTTONDOWN_BASE_URL = "https://api.buttondown.email/v1";
 const BUTTONDOWN_API_KEY = process.env.BUTTONDOWN_API_KEY;
 
@@ -43,24 +43,26 @@ export type ButtondownAPIEmailsResponse = {
 	}>;
 };
 
-export async function fetchNewsletterEmails(): Promise<ButtondownAPIEmailsResponse> {
+export const fetchNewsletterEmails = createServerFn({
+	method: "GET",
+}).handler<ButtondownAPIEmailsResponse>(async () => {
 	try {
+		console.log({ BUTTONDOWN_API_KEY, BUTTONDOWN_BASE_URL });
+
 		const response = await fetch(`${BUTTONDOWN_BASE_URL}/emails`, {
 			headers: {
 				...(BUTTONDOWN_API_KEY !== "" && {
 					"X-API-Version": "2024-08-15",
 					Authorization: `Token ${BUTTONDOWN_API_KEY}`,
 				}),
-			},
-			next: {
-				revalidate: 86400,
+				"Access-Control-Allow-Origin": "*",
 			},
 		});
-		return (await response.json()) as ButtondownAPIEmailsResponse;
+		return await response.json();
 	} catch (error: unknown) {
 		// eslint-disable-next-line no-console
 		console.error(error);
 
 		return BUTTONDOWN_EMAIL_MOCKS;
 	}
-}
+});
