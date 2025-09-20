@@ -12,13 +12,12 @@ import { ViewsCounter } from "@/lib/components/ViewsCounter";
 import {
 	HighlightWithUseEffect,
 	HighlightWithUseInterval,
-} from "./chameleon-text/components.client";
+} from "./-chameleon-text/components.client";
 import { isNil } from "lodash-es";
 
 export const Route = createFileRoute("/(main)/blog/$slug")({
 	component: RouteComponent,
 	loader: ({ params: { slug } }) => {
-		console.log({ slug });
 		const post = blogPosts.find((page) => page.page_slug === slug);
 
 		if (isNil(post)) {
@@ -64,6 +63,37 @@ function RouteComponent() {
 					HighlightWithUseInterval,
 				}}
 			/>
+
+			<ViewsCounter />
 		</>
 	);
 }
+
+// export async function generateStaticParams() {
+// 	return blogPosts.map((post) => ({
+// 		slug: post.page_slug,
+// 	}));
+// }
+
+// export async function generateMetadata(props: PageParams): Promise<Metadata> {
+// 	const params = await props.params;
+// 	const post = blogPosts.find((page) => page.page_slug === params.slug);
+
+// 	return {
+// 		title: `${post?.seo_title ?? post?.title} ${SITE_TITLE_APPEND}`,
+// 		description: post?.description,
+// 		openGraph: {
+// 			title: `${post?.seo_title ?? post?.title} ${SITE_TITLE_APPEND}`,
+// 			description: post?.description,
+// 			type: "article",
+// 			url: `${SITE_URL}/blog/${params.slug}`,
+// 			images: { url: post?.image ?? SITE_OG_IMAGE },
+// 		},
+// 		twitter: {
+// 			card: "summary_large_image",
+// 			title: `${post?.seo_title ?? post?.title} ${SITE_TITLE_APPEND}`,
+// 			description: post?.description,
+// 			images: { url: post?.image ?? SITE_OG_IMAGE },
+// 		},
+// 	};
+// }

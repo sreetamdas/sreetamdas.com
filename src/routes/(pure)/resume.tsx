@@ -258,7 +258,7 @@ function ResumePage() {
 			</div>
 
 			<div className="print:hidden">
-				<ViewsCounter slug="/resume" />
+				<ViewsCounter />
 			</div>
 		</div>
 	);

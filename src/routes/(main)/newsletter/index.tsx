@@ -28,9 +28,9 @@ function NewsletterEmailsPage() {
 		<>
 			<h1 className="pt-10 pb-20 font-serif text-8xl font-bold tracking-tighter">/newsletter</h1>
 			<NewsletterEmailsPreviews emails={newsletter_emails_previews_data} />
-			<ViewsCounter slug="/newsletter" />
+			<ViewsCounter />
 		</>
-	)
+	);
 }
 
 function getEmailPreviewContent(content: string) {
@@ -48,7 +48,7 @@ function getEmailPreviewContent(content: string) {
 			.split("\n")
 			.slice(0, 3)
 			.join("\n")
-	)
+	);
 }
 async function getNewsletterEmailsPreviewsData() {
 	const buttondown_api_emails_response = await fetchNewsletterEmails();
@@ -66,5 +66,5 @@ async function getNewsletterEmailsPreviewsData() {
 					await compile(getEmailPreviewContent(body), { outputFormat: "function-body" }),
 				),
 			})),
-	)
+	);
 }

@@ -1,17 +1,14 @@
 // <reference types="vite/client" />
-import type { ReactNode } from "react";
-import { Outlet, createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
-import { createMiddleware } from "@tanstack/react-start";
-import { FOOBAR_SOURCE_CODE } from "@/lib/domains/foobar/helpers";
-
-import appCss from "@/app/global.css?url";
-import "@fontsource-variable/bricolage-grotesque";
-import "@fontsource-variable/inter";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { HeadContent, Outlet, Scripts, createRootRoute } from "@tanstack/react-router";
+import { FOOBAR_SOURCE_CODE } from "@/lib/domains/foobar/helpers";
+import type { ReactNode } from "react";
+import "@fontsource-variable/bricolage-grotesque/index.css";
+import "@fontsource-variable/inter/index.css";
+import appCss from "./global.css?url";
 
 export const Route = createRootRoute({
 	component: RootComponent,
-
 	head: () => ({
 		meta: [
 			{
@@ -55,14 +52,6 @@ export const Route = createRootRoute({
 	headers: () => ({
 		"x-foobar": "/foobar/headers",
 	}),
-});
-
-const authMiddleware = createMiddleware({ type: "function" }).client(async ({ next }) => {
-	return next({
-		headers: {
-			Authorization: `Bearer 123`,
-		},
-	});
 });
 
 function RootComponent() {

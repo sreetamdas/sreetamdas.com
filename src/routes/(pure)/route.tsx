@@ -1,15 +1,13 @@
-import { type ReactNode } from "react";
-
 import { Footer } from "@/lib/components/Footer";
 import { Header } from "@/lib/components/Header";
-import { FoobarPixel } from "@/lib/domains/foobar/Pixel.client";
+import { FoobarPixel } from "@/lib/domains/foobar/Pixel";
 import { createFileRoute, Outlet } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/(pure)")({
 	component: MainLayout,
 });
 
-function MainLayout({ children }: { children: ReactNode }) {
+function MainLayout() {
 	return (
 		<>
 			<Header className="print:hidden" />

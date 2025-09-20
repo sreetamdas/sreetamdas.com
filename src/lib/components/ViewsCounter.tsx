@@ -1,26 +1,23 @@
-import { Suspense } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { IS_CI, IS_DEV } from "@/config";
-import { getPageViews, upsertPageViews } from "@/lib/domains/Supabase";
+import { getPageViews, PageViewCount, upsertPageViews } from "@/lib/domains/Supabase";
 import { cn } from "@/lib/helpers/utils";
 import { createServerFn, useServerFn } from "@tanstack/react-start";
-import { useParams } from "@tanstack/react-router";
-
+import { useLocation } from "@tanstack/react-router";
+import { z } from "zod";
 type IsomorphicFetchOptions = {
 	disabled?: boolean;
 };
-
-const getViewCount = createServerFn({ method: "GET" }).handler(async ({ data }) => {
-	console.log({ data });
-	return isomorphicFetchPageViews(data.slug, { disabled: true });
-});
 
 /**
  * Wrapper for Supabase page views for both only fetching and upserting
  * @param slug page slug
  * @returns page views response
  */
-async function isomorphicFetchPageViews(slug: string, options: IsomorphicFetchOptions) {
+async function isomorphicFetchPageViews(
+	slug: string,
+	options: IsomorphicFetchOptions,
+): Promise<PageViewCount> {
 	if (options.disabled) {
 		const response = await getPageViews(slug);
 		return response;
@@ -28,6 +25,19 @@ async function isomorphicFetchPageViews(slug: string, options: IsomorphicFetchOp
 	const response = await upsertPageViews(slug);
 	return response;
 }
+
+const PagePathname = z.object({
+	slug: z.string().min(1),
+	disabled: z.boolean(),
+});
+
+const fetchViewCountServerFn = createServerFn<"GET", "data", PageViewCount>({ method: "GET" })
+	.validator((data) => {
+		return PagePathname.parse(data);
+	})
+	.handler(async ({ data }) => {
+		return isomorphicFetchPageViews(data.slug, { disabled: data.disabled });
+	});
 
 type ViewsCounterProps = {
 	slug?: string;
@@ -40,39 +50,46 @@ export const ViewsCounter = ({
 	page_type = "page",
 	hidden = false,
 	disabled = IS_DEV || IS_CI,
-}: ViewsCounterProps) => (
-	<div
-		className={cn(
-			"mx-auto mt-auto mb-5 w-full flex-row items-center justify-center gap-2 pt-40",
-			hidden ? "hidden" : "flex",
-		)}
-	>
-		<span role="img" aria-label="eyes">
-			👀
-		</span>
-		{/* <Suspense fallback={<p className="m-0 text-xs">Getting view count</p>}>
+}: ViewsCounterProps) => {
+	return (
+		<div
+			className={cn(
+				"mx-auto mt-auto mb-5 w-full flex-row items-center justify-center gap-2 pt-40",
+				hidden ? "hidden" : "flex",
+			)}
+		>
+			<span role="img" aria-label="eyes">
+				👀
+			</span>
 			<Views slug={slug} page_type={page_type} disabled={disabled} />
-		</Suspense> */}
-	</div>
-);
-
-const Views = async ({ slug, page_type, disabled }: Omit<ViewsCounterProps, "hidden">) => {
-	// const { data } = await isomorphicFetchPageViews(slug, { disabled });
-	const route = useParams({ strict: false });
-
-	console.log(">>", { route });
-
-	const getViews = useServerFn(() => getViewCount({ data: route }));
-	const { data } = useQuery({ queryKey: route, queryFn: getViews });
-
-	// const res = getViews();
-	console.log("client", { data });
-
-	return <p className="m-0 text-xs">{getViewCountCopy(0, page_type)}</p>;
+		</div>
+	);
 };
 
-function getViewCountCopy(view_count: number | null, page_type: ViewsCounterProps["page_type"]) {
+const Views = ({ page_type, disabled }: Omit<ViewsCounterProps, "hidden">) => {
+	const { pathname } = useLocation();
+
+	const fetchViewCount = useServerFn<() => Promise<PageViewCount>>(() => {
+		return fetchViewCountServerFn({ data: { slug: pathname, disabled } });
+	});
+	const { data, isLoading } = useQuery({
+		queryFn: fetchViewCount,
+		queryKey: [pathname, "get-views"],
+	});
+
+	if (isLoading) {
+		return <p className="m-0 text-xs">Getting view count</p>;
+	}
+
+	return <p className="m-0 text-xs">{getViewCountCopy(data?.view_count, page_type)}</p>;
+};
+
+function getViewCountCopy(
+	view_count: number | undefined,
+	page_type: ViewsCounterProps["page_type"],
+) {
 	switch (view_count) {
+		case undefined:
 		case null:
 			return "Getting page views";
 		case 0:

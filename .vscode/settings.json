@@ -20,10 +20,13 @@
 		["cva\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"],
 		["cx\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"]
 	],
+	"eslint.enable": false,
 	"eslint.useFlatConfig": true,
 	"eslint.options": {
 		"overrideConfigFile": "./.config/eslint.config.mjs"
 	},
+	"oxc.configPath": ".config/.oxlintrc.json",
+	"oxc.lint.run": "onSave",
 	"prettier.configPath": ".config/prettier.config.mjs",
 	"prettier.ignorePath": ".config/.prettierignore",
 	"[mdx][markdown]": {
@@ -33,5 +36,6 @@
 			"strings": "off"
 		},
 		"editor.rulers": [60, 80]
-	}
+	},
+	"oxc.enable": true
 }

@@ -60,7 +60,7 @@ async function KeebsPage() {
 				))}
 			</section>
 
-			<ViewsCounter slug="/keebs" />
+			<ViewsCounter />
 		</>
 	);
 }

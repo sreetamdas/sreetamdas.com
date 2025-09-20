@@ -1,6 +1,7 @@
-import { withPlausibleProxy } from "next-plausible";
 import { initOpenNextCloudflareForDev } from "@opennextjs/cloudflare";
+import { withPlausibleProxy } from "next-plausible";
 
+// eslint-disable-next-line @typescript-eslint/no-floating-promises
 initOpenNextCloudflareForDev();
 
 process.env.SITE_URL = process.env.SITE_URL || process.env.VERCEL_URL || "http://localhost:3000";
@@ -27,11 +28,8 @@ let nextConfig = {
 	},
 	experimental: {
 		// typedRoutes: true,
-		mdxRs: true,
+		// mdxRs: true,
 		// ppr: "incremental",
-	},
-	devIndicators: {
-		buildActivity: false,
 	},
 	images: {
 		remotePatterns: [

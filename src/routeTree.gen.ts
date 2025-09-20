@@ -25,6 +25,9 @@ import { Route as mainNewsletterIndexRouteImport } from './routes/(main)/newslet
 import { Route as mainBlogIndexRouteImport } from './routes/(main)/blog/index'
 import { Route as mainNewsletterSlugRouteImport } from './routes/(main)/newsletter/$slug'
 import { Route as mainBlogSlugRouteImport } from './routes/(main)/blog/$slug'
+import { Route as mainfoobarFoobarIndexRouteImport } from './routes/(main)/(foobar)/foobar/index'
+import { Route as mainfoobarFoobarSlugRouteImport } from './routes/(main)/(foobar)/foobar/$slug'
+import { ServerRoute as apiApiPageViewsServerRouteImport } from './routes/(api)/api/page-views'
 import { ServerRoute as apiApiCoffeeServerRouteImport } from './routes/(api)/api/coffee'
 
 const rootServerRouteImport = createServerRootRoute()
@@ -97,6 +100,21 @@ const mainBlogSlugRoute = mainBlogSlugRouteImport.update({
   path: '/blog/$slug',
   getParentRoute: () => mainRouteRoute,
 } as any)
+const mainfoobarFoobarIndexRoute = mainfoobarFoobarIndexRouteImport.update({
+  id: '/(foobar)/foobar/',
+  path: '/foobar/',
+  getParentRoute: () => mainRouteRoute,
+} as any)
+const mainfoobarFoobarSlugRoute = mainfoobarFoobarSlugRouteImport.update({
+  id: '/(foobar)/foobar/$slug',
+  path: '/foobar/$slug',
+  getParentRoute: () => mainRouteRoute,
+} as any)
+const apiApiPageViewsServerRoute = apiApiPageViewsServerRouteImport.update({
+  id: '/(api)/api/page-views',
+  path: '/api/page-views',
+  getParentRoute: () => rootServerRouteImport,
+} as any)
 const apiApiCoffeeServerRoute = apiApiCoffeeServerRouteImport.update({
   id: '/(api)/api/coffee',
   path: '/api/coffee',
@@ -116,6 +134,8 @@ export interface FileRoutesByFullPath {
   '/blog': typeof mainBlogIndexRoute
   '/newsletter': typeof mainNewsletterIndexRoute
   '/rwc': typeof mainRwcIndexRoute
+  '/foobar/$slug': typeof mainfoobarFoobarSlugRoute
+  '/foobar': typeof mainfoobarFoobarIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof mainIndexRoute
@@ -130,6 +150,8 @@ export interface FileRoutesByTo {
   '/blog': typeof mainBlogIndexRoute
   '/newsletter': typeof mainNewsletterIndexRoute
   '/rwc': typeof mainRwcIndexRoute
+  '/foobar/$slug': typeof mainfoobarFoobarSlugRoute
+  '/foobar': typeof mainfoobarFoobarIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -147,6 +169,8 @@ export interface FileRoutesById {
   '/(main)/blog/': typeof mainBlogIndexRoute
   '/(main)/newsletter/': typeof mainNewsletterIndexRoute
   '/(main)/rwc/': typeof mainRwcIndexRoute
+  '/(main)/(foobar)/foobar/$slug': typeof mainfoobarFoobarSlugRoute
+  '/(main)/(foobar)/foobar/': typeof mainfoobarFoobarIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -163,6 +187,8 @@ export interface FileRouteTypes {
     | '/blog'
     | '/newsletter'
     | '/rwc'
+    | '/foobar/$slug'
+    | '/foobar'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -177,6 +203,8 @@ export interface FileRouteTypes {
     | '/blog'
     | '/newsletter'
     | '/rwc'
+    | '/foobar/$slug'
+    | '/foobar'
   id:
     | '__root__'
     | '/(main)'
@@ -193,6 +221,8 @@ export interface FileRouteTypes {
     | '/(main)/blog/'
     | '/(main)/newsletter/'
     | '/(main)/rwc/'
+    | '/(main)/(foobar)/foobar/$slug'
+    | '/(main)/(foobar)/foobar/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -201,24 +231,28 @@ export interface RootRouteChildren {
 }
 export interface FileServerRoutesByFullPath {
   '/api/coffee': typeof apiApiCoffeeServerRoute
+  '/api/page-views': typeof apiApiPageViewsServerRoute
 }
 export interface FileServerRoutesByTo {
   '/api/coffee': typeof apiApiCoffeeServerRoute
+  '/api/page-views': typeof apiApiPageViewsServerRoute
 }
 export interface FileServerRoutesById {
   __root__: typeof rootServerRouteImport
   '/(api)/api/coffee': typeof apiApiCoffeeServerRoute
+  '/(api)/api/page-views': typeof apiApiPageViewsServerRoute
 }
 export interface FileServerRouteTypes {
   fileServerRoutesByFullPath: FileServerRoutesByFullPath
-  fullPaths: '/api/coffee'
+  fullPaths: '/api/coffee' | '/api/page-views'
   fileServerRoutesByTo: FileServerRoutesByTo
-  to: '/api/coffee'
-  id: '__root__' | '/(api)/api/coffee'
+  to: '/api/coffee' | '/api/page-views'
+  id: '__root__' | '/(api)/api/coffee' | '/(api)/api/page-views'
   fileServerRoutesById: FileServerRoutesById
 }
 export interface RootServerRouteChildren {
   apiApiCoffeeServerRoute: typeof apiApiCoffeeServerRoute
+  apiApiPageViewsServerRoute: typeof apiApiPageViewsServerRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -321,10 +355,31 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof mainBlogSlugRouteImport
       parentRoute: typeof mainRouteRoute
     }
+    '/(main)/(foobar)/foobar/': {
+      id: '/(main)/(foobar)/foobar/'
+      path: '/foobar'
+      fullPath: '/foobar'
+      preLoaderRoute: typeof mainfoobarFoobarIndexRouteImport
+      parentRoute: typeof mainRouteRoute
+    }
+    '/(main)/(foobar)/foobar/$slug': {
+      id: '/(main)/(foobar)/foobar/$slug'
+      path: '/foobar/$slug'
+      fullPath: '/foobar/$slug'
+      preLoaderRoute: typeof mainfoobarFoobarSlugRouteImport
+      parentRoute: typeof mainRouteRoute
+    }
   }
 }
 declare module '@tanstack/react-start/server' {
   interface ServerFileRoutesByPath {
+    '/(api)/api/page-views': {
+      id: '/(api)/api/page-views'
+      path: '/api/page-views'
+      fullPath: '/api/page-views'
+      preLoaderRoute: typeof apiApiPageViewsServerRouteImport
+      parentRoute: typeof rootServerRouteImport
+    }
     '/(api)/api/coffee': {
       id: '/(api)/api/coffee'
       path: '/api/coffee'
@@ -346,6 +401,8 @@ interface mainRouteRouteChildren {
   mainBlogIndexRoute: typeof mainBlogIndexRoute
   mainNewsletterIndexRoute: typeof mainNewsletterIndexRoute
   mainRwcIndexRoute: typeof mainRwcIndexRoute
+  mainfoobarFoobarSlugRoute: typeof mainfoobarFoobarSlugRoute
+  mainfoobarFoobarIndexRoute: typeof mainfoobarFoobarIndexRoute
 }
 
 const mainRouteRouteChildren: mainRouteRouteChildren = {
@@ -359,6 +416,8 @@ const mainRouteRouteChildren: mainRouteRouteChildren = {
   mainBlogIndexRoute: mainBlogIndexRoute,
   mainNewsletterIndexRoute: mainNewsletterIndexRoute,
   mainRwcIndexRoute: mainRwcIndexRoute,
+  mainfoobarFoobarSlugRoute: mainfoobarFoobarSlugRoute,
+  mainfoobarFoobarIndexRoute: mainfoobarFoobarIndexRoute,
 }
 
 const mainRouteRouteWithChildren = mainRouteRoute._addFileChildren(
@@ -388,6 +447,7 @@ export const routeTree = rootRouteImport
   ._addFileTypes<FileRouteTypes>()
 const rootServerRouteChildren: RootServerRouteChildren = {
   apiApiCoffeeServerRoute: apiApiCoffeeServerRoute,
+  apiApiPageViewsServerRoute: apiApiPageViewsServerRoute,
 }
 export const serverRouteTree = rootServerRouteImport
   ._addFileChildren(rootServerRouteChildren)

@@ -12,8 +12,8 @@ export const Route = createFileRoute("/(main)/blog/")({
 			},
 		],
 	}),
-	loader: () => {
-		return blogPosts
+	loader: () =>
+		blogPosts
 			.flatMap(({ title, description, page_slug, page_path, url, published, published_at }) => {
 				if (!IS_DEV && !published) {
 					return [];
@@ -28,8 +28,7 @@ export const Route = createFileRoute("/(main)/blog/")({
 					url,
 				};
 			})
-			.sort((a, b) => new Date(b.published_at).getTime() - new Date(a.published_at).getTime());
-	},
+			.sort((a, b) => new Date(b.published_at).getTime() - new Date(a.published_at).getTime()),
 });
 
 function BlogArchivePage() {

@@ -6,7 +6,7 @@ export default {
 	semi: true,
 	singleQuote: false,
 	printWidth: 100,
-	plugins: ["prettier-plugin-tailwindcss"],
+	plugins: ["@prettier/plugin-oxc", "prettier-plugin-tailwindcss"],
 	overrides: [
 		{
 			files: "*.mdx",

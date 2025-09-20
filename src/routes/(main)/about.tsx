@@ -29,7 +29,7 @@ function AboutPage() {
 		<>
 			<h1 className="pt-10 pb-20 font-serif text-8xl font-bold tracking-tighter">/about</h1>
 			<MDXContent code={post.code} components={{ SocialLinks }} />
-			<ViewsCounter slug="/about" />
+			<ViewsCounter />
 			<FoobarEntry />
 		</>
 	);

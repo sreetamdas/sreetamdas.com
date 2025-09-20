@@ -3,7 +3,7 @@ import { FaRegStar } from "react-icons/fa";
 import { VscRepoForked } from "react-icons/vsc";
 
 import { LinkTo } from "@/lib/components/Anchor";
-import { fetchGitHubStats, getGitHubStats } from "@/lib/domains/GitHub";
+import { fetchGitHubStats } from "@/lib/domains/GitHub";
 import { cn } from "@/lib/helpers/utils";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery } from "@tanstack/react-query";
@@ -38,8 +38,8 @@ export const GitHubStats = () => {
 	const getGitHubStats = useServerFn(fetchGitHubStats);
 
 	const { data } = useQuery({
-		queryKey: ["github-stats"],
 		queryFn: getGitHubStats,
+		queryKey: ["github-stats"],
 		staleTime: Infinity,
 	});
 

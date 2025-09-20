@@ -26,7 +26,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
 					enabled={process.env.NODE_ENV === "production"}
 				/>
 			</head>
-			<body className="min-h-screen bg-background text-foreground selection:bg-secondary selection:text-background">
+			<body className="bg-background text-foreground selection:bg-secondary selection:text-background min-h-screen">
 				<script
 					dangerouslySetInnerHTML={{
 						__html: blockingScriptSetInitialColorScheme,

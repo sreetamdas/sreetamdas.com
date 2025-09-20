@@ -41,7 +41,7 @@ function KarmaPage() {
 
 			<KarmaShowcase examples={examples} />
 
-			<ViewsCounter slug="/karma" />
+			<ViewsCounter  />
 		</>
 	);
 }

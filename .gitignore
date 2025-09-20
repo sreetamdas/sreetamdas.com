@@ -48,3 +48,8 @@ tsconfig.tsbuildinfo
 
 # Cloudflare
 .open-next
+
+
+.output
+.tanstack
+.nitro

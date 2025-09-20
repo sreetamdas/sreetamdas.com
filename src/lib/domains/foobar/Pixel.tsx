@@ -1,11 +1,7 @@
-"use client";
-
-import { usePathname } from "next/navigation";
 import { useEffect } from "react";
 import { useShallow } from "zustand/react/shallow";
 
 import { IS_DEV } from "@/config";
-import { LinkTo } from "@/lib/components/Anchor";
 import { Code } from "@/lib/components/Typography";
 import {
 	addFoobarToLocalStorage,
@@ -18,6 +14,7 @@ import { useHasMounted } from "@/lib/helpers/hooks";
 
 import { type FoobaFlagPageSlug, FOOBAR_FLAGS } from "./flags";
 import { type FoobarSliceType } from "./store";
+import { Link, useLocation } from "@tanstack/react-router";
 
 const foobarDataSelector = (state: FoobarSliceType) => ({
 	foobar_data: state.foobar_data,
@@ -35,7 +32,7 @@ type FoobarPixelProps = {
  * - Track navigation for corresponding achievements
  */
 export const FoobarPixel = (props: FoobarPixelProps) => {
-	const pathname = usePathname();
+	const { pathname } = useLocation();
 	const has_mounted = useHasMounted();
 	const plausibleEvent = useCustomPlausible();
 	const { foobar_data, setFoobarData } = useGlobalStore(useShallow(foobarDataSelector));
@@ -95,9 +92,9 @@ export const FoobarPixel = (props: FoobarPixelProps) => {
 
 	return has_mounted && unlocked ? (
 		<span className="col-start-2 col-end-3">
-			<LinkTo href="/foobar" style={{ border: "none" }}>
+			<Link to="/foobar" className="link-base" style={{ border: "none" }}>
 				<Code>resume /foobar</Code>
-			</LinkTo>
+			</Link>
 		</span>
 	) : null;
 };

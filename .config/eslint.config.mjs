@@ -1,5 +1,5 @@
 import eslint from "@eslint/js";
-import * as mdx from "eslint-plugin-mdx";
+// import * as mdx from "eslint-plugin-mdx";
 import simpleImportSort from "eslint-plugin-simple-import-sort";
 import globals from "globals";
 import tseslint from "typescript-eslint";
@@ -34,17 +34,17 @@ export default tseslint.config(
 			"simple-import-sort": simpleImportSort,
 		},
 	},
-	{
-		...mdx.flat,
-		// optional, if you want to lint code blocks at the same
-		processor: mdx.createRemarkProcessor({
-			lintCodeBlocks: true,
-			// optional, if you want to disable language mapper, set it to `false`
-			// if you want to override the default language mapper inside, you can provide your own
-			languageMapper: {},
-		}),
-		extends: [tseslint.configs.disableTypeChecked],
-	},
+	// {
+	// 	...mdx.flat,
+	// 	// optional, if you want to lint code blocks at the same
+	// 	processor: mdx.createRemarkProcessor({
+	// 		lintCodeBlocks: true,
+	// 		// optional, if you want to disable language mapper, set it to `false`
+	// 		// if you want to override the default language mapper inside, you can provide your own
+	// 		languageMapper: {},
+	// 	}),
+	// 	extends: [tseslint.configs.disableTypeChecked],
+	// },
 	{
 		rules: {
 			"linebreak-style": ["error", "unix"],

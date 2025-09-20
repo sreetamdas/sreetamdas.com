@@ -5,7 +5,7 @@ import { NotFoundDogsLink } from "@/lib/components/Error";
 import { Footer } from "@/lib/components/Footer";
 import { Header } from "@/lib/components/Header";
 import { Gradient } from "@/lib/components/Typography";
-import { FoobarPixel } from "@/lib/domains/foobar/Pixel.client";
+import { FoobarPixel } from "@/lib/domains/foobar/Pixel";
 
 export type GlobalNotFoundPageProps = {
 	message?: ReactNode;

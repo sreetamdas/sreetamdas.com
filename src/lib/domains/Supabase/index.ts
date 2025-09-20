@@ -1,17 +1,17 @@
 import { IS_DEV } from "@/config";
 
-type PageViewCount = {
+export type PageViewCount = {
 	view_count: number;
 };
 
-type SuccessResponse<Type = undefined> = { data: Type };
-type ErrorResponse<Type = undefined> = {
-	error?: Type;
-};
-type PageViewCountResponse =
-	| (SuccessResponse<PageViewCount> & { type: "success" })
-	| (SuccessResponse<null> &
-			ErrorResponse<{ message: string; cause: unknown }> & { type: "error" });
+// type SuccessResponse<Type = undefined> = { data: Type };
+// type ErrorResponse<Type = undefined> = {
+// 	error?: Type;
+// };
+// export type PageViewCountResponse =
+// 	| (SuccessResponse<PageViewCount> & { type: "success" })
+// 	| (SuccessResponse<null> &
+// 			ErrorResponse<{ message: string; cause: unknown }> & { type: "error" });
 
 const SUPABASE_ENABLED =
 	typeof process.env.NEXT_PUBLIC_SUPABASE_URL !== "undefined" &&
@@ -31,47 +31,39 @@ const supabase_headers = {
  * @param slug page slug
  * @returns Get page view_count
  */
-export async function getPageViews(slug: string): Promise<PageViewCountResponse> {
-	try {
-		if (!SUPABASE_ENABLED) {
-			throw new Error("Supabase is not initialized");
-		}
-
-		const params = new URLSearchParams({
-			slug: `eq.${slug}`,
-			select: "view_count",
-			limit: "1",
-		});
-
-		// eslint-disable-next-line no-console
-		console.log("GET", slug);
-
-		const request = await fetch(`${SUPABASE_API_BASE_URL}/page_details?${params.toString()}`, {
-			method: "GET",
-			headers: {
-				"Content-Type": "application/json",
-				...supabase_headers,
-			},
-			...(!IS_DEV && { cache: "no-store" }),
-		});
-
-		const response = (await request.json()) as Array<PageViewCount>;
-		const view_count = response[0];
-
-		if (typeof view_count === "undefined") {
-			throw new Error("Page has not been added to the database yet", {
-				cause: { view_count: "undefined" },
-			});
-		}
-
-		return { data: view_count, type: "success" };
-	} catch (error) {
-		return {
-			data: null,
-			error: { message: `Error while getting page views for ${slug}`, cause: error },
-			type: "error",
-		};
+export async function getPageViews(slug: string): Promise<PageViewCount> {
+	if (!SUPABASE_ENABLED) {
+		throw new Error("Supabase is not initialized");
 	}
+
+	const params = new URLSearchParams({
+		slug: `eq.${slug}`,
+		select: "view_count",
+		limit: "1",
+	});
+
+	// eslint-disable-next-line no-console
+	console.log("GET", slug);
+
+	const request = await fetch(`${SUPABASE_API_BASE_URL}/page_details?${params.toString()}`, {
+		method: "GET",
+		headers: {
+			"Content-Type": "application/json",
+			...supabase_headers,
+		},
+		...(!IS_DEV && { cache: "no-store" }),
+	});
+
+	const response = (await request.json()) as Array<PageViewCount>;
+	const data = response[0];
+
+	if (typeof data === "undefined") {
+		throw new Error("Page has not been added to the database yet", {
+			cause: { data: "undefined" },
+		});
+	}
+
+	return data;
 }
 
 /**

@@ -45,7 +45,7 @@ async function RWCPage() {
 				/>
 			))}
 
-			<ViewsCounter slug="/rwc" />
+			<ViewsCounter />
 		</>
 	);
 }
