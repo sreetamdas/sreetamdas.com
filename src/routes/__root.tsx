@@ -49,6 +49,7 @@ export const Route = createRootRoute({
 			{
 				defer: true,
 				"data-domain": "sreetamdas.com",
+				"data-api": "/prxy/plsbl/api/event",
 				src: "/prxy/plsbl/js/script.file-downloads.outbound-links.pageview-props.tagged-events.local.js",
 			},
 			{
