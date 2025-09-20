@@ -4,6 +4,7 @@ import { ViewsCounter } from "@/lib/components/ViewsCounter";
 import { KarmaShowcase } from "@/lib/components/KarmaShowcase.client";
 import { imageSizeFromFile } from "image-size/fromFile";
 import path from "node:path";
+import { createServerFn } from "@tanstack/react-start";
 
 export const metadata = {
 	title: `Karma ${SITE_TITLE_APPEND}`,
@@ -23,7 +24,7 @@ export const metadata = {
 export const Route = createFileRoute("/(main)/karma")({
 	component: KarmaPage,
 	loader: async () => {
-		return await getShowcaseImagesInfo();
+		return await getShowcaseImages();
 	},
 });
 
@@ -41,12 +42,12 @@ function KarmaPage() {
 
 			<KarmaShowcase examples={examples} />
 
-			<ViewsCounter  />
+			<ViewsCounter />
 		</>
 	);
 }
 
-async function getShowcaseImagesInfo() {
+const getShowcaseImages = createServerFn({ type: "static" }).handler(async () => {
 	return await Promise.all(
 		theme_language_map.map(async ({ name, default_image, light_image }) => {
 			const default_dimensions = await imageSizeFromFile(path.join("./public", default_image));
@@ -65,7 +66,7 @@ async function getShowcaseImagesInfo() {
 			};
 		}),
 	);
-}
+});
 
 const theme_language_map = [
 	{

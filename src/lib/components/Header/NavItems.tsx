@@ -1,58 +1,62 @@
 import { FaGithub, FaTwitter } from "react-icons/fa";
 import { FiRss } from "react-icons/fi";
 
-import { LinkTo } from "@/lib/components/Anchor";
+import { Link } from "@tanstack/react-router";
 
 export const NavigationItems = () => (
 	<nav className="contents w-min">
 		<ul className="contents">
 			<li>
-				<LinkTo href="/about" className="text-foreground hover:text-primary">
+				<Link to="/about" className="link-base text-foreground hover:text-primary">
 					about
-				</LinkTo>
+				</Link>
 			</li>
 			<li>
-				<LinkTo href="/blog" className="text-foreground hover:text-primary">
+				<Link to="/blog" className="link-base text-foreground hover:text-primary">
 					blog
-				</LinkTo>
+				</Link>
 			</li>
 			<li>
-				<LinkTo href="/karma" className="text-foreground hover:text-primary">
+				<Link to="/karma" className="link-base text-foreground hover:text-primary">
 					karma
-				</LinkTo>
+				</Link>
 			</li>
 			<li>
-				<LinkTo href="/uses" className="text-foreground hover:text-primary">
+				<Link
+					to="/$slug"
+					params={{ slug: "uses" }}
+					className="link-base text-foreground hover:text-primary"
+				>
 					uses
-				</LinkTo>
+				</Link>
 			</li>
 		</ul>
 		<ul className="mt-12 grid grid-flow-col gap-x-8 md:mt-0 md:contents">
 			<li>
-				<LinkTo
+				<a
 					href="https://github.com/sreetamdas"
 					target="_blank"
-					className="flex items-center text-3xl text-foreground hover:text-primary md:text-2xl"
+					className="link-base text-foreground hover:text-primary flex items-center text-3xl md:text-2xl"
 				>
 					<FaGithub aria-label="Sreetam's GitHub" title="Sreetam Das' GitHub" />
-				</LinkTo>
+				</a>
 			</li>
 			<li>
-				<LinkTo
+				<a
 					href="https://twitter.com/_SreetamDas"
 					target="_blank"
-					className="flex items-center text-3xl text-foreground hover:text-primary md:text-2xl"
+					className="link-base text-foreground hover:text-primary flex items-center text-3xl md:text-2xl"
 				>
 					<FaTwitter aria-label="Sreetam Das' Twitter" title="Sreetam Das' Twitter" />
-				</LinkTo>
+				</a>
 			</li>
 			<li>
-				<LinkTo
+				<a
 					href="https://sreetamdas.com/rss/feed.xml"
-					className="flex items-center text-3xl text-foreground hover:text-primary md:text-2xl"
+					className="link-base text-foreground hover:text-primary flex items-center text-3xl md:text-2xl"
 				>
 					<FiRss aria-label="Blog RSS feed" title="Blog RSS feed" />
-				</LinkTo>
+				</a>
 			</li>
 		</ul>
 	</nav>
