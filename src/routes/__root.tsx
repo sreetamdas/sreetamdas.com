@@ -4,7 +4,9 @@ import { HeadContent, Outlet, Scripts, createRootRoute } from "@tanstack/react-r
 import { FOOBAR_SOURCE_CODE } from "@/lib/domains/foobar/helpers";
 import type { ReactNode } from "react";
 import "@fontsource-variable/bricolage-grotesque/index.css";
+import bricolageGrotesqueFont from "@fontsource-variable/bricolage-grotesque/files/bricolage-grotesque-latin-wght-normal.woff2?url";
 import "@fontsource-variable/inter/index.css";
+import interFont from "@fontsource-variable/inter/files/inter-latin-ext-wght-normal.woff2?url";
 import appCss from "./global.css?url";
 
 export const Route = createRootRoute({
@@ -23,6 +25,20 @@ export const Route = createRootRoute({
 			},
 		],
 		links: [
+			{
+				rel: "preload",
+				as: "font",
+				type: "font/woff2",
+				href: bricolageGrotesqueFont,
+				crossOrigin: "anonymous",
+			},
+			{
+				rel: "preload",
+				as: "font",
+				type: "font/woff2",
+				href: interFont,
+				crossOrigin: "anonymous",
+			},
 			{ rel: "stylesheet", href: appCss },
 			{
 				rel: "icon",
