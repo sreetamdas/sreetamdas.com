@@ -33,7 +33,7 @@ export const Route = createRootRoute({
 			{
 				defer: true,
 				"data-domain": "sreetamdas.com",
-				src: "https://plausible.io/js/script.file-downloads.outbound-links.pageview-props.tagged-events.local.js",
+				src: "/prxy/plsbl/js/script.file-downloads.outbound-links.pageview-props.tagged-events.local.js",
 			},
 			{
 				children:
