@@ -22,7 +22,7 @@
 			"binding": "D1",
 			"preview_database_id": "sreetamdas_com_preview_default",
 			"migrations_dir": "drizzle/migrations"
-		},
+		}
 	],
 	"kv_namespaces": [
 		{
