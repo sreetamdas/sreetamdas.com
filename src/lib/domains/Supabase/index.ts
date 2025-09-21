@@ -71,41 +71,33 @@ export async function getPageViews(slug: string): Promise<PageViewCount> {
  * @param slug page slug
  * @returns upserted page view_count after incrementing
  */
-export async function upsertPageViews(slug: string): Promise<PageViewCountResponse> {
-	try {
-		if (!SUPABASE_ENABLED) {
-			throw new Error("Supabase is not initialized");
-		}
-
-		// eslint-disable-next-line no-console
-		console.log("UPSERT", slug);
-
-		const request = await fetch(`${SUPABASE_API_BASE_URL}/rpc/upsert_page_view`, {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-				...supabase_headers,
-			},
-			cache: "no-store",
-			body: JSON.stringify({
-				page_slug: slug,
-			}),
-		});
-
-		const view_count = (await request.json()) as number;
-
-		if (typeof view_count === "undefined") {
-			throw new Error("Page has not been added to the database yet", {
-				cause: { view_count: "undefined" },
-			});
-		}
-
-		return { data: { view_count }, type: "success" };
-	} catch (error) {
-		return {
-			data: null,
-			error: { message: `Error while upserting page views for ${slug}`, cause: error },
-			type: "error",
-		};
+export async function upsertPageViews(slug: string): Promise<PageViewCount> {
+	if (!SUPABASE_ENABLED) {
+		throw new Error("Supabase is not initialized");
 	}
+
+	// eslint-disable-next-line no-console
+	console.log("UPSERT", slug);
+
+	const request = await fetch(`${SUPABASE_API_BASE_URL}/rpc/upsert_page_view`, {
+		method: "POST",
+		headers: {
+			"Content-Type": "application/json",
+			...supabase_headers,
+		},
+		cache: "no-store",
+		body: JSON.stringify({
+			page_slug: slug,
+		}),
+	});
+
+	const view_count = (await request.json()) as number;
+
+	if (typeof view_count === "undefined") {
+		throw new Error("Page has not been added to the database yet", {
+			cause: { view_count: "undefined" },
+		});
+	}
+
+	return { view_count };
 }
