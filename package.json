@@ -26,7 +26,7 @@
 		"lint": "pnpm run prettier:check && pnpm run eslint:check",
 		"lint:fix": "pnpm run prettier:write && pnpm run eslint:fix",
 		"format": "pnpm run prettier:write .",
-		"deploy": "opennextjs-cloudflare && wrangler deploy"
+		"deploy": "pnpm run build && wrangler deploy"
 	},
 	"dependencies": {
 		"@cloudflare/vite-plugin": "^1.13.3",
