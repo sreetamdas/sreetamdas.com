@@ -1,5 +1,3 @@
-"use client";
-
 import { useEffect } from "react";
 import { IoMdMoon } from "react-icons/io";
 import { LuMonitor, LuSun } from "react-icons/lu";
@@ -123,7 +121,7 @@ export const ColorSchemeToggle = () => {
 	return (
 		<button
 			onClick={() => handleColorSchemeToggle()}
-			className="link-base flex h-6 w-6 items-center text-2xl text-foreground hover:text-primary"
+			className="link-base text-foreground hover:text-primary flex h-6 w-6 items-center text-2xl"
 			type="button"
 		>
 			<ToggleIcon colorScheme={colorScheme} />
