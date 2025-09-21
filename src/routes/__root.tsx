@@ -1,8 +1,9 @@
 // <reference types="vite/client" />
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { HeadContent, Outlet, Scripts, createRootRoute } from "@tanstack/react-router";
 import { FOOBAR_SOURCE_CODE } from "@/lib/domains/foobar/helpers";
-import type { ReactNode } from "react";
+import { lazy, Suspense, useEffect, useState, type ReactNode } from "react";
 import "@fontsource-variable/bricolage-grotesque/index.css";
 import bricolageGrotesqueFont from "@fontsource-variable/bricolage-grotesque/files/bricolage-grotesque-latin-wght-normal.woff2?url";
 import "@fontsource-variable/inter/index.css";
@@ -73,10 +74,30 @@ export const Route = createRootRoute({
 
 function RootComponent() {
 	const queryClient = new QueryClient();
+
+	const ReactQueryDevtoolsProduction = lazy(() =>
+		import("@tanstack/react-query-devtools/build/modern/production.js").then((d) => ({
+			default: d.ReactQueryDevtools,
+		})),
+	);
+
+	const [showDevtools, setShowDevtools] = useState(false);
+
+	useEffect(() => {
+		// @ts-expect-error dev tools
+		window.toggleDevtools = () => setShowDevtools((old) => !old);
+	}, []);
+
 	return (
 		<RootDocument>
 			<QueryClientProvider client={queryClient}>
 				<Outlet />
+				<ReactQueryDevtools initialIsOpen={false} />
+				{showDevtools && (
+					<Suspense fallback={null}>
+						<ReactQueryDevtoolsProduction />
+					</Suspense>
+				)}
 			</QueryClientProvider>
 		</RootDocument>
 	);
