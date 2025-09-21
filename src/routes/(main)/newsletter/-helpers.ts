@@ -47,8 +47,6 @@ export const fetchNewsletterEmails = createServerFn({
 	method: "GET",
 }).handler<ButtondownAPIEmailsResponse>(async () => {
 	try {
-		console.log({ BUTTONDOWN_API_KEY, BUTTONDOWN_BASE_URL });
-
 		const response = await fetch(`${BUTTONDOWN_BASE_URL}/emails`, {
 			headers: {
 				...(BUTTONDOWN_API_KEY !== "" && {

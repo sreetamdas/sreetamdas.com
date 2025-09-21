@@ -10,8 +10,6 @@ const octokit_headers = {
 };
 
 export const fetchGitHubStats = createServerFn({ method: "GET" }).handler(async () => {
-	console.log("fetchGitHubStats called");
-
 	const request = await fetch(
 		`${GITHUB_API_BASE_URL}/repos/${DEFAULT_REPO.owner}/${DEFAULT_REPO.repo}`,
 		{

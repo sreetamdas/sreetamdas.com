@@ -1,5 +1,3 @@
-"use client";
-
 import * as DrawerPrimitive from "@radix-ui/react-dialog";
 import * as VisuallyHidden from "@radix-ui/react-visually-hidden";
 import {
@@ -23,7 +21,7 @@ const DrawerOverlay = forwardRef<
 >(({ className, ...props }, ref) => (
 	<DrawerPrimitive.Overlay
 		className={cn(
-			"fixed inset-0 z-50 bg-black/80 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
+			"data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 fixed inset-0 z-50 bg-black/80",
 			className,
 		)}
 		{...props}
@@ -41,13 +39,13 @@ const DrawerContent = forwardRef<ElementRef<typeof DrawerPrimitive.Content>, Dra
 			<DrawerPrimitive.Content
 				ref={ref}
 				className={cn(
-					"fixed inset-y-0 left-0 z-50 h-full w-3/4 gap-4 border-r bg-background p-6 shadow-lg transition ease-in-out data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:slide-out-to-left data-[state=open]:slide-in-from-left data-[state=closed]:animate-duration-(--transition-duration) data-[state=open]:animate-duration-(--transition-duration) sm:max-w-sm",
+					"bg-background data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:slide-out-to-left data-[state=open]:slide-in-from-left data-[state=closed]:animate-duration-(--transition-duration) data-[state=open]:animate-duration-(--transition-duration) fixed inset-y-0 left-0 z-50 h-full w-3/4 gap-4 border-r p-6 shadow-lg transition ease-in-out sm:max-w-sm",
 					className,
 				)}
 				{...props}
 			>
 				{children}
-				<DrawerPrimitive.Close className="absolute right-4 top-4 rounded-sm text-2xl opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus-visible:outline-dashed focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-secondary disabled:pointer-events-none data-[state=open]:bg-secondary">
+				<DrawerPrimitive.Close className="ring-offset-background focus-visible:outline-secondary data-[state=open]:bg-secondary absolute top-4 right-4 rounded-sm text-2xl opacity-70 transition-opacity hover:opacity-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-dashed disabled:pointer-events-none">
 					<LuX className="size-6" />
 					<span className="sr-only">Close</span>
 				</DrawerPrimitive.Close>
@@ -77,7 +75,7 @@ const DrawerTitle = forwardRef<
 	<VisuallyHidden.Root asChild>
 		<DrawerPrimitive.Title
 			ref={ref}
-			className={cn("text-lg font-semibold text-foreground", className)}
+			className={cn("text-foreground text-lg font-semibold", className)}
 			{...props}
 		/>
 	</VisuallyHidden.Root>

@@ -1,5 +1,6 @@
 // <reference types="vite/client" />
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { HeadContent, Outlet, Scripts, createRootRoute } from "@tanstack/react-router";
 import { FOOBAR_SOURCE_CODE } from "@/lib/domains/foobar/helpers";
 import type { ReactNode } from "react";
@@ -77,6 +78,7 @@ function RootComponent() {
 		<RootDocument>
 			<QueryClientProvider client={queryClient}>
 				<Outlet />
+				<ReactQueryDevtools initialIsOpen={false} />
 			</QueryClientProvider>
 		</RootDocument>
 	);

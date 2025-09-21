@@ -2,6 +2,7 @@ let cachedEnv: CloudflareEnv | null = null;
 
 // This gets called once at startup when running locally
 async function initDevEnv() {
+	// oxlint-disable-next-line no-console
 	console.log("Initializing Cloudflare bindings for local development...");
 
 	const { getPlatformProxy } = await import("wrangler");

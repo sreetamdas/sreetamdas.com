@@ -1,5 +1,3 @@
-"use client";
-
 import { type ReactElement } from "react";
 import { IconBaseProps } from "react-icons";
 import {
@@ -14,8 +12,6 @@ import {
 	FaTwitter,
 } from "react-icons/fa";
 import { SiPeerlist } from "react-icons/si";
-
-import { LinkTo } from "@/lib/components/Anchor";
 
 type ExternalLinksArrayType = Array<{
 	link: string;
@@ -86,9 +82,9 @@ export const SocialLinks = () => {
 		<ul className="flex flex-wrap place-items-center justify-center gap-4 px-12 py-4 sm:p-4">
 			{external_links.map(({ link, onClick, Icon, title }) => (
 				<li key={title} className="text-2xl">
-					<LinkTo href={link} onClick={onClick}>
+					<a className="link-base" href={link} onClick={onClick}>
 						<Icon title={title} />
-					</LinkTo>
+					</a>
 				</li>
 			))}
 		</ul>

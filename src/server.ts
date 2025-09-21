@@ -5,12 +5,9 @@ export default createStartHandler({
 	createRouter,
 })(defaultStreamHandler);
 
-console.log(">>>> server", import.meta.env.DEV);
-
 if (!process.env.VELITE_STARTED && import.meta.env.DEV) {
 	process.env.VELITE_STARTED = "1";
-  console.log(">>>> building");
-  
+
 	const { build } = await import("velite");
 	await build({
 		watch: import.meta.env.DEV,

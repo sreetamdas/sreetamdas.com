@@ -12,7 +12,7 @@
 		"analyze": "ANALYZE=true next build",
 		"dev": "vite dev",
 		"build": "pnpm run build:content && vite build",
-		"start": "next start",
+		"preview": "vite preview",
 		"export": "next build && next export",
 		"compile": "tsc --watch",
 		"typecheck": "tsc -p tsconfig.json",
@@ -25,7 +25,6 @@
 		"lint": "pnpm run prettier:check && pnpm run eslint:check",
 		"lint:fix": "pnpm run prettier:write && pnpm run eslint:fix",
 		"format": "pnpm run prettier:write .",
-		"preview": "opennextjs-cloudflare && wrangler dev",
 		"deploy": "opennextjs-cloudflare && wrangler deploy"
 	},
 	"dependencies": {
@@ -45,6 +44,7 @@
 		"@supabase/supabase-js": "^2.57.4",
 		"@tailwindcss/vite": "^4.1.13",
 		"@tanstack/react-query": "^5.89.0",
+		"@tanstack/react-query-devtools": "^5.89.0",
 		"@tanstack/react-router": "^1.131.48",
 		"@tanstack/react-start": "^1.131.48",
 		"cloudflare": "^5.1.0",

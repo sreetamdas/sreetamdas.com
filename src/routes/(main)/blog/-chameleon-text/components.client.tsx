@@ -1,5 +1,3 @@
-"use client";
-
 import { random } from "lodash-es";
 import { type PropsWithChildren, useEffect } from "react";
 

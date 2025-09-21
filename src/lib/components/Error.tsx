@@ -1,5 +1,3 @@
-"use client";
-
 import { useShallow } from "zustand/react/shallow";
 
 import { LinkTo } from "@/lib/components/Anchor";
