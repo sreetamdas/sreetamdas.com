@@ -15,7 +15,8 @@ export const Route = createFileRoute("/(main)/rwc/")({
 	component: RWCPage,
 	loader: async () => {
 		const gist = await fetchGist(GITHUB_RWC_GIST_ID);
-		return gist;
+		const karma_highlighter = await getSlimKarmaHighlighter();
+		return { gist, karma_highlighter };
 	},
 	head: () => ({
 		meta: [
@@ -27,13 +28,11 @@ export const Route = createFileRoute("/(main)/rwc/")({
 });
 
 async function RWCPage() {
-	const gist = Route.useLoaderData();
+	const { gist, karma_highlighter } = Route.useLoaderData();
 
 	if (typeof gist.files === "undefined") {
 		return null;
 	}
-
-	const karma_highlighter = await getSlimKarmaHighlighter();
 
 	return (
 		<>
