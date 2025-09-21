@@ -22,19 +22,25 @@ export const Footer = ({ children, className }: HTMLAttributes<HTMLDivElement>) 
 		{children}
 		<GitHubStats />
 		<p>
-			Made with <LinkTo href="https://nextjs.org">Next.js</LinkTo> &bull; View source on{" "}
-			<LinkTo href="https://github.com/sreetamdas/sreetamdas.com">GitHub</LinkTo>{" "}
+			Made with{" "}
+			<a className="link-base" href="https://nextjs.org">
+				Next.js
+			</a>{" "}
+			&bull; View source on{" "}
+			<a className="link-base" href="https://github.com/sreetamdas/sreetamdas.com">
+				GitHub
+			</a>{" "}
 			<span className="hidden md:inline-block">&bull;</span> <br className="md:hidden" />
-			Find me on <LinkTo href="https://twitter.com/_SreetamDas">Twitter</LinkTo>
+			Find me on{" "}
+			<a className="link-base" href="https://twitter.com/_SreetamDas">
+				Twitter
+			</a>
 		</p>
 		<p className="pt-8">I hope you have a very nice day :)</p>
 	</footer>
 );
 
 export const GitHubStats = () => {
-	// const data = await getGitHubStats();
-	// const data = await useServerFn(getGitHubStats)();
-
 	const getGitHubStats = useServerFn(fetchGitHubStats);
 
 	const { data } = useQuery({
@@ -45,22 +51,22 @@ export const GitHubStats = () => {
 
 	return (
 		<div className="grid grid-cols-[max-content_max-content] justify-center gap-4 py-2.5">
-			<LinkTo
+			<a
 				href="https://github.com/sreetamdas/sreetamdas.com/stargazers"
-				className="text-foreground hover:text-primary flex w-max items-center gap-1 transition-[color] hover:no-underline"
+				className="link-base text-foreground hover:text-primary flex w-max items-center gap-1 transition-[color] hover:no-underline"
 			>
 				<span className="leading-4">
 					<FaRegStar title="star" aria-label="star" className="h-[18px] w-[18px] text-current" />
 				</span>
 				<span>{data?.stars ?? "—"}</span>
-			</LinkTo>
-			<LinkTo
+			</a>
+			<a
 				href="https://github.com/sreetamdas/sreetamdas.com/network/members"
-				className="text-foreground hover:text-primary flex w-max items-center gap-1 transition-[color] hover:no-underline"
+				className="link-base text-foreground hover:text-primary flex w-max items-center gap-1 transition-[color] hover:no-underline"
 			>
 				<VscRepoForked title="fork" aria-label="fork" className="h-[18px] w-[18px] text-current" />
 				<span>{data?.forks ?? "—"}</span>
-			</LinkTo>
+			</a>
 		</div>
 	);
 };

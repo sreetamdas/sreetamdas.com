@@ -12,7 +12,7 @@ export default defineConfig({
 		tsConfigPaths({
 			projects: ["./tsconfig.json"],
 		}),
-		tanstackStart({ customViteReactPlugin: true, target: "vercel" }),
+		tanstackStart({ target: "cloudflare-module" }),
 		viteReact(),
 		tailwindcss(),
 	],

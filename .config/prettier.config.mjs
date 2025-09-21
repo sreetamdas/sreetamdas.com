@@ -16,5 +16,11 @@ export default {
 				printWidth: 70,
 			},
 		},
+		{
+			files: ["*.jsonc", "*.json"],
+			options: {
+				trailingComma: "none",
+			},
+		},
 	],
 };

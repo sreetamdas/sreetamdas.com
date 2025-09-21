@@ -26,7 +26,7 @@
 		"overrideConfigFile": "./.config/eslint.config.mjs"
 	},
 	"oxc.configPath": ".config/.oxlintrc.json",
-	"oxc.lint.run": "onSave",
+	"oxc.lint.run": "onType",
 	"prettier.configPath": ".config/prettier.config.mjs",
 	"prettier.ignorePath": ".config/.prettierignore",
 	"[mdx][markdown]": {

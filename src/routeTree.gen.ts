@@ -27,7 +27,6 @@ import { Route as mainNewsletterSlugRouteImport } from './routes/(main)/newslett
 import { Route as mainBlogSlugRouteImport } from './routes/(main)/blog/$slug'
 import { Route as mainfoobarFoobarIndexRouteImport } from './routes/(main)/(foobar)/foobar/index'
 import { Route as mainfoobarFoobarSlugRouteImport } from './routes/(main)/(foobar)/foobar/$slug'
-import { ServerRoute as apiApiPageViewsServerRouteImport } from './routes/(api)/api/page-views'
 import { ServerRoute as apiApiCoffeeServerRouteImport } from './routes/(api)/api/coffee'
 
 const rootServerRouteImport = createServerRootRoute()
@@ -109,11 +108,6 @@ const mainfoobarFoobarSlugRoute = mainfoobarFoobarSlugRouteImport.update({
   id: '/(foobar)/foobar/$slug',
   path: '/foobar/$slug',
   getParentRoute: () => mainRouteRoute,
-} as any)
-const apiApiPageViewsServerRoute = apiApiPageViewsServerRouteImport.update({
-  id: '/(api)/api/page-views',
-  path: '/api/page-views',
-  getParentRoute: () => rootServerRouteImport,
 } as any)
 const apiApiCoffeeServerRoute = apiApiCoffeeServerRouteImport.update({
   id: '/(api)/api/coffee',
@@ -231,28 +225,24 @@ export interface RootRouteChildren {
 }
 export interface FileServerRoutesByFullPath {
   '/api/coffee': typeof apiApiCoffeeServerRoute
-  '/api/page-views': typeof apiApiPageViewsServerRoute
 }
 export interface FileServerRoutesByTo {
   '/api/coffee': typeof apiApiCoffeeServerRoute
-  '/api/page-views': typeof apiApiPageViewsServerRoute
 }
 export interface FileServerRoutesById {
   __root__: typeof rootServerRouteImport
   '/(api)/api/coffee': typeof apiApiCoffeeServerRoute
-  '/(api)/api/page-views': typeof apiApiPageViewsServerRoute
 }
 export interface FileServerRouteTypes {
   fileServerRoutesByFullPath: FileServerRoutesByFullPath
-  fullPaths: '/api/coffee' | '/api/page-views'
+  fullPaths: '/api/coffee'
   fileServerRoutesByTo: FileServerRoutesByTo
-  to: '/api/coffee' | '/api/page-views'
-  id: '__root__' | '/(api)/api/coffee' | '/(api)/api/page-views'
+  to: '/api/coffee'
+  id: '__root__' | '/(api)/api/coffee'
   fileServerRoutesById: FileServerRoutesById
 }
 export interface RootServerRouteChildren {
   apiApiCoffeeServerRoute: typeof apiApiCoffeeServerRoute
-  apiApiPageViewsServerRoute: typeof apiApiPageViewsServerRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -373,13 +363,6 @@ declare module '@tanstack/react-router' {
 }
 declare module '@tanstack/react-start/server' {
   interface ServerFileRoutesByPath {
-    '/(api)/api/page-views': {
-      id: '/(api)/api/page-views'
-      path: '/api/page-views'
-      fullPath: '/api/page-views'
-      preLoaderRoute: typeof apiApiPageViewsServerRouteImport
-      parentRoute: typeof rootServerRouteImport
-    }
     '/(api)/api/coffee': {
       id: '/(api)/api/coffee'
       path: '/api/coffee'
@@ -447,7 +430,6 @@ export const routeTree = rootRouteImport
   ._addFileTypes<FileRouteTypes>()
 const rootServerRouteChildren: RootServerRouteChildren = {
   apiApiCoffeeServerRoute: apiApiCoffeeServerRoute,
-  apiApiPageViewsServerRoute: apiApiPageViewsServerRoute,
 }
 export const serverRouteTree = rootServerRouteImport
   ._addFileChildren(rootServerRouteChildren)

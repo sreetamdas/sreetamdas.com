@@ -1,4 +1,3 @@
-"use client";
 import "shiki-magic-move/dist/style.css";
 
 import { useEffect, useId, useState } from "react";
@@ -37,7 +36,7 @@ export const ParseInput = ({ conjunctionInputsStage: conjInputsStage }: Props) =
 		<figure className="my-10">
 			<div className="flex justify-between gap-2">
 				<button
-					className="group flex items-center gap-x-1 rounded-global bg-primary/20 px-2 py-1 text-xs text-foreground transition-[color,background-color] enabled:hover:bg-primary/25 disabled:cursor-not-allowed disabled:bg-primary/10 sm:px-4"
+					className="group rounded-global bg-primary/20 text-foreground enabled:hover:bg-primary/25 disabled:bg-primary/10 flex items-center gap-x-1 px-2 py-1 text-xs transition-[color,background-color] disabled:cursor-not-allowed sm:px-4"
 					onClick={moveBackward}
 					disabled={current_stage_index === index_bounds[0]}
 					aria-disabled={current_stage_index === index_bounds[0]}
@@ -48,7 +47,7 @@ export const ParseInput = ({ conjunctionInputsStage: conjInputsStage }: Props) =
 					</span>
 					<FaLongArrowAltLeft
 						aria-label="Previous step"
-						className="text-primary/50 transition-[color] group-hover:text-primary"
+						className="text-primary/50 group-hover:text-primary transition-[color]"
 					/>
 					<span className="sr-only sm:not-sr-only">Previous</span>
 				</button>
@@ -56,7 +55,7 @@ export const ParseInput = ({ conjunctionInputsStage: conjInputsStage }: Props) =
 					{stages[current_stage_index].label}
 				</figcaption>
 				<button
-					className="group flex items-center gap-x-1 rounded-global bg-primary/20 px-2 py-1 text-xs text-foreground transition-[color,background-color] enabled:hover:bg-primary/25 disabled:cursor-not-allowed disabled:bg-primary/10 sm:px-4"
+					className="group rounded-global bg-primary/20 text-foreground enabled:hover:bg-primary/25 disabled:bg-primary/10 flex items-center gap-x-1 px-2 py-1 text-xs transition-[color,background-color] disabled:cursor-not-allowed sm:px-4"
 					onClick={moveForward}
 					disabled={current_stage_index === index_bounds[1]}
 					aria-disabled={current_stage_index === index_bounds[1]}
@@ -68,17 +67,17 @@ export const ParseInput = ({ conjunctionInputsStage: conjInputsStage }: Props) =
 					<span className="sr-only sm:not-sr-only">Next</span>
 					<FaLongArrowAltRight
 						aria-label="Next step"
-						className="text-primary/50 transition-[color] group-hover:text-primary"
+						className="text-primary/50 group-hover:text-primary transition-[color]"
 					/>
 				</button>
 			</div>
 			<div className="my-2 flex flex-col">
-				<div className="-mx-4 grid grid-flow-col overflow-x-scroll rounded-tl-global rounded-tr-global bg-karma-background pl-2 pr-2 sm:-ml-12 sm:-mr-5 sm:pl-12 sm:pr-5">
-					<span className="justify-self-start rounded-t-global py-1 font-mono text-zinc-400 max-sm:text-xs">
+				<div className="rounded-tl-global rounded-tr-global bg-karma-background -mx-4 grid grid-flow-col overflow-x-scroll pr-2 pl-2 sm:-mr-5 sm:-ml-12 sm:pr-5 sm:pl-12">
+					<span className="rounded-t-global justify-self-start py-1 font-mono text-zinc-400 max-sm:text-xs">
 						parse_input.ex
 					</span>
 
-					<span className="justify-self-end rounded-t-global py-1 font-mono text-zinc-400 max-sm:text-xs">
+					<span className="rounded-t-global justify-self-end py-1 font-mono text-zinc-400 max-sm:text-xs">
 						elixir
 					</span>
 				</div>
@@ -89,7 +88,7 @@ export const ParseInput = ({ conjunctionInputsStage: conjInputsStage }: Props) =
 						highlighter={highlighter}
 						code={stages[current_stage_index].code.trim()}
 						options={{ duration: 500, stagger: 0.3, lineNumbers: true }}
-						className="-mx-4 overflow-x-scroll rounded-bl-global rounded-br-global p-5 text-xs max-sm:px-2 sm:-ml-12 sm:-mr-5 sm:text-sm [&>.shiki-magic-move-line-number]:mr-2 [&>.shiki-magic-move-line-number]:w-6 [&>.shiki-magic-move-line-number]:whitespace-nowrap [&>.shiki-magic-move-line-number]:pr-2 [&>.shiki-magic-move-line-number]:text-right max-sm:[&>.shiki-magic-move-line-number]:hidden"
+						className="rounded-bl-global rounded-br-global -mx-4 overflow-x-scroll p-5 text-xs max-sm:px-2 sm:-mr-5 sm:-ml-12 sm:text-sm [&>.shiki-magic-move-line-number]:mr-2 [&>.shiki-magic-move-line-number]:w-6 [&>.shiki-magic-move-line-number]:pr-2 [&>.shiki-magic-move-line-number]:text-right [&>.shiki-magic-move-line-number]:whitespace-nowrap max-sm:[&>.shiki-magic-move-line-number]:hidden"
 					/>
 				)}
 			</div>

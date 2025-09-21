@@ -68,8 +68,6 @@ export const Route = createFileRoute("/(main)/newsletter/$slug")({
 function NewsletterEmailDetailPage() {
 	const { newsletter_email_data } = Route.useLoaderData();
 
-	console.log({ newsletter_email_data });
-
 	return <NewsletterEmailDetail email={newsletter_email_data} />;
 }
 

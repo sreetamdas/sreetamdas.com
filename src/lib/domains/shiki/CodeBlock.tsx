@@ -1,5 +1,3 @@
-"use client";
-
 import { isObject } from "lodash-es";
 import {
 	Children,
@@ -53,11 +51,11 @@ export const CodeBlock = (props: CodeBlockProps) => {
 	return (
 		<figure className="my-5 flex flex-col">
 			<div
-				className="-mx-4 grid grid-flow-col overflow-x-scroll rounded-tl-global rounded-tr-global pl-2 pr-2 sm:-ml-12 sm:-mr-5 sm:pl-12 sm:pr-5"
+				className="rounded-tl-global rounded-tr-global -mx-4 grid grid-flow-col overflow-x-scroll pr-2 pl-2 sm:-mr-5 sm:-ml-12 sm:pr-5 sm:pl-12"
 				style={style}
 			>
 				{filename !== null ? (
-					<span className="justify-self-start rounded-t-global py-1 font-mono text-zinc-400 max-sm:text-xs">
+					<span className="rounded-t-global justify-self-start py-1 font-mono text-zinc-400 max-sm:text-xs">
 						{filename}
 					</span>
 				) : null}
@@ -65,14 +63,14 @@ export const CodeBlock = (props: CodeBlockProps) => {
 					<span className="grid grid-flow-col items-center gap-8 justify-self-end">
 						{allow_block_expand ? (
 							<button
-								className="h-fit justify-self-end rounded-global bg-zinc-700 px-1 font-mono text-xs text-background transition-colors hover:bg-zinc-600 sm:text-sm"
+								className="rounded-global text-background h-fit justify-self-end bg-zinc-700 px-1 font-mono text-xs transition-colors hover:bg-zinc-600 sm:text-sm"
 								onClick={toggleExpand}
 							>
 								toggle expand
 							</button>
 						) : null}
 						{code_lang !== "plain" ? (
-							<span className="justify-self-end rounded-t-global py-1 font-mono text-zinc-400 max-sm:text-xs">
+							<span className="rounded-t-global justify-self-end py-1 font-mono text-zinc-400 max-sm:text-xs">
 								{code_lang}
 							</span>
 						) : null}
@@ -81,7 +79,7 @@ export const CodeBlock = (props: CodeBlockProps) => {
 			</div>
 			<pre
 				className={cn(
-					"-mx-4 overflow-x-scroll p-5 text-xs max-sm:px-2 sm:-ml-12 sm:-mr-5 sm:text-sm max-sm:[&>code>.block>.line]:whitespace-pre-wrap",
+					"-mx-4 overflow-x-scroll p-5 text-xs max-sm:px-2 sm:-mr-5 sm:-ml-12 sm:text-sm max-sm:[&>code>.block>.line]:whitespace-pre-wrap",
 					filename === null && code_lang === "plain" && "rounded-global",
 					is_block_expanded
 						? "rounded-bl-global rounded-br-global"
@@ -96,7 +94,7 @@ export const CodeBlock = (props: CodeBlockProps) => {
 				</code>
 			</pre>
 			{allow_block_expand && !is_block_expanded ? (
-				<div className="rounded-bl-global rounded-br-global sm:-ml-12 sm:-mr-5" style={style}>
+				<div className="rounded-bl-global rounded-br-global sm:-mr-5 sm:-ml-12" style={style}>
 					<button
 						className="flex w-full justify-center px-5 py-2 text-xs text-zinc-400 transition-[color] hover:text-zinc-200 max-sm:px-2"
 						onClick={toggleExpand}
@@ -139,7 +137,7 @@ const CodeBlockChildren = ({ children, hide_line_numbers }: CodeBlockChildrenPro
 						{hide_line_numbers ? null : (
 							<span
 								className={cn(
-									"inline-block w-0 select-none text-right text-zinc-600 max-sm:opacity-0 sm:-ml-2 sm:mr-2 sm:w-8 sm:pr-2",
+									"inline-block w-0 text-right text-zinc-600 select-none max-sm:opacity-0 sm:mr-2 sm:-ml-2 sm:w-8 sm:pr-2",
 									should_line_highlight && "text-[#a86efd]",
 								)}
 								aria-hidden="true"

@@ -1,9 +1,6 @@
-"use client";
-
 import * as SwitchPrimitive from "@radix-ui/react-switch";
 import { useState } from "react";
 
-import { LinkTo } from "@/lib/components/Anchor";
 import { Image } from "@/lib/components/Image";
 
 export const KARMA_COLOR_PALETTE = [
@@ -42,8 +39,6 @@ export const KarmaShowcase = ({ examples }: Props) => {
 		setIsDefaultTheme(checked);
 	}
 
-	console.log({ examples });
-
 	return (
 		<>
 			<div className="flex flex-wrap items-center justify-center gap-4 pt-12 sm:justify-between">
@@ -59,18 +54,25 @@ export const KarmaShowcase = ({ examples }: Props) => {
 				))}
 			</div>
 			<div className="flex justify-center gap-20 py-10">
-				<LinkTo href="https://marketplace.visualstudio.com/items?itemName=SreetamD.karma">
+				<a
+					className="link-base"
+					href="https://marketplace.visualstudio.com/items?itemName=SreetamD.karma"
+				>
 					Install from VS Code marketplace
-				</LinkTo>
+				</a>
 
-				<LinkTo href="https://github.com/sreetamdas/karma">View source</LinkTo>
+				<a className="link-base" href="https://github.com/sreetamdas/karma">
+					View source
+				</a>
 			</div>
 			<div className="flex gap-8 pb-12">
 				<p className="sm:shrink-0">Check out examples:</p>
 				<ul className="flex flex-wrap gap-x-8 gap-y-2">
 					{examples.map(({ name }) => (
 						<li key={name.toLowerCase()} className="inline list-none">
-							<LinkTo href={`#${name.toLowerCase()}`}>{name}</LinkTo>
+							<a className="link-base" href={`#${name.toLowerCase()}`}>
+								{name}
+							</a>
 						</li>
 					))}
 				</ul>

@@ -1,5 +1,3 @@
-"use client";
-
 import { useEffect } from "react";
 
 export default function PureRouteGroupError({ error, reset }: { error: Error; reset: () => void }) {
@@ -15,7 +13,7 @@ export default function PureRouteGroupError({ error, reset }: { error: Error; re
 				You&apos;re in the <code>/foobar</code> route
 			</p>
 			<button
-				className="link-base text-2xl text-foreground hover:text-primary"
+				className="link-base text-foreground hover:text-primary text-2xl"
 				onClick={() => reset()}
 				type="button"
 			>

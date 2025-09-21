@@ -1,5 +1,3 @@
-"use client";
-
 import { random } from "lodash-es";
 import {
 	type HTMLAttributes,
@@ -48,7 +46,7 @@ export const ChameleonHighlight = ({
 	return (
 		<span
 			className={cn(
-				"font-serif font-bold leading-none tracking-tighter transition-colors duration-3000 ease-linear text-(--color-fancy-pants,var(--color-primary)) text-[clamp(4rem,10vw,8rem)]",
+				"font-serif text-[clamp(4rem,10vw,8rem)] leading-none font-bold tracking-tighter text-(--color-fancy-pants,var(--color-primary)) transition-colors duration-3000 ease-linear",
 				passedClasses,
 			)}
 		>

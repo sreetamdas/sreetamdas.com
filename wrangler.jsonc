@@ -1,36 +1,32 @@
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
 	"name": "sreetamdas-com",
-	"main": "./.output/server/index.mjs",
+	"main": ".output/server/index.mjs",
 	"compatibility_date": "2025-09-19",
 	"compatibility_flags": ["nodejs_compat"],
 	"assets": {
-		"not_found_handling": "single-page-application",
-		"binding": "ASSETS",
-		"directory": "./.output/public",
+		"directory": ".output/public"
 	},
-
 	"observability": {
-		"enabled": true,
+		"enabled": true
 	},
 	"placement": {
-		"mode": "smart",
+		"mode": "smart"
 	},
-
 	"d1_databases": [
 		{
 			"database_name": "sreetamdas_com",
 			"database_id": "94e03c24-095b-47e2-bdba-a53027348100",
 			"binding": "D1",
 			"preview_database_id": "sreetamdas_com_preview_default",
-			"migrations_dir": "drizzle/migrations",
-		},
+			"migrations_dir": "drizzle/migrations"
+		}
 	],
 	"kv_namespaces": [
 		{
 			"binding": "KV",
 			"id": "2bc6cd0487714be58807514bc7c2003b",
-			"preview_id": "sreetamdas_com_kv_preview_default",
-		},
-	],
+			"preview_id": "sreetamdas_com_kv_preview_default"
+		}
+	]
 }
