@@ -1,8 +1,4 @@
-import { type Metadata } from "next";
-
-import { SITE_OG_IMAGE, SITE_TITLE_APPEND, SITE_URL } from "@/config";
 import { rootPages } from "@/generated";
-import { LinkTo } from "@/lib/components/Anchor";
 import { MDXContent } from "@/lib/components/MDX";
 import { ViewsCounter } from "@/lib/components/ViewsCounter";
 import { fetchRepoContributors } from "@/lib/domains/GitHub";

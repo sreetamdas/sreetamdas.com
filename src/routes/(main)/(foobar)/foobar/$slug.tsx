@@ -1,19 +1,15 @@
 import { FoobarSchrodinger } from "@/lib/domains/foobar/Dashboard.client";
 import { type FoobaFlagPageSlug, FOOBAR_FLAGS } from "@/lib/domains/foobar/flags";
 import { createFileRoute, notFound } from "@tanstack/react-router";
+import z from "zod";
 
-// export const dynamicParams = false;
-
-// export function generateStaticParams() {
-// 	const all_foobar_pages_slugs = getAllFoobarPagesSlugs();
-// 	const paths = all_foobar_pages_slugs.map((slug) => ({ slug }));
-
-// 	return paths;
-// }
+const foobar_routes_schema = z.object({
+	slug: z.enum(getAllFoobarPagesSlugs()),
+});
 
 export const Route = createFileRoute("/(main)/(foobar)/foobar/$slug")({
 	component: FoobarCompletedPage,
-	loader: ({ params: { slug } }) => {
+	loader: ({ params: { slug } }: { params: { slug: Exclude<FoobaFlagPageSlug, "/"> } }) => {
 		const all_foobar_pages_slugs = getAllFoobarPagesSlugs();
 		if (!all_foobar_pages_slugs.includes(slug)) {
 			notFound();
@@ -21,13 +17,15 @@ export const Route = createFileRoute("/(main)/(foobar)/foobar/$slug")({
 
 		return { slug };
 	},
+	params: {
+		parse: (params) => {
+			return foobar_routes_schema.parse(params);
+		},
+	},
 });
 
-type PageParams = {
-	params: Promise<{ slug: Exclude<FoobaFlagPageSlug, "/"> }>;
-};
 function FoobarCompletedPage() {
-	const { slug } = Route.useLoaderData();
+	const { slug } = Route.useLoaderData() as { slug: Exclude<FoobaFlagPageSlug, "/"> };
 
 	return <FoobarSchrodinger completed_page={slug} />;
 }

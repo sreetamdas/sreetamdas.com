@@ -7,18 +7,24 @@ import { NewsletterEmailsPreviews } from "./-components";
 import { fetchNewsletterEmails } from "./-helpers";
 import { createFileRoute } from "@tanstack/react-router";
 
-export const metadata = {
-	title: `Newsletter ${SITE_TITLE_APPEND}`,
-	description:
-		"Curated links keeping up with the JavaScript, React and webdev world. And mechanical keyboards!",
-};
-
 export const Route = createFileRoute("/(main)/newsletter/")({
 	component: NewsletterEmailsPage,
 	loader: async () => {
 		const newsletter_emails_previews_data = await getNewsletterEmailsPreviewsData();
 		return { newsletter_emails_previews_data };
 	},
+	head: () => ({
+		meta: [
+			{
+				title: `Newsletter ${SITE_TITLE_APPEND}`,
+			},
+			{
+				name: "description",
+				content:
+					"Curated links keeping up with the JavaScript, React and webdev world. And mechanical keyboards!",
+			},
+		],
+	}),
 });
 
 function NewsletterEmailsPage() {

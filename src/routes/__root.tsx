@@ -3,12 +3,13 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { HeadContent, Outlet, Scripts, createRootRoute } from "@tanstack/react-router";
 import { FOOBAR_SOURCE_CODE } from "@/lib/domains/foobar/helpers";
-import { lazy, Suspense, useEffect, useState, type ReactNode } from "react";
+import { type ReactNode } from "react";
 import "@fontsource-variable/bricolage-grotesque/index.css";
 import bricolageGrotesqueFont from "@fontsource-variable/bricolage-grotesque/files/bricolage-grotesque-latin-wght-normal.woff2?url";
 import "@fontsource-variable/inter/index.css";
 import interFont from "@fontsource-variable/inter/files/inter-latin-ext-wght-normal.woff2?url";
 import appCss from "./global.css?url";
+import { SITE_DESCRIPTION, SITE_OG_IMAGE, SITE_TITLE_APPEND, SITE_URL } from "@/config";
 
 export const Route = createRootRoute({
 	component: RootComponent,
@@ -23,6 +24,88 @@ export const Route = createRootRoute({
 			},
 			{
 				title: "TanStack Start Starter",
+			},
+			{
+				name: "description",
+				content: SITE_DESCRIPTION,
+			},
+			{
+				property: "og:title",
+				content: `👋 Hello hello! ${SITE_TITLE_APPEND}`,
+			},
+			{
+				property: "og:description",
+				content: SITE_DESCRIPTION,
+			},
+			{
+				property: "og:url",
+				content: SITE_URL,
+			},
+			{
+				property: "og:image:type",
+				content: "image/png",
+			},
+			{
+				property: "og:image:width",
+				content: "1200",
+			},
+			{
+				property: "og:image:height",
+				content: "600",
+			},
+			{
+				property: "og:image",
+				content: `${SITE_URL}${SITE_OG_IMAGE}`,
+			},
+			{
+				property: "og:type",
+				content: "website",
+			},
+			{
+				property: "twitter:card",
+				content: "summary_large_image",
+			},
+			{
+				property: "twitter:site",
+				content: "@_SreetamDas",
+			},
+			{
+				property: "twitter:created",
+				content: "@_SreetamDas",
+			},
+			{
+				property: "twitter:title",
+				content: `👋 Hello hello! ${SITE_TITLE_APPEND}`,
+			},
+			{
+				property: "twitter:description",
+				content: SITE_DESCRIPTION,
+			},
+			{
+				property: "twitter:image:type",
+				content: "image/png",
+			},
+			{
+				property: "twitter:image:width",
+				content: "1200",
+			},
+			{
+				property: "twitter:image:height",
+				content: "600",
+			},
+			{
+				property: "twitter:image",
+				content: `${SITE_URL}${SITE_OG_IMAGE}`,
+			},
+			{
+				name: "theme-color",
+				media: "(prefers-color-scheme: light)",
+				content: "#5B34DA",
+			},
+			{
+				name: "theme-color",
+				media: "(prefers-color-scheme: dark)",
+				content: "#9D86E9",
 			},
 		],
 		links: [
@@ -44,6 +127,10 @@ export const Route = createRootRoute({
 			{
 				rel: "icon",
 				href: "/favicon.png",
+			},
+			{
+				rel: "canonical",
+				href: SITE_URL,
 			},
 		],
 		scripts: [
@@ -75,29 +162,11 @@ export const Route = createRootRoute({
 function RootComponent() {
 	const queryClient = new QueryClient();
 
-	const ReactQueryDevtoolsProduction = lazy(() =>
-		import("@tanstack/react-query-devtools/build/modern/production.js").then((d) => ({
-			default: d.ReactQueryDevtools,
-		})),
-	);
-
-	const [showDevtools, setShowDevtools] = useState(false);
-
-	useEffect(() => {
-		// @ts-expect-error dev tools
-		window.toggleDevtools = () => setShowDevtools((old) => !old);
-	}, []);
-
 	return (
 		<RootDocument>
 			<QueryClientProvider client={queryClient}>
 				<Outlet />
 				<ReactQueryDevtools initialIsOpen={false} />
-				{showDevtools && (
-					<Suspense fallback={null}>
-						<ReactQueryDevtoolsProduction />
-					</Suspense>
-				)}
 			</QueryClientProvider>
 		</RootDocument>
 	);

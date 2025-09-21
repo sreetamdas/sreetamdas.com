@@ -6,26 +6,46 @@ import { imageSizeFromFile } from "image-size/fromFile";
 import path from "node:path";
 import { createServerFn } from "@tanstack/react-start";
 
-export const metadata = {
-	title: `Karma ${SITE_TITLE_APPEND}`,
-	description: "A colorful VS Code theme by Sreetam Das",
-	openGraph: {
-		title: `Karma ${SITE_TITLE_APPEND}`,
-		description: "A colorful VS Code theme by Sreetam Das",
-		images: { url: `${SITE_URL}/karma/karma-card.jpg` },
-	},
-	twitter: {
-		title: `Karma ${SITE_TITLE_APPEND}`,
-		description: "A colorful VS Code theme by Sreetam Das",
-		images: { url: `${SITE_URL}/karma/karma-card.jpg` },
-	},
-};
-
 export const Route = createFileRoute("/(main)/karma")({
 	component: KarmaPage,
 	loader: async () => {
 		return await getShowcaseImages();
 	},
+	head: () => ({
+		meta: [
+			{
+				title: `Karma ${SITE_TITLE_APPEND}`,
+			},
+			{
+				name: "description",
+				content: "A colorful VS Code theme by Sreetam Das",
+			},
+			{
+				property: "og:title",
+				content: `Karma ${SITE_TITLE_APPEND}`,
+			},
+			{
+				property: "og:description",
+				content: "A colorful VS Code theme by Sreetam Das",
+			},
+			{
+				property: "og:image",
+				content: `${SITE_URL}/karma/karma-card.jpg`,
+			},
+			{
+				name: "twitter:title",
+				content: `Karma ${SITE_TITLE_APPEND}`,
+			},
+			{
+				name: "twitter:description",
+				content: "A colorful VS Code theme by Sreetam Das",
+			},
+			{
+				name: "twitter:image",
+				content: `${SITE_URL}/karma/karma-card.jpg`,
+			},
+		],
+	}),
 });
 
 function KarmaPage() {

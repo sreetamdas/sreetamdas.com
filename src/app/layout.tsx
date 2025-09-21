@@ -3,7 +3,6 @@ import "./global.css";
 import PlausibleProvider from "next-plausible";
 import { type ReactNode } from "react";
 
-import { SITE_DESCRIPTION, SITE_TITLE_APPEND, SITE_URL } from "@/config";
 import { bricolage_grotesque_font, inter_font, iosevka_font } from "@/lib/domains/fonts";
 import { FOOBAR_SOURCE_CODE } from "@/lib/domains/foobar/helpers";
 
@@ -42,39 +41,6 @@ export default function RootLayout({ children }: { children: ReactNode }) {
 		</html>
 	);
 }
-
-export const metadata = {
-	metadataBase: new URL(SITE_URL),
-	title: `Hello hello! ${SITE_TITLE_APPEND}`,
-	description: SITE_DESCRIPTION,
-	openGraph: {
-		title: `👋 Hello! ${SITE_TITLE_APPEND}`,
-		description: SITE_DESCRIPTION,
-		url: SITE_URL,
-		type: "website",
-	},
-	twitter: {
-		title: `👋 Hello! ${SITE_TITLE_APPEND}`,
-		description: SITE_DESCRIPTION,
-		card: "summary_large_image",
-		creator: "@_SreetamDas",
-		site: "@_SreetamDas",
-	},
-	appleWebApp: {
-		title: "Sreetam Das' website",
-		statusBarStyle: "default",
-		capable: true,
-	},
-	icons: {
-		icon: "/favicon.png",
-	},
-	other: {
-		"mobile-web-app-capable": "yes",
-	},
-	alternates: {
-		canonical: "./",
-	},
-};
 
 export const viewport = {
 	themeColor: [

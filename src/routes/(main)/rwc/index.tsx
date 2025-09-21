@@ -9,9 +9,6 @@ import { getSlimKarmaHighlighter } from "@/lib/domains/shiki";
 import module_css from "./CodeSnippet.module.css";
 import { createFileRoute } from "@tanstack/react-router";
 
-export const metadata = {
-	title: `RWC ${SITE_TITLE_APPEND}`,
-};
 const GITHUB_RWC_GIST_ID = process.env.GITHUB_RWC_GIST_ID as string;
 
 export const Route = createFileRoute("/(main)/rwc/")({
@@ -20,6 +17,13 @@ export const Route = createFileRoute("/(main)/rwc/")({
 		const gist = await fetchGist(GITHUB_RWC_GIST_ID);
 		return gist;
 	},
+	head: () => ({
+		meta: [
+			{
+				title: `RWC ${SITE_TITLE_APPEND}`,
+			},
+		],
+	}),
 });
 
 async function RWCPage() {

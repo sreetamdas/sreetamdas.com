@@ -2,12 +2,15 @@ import { SITE_TITLE_APPEND } from "@/config";
 import { ViewsCounter } from "@/lib/components/ViewsCounter";
 import { createFileRoute } from "@tanstack/react-router";
 
-export const metadata = {
-	title: `Resume ${SITE_TITLE_APPEND}`,
-};
-
 export const Route = createFileRoute("/(pure)/resume")({
 	component: ResumePage,
+	head: () => ({
+		meta: [
+			{
+				title: `Resume ${SITE_TITLE_APPEND}`,
+			},
+		],
+	}),
 });
 
 function ResumePage() {

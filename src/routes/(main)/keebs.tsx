@@ -10,16 +10,23 @@ import { createFileRoute } from "@tanstack/react-router";
 
 const KEEBS_DATABASE_ID = process.env.NOTION_KEEBS_PAGE_ID;
 
-export const metadata = {
-	title: `Keebs ${SITE_TITLE_APPEND}`,
-};
-
 export const Route = createFileRoute("/(main)/keebs")({
 	component: KeebsPage,
 	loader: async () => {
 		const keebs = await getKeebsFromNotion();
 		return keebs;
 	},
+	head: () => ({
+		meta: [
+			{
+				title: `Keebs ${SITE_TITLE_APPEND}`,
+			},
+			{
+				name: "description",
+				content: "A collection of my mechanical keyboards",
+			},
+		],
+	}),
 });
 
 export type KeebDetailsFromNotion = Omit<KeebDetails, "image"> & {

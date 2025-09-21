@@ -7,10 +7,6 @@ import { FoobarEntry } from "@/lib/domains/foobar/Entry.client";
 
 import { createFileRoute, notFound } from "@tanstack/react-router";
 
-export const metadata = {
-	title: `About ${SITE_TITLE_APPEND}`,
-};
-
 export const Route = createFileRoute("/(main)/about")({
 	component: AboutPage,
 	loader: () => {
@@ -20,6 +16,13 @@ export const Route = createFileRoute("/(main)/about")({
 		}
 		return post;
 	},
+	head: () => ({
+		meta: [
+			{
+				title: `About ${SITE_TITLE_APPEND}`,
+			},
+		],
+	}),
 });
 
 function AboutPage() {

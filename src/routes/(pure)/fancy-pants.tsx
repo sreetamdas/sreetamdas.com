@@ -4,13 +4,19 @@ import { SITE_TITLE_APPEND } from "@/config";
 import { ChameleonHighlight } from "@/lib/components/Typography.client";
 import { createFileRoute } from "@tanstack/react-router";
 
-export const metadata = {
-	title: `Fancy Pants ${SITE_TITLE_APPEND}`,
-	description: "Sreetam Das' fancy-shmancy landing page",
-};
-
 export const Route = createFileRoute("/(pure)/fancy-pants")({
 	component: FancyPantsPage,
+	head: () => ({
+		meta: [
+			{
+				title: `Fancy Pants ${SITE_TITLE_APPEND}`,
+			},
+			{
+				name: "description",
+				content: "Sreetam Das' fancy-shmancy landing page",
+			},
+		],
+	}),
 });
 
 function FancyPantsPage() {
