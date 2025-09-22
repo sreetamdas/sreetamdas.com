@@ -46,10 +46,10 @@ const getHighlightedCode = createServerFn({ type: "static" }).handler(async () =
 
 export const Route = createFileRoute("/(main)/rwc")({
 	component: RWCPage,
-	loader: async () => {
+	loader: () => {
 		console.log("running loader");
 
-		return await getHighlightedCode();
+		return getHighlightedCode();
 	},
 	head: () => ({
 		meta: [
@@ -82,14 +82,11 @@ function RWCPage() {
 								{lang}
 							</span>
 						</div>
-						<pre
-							// className={module_css["code-snippet"]}
-							style={{ backgroundColor }}
-							dangerouslySetInnerHTML={{ __html: html }}
-						/>
+						<pre style={{ backgroundColor }} dangerouslySetInnerHTML={{ __html: html }} />
 					</article>
 				))}
 			</section>
+
 			<ViewsCounter />
 		</>
 	);

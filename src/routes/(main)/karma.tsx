@@ -8,8 +8,8 @@ import { createServerFn } from "@tanstack/react-start";
 
 export const Route = createFileRoute("/(main)/karma")({
 	component: KarmaPage,
-	loader: async () => {
-		return await getShowcaseImages();
+	loader: () => {
+		return getShowcaseImages();
 	},
 	head: () => ({
 		meta: [

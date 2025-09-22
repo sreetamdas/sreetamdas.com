@@ -14,7 +14,7 @@ export const Route = createFileRoute("/(main)/keebs")({
 	component: KeebsPage,
 	loader: async () => {
 		const keebs = await getKeebsFromNotion();
-		return keebs;
+		return { keebs };
 	},
 	head: () => ({
 		meta: [
@@ -34,7 +34,7 @@ export type KeebDetailsFromNotion = Omit<KeebDetails, "image"> & {
 };
 
 async function KeebsPage() {
-	const keebs = Route.useLoaderData();
+	const { keebs } = Route.useLoaderData();
 
 	return (
 		<>
