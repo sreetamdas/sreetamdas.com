@@ -5,41 +5,46 @@ import { fetchGist } from "@/lib/domains/GitHub";
 import { getSlimKarmaHighlighter } from "@/lib/domains/shiki";
 
 import { createFileRoute, notFound } from "@tanstack/react-router";
+import { createServerFn } from "@tanstack/react-start";
 
 const GITHUB_RWC_GIST_ID = process.env.GITHUB_RWC_GIST_ID as string;
+
+const getHighlightedCode = createServerFn({ type: "static" }).handler(async () => {
+	const gist = await fetchGist(GITHUB_RWC_GIST_ID);
+
+	if (typeof gist.files === "undefined" || Object.keys(gist.files).length === 0) {
+		throw notFound();
+	}
+
+	const files = Object.values(gist.files);
+	if (files.length === 0) {
+		notFound();
+	}
+
+	const karma_highlighter = await getSlimKarmaHighlighter();
+	const backgroundColor = karma_highlighter.getTheme("karma").bg;
+
+	const all_solutions = files.flatMap((file) => {
+		const code = file?.content;
+		const slug = file?.filename?.replaceAll(/[\s.]/g, "_").toLowerCase()!;
+		const filename = file?.filename;
+		const lang = file?.language?.toLowerCase() ?? "js";
+		if (code == null) {
+			return [];
+		}
+		const html = karma_highlighter.codeToHtml(code, { theme: "karma", lang });
+		const cleaned_html = html.replace(/(^<pre [^>]*>)/, "").replace(/(<\/pre>$)/, "");
+
+		return [{ html: cleaned_html, slug, filename, lang }];
+	});
+
+	return { all_solutions, backgroundColor };
+});
 
 export const Route = createFileRoute("/(main)/rwc")({
 	component: RWCPage,
 	loader: async () => {
-		const gist = await fetchGist(GITHUB_RWC_GIST_ID);
-
-		if (typeof gist.files === "undefined" || Object.keys(gist.files).length === 0) {
-			throw notFound();
-		}
-
-		const files = Object.values(gist.files);
-		if (files.length === 0) {
-			notFound();
-		}
-
-		const karma_highlighter = await getSlimKarmaHighlighter();
-		const backgroundColor = karma_highlighter.getTheme("karma").bg;
-
-		const all_solutions = files.flatMap((file) => {
-			const code = file?.content;
-			const slug = file?.filename?.replaceAll(/[\s.]/g, "_").toLowerCase()!;
-			const filename = file?.filename;
-			const lang = file?.language?.toLowerCase() ?? "js";
-			if (code == null) {
-				return [];
-			}
-			const html = karma_highlighter.codeToHtml(code, { theme: "karma", lang });
-			const cleaned_html = html.replace(/(^<pre [^>]*>)/, "").replace(/(<\/pre>$)/, "");
-
-			return [{ html: cleaned_html, slug, filename, lang }];
-		});
-
-		return { all_solutions, backgroundColor };
+		return await getHighlightedCode();
 	},
 	head: () => ({
 		meta: [
