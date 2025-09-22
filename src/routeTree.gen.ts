@@ -16,11 +16,11 @@ import { Route as mainRouteRouteImport } from './routes/(main)/route'
 import { Route as mainIndexRouteImport } from './routes/(main)/index'
 import { Route as pureResumeRouteImport } from './routes/(pure)/resume'
 import { Route as pureFancyPantsRouteImport } from './routes/(pure)/fancy-pants'
+import { Route as mainRwcRouteImport } from './routes/(main)/rwc'
 import { Route as mainKeebsRouteImport } from './routes/(main)/keebs'
 import { Route as mainKarmaRouteImport } from './routes/(main)/karma'
 import { Route as mainAboutRouteImport } from './routes/(main)/about'
 import { Route as mainSlugRouteImport } from './routes/(main)/$slug'
-import { Route as mainRwcIndexRouteImport } from './routes/(main)/rwc/index'
 import { Route as mainNewsletterIndexRouteImport } from './routes/(main)/newsletter/index'
 import { Route as mainBlogIndexRouteImport } from './routes/(main)/blog/index'
 import { Route as mainNewsletterSlugRouteImport } from './routes/(main)/newsletter/$slug'
@@ -54,6 +54,11 @@ const pureFancyPantsRoute = pureFancyPantsRouteImport.update({
   path: '/fancy-pants',
   getParentRoute: () => pureRouteRoute,
 } as any)
+const mainRwcRoute = mainRwcRouteImport.update({
+  id: '/rwc',
+  path: '/rwc',
+  getParentRoute: () => mainRouteRoute,
+} as any)
 const mainKeebsRoute = mainKeebsRouteImport.update({
   id: '/keebs',
   path: '/keebs',
@@ -72,11 +77,6 @@ const mainAboutRoute = mainAboutRouteImport.update({
 const mainSlugRoute = mainSlugRouteImport.update({
   id: '/$slug',
   path: '/$slug',
-  getParentRoute: () => mainRouteRoute,
-} as any)
-const mainRwcIndexRoute = mainRwcIndexRouteImport.update({
-  id: '/rwc/',
-  path: '/rwc/',
   getParentRoute: () => mainRouteRoute,
 } as any)
 const mainNewsletterIndexRoute = mainNewsletterIndexRouteImport.update({
@@ -121,13 +121,13 @@ export interface FileRoutesByFullPath {
   '/about': typeof mainAboutRoute
   '/karma': typeof mainKarmaRoute
   '/keebs': typeof mainKeebsRoute
+  '/rwc': typeof mainRwcRoute
   '/fancy-pants': typeof pureFancyPantsRoute
   '/resume': typeof pureResumeRoute
   '/blog/$slug': typeof mainBlogSlugRoute
   '/newsletter/$slug': typeof mainNewsletterSlugRoute
   '/blog': typeof mainBlogIndexRoute
   '/newsletter': typeof mainNewsletterIndexRoute
-  '/rwc': typeof mainRwcIndexRoute
   '/foobar/$slug': typeof mainfoobarFoobarSlugRoute
   '/foobar': typeof mainfoobarFoobarIndexRoute
 }
@@ -137,13 +137,13 @@ export interface FileRoutesByTo {
   '/about': typeof mainAboutRoute
   '/karma': typeof mainKarmaRoute
   '/keebs': typeof mainKeebsRoute
+  '/rwc': typeof mainRwcRoute
   '/fancy-pants': typeof pureFancyPantsRoute
   '/resume': typeof pureResumeRoute
   '/blog/$slug': typeof mainBlogSlugRoute
   '/newsletter/$slug': typeof mainNewsletterSlugRoute
   '/blog': typeof mainBlogIndexRoute
   '/newsletter': typeof mainNewsletterIndexRoute
-  '/rwc': typeof mainRwcIndexRoute
   '/foobar/$slug': typeof mainfoobarFoobarSlugRoute
   '/foobar': typeof mainfoobarFoobarIndexRoute
 }
@@ -155,6 +155,7 @@ export interface FileRoutesById {
   '/(main)/about': typeof mainAboutRoute
   '/(main)/karma': typeof mainKarmaRoute
   '/(main)/keebs': typeof mainKeebsRoute
+  '/(main)/rwc': typeof mainRwcRoute
   '/(pure)/fancy-pants': typeof pureFancyPantsRoute
   '/(pure)/resume': typeof pureResumeRoute
   '/(main)/': typeof mainIndexRoute
@@ -162,7 +163,6 @@ export interface FileRoutesById {
   '/(main)/newsletter/$slug': typeof mainNewsletterSlugRoute
   '/(main)/blog/': typeof mainBlogIndexRoute
   '/(main)/newsletter/': typeof mainNewsletterIndexRoute
-  '/(main)/rwc/': typeof mainRwcIndexRoute
   '/(main)/(foobar)/foobar/$slug': typeof mainfoobarFoobarSlugRoute
   '/(main)/(foobar)/foobar/': typeof mainfoobarFoobarIndexRoute
 }
@@ -174,13 +174,13 @@ export interface FileRouteTypes {
     | '/about'
     | '/karma'
     | '/keebs'
+    | '/rwc'
     | '/fancy-pants'
     | '/resume'
     | '/blog/$slug'
     | '/newsletter/$slug'
     | '/blog'
     | '/newsletter'
-    | '/rwc'
     | '/foobar/$slug'
     | '/foobar'
   fileRoutesByTo: FileRoutesByTo
@@ -190,13 +190,13 @@ export interface FileRouteTypes {
     | '/about'
     | '/karma'
     | '/keebs'
+    | '/rwc'
     | '/fancy-pants'
     | '/resume'
     | '/blog/$slug'
     | '/newsletter/$slug'
     | '/blog'
     | '/newsletter'
-    | '/rwc'
     | '/foobar/$slug'
     | '/foobar'
   id:
@@ -207,6 +207,7 @@ export interface FileRouteTypes {
     | '/(main)/about'
     | '/(main)/karma'
     | '/(main)/keebs'
+    | '/(main)/rwc'
     | '/(pure)/fancy-pants'
     | '/(pure)/resume'
     | '/(main)/'
@@ -214,7 +215,6 @@ export interface FileRouteTypes {
     | '/(main)/newsletter/$slug'
     | '/(main)/blog/'
     | '/(main)/newsletter/'
-    | '/(main)/rwc/'
     | '/(main)/(foobar)/foobar/$slug'
     | '/(main)/(foobar)/foobar/'
   fileRoutesById: FileRoutesById
@@ -282,6 +282,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof pureFancyPantsRouteImport
       parentRoute: typeof pureRouteRoute
     }
+    '/(main)/rwc': {
+      id: '/(main)/rwc'
+      path: '/rwc'
+      fullPath: '/rwc'
+      preLoaderRoute: typeof mainRwcRouteImport
+      parentRoute: typeof mainRouteRoute
+    }
     '/(main)/keebs': {
       id: '/(main)/keebs'
       path: '/keebs'
@@ -308,13 +315,6 @@ declare module '@tanstack/react-router' {
       path: '/$slug'
       fullPath: '/$slug'
       preLoaderRoute: typeof mainSlugRouteImport
-      parentRoute: typeof mainRouteRoute
-    }
-    '/(main)/rwc/': {
-      id: '/(main)/rwc/'
-      path: '/rwc'
-      fullPath: '/rwc'
-      preLoaderRoute: typeof mainRwcIndexRouteImport
       parentRoute: typeof mainRouteRoute
     }
     '/(main)/newsletter/': {
@@ -378,12 +378,12 @@ interface mainRouteRouteChildren {
   mainAboutRoute: typeof mainAboutRoute
   mainKarmaRoute: typeof mainKarmaRoute
   mainKeebsRoute: typeof mainKeebsRoute
+  mainRwcRoute: typeof mainRwcRoute
   mainIndexRoute: typeof mainIndexRoute
   mainBlogSlugRoute: typeof mainBlogSlugRoute
   mainNewsletterSlugRoute: typeof mainNewsletterSlugRoute
   mainBlogIndexRoute: typeof mainBlogIndexRoute
   mainNewsletterIndexRoute: typeof mainNewsletterIndexRoute
-  mainRwcIndexRoute: typeof mainRwcIndexRoute
   mainfoobarFoobarSlugRoute: typeof mainfoobarFoobarSlugRoute
   mainfoobarFoobarIndexRoute: typeof mainfoobarFoobarIndexRoute
 }
@@ -393,12 +393,12 @@ const mainRouteRouteChildren: mainRouteRouteChildren = {
   mainAboutRoute: mainAboutRoute,
   mainKarmaRoute: mainKarmaRoute,
   mainKeebsRoute: mainKeebsRoute,
+  mainRwcRoute: mainRwcRoute,
   mainIndexRoute: mainIndexRoute,
   mainBlogSlugRoute: mainBlogSlugRoute,
   mainNewsletterSlugRoute: mainNewsletterSlugRoute,
   mainBlogIndexRoute: mainBlogIndexRoute,
   mainNewsletterIndexRoute: mainNewsletterIndexRoute,
-  mainRwcIndexRoute: mainRwcIndexRoute,
   mainfoobarFoobarSlugRoute: mainfoobarFoobarSlugRoute,
   mainfoobarFoobarIndexRoute: mainfoobarFoobarIndexRoute,
 }
