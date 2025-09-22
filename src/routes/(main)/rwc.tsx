@@ -38,12 +38,17 @@ const getHighlightedCode = createServerFn({ type: "static" }).handler(async () =
 		return [{ html: cleaned_html, slug, filename, lang }];
 	});
 
+	// oxlint-disable-next-line no-console
+	console.log({ backgroundColor });
+
 	return { all_solutions, backgroundColor };
 });
 
 export const Route = createFileRoute("/(main)/rwc")({
 	component: RWCPage,
 	loader: async () => {
+		console.log("running loader");
+
 		return await getHighlightedCode();
 	},
 	head: () => ({
