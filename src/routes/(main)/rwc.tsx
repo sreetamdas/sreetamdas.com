@@ -9,40 +9,40 @@ import { createServerFn } from "@tanstack/react-start";
 
 const GITHUB_RWC_GIST_ID = process.env.GITHUB_RWC_GIST_ID as string;
 
-const getHighlightedCode = createServerFn({ type: "static" }).handler(async () => {
-	const gist = await fetchGist(GITHUB_RWC_GIST_ID);
+// const getHighlightedCode = createServerFn({ type: "static" }).handler(async () => {
+// 	const gist = await fetchGist(GITHUB_RWC_GIST_ID);
 
-	if (typeof gist.files === "undefined" || Object.keys(gist.files).length === 0) {
-		throw notFound();
-	}
+// 	if (typeof gist.files === "undefined" || Object.keys(gist.files).length === 0) {
+// 		throw notFound();
+// 	}
 
-	const files = Object.values(gist.files);
-	if (files.length === 0) {
-		notFound();
-	}
+// 	const files = Object.values(gist.files);
+// 	if (files.length === 0) {
+// 		notFound();
+// 	}
 
-	const karma_highlighter = await getSlimKarmaHighlighter();
-	const background_color = karma_highlighter.getTheme("karma").bg;
+// 	const karma_highlighter = await getSlimKarmaHighlighter();
+// 	const background_color = karma_highlighter.getTheme("karma").bg;
 
-	const all_solutions = files.flatMap((file) => {
-		const code = file?.content;
-		const slug = file?.filename?.replaceAll(/[\s.]/g, "_").toLowerCase()!;
-		const filename = file?.filename;
-		const lang = file?.language?.toLowerCase() ?? "js";
-		if (code == null) {
-			return [];
-		}
-		const html = karma_highlighter.codeToHtml(code, { theme: "karma", lang });
-		const cleaned_html = html.replace(/(^<pre [^>]*>)/, "").replace(/(<\/pre>$)/, "");
+// 	const all_solutions = files.flatMap((file) => {
+// 		const code = file?.content;
+// 		const slug = file?.filename?.replaceAll(/[\s.]/g, "_").toLowerCase()!;
+// 		const filename = file?.filename;
+// 		const lang = file?.language?.toLowerCase() ?? "js";
+// 		if (code == null) {
+// 			return [];
+// 		}
+// 		const html = karma_highlighter.codeToHtml(code, { theme: "karma", lang });
+// 		const cleaned_html = html.replace(/(^<pre [^>]*>)/, "").replace(/(<\/pre>$)/, "");
 
-		return [{ html: cleaned_html, slug, filename, lang }];
-	});
+// 		return [{ html: cleaned_html, slug, filename, lang }];
+// 	});
 
-	// oxlint-disable-next-line no-console
-	console.log({ background_color, all_solutions });
+// 	// oxlint-disable-next-line no-console
+// 	console.log({ background_color, all_solutions });
 
-	return { all_solutions, background_color };
-});
+// 	return { all_solutions, background_color };
+// });
 
 export const Route = createFileRoute("/(main)/rwc")({
 	component: RWCPage,
