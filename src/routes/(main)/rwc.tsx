@@ -22,7 +22,7 @@ const getHighlightedCode = createServerFn({ type: "static" }).handler(async () =
 	}
 
 	const karma_highlighter = await getSlimKarmaHighlighter();
-	const backgroundColor = karma_highlighter.getTheme("karma").bg;
+	const background_color = karma_highlighter.getTheme("karma").bg;
 
 	const all_solutions = files.flatMap((file) => {
 		const code = file?.content;
@@ -39,17 +39,20 @@ const getHighlightedCode = createServerFn({ type: "static" }).handler(async () =
 	});
 
 	// oxlint-disable-next-line no-console
-	console.log({ backgroundColor });
+	console.log({ background_color, all_solutions });
 
-	return { all_solutions, backgroundColor };
+	return { all_solutions, background_color };
 });
 
 export const Route = createFileRoute("/(main)/rwc")({
 	component: RWCPage,
-	loader: () => {
+	loader: async () => {
+		// oxlint-disable-next-line no-console
 		console.log("running loader");
 
-		return getHighlightedCode();
+		const { all_solutions, background_color } = await getHighlightedCode();
+
+		return { all_solutions, background_color };
 	},
 	head: () => ({
 		meta: [
@@ -61,7 +64,10 @@ export const Route = createFileRoute("/(main)/rwc")({
 });
 
 function RWCPage() {
-	const { all_solutions, backgroundColor } = Route.useLoaderData();
+	const { all_solutions, background_color: backgroundColor } = Route.useLoaderData();
+
+	// oxlint-disable-next-line no-console
+	console.log({ all_solutions, backgroundColor });
 
 	return (
 		<>

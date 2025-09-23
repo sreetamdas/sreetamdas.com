@@ -14,12 +14,6 @@ export default defineConfig({
 		}),
 		tanstackStart({
 			customViteReactPlugin: true,
-			pages: [
-				{
-					path: "/rwc",
-					prerender: { enabled: true },
-				},
-			],
 		}),
 		viteReact(),
 		tailwindcss(),
