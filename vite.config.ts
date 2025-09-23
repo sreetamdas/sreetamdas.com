@@ -12,7 +12,15 @@ export default defineConfig({
 		tsConfigPaths({
 			projects: ["./tsconfig.json"],
 		}),
-		tanstackStart({ customViteReactPlugin: true }),
+		tanstackStart({
+			customViteReactPlugin: true,
+			pages: [
+				{
+					path: "/rwc",
+					prerender: { enabled: true },
+				},
+			],
+		}),
 		viteReact(),
 		tailwindcss(),
 	],
