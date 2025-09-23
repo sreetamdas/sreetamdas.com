@@ -49,10 +49,6 @@ export const Route = createFileRoute("/(main)/rwc")({
 	loader: async () => {
 		// oxlint-disable-next-line no-console
 		console.log("running loader");
-
-		const { all_solutions, background_color } = await getHighlightedCode();
-
-		return { all_solutions, background_color };
 	},
 	onError: (err) => {
 // oxlint-disable-next-line no-console
