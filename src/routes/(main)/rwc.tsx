@@ -4,7 +4,7 @@ import { ViewsCounter } from "@/lib/components/ViewsCounter";
 import { fetchGist } from "@/lib/domains/GitHub";
 import { getSlimKarmaHighlighter } from "@/lib/domains/shiki";
 
-import { createFileRoute, notFound } from "@tanstack/react-router";
+import { createFileRoute, ErrorComponent, notFound } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
 
 const GITHUB_RWC_GIST_ID = process.env.GITHUB_RWC_GIST_ID as string;
@@ -54,6 +54,12 @@ export const Route = createFileRoute("/(main)/rwc")({
 
 		return { all_solutions, background_color };
 	},
+	onError: (err) => {
+		console.log({ err });
+
+		throw notFound();
+	},
+	errorComponent: (err) => <ErrorComponent error={err} />,
 	head: () => ({
 		meta: [
 			{
