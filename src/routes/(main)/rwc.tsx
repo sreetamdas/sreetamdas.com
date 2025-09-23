@@ -1,5 +1,5 @@
 import { SITE_TITLE_APPEND } from "@/config";
-import { LinkAnchor } from "@/lib/components/Typography";
+// import { LinkAnchor } from "@/lib/components/Typography";
 import { ViewsCounter } from "@/lib/components/ViewsCounter";
 import { fetchGist } from "@/lib/domains/GitHub";
 import { getSlimKarmaHighlighter } from "@/lib/domains/shiki";
@@ -55,6 +55,7 @@ export const Route = createFileRoute("/(main)/rwc")({
 		return { all_solutions, background_color };
 	},
 	onError: (err) => {
+// oxlint-disable-next-line no-console
 		console.log({ err });
 
 		throw notFound();
@@ -70,16 +71,16 @@ export const Route = createFileRoute("/(main)/rwc")({
 });
 
 function RWCPage() {
-	const { all_solutions, background_color: backgroundColor } = Route.useLoaderData();
+	// const { all_solutions, background_color: backgroundColor } = Route.useLoaderData();
 
 	// oxlint-disable-next-line no-console
-	console.log({ all_solutions, backgroundColor });
+	// console.log({ all_solutions, backgroundColor });
 
 	return (
 		<>
 			<h1 className="pt-10 pb-20 font-serif text-8xl font-bold tracking-tighter">/rwc</h1>
 
-			<section className="[&_pre]:rounded-global [&_pre]:-mr-5 [&_pre]:-ml-12 [&_pre]:overflow-x-scroll [&_pre]:p-5 [&_pre]:text-sm [&_pre]:leading-5 [&_pre]:min-md:-ml-6 [&_pre>code]:[counter-increment:step_0] [&_pre>code]:[counter-reset:step] [&_pre>code>span]:before:mr-2 [&_pre>code>span]:before:-ml-2 [&_pre>code>span]:before:hidden [&_pre>code>span]:before:h-4 [&_pre>code>span]:before:w-8 [&_pre>code>span]:before:pr-2 [&_pre>code>span]:before:text-right [&_pre>code>span]:before:[color:rgb(82_82_91)] [&_pre>code>span]:before:content-[counter(step)] [&_pre>code>span]:before:[counter-increment:step] [&_pre>code>span]:before:min-md:inline-block">
+			{/* <section className="[&_pre]:rounded-global [&_pre]:-mr-5 [&_pre]:-ml-12 [&_pre]:overflow-x-scroll [&_pre]:p-5 [&_pre]:text-sm [&_pre]:leading-5 [&_pre]:min-md:-ml-6 [&_pre>code]:[counter-increment:step_0] [&_pre>code]:[counter-reset:step] [&_pre>code>span]:before:mr-2 [&_pre>code>span]:before:-ml-2 [&_pre>code>span]:before:hidden [&_pre>code>span]:before:h-4 [&_pre>code>span]:before:w-8 [&_pre>code>span]:before:pr-2 [&_pre>code>span]:before:text-right [&_pre>code>span]:before:[color:rgb(82_82_91)] [&_pre>code>span]:before:content-[counter(step)] [&_pre>code>span]:before:[counter-increment:step] [&_pre>code>span]:before:min-md:inline-block">
 				{all_solutions.map(({ html, slug, filename, lang }) => (
 					<article className="my-20 flex flex-col" key={slug}>
 						<div className="flex justify-between">
@@ -97,7 +98,7 @@ function RWCPage() {
 						<pre style={{ backgroundColor }} dangerouslySetInnerHTML={{ __html: html }} />
 					</article>
 				))}
-			</section>
+			</section> */}
 
 			<ViewsCounter />
 		</>
