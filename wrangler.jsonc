@@ -1,7 +1,7 @@
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
 	"name": "sreetamdas-com",
-	"main": ".output/server/index.mjs",
+	"main": "@tanstack/react-start/server-entry",
 	"compatibility_date": "2025-09-19",
 	"compatibility_flags": ["nodejs_compat"],
 	"assets": {
