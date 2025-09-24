@@ -1,7 +1,7 @@
 import { BUTTONDOWN_EMAIL_MOCKS } from "./-mocks";
 import { createServerFn } from "@tanstack/react-start";
 const BUTTONDOWN_BASE_URL = "https://api.buttondown.email/v1";
-const BUTTONDOWN_API_KEY = process.env.BUTTONDOWN_API_KEY;
+const BUTTONDOWN_API_KEY = import.meta.env.VITE_BUTTONDOWN_API_KEY;
 
 export type ButtondownAPISubscribersResponse = {
 	count: number;

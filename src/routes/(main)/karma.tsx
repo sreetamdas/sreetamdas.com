@@ -5,6 +5,7 @@ import { KarmaShowcase } from "@/lib/components/KarmaShowcase.client";
 import { imageSizeFromFile } from "image-size/fromFile";
 import path from "node:path";
 import { createServerFn } from "@tanstack/react-start";
+// import { staticFunctionMiddleware } from "@tanstack/start-static-server-functions";
 
 export const Route = createFileRoute("/(main)/karma")({
 	component: KarmaPage,
@@ -67,26 +68,28 @@ function KarmaPage() {
 	);
 }
 
-const getShowcaseImages = createServerFn({ type: "static" }).handler(async () => {
-	return await Promise.all(
-		theme_language_map.map(async ({ name, default_image, light_image }) => {
-			const default_dimensions = await imageSizeFromFile(path.join("./public", default_image));
-			const light_dimensions = await imageSizeFromFile(path.join("./public", light_image));
+const getShowcaseImages = createServerFn({ method: "GET" })
+	// .middleware([staticFunctionMiddleware])
+	.handler(async () => {
+		return await Promise.all(
+			theme_language_map.map(async ({ name, default_image, light_image }) => {
+				const default_dimensions = await imageSizeFromFile(path.join("./public", default_image));
+				const light_dimensions = await imageSizeFromFile(path.join("./public", light_image));
 
-			return {
-				name,
-				dark: {
-					src: default_image,
-					...default_dimensions,
-				},
-				light: {
-					src: default_image,
-					...light_dimensions,
-				},
-			};
-		}),
-	);
-});
+				return {
+					name,
+					dark: {
+						src: default_image,
+						...default_dimensions,
+					},
+					light: {
+						src: default_image,
+						...light_dimensions,
+					},
+				};
+			}),
+		);
+	});
 
 const theme_language_map = [
 	{

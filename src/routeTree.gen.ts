@@ -8,8 +8,6 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-import { createServerRootRoute } from '@tanstack/react-start/server'
-
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as pureRouteRouteImport } from './routes/(pure)/route'
 import { Route as mainRouteRouteImport } from './routes/(main)/route'
@@ -20,16 +18,13 @@ import { Route as mainRwcRouteImport } from './routes/(main)/rwc'
 import { Route as mainKeebsRouteImport } from './routes/(main)/keebs'
 import { Route as mainKarmaRouteImport } from './routes/(main)/karma'
 import { Route as mainAboutRouteImport } from './routes/(main)/about'
-import { Route as mainSlugRouteImport } from './routes/(main)/$slug'
 import { Route as mainNewsletterIndexRouteImport } from './routes/(main)/newsletter/index'
 import { Route as mainBlogIndexRouteImport } from './routes/(main)/blog/index'
 import { Route as mainNewsletterSlugRouteImport } from './routes/(main)/newsletter/$slug'
 import { Route as mainBlogSlugRouteImport } from './routes/(main)/blog/$slug'
+import { Route as apiApiCoffeeRouteImport } from './routes/(api)/api/coffee'
 import { Route as mainfoobarFoobarIndexRouteImport } from './routes/(main)/(foobar)/foobar/index'
 import { Route as mainfoobarFoobarSlugRouteImport } from './routes/(main)/(foobar)/foobar/$slug'
-import { ServerRoute as apiApiCoffeeServerRouteImport } from './routes/(api)/api/coffee'
-
-const rootServerRouteImport = createServerRootRoute()
 
 const pureRouteRoute = pureRouteRouteImport.update({
   id: '/(pure)',
@@ -74,11 +69,6 @@ const mainAboutRoute = mainAboutRouteImport.update({
   path: '/about',
   getParentRoute: () => mainRouteRoute,
 } as any)
-const mainSlugRoute = mainSlugRouteImport.update({
-  id: '/$slug',
-  path: '/$slug',
-  getParentRoute: () => mainRouteRoute,
-} as any)
 const mainNewsletterIndexRoute = mainNewsletterIndexRouteImport.update({
   id: '/newsletter/',
   path: '/newsletter/',
@@ -99,6 +89,11 @@ const mainBlogSlugRoute = mainBlogSlugRouteImport.update({
   path: '/blog/$slug',
   getParentRoute: () => mainRouteRoute,
 } as any)
+const apiApiCoffeeRoute = apiApiCoffeeRouteImport.update({
+  id: '/(api)/api/coffee',
+  path: '/api/coffee',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const mainfoobarFoobarIndexRoute = mainfoobarFoobarIndexRouteImport.update({
   id: '/(foobar)/foobar/',
   path: '/foobar/',
@@ -109,21 +104,16 @@ const mainfoobarFoobarSlugRoute = mainfoobarFoobarSlugRouteImport.update({
   path: '/foobar/$slug',
   getParentRoute: () => mainRouteRoute,
 } as any)
-const apiApiCoffeeServerRoute = apiApiCoffeeServerRouteImport.update({
-  id: '/(api)/api/coffee',
-  path: '/api/coffee',
-  getParentRoute: () => rootServerRouteImport,
-} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof mainIndexRoute
-  '/$slug': typeof mainSlugRoute
   '/about': typeof mainAboutRoute
   '/karma': typeof mainKarmaRoute
   '/keebs': typeof mainKeebsRoute
   '/rwc': typeof mainRwcRoute
   '/fancy-pants': typeof pureFancyPantsRoute
   '/resume': typeof pureResumeRoute
+  '/api/coffee': typeof apiApiCoffeeRoute
   '/blog/$slug': typeof mainBlogSlugRoute
   '/newsletter/$slug': typeof mainNewsletterSlugRoute
   '/blog': typeof mainBlogIndexRoute
@@ -133,13 +123,13 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof mainIndexRoute
-  '/$slug': typeof mainSlugRoute
   '/about': typeof mainAboutRoute
   '/karma': typeof mainKarmaRoute
   '/keebs': typeof mainKeebsRoute
   '/rwc': typeof mainRwcRoute
   '/fancy-pants': typeof pureFancyPantsRoute
   '/resume': typeof pureResumeRoute
+  '/api/coffee': typeof apiApiCoffeeRoute
   '/blog/$slug': typeof mainBlogSlugRoute
   '/newsletter/$slug': typeof mainNewsletterSlugRoute
   '/blog': typeof mainBlogIndexRoute
@@ -151,7 +141,6 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/(main)': typeof mainRouteRouteWithChildren
   '/(pure)': typeof pureRouteRouteWithChildren
-  '/(main)/$slug': typeof mainSlugRoute
   '/(main)/about': typeof mainAboutRoute
   '/(main)/karma': typeof mainKarmaRoute
   '/(main)/keebs': typeof mainKeebsRoute
@@ -159,6 +148,7 @@ export interface FileRoutesById {
   '/(pure)/fancy-pants': typeof pureFancyPantsRoute
   '/(pure)/resume': typeof pureResumeRoute
   '/(main)/': typeof mainIndexRoute
+  '/(api)/api/coffee': typeof apiApiCoffeeRoute
   '/(main)/blog/$slug': typeof mainBlogSlugRoute
   '/(main)/newsletter/$slug': typeof mainNewsletterSlugRoute
   '/(main)/blog/': typeof mainBlogIndexRoute
@@ -170,13 +160,13 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/$slug'
     | '/about'
     | '/karma'
     | '/keebs'
     | '/rwc'
     | '/fancy-pants'
     | '/resume'
+    | '/api/coffee'
     | '/blog/$slug'
     | '/newsletter/$slug'
     | '/blog'
@@ -186,13 +176,13 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/$slug'
     | '/about'
     | '/karma'
     | '/keebs'
     | '/rwc'
     | '/fancy-pants'
     | '/resume'
+    | '/api/coffee'
     | '/blog/$slug'
     | '/newsletter/$slug'
     | '/blog'
@@ -203,7 +193,6 @@ export interface FileRouteTypes {
     | '__root__'
     | '/(main)'
     | '/(pure)'
-    | '/(main)/$slug'
     | '/(main)/about'
     | '/(main)/karma'
     | '/(main)/keebs'
@@ -211,6 +200,7 @@ export interface FileRouteTypes {
     | '/(pure)/fancy-pants'
     | '/(pure)/resume'
     | '/(main)/'
+    | '/(api)/api/coffee'
     | '/(main)/blog/$slug'
     | '/(main)/newsletter/$slug'
     | '/(main)/blog/'
@@ -222,27 +212,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   mainRouteRoute: typeof mainRouteRouteWithChildren
   pureRouteRoute: typeof pureRouteRouteWithChildren
-}
-export interface FileServerRoutesByFullPath {
-  '/api/coffee': typeof apiApiCoffeeServerRoute
-}
-export interface FileServerRoutesByTo {
-  '/api/coffee': typeof apiApiCoffeeServerRoute
-}
-export interface FileServerRoutesById {
-  __root__: typeof rootServerRouteImport
-  '/(api)/api/coffee': typeof apiApiCoffeeServerRoute
-}
-export interface FileServerRouteTypes {
-  fileServerRoutesByFullPath: FileServerRoutesByFullPath
-  fullPaths: '/api/coffee'
-  fileServerRoutesByTo: FileServerRoutesByTo
-  to: '/api/coffee'
-  id: '__root__' | '/(api)/api/coffee'
-  fileServerRoutesById: FileServerRoutesById
-}
-export interface RootServerRouteChildren {
-  apiApiCoffeeServerRoute: typeof apiApiCoffeeServerRoute
+  apiApiCoffeeRoute: typeof apiApiCoffeeRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -310,13 +280,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof mainAboutRouteImport
       parentRoute: typeof mainRouteRoute
     }
-    '/(main)/$slug': {
-      id: '/(main)/$slug'
-      path: '/$slug'
-      fullPath: '/$slug'
-      preLoaderRoute: typeof mainSlugRouteImport
-      parentRoute: typeof mainRouteRoute
-    }
     '/(main)/newsletter/': {
       id: '/(main)/newsletter/'
       path: '/newsletter'
@@ -345,6 +308,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof mainBlogSlugRouteImport
       parentRoute: typeof mainRouteRoute
     }
+    '/(api)/api/coffee': {
+      id: '/(api)/api/coffee'
+      path: '/api/coffee'
+      fullPath: '/api/coffee'
+      preLoaderRoute: typeof apiApiCoffeeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/(main)/(foobar)/foobar/': {
       id: '/(main)/(foobar)/foobar/'
       path: '/foobar'
@@ -361,20 +331,8 @@ declare module '@tanstack/react-router' {
     }
   }
 }
-declare module '@tanstack/react-start/server' {
-  interface ServerFileRoutesByPath {
-    '/(api)/api/coffee': {
-      id: '/(api)/api/coffee'
-      path: '/api/coffee'
-      fullPath: '/api/coffee'
-      preLoaderRoute: typeof apiApiCoffeeServerRouteImport
-      parentRoute: typeof rootServerRouteImport
-    }
-  }
-}
 
 interface mainRouteRouteChildren {
-  mainSlugRoute: typeof mainSlugRoute
   mainAboutRoute: typeof mainAboutRoute
   mainKarmaRoute: typeof mainKarmaRoute
   mainKeebsRoute: typeof mainKeebsRoute
@@ -389,7 +347,6 @@ interface mainRouteRouteChildren {
 }
 
 const mainRouteRouteChildren: mainRouteRouteChildren = {
-  mainSlugRoute: mainSlugRoute,
   mainAboutRoute: mainAboutRoute,
   mainKarmaRoute: mainKarmaRoute,
   mainKeebsRoute: mainKeebsRoute,
@@ -424,13 +381,16 @@ const pureRouteRouteWithChildren = pureRouteRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   mainRouteRoute: mainRouteRouteWithChildren,
   pureRouteRoute: pureRouteRouteWithChildren,
+  apiApiCoffeeRoute: apiApiCoffeeRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-const rootServerRouteChildren: RootServerRouteChildren = {
-  apiApiCoffeeServerRoute: apiApiCoffeeServerRoute,
+
+import type { getRouter } from './router.ts'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
+  interface Register {
+    router: Awaited<ReturnType<typeof getRouter>>
+  }
 }
-export const serverRouteTree = rootServerRouteImport
-  ._addFileChildren(rootServerRouteChildren)
-  ._addFileTypes<FileServerRouteTypes>()

@@ -4,26 +4,17 @@ export type PageViewCount = {
 	view_count: number;
 };
 
-// type SuccessResponse<Type = undefined> = { data: Type };
-// type ErrorResponse<Type = undefined> = {
-// 	error?: Type;
-// };
-// export type PageViewCountResponse =
-// 	| (SuccessResponse<PageViewCount> & { type: "success" })
-// 	| (SuccessResponse<null> &
-// 			ErrorResponse<{ message: string; cause: unknown }> & { type: "error" });
-
 const SUPABASE_ENABLED =
-	typeof process.env.NEXT_PUBLIC_SUPABASE_URL !== "undefined" &&
-	process.env.NEXT_PUBLIC_SUPABASE_URL !== "" &&
-	typeof process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY !== "undefined" &&
-	process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY !== "";
+	typeof import.meta.env.VITE_SUPABASE_URL !== "undefined" &&
+	import.meta.env.VITE_SUPABASE_URL !== "" &&
+	typeof import.meta.env.VITE_SUPABASE_ANON_KEY !== "undefined" &&
+	import.meta.env.VITE_SUPABASE_ANON_KEY !== "";
 
-export const SUPABASE_API_BASE_URL = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/rest/v1`;
+export const SUPABASE_API_BASE_URL = `${import.meta.env.VITE_SUPABASE_URL}/rest/v1`;
 
 const supabase_headers = {
-	apiKey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY as string,
-	Authorization: `Bearer ${process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY}`,
+	apiKey: import.meta.env.VITE_SUPABASE_ANON_KEY as string,
+	Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
 };
 
 /**

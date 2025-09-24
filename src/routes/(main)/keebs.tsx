@@ -8,7 +8,7 @@ import { ImgurClient, type KeebDetails } from "@/lib/domains/Imgur";
 import { NotionClient } from "@/lib/domains/Notion";
 import { createFileRoute } from "@tanstack/react-router";
 
-const KEEBS_DATABASE_ID = process.env.NOTION_KEEBS_PAGE_ID;
+const KEEBS_DATABASE_ID = import.meta.env.VITE_NOTION_KEEBS_PAGE_ID;
 
 export const Route = createFileRoute("/(main)/keebs")({
 	component: KeebsPage,
@@ -74,10 +74,10 @@ async function KeebsPage() {
 
 const propertiesToRetrieve = ["Name", "Type", "Image"];
 async function getKeebsFromNotion(): Promise<Array<KeebDetails | KeebDetailsFromNotion>> {
-	const notionClient = new NotionClient({ token: process.env.NOTION_TOKEN });
+	const notionClient = new NotionClient({ token: import.meta.env.VITE_NOTION_TOKEN });
 	const imgurClient = new ImgurClient({
-		client_id: process.env.IMGUR_API_CLIENT_ID,
-		album_url: process.env.IMGUR_KEEBS_ALBUM_HASH,
+		client_id: import.meta.env.VITE_IMGUR_API_CLIENT_ID,
+		album_url: import.meta.env.VITE_IMGUR_KEEBS_ALBUM_HASH,
 	});
 
 	if (isUndefined(KEEBS_DATABASE_ID) || isEmpty(KEEBS_DATABASE_ID)) {
