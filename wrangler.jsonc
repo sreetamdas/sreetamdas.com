@@ -1,9 +1,13 @@
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
 	"name": "sreetamdas-com",
-	"main": "@tanstack/react-start/server-entry",
 	"compatibility_date": "2025-09-19",
 	"compatibility_flags": ["nodejs_compat"],
+	"main": "./dist/server/server.js",
+	"assets": {
+		"binding": "ASSETS",
+		"directory": "./dist/client"
+	},
 	"observability": {
 		"enabled": true
 	},
