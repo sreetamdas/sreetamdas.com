@@ -53,3 +53,4 @@ tsconfig.tsbuildinfo
 .output
 .tanstack
 .nitro
+dist/
