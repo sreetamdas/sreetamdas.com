@@ -4,7 +4,7 @@ import { isUndefined } from "lodash-es";
 import { useEffect } from "react";
 import { useShallow } from "zustand/react/shallow";
 
-import GlobalNotFound from "@/app/not-found";
+
 import { IS_DEV } from "@/config";
 import { Code } from "@/lib/components/Typography";
 import { ShowCompletedBadges } from "@/lib/domains/foobar/badges";
@@ -14,6 +14,7 @@ import { useGlobalStore } from "@/lib/domains/global";
 import { useCustomPlausible } from "@/lib/domains/Plausible";
 import { useHasMounted } from "@/lib/helpers/hooks";
 import { useNavigate } from "@tanstack/react-router";
+import { NotFound404 } from "@/lib/components/Error";
 
 /**
  * Foobar page, that is only shown once foobar is unlocked
@@ -137,7 +138,7 @@ const ResetFoobar = ({ handleClearFoobarData }: { handleClearFoobarData: () => v
 );
 
 const FoobarButLocked = () => (
-	<GlobalNotFound
+	<NotFound404
 		message={<p className="pt-5 text-center text-xs">psst, you should check the console!</p>}
 		has_layout
 	/>
