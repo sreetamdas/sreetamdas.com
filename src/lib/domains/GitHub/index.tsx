@@ -7,6 +7,7 @@ const octokit_headers = {
 	Accept: "application/vnd.github+json",
 	Authorization: `Bearer ${import.meta.env.VITE_GITHUB_TOKEN}`,
 	"X-GitHub-Api-Version": "2022-11-28",
+	"User-Agent": "sreetamdas.com",
 };
 
 export const fetchGitHubStats = createServerFn({ method: "GET" }).handler(async () => {
@@ -17,25 +18,13 @@ export const fetchGitHubStats = createServerFn({ method: "GET" }).handler(async 
 			next: { revalidate: 3600 },
 		},
 	);
+
 	const data: Endpoints["GET /repos/{owner}/{repo}"]["response"]["data"] = await request.json();
+
 	const { stargazers_count: stars, forks_count: forks } = data;
 
 	return { stars, forks };
 });
-
-// export const getGitHubStats = createServerFn({ method: "GET" }).handler(async () => {
-// 	try {
-// 		const { data } = useQuery({
-// 			queryKey: ["github-stats"],
-// 			queryFn: fetchGitHubStats,
-// 			staleTime: Infinity,
-// 			initialData: { stars: 0, forks: 0 },
-// 		});
-// 		return data;
-// 	} catch (_error) {
-// 		return { stars: 0, forks: 0 };
-// 	}
-// });
 
 export async function fetchRepoContributors() {
 	const request = await fetch(
@@ -56,6 +45,7 @@ export async function fetchGist(gist_id: string) {
 		headers: octokit_headers,
 		next: { revalidate: 3600 },
 	});
+
 	const data: Endpoints["GET /gists/{gist_id}"]["response"]["data"] = await request.json();
 
 	return data;
