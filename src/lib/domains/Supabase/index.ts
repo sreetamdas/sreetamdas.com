@@ -24,6 +24,11 @@ const supabase_headers = {
  */
 export async function getPageViews(slug: string): Promise<PageViewCount> {
 	if (!SUPABASE_ENABLED) {
+		console.error({
+			url: import.meta.env.VITE_SUPABASE_URL,
+			key: import.meta.env.VITE_SUPABASE_ANON_KEY,
+		});
+
 		throw new Error("Supabase is not initialized");
 	}
 
