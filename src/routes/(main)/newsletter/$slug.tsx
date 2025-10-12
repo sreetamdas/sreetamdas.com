@@ -1,9 +1,9 @@
 import { compile } from "@mdx-js/mdx";
-import { notFound } from "next/navigation";
+
 
 import { NewsletterEmailDetail } from "./-components";
 import { fetchNewsletterEmails } from "./-helpers";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, notFound } from "@tanstack/react-router";
 
 export const dynamicParams = false;
 
@@ -36,7 +36,7 @@ export const Route = createFileRoute("/(main)/newsletter/$slug")({
 		if (typeof newsletter_email_by_slug === "undefined") {
 			// eslint-disable-next-line no-console
 			console.error("Newsletter email not found", "warning");
-			notFound();
+			throw notFound();
 		}
 
 		/**

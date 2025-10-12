@@ -138,11 +138,11 @@ export const Route = createRootRoute({
 				defer: true,
 				"data-domain": "sreetamdas.com",
 				"data-api": "/prxy/plsbl/api/event",
-				src: "/prxy/plsbl/js/script.file-downloads.outbound-links.pageview-props.tagged-events.local.js",
+				src: "/prxy/plsbl/js/pa-9_SvPsvmZhj3FQWGOD3c1.js",
 			},
 			{
 				children:
-					"window.plausible = window.plausible || function() { (window.plausible.q = window.plausible.q || []).push(arguments) }",
+					"window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};plausible.init()",
 			},
 		],
 	}),

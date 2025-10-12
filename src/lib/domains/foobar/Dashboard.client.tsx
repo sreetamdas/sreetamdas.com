@@ -1,9 +1,7 @@
 import * as AlertDialogPrimitive from "@radix-ui/react-alert-dialog";
 import { isUndefined } from "lodash-es";
-// import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useShallow } from "zustand/react/shallow";
-
 
 import { IS_DEV } from "@/config";
 import { Code } from "@/lib/components/Typography";
@@ -140,7 +138,6 @@ const ResetFoobar = ({ handleClearFoobarData }: { handleClearFoobarData: () => v
 const FoobarButLocked = () => (
 	<NotFound404
 		message={<p className="pt-5 text-center text-xs">psst, you should check the console!</p>}
-		has_layout
 	/>
 );
 

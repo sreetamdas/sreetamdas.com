@@ -14,17 +14,23 @@ import {
 	HighlightWithUseInterval,
 } from "./-chameleon-text/components.client";
 import { isNil } from "lodash-es";
+import { createServerFn, createServerOnlyFn } from "@tanstack/react-start";
+import { staticFunctionMiddleware } from "@tanstack/start-static-server-functions";
+
+const getBlogContent = createServerOnlyFn(async ({ data: { slug } }) => {
+	const post = blogPosts.find((page) => page.page_slug === slug);
+
+	if (isNil(post)) {
+		throw notFound();
+	}
+
+	return post;
+});
 
 export const Route = createFileRoute("/(main)/blog/$slug")({
 	component: RouteComponent,
 	loader: ({ params: { slug } }) => {
-		const post = blogPosts.find((page) => page.page_slug === slug);
-
-		if (isNil(post)) {
-			throw notFound();
-		}
-
-		return post;
+		return getBlogContent({ data: { slug } });
 	},
 	notFoundComponent: () => (
 		<>
@@ -40,6 +46,8 @@ export const Route = createFileRoute("/(main)/blog/$slug")({
 
 function RouteComponent() {
 	const post = Route.useLoaderData();
+
+	console.log({ post });
 
 	return (
 		<>

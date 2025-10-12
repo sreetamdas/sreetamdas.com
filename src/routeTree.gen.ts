@@ -18,6 +18,7 @@ import { Route as mainRwcRouteImport } from './routes/(main)/rwc'
 import { Route as mainKeebsRouteImport } from './routes/(main)/keebs'
 import { Route as mainKarmaRouteImport } from './routes/(main)/karma'
 import { Route as mainAboutRouteImport } from './routes/(main)/about'
+import { Route as mainSlugRouteImport } from './routes/(main)/$slug'
 import { Route as mainNewsletterIndexRouteImport } from './routes/(main)/newsletter/index'
 import { Route as mainBlogIndexRouteImport } from './routes/(main)/blog/index'
 import { Route as mainNewsletterSlugRouteImport } from './routes/(main)/newsletter/$slug'
@@ -69,6 +70,11 @@ const mainAboutRoute = mainAboutRouteImport.update({
   path: '/about',
   getParentRoute: () => mainRouteRoute,
 } as any)
+const mainSlugRoute = mainSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => mainRouteRoute,
+} as any)
 const mainNewsletterIndexRoute = mainNewsletterIndexRouteImport.update({
   id: '/newsletter/',
   path: '/newsletter/',
@@ -107,6 +113,7 @@ const mainfoobarFoobarSlugRoute = mainfoobarFoobarSlugRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof mainIndexRoute
+  '/$slug': typeof mainSlugRoute
   '/about': typeof mainAboutRoute
   '/karma': typeof mainKarmaRoute
   '/keebs': typeof mainKeebsRoute
@@ -123,6 +130,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof mainIndexRoute
+  '/$slug': typeof mainSlugRoute
   '/about': typeof mainAboutRoute
   '/karma': typeof mainKarmaRoute
   '/keebs': typeof mainKeebsRoute
@@ -141,6 +149,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/(main)': typeof mainRouteRouteWithChildren
   '/(pure)': typeof pureRouteRouteWithChildren
+  '/(main)/$slug': typeof mainSlugRoute
   '/(main)/about': typeof mainAboutRoute
   '/(main)/karma': typeof mainKarmaRoute
   '/(main)/keebs': typeof mainKeebsRoute
@@ -160,6 +169,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/$slug'
     | '/about'
     | '/karma'
     | '/keebs'
@@ -176,6 +186,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/$slug'
     | '/about'
     | '/karma'
     | '/keebs'
@@ -193,6 +204,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/(main)'
     | '/(pure)'
+    | '/(main)/$slug'
     | '/(main)/about'
     | '/(main)/karma'
     | '/(main)/keebs'
@@ -280,6 +292,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof mainAboutRouteImport
       parentRoute: typeof mainRouteRoute
     }
+    '/(main)/$slug': {
+      id: '/(main)/$slug'
+      path: '/$slug'
+      fullPath: '/$slug'
+      preLoaderRoute: typeof mainSlugRouteImport
+      parentRoute: typeof mainRouteRoute
+    }
     '/(main)/newsletter/': {
       id: '/(main)/newsletter/'
       path: '/newsletter'
@@ -333,6 +352,7 @@ declare module '@tanstack/react-router' {
 }
 
 interface mainRouteRouteChildren {
+  mainSlugRoute: typeof mainSlugRoute
   mainAboutRoute: typeof mainAboutRoute
   mainKarmaRoute: typeof mainKarmaRoute
   mainKeebsRoute: typeof mainKeebsRoute
@@ -347,6 +367,7 @@ interface mainRouteRouteChildren {
 }
 
 const mainRouteRouteChildren: mainRouteRouteChildren = {
+  mainSlugRoute: mainSlugRoute,
   mainAboutRoute: mainAboutRoute,
   mainKarmaRoute: mainKarmaRoute,
   mainKeebsRoute: mainKeebsRoute,
