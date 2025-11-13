@@ -33,7 +33,12 @@ export const Route = createFileRoute("/(main)/$slug")({
 });
 
 function MDXPageSlugPage() {
-	const { post, contributors } = Route.useLoaderData();
+	const { contributors } = Route.useLoaderData();
+	const post = rootPages.find((page) => page.page_slug === Route.useParams().slug);
+
+	if (isNil(post)) {
+		throw notFound();
+	}
 
 	return (
 		<>
@@ -42,7 +47,7 @@ function MDXPageSlugPage() {
 			</h1>
 			<MDXContent
 				code={post.code}
-				components={{ RepoContributors: () => <RepoContributors contributors={contributors} /> }}
+				// components={{ RepoContributors: () => <RepoContributors contributors={contributors} /> }}
 			/>
 			<ViewsCounter />
 		</>

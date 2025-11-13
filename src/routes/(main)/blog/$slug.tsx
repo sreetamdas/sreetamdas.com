@@ -1,5 +1,5 @@
 import { blogPosts } from "@/generated";
-import { createFileRoute, notFound } from "@tanstack/react-router";
+import { createFileRoute, notFound, useLocation, useParams } from "@tanstack/react-router";
 
 import { Balancer } from "react-wrap-balancer";
 import { MDXContent } from "@/lib/components/MDX";
@@ -14,21 +14,34 @@ import {
 	HighlightWithUseInterval,
 } from "./-chameleon-text/components.client";
 import { isNil } from "lodash-es";
-import { createServerFn, createServerOnlyFn } from "@tanstack/react-start";
+import { createServerFn, useServerFn } from "@tanstack/react-start";
 import { staticFunctionMiddleware } from "@tanstack/start-static-server-functions";
+import { useQuery } from "@tanstack/react-query";
+import z from "zod";
 
-const getBlogContent = createServerOnlyFn(async ({ data: { slug } }) => {
-	const post = blogPosts.find((page) => page.page_slug === slug);
-
-	if (isNil(post)) {
-		throw notFound();
-	}
-
-	return post;
+const page_slug = z.object({
+	slug: z.string().min(1),
 });
+
+const getBlogContent = createServerFn({ method: "GET" })
+	.inputValidator((data) => {
+		console.log("validating");
+
+		return page_slug.parse(data);
+	})
+	.handler(({ data: { slug } }) => {
+		const post = blogPosts.find((page) => page.page_slug === slug);
+
+		if (isNil(post)) {
+			throw notFound();
+		}
+
+		return post;
+	});
 
 export const Route = createFileRoute("/(main)/blog/$slug")({
 	component: RouteComponent,
+
 	loader: ({ params: { slug } }) => {
 		return getBlogContent({ data: { slug } });
 	},
@@ -47,15 +60,37 @@ export const Route = createFileRoute("/(main)/blog/$slug")({
 function RouteComponent() {
 	const post = Route.useLoaderData();
 
+	// const { slug } = useParams({ from: "/(main)/blog/$slug" });
+	// const getPost = useServerFn(() => getBlogContent({ data: { slug } }));
+	// // const post = getPost({ data: { slug: Route.useParams().slug } });
+
+	// // const getGitHubStats = useServerFn(fetchGitHubStats);
+
+	// const { data: post, isLoading } = useQuery({
+	// 	queryFn: getPost,
+	// 	queryKey: ["blog-post", slug],
+	// 	// staleTime: Infinity,
+	// });
+
+	// console.log({ post });
+
+	// if (isNil(post)) {
+	// 	throw notFound();
+	// }
+
+	// if (isLoading) {
+	// 	return <span>loading</span>;
+	// }
+
 	console.log({ post });
 
 	return (
 		<>
 			<ReadingProgress />
 			<h1 className="pt-10 pb-20 font-serif text-8xl font-bold tracking-tighter">
-				<Balancer>
-					<Gradient>{post.title}</Gradient>
-				</Balancer>
+				{/* <Balancer> */}
+				<Gradient>{post.title}</Gradient>
+				{/* </Balancer> */}
 			</h1>
 
 			<MDXContent

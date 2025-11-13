@@ -112,7 +112,6 @@ const mainfoobarFoobarSlugRoute = mainfoobarFoobarSlugRouteImport.update({
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof mainIndexRoute
   '/$slug': typeof mainSlugRoute
   '/about': typeof mainAboutRoute
   '/karma': typeof mainKarmaRoute
@@ -120,6 +119,7 @@ export interface FileRoutesByFullPath {
   '/rwc': typeof mainRwcRoute
   '/fancy-pants': typeof pureFancyPantsRoute
   '/resume': typeof pureResumeRoute
+  '/': typeof mainIndexRoute
   '/api/coffee': typeof apiApiCoffeeRoute
   '/blog/$slug': typeof mainBlogSlugRoute
   '/newsletter/$slug': typeof mainNewsletterSlugRoute
@@ -129,7 +129,6 @@ export interface FileRoutesByFullPath {
   '/foobar': typeof mainfoobarFoobarIndexRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof mainIndexRoute
   '/$slug': typeof mainSlugRoute
   '/about': typeof mainAboutRoute
   '/karma': typeof mainKarmaRoute
@@ -137,6 +136,7 @@ export interface FileRoutesByTo {
   '/rwc': typeof mainRwcRoute
   '/fancy-pants': typeof pureFancyPantsRoute
   '/resume': typeof pureResumeRoute
+  '/': typeof mainIndexRoute
   '/api/coffee': typeof apiApiCoffeeRoute
   '/blog/$slug': typeof mainBlogSlugRoute
   '/newsletter/$slug': typeof mainNewsletterSlugRoute
@@ -168,7 +168,6 @@ export interface FileRoutesById {
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    | '/'
     | '/$slug'
     | '/about'
     | '/karma'
@@ -176,6 +175,7 @@ export interface FileRouteTypes {
     | '/rwc'
     | '/fancy-pants'
     | '/resume'
+    | '/'
     | '/api/coffee'
     | '/blog/$slug'
     | '/newsletter/$slug'
@@ -185,7 +185,6 @@ export interface FileRouteTypes {
     | '/foobar'
   fileRoutesByTo: FileRoutesByTo
   to:
-    | '/'
     | '/$slug'
     | '/about'
     | '/karma'
@@ -193,6 +192,7 @@ export interface FileRouteTypes {
     | '/rwc'
     | '/fancy-pants'
     | '/resume'
+    | '/'
     | '/api/coffee'
     | '/blog/$slug'
     | '/newsletter/$slug'
@@ -231,15 +231,15 @@ declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
     '/(pure)': {
       id: '/(pure)'
-      path: '/'
-      fullPath: '/'
+      path: ''
+      fullPath: ''
       preLoaderRoute: typeof pureRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/(main)': {
       id: '/(main)'
-      path: '/'
-      fullPath: '/'
+      path: ''
+      fullPath: ''
       preLoaderRoute: typeof mainRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
