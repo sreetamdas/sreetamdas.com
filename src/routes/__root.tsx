@@ -128,10 +128,10 @@ export const Route = createRootRoute({
 				rel: "icon",
 				href: "/favicon.png",
 			},
-			{
-				rel: "canonical",
-				href: SITE_URL,
-			},
+			// {
+			// 	rel: "canonical",
+			// 	href: SITE_URL,
+			// },
 		],
 		scripts: [
 			{
