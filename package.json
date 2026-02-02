@@ -77,7 +77,7 @@
 		"tailwindcss": "^3.4.13",
 		"typescript": "^5.6.2",
 		"typescript-eslint": "^8.8.0",
-		"velite": "^0.1.1"
+		"velite": "^0.3.0"
 	},
 	"browser": {
 		"fs": false
