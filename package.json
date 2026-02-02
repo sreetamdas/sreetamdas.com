@@ -48,7 +48,7 @@
 		"remark-frontmatter": "^5.0.0",
 		"remark-gfm": "^4.0.0",
 		"remark-toc": "^9.0.0",
-		"shiki-magic-move": "^0.4.5",
+		"shiki-magic-move": "^0.5.0",
 		"type-fest": "^4.26.1",
 		"unist-util-visit": "^5.0.0",
 		"zustand": "^4.5.5"
