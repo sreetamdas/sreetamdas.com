@@ -26,6 +26,8 @@ import { Route as mainBlogSlugRouteImport } from './routes/(main)/blog/$slug'
 import { Route as apiApiCoffeeRouteImport } from './routes/(api)/api/coffee'
 import { Route as mainfoobarFoobarIndexRouteImport } from './routes/(main)/(foobar)/foobar/index'
 import { Route as mainfoobarFoobarSlugRouteImport } from './routes/(main)/(foobar)/foobar/$slug'
+import { Route as apiPrxyPlsblJsScriptRouteImport } from './routes/(api)/prxy/plsbl/js/$script'
+import { Route as apiPrxyPlsblApiEventRouteImport } from './routes/(api)/prxy/plsbl/api/event'
 
 const pureRouteRoute = pureRouteRouteImport.update({
   id: '/(pure)',
@@ -110,6 +112,16 @@ const mainfoobarFoobarSlugRoute = mainfoobarFoobarSlugRouteImport.update({
   path: '/foobar/$slug',
   getParentRoute: () => mainRouteRoute,
 } as any)
+const apiPrxyPlsblJsScriptRoute = apiPrxyPlsblJsScriptRouteImport.update({
+  id: '/(api)/prxy/plsbl/js/$script',
+  path: '/prxy/plsbl/js/$script',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const apiPrxyPlsblApiEventRoute = apiPrxyPlsblApiEventRouteImport.update({
+  id: '/(api)/prxy/plsbl/api/event',
+  path: '/prxy/plsbl/api/event',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/$slug': typeof mainSlugRoute
@@ -127,6 +139,8 @@ export interface FileRoutesByFullPath {
   '/newsletter/': typeof mainNewsletterIndexRoute
   '/foobar/$slug': typeof mainfoobarFoobarSlugRoute
   '/foobar/': typeof mainfoobarFoobarIndexRoute
+  '/prxy/plsbl/api/event': typeof apiPrxyPlsblApiEventRoute
+  '/prxy/plsbl/js/$script': typeof apiPrxyPlsblJsScriptRoute
 }
 export interface FileRoutesByTo {
   '/$slug': typeof mainSlugRoute
@@ -144,6 +158,8 @@ export interface FileRoutesByTo {
   '/newsletter': typeof mainNewsletterIndexRoute
   '/foobar/$slug': typeof mainfoobarFoobarSlugRoute
   '/foobar': typeof mainfoobarFoobarIndexRoute
+  '/prxy/plsbl/api/event': typeof apiPrxyPlsblApiEventRoute
+  '/prxy/plsbl/js/$script': typeof apiPrxyPlsblJsScriptRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -164,6 +180,8 @@ export interface FileRoutesById {
   '/(main)/newsletter/': typeof mainNewsletterIndexRoute
   '/(main)/(foobar)/foobar/$slug': typeof mainfoobarFoobarSlugRoute
   '/(main)/(foobar)/foobar/': typeof mainfoobarFoobarIndexRoute
+  '/(api)/prxy/plsbl/api/event': typeof apiPrxyPlsblApiEventRoute
+  '/(api)/prxy/plsbl/js/$script': typeof apiPrxyPlsblJsScriptRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -183,6 +201,8 @@ export interface FileRouteTypes {
     | '/newsletter/'
     | '/foobar/$slug'
     | '/foobar/'
+    | '/prxy/plsbl/api/event'
+    | '/prxy/plsbl/js/$script'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/$slug'
@@ -200,6 +220,8 @@ export interface FileRouteTypes {
     | '/newsletter'
     | '/foobar/$slug'
     | '/foobar'
+    | '/prxy/plsbl/api/event'
+    | '/prxy/plsbl/js/$script'
   id:
     | '__root__'
     | '/(main)'
@@ -219,12 +241,16 @@ export interface FileRouteTypes {
     | '/(main)/newsletter/'
     | '/(main)/(foobar)/foobar/$slug'
     | '/(main)/(foobar)/foobar/'
+    | '/(api)/prxy/plsbl/api/event'
+    | '/(api)/prxy/plsbl/js/$script'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   mainRouteRoute: typeof mainRouteRouteWithChildren
   pureRouteRoute: typeof pureRouteRouteWithChildren
   apiApiCoffeeRoute: typeof apiApiCoffeeRoute
+  apiPrxyPlsblApiEventRoute: typeof apiPrxyPlsblApiEventRoute
+  apiPrxyPlsblJsScriptRoute: typeof apiPrxyPlsblJsScriptRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -348,6 +374,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof mainfoobarFoobarSlugRouteImport
       parentRoute: typeof mainRouteRoute
     }
+    '/(api)/prxy/plsbl/js/$script': {
+      id: '/(api)/prxy/plsbl/js/$script'
+      path: '/prxy/plsbl/js/$script'
+      fullPath: '/prxy/plsbl/js/$script'
+      preLoaderRoute: typeof apiPrxyPlsblJsScriptRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/(api)/prxy/plsbl/api/event': {
+      id: '/(api)/prxy/plsbl/api/event'
+      path: '/prxy/plsbl/api/event'
+      fullPath: '/prxy/plsbl/api/event'
+      preLoaderRoute: typeof apiPrxyPlsblApiEventRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -403,6 +443,8 @@ const rootRouteChildren: RootRouteChildren = {
   mainRouteRoute: mainRouteRouteWithChildren,
   pureRouteRoute: pureRouteRouteWithChildren,
   apiApiCoffeeRoute: apiApiCoffeeRoute,
+  apiPrxyPlsblApiEventRoute: apiPrxyPlsblApiEventRoute,
+  apiPrxyPlsblJsScriptRoute: apiPrxyPlsblJsScriptRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
