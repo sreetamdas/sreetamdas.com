@@ -12,15 +12,10 @@ yarn.lock
 /coverage
 public/mockServiceWorker.js
 
-# next.js
+# build output
 /.next/
 /out/
-
-# production
 /build
-
-# misc
-.DS_Store
 
 # debug
 npm-debug.log*
@@ -41,8 +36,11 @@ public/rss/
 public/sitemap*.xml
 tsconfig.tsbuildinfo
 
-# Sentry
+# sentry
 .sentryclirc
 
-# Velite
+# velite
 .velite
+
+# generated
+../src/routeTree.gen.ts

@@ -1,50 +1,43 @@
 {
-	"editor.quickSuggestions": {
-		"strings": true
-	},
-	"files.associations": {
-		"*.module.css": "postcss",
-		"*.css": "tailwindcss"
-	},
-	"tailwindCSS.classAttributes": ["class", "className", "ngClass", "tw"],
-	"tailwindCSS.includeLanguages": {
-		"plaintext": "html"
-	},
-	"typescript.tsdk": "node_modules/typescript/lib",
-	"typescript.enablePromptUseWorkspaceTsdk": true,
-	"workbench.colorCustomizations": {
-		"statusBar.background": "#3f0092",
-		"statusBar.foreground": "#fff"
-	},
-	"tailwindCSS.experimental.classRegex": [
-		["cva\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"],
-		["cx\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"]
-	],
-	"eslint.enable": false,
-	"eslint.useFlatConfig": true,
-	"eslint.options": {
-		"overrideConfigFile": "./.config/eslint.config.mjs"
-	},
-	"oxc.configPath": ".config/.oxlintrc.json",
-	"oxc.lint.run": "onType",
-	"prettier.configPath": ".config/prettier.config.mjs",
-	"prettier.ignorePath": ".config/.prettierignore",
-	"[mdx][markdown]": {
-		"editor.quickSuggestions": {
-			"other": "off",
-			"comments": "off",
-			"strings": "off"
-		},
-		"editor.rulers": [60, 80]
-	},
-	"oxc.enable": true,
-	"files.watcherExclude": {
-		"**/routeTree.gen.ts": true
-	},
-	"search.exclude": {
-		"**/routeTree.gen.ts": true
-	},
-	"files.readonlyInclude": {
-		"**/routeTree.gen.ts": true
-	}
+  "editor.quickSuggestions": {
+    "strings": true
+  },
+  "files.associations": {
+    "*.module.css": "postcss",
+    "*.css": "tailwindcss"
+  },
+  "tailwindCSS.classAttributes": ["class", "className", "ngClass", "tw"],
+  "tailwindCSS.includeLanguages": {
+    "plaintext": "html"
+  },
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "typescript.enablePromptUseWorkspaceTsdk": true,
+  "workbench.colorCustomizations": {
+    "statusBar.background": "#3f0092",
+    "statusBar.foreground": "#fff"
+  },
+  "tailwindCSS.experimental.classRegex": [
+    ["cva\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"],
+    ["cx\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"]
+  ],
+  "oxc.configPath": ".config/.oxlintrc.json",
+  "oxc.lint.run": "onType",
+  "[mdx][markdown]": {
+    "editor.quickSuggestions": {
+      "other": "off",
+      "comments": "off",
+      "strings": "off"
+    },
+    "editor.rulers": [60, 80]
+  },
+  "oxc.enable": true,
+  "files.watcherExclude": {
+    "**/routeTree.gen.ts": true
+  },
+  "search.exclude": {
+    "**/routeTree.gen.ts": true
+  },
+  "files.readonlyInclude": {
+    "**/routeTree.gen.ts": true
+  }
 }

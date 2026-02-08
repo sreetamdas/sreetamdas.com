@@ -1,0 +1,26 @@
+{
+	"$schema": "../node_modules/oxfmt/configuration_schema.json",
+	"useTabs": true,
+	"tabWidth": 2,
+	"semi": true,
+	"singleQuote": false,
+	"printWidth": 100,
+	"trailingComma": "all",
+	"experimentalTailwindcss": {},
+	"overrides": [
+		{
+			"files": ["*.mdx"],
+			"options": {
+				"useTabs": false,
+				"tabWidth": 2,
+				"printWidth": 70
+			}
+		},
+		{
+			"files": ["*.json", "*.jsonc"],
+			"options": {
+				"trailingComma": "none"
+			}
+		}
+	]
+}
