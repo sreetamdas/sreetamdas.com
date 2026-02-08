@@ -22,6 +22,7 @@ const aoc_solutions = defineCollection({
 			published_at: s.isodate(),
 			updated_at: s.isodate().optional(),
 			code: s.mdx(),
+			raw: s.raw(),
 			published: s.boolean(),
 			url: s.string().optional() as Schema<Route<`/blog/${string}`>>,
 			image: s.string().optional(),
@@ -69,6 +70,7 @@ export default defineConfig({
 					updated_at: s.isodate().optional(),
 					published: s.boolean(),
 					code: s.mdx(),
+					raw: s.raw(),
 					url: s.string().optional() as Schema<Route<`/blog/${string}`>>,
 					image: s.string().optional(),
 					use_client: s
@@ -113,6 +115,7 @@ export default defineConfig({
 					updated_at: s.isodate().optional(),
 					published: s.boolean(),
 					code: s.mdx(),
+					raw: s.raw(),
 					skip_page: s
 						.boolean()
 						.default(false)

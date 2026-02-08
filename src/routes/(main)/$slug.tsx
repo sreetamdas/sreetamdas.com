@@ -9,49 +9,51 @@ import { Image } from "@/lib/components/Image";
 export const dynamicParams = false;
 
 export function generateStaticParams() {
-	return rootPages.flatMap(({ page_slug, skip_page }) => {
-		if (skip_page) return [];
+  return rootPages.flatMap(({ page_slug, skip_page }) => {
+    if (skip_page) return [];
 
-		return {
-			mdxPageSlug: page_slug,
-		};
-	});
+    return {
+      mdxPageSlug: page_slug,
+    };
+  });
 }
 
 export const Route = createFileRoute("/(main)/$slug")({
-	component: MDXPageSlugPage,
-	loader: async ({ params: { slug } }) => {
-		const post = rootPages.find((page) => page.page_slug === slug);
-		const contributors = await fetchRepoContributors();
+  component: MDXPageSlugPage,
+  loader: async ({ params: { slug } }) => {
+    const post = rootPages.find((page) => page.page_slug === slug);
+    const contributors = await fetchRepoContributors();
 
-		if (isNil(post)) {
-			throw notFound();
-		}
+    if (isNil(post)) {
+      throw notFound();
+    }
 
-		return { post, contributors };
-	},
+    return { post, contributors };
+  },
 });
 
 function MDXPageSlugPage() {
-	const { contributors } = Route.useLoaderData();
-	const post = rootPages.find((page) => page.page_slug === Route.useParams().slug);
+  const { contributors } = Route.useLoaderData();
+  const post = rootPages.find(
+    (page) => page.page_slug === Route.useParams().slug,
+  );
 
-	if (isNil(post)) {
-		throw notFound();
-	}
+  if (isNil(post)) {
+    throw notFound();
+  }
 
-	return (
-		<>
-			<h1 className="pt-10 pb-20 font-serif text-8xl font-bold tracking-tighter">
-				/{post.page_slug}
-			</h1>
-			<MDXContent
-				code={post.code}
-				// components={{ RepoContributors: () => <RepoContributors contributors={contributors} /> }}
-			/>
-			<ViewsCounter />
-		</>
-	);
+  return (
+    <>
+      <h1 className="pt-10 pb-20 font-serif text-8xl font-bold tracking-tighter">
+        /{post.page_slug}
+      </h1>
+      <MDXContent
+        source={post.raw}
+        // components={{ RepoContributors: () => <RepoContributors contributors={contributors} /> }}
+      />
+      <ViewsCounter />
+    </>
+  );
 }
 
 // export async function generateMetadata(props: PageParams): Promise<Metadata> {
@@ -78,27 +80,37 @@ function MDXPageSlugPage() {
 // }
 
 const RepoContributors = async ({
-	contributors,
+  contributors,
 }: {
-	contributors: Awaited<ReturnType<typeof fetchRepoContributors>>;
+  contributors: Awaited<ReturnType<typeof fetchRepoContributors>>;
 }) => {
-	return (
-		<div className="flex flex-wrap gap-6 pt-4">
-			{contributors?.map(
-				({ login, avatar_url, html_url }) =>
-					html_url && (
-						<a href={html_url} key={login} target="_blank" className="link-base">
-							<div className="flex flex-col items-center gap-1">
-								{avatar_url ? (
-									<span className="rounded-global size-32 overflow-hidden">
-										<Image src={avatar_url} alt={login ?? ""} height={128} width={128} />
-									</span>
-								) : null}
-								<p className="m-0 pb-2 text-sm">{login}</p>
-							</div>
-						</a>
-					),
-			)}
-		</div>
-	);
+  return (
+    <div className="flex flex-wrap gap-6 pt-4">
+      {contributors?.map(
+        ({ login, avatar_url, html_url }) =>
+          html_url && (
+            <a
+              href={html_url}
+              key={login}
+              target="_blank"
+              className="link-base"
+            >
+              <div className="flex flex-col items-center gap-1">
+                {avatar_url ? (
+                  <span className="rounded-global size-32 overflow-hidden">
+                    <Image
+                      src={avatar_url}
+                      alt={login ?? ""}
+                      height={128}
+                      width={128}
+                    />
+                  </span>
+                ) : null}
+                <p className="m-0 pb-2 text-sm">{login}</p>
+              </div>
+            </a>
+          ),
+      )}
+    </div>
+  );
 };

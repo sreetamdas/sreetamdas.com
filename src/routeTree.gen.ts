@@ -123,10 +123,10 @@ export interface FileRoutesByFullPath {
   '/api/coffee': typeof apiApiCoffeeRoute
   '/blog/$slug': typeof mainBlogSlugRoute
   '/newsletter/$slug': typeof mainNewsletterSlugRoute
-  '/blog': typeof mainBlogIndexRoute
-  '/newsletter': typeof mainNewsletterIndexRoute
+  '/blog/': typeof mainBlogIndexRoute
+  '/newsletter/': typeof mainNewsletterIndexRoute
   '/foobar/$slug': typeof mainfoobarFoobarSlugRoute
-  '/foobar': typeof mainfoobarFoobarIndexRoute
+  '/foobar/': typeof mainfoobarFoobarIndexRoute
 }
 export interface FileRoutesByTo {
   '/$slug': typeof mainSlugRoute
@@ -179,10 +179,10 @@ export interface FileRouteTypes {
     | '/api/coffee'
     | '/blog/$slug'
     | '/newsletter/$slug'
-    | '/blog'
-    | '/newsletter'
+    | '/blog/'
+    | '/newsletter/'
     | '/foobar/$slug'
-    | '/foobar'
+    | '/foobar/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/$slug'
@@ -302,14 +302,14 @@ declare module '@tanstack/react-router' {
     '/(main)/newsletter/': {
       id: '/(main)/newsletter/'
       path: '/newsletter'
-      fullPath: '/newsletter'
+      fullPath: '/newsletter/'
       preLoaderRoute: typeof mainNewsletterIndexRouteImport
       parentRoute: typeof mainRouteRoute
     }
     '/(main)/blog/': {
       id: '/(main)/blog/'
       path: '/blog'
-      fullPath: '/blog'
+      fullPath: '/blog/'
       preLoaderRoute: typeof mainBlogIndexRouteImport
       parentRoute: typeof mainRouteRoute
     }
@@ -337,7 +337,7 @@ declare module '@tanstack/react-router' {
     '/(main)/(foobar)/foobar/': {
       id: '/(main)/(foobar)/foobar/'
       path: '/foobar'
-      fullPath: '/foobar'
+      fullPath: '/foobar/'
       preLoaderRoute: typeof mainfoobarFoobarIndexRouteImport
       parentRoute: typeof mainRouteRoute
     }

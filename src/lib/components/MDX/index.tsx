@@ -1,22 +1,27 @@
 import { type MDXComponents } from "mdx/types";
-import { type ReactElement } from "react";
-import * as runtime from "react/jsx-runtime";
+import { SafeMdxRenderer } from "safe-mdx";
+import { mdxParse } from "safe-mdx/parse";
 
 import { customMDXComponents } from "./components";
 
 export { customMDXComponents };
 
 type MDXContentCodeType = {
-	code: string;
-	components?: MDXComponents | (() => Promise<ReactElement>);
+  source?: string;
+  components?: MDXComponents;
 };
-export const MDXContent = ({ code, components = {} }: MDXContentCodeType) => {
-	const Content = useMDXComponent(code);
+export const MDXContent = ({ source, components = {} }: MDXContentCodeType) => {
+  const mergedComponents = { ...customMDXComponents, ...components };
 
-	return <Content components={{ ...customMDXComponents, ...components }} />;
+  if (!source) {
+    return null;
+  }
+
+  return (
+    <SafeMdxRenderer
+      markdown={source}
+      mdast={mdxParse(source)}
+      components={mergedComponents}
+    />
+  );
 };
-
-function useMDXComponent(code: string) {
-	const fn = new Function(code);
-	return fn({ ...runtime }).default;
-}
