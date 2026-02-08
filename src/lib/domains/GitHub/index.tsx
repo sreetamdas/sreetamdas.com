@@ -5,79 +5,71 @@ import { DEFAULT_REPO } from "@/config";
 export const GITHUB_API_BASE_URL = "https://api.github.com";
 
 function getGitHubToken() {
-  return (
-    process.env.VITE_GITHUB_TOKEN ??
-    process.env.GITHUB_TOKEN ??
-    import.meta.env.VITE_GITHUB_TOKEN
-  );
+	return (
+		process.env.VITE_GITHUB_TOKEN ?? process.env.GITHUB_TOKEN ?? import.meta.env.VITE_GITHUB_TOKEN
+	);
 }
 
 function getGitHubHeaders() {
-  const token = getGitHubToken();
-  return {
-    Accept: "application/vnd.github+json",
-    ...(token ? { Authorization: `Bearer ${token}` } : {}),
-    "X-GitHub-Api-Version": "2022-11-28",
-    "User-Agent": "sreetamdas.com",
-  };
+	const token = getGitHubToken();
+	return {
+		Accept: "application/vnd.github+json",
+		...(token ? { Authorization: `Bearer ${token}` } : {}),
+		"X-GitHub-Api-Version": "2022-11-28",
+		"User-Agent": "sreetamdas.com",
+	};
 }
 
-export const fetchGitHubStats = createServerFn({ method: "GET" }).handler(
-  async () => {
-    const request = await fetch(
-      `${GITHUB_API_BASE_URL}/repos/${DEFAULT_REPO.owner}/${DEFAULT_REPO.repo}`,
-      {
-        headers: getGitHubHeaders(),
-        next: { revalidate: 3600 },
-      },
-    );
+export const fetchGitHubStats = createServerFn({ method: "GET" }).handler(async () => {
+	const request = await fetch(
+		`${GITHUB_API_BASE_URL}/repos/${DEFAULT_REPO.owner}/${DEFAULT_REPO.repo}`,
+		{
+			headers: getGitHubHeaders(),
+			next: { revalidate: 3600 },
+		},
+	);
 
-    if (!request.ok) {
-      return { stars: 0, forks: 0 };
-    }
+	if (!request.ok) {
+		return { stars: 0, forks: 0 };
+	}
 
-    const data: Endpoints["GET /repos/{owner}/{repo}"]["response"]["data"] =
-      await request.json();
+	const data: Endpoints["GET /repos/{owner}/{repo}"]["response"]["data"] = await request.json();
 
-    const { stargazers_count: stars, forks_count: forks } = data;
+	const { stargazers_count: stars, forks_count: forks } = data;
 
-    return { stars, forks };
-  },
-);
+	return { stars, forks };
+});
 
 export async function fetchRepoContributors() {
-  const request = await fetch(
-    `${GITHUB_API_BASE_URL}/repos/${DEFAULT_REPO.owner}/${DEFAULT_REPO.repo}/contributors`,
-    {
-      headers: getGitHubHeaders(),
-      next: { revalidate: 3600 },
-    },
-  );
+	const request = await fetch(
+		`${GITHUB_API_BASE_URL}/repos/${DEFAULT_REPO.owner}/${DEFAULT_REPO.repo}/contributors`,
+		{
+			headers: getGitHubHeaders(),
+			next: { revalidate: 3600 },
+		},
+	);
 
-  if (!request.ok) {
-    return [];
-  }
+	if (!request.ok) {
+		return [];
+	}
 
-  const data: Endpoints["GET /repos/{owner}/{repo}/contributors"]["response"]["data"] =
-    await request.json();
+	const data: Endpoints["GET /repos/{owner}/{repo}/contributors"]["response"]["data"] =
+		await request.json();
 
-  return data.filter(
-    ({ type, login }) => type !== "Bot" && login !== DEFAULT_REPO.owner,
-  );
+	return data.filter(({ type, login }) => type !== "Bot" && login !== DEFAULT_REPO.owner);
 }
 
 export async function fetchGist(gist_id: string) {
-  const request = await fetch(`${GITHUB_API_BASE_URL}/gists/${gist_id}`, {
-    headers: getGitHubHeaders(),
-    next: { revalidate: 3600 },
-  });
+	const request = await fetch(`${GITHUB_API_BASE_URL}/gists/${gist_id}`, {
+		headers: getGitHubHeaders(),
+		next: { revalidate: 3600 },
+	});
 
-  if (!request.ok) {
-    throw new Error(`Failed to fetch gist: ${request.status}`);
-  }
+	if (!request.ok) {
+		throw new Error(`Failed to fetch gist: ${request.status}`);
+	}
 
-  const data: Endpoints["GET /gists/{gist_id}"]["response"]["data"] =
-    await request.json();
+	const data: Endpoints["GET /gists/{gist_id}"]["response"]["data"] = await request.json();
 
-  return data;
+	return data;
 }

@@ -17,7 +17,7 @@ export const LinkAnchor = ({ id }: LinkAnchorProp) => (
 	<LinkTo
 		href={`#${id}`}
 		replaceClasses
-		className="absolute -translate-x-[125%] translate-y-2 text-primary opacity-0 transition-opacity focus-visible:opacity-75 focus-visible:outline-dashed focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-secondary group-hover:opacity-75 max-md:hidden"
+		className="text-primary focus-visible:outline-secondary absolute -translate-x-[125%] translate-y-2 opacity-0 transition-opacity group-hover:opacity-75 focus-visible:opacity-75 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-dashed max-md:hidden"
 	>
 		<FiLink aria-label={id} />
 	</LinkTo>
@@ -55,8 +55,8 @@ export const UnorderedList = (props: HTMLAttributes<HTMLUListElement>) => (
 				return (
 					// @ts-expect-error child props is not unknown
 					<li className="mb-3 flex list-none items-start p-0 last:mb-0 only:mt-3" {...child.props}>
-						<FaLongArrowAltRight aria-label="marker" className="mr-2.5 mt-1 text-primary" />
-						<span className="shrink grow basis-0 [&>ul>li]:m-0 [&>ul]:my-0">
+						<FaLongArrowAltRight aria-label="marker" className="text-primary mt-1 mr-2.5" />
+						<span className="shrink grow basis-0 [&>ul]:my-0 [&>ul>li]:m-0">
 							{/* @ts-expect-error child props is not unknown */}
 							{child.props.children}
 						</span>
@@ -81,7 +81,7 @@ export const Code = ({ children, className, ...props }: HTMLAttributes<HTMLSpanE
 );
 
 export const Gradient = ({ children }: { children: ReactNode }) => (
-	<span className="w-fit bg-gradient-to-r from-primary to-secondary box-decoration-slice bg-clip-text text-transparent">
+	<span className="from-primary to-secondary w-fit bg-gradient-to-r box-decoration-slice bg-clip-text text-transparent">
 		{children}
 	</span>
 );

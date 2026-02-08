@@ -7,21 +7,17 @@ import { customMDXComponents } from "./components";
 export { customMDXComponents };
 
 type MDXContentCodeType = {
-  source?: string;
-  components?: MDXComponents;
+	source?: string;
+	components?: MDXComponents;
 };
 export const MDXContent = ({ source, components = {} }: MDXContentCodeType) => {
-  const mergedComponents = { ...customMDXComponents, ...components };
+	const mergedComponents = { ...customMDXComponents, ...components };
 
-  if (!source) {
-    return null;
-  }
+	if (!source) {
+		return null;
+	}
 
-  return (
-    <SafeMdxRenderer
-      markdown={source}
-      mdast={mdxParse(source)}
-      components={mergedComponents}
-    />
-  );
+	return (
+		<SafeMdxRenderer markdown={source} mdast={mdxParse(source)} components={mergedComponents} />
+	);
 };
