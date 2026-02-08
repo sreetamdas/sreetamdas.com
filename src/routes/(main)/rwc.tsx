@@ -3,14 +3,9 @@ import { ViewsCounter } from "@/lib/components/ViewsCounter";
 import { fetchGist } from "@/lib/domains/GitHub";
 import { getSlimKarmaHighlighter } from "@/lib/domains/shiki";
 
-import {
-  createFileRoute,
-  ErrorComponent,
-  notFound,
-} from "@tanstack/react-router";
+import { createFileRoute, ErrorComponent } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
 
-import { staticFunctionMiddleware } from "@tanstack/start-static-server-functions";
 import { FiLink } from "react-icons/fi";
 
 const GITHUB_RWC_GIST_ID =
@@ -18,21 +13,31 @@ const GITHUB_RWC_GIST_ID =
   process.env.GITHUB_RWC_GIST_ID ??
   import.meta.env.VITE_GITHUB_RWC_GIST_ID;
 
-const getHighlightedCode = createServerFn({ method: "GET" })
-  .middleware([staticFunctionMiddleware])
-  .handler(async () => {
-    const gist = await fetchGist(GITHUB_RWC_GIST_ID);
+const FALLBACK_RWC_BACKGROUND = "#17181c";
+
+const getHighlightedCode = createServerFn({ method: "GET" }).handler(
+  async () => {
+    if (!GITHUB_RWC_GIST_ID) {
+      return { all_solutions: [], background_color: FALLBACK_RWC_BACKGROUND };
+    }
+
+    let gist: Awaited<ReturnType<typeof fetchGist>>;
+    try {
+      gist = await fetchGist(GITHUB_RWC_GIST_ID);
+    } catch {
+      return { all_solutions: [], background_color: FALLBACK_RWC_BACKGROUND };
+    }
 
     if (
       typeof gist.files === "undefined" ||
       Object.keys(gist.files).length === 0
     ) {
-      throw notFound();
+      return { all_solutions: [], background_color: FALLBACK_RWC_BACKGROUND };
     }
 
     const files = Object.values(gist.files);
     if (files.length === 0) {
-      notFound();
+      return { all_solutions: [], background_color: FALLBACK_RWC_BACKGROUND };
     }
 
     const karma_highlighter = await getSlimKarmaHighlighter();
@@ -55,20 +60,12 @@ const getHighlightedCode = createServerFn({ method: "GET" })
     });
 
     return { all_solutions, background_color };
-  });
+  },
+);
 
 export const Route = createFileRoute("/(main)/rwc")({
   component: RWCPage,
-  loader: async () => {
-    console.log("running loader");
-
-    return await getHighlightedCode();
-  },
-  onError: (err) => {
-    console.log({ err });
-
-    throw notFound();
-  },
+  loader: async () => getHighlightedCode(),
   errorComponent: (err) => <ErrorComponent error={err} />,
   head: () => ({
     meta: [
@@ -82,6 +79,19 @@ export const Route = createFileRoute("/(main)/rwc")({
 function RWCPage() {
   const { all_solutions, background_color: backgroundColor } =
     Route.useLoaderData();
+
+  if (all_solutions.length === 0) {
+    return (
+      <>
+        <h1 className="pt-10 pb-20 font-serif text-8xl font-bold tracking-tighter">
+          /rwc
+        </h1>
+        <p className="max-w-prose">
+          Code samples are temporarily unavailable in this preview deployment.
+        </p>
+      </>
+    );
+  }
 
   return (
     <>
