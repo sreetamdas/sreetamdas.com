@@ -59,14 +59,8 @@ const getHighlightedCode = createServerFn({ method: "GET" })
 
 export const Route = createFileRoute("/(main)/rwc")({
   component: RWCPage,
-  loader: async () => {
-    console.log("running loader");
-
-    return await getHighlightedCode();
-  },
-  onError: (err) => {
-    console.log({ err });
-
+  loader: async () => getHighlightedCode(),
+  onError: () => {
     throw notFound();
   },
   errorComponent: (err) => <ErrorComponent error={err} />,

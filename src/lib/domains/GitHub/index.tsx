@@ -1,5 +1,6 @@
 import { type Endpoints } from "@octokit/types";
 import { createServerFn } from "@tanstack/react-start";
+import { staticFunctionMiddleware } from "@tanstack/start-static-server-functions";
 import { DEFAULT_REPO } from "@/config";
 
 export const GITHUB_API_BASE_URL = "https://api.github.com";
@@ -22,13 +23,13 @@ function getGitHubHeaders() {
   };
 }
 
-export const fetchGitHubStats = createServerFn({ method: "GET" }).handler(
-  async () => {
+export const fetchGitHubStats = createServerFn({ method: "GET" })
+  .middleware([staticFunctionMiddleware])
+  .handler(async () => {
     const request = await fetch(
       `${GITHUB_API_BASE_URL}/repos/${DEFAULT_REPO.owner}/${DEFAULT_REPO.repo}`,
       {
         headers: getGitHubHeaders(),
-        next: { revalidate: 3600 },
       },
     );
 
@@ -42,15 +43,13 @@ export const fetchGitHubStats = createServerFn({ method: "GET" }).handler(
     const { stargazers_count: stars, forks_count: forks } = data;
 
     return { stars, forks };
-  },
-);
+  });
 
 export async function fetchRepoContributors() {
   const request = await fetch(
     `${GITHUB_API_BASE_URL}/repos/${DEFAULT_REPO.owner}/${DEFAULT_REPO.repo}/contributors`,
     {
       headers: getGitHubHeaders(),
-      next: { revalidate: 3600 },
     },
   );
 
@@ -69,7 +68,6 @@ export async function fetchRepoContributors() {
 export async function fetchGist(gist_id: string) {
   const request = await fetch(`${GITHUB_API_BASE_URL}/gists/${gist_id}`, {
     headers: getGitHubHeaders(),
-    next: { revalidate: 3600 },
   });
 
   if (!request.ok) {

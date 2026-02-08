@@ -8,7 +8,8 @@ import {
   createRootRoute,
 } from "@tanstack/react-router";
 import { FOOBAR_SOURCE_CODE } from "@/lib/domains/foobar/helpers";
-import { type ReactNode } from "react";
+import { initCustomPlausible } from "@/lib/domains/Plausible";
+import { type ReactNode, useEffect } from "react";
 import "@fontsource-variable/bricolage-grotesque/index.css";
 import bricolageGrotesqueFont from "@fontsource-variable/bricolage-grotesque/files/bricolage-grotesque-latin-wght-normal.woff2?url";
 import "@fontsource-variable/inter/index.css";
@@ -143,18 +144,6 @@ export const Route = createRootRoute({
       // 	href: SITE_URL,
       // },
     ],
-    scripts: [
-      {
-        defer: true,
-        "data-domain": "sreetamdas.com",
-        "data-api": "/prxy/plsbl/api/event",
-        src: "/prxy/plsbl/js/pa-9_SvPsvmZhj3FQWGOD3c1.js",
-      },
-      {
-        children:
-          "window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};plausible.init({endpoint:'/prxy/plsbl/api/event'})",
-      },
-    ],
   }),
   scripts: () => [
     {
@@ -171,6 +160,10 @@ export const Route = createRootRoute({
 
 function RootComponent() {
   const queryClient = new QueryClient();
+
+  useEffect(() => {
+    void initCustomPlausible();
+  }, []);
 
   return (
     <RootDocument>
