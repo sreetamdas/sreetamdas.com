@@ -2,6 +2,26 @@ import { NewsletterEmailDetail } from "./-components";
 import { fetchNewsletterEmails } from "./-helpers";
 import { createFileRoute, notFound } from "@tanstack/react-router";
 
+export const dynamicParams = false;
+
+// export async function generateStaticParams() {
+// 	const newsletter_emails_slugs = await getNewsletterEmailsSlugs();
+
+// 	return newsletter_emails_slugs;
+// }
+
+// export async function generateMetadata(props: PageProps): Promise<Metadata> {
+// 	const params = await props.params;
+
+// 	const { slug } = params;
+
+// 	const newsletter_email_data = await getNewsletterEmailsDataBySlug(slug);
+
+// 	return {
+// 		title: newsletter_email_data.subject,
+// 	};
+// }
+
 export const Route = createFileRoute("/(main)/newsletter/$slug")({
   component: NewsletterEmailDetailPage,
   loader: async ({ params: { slug } }) => {
@@ -12,6 +32,8 @@ export const Route = createFileRoute("/(main)/newsletter/$slug")({
       );
 
     if (typeof newsletter_email_by_slug === "undefined") {
+      // eslint-disable-next-line no-console
+      console.error("Newsletter email not found", "warning");
       throw notFound();
     }
 
@@ -46,3 +68,9 @@ function NewsletterEmailDetailPage() {
 
   return <NewsletterEmailDetail email={newsletter_email_data} />;
 }
+
+// async function getNewsletterEmailsSlugs() {
+// 	const buttondown_api_emails_response = await fetchNewsletterEmails();
+
+// 	return buttondown_api_emails_response.results.map(({ slug }) => ({ slug }));
+// }

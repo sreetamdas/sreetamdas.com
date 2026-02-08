@@ -1,3 +1,4 @@
+import { type Route } from "next";
 import rehypeRaw from "rehype-raw";
 import rehypeSlug from "rehype-slug";
 import remarkFrontmatter from "remark-frontmatter";
@@ -23,14 +24,14 @@ const aoc_solutions = defineCollection({
 			code: s.mdx(),
 			raw: s.raw(),
 			published: s.boolean(),
-			url: s.string().optional() as Schema<`/blog/${string}`>,
+			url: s.string().optional() as Schema<Route<`/blog/${string}`>>,
 			image: s.string().optional(),
 			raw_path: s.path(),
 		})
 		.transform((data, { meta }) => ({
 			...data,
 			// computed fields
-			page_path: `/${data.raw_path}` as `/blog/${string}`,
+			page_path: `/${data.raw_path}` as Route<`/blog/${string}`>,
 			page_slug: data.raw_path.split("/").slice(-2).join("/"),
 			structured_data: {
 				type: "json",
@@ -70,7 +71,7 @@ export default defineConfig({
 					published: s.boolean(),
 					code: s.mdx(),
 					raw: s.raw(),
-					url: s.string().optional() as Schema<`/blog/${string}`>,
+					url: s.string().optional() as Schema<Route<`/blog/${string}`>>,
 					image: s.string().optional(),
 					use_client: s
 						.boolean()
@@ -82,7 +83,7 @@ export default defineConfig({
 				.transform((data, { meta }) => ({
 					...data,
 					// computed fields
-					page_path: `/${data.raw_path}` as `/blog/${string}`,
+					page_path: `/${data.raw_path}` as Route<`/blog/${string}`>,
 					page_slug: data.raw_path.split("/").at(-1),
 					structured_data: {
 						type: "json",
@@ -125,7 +126,7 @@ export default defineConfig({
 				.transform((data) => ({
 					...data,
 					// computed fields
-					page_path: `/${data.raw_path.split("/").at(-1)}` as `/${string}`,
+					page_path: `/${data.raw_path.split("/").at(-1)}` as Route<`/${string}`>,
 					page_slug: data.raw_path.split("/").at(-1),
 				})),
 		},

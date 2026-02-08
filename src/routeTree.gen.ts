@@ -21,12 +21,10 @@ import { Route as mainAboutRouteImport } from './routes/(main)/about'
 import { Route as mainSlugRouteImport } from './routes/(main)/$slug'
 import { Route as mainNewsletterIndexRouteImport } from './routes/(main)/newsletter/index'
 import { Route as mainBlogIndexRouteImport } from './routes/(main)/blog/index'
-import { Route as mainAocIndexRouteImport } from './routes/(main)/aoc/index'
 import { Route as mainNewsletterSlugRouteImport } from './routes/(main)/newsletter/$slug'
 import { Route as mainBlogSlugRouteImport } from './routes/(main)/blog/$slug'
 import { Route as apiApiCoffeeRouteImport } from './routes/(api)/api/coffee'
 import { Route as mainfoobarFoobarIndexRouteImport } from './routes/(main)/(foobar)/foobar/index'
-import { Route as mainAocYearDayRouteImport } from './routes/(main)/aoc/$year/$day'
 import { Route as mainfoobarFoobarSlugRouteImport } from './routes/(main)/(foobar)/foobar/$slug'
 import { Route as apiPrxyPlsblJsScriptRouteImport } from './routes/(api)/prxy/plsbl/js/$script'
 import { Route as apiPrxyPlsblApiEventRouteImport } from './routes/(api)/prxy/plsbl/api/event'
@@ -89,11 +87,6 @@ const mainBlogIndexRoute = mainBlogIndexRouteImport.update({
   path: '/blog/',
   getParentRoute: () => mainRouteRoute,
 } as any)
-const mainAocIndexRoute = mainAocIndexRouteImport.update({
-  id: '/aoc/',
-  path: '/aoc/',
-  getParentRoute: () => mainRouteRoute,
-} as any)
 const mainNewsletterSlugRoute = mainNewsletterSlugRouteImport.update({
   id: '/newsletter/$slug',
   path: '/newsletter/$slug',
@@ -112,11 +105,6 @@ const apiApiCoffeeRoute = apiApiCoffeeRouteImport.update({
 const mainfoobarFoobarIndexRoute = mainfoobarFoobarIndexRouteImport.update({
   id: '/(foobar)/foobar/',
   path: '/foobar/',
-  getParentRoute: () => mainRouteRoute,
-} as any)
-const mainAocYearDayRoute = mainAocYearDayRouteImport.update({
-  id: '/aoc/$year/$day',
-  path: '/aoc/$year/$day',
   getParentRoute: () => mainRouteRoute,
 } as any)
 const mainfoobarFoobarSlugRoute = mainfoobarFoobarSlugRouteImport.update({
@@ -147,11 +135,9 @@ export interface FileRoutesByFullPath {
   '/api/coffee': typeof apiApiCoffeeRoute
   '/blog/$slug': typeof mainBlogSlugRoute
   '/newsletter/$slug': typeof mainNewsletterSlugRoute
-  '/aoc/': typeof mainAocIndexRoute
   '/blog/': typeof mainBlogIndexRoute
   '/newsletter/': typeof mainNewsletterIndexRoute
   '/foobar/$slug': typeof mainfoobarFoobarSlugRoute
-  '/aoc/$year/$day': typeof mainAocYearDayRoute
   '/foobar/': typeof mainfoobarFoobarIndexRoute
   '/prxy/plsbl/api/event': typeof apiPrxyPlsblApiEventRoute
   '/prxy/plsbl/js/$script': typeof apiPrxyPlsblJsScriptRoute
@@ -168,11 +154,9 @@ export interface FileRoutesByTo {
   '/api/coffee': typeof apiApiCoffeeRoute
   '/blog/$slug': typeof mainBlogSlugRoute
   '/newsletter/$slug': typeof mainNewsletterSlugRoute
-  '/aoc': typeof mainAocIndexRoute
   '/blog': typeof mainBlogIndexRoute
   '/newsletter': typeof mainNewsletterIndexRoute
   '/foobar/$slug': typeof mainfoobarFoobarSlugRoute
-  '/aoc/$year/$day': typeof mainAocYearDayRoute
   '/foobar': typeof mainfoobarFoobarIndexRoute
   '/prxy/plsbl/api/event': typeof apiPrxyPlsblApiEventRoute
   '/prxy/plsbl/js/$script': typeof apiPrxyPlsblJsScriptRoute
@@ -192,11 +176,9 @@ export interface FileRoutesById {
   '/(api)/api/coffee': typeof apiApiCoffeeRoute
   '/(main)/blog/$slug': typeof mainBlogSlugRoute
   '/(main)/newsletter/$slug': typeof mainNewsletterSlugRoute
-  '/(main)/aoc/': typeof mainAocIndexRoute
   '/(main)/blog/': typeof mainBlogIndexRoute
   '/(main)/newsletter/': typeof mainNewsletterIndexRoute
   '/(main)/(foobar)/foobar/$slug': typeof mainfoobarFoobarSlugRoute
-  '/(main)/aoc/$year/$day': typeof mainAocYearDayRoute
   '/(main)/(foobar)/foobar/': typeof mainfoobarFoobarIndexRoute
   '/(api)/prxy/plsbl/api/event': typeof apiPrxyPlsblApiEventRoute
   '/(api)/prxy/plsbl/js/$script': typeof apiPrxyPlsblJsScriptRoute
@@ -215,11 +197,9 @@ export interface FileRouteTypes {
     | '/api/coffee'
     | '/blog/$slug'
     | '/newsletter/$slug'
-    | '/aoc/'
     | '/blog/'
     | '/newsletter/'
     | '/foobar/$slug'
-    | '/aoc/$year/$day'
     | '/foobar/'
     | '/prxy/plsbl/api/event'
     | '/prxy/plsbl/js/$script'
@@ -236,11 +216,9 @@ export interface FileRouteTypes {
     | '/api/coffee'
     | '/blog/$slug'
     | '/newsletter/$slug'
-    | '/aoc'
     | '/blog'
     | '/newsletter'
     | '/foobar/$slug'
-    | '/aoc/$year/$day'
     | '/foobar'
     | '/prxy/plsbl/api/event'
     | '/prxy/plsbl/js/$script'
@@ -259,11 +237,9 @@ export interface FileRouteTypes {
     | '/(api)/api/coffee'
     | '/(main)/blog/$slug'
     | '/(main)/newsletter/$slug'
-    | '/(main)/aoc/'
     | '/(main)/blog/'
     | '/(main)/newsletter/'
     | '/(main)/(foobar)/foobar/$slug'
-    | '/(main)/aoc/$year/$day'
     | '/(main)/(foobar)/foobar/'
     | '/(api)/prxy/plsbl/api/event'
     | '/(api)/prxy/plsbl/js/$script'
@@ -363,13 +339,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof mainBlogIndexRouteImport
       parentRoute: typeof mainRouteRoute
     }
-    '/(main)/aoc/': {
-      id: '/(main)/aoc/'
-      path: '/aoc'
-      fullPath: '/aoc/'
-      preLoaderRoute: typeof mainAocIndexRouteImport
-      parentRoute: typeof mainRouteRoute
-    }
     '/(main)/newsletter/$slug': {
       id: '/(main)/newsletter/$slug'
       path: '/newsletter/$slug'
@@ -396,13 +365,6 @@ declare module '@tanstack/react-router' {
       path: '/foobar'
       fullPath: '/foobar/'
       preLoaderRoute: typeof mainfoobarFoobarIndexRouteImport
-      parentRoute: typeof mainRouteRoute
-    }
-    '/(main)/aoc/$year/$day': {
-      id: '/(main)/aoc/$year/$day'
-      path: '/aoc/$year/$day'
-      fullPath: '/aoc/$year/$day'
-      preLoaderRoute: typeof mainAocYearDayRouteImport
       parentRoute: typeof mainRouteRoute
     }
     '/(main)/(foobar)/foobar/$slug': {
@@ -438,11 +400,9 @@ interface mainRouteRouteChildren {
   mainIndexRoute: typeof mainIndexRoute
   mainBlogSlugRoute: typeof mainBlogSlugRoute
   mainNewsletterSlugRoute: typeof mainNewsletterSlugRoute
-  mainAocIndexRoute: typeof mainAocIndexRoute
   mainBlogIndexRoute: typeof mainBlogIndexRoute
   mainNewsletterIndexRoute: typeof mainNewsletterIndexRoute
   mainfoobarFoobarSlugRoute: typeof mainfoobarFoobarSlugRoute
-  mainAocYearDayRoute: typeof mainAocYearDayRoute
   mainfoobarFoobarIndexRoute: typeof mainfoobarFoobarIndexRoute
 }
 
@@ -455,11 +415,9 @@ const mainRouteRouteChildren: mainRouteRouteChildren = {
   mainIndexRoute: mainIndexRoute,
   mainBlogSlugRoute: mainBlogSlugRoute,
   mainNewsletterSlugRoute: mainNewsletterSlugRoute,
-  mainAocIndexRoute: mainAocIndexRoute,
   mainBlogIndexRoute: mainBlogIndexRoute,
   mainNewsletterIndexRoute: mainNewsletterIndexRoute,
   mainfoobarFoobarSlugRoute: mainfoobarFoobarSlugRoute,
-  mainAocYearDayRoute: mainAocYearDayRoute,
   mainfoobarFoobarIndexRoute: mainfoobarFoobarIndexRoute,
 }
 
