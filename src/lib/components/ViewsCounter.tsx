@@ -31,14 +31,16 @@ const PagePathname = z.object({
 	disabled: z.boolean(),
 });
 
-const fetchViewCountServerFn = createServerFn<"GET", "data", PageViewCount>({ method: "GET" })
+const fetchViewCountServerFn = createServerFn<"GET", "data", PageViewCount>({
+	method: "GET",
+})
 	.inputValidator((data) => {
 		return PagePathname.parse(data);
 	})
 	.handler(async ({ data }) => {
-		console.log({ data });
-
-		const res = isomorphicFetchPageViews(data.slug, { disabled: data.disabled });
+		const res = isomorphicFetchPageViews(data.slug, {
+			disabled: data.disabled,
+		});
 
 		return res;
 	});
@@ -73,11 +75,9 @@ export const ViewsCounter = ({
 const Views = ({ page_type, disabled }: Omit<ViewsCounterProps, "hidden">) => {
 	const { pathname } = useLocation();
 
-	const fetchViewCount = useServerFn<() => Promise<PageViewCount>>(() => {
-		console.log("fetching");
-
-		return fetchViewCountServerFn({ data: { slug: pathname, disabled } });
-	});
+	const fetchViewCount = useServerFn<() => Promise<PageViewCount>>(() =>
+		fetchViewCountServerFn({ data: { slug: pathname, disabled } }),
+	);
 	const { data, isLoading } = useQuery({
 		queryFn: fetchViewCount,
 		queryKey: [pathname, "get-views"],

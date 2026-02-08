@@ -2,7 +2,6 @@ import { type HTMLAttributes } from "react";
 import { FaRegStar } from "react-icons/fa";
 import { VscRepoForked } from "react-icons/vsc";
 
-import { LinkTo } from "@/lib/components/Anchor";
 import { fetchGitHubStats } from "@/lib/domains/GitHub";
 import { cn } from "@/lib/helpers/utils";
 import { useServerFn } from "@tanstack/react-start";
