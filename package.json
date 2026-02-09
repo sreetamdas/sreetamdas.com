@@ -85,7 +85,7 @@
     "tailwindcss": "^4.1.17",
     "typescript": "^5.9.3",
     "velite": "^0.3.1",
-    "vite-tsconfig-paths": "^5.1.4",
+    "vite-tsconfig-paths": "^6.0.0",
     "wrangler": "^4.53.0"
   },
   "browser": {
