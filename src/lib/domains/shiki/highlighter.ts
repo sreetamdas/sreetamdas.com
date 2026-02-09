@@ -1,20 +1,7 @@
 import { defaultTheme } from "@sreetamdas/karma";
-import {
-	type BundledLanguage,
-	getSingletonHighlighterCore,
-	type HighlighterGeneric,
-	normalizeTheme,
-	type ThemeRegistration,
-} from "shiki";
-import css from "shiki/langs/css.mjs";
-import elixir from "shiki/langs/elixir.mjs";
-import html from "shiki/langs/html.mjs";
-import json from "shiki/langs/json.mjs";
-import markdown from "shiki/langs/markdown.mjs";
-import shell from "shiki/langs/shell.mjs";
-import tsx from "shiki/langs/tsx.mjs";
-import typescript from "shiki/langs/typescript.mjs";
-import getWasm from "shiki/wasm";
+import type { BundledLanguage, HighlighterGeneric, ThemeRegistration } from "shiki";
+import { createHighlighterCore, normalizeTheme } from "shiki/core";
+import { createJavaScriptRegexEngine } from "shiki/engine/javascript";
 
 export type BundledLangs = (typeof _preloaded_langs)[number];
 const _preloaded_langs = [
@@ -43,16 +30,26 @@ function convertToThemeRegistration(theme: typeof defaultTheme): ThemeRegistrati
 	};
 }
 
+const karma_shiki_theme = convertToThemeRegistration(defaultTheme);
+const theme = normalizeTheme(karma_shiki_theme);
+const karmaHighlighter = createHighlighterCore({
+	langs: [
+		import("@shikijs/langs-precompiled/css"),
+		import("@shikijs/langs-precompiled/elixir"),
+		import("@shikijs/langs-precompiled/html"),
+		import("@shikijs/langs-precompiled/json"),
+		import("@shikijs/langs-precompiled/markdown"),
+		import("@shikijs/langs-precompiled/shell"),
+		import("@shikijs/langs-precompiled/tsx"),
+		import("@shikijs/langs-precompiled/typescript"),
+	],
+	themes: [theme],
+	engine: createJavaScriptRegexEngine(),
+}) as Promise<KarmaHighlighter>;
+
 export type KarmaHighlighter = HighlighterGeneric<BundledLangs, "karma">;
 export async function getSlimKarmaHighlighter(): Promise<KarmaHighlighter> {
-	const karma_shiki_theme = convertToThemeRegistration(defaultTheme);
-	const theme = normalizeTheme(karma_shiki_theme);
-
-	const highlighter = (await getSingletonHighlighterCore({
-		langs: [typescript, tsx, json, markdown, html, css, shell, elixir],
-		themes: [theme],
-		loadWasm: getWasm,
-	})) as KarmaHighlighter;
+	const highlighter = await karmaHighlighter;
 
 	return highlighter;
 }

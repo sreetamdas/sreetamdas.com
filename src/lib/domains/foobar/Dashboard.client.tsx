@@ -1,11 +1,8 @@
-"use client";
-
 import * as AlertDialogPrimitive from "@radix-ui/react-alert-dialog";
 import { isUndefined } from "lodash-es";
-import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import { useShallow } from "zustand/react/shallow";
 
-import GlobalNotFound from "@/app/not-found";
 import { IS_DEV } from "@/config";
 import { Code } from "@/lib/components/Typography";
 import { ShowCompletedBadges } from "@/lib/domains/foobar/badges";
@@ -14,21 +11,26 @@ import { type FoobarSchrodingerProps, initialFoobarData } from "@/lib/domains/fo
 import { useGlobalStore } from "@/lib/domains/global";
 import { useCustomPlausible } from "@/lib/domains/Plausible";
 import { useHasMounted } from "@/lib/helpers/hooks";
+import { useNavigate } from "@tanstack/react-router";
+import { NotFound404 } from "@/lib/components/Error";
 
 /**
  * Foobar page, that is only shown once foobar is unlocked
  * @param completed_page foobar page that is being currently accessed
  */
 export const FoobarDashboard = ({ completed_page }: FoobarSchrodingerProps) => {
-	const router = useRouter();
+	// const router = useRouter();
+	const navigate = useNavigate();
 	const plausibleEvent = useCustomPlausible();
-	const { foobar_data, setFoobarData } = useGlobalStore((state) => ({
-		foobar_data: state.foobar_data,
-		setFoobarData: state.setFoobarData,
-	}));
+	const { foobar_data, setFoobarData } = useGlobalStore(
+		useShallow((state) => ({
+			foobar_data: state.foobar_data,
+			setFoobarData: state.setFoobarData,
+		})),
+	);
 
 	function handleUserIsOffline() {
-		router.push("/foobar/offline");
+		navigate({ to: "/foobar/$slug", params: { slug: "offline" } });
 	}
 
 	useEffect(() => {
@@ -51,7 +53,7 @@ export const FoobarDashboard = ({ completed_page }: FoobarSchrodingerProps) => {
 		<>
 			<UnlockedAchievementBanner completed_page={completed_page} />
 			{IS_DEV && (
-				<pre className="my-5 rounded-global bg-foreground/10 p-6 font-mono text-sm transition-colors dark:bg-foreground/20">
+				<pre className="rounded-global bg-foreground/10 dark:bg-foreground/20 my-5 p-6 font-mono text-sm transition-colors">
 					<h2 className="text-4xl font-bold">DEV</h2>
 					{JSON.stringify(foobar_data, null, 2)}
 				</pre>
@@ -73,7 +75,7 @@ export const FoobarDashboard = ({ completed_page }: FoobarSchrodingerProps) => {
 
 const UnlockedAchievementBanner = ({ completed_page }: FoobarSchrodingerProps) =>
 	completed_page && completed_page !== "/" ? (
-		<h1 className="pb-5 pt-20 text-center text-6xl font-bold leading-normal">
+		<h1 className="pt-20 pb-5 text-center text-6xl leading-normal font-bold">
 			— You&apos;ve unlocked —
 			<br />
 			<span role="img" aria-label="sparkle">
@@ -92,19 +94,19 @@ const ResetFoobar = ({ handleClearFoobarData }: { handleClearFoobarData: () => v
 	<AlertDialogPrimitive.Root>
 		<AlertDialogPrimitive.Trigger asChild>
 			<button
-				className="rounded-global border-2 border-solid border-primary bg-background px-6 py-1 text-sm text-foreground transition-[color,background-color] hover:bg-primary hover:text-background"
+				className="rounded-global border-primary bg-background text-foreground hover:bg-primary hover:text-background border-2 border-solid px-6 py-1 text-sm transition-[color,background-color]"
 				type="button"
 			>
 				Clear everything and Restart
 			</button>
 		</AlertDialogPrimitive.Trigger>
 		<AlertDialogPrimitive.Portal>
-			<AlertDialogPrimitive.Overlay className="fixed inset-0 bg-slate-950/40 data-[state=open]:animate-overlayShow" />
-			<AlertDialogPrimitive.Content className="fixed left-[50%] top-[50%] max-h-[85vh] w-[90vw] max-w-[500px] translate-x-[-50%] translate-y-[-50%] rounded-global bg-white p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none data-[state=open]:animate-contentShow">
+			<AlertDialogPrimitive.Overlay className="data-[state=open]:animate-overlayShow fixed inset-0 bg-slate-950/40" />
+			<AlertDialogPrimitive.Content className="rounded-global data-[state=open]:animate-contentShow fixed top-[50%] left-[50%] max-h-[85vh] w-[90vw] max-w-[500px] translate-x-[-50%] translate-y-[-50%] bg-white p-[25px] shadow-[hsl(206_22%_7%/35%)_0px_10px_38px_-10px,hsl(206_22%_7%/20%)_0px_10px_20px_-15px] focus:outline-none">
 				<AlertDialogPrimitive.Title className="m-0 text-[17px] font-medium text-slate-950">
 					Are you absolutely sure?
 				</AlertDialogPrimitive.Title>
-				<AlertDialogPrimitive.Description className="mb-5 mt-4 text-[15px] leading-normal text-zinc-500">
+				<AlertDialogPrimitive.Description className="mt-4 mb-5 text-[15px] leading-normal text-zinc-500">
 					This action cannot be undone.
 					<br />
 					This will reset your <Code>/foobar</Code> progress.
@@ -112,7 +114,7 @@ const ResetFoobar = ({ handleClearFoobarData }: { handleClearFoobarData: () => v
 				<div className="flex justify-end gap-[25px]">
 					<AlertDialogPrimitive.Cancel asChild>
 						<button
-							className="inline-flex h-[35px] items-center justify-center rounded-global bg-zinc-100 px-[15px] font-medium leading-none text-zinc-500 outline-none hover:bg-zinc-200 focus:shadow-[0_0_0_2px] focus:shadow-zinc-300"
+							className="rounded-global inline-flex h-[35px] items-center justify-center bg-zinc-100 px-[15px] leading-none font-medium text-zinc-500 outline-none hover:bg-zinc-200 focus:shadow-[0_0_0_2px] focus:shadow-zinc-300"
 							type="button"
 						>
 							Cancel
@@ -120,7 +122,7 @@ const ResetFoobar = ({ handleClearFoobarData }: { handleClearFoobarData: () => v
 					</AlertDialogPrimitive.Cancel>
 					<AlertDialogPrimitive.Action asChild>
 						<button
-							className="inline-flex h-[35px] items-center justify-center rounded-global bg-red-100 px-[15px] font-medium leading-none text-red-700 outline-none hover:bg-red-200 focus:shadow-[0_0_0_2px] focus:shadow-red-300"
+							className="rounded-global inline-flex h-[35px] items-center justify-center bg-red-100 px-[15px] leading-none font-medium text-red-700 outline-none hover:bg-red-200 focus:shadow-[0_0_0_2px] focus:shadow-red-300"
 							onClick={handleClearFoobarData}
 							type="button"
 						>
@@ -134,18 +136,19 @@ const ResetFoobar = ({ handleClearFoobarData }: { handleClearFoobarData: () => v
 );
 
 const FoobarButLocked = () => (
-	<GlobalNotFound
+	<NotFound404
 		message={<p className="pt-5 text-center text-xs">psst, you should check the console!</p>}
-		has_layout
 	/>
 );
 
 export const FoobarSchrodinger = ({ completed_page }: FoobarSchrodingerProps) => {
-	const { unlocked, setFoobarData, completed } = useGlobalStore((state) => ({
-		unlocked: state.foobar_data.unlocked,
-		completed: state.foobar_data.completed,
-		setFoobarData: state.setFoobarData,
-	}));
+	const { unlocked, setFoobarData, completed } = useGlobalStore(
+		useShallow((state) => ({
+			unlocked: state.foobar_data.unlocked,
+			completed: state.foobar_data.completed,
+			setFoobarData: state.setFoobarData,
+		})),
+	);
 	const has_mounted = useHasMounted();
 	const plausibleEvent = useCustomPlausible();
 

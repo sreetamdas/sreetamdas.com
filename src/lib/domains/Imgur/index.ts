@@ -5,8 +5,6 @@
 
 import { isEmpty, isUndefined } from "lodash-es";
 
-import { type KeebDetailsFromNotion } from "@/app/(main)/keebs/page";
-
 export type KeebDetails = {
 	name: string;
 	tags: Array<{ name: string }>;
@@ -15,6 +13,10 @@ export type KeebDetails = {
 		height: number;
 		width: number;
 	};
+};
+
+export type KeebDetailsFromNotion = Omit<KeebDetails, "image"> & {
+	image: Omit<KeebDetails["image"], "height" | "width">;
 };
 
 type ImgurClientOptions = {
@@ -46,7 +48,6 @@ export class ImgurClient {
 			headers: {
 				Authorization: `Client-ID ${this.client_id}`,
 			},
-			next: { revalidate: 86400 },
 		});
 
 		const response = (await request.json()) as ImgurAPIResponse<Array<ImgurImage>>;
@@ -65,7 +66,11 @@ export class ImgurClient {
 			if (typeof imgurImage !== "undefined") {
 				return {
 					...imageData,
-					image: { ...imageData.image, height: imgurImage.height, width: imgurImage.width },
+					image: {
+						...imageData.image,
+						height: imgurImage.height,
+						width: imgurImage.width,
+					},
 				} as KeebDetails;
 			}
 

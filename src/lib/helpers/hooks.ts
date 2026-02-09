@@ -20,7 +20,7 @@ type CallbackFn = (...args: unknown[]) => void;
  * @param delay - Number representing the delay in ms. Set to `null` to "pause" the interval.
  */
 export function useInterval(callback: CallbackFn, delay: Delay) {
-	const savedCallback = useRef<CallbackFn>();
+	const savedCallback = useRef<CallbackFn>(null);
 
 	useEffect(() => {
 		savedCallback.current = callback;
@@ -41,7 +41,7 @@ export function useRandomInterval(
 	minDelay: null | number,
 	maxDelay: null | number,
 ) {
-	const timeoutId = useRef<number | undefined>();
+	const timeoutId = useRef<number | null>(null);
 	const savedCallback = useRef(callback);
 	useEffect(() => {
 		savedCallback.current = callback;
@@ -58,10 +58,18 @@ export function useRandomInterval(
 			handleTick();
 		}
 
-		return () => window.clearTimeout(timeoutId.current);
+		return () => {
+			if (timeoutId.current !== null) {
+				window.clearTimeout(timeoutId.current);
+			}
+		};
 	}, [minDelay, maxDelay]);
 	const cancel = useCallback(function () {
-		window.clearTimeout(timeoutId.current);
+		{
+			if (timeoutId.current !== null) {
+				window.clearTimeout(timeoutId.current);
+			}
+		}
 	}, []);
 	return cancel;
 }

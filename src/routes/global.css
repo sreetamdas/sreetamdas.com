@@ -1,0 +1,125 @@
+@import "tailwindcss";
+
+@font-face {
+	font-family: "Iosevka";
+	src: url("/fonts/iosevka/iosevka-das-version-regular.subset.woff2") format("woff2");
+	font-weight: normal;
+	font-style: normal;
+	font-display: swap;
+}
+@font-face {
+	font-family: "Iosevka";
+	src: url("/fonts/iosevka/iosevka-das-version-italic.subset.woff2") format("woff2");
+	font-weight: normal;
+	font-style: italic;
+	font-display: swap;
+}
+@font-face {
+	font-family: "Iosevka";
+	src: url("/fonts/iosevka/iosevka-das-version-bold.subset.woff2") format("woff2");
+	font-weight: 700;
+	font-style: normal;
+	font-display: swap;
+}
+@font-face {
+	font-family: "Iosevka";
+	src: url("/fonts/iosevka/iosevka-das-version-bold-italic.subset.woff2") format("woff2");
+	font-weight: 700;
+	font-style: italic;
+	font-display: swap;
+}
+
+@theme {
+	--light-purple: rgb(91 52 218);
+	--light-blue: rgb(53 142 241);
+	--dark-purple: rgb(157 134 233);
+	--dark-blue: rgb(97 218 251);
+	--not-white: rgb(247 241 255);
+	--karma-background: rgb(10 14 20);
+	--black: rgb(0 0 0);
+
+	--color-primary: var(--light-purple);
+	--color-secondary: var(--light-blue);
+	--color-foreground: var(--black);
+	--color-background: var(--not-white);
+	--color-karma-background: var(--karma-background);
+
+	--font-serif: "Bricolage Grotesque Variable", serif;
+	--font-mono: "Iosevka", serif;
+
+	--max-width: 650px;
+	--radius-global: 5px;
+	--transition-duration: 250ms;
+}
+
+[data-color-scheme="dark"] {
+	--color-primary: var(--dark-purple);
+	--color-secondary: var(--dark-blue);
+	--color-foreground: var(--not-white);
+	--color-background: var(--black);
+}
+
+@custom-variant dark {
+	&:where([data-color-scheme="dark"], [data-color-scheme="dark"] *) {
+		--color-primary: var(--dark-purple);
+		--color-secondary: var(--dark-blue);
+		--color-foreground: var(--not-white);
+		--color-background: var(--black);
+	}
+}
+
+@media print {
+	@page {
+		margin: 0;
+	}
+
+	/* Use light mode when printing */
+	[data-color-scheme="dark"] {
+		--color-primary: var(--light-purple);
+		--color-secondary: var(--light-blue);
+		--color-foreground: var(--black);
+		--color-background: var(--not-white);
+	}
+}
+
+@utility gradient {
+	@apply from-primary to-secondary bg-gradient-to-r box-decoration-slice bg-clip-text text-transparent;
+}
+
+@utility font-code {
+	font-family: var(--font-iosevka);
+}
+
+@utility link-base {
+	color: var(--color-primary);
+	background-image: linear-gradient(90deg, var(--color-secondary) 0%, var(--color-secondary) 100%);
+	background-size: 0 2px;
+	background-position: 100% 100%;
+	background-repeat: no-repeat;
+	transition: background-size var(--transition-duration) ease-in-out;
+
+	&:hover {
+		background-size: 100% 2px;
+		background-position: 0 100%;
+	}
+
+	&:focus-visible {
+		outline: 2px dashed var(--color-secondary);
+		outline-offset: 2px;
+	}
+
+	&:has(svg:first-child:last-child) {
+		background: none;
+	}
+
+	@media (prefers-color-scheme: dark) {
+		& > code {
+			color: var(--color-secondary);
+		}
+	}
+}
+
+strong > em {
+	/* color: theme(colors.primary); */
+	color: var(--color-primary);
+}

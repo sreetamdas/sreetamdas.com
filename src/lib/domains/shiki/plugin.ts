@@ -1,11 +1,13 @@
+import { transformerColorizedBrackets } from "@shikijs/colorized-brackets";
+import { defaultTheme } from "@sreetamdas/karma";
 import { omit } from "lodash-es";
 import { type BundledLanguage } from "shiki/langs";
+import { type Node } from "unist";
 import { visit } from "unist-util-visit";
-import { type UnistNode } from "unist-util-visit/lib";
 
 import { getSlimKarmaHighlighter } from "./highlighter";
 
-type TreeNode = UnistNode & {
+type TreeNode = Node & {
 	lang: BundledLanguage;
 	meta: string;
 	value: string;
@@ -32,6 +34,16 @@ export function remarkShiki() {
 							}
 						},
 					},
+					transformerColorizedBrackets({
+						themes: {
+							karma: [
+								defaultTheme.colors["editorBracketHighlight.foreground1"],
+								defaultTheme.colors["editorBracketHighlight.foreground2"],
+								defaultTheme.colors["editorBracketHighlight.foreground3"],
+								defaultTheme.colors["editorBracketHighlight.unexpectedBracket.foreground"],
+							],
+						},
+					}),
 				],
 				meta: meta ?? {},
 			});

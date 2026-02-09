@@ -1,76 +1,73 @@
-import { type UrlObject } from "node:url";
-
-import { type Route } from "next";
-import NextLink, { type LinkProps } from "next/link";
+import { Link, type LinkProps } from "@tanstack/react-router";
 import { type AnchorHTMLAttributes, type ReactNode } from "react";
 import { ImArrowUpRight2 } from "react-icons/im";
 
 import { SITE_URL } from "@/config";
 import { cn } from "@/lib/helpers/utils";
 
-type LinkAdditionalProps = {
-	replaceClasses?: true;
-	showExternalLinkIndicator?: true;
+type LinkToProps = Omit<AnchorHTMLAttributes<HTMLAnchorElement>, "href" | "children"> & {
+	href: string;
+	params?: Record<string, string>;
+	replaceClasses?: boolean;
+	showExternalLinkIndicator?: boolean;
+	children: ReactNode;
 };
 
-type LinkToProps<RouteType extends string = string> =
-	| (Omit<AnchorHTMLAttributes<HTMLAnchorElement>, keyof LinkProps<RouteType>> &
-			Omit<LinkProps<RouteType>, "href"> & {
-				children?: ReactNode;
-			} & LinkAdditionalProps & {
-				href?: Route<RouteType> | UrlObject;
-			})
-	| (AnchorHTMLAttributes<HTMLAnchorElement> & LinkAdditionalProps);
-export const LinkTo = <RouteType extends string = string>(linkToProps: LinkToProps<RouteType>) => {
-	const {
-		href,
-		className: passedClasses,
-		replaceClasses = false,
-		showExternalLinkIndicator = false,
-		...restProps
-	} = linkToProps;
-	const extraProps: Partial<LinkToProps> = {};
-	let isExternalLink = false;
-
-	if (typeof href === "string") {
-		if (href === "/resume.pdf") {
-			isExternalLink = true;
-		} else if (
-			href.startsWith(SITE_URL) &&
-			href.startsWith("/") &&
-			href.startsWith("?") &&
-			href.startsWith("#")
-		) {
-			isExternalLink = false;
-		} else if (href.startsWith("https://")) {
-			isExternalLink = true;
-		}
+function isExternal(href: string) {
+	if (href === "/resume.pdf") {
+		return true;
 	}
 
-	if (isExternalLink) {
-		extraProps.target = "_blank";
+	if (href.startsWith("http://") || href.startsWith("https://")) {
+		return !href.startsWith(SITE_URL);
 	}
 
-	if (!isExternalLink && typeof href !== "undefined") {
+	if (href.startsWith("mailto:") || href.startsWith("tel:")) {
+		return true;
+	}
+
+	return false;
+}
+
+function isRouterLink(href: string) {
+	return href.startsWith("/") && !isExternal(href) && !href.startsWith("//");
+}
+
+export const LinkTo = ({
+	href,
+	params,
+	className,
+	replaceClasses = false,
+	showExternalLinkIndicator = false,
+	children,
+	...restProps
+}: LinkToProps) => {
+	const external = isExternal(href);
+	const classNames = cn(!replaceClasses && "link-base", className);
+
+	if (isRouterLink(href)) {
 		return (
-			<NextLink
-				{...restProps}
-				{...extraProps}
-				href={href}
-				className={cn(!replaceClasses && "link-base", passedClasses)}
-			/>
+			<Link
+				{...(restProps as unknown as Omit<LinkProps, "to">)}
+				to={href as LinkProps["to"]}
+				params={params as LinkProps["params"]}
+				className={classNames}
+			>
+				{children}
+			</Link>
 		);
 	}
 
 	return (
 		<a
 			{...restProps}
-			{...extraProps}
-			href={href as string}
-			className={cn(!replaceClasses && "link-base", passedClasses)}
+			href={href}
+			target={external ? "_blank" : restProps.target}
+			rel={external ? "noreferrer" : restProps.rel}
+			className={classNames}
 		>
-			{linkToProps.children}
-			{isExternalLink && showExternalLinkIndicator && (
+			{children}
+			{external && showExternalLinkIndicator ? (
 				<>
 					{" "}
 					<span className="sr-only">(opens in a new tab)</span>
@@ -79,7 +76,7 @@ export const LinkTo = <RouteType extends string = string>(linkToProps: LinkToPro
 						aria-label="opens in a new tab"
 					/>
 				</>
-			)}
+			) : null}
 		</a>
 	);
 };

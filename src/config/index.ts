@@ -4,7 +4,7 @@ export const DEFAULT_REPO = {
 	repo: "sreetamdas.com",
 };
 
-export const SITE_URL = process.env.SITE_URL as string;
+export const SITE_URL = process.env.VITE_SITE_URL as string;
 export const SITE_TITLE_APPEND = `| ${OWNER_NAME}`;
 export const SITE_DESCRIPTION =
 	"Senior software tinkerer from India. 💜 React, Elixir and TypeScript, CS and mechanical keyboards!";
