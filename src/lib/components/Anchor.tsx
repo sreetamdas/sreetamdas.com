@@ -1,71 +1,73 @@
-import { Link, LinkProps } from "@tanstack/react-router";
-import { ReactNode } from "react";
+import { Link, type LinkProps } from "@tanstack/react-router";
+import { type AnchorHTMLAttributes, type ReactNode } from "react";
 import { ImArrowUpRight2 } from "react-icons/im";
 
 import { SITE_URL } from "@/config";
 import { cn } from "@/lib/helpers/utils";
 
-type LinkAdditionalProps = {
-	href: LinkProps["to"];
-	replaceClasses?: true;
-	showExternalLinkIndicator?: true;
+type LinkToProps = Omit<AnchorHTMLAttributes<HTMLAnchorElement>, "href" | "children"> & {
+	href: string;
+	params?: Record<string, string>;
+	replaceClasses?: boolean;
+	showExternalLinkIndicator?: boolean;
 	children: ReactNode;
-	className?: string;
 };
 
-type LinkToProps = LinkProps & LinkAdditionalProps;
-export const LinkTo = (linkToProps: LinkToProps) => {
-	const {
-		href,
-		className: passedClasses,
-		replaceClasses = false,
-		showExternalLinkIndicator = false,
-		...restProps
-	} = linkToProps;
-
-	const extraProps: Partial<LinkToProps> = {};
-	let isExternalLink = false;
-
-	if (typeof href === "string") {
-		// @ts-expect-error resume pdf
-		if (href === "/resume.pdf") {
-			isExternalLink = true;
-		} else if (
-			href.startsWith(SITE_URL) &&
-			href.startsWith("/") &&
-			href.startsWith("?") &&
-			href.startsWith("#")
-		) {
-			isExternalLink = false;
-		} else if (href.startsWith("https://")) {
-			isExternalLink = true;
-		}
+function isExternal(href: string) {
+	if (href === "/resume.pdf") {
+		return true;
 	}
 
-	if (isExternalLink) {
-		extraProps.target = "_blank";
+	if (href.startsWith("http://") || href.startsWith("https://")) {
+		return !href.startsWith(SITE_URL);
 	}
 
-	if (!isExternalLink && typeof href !== "undefined") {
+	if (href.startsWith("mailto:") || href.startsWith("tel:")) {
+		return true;
+	}
+
+	return false;
+}
+
+function isRouterLink(href: string) {
+	return href.startsWith("/") && !isExternal(href) && !href.startsWith("//");
+}
+
+export const LinkTo = ({
+	href,
+	params,
+	className,
+	replaceClasses = false,
+	showExternalLinkIndicator = false,
+	children,
+	...restProps
+}: LinkToProps) => {
+	const external = isExternal(href);
+	const classNames = cn(!replaceClasses && "link-base", className);
+
+	if (isRouterLink(href)) {
 		return (
 			<Link
-				{...restProps}
-				{...extraProps}
-				to={href}
-				className={cn(!replaceClasses && "link-base", passedClasses)}
-			/>
+				{...(restProps as unknown as Omit<LinkProps, "to">)}
+				to={href as LinkProps["to"]}
+				params={params as LinkProps["params"]}
+				className={classNames}
+			>
+				{children}
+			</Link>
 		);
 	}
 
 	return (
 		<a
 			{...restProps}
-			{...extraProps}
-			href={href as string}
-			className={cn(!replaceClasses && "link-base", passedClasses)}
+			href={href}
+			target={external ? "_blank" : restProps.target}
+			rel={external ? "noreferrer" : restProps.rel}
+			className={classNames}
 		>
-			{linkToProps.children}
-			{isExternalLink && showExternalLinkIndicator && (
+			{children}
+			{external && showExternalLinkIndicator ? (
 				<>
 					{" "}
 					<span className="sr-only">(opens in a new tab)</span>
@@ -74,7 +76,7 @@ export const LinkTo = (linkToProps: LinkToProps) => {
 						aria-label="opens in a new tab"
 					/>
 				</>
-			)}
+			) : null}
 		</a>
 	);
 };

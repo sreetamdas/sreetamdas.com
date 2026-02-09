@@ -6,10 +6,13 @@
 import {
 	type DatabaseObjectResponse,
 	type PageObjectResponse,
-	type QueryDatabaseParameters,
-	type QueryDatabaseResponse,
 } from "@notionhq/client/build/src/api-endpoints";
 import { isEmpty, isUndefined } from "lodash-es";
+
+type QueryDatabaseOptions = {
+	filter_properties?: Array<string>;
+	[key: string]: unknown;
+};
 
 type NotionClientOptions = {
 	token?: string;
@@ -34,7 +37,6 @@ export class NotionClient {
 				"Notion-Version": "2022-06-28",
 				"Content-Type": "application/json",
 			},
-			next: { revalidate: 3600 },
 		});
 		const data: DatabaseObjectResponse = await response.json();
 
@@ -43,14 +45,19 @@ export class NotionClient {
 
 	async getPropertiesIDs(database_id: string, filter_properties: Array<string>) {
 		const data = await this.retrieveDatabase(database_id);
+		const properties = (
+			data as unknown as {
+				properties: Record<string, { id: string }>;
+			}
+		).properties;
 
 		return filter_properties.map((property) => ({
 			name: property,
-			id: data?.properties[property].id,
+			id: properties[property].id,
 		}));
 	}
 
-	async queryDatabase(database_id: string, options: Omit<QueryDatabaseParameters, "database_id">) {
+	async queryDatabase(database_id: string, options: QueryDatabaseOptions) {
 		const { filter_properties, ...filter } = options;
 		let filter_properties_query = "";
 
@@ -70,7 +77,6 @@ export class NotionClient {
 				"Content-Type": "application/json",
 			},
 			body: JSON.stringify(filter),
-			next: { revalidate: 3600 },
 		});
 
 		const data: QueryDatabasePageObjectResponse = await response.json();
@@ -78,14 +84,10 @@ export class NotionClient {
 	}
 }
 
-type QueryDatabasePageObjectResponse = Omit<QueryDatabaseResponse, "results"> & {
-	results: Array<
-		Extract<
-			QueryDatabaseResponse["results"][number],
-			{
-				object: "page";
-				properties: PageObjectResponse["properties"];
-			}
-		>
-	>;
+type QueryDatabasePageObjectResponse = {
+	object?: string;
+	results: Array<{
+		object: "page";
+		properties: PageObjectResponse["properties"];
+	}>;
 };

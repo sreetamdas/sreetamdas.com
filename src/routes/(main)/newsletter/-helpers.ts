@@ -31,11 +31,11 @@ export type ButtondownAPIEmailsResponse = {
 	results: Array<{
 		body: string;
 		email_type: string;
-		excluded_tags: Array<unknown>;
+		excluded_tags: Array<object>;
 		external_url: string;
 		id: string;
-		included_tags: Array<unknown>;
-		metadata: Record<string, unknown>;
+		included_tags: Array<object>;
+		metadata: Record<string, object>;
 		publish_date: string;
 		secondary_id: number;
 		slug: string;
@@ -45,7 +45,7 @@ export type ButtondownAPIEmailsResponse = {
 
 export const fetchNewsletterEmails = createServerFn({
 	method: "GET",
-}).handler<ButtondownAPIEmailsResponse>(async () => {
+}).handler(async (): Promise<ButtondownAPIEmailsResponse> => {
 	try {
 		const response = await fetch(`${BUTTONDOWN_BASE_URL}/emails`, {
 			headers: {
@@ -56,11 +56,8 @@ export const fetchNewsletterEmails = createServerFn({
 				"Access-Control-Allow-Origin": "*",
 			},
 		});
-		return await response.json();
-	} catch (error: unknown) {
-		// eslint-disable-next-line no-console
-		console.error(error);
-
-		return BUTTONDOWN_EMAIL_MOCKS;
+		return (await response.json()) as ButtondownAPIEmailsResponse;
+	} catch (_error: unknown) {
+		return BUTTONDOWN_EMAIL_MOCKS as ButtondownAPIEmailsResponse;
 	}
 });

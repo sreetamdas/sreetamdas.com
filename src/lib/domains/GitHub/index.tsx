@@ -25,7 +25,6 @@ export const fetchGitHubStats = createServerFn({ method: "GET" }).handler(async 
 		`${GITHUB_API_BASE_URL}/repos/${DEFAULT_REPO.owner}/${DEFAULT_REPO.repo}`,
 		{
 			headers: getGitHubHeaders(),
-			next: { revalidate: 3600 },
 		},
 	);
 
@@ -45,7 +44,6 @@ export async function fetchRepoContributors() {
 		`${GITHUB_API_BASE_URL}/repos/${DEFAULT_REPO.owner}/${DEFAULT_REPO.repo}/contributors`,
 		{
 			headers: getGitHubHeaders(),
-			next: { revalidate: 3600 },
 		},
 	);
 
@@ -62,7 +60,6 @@ export async function fetchRepoContributors() {
 export async function fetchGist(gist_id: string) {
 	const request = await fetch(`${GITHUB_API_BASE_URL}/gists/${gist_id}`, {
 		headers: getGitHubHeaders(),
-		next: { revalidate: 3600 },
 	});
 
 	if (!request.ok) {
