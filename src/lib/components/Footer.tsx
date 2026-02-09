@@ -2,6 +2,7 @@ import { type HTMLAttributes } from "react";
 import { FaRegStar } from "react-icons/fa";
 import { VscRepoForked } from "react-icons/vsc";
 
+import { LiveViewersBadge } from "@/lib/components/LiveViewersBadge.client";
 import { fetchGitHubStats } from "@/lib/domains/GitHub";
 import { cn } from "@/lib/helpers/utils";
 import { useServerFn } from "@tanstack/react-start";
@@ -35,7 +36,13 @@ export const Footer = ({ children, className }: HTMLAttributes<HTMLDivElement>) 
 				Twitter
 			</a>
 		</p>
-		<p className="pt-8">I hope you have a very nice day :)</p>
+		<div className="grid w-full place-items-center gap-3 pt-8 md:grid-cols-[1fr_auto_1fr] md:items-center md:gap-4">
+			<div className="md:justify-self-end md:order-3">
+				<LiveViewersBadge />
+			</div>
+			<p className="text-center md:order-2">I hope you have a very nice day :)</p>
+			<div className="hidden md:block md:order-1" />
+		</div>
 	</footer>
 );
 
