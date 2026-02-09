@@ -9,7 +9,7 @@ node_modules
 /coverage
 public/mockServiceWorker.js
 
-# next.js
+# next.js (legacy)
 /.next/
 /out/
 
@@ -34,11 +34,9 @@ yarn-error.log*
 .eslintcache
 .vercel
 
-pages/foobar/spec.md
-
 public/rss/
 public/sitemap*.xml
-tsconfig.tsbuildinfo
+*.tsbuildinfo
 
 # Sentry
 .sentryclirc
@@ -55,3 +53,6 @@ tsconfig.tsbuildinfo
 .tanstack
 .nitro
 dist/
+
+# Localflare generated files
+.localflare/

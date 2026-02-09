@@ -1,6 +1,1 @@
-// import { registerGlobalMiddleware } from "@tanstack/react-start";
-// import { cloudfareMiddleware } from "@/lib/domains/cloudflare/middleware";
-
-// registerGlobalMiddleware({
-// 	middleware: [cloudfareMiddleware],
-// });
+// Reserved for global middleware when/if we adopt request/function middleware at the Start instance level.
