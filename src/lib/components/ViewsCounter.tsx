@@ -1,8 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 import { IS_CI, IS_DEV } from "@/config";
 import { cn } from "@/lib/helpers/utils";
-import { cloudflareMiddleware } from "@/lib/domains/cloudflare/middleware";
 import { createServerFn, useServerFn } from "@tanstack/react-start";
+import { getGlobalStartContext } from "@tanstack/react-start";
 import { useLocation } from "@tanstack/react-router";
 import { z } from "zod";
 type PageViewCount = {
@@ -17,13 +17,14 @@ const PagePathname = z.object({
 const fetchViewCountServerFn = createServerFn<"GET", "data", PageViewCount>({
 	method: "GET",
 })
-	.middleware([cloudflareMiddleware])
 	.inputValidator((data) => {
 		return PagePathname.parse(data);
 	})
-	.handler(async ({ data, context }) => {
-		if (!context?.env) {
-			throw new Error("Cloudflare env not available in server function context");
+	.handler(async ({ data }) => {
+		const ctx = getGlobalStartContext() as unknown as { env?: CloudflareEnv } | undefined;
+		const env = ctx?.env;
+		if (!env) {
+			throw new Error("Cloudflare env not available (expected Start request context)");
 		}
 
 		const [{ getDb }, { getPageViews, upsertPageViews }] = await Promise.all([
@@ -31,7 +32,7 @@ const fetchViewCountServerFn = createServerFn<"GET", "data", PageViewCount>({
 			import("@/lib/domains/PageViews"),
 		]);
 
-		const db = getDb(context.env);
+		const db = getDb(env);
 
 		if (data.disabled) {
 			return getPageViews(db, data.slug);
