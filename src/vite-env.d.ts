@@ -15,8 +15,6 @@ interface ImportMetaEnv {
 	readonly VITE_NOTION_KEEBS_PAGE_ID: string;
 	readonly VITE_NOTION_TOKEN: string;
 	readonly VITE_SITE_URL: string;
-	readonly VITE_SUPABASE_ANON_KEY: string;
-	readonly VITE_SUPABASE_URL: string;
 }
 
 interface ImportMeta {

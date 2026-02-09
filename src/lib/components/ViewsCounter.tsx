@@ -1,30 +1,13 @@
 import { useQuery } from "@tanstack/react-query";
 import { IS_CI, IS_DEV } from "@/config";
-import { getPageViews, PageViewCount, upsertPageViews } from "@/lib/domains/Supabase";
 import { cn } from "@/lib/helpers/utils";
+import { cloudflareMiddleware } from "@/lib/domains/cloudflare/middleware";
 import { createServerFn, useServerFn } from "@tanstack/react-start";
 import { useLocation } from "@tanstack/react-router";
 import { z } from "zod";
-type IsomorphicFetchOptions = {
-	disabled?: boolean;
+type PageViewCount = {
+	view_count: number;
 };
-
-/**
- * Wrapper for Supabase page views for both only fetching and upserting
- * @param slug page slug
- * @returns page views response
- */
-async function isomorphicFetchPageViews(
-	slug: string,
-	options: IsomorphicFetchOptions,
-): Promise<PageViewCount> {
-	if (options.disabled) {
-		const response = await getPageViews(slug);
-		return response;
-	}
-	const response = await upsertPageViews(slug);
-	return response;
-}
 
 const PagePathname = z.object({
 	slug: z.string().min(1),
@@ -34,15 +17,27 @@ const PagePathname = z.object({
 const fetchViewCountServerFn = createServerFn<"GET", "data", PageViewCount>({
 	method: "GET",
 })
+	.middleware([cloudflareMiddleware])
 	.inputValidator((data) => {
 		return PagePathname.parse(data);
 	})
-	.handler(async ({ data }) => {
-		const res = isomorphicFetchPageViews(data.slug, {
-			disabled: data.disabled,
-		});
+	.handler(async ({ data, context }) => {
+		if (!context?.env) {
+			throw new Error("Cloudflare env not available in server function context");
+		}
 
-		return res;
+		const [{ getDb }, { getPageViews, upsertPageViews }] = await Promise.all([
+			import("@/db"),
+			import("@/lib/domains/PageViews"),
+		]);
+
+		const db = getDb(context.env);
+
+		if (data.disabled) {
+			return getPageViews(db, data.slug);
+		}
+
+		return upsertPageViews(db, data.slug);
 	});
 
 type ViewsCounterProps = {

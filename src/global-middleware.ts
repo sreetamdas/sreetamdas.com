@@ -1,6 +1,2 @@
-// import { registerGlobalMiddleware } from "@tanstack/react-start";
-// import { cloudfareMiddleware } from "@/lib/domains/cloudflare/middleware";
-
-// registerGlobalMiddleware({
-// 	middleware: [cloudfareMiddleware],
-// });
+// TanStack Start currently does not expose a stable `registerGlobalMiddleware` API in our version.
+// Middleware should be applied per `createServerFn` via `.middleware([cloudflareMiddleware])`.

@@ -5,12 +5,16 @@ async function initDevEnv() {
 	// oxlint-disable-next-line no-console
 	console.log("Initializing Cloudflare bindings for local development...");
 
-	const { getPlatformProxy } = await import("wrangler");
+	// NOTE: This must not be statically analyzable by Vite/Rollup.
+	// If it is, production SSR builds will try to bundle `wrangler` (and its wasm deps).
+	// oxlint-disable-next-line no-eval
+	const { getPlatformProxy } = await Function('return import("wrangler")')();
 	const proxy = await getPlatformProxy();
 	cachedEnv = proxy.env as unknown as CloudflareEnv;
 }
 
-if (import.meta.env.DEV) {
+// Only initialize the Wrangler proxy in the server runtime.
+if (import.meta.env.SSR && import.meta.env.DEV) {
 	await initDevEnv();
 }
 
