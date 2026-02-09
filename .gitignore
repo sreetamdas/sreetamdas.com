@@ -48,6 +48,7 @@ tsconfig.tsbuildinfo
 
 # Cloudflare
 .open-next
+.wrangler
 
 
 .output
