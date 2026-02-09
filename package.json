@@ -77,7 +77,7 @@
     "@types/unist": "~3.0.3",
     "@vitejs/plugin-react": "^5.1.2",
     "autoprefixer": "^10.4.22",
-    "globals": "^16.5.0",
+    "globals": "^17.0.0",
     "oxfmt": "^0.28.0",
     "oxlint": "^1.32.0",
     "oxlint-tsgolint": "^0.11.5",
