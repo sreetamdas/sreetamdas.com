@@ -1,6 +1,5 @@
 {
 	"compilerOptions": {
-		"baseUrl": "src",
 		"esModuleInterop": true,
 		"forceConsistentCasingInFileNames": true,
 		"isolatedModules": true,
@@ -16,9 +15,9 @@
 		"strictNullChecks": true,
 		"target": "ES2022",
 		"paths": {
-			"@/generated": ["../.velite"],
-			"@/*": ["./*"],
-			"@/public/*": ["../public/*"]
+			"@/generated": ["./.velite"],
+			"@/*": ["./src/*"],
+			"@/public/*": ["./public/*"]
 		}
 	},
 	"exclude": ["node_modules", "public"]
