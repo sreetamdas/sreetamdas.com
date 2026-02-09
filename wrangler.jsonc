@@ -3,7 +3,21 @@
   "name": "sreetamdas-com",
   "compatibility_date": "2025-09-27",
   "compatibility_flags": ["nodejs_compat"],
-  "main": "@tanstack/react-start/server-entry",
+  "main": "./src/worker.ts",
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "SITE_PRESENCE",
+        "class_name": "PresenceDurableObject",
+      },
+    ],
+  },
+  "migrations": [
+    {
+      "tag": "do-v1",
+      "new_sqlite_classes": ["PresenceDurableObject"],
+    },
+  ],
   "observability": {
     "enabled": true,
   },
