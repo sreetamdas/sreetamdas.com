@@ -1,12 +1,14 @@
 import { ImArrowUpRight2 } from "react-icons/im";
 
 import { SITE_TITLE_APPEND } from "@/config";
+import { canonicalUrl, defaultOgImageUrl } from "@/lib/seo";
 import { ChameleonHighlight } from "@/lib/components/Typography.client";
 import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/(pure)/fancy-pants")({
 	component: FancyPantsPage,
 	head: () => ({
+		links: [{ rel: "canonical", href: canonicalUrl("/fancy-pants") }],
 		meta: [
 			{
 				title: `Fancy Pants ${SITE_TITLE_APPEND}`,
@@ -15,6 +17,14 @@ export const Route = createFileRoute("/(pure)/fancy-pants")({
 				name: "description",
 				content: "Sreetam Das' fancy-shmancy landing page",
 			},
+			{ property: "og:title", content: `Fancy Pants ${SITE_TITLE_APPEND}` },
+			{ property: "og:description", content: "Sreetam Das' fancy-shmancy landing page" },
+			{ property: "og:type", content: "website" },
+			{ property: "og:url", content: canonicalUrl("/fancy-pants") },
+			{ property: "og:image", content: defaultOgImageUrl() },
+			{ name: "twitter:title", content: `Fancy Pants ${SITE_TITLE_APPEND}` },
+			{ name: "twitter:description", content: "Sreetam Das' fancy-shmancy landing page" },
+			{ name: "twitter:image", content: defaultOgImageUrl() },
 		],
 	}),
 });

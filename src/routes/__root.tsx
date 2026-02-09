@@ -9,7 +9,7 @@ import bricolageGrotesqueFont from "@fontsource-variable/bricolage-grotesque/fil
 import "@fontsource-variable/inter/index.css";
 import interFont from "@fontsource-variable/inter/files/inter-latin-ext-wght-normal.woff2?url";
 import appCss from "./global.css?url";
-import { SITE_DESCRIPTION, SITE_OG_IMAGE, SITE_TITLE_APPEND, SITE_URL } from "@/config";
+import { SITE_TITLE_APPEND } from "@/config";
 
 export const Route = createRootRoute({
 	component: RootComponent,
@@ -23,79 +23,30 @@ export const Route = createRootRoute({
 				content: "width=device-width, initial-scale=1",
 			},
 			{
-				title: "TanStack Start Starter",
+				title: `Hello hello! ${SITE_TITLE_APPEND}`,
+			},
+			// Description is set per-route.
+			{
+				name: "mobile-web-app-capable",
+				content: "yes",
 			},
 			{
-				name: "description",
-				content: SITE_DESCRIPTION,
+				name: "apple-mobile-web-app-title",
+				content: "Sreetam Das' website",
 			},
 			{
-				property: "og:title",
-				content: `👋 Hello hello! ${SITE_TITLE_APPEND}`,
+				name: "apple-mobile-web-app-status-bar-style",
+				content: "default",
 			},
+			// SEO meta (canonical, og:*, twitter:title/description/image) is set per-route.
+			{ name: "twitter:card", content: "summary_large_image" },
 			{
-				property: "og:description",
-				content: SITE_DESCRIPTION,
-			},
-			{
-				property: "og:url",
-				content: SITE_URL,
-			},
-			{
-				property: "og:image:type",
-				content: "image/png",
-			},
-			{
-				property: "og:image:width",
-				content: "1200",
-			},
-			{
-				property: "og:image:height",
-				content: "600",
-			},
-			{
-				property: "og:image",
-				content: `${SITE_URL}${SITE_OG_IMAGE}`,
-			},
-			{
-				property: "og:type",
-				content: "website",
-			},
-			{
-				property: "twitter:card",
-				content: "summary_large_image",
-			},
-			{
-				property: "twitter:site",
+				name: "twitter:site",
 				content: "@_SreetamDas",
 			},
 			{
-				property: "twitter:created",
+				name: "twitter:creator",
 				content: "@_SreetamDas",
-			},
-			{
-				property: "twitter:title",
-				content: `👋 Hello hello! ${SITE_TITLE_APPEND}`,
-			},
-			{
-				property: "twitter:description",
-				content: SITE_DESCRIPTION,
-			},
-			{
-				property: "twitter:image:type",
-				content: "image/png",
-			},
-			{
-				property: "twitter:image:width",
-				content: "1200",
-			},
-			{
-				property: "twitter:image:height",
-				content: "600",
-			},
-			{
-				property: "twitter:image",
-				content: `${SITE_URL}${SITE_OG_IMAGE}`,
 			},
 			{
 				name: "theme-color",

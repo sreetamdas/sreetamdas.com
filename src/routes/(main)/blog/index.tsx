@@ -1,17 +1,33 @@
-import { IS_DEV, SITE_TITLE_APPEND } from "@/config";
+import { IS_DEV, SITE_DESCRIPTION, SITE_TITLE_APPEND } from "@/config";
 import { blogPosts } from "@/generated";
 import { LinkTo } from "@/lib/components/Anchor";
+import { canonicalUrl, defaultOgImageUrl } from "@/lib/seo";
 import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/(main)/blog/")({
 	component: BlogArchivePage,
-	head: () => ({
-		meta: [
-			{
-				title: `Blog archive ${SITE_TITLE_APPEND}`,
-			},
-		],
-	}),
+	head: () => {
+		const title = `Blog archive ${SITE_TITLE_APPEND}`;
+		const description = SITE_DESCRIPTION;
+		const canonical = canonicalUrl("/blog");
+		const ogImage = defaultOgImageUrl();
+
+		return {
+			links: [{ rel: "canonical", href: canonical }],
+			meta: [
+				{ title },
+				{ name: "description", content: description },
+				{ property: "og:title", content: title },
+				{ property: "og:description", content: description },
+				{ property: "og:type", content: "website" },
+				{ property: "og:url", content: canonical },
+				{ property: "og:image", content: ogImage },
+				{ name: "twitter:title", content: title },
+				{ name: "twitter:description", content: description },
+				{ name: "twitter:image", content: ogImage },
+			],
+		};
+	},
 	loader: () =>
 		blogPosts
 			.flatMap(({ title, description, page_slug, page_path, url, published, published_at }) => {

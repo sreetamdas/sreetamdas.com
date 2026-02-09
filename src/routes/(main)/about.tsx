@@ -1,5 +1,6 @@
 import { SocialLinks } from "@/lib/components/SocialLinks";
-import { SITE_TITLE_APPEND } from "@/config";
+import { SITE_DESCRIPTION, SITE_TITLE_APPEND } from "@/config";
+import { canonicalUrl, defaultOgImageUrl } from "@/lib/seo";
 import { rootPages } from "@/generated";
 import { MDXContent } from "@/lib/components/MDX";
 import { ViewsCounter } from "@/lib/components/ViewsCounter";
@@ -16,13 +17,28 @@ export const Route = createFileRoute("/(main)/about")({
 		}
 		return post;
 	},
-	head: () => ({
-		meta: [
-			{
-				title: `About ${SITE_TITLE_APPEND}`,
-			},
-		],
-	}),
+	head: ({ loaderData }) => {
+		const title = `About ${SITE_TITLE_APPEND}`;
+		const description = loaderData?.description ?? SITE_DESCRIPTION;
+		const canonical = canonicalUrl("/about");
+		const ogImage = defaultOgImageUrl();
+
+		return {
+			links: [{ rel: "canonical", href: canonical }],
+			meta: [
+				{ title },
+				{ name: "description", content: description },
+				{ property: "og:title", content: title },
+				{ property: "og:description", content: description },
+				{ property: "og:type", content: "website" },
+				{ property: "og:url", content: canonical },
+				{ property: "og:image", content: ogImage },
+				{ name: "twitter:title", content: title },
+				{ name: "twitter:description", content: description },
+				{ name: "twitter:image", content: ogImage },
+			],
+		};
+	},
 });
 
 function AboutPage() {

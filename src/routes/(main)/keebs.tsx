@@ -2,6 +2,7 @@ import { type PageObjectResponse } from "@notionhq/client/build/src/api-endpoint
 import { isEmpty, isUndefined } from "lodash-es";
 
 import { SITE_TITLE_APPEND } from "@/config";
+import { canonicalUrl, defaultOgImageUrl } from "@/lib/seo";
 import { Image } from "@/lib/components/Image";
 import { ViewsCounter } from "@/lib/components/ViewsCounter";
 import { ImgurClient, type KeebDetails } from "@/lib/domains/Imgur";
@@ -31,15 +32,26 @@ export const Route = createFileRoute("/(main)/keebs")({
 		return { keebs };
 	},
 	head: () => ({
-		meta: [
-			{
-				title: `Keebs ${SITE_TITLE_APPEND}`,
-			},
-			{
-				name: "description",
-				content: "A collection of my mechanical keyboards",
-			},
-		],
+		links: [{ rel: "canonical", href: canonicalUrl("/keebs") }],
+		meta: (() => {
+			const title = `Keebs ${SITE_TITLE_APPEND}`;
+			const description = "A collection of my mechanical keyboards";
+			const canonical = canonicalUrl("/keebs");
+			const ogImage = defaultOgImageUrl();
+
+			return [
+				{ title },
+				{ name: "description", content: description },
+				{ property: "og:title", content: title },
+				{ property: "og:description", content: description },
+				{ property: "og:type", content: "website" },
+				{ property: "og:url", content: canonical },
+				{ property: "og:image", content: ogImage },
+				{ name: "twitter:title", content: title },
+				{ name: "twitter:description", content: description },
+				{ name: "twitter:image", content: ogImage },
+			];
+		})(),
 	}),
 });
 

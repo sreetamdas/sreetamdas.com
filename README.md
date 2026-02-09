@@ -4,10 +4,11 @@ Thanks for checking out my personal website and blog! Here's the source code for
 
 ## Tech stack
 
-- [React](https://reactjs.org) + [Next.js](https://nextjs.org)
+- [React](https://react.dev) + [TanStack Start](https://tanstack.com/start) (TanStack Router)
+- [Vite](https://vitejs.dev)
 - [TypeScript](https://www.typescriptlang.org)
 - [Tailwind CSS](https://tailwindcss.com)
-- [mdx](https://mdxjs.com)
+- Content: MDX processed via [Velite](https://github.com/zce/velite)
 - [Plausible](https://plausible.io)
 - [React Icons](https://react-icons.github.io/react-icons)
 
@@ -39,6 +40,32 @@ Pretty much wherever the mini-game is present in the repo, it's placed under a <
 ## Development/Contributing
 
 Please check out the [Contributing guide](CONTRIBUTING.md)
+
+### Local development
+
+```bash
+pnpm install
+pnpm dev
+```
+
+Notes:
+
+- `pnpm dev` runs Velite in watch mode (`pnpm dev:content`) and the Vite dev server.
+- `pnpm build` runs `pnpm build:content` automatically via `prebuild`.
+- `pnpm deploy` builds and deploys to Cloudflare via Wrangler.
+
+### Environment variables
+
+Commonly used values:
+
+- `VITE_SITE_URL` (e.g. `https://sreetamdas.com`)
+- Buttondown newsletter: `VITE_BUTTONDOWN_API_KEY` (optional; falls back to mocks)
+- Keebs page data (Notion + Imgur):
+  - `NOTION_TOKEN` / `VITE_NOTION_TOKEN`
+  - `NOTION_KEEBS_PAGE_ID` / `VITE_NOTION_KEEBS_PAGE_ID`
+  - `IMGUR_API_CLIENT_ID` / `VITE_IMGUR_API_CLIENT_ID`
+  - `IMGUR_KEEBS_ALBUM_HASH` / `VITE_IMGUR_KEEBS_ALBUM_HASH`
+- RWC page gist: `GITHUB_RWC_GIST_ID` / `VITE_GITHUB_RWC_GIST_ID`
 
 ### Newsletter
 

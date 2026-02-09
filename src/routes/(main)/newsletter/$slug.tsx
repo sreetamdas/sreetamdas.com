@@ -1,6 +1,8 @@
 import { NewsletterEmailDetail } from "./-components";
 import { fetchNewsletterEmails } from "./-helpers";
 import { createFileRoute, notFound } from "@tanstack/react-router";
+import { SITE_DESCRIPTION, SITE_TITLE_APPEND } from "@/config";
+import { canonicalUrl, defaultOgImageUrl } from "@/lib/seo";
 
 export const dynamicParams = false;
 
@@ -24,6 +26,29 @@ export const dynamicParams = false;
 
 export const Route = createFileRoute("/(main)/newsletter/$slug")({
 	component: NewsletterEmailDetailPage,
+	head: (ctx: any) => {
+		const email = ctx.loaderData?.newsletter_email_data;
+		const title = `${email?.subject ?? "Newsletter"} ${SITE_TITLE_APPEND}`;
+		const description = SITE_DESCRIPTION;
+		const canonical = canonicalUrl(`/newsletter/${email?.slug ?? ""}`);
+		const ogImage = defaultOgImageUrl();
+
+		return {
+			links: [{ rel: "canonical", href: canonical }],
+			meta: [
+				{ title },
+				{ name: "description", content: description },
+				{ property: "og:title", content: title },
+				{ property: "og:description", content: description },
+				{ property: "og:type", content: "article" },
+				{ property: "og:url", content: canonical },
+				{ property: "og:image", content: ogImage },
+				{ name: "twitter:title", content: title },
+				{ name: "twitter:description", content: description },
+				{ name: "twitter:image", content: ogImage },
+			],
+		};
+	},
 	loader: async ({ params: { slug } }) => {
 		const buttondown_api_emails_response = await fetchNewsletterEmails();
 		const newsletter_email_by_slug = buttondown_api_emails_response.results.find(
@@ -60,7 +85,7 @@ export const Route = createFileRoute("/(main)/newsletter/$slug")({
 });
 
 function NewsletterEmailDetailPage() {
-	const { newsletter_email_data } = Route.useLoaderData();
+	const { newsletter_email_data } = Route.useLoaderData() as any;
 
 	return <NewsletterEmailDetail email={newsletter_email_data} />;
 }
