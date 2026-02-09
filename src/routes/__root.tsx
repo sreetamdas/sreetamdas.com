@@ -9,7 +9,7 @@ import bricolageGrotesqueFont from "@fontsource-variable/bricolage-grotesque/fil
 import "@fontsource-variable/inter/index.css";
 import interFont from "@fontsource-variable/inter/files/inter-latin-ext-wght-normal.woff2?url";
 import appCss from "./global.css?url";
-import { SITE_TITLE_APPEND } from "@/config";
+import { IS_DEV, SITE_TITLE_APPEND } from "@/config";
 
 export const Route = createRootRoute({
 	component: RootComponent,
@@ -117,7 +117,9 @@ function RootComponent() {
 		<RootDocument>
 			<QueryClientProvider client={queryClient}>
 				<Outlet />
-				<ReactQueryDevtools initialIsOpen={false} />
+				{IS_DEV ? (
+					<ReactQueryDevtools initialIsOpen={false} buttonPosition="bottom-left" />
+				) : null}
 			</QueryClientProvider>
 		</RootDocument>
 	);
