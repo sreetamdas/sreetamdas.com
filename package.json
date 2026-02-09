@@ -27,7 +27,16 @@
     "lint": "pnpm run oxfmt:check && pnpm run oxlint:check",
     "lint:fix": "pnpm run oxfmt:write && pnpm run oxlint:fix",
     "format": "pnpm run oxfmt:write",
-    "deploy": "pnpm run build && wrangler deploy"
+    "deploy": "pnpm run build && wrangler deploy",
+    "prepare": "husky",
+    "lint-staged": "lint-staged"
+  },
+  "lint-staged": {
+    "*.{ts,tsx,js,jsx}": [
+      "oxfmt -c ./.config/.oxfmtrc.json --ignore-path ./.config/.oxfmtignore",
+      "oxlint --config ./.config/.oxlintrc.json"
+    ],
+    "*.{json,jsonc}": ["oxfmt -c ./.config/.oxfmtrc.json --ignore-path ./.config/.oxfmtignore"]
   },
   "dependencies": {
     "@cloudflare/vite-plugin": "^1.17.0",
@@ -79,6 +88,8 @@
     "@vitejs/plugin-react": "^5.1.2",
     "better-sqlite3": "^12.6.2",
     "drizzle-kit": "1.0.0-beta.15-859cf75",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.2.7",
     "oxfmt": "^0.28.0",
     "oxlint": "^1.32.0",
     "oxlint-tsgolint": "^0.11.5",
