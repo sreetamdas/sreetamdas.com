@@ -48,7 +48,7 @@
     "clsx": "^2.1.1",
     "image-size": "^2.0.2",
     "lodash-es": "^4.17.21",
-    "nitro": "3.0.1-alpha.1",
+    "nitro": "3.0.1-alpha.2",
     "react": "19.2.1",
     "react-dom": "19.2.1",
     "react-icons": "^5.5.0",
