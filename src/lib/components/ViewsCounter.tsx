@@ -2,9 +2,9 @@ import { useQuery } from "@tanstack/react-query";
 import { IS_CI, IS_DEV } from "@/config";
 import { cn } from "@/lib/helpers/utils";
 import { createServerFn, useServerFn } from "@tanstack/react-start";
-import { getGlobalStartContext } from "@tanstack/react-start";
 import { useLocation } from "@tanstack/react-router";
 import { z } from "zod";
+import { env } from "cloudflare:workers";
 type PageViewCount = {
 	view_count: number;
 };
@@ -21,12 +21,6 @@ const fetchViewCountServerFn = createServerFn<"GET", "data", PageViewCount>({
 		return PagePathname.parse(data);
 	})
 	.handler(async ({ data }) => {
-		const ctx = getGlobalStartContext() as unknown as { env?: CloudflareEnv } | undefined;
-		const env = ctx?.env;
-		if (!env) {
-			throw new Error("Cloudflare env not available (expected Start request context)");
-		}
-
 		const [{ getDb }, { getPageViews, upsertPageViews }] = await Promise.all([
 			import("@/db"),
 			import("@/lib/domains/PageViews"),
