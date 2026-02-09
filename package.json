@@ -6,7 +6,7 @@
   "scripts": {
     "dev:content": "velite --config './.config/velite.config.ts' --watch",
     "build:content": "velite --config './.config/velite.config.ts' --clean",
-    "dev": "pnpm run dev:content & vite dev",
+    "dev": "pnpm run build:content && pnpm run dev:content & vite dev",
     "prebuild": "pnpm run build:content",
     "build": "vite build",
     "preview": "vite preview",
