@@ -10,8 +10,16 @@ function getArgValue(flag) {
 
 const outPath = getArgValue("--out") ?? "./supabase-page_details.json";
 
-const SUPABASE_URL = process.env.SUPABASE_URL;
-const SUPABASE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY ?? process.env.SUPABASE_KEY;
+const SUPABASE_URL =
+	process.env.SUPABASE_URL ??
+	process.env.VITE_SUPABASE_URL ??
+	process.env.NEXT_PUBLIC_SUPABASE_URL;
+
+const SUPABASE_KEY =
+	process.env.SUPABASE_SERVICE_ROLE_KEY ??
+	process.env.SUPABASE_KEY ??
+	process.env.VITE_SUPABASE_ANON_KEY ??
+	process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
 if (!SUPABASE_URL) {
 	throw new Error("Missing SUPABASE_URL in env");
@@ -19,6 +27,14 @@ if (!SUPABASE_URL) {
 
 if (!SUPABASE_KEY) {
 	throw new Error("Missing SUPABASE_SERVICE_ROLE_KEY (or SUPABASE_KEY) in env");
+}
+
+if (!process.env.SUPABASE_SERVICE_ROLE_KEY && (process.env.VITE_SUPABASE_ANON_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY)) {
+	console.warn(
+		"[warn] Using an anon Supabase key for export. " +
+			"If RLS/policies restrict SELECT on page_details, the export may fail or be incomplete. " +
+			"Prefer SUPABASE_SERVICE_ROLE_KEY for a one-time full migration.",
+	);
 }
 
 const SUPABASE_API_BASE_URL = `${SUPABASE_URL.replace(/\/$/, "")}/rest/v1`;
