@@ -1,6 +1,9 @@
 import { blogPosts } from "@/generated";
 import { createFileRoute, notFound } from "@tanstack/react-router";
 
+import { SITE_DESCRIPTION, SITE_TITLE_APPEND } from "@/config";
+import { absoluteUrl, canonicalUrl, defaultOgImageUrl } from "@/lib/seo";
+
 import { MDXContent } from "@/lib/components/MDX";
 import { ReadingProgress } from "@/lib/components/ProgressBar.client";
 import { InfoBlock } from "@/lib/components/sink";
@@ -34,9 +37,32 @@ const getBlogContent = createServerFn({ method: "GET" })
 
 export const Route = createFileRoute("/(main)/blog/$slug")({
 	component: RouteComponent,
+	head: ({ loaderData }: any) => {
+		const post = loaderData;
+		const title = `${post?.seo_title ?? post?.title ?? "Blog"} ${SITE_TITLE_APPEND}`;
+		const description = post?.description ?? SITE_DESCRIPTION;
+		const canonical = canonicalUrl(post?.page_path ?? "/blog");
+		const ogImage = post?.image ? absoluteUrl(post.image) : defaultOgImageUrl();
 
-	loader: ({ params: { slug } }) => {
-		return getBlogContent({ data: { slug } });
+		return {
+			links: [{ rel: "canonical", href: canonical }],
+			meta: [
+				{ title },
+				{ name: "description", content: description },
+				{ property: "og:title", content: title },
+				{ property: "og:description", content: description },
+				{ property: "og:type", content: "article" },
+				{ property: "og:url", content: canonical },
+				{ property: "og:image", content: ogImage },
+				{ name: "twitter:title", content: title },
+				{ name: "twitter:description", content: description },
+				{ name: "twitter:image", content: ogImage },
+			],
+		};
+	},
+
+	loader: ({ params }: any) => {
+		return getBlogContent({ data: { slug: params.slug } });
 	},
 	notFoundComponent: () => (
 		<>
@@ -48,10 +74,10 @@ export const Route = createFileRoute("/(main)/blog/$slug")({
 			</p>
 		</>
 	),
-});
+} as any);
 
 function RouteComponent() {
-	const post = Route.useLoaderData();
+	const post = Route.useLoaderData() as any;
 
 	return (
 		<>

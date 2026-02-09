@@ -1,14 +1,25 @@
-import { SITE_TITLE_APPEND } from "@/config";
+import { SITE_DESCRIPTION, SITE_TITLE_APPEND } from "@/config";
 import { ViewsCounter } from "@/lib/components/ViewsCounter";
+import { canonicalUrl, defaultOgImageUrl } from "@/lib/seo";
 import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/(pure)/resume")({
 	component: ResumePage,
 	head: () => ({
+		links: [{ rel: "canonical", href: canonicalUrl("/resume") }],
 		meta: [
 			{
 				title: `Resume ${SITE_TITLE_APPEND}`,
 			},
+			{ name: "description", content: SITE_DESCRIPTION },
+			{ property: "og:title", content: `Resume ${SITE_TITLE_APPEND}` },
+			{ property: "og:description", content: SITE_DESCRIPTION },
+			{ property: "og:type", content: "website" },
+			{ property: "og:url", content: canonicalUrl("/resume") },
+			{ property: "og:image", content: defaultOgImageUrl() },
+			{ name: "twitter:title", content: `Resume ${SITE_TITLE_APPEND}` },
+			{ name: "twitter:description", content: SITE_DESCRIPTION },
+			{ name: "twitter:image", content: defaultOgImageUrl() },
 		],
 	}),
 });

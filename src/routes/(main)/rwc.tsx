@@ -1,5 +1,6 @@
-import { SITE_TITLE_APPEND } from "@/config";
+import { SITE_DESCRIPTION, SITE_TITLE_APPEND } from "@/config";
 import { ViewsCounter } from "@/lib/components/ViewsCounter";
+import { canonicalUrl, defaultOgImageUrl } from "@/lib/seo";
 import { fetchGist } from "@/lib/domains/GitHub";
 import { getSlimKarmaHighlighter } from "@/lib/domains/shiki";
 
@@ -61,10 +62,20 @@ export const Route = createFileRoute("/(main)/rwc")({
 	loader: async () => getHighlightedCode(),
 	errorComponent: (err) => <ErrorComponent error={err} />,
 	head: () => ({
+		links: [{ rel: "canonical", href: canonicalUrl("/rwc") }],
 		meta: [
 			{
 				title: `RWC ${SITE_TITLE_APPEND}`,
 			},
+			{ name: "description", content: SITE_DESCRIPTION },
+			{ property: "og:title", content: `RWC ${SITE_TITLE_APPEND}` },
+			{ property: "og:description", content: SITE_DESCRIPTION },
+			{ property: "og:type", content: "website" },
+			{ property: "og:url", content: canonicalUrl("/rwc") },
+			{ property: "og:image", content: defaultOgImageUrl() },
+			{ name: "twitter:title", content: `RWC ${SITE_TITLE_APPEND}` },
+			{ name: "twitter:description", content: SITE_DESCRIPTION },
+			{ name: "twitter:image", content: defaultOgImageUrl() },
 		],
 	}),
 });

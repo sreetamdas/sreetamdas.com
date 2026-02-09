@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SITE_TITLE_APPEND, SITE_URL } from "@/config";
+import { canonicalUrl } from "@/lib/seo";
 import { ViewsCounter } from "@/lib/components/ViewsCounter";
 import { KarmaShowcase } from "@/lib/components/KarmaShowcase.client";
 import { createServerFn } from "@tanstack/react-start";
@@ -11,6 +12,7 @@ export const Route = createFileRoute("/(main)/karma")({
 		return getShowcaseImages();
 	},
 	head: () => ({
+		links: [{ rel: "canonical", href: canonicalUrl("/karma") }],
 		meta: [
 			{
 				title: `Karma ${SITE_TITLE_APPEND}`,
@@ -19,6 +21,8 @@ export const Route = createFileRoute("/(main)/karma")({
 				name: "description",
 				content: "A colorful VS Code theme by Sreetam Das",
 			},
+			{ property: "og:type", content: "website" },
+			{ property: "og:url", content: canonicalUrl("/karma") },
 			{
 				property: "og:title",
 				content: `Karma ${SITE_TITLE_APPEND}`,
@@ -31,6 +35,7 @@ export const Route = createFileRoute("/(main)/karma")({
 				property: "og:image",
 				content: `${SITE_URL}/karma/karma-card.jpg`,
 			},
+			{ name: "twitter:card", content: "summary_large_image" },
 			{
 				name: "twitter:title",
 				content: `Karma ${SITE_TITLE_APPEND}`,

@@ -2,17 +2,33 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { notFound } from "@tanstack/react-router";
 
 import { IS_DEV, SITE_TITLE_APPEND } from "@/config";
+import { canonicalUrl, defaultOgImageUrl } from "@/lib/seo";
 import { aoc_solutions } from "@/generated";
 
 export const Route = createFileRoute("/(main)/aoc/")({
 	component: AdventOfCodeIndexPage,
 	head: () => ({
+		links: [{ rel: "canonical", href: canonicalUrl("/aoc") }],
 		meta: [
 			{ title: `Advent of Code ${SITE_TITLE_APPEND}` },
 			{
 				name: "description",
 				content: "Writeups and notes for Advent of Code solutions",
 			},
+			{ property: "og:title", content: `Advent of Code ${SITE_TITLE_APPEND}` },
+			{
+				property: "og:description",
+				content: "Writeups and notes for Advent of Code solutions",
+			},
+			{ property: "og:type", content: "website" },
+			{ property: "og:url", content: canonicalUrl("/aoc") },
+			{ property: "og:image", content: defaultOgImageUrl() },
+			{ name: "twitter:title", content: `Advent of Code ${SITE_TITLE_APPEND}` },
+			{
+				name: "twitter:description",
+				content: "Writeups and notes for Advent of Code solutions",
+			},
+			{ name: "twitter:image", content: defaultOgImageUrl() },
 		],
 	}),
 	loader: () => {

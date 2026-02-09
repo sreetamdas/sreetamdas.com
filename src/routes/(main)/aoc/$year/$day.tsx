@@ -2,7 +2,8 @@ import { isEmpty, isNil } from "lodash-es";
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import z from "zod";
 
-import { IS_DEV, SITE_OG_IMAGE, SITE_TITLE_APPEND, SITE_URL } from "@/config";
+import { IS_DEV, SITE_TITLE_APPEND } from "@/config";
+import { absoluteUrl, canonicalUrl, defaultOgImageUrl } from "@/lib/seo";
 import { aoc_solutions } from "@/generated";
 import { MDXContent } from "@/lib/components/MDX";
 import { ReadingProgress } from "@/lib/components/ProgressBar.client";
@@ -38,6 +39,12 @@ export const Route = createFileRoute("/(main)/aoc/$year/$day")({
 		return { post, fullSlug };
 	},
 	head: ({ loaderData }) => ({
+		links: [
+			{
+				rel: "canonical",
+				href: canonicalUrl(`/aoc/${loaderData?.fullSlug ?? ""}`),
+			},
+		],
 		meta: [
 			{
 				title: `${loaderData?.post.seo_title ?? loaderData?.post.title} ${SITE_TITLE_APPEND}`,
@@ -51,24 +58,24 @@ export const Route = createFileRoute("/(main)/aoc/$year/$day")({
 			{ property: "og:type", content: "article" },
 			{
 				property: "og:url",
-				content: `${SITE_URL}/aoc/${loaderData?.fullSlug}`,
+				content: canonicalUrl(`/aoc/${loaderData?.fullSlug ?? ""}`),
 			},
 			{
 				property: "og:image",
-				content: loaderData?.post.image ?? SITE_OG_IMAGE,
+				content: loaderData?.post.image ? absoluteUrl(loaderData.post.image) : defaultOgImageUrl(),
 			},
-			{ property: "twitter:card", content: "summary_large_image" },
+			{ name: "twitter:card", content: "summary_large_image" },
 			{
-				property: "twitter:title",
+				name: "twitter:title",
 				content: `${loaderData?.post.seo_title ?? loaderData?.post.title} ${SITE_TITLE_APPEND}`,
 			},
 			{
-				property: "twitter:description",
+				name: "twitter:description",
 				content: loaderData?.post.description,
 			},
 			{
-				property: "twitter:image",
-				content: loaderData?.post.image ?? SITE_OG_IMAGE,
+				name: "twitter:image",
+				content: loaderData?.post.image ? absoluteUrl(loaderData.post.image) : defaultOgImageUrl(),
 			},
 		],
 	}),
