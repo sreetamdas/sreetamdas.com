@@ -20,8 +20,6 @@
     "db:studio": "drizzle-kit studio --config drizzle.studio.local.config.ts",
     "db:studio:local": "pnpm db:bootstrap:local && drizzle-kit studio --config drizzle.studio.local.config.ts",
     "db:studio:remote": "drizzle-kit studio --config drizzle.studio.remote.config.ts",
-    "migrate:pageviews:export-supabase": "node scripts/supabase-export-page-details.mjs",
-    "migrate:pageviews:generate-d1-sql": "node scripts/d1-generate-import-sql.mjs",
     "oxlint:check": "oxlint --config ./.config/.oxlintrc.json ./src",
     "oxlint:fix": "oxlint --config ./.config/.oxlintrc.json --fix ./src",
     "oxfmt:check": "oxfmt --config ./.config/.oxfmtrc.json --ignore-path ./.config/.oxfmtignore --check ./src '!**/routeTree.gen.ts'",
