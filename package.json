@@ -78,7 +78,7 @@
     "@types/unist": "~3.0.3",
     "@vitejs/plugin-react": "^5.1.2",
     "better-sqlite3": "^12.6.2",
-    "drizzle-kit": "1.0.0-beta.15-859cf75",
+    "drizzle-kit": "1.0.0-beta.9-e89174b",
     "oxfmt": "^0.28.0",
     "oxlint": "^1.32.0",
     "oxlint-tsgolint": "^0.11.5",
