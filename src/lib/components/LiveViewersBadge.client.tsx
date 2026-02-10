@@ -2,14 +2,13 @@ import { useEffect, useRef, useState } from "react";
 
 import { cn } from "@/lib/helpers/utils";
 
-type LiveViewersPayload =
-	| {
-			type: "count";
-			count: number;
-	  }
-	| {
-			type: "pong";
-	  };
+type LiveViewersPayload = {
+	type: "count";
+	count: number;
+};
+
+const PING_INTERVAL_MS = 60_000;
+const PING_JITTER_MAX_MS = 2_000;
 
 function getWsUrl() {
 	const url = new URL("/api/presence", window.location.href);
@@ -22,7 +21,8 @@ export const LiveViewersBadge = ({ className }: { className?: string }) => {
 	const [connected, setConnected] = useState(false);
 	const wsRef = useRef<WebSocket | null>(null);
 	const reconnectTimerRef = useRef<number | null>(null);
-	const pingTimerRef = useRef<number | null>(null);
+	const pingTimeoutRef = useRef<number | null>(null);
+	const pingJitterMsRef = useRef<number | null>(null);
 	const reconnectAttemptRef = useRef(0);
 
 	useEffect(() => {
@@ -36,10 +36,39 @@ export const LiveViewersBadge = ({ className }: { className?: string }) => {
 		}
 
 		function clearPingTimer() {
-			if (pingTimerRef.current !== null) {
-				window.clearInterval(pingTimerRef.current);
-				pingTimerRef.current = null;
+			if (pingTimeoutRef.current !== null) {
+				window.clearTimeout(pingTimeoutRef.current);
+				pingTimeoutRef.current = null;
 			}
+		}
+
+		function startUtcAlignedPings(ws: WebSocket, intervalMs: number) {
+			clearPingTimer();
+
+			if (pingJitterMsRef.current === null) {
+				const jitterArray = new Uint32Array(1);
+				crypto.getRandomValues(jitterArray);
+				pingJitterMsRef.current = jitterArray[0] % PING_JITTER_MAX_MS;
+			}
+			const jitterMs = pingJitterMsRef.current;
+
+			const scheduleNext = () => {
+				const now = Date.now();
+				const base = (Math.floor(now / intervalMs) + 1) * intervalMs;
+				let next = base + jitterMs;
+				if (next <= now) next += intervalMs;
+
+				pingTimeoutRef.current = window.setTimeout(() => {
+					try {
+						ws.send("ping");
+					} catch {
+						// noop
+					}
+					scheduleNext();
+				}, next - now);
+			};
+
+			scheduleNext();
 		}
 
 		function closeCurrent() {
@@ -82,14 +111,7 @@ export const LiveViewersBadge = ({ className }: { className?: string }) => {
 				if (cancelled) return;
 				reconnectAttemptRef.current = 0;
 				setConnected(true);
-				clearPingTimer();
-				pingTimerRef.current = window.setInterval(() => {
-					try {
-						ws.send("ping");
-					} catch {
-						// noop
-					}
-				}, 25_000);
+				startUtcAlignedPings(ws, PING_INTERVAL_MS);
 			};
 
 			ws.onmessage = (event) => {
