@@ -3,13 +3,13 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { HeadContent, Outlet, Scripts, createRootRoute } from "@tanstack/react-router";
 import { FOOBAR_SOURCE_CODE } from "@/lib/domains/foobar/helpers";
-import { type ReactNode } from "react";
+import { type ReactNode, useState } from "react";
 import "@fontsource-variable/bricolage-grotesque/index.css";
 import bricolageGrotesqueFont from "@fontsource-variable/bricolage-grotesque/files/bricolage-grotesque-latin-wght-normal.woff2?url";
 import "@fontsource-variable/inter/index.css";
 import interFont from "@fontsource-variable/inter/files/inter-latin-ext-wght-normal.woff2?url";
 import appCss from "./global.css?url";
-import { SITE_TITLE_APPEND } from "@/config";
+import { IS_DEV, SITE_TITLE_APPEND } from "@/config";
 
 export const Route = createRootRoute({
 	component: RootComponent,
@@ -111,13 +111,13 @@ export const Route = createRootRoute({
 });
 
 function RootComponent() {
-	const queryClient = new QueryClient();
+	const [queryClient] = useState(() => new QueryClient());
 
 	return (
 		<RootDocument>
 			<QueryClientProvider client={queryClient}>
 				<Outlet />
-				<ReactQueryDevtools initialIsOpen={false} />
+				{IS_DEV ? <ReactQueryDevtools initialIsOpen={false} buttonPosition="bottom-left" /> : null}
 			</QueryClientProvider>
 		</RootDocument>
 	);

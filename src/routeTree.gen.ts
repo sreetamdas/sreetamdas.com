@@ -24,6 +24,7 @@ import { Route as mainBlogIndexRouteImport } from './routes/(main)/blog/index'
 import { Route as mainAocIndexRouteImport } from './routes/(main)/aoc/index'
 import { Route as mainNewsletterSlugRouteImport } from './routes/(main)/newsletter/$slug'
 import { Route as mainBlogSlugRouteImport } from './routes/(main)/blog/$slug'
+import { Route as apiApiPresenceRouteImport } from './routes/(api)/api/presence'
 import { Route as apiApiCoffeeRouteImport } from './routes/(api)/api/coffee'
 import { Route as mainfoobarFoobarIndexRouteImport } from './routes/(main)/(foobar)/foobar/index'
 import { Route as mainAocYearDayRouteImport } from './routes/(main)/aoc/$year/$day'
@@ -104,6 +105,11 @@ const mainBlogSlugRoute = mainBlogSlugRouteImport.update({
   path: '/blog/$slug',
   getParentRoute: () => mainRouteRoute,
 } as any)
+const apiApiPresenceRoute = apiApiPresenceRouteImport.update({
+  id: '/(api)/api/presence',
+  path: '/api/presence',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const apiApiCoffeeRoute = apiApiCoffeeRouteImport.update({
   id: '/(api)/api/coffee',
   path: '/api/coffee',
@@ -145,6 +151,7 @@ export interface FileRoutesByFullPath {
   '/resume': typeof pureResumeRoute
   '/': typeof mainIndexRoute
   '/api/coffee': typeof apiApiCoffeeRoute
+  '/api/presence': typeof apiApiPresenceRoute
   '/blog/$slug': typeof mainBlogSlugRoute
   '/newsletter/$slug': typeof mainNewsletterSlugRoute
   '/aoc/': typeof mainAocIndexRoute
@@ -166,6 +173,7 @@ export interface FileRoutesByTo {
   '/resume': typeof pureResumeRoute
   '/': typeof mainIndexRoute
   '/api/coffee': typeof apiApiCoffeeRoute
+  '/api/presence': typeof apiApiPresenceRoute
   '/blog/$slug': typeof mainBlogSlugRoute
   '/newsletter/$slug': typeof mainNewsletterSlugRoute
   '/aoc': typeof mainAocIndexRoute
@@ -190,6 +198,7 @@ export interface FileRoutesById {
   '/(pure)/resume': typeof pureResumeRoute
   '/(main)/': typeof mainIndexRoute
   '/(api)/api/coffee': typeof apiApiCoffeeRoute
+  '/(api)/api/presence': typeof apiApiPresenceRoute
   '/(main)/blog/$slug': typeof mainBlogSlugRoute
   '/(main)/newsletter/$slug': typeof mainNewsletterSlugRoute
   '/(main)/aoc/': typeof mainAocIndexRoute
@@ -213,6 +222,7 @@ export interface FileRouteTypes {
     | '/resume'
     | '/'
     | '/api/coffee'
+    | '/api/presence'
     | '/blog/$slug'
     | '/newsletter/$slug'
     | '/aoc/'
@@ -234,6 +244,7 @@ export interface FileRouteTypes {
     | '/resume'
     | '/'
     | '/api/coffee'
+    | '/api/presence'
     | '/blog/$slug'
     | '/newsletter/$slug'
     | '/aoc'
@@ -257,6 +268,7 @@ export interface FileRouteTypes {
     | '/(pure)/resume'
     | '/(main)/'
     | '/(api)/api/coffee'
+    | '/(api)/api/presence'
     | '/(main)/blog/$slug'
     | '/(main)/newsletter/$slug'
     | '/(main)/aoc/'
@@ -273,6 +285,7 @@ export interface RootRouteChildren {
   mainRouteRoute: typeof mainRouteRouteWithChildren
   pureRouteRoute: typeof pureRouteRouteWithChildren
   apiApiCoffeeRoute: typeof apiApiCoffeeRoute
+  apiApiPresenceRoute: typeof apiApiPresenceRoute
   apiPrxyPlsblApiEventRoute: typeof apiPrxyPlsblApiEventRoute
   apiPrxyPlsblJsScriptRoute: typeof apiPrxyPlsblJsScriptRoute
 }
@@ -384,6 +397,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof mainBlogSlugRouteImport
       parentRoute: typeof mainRouteRoute
     }
+    '/(api)/api/presence': {
+      id: '/(api)/api/presence'
+      path: '/api/presence'
+      fullPath: '/api/presence'
+      preLoaderRoute: typeof apiApiPresenceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/(api)/api/coffee': {
       id: '/(api)/api/coffee'
       path: '/api/coffee'
@@ -485,6 +505,7 @@ const rootRouteChildren: RootRouteChildren = {
   mainRouteRoute: mainRouteRouteWithChildren,
   pureRouteRoute: pureRouteRouteWithChildren,
   apiApiCoffeeRoute: apiApiCoffeeRoute,
+  apiApiPresenceRoute: apiApiPresenceRoute,
   apiPrxyPlsblApiEventRoute: apiPrxyPlsblApiEventRoute,
   apiPrxyPlsblJsScriptRoute: apiPrxyPlsblJsScriptRoute,
 }

@@ -44,3 +44,5 @@ tsconfig.tsbuildinfo
 
 # generated
 ../src/routeTree.gen.ts
+src/routeTree.gen.ts
+src/**/routeTree.gen.ts
