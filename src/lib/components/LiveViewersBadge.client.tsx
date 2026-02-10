@@ -96,6 +96,7 @@ export const LiveViewersBadge = ({ className }: { className?: string }) => {
 		function connect() {
 			if (cancelled) return;
 			closeCurrent();
+			pingJitterMsRef.current = null;
 
 			let ws: WebSocket;
 			try {
