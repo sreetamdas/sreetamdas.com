@@ -22,7 +22,7 @@ This file documents project conventions for humans and coding agents.
 ## Tooling + Style
 
 - Package manager: `pnpm`.
-- Node: see `package.json` `engines.node` (currently `22`).
+- Node: see `.nvmrc` (currently `24`).
 - Formatting: `oxfmt`.
   - Default indentation uses tabs; print width 100.
   - `src/**/routeTree.gen.ts` is excluded from formatting.
