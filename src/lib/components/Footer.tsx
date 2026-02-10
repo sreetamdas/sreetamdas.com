@@ -23,8 +23,12 @@ export const Footer = ({ children, className }: HTMLAttributes<HTMLDivElement>) 
 		<GitHubStats />
 		<p>
 			Made with{" "}
-			<a className="link-base" href="https://nextjs.org">
-				Next.js
+			<a className="link-base" href="https://tanstack.com/start">
+				TanStack Start
+			</a>{" "}
+			on{" "}
+			<a className="link-base" href="https://workers.cloudflare.com">
+				Cloudflare Workers
 			</a>{" "}
 			&bull; View source on{" "}
 			<a className="link-base" href="https://github.com/sreetamdas/sreetamdas.com">
@@ -37,11 +41,11 @@ export const Footer = ({ children, className }: HTMLAttributes<HTMLDivElement>) 
 			</a>
 		</p>
 		<div className="grid w-full place-items-center gap-3 pt-8 md:grid-cols-[1fr_auto_1fr] md:items-center md:gap-4">
-			<div className="md:justify-self-end md:order-3">
+			<div className="md:order-3 md:justify-self-end">
 				<LiveViewersBadge />
 			</div>
 			<p className="text-center md:order-2">I hope you have a very nice day :)</p>
-			<div className="hidden md:block md:order-1" />
+			<div className="hidden md:order-1 md:block" />
 		</div>
 	</footer>
 );
