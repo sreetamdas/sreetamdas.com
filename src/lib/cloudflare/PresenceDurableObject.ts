@@ -70,7 +70,7 @@ export class PresenceDurableObject extends DurableObject<CloudflareEnv> {
 	}
 
 	private maybePruneStaleConnections(now: number) {
-		if (now - this.lastPruneAt < PRUNE_MIN_INTERVAL_MS) return;
+		if (now - this.lastPruneAt < PRUNE_MIN_INTERVAL_MS) return false;
 		this.lastPruneAt = now;
 
 		let closedAny = false;
@@ -89,6 +89,7 @@ export class PresenceDurableObject extends DurableObject<CloudflareEnv> {
 		if (closedAny) {
 			this.broadcastCount();
 		}
+		return closedAny;
 	}
 
 	async fetch(request: Request): Promise<Response> {
@@ -111,8 +112,9 @@ export class PresenceDurableObject extends DurableObject<CloudflareEnv> {
 				lastSeenAt: Date.now(),
 			} satisfies ConnectionAttachment);
 
+			const pruned = this.maybePruneStaleConnections(Date.now());
 			// Broadcast the updated count (includes this connection).
-			this.broadcastCount();
+			if (!pruned) this.broadcastCount();
 
 			return new Response(null, { status: 101, webSocket: client });
 		}
@@ -136,12 +138,7 @@ export class PresenceDurableObject extends DurableObject<CloudflareEnv> {
 		}
 	}
 
-	webSocketClose(ws: WebSocket, code: number, reason: string) {
-		try {
-			ws.close(code, reason);
-		} catch {
-			// noop
-		}
+	webSocketClose(_ws: WebSocket, _code: number, reason: string) {
 		if (reason !== "stale") {
 			this.broadcastCount();
 		}
