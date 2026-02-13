@@ -14,7 +14,6 @@ interface ImportMetaEnv {
 	readonly VITE_IMGUR_KEEBS_ALBUM_HASH: string;
 	readonly VITE_NOTION_KEEBS_PAGE_ID: string;
 	readonly VITE_NOTION_TOKEN: string;
-	readonly VITE_SENTRY_DSN: string;
 	readonly VITE_SITE_URL: string;
 }
 

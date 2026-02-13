@@ -45,7 +45,6 @@
 		"@radix-ui/react-dialog": "^1.1.15",
 		"@radix-ui/react-switch": "^1.2.6",
 		"@radix-ui/react-visually-hidden": "^1.2.4",
-		"@sentry/react": "^10.38.0",
 		"@shikijs/colorized-brackets": "^3.19.0",
 		"@shikijs/langs-precompiled": "^3.19.0",
 		"@sreetamdas/karma": "^3.1.1",

@@ -1,9 +1,9 @@
 import { useEffect } from "react";
-import { captureException } from "@/lib/domains/Sentry";
 
 export default function PureRouteGroupError({ error, reset }: { error: Error; reset: () => void }) {
 	useEffect(() => {
-		captureException(error);
+		// eslint-disable-next-line no-console
+		console.error(error);
 	}, [error]);
 
 	return (
