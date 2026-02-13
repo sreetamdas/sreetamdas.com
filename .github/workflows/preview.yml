@@ -47,6 +47,16 @@ jobs:
       - name: Build
         run: pnpm build
 
+      - name: Strip Durable Objects from built wrangler config
+        run: |
+          node -e "
+            const fs = require('fs');
+            const cfg = JSON.parse(fs.readFileSync('dist/server/wrangler.json', 'utf-8'));
+            delete cfg.durable_objects;
+            delete cfg.migrations;
+            fs.writeFileSync('dist/server/wrangler.json', JSON.stringify(cfg, null, 2));
+          "
+
       - name: Sanitize branch name
         id: alias
         run: |
