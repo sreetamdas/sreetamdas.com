@@ -3,7 +3,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { HeadContent, Outlet, Scripts, createRootRoute } from "@tanstack/react-router";
 import { FOOBAR_SOURCE_CODE } from "@/lib/domains/foobar/helpers";
-import { type ReactNode, useState } from "react";
+import { captureException, initSentryBrowser } from "@/lib/domains/Sentry";
+import { type ReactNode, useEffect, useState } from "react";
 import "@fontsource-variable/bricolage-grotesque/index.css";
 import bricolageGrotesqueFont from "@fontsource-variable/bricolage-grotesque/files/bricolage-grotesque-latin-wght-normal.woff2?url";
 import "@fontsource-variable/inter/index.css";
@@ -13,6 +14,7 @@ import { IS_DEV, SITE_TITLE_APPEND } from "@/config";
 
 export const Route = createRootRoute({
 	component: RootComponent,
+	errorComponent: RootErrorComponent,
 	head: () => ({
 		meta: [
 			{
@@ -113,12 +115,42 @@ export const Route = createRootRoute({
 function RootComponent() {
 	const [queryClient] = useState(() => new QueryClient());
 
+	useEffect(() => {
+		initSentryBrowser();
+	}, []);
+
 	return (
 		<RootDocument>
 			<QueryClientProvider client={queryClient}>
 				<Outlet />
 				{IS_DEV ? <ReactQueryDevtools initialIsOpen={false} buttonPosition="bottom-left" /> : null}
 			</QueryClientProvider>
+		</RootDocument>
+	);
+}
+
+function RootErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
+	useEffect(() => {
+		captureException(error);
+	}, [error]);
+
+	return (
+		<RootDocument>
+			<main className="mx-auto grid min-h-[60vh] max-w-3xl place-items-center px-6 py-16">
+				<section className="grid gap-4 text-center">
+					<h1 className="font-serif text-4xl font-bold tracking-tight">Something went wrong</h1>
+					<p className="text-foreground/70 text-sm">This error has been reported.</p>
+					<div>
+						<button
+							type="button"
+							onClick={() => reset()}
+							className="link-base text-foreground hover:text-primary"
+						>
+							Try again
+						</button>
+					</div>
+				</section>
+			</main>
 		</RootDocument>
 	);
 }
