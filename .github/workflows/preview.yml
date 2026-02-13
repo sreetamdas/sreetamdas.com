@@ -69,7 +69,9 @@ jobs:
         run: |
           OUTPUT=$(pnpm exec wrangler versions upload --preview-alias "${{ steps.alias.outputs.slug }}" 2>&1)
           echo "$OUTPUT"
-          PREVIEW_URL=$(echo "$OUTPUT" | grep -oP 'https://[^\s]+\.workers\.dev' | head -1)
+          VERSION_ID=$(echo "$OUTPUT" | grep -oP 'Worker Version ID: \K[0-9a-f-]+')
+          VERSION_PREFIX=$(echo "$VERSION_ID" | cut -c1-8)
+          PREVIEW_URL="https://${VERSION_PREFIX}-sreetamdas-com.sreetamdas.workers.dev"
           echo "preview_url=$PREVIEW_URL" >> "$GITHUB_OUTPUT"
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
