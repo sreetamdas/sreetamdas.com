@@ -4,8 +4,6 @@
 	"compatibility_date": "2025-09-27",
 	"compatibility_flags": ["nodejs_compat"],
 	"main": "./src/worker.ts",
-	"workers_dev": true,
-	"preview_urls": true,
 	"durable_objects": {
 		"bindings": [
 			{
