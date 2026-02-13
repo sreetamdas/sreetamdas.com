@@ -16,13 +16,13 @@ If you spot any typos, feel free to send a pull request! 🙂
 
 ## Setting up locally
 
-This project utilizes a _bunch_ of APIs for all kinds of different things: [Buttondown.email API](https://api.buttondown.email) for my newsletter statistics, Cloudflare D1 for page view counts, etc.
+This project utilizes a _bunch_ of APIs for all kinds of different things: [Buttondown.email API](https://api.buttondown.email) for newsletter data, Cloudflare D1 for page view counts, and more.
 
-In order to provide a more seamless experience, I've set up [Mock Service Worker](https://mswjs.io) which allows us to intercept and mock such requests at the network level. Pretty neat stuff!
+To keep local development smooth, most integrations have fallbacks/mocks so you can run the app without configuring every external API up front.
 
 ### Default local setup
 
-By default, mocking is enabled via the `NEXT_PUBLIC_API_MOCKING_ENABLED` environment variable set to `true` in `.env.example`. What this means is that you _should_ be able to clone the repo, run `pnpm i`, and start working without any additional setup! Make sure you rename `.env.example` to `.env`.
+By default, you should be able to clone the repo, run `pnpm i`, and start working without adding API keys. If you want to use real integrations locally, copy `.env.example` to `.env` and fill in only the values you need.
 
 #### Node version
 
@@ -41,7 +41,7 @@ pnpm dev
 
 ### Setting up the `.env` variables
 
-If you'd like to use your own API keys, open up `.env.example` and replace the `${VARIABLE_NAME}` with your corresponding details. And when you're ready, disable mock service worker by removing the `NEXT_PUBLIC_API_MOCKING_ENABLED` environment variable or setting it to `false`.
+If you'd like to use your own API keys, open `.env.example` and replace the `${VARIABLE_NAME}` placeholders with your details.
 
 #### Notion
 

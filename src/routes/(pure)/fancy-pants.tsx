@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { ImArrowUpRight2 } from "react-icons/im";
 
 import { SITE_TITLE_APPEND } from "@/config";
@@ -30,7 +31,18 @@ export const Route = createFileRoute("/(pure)/fancy-pants")({
 });
 
 function FancyPantsPage() {
-	// TODO Set dark mode
+	useEffect(() => {
+		const root = document.documentElement;
+		const prev = root.getAttribute("data-color-scheme");
+		root.setAttribute("data-color-scheme", "dark");
+		return () => {
+			if (prev) {
+				root.setAttribute("data-color-scheme", prev);
+			} else {
+				root.removeAttribute("data-color-scheme");
+			}
+		};
+	}, []);
 
 	return (
 		<section className="p-10">

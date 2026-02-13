@@ -9,8 +9,9 @@
 	"scripts": {
 		"dev:content": "velite --config './.config/velite.config.ts' --watch",
 		"build:content": "velite --config './.config/velite.config.ts' --clean",
+		"generate-feeds": "tsx scripts/generate-feeds.ts",
 		"dev": "pnpm run build:content && pnpm run dev:content & vite dev",
-		"prebuild": "pnpm run build:content",
+		"prebuild": "pnpm run build:content && pnpm run generate-feeds",
 		"build": "vite build",
 		"preview": "vite preview",
 		"compile": "tsc --watch",
@@ -44,6 +45,7 @@
 		"@radix-ui/react-dialog": "^1.1.15",
 		"@radix-ui/react-switch": "^1.2.6",
 		"@radix-ui/react-visually-hidden": "^1.2.4",
+		"@sentry/react": "^10.38.0",
 		"@shikijs/colorized-brackets": "^3.19.0",
 		"@shikijs/langs-precompiled": "^3.19.0",
 		"@sreetamdas/karma": "^3.1.1",

@@ -13,10 +13,8 @@ export const NotFound404 = ({ message }: { message?: ReactNode }) => {
 				<Gradient>404!</Gradient>
 			</h1>
 			<p className="pt-4 text-center font-serif text-xl">
-				The blog post you&apos;re trying to find doesn&apos;t exist :/
+				{message ?? "The page you\u2019re looking for doesn\u2019t exist :/"}
 			</p>
-
-			{message ? message : null}
 
 			<p className="pt-40 text-center">
 				<a className="link-base" href="/">

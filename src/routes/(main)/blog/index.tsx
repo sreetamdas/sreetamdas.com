@@ -30,20 +30,32 @@ export const Route = createFileRoute("/(main)/blog/")({
 	},
 	loader: () =>
 		blogPosts
-			.flatMap(({ title, description, page_slug, page_path, url, published, published_at }) => {
-				if (!IS_DEV && !published) {
-					return [];
-				}
-
-				return {
+			.flatMap(
+				({
 					title,
 					description,
 					page_slug,
 					page_path,
-					published_at,
 					url,
-				};
-			})
+					published,
+					published_at,
+					reading_time,
+				}) => {
+					if (!IS_DEV && !published) {
+						return [];
+					}
+
+					return {
+						title,
+						description,
+						page_slug,
+						page_path,
+						published_at,
+						reading_time,
+						url,
+					};
+				},
+			)
 			.sort((a, b) => new Date(b.published_at).getTime() - new Date(a.published_at).getTime()),
 });
 
@@ -55,7 +67,7 @@ function BlogArchivePage() {
 			<h1 className="pt-10 pb-20 font-serif text-8xl font-bold tracking-tighter">/blog</h1>
 			<section className="grid gap-20">
 				{blog_posts_previews.map(
-					({ title, description, page_slug, page_path, published_at, url }) => (
+					({ title, description, page_slug, page_path, published_at, reading_time, url }) => (
 						<article key={page_slug} className="group grid gap-y-2">
 							<LinkTo
 								href={url ?? page_path}
@@ -75,6 +87,7 @@ function BlogArchivePage() {
 										day: "numeric",
 									})}
 								</p>
+								<p className="text-foreground/60 text-sm">{reading_time} min read</p>
 							</div>
 						</article>
 					),

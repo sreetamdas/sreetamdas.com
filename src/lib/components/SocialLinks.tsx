@@ -13,6 +13,8 @@ import {
 } from "react-icons/fa";
 import { SiPeerlist } from "react-icons/si";
 
+import { useCustomPlausible } from "@/lib/domains/Plausible";
+
 type ExternalLinksArrayType = Array<{
 	link: string;
 	title: string;
@@ -20,6 +22,8 @@ type ExternalLinksArrayType = Array<{
 	onClick?: () => void;
 }>;
 export const SocialLinks = () => {
+	const plausibleEvent = useCustomPlausible();
+
 	const external_links: ExternalLinksArrayType = [
 		{
 			link: "https://github.com/sreetamdas",
@@ -61,9 +65,7 @@ export const SocialLinks = () => {
 			title: "Sreetam Das' Reddit",
 			Icon: (props) => <FaRedditAlien {...props} />,
 			onClick: () => {
-				// TODO: add Plausible event to track this as a new foobar badge
-				// eslint-disable-next-line no-console
-				console.log("Rick-rolled");
+				plausibleEvent("foobar", { props: { achievement: "easter-egg" } });
 			},
 		},
 		{
