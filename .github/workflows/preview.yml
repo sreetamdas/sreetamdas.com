@@ -4,13 +4,14 @@ on:
   pull_request:
 
 concurrency:
-  group: preview-${{ github.head_ref }}
+  group: preview-${{ github.event.pull_request.number }}
   cancel-in-progress: true
 
 jobs:
   preview:
     name: Preview
     runs-on: ubuntu-latest
+    if: ${{ secrets.CLOUDFLARE_API_TOKEN != '' }}
     permissions:
       contents: read
       pull-requests: write
@@ -47,10 +48,16 @@ jobs:
       - name: Build
         run: pnpm build
 
+      - name: Sanitize branch name
+        id: alias
+        run: |
+          SLUG=$(echo "${{ github.head_ref }}" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9-]/-/g' | sed 's/--*/-/g' | sed 's/^-//' | sed 's/-$//' | cut -c1-28)
+          echo "slug=$SLUG" >> "$GITHUB_OUTPUT"
+
       - name: Upload preview version
         id: preview
         run: |
-          OUTPUT=$(pnpm exec wrangler versions upload --preview-alias "${{ github.head_ref }}" 2>&1)
+          OUTPUT=$(pnpm exec wrangler versions upload --preview-alias "${{ steps.alias.outputs.slug }}" 2>&1)
           echo "$OUTPUT"
           PREVIEW_URL=$(echo "$OUTPUT" | grep -oP 'https://[^\s]+\.workers\.dev' | head -1)
           echo "preview_url=$PREVIEW_URL" >> "$GITHUB_OUTPUT"
@@ -63,7 +70,8 @@ jobs:
         with:
           script: |
             const previewUrl = '${{ steps.preview.outputs.preview_url }}';
-            const branchAlias = `https://${{ github.head_ref }}-sreetamdas-com.sreetamdas.workers.dev`;
+            const alias = '${{ steps.alias.outputs.slug }}';
+            const branchAlias = `https://${alias}-sreetamdas-com.sreetamdas.workers.dev`;
             const body = [
               '## Workers Preview Deploy',
               '',
