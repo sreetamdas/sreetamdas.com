@@ -43,7 +43,11 @@ type RootPage = {
 };
 
 function loadJson<T>(filename: string): T {
-	const content = readFileSync(resolve(VELITE_DIR, filename), "utf-8");
+	const filepath = resolve(VELITE_DIR, filename);
+	if (!existsSync(filepath)) {
+		throw new Error(`${filepath} not found — run "pnpm build:content" before generating feeds.`);
+	}
+	const content = readFileSync(filepath, "utf-8");
 	return JSON.parse(content) as T;
 }
 

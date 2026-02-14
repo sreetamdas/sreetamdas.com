@@ -136,7 +136,7 @@ function RootErrorComponent({ error, reset }: { error: Error; reset: () => void 
 				<section className="grid gap-4 text-center">
 					<h1 className="font-serif text-4xl font-bold tracking-tight">Something went wrong</h1>
 					<p className="text-foreground/70 text-sm">This error has been reported.</p>
-					<div>
+					<div className="flex items-center justify-center gap-4">
 						<button
 							type="button"
 							onClick={() => reset()}
@@ -144,6 +144,9 @@ function RootErrorComponent({ error, reset }: { error: Error; reset: () => void 
 						>
 							Try again
 						</button>
+						<a href="/" className="link-base text-foreground hover:text-primary">
+							Go home
+						</a>
 					</div>
 				</section>
 			</main>
