@@ -52,6 +52,20 @@
 					"pattern": "dev.sreetamdas.com"
 				}
 			],
+			"durable_objects": {
+				"bindings": [
+					{
+						"name": "SITE_PRESENCE",
+						"class_name": "PresenceDurableObject"
+					}
+				]
+			},
+			"migrations": [
+				{
+					"tag": "do-v1",
+					"new_sqlite_classes": ["PresenceDurableObject"]
+				}
+			],
 			"d1_databases": [
 				{
 					"database_name": "sreetamdas_com",
@@ -74,6 +88,20 @@
 				{
 					"custom_domain": true,
 					"pattern": "sreetamdas.com"
+				}
+			],
+			"durable_objects": {
+				"bindings": [
+					{
+						"name": "SITE_PRESENCE",
+						"class_name": "PresenceDurableObject"
+					}
+				]
+			},
+			"migrations": [
+				{
+					"tag": "do-v1",
+					"new_sqlite_classes": ["PresenceDurableObject"]
 				}
 			],
 			"d1_databases": [
