@@ -87,7 +87,9 @@ function BlogArchivePage() {
 										day: "numeric",
 									})}
 								</p>
-								<p className="text-foreground/60 text-sm">{reading_time} min read</p>
+								{reading_time ? (
+									<p className="text-foreground/60 text-sm">{reading_time} min read</p>
+								) : null}
 							</div>
 						</article>
 					),

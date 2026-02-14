@@ -17,7 +17,8 @@ This file documents project conventions for humans and coding agents.
 - Build: `pnpm build` (includes content build via `prebuild`)
 - Lint/format check: `pnpm lint` (oxfmt check + oxlint)
 - Auto-fix (when safe): `pnpm lint:fix`
-- Deploy: `pnpm deploy` (build + `wrangler deploy`)
+- Deploy (production): `pnpm deploy` or `pnpm deploy:production`
+- Deploy (staging): `pnpm deploy:staging`
 
 ## Tooling + Style
 

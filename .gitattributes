@@ -1,0 +1,3 @@
+# Mark generated files so GitHub collapses them in PR diffs
+src/cloudflare-env.d.ts linguist-generated=true
+pnpm-lock.yaml linguist-generated=true
