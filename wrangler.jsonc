@@ -4,6 +4,8 @@
 	"compatibility_date": "2025-09-27",
 	"compatibility_flags": ["nodejs_compat"],
 	"main": "./src/worker.ts",
+	"workers_dev": true,
+	"preview_urls": true,
 	"durable_objects": {
 		"bindings": [
 			{
@@ -39,5 +41,32 @@
 			"id": "2bc6cd0487714be58807514bc7c2003b",
 			"preview_id": "sreetamdas_com_kv_preview_default"
 		}
-	]
+	],
+	"env": {
+		"staging": {
+			"name": "sreetamdas-com-staging",
+			"workers_dev": true,
+			"routes": [
+				{
+					"custom_domain": true,
+					"pattern": "dev.sreetamdas.com"
+				}
+			],
+			"d1_databases": [
+				{
+					"database_name": "sreetamdas_com",
+					"database_id": "94e03c24-095b-47e2-bdba-a53027348100",
+					"binding": "D1",
+					"preview_database_id": "sreetamdas_com_preview_staging"
+				}
+			],
+			"kv_namespaces": [
+				{
+					"binding": "KV",
+					"id": "2bc6cd0487714be58807514bc7c2003b",
+					"preview_id": "sreetamdas_com_kv_preview_staging"
+				}
+			]
+		}
+	}
 }
