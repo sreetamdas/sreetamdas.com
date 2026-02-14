@@ -9,8 +9,9 @@
 	"scripts": {
 		"dev:content": "velite --config './.config/velite.config.ts' --watch",
 		"build:content": "velite --config './.config/velite.config.ts' --clean",
+		"generate-feeds": "tsx scripts/generate-feeds.ts",
 		"dev": "pnpm run build:content && pnpm run dev:content & vite dev",
-		"prebuild": "pnpm run build:content",
+		"prebuild": "pnpm run build:content && pnpm run generate-feeds",
 		"build": "vite build",
 		"preview": "vite preview",
 		"compile": "tsc --watch",
@@ -91,6 +92,7 @@
 		"oxlint": "^1.32.0",
 		"oxlint-tsgolint": "^0.11.5",
 		"tailwindcss": "^4.1.17",
+		"tsx": "^4.21.0",
 		"typescript": "^5.9.3",
 		"velite": "^0.3.1",
 		"vite-tsconfig-paths": "^6.1.0",

@@ -81,8 +81,8 @@ function ResumePage() {
 
 								<ul className="list-outside list-disc pl-4">
 									<li>
-										Lead development of major team-scoped projects, participate in cross-team and
-										company-wide initiatives
+										Owning delivery for end-to-end features, integrations and issues across product
+										and marketing experiences by partnering with cross-functional teams
 									</li>
 								</ul>
 
@@ -161,7 +161,8 @@ function ResumePage() {
 										<a href="https://github.com/sreetamdas/sreetamdas.com" className="link-base">
 											sreetamdas.com
 										</a>
-										: personal website built with Next.js, TypeScript and friends; open-sourced
+										: personal website built with TanStack Start, Cloudflare Workers and TypeScript;
+										open-sourced
 									</li>
 									<li>
 										<a href="https://sreetamdas.com/newsletter" className="link-base">
@@ -194,9 +195,7 @@ function ResumePage() {
 
 						<div id="extra">
 							<h2 className="text-secondary mb-4 font-bold uppercase">Skills</h2>
-							<p className="mt-4 mb-2">
-								React, CSS, Next.js, Redux, NodeJS, TypeScript, Elixir, Python and Styled-components
-							</p>
+							<p className="mt-4 mb-2">React, Elixir, TypeScript, Next.js and Python</p>
 							<h2 className="text-secondary mt-6 font-bold uppercase">Interests</h2>
 							<p className="mt-4 mb-2">
 								Developer experience, local-first offline apps, performance
