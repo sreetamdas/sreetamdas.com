@@ -2,13 +2,14 @@ import { rootPages } from "@/generated";
 import { MDXContent } from "@/lib/components/MDX";
 import { RepoContributors } from "@/lib/components/GitHub/RepoContributors";
 import { ViewsCounter } from "@/lib/components/ViewsCounter";
+import { fetchRepoContributors, type RepoContributor } from "@/lib/domains/GitHub";
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { isNil } from "lodash-es";
 import { SITE_DESCRIPTION, SITE_TITLE_APPEND } from "@/config";
 import { canonicalUrl, defaultOgImageUrl } from "@/lib/seo";
 
 type RootPage = (typeof rootPages)[number];
-type RootPageLoaderData = { post: RootPage };
+type RootPageLoaderData = { post: RootPage; contributors: Array<RepoContributor> };
 
 export const Route = createFileRoute("/(main)/$slug")({
 	component: MDXPageSlugPage,
@@ -36,26 +37,33 @@ export const Route = createFileRoute("/(main)/$slug")({
 			],
 		};
 	},
-	loader: ({ params }: { params: { slug: string } }) => {
+	loader: async ({ params }: { params: { slug: string } }) => {
 		const post = rootPages.find((page) => page.page_slug === params.slug);
 
 		if (isNil(post)) {
 			throw notFound();
 		}
 
-		return { post };
+		const contributors = await fetchRepoContributors();
+
+		return { post, contributors };
 	},
 });
 
 function MDXPageSlugPage() {
-	const { post } = Route.useLoaderData();
+	const { post, contributors } = Route.useLoaderData();
 
 	return (
 		<>
 			<h1 className="pt-10 pb-20 font-serif text-8xl font-bold tracking-tighter">
 				/{post.page_slug}
 			</h1>
-			<MDXContent source={post.raw} components={{ RepoContributors }} />
+			<MDXContent
+				source={post.raw}
+				components={{
+					RepoContributors: () => <RepoContributors contributors={contributors} />,
+				}}
+			/>
 			<ViewsCounter />
 		</>
 	);

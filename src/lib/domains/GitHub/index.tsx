@@ -39,6 +39,12 @@ export const fetchGitHubStats = createServerFn({ method: "GET" }).handler(async 
 	return { stars, forks };
 });
 
+export type RepoContributor = {
+	login: string | undefined;
+	avatar_url: string | undefined;
+	html_url: string | undefined;
+};
+
 export const fetchRepoContributors = createServerFn({ method: "GET" }).handler(async () => {
 	const request = await fetch(
 		`${GITHUB_API_BASE_URL}/repos/${DEFAULT_REPO.owner}/${DEFAULT_REPO.repo}/contributors`,
@@ -56,7 +62,7 @@ export const fetchRepoContributors = createServerFn({ method: "GET" }).handler(a
 
 	return data
 		.filter(({ type, login }) => type !== "Bot" && login !== DEFAULT_REPO.owner)
-		.map(({ login, avatar_url, html_url }) => ({ login, avatar_url, html_url }));
+		.map(({ login, avatar_url, html_url }): RepoContributor => ({ login, avatar_url, html_url }));
 });
 
 export async function fetchGist(gist_id: string) {
