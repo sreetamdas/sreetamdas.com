@@ -4,29 +4,20 @@ import { ViewsCounter } from "@/lib/components/ViewsCounter";
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { isNil } from "lodash-es";
 import { SITE_DESCRIPTION, SITE_TITLE_APPEND } from "@/config";
-import { absoluteUrl, canonicalUrl, defaultOgImageUrl } from "@/lib/seo";
+import { canonicalUrl, defaultOgImageUrl } from "@/lib/seo";
 
-export const dynamicParams = false;
-
-export function generateStaticParams() {
-	return rootPages.flatMap(({ page_slug, skip_page }) => {
-		if (skip_page) return [];
-
-		return {
-			mdxPageSlug: page_slug,
-		};
-	});
-}
+type RootPage = (typeof rootPages)[number];
+type RootPageLoaderData = { post: RootPage };
 
 export const Route = createFileRoute("/(main)/$slug")({
 	component: MDXPageSlugPage,
-	head: (ctx: any) => {
-		const post = ctx.loaderData?.post;
+	head: ({ loaderData }: { loaderData?: RootPageLoaderData }) => {
+		const post = loaderData?.post;
 		const titleBase = post?.title ?? post?.page_slug ?? "Page";
 		const title = `${titleBase} ${SITE_TITLE_APPEND}`;
 		const description = post?.description ?? SITE_DESCRIPTION;
 		const canonical = canonicalUrl(post?.page_path ?? "/");
-		const ogImage = post?.image ? absoluteUrl(post.image) : defaultOgImageUrl();
+		const ogImage = defaultOgImageUrl();
 
 		return {
 			links: [{ rel: "canonical", href: canonical }],
@@ -44,7 +35,7 @@ export const Route = createFileRoute("/(main)/$slug")({
 			],
 		};
 	},
-	loader: ({ params }: any) => {
+	loader: ({ params }: { params: { slug: string } }) => {
 		const post = rootPages.find((page) => page.page_slug === params.slug);
 
 		if (isNil(post)) {
@@ -53,10 +44,10 @@ export const Route = createFileRoute("/(main)/$slug")({
 
 		return { post };
 	},
-} as any);
+});
 
 function MDXPageSlugPage() {
-	const { post } = Route.useLoaderData() as any;
+	const { post } = Route.useLoaderData();
 
 	return (
 		<>

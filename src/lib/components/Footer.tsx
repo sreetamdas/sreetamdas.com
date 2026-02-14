@@ -53,7 +53,7 @@ export const Footer = ({ children, className }: HTMLAttributes<HTMLDivElement>) 
 export const GitHubStats = () => {
 	const getGitHubStats = useServerFn(fetchGitHubStats);
 
-	const { data } = useQuery({
+	const { data, isLoading } = useQuery({
 		queryFn: getGitHubStats,
 		queryKey: ["github-stats"],
 		staleTime: Infinity,
@@ -68,14 +68,14 @@ export const GitHubStats = () => {
 				<span className="leading-4">
 					<FaRegStar title="star" aria-label="star" className="h-[18px] w-[18px] text-current" />
 				</span>
-				<span>{data?.stars ?? "—"}</span>
+				<span className={isLoading ? "animate-pulse" : ""}>{data?.stars ?? "…"}</span>
 			</a>
 			<a
 				href="https://github.com/sreetamdas/sreetamdas.com/network/members"
 				className="link-base text-foreground hover:text-primary flex w-max items-center gap-1 transition-[color] hover:no-underline"
 			>
 				<VscRepoForked title="fork" aria-label="fork" className="h-[18px] w-[18px] text-current" />
-				<span>{data?.forks ?? "—"}</span>
+				<span className={isLoading ? "animate-pulse" : ""}>{data?.forks ?? "…"}</span>
 			</a>
 		</div>
 	);

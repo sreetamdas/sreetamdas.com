@@ -51,6 +51,7 @@ export const LinkTo = ({
 				{...(restProps as unknown as Omit<LinkProps, "to">)}
 				to={href as LinkProps["to"]}
 				params={params as LinkProps["params"]}
+				preload="intent"
 				className={classNames}
 			>
 				{children}

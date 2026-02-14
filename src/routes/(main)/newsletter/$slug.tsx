@@ -4,6 +4,13 @@ import { createFileRoute, notFound } from "@tanstack/react-router";
 import { SITE_DESCRIPTION, SITE_TITLE_APPEND } from "@/config";
 import { canonicalUrl, defaultOgImageUrl } from "@/lib/seo";
 
+type NewsletterIssue = Awaited<ReturnType<typeof fetchNewsletterEmails>>["results"][number];
+type NewsletterLoaderData = {
+	newsletter_email_data: NewsletterIssue & {
+		body: string;
+	};
+};
+
 export const dynamicParams = false;
 
 // export async function generateStaticParams() {
@@ -26,8 +33,8 @@ export const dynamicParams = false;
 
 export const Route = createFileRoute("/(main)/newsletter/$slug")({
 	component: NewsletterEmailDetailPage,
-	head: (ctx: any) => {
-		const email = ctx.loaderData?.newsletter_email_data;
+	head: ({ loaderData }: { loaderData?: NewsletterLoaderData }) => {
+		const email = loaderData?.newsletter_email_data;
 		const title = `${email?.subject ?? "Newsletter"} ${SITE_TITLE_APPEND}`;
 		const description = SITE_DESCRIPTION;
 		const canonical = canonicalUrl(`/newsletter/${email?.slug ?? ""}`);
@@ -85,7 +92,7 @@ export const Route = createFileRoute("/(main)/newsletter/$slug")({
 });
 
 function NewsletterEmailDetailPage() {
-	const { newsletter_email_data } = Route.useLoaderData() as any;
+	const { newsletter_email_data } = Route.useLoaderData();
 
 	return <NewsletterEmailDetail email={newsletter_email_data} />;
 }

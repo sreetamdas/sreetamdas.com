@@ -7,17 +7,17 @@ export const NavigationItems = () => (
 	<nav className="contents w-min">
 		<ul className="contents">
 			<li>
-				<Link to="/about" className="link-base text-foreground hover:text-primary">
+				<Link to="/about" preload="intent" className="link-base text-foreground hover:text-primary">
 					about
 				</Link>
 			</li>
 			<li>
-				<Link to="/blog" className="link-base text-foreground hover:text-primary">
+				<Link to="/blog" preload="intent" className="link-base text-foreground hover:text-primary">
 					blog
 				</Link>
 			</li>
 			<li>
-				<Link to="/karma" className="link-base text-foreground hover:text-primary">
+				<Link to="/karma" preload="intent" className="link-base text-foreground hover:text-primary">
 					karma
 				</Link>
 			</li>
@@ -25,6 +25,7 @@ export const NavigationItems = () => (
 				<Link
 					to="/$slug"
 					params={{ slug: "uses" }}
+					preload="intent"
 					className="link-base text-foreground hover:text-primary"
 				>
 					uses

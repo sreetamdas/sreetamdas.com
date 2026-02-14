@@ -29,8 +29,7 @@ export const SITE_DESCRIPTION =
 	"Senior software tinkerer from India. 💜 React, Elixir and TypeScript, CS and mechanical keyboards!";
 export const SITE_OG_IMAGE = "/og-image.png";
 
-export const IS_DEV =
-	getViteEnvBoolean("DEV") ?? getProcessEnv("NODE_ENV") === "development";
+export const IS_DEV = getViteEnvBoolean("DEV") ?? getProcessEnv("NODE_ENV") === "development";
 export const IS_DEBUG = getProcessEnv("DEBUG_MODE") === "true";
 
 /**

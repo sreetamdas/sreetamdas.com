@@ -12,6 +12,36 @@ import { FiLink } from "react-icons/fi";
 import { LinkTo } from "@/lib/components/Anchor";
 import { cn } from "@/lib/helpers/utils";
 
+/**
+ * Derives a URL-friendly slug from heading children text.
+ * Handles plain strings and nested React elements, producing a kebab-case id.
+ */
+function slugify(children: ReactNode): string {
+	const text = extractText(children);
+	return text
+		.toLowerCase()
+		.trim()
+		.replace(/[^\w\s-]/g, "")
+		.replace(/[\s_]+/g, "-")
+		.replace(/^-+|-+$/g, "");
+}
+
+function extractText(node: ReactNode): string {
+	if (typeof node === "string") return node;
+	if (typeof node === "number") return String(node);
+	if (!node) return "";
+
+	if (Array.isArray(node)) {
+		return node.map(extractText).join("");
+	}
+
+	if (isValidElement(node) && node.props) {
+		return extractText((node.props as { children?: ReactNode }).children);
+	}
+
+	return "";
+}
+
 type LinkAnchorProp = Required<Pick<HTMLAttributes<HTMLHeadElement>, "id">>;
 export const LinkAnchor = ({ id }: LinkAnchorProp) => (
 	<LinkTo
@@ -26,14 +56,15 @@ export const LinkAnchor = ({ id }: LinkAnchorProp) => (
 type HeadingProps = DetailedHTMLProps<HTMLAttributes<HTMLHeadingElement>, HTMLHeadingElement>;
 const getHeading = (
 	el: "h1" | "h2" | "h3" | "h4" | "h5" | "h6",
-	// propsWithoutChildren contains `id` attr here
 	{ children, ...propsWithoutChildren }: HeadingProps,
 ) => {
+	// Prefer an id from rehype-slug (build-time), fall back to runtime slugification.
+	const id = propsWithoutChildren.id || slugify(children);
+
 	const ActualHeading = createElement(
 		el,
-		propsWithoutChildren,
-		// `id` is always present thanks to rehypeSlug plugin
-		<LinkAnchor id={propsWithoutChildren.id!} />,
+		{ ...propsWithoutChildren, id },
+		<LinkAnchor id={id} />,
 		children,
 	);
 

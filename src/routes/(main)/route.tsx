@@ -1,11 +1,13 @@
 import { Footer } from "@/lib/components/Footer";
 import { Header } from "@/lib/components/Header";
+import { NotFound404 } from "@/lib/components/Error";
 import { createFileRoute } from "@tanstack/react-router";
 import { Outlet } from "@tanstack/react-router";
 import { FoobarPixel } from "@/lib/domains/foobar/Pixel";
 
 export const Route = createFileRoute("/(main)")({
 	component: RouteComponent,
+	notFoundComponent: () => <NotFound404 />,
 });
 
 function RouteComponent() {
