@@ -3,7 +3,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { HeadContent, Outlet, Scripts, createRootRoute } from "@tanstack/react-router";
 import { FOOBAR_SOURCE_CODE } from "@/lib/domains/foobar/helpers";
-import { captureException, initSentryBrowser } from "@/lib/domains/Sentry";
+import { captureException } from "@/lib/domains/Sentry";
 import { type ReactNode, useEffect, useState } from "react";
 import "@fontsource-variable/bricolage-grotesque/index.css";
 import bricolageGrotesqueFont from "@fontsource-variable/bricolage-grotesque/files/bricolage-grotesque-latin-wght-normal.woff2?url";
@@ -114,10 +114,6 @@ export const Route = createRootRoute({
 
 function RootComponent() {
 	const [queryClient] = useState(() => new QueryClient());
-
-	useEffect(() => {
-		initSentryBrowser();
-	}, []);
 
 	return (
 		<RootDocument>

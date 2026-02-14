@@ -1,29 +1,16 @@
-import * as Sentry from "@sentry/react";
-
-let hasInitializedSentry = false;
-
-function getSentryDsn() {
-	return import.meta.env.VITE_SENTRY_DSN;
-}
-
-export function initSentryBrowser() {
-	if (typeof window === "undefined") return;
-	if (hasInitializedSentry) return;
-
-	const dsn = getSentryDsn();
-	if (!dsn) return;
-
-	Sentry.init({
-		dsn,
-		environment: import.meta.env.MODE,
-		enabled: !import.meta.env.DEV,
-	});
-
-	hasInitializedSentry = true;
-}
+/**
+ * Thin wrapper around @sentry/tanstackstart-react.
+ *
+ * Client-side Sentry.init() happens in src/router.tsx (guarded by !router.isServer).
+ * Server-side instrumentation is not yet supported on Cloudflare Workers.
+ * This module re-exports captureException for use in error boundaries.
+ */
+import {
+	captureException as sentryCaptureException,
+	isInitialized,
+} from "@sentry/tanstackstart-react";
 
 export function captureException(error: unknown) {
-	initSentryBrowser();
-	if (!hasInitializedSentry) return;
-	Sentry.captureException(error);
+	if (!isInitialized()) return;
+	sentryCaptureException(error);
 }

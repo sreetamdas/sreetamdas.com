@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/tanstackstart-react";
 import { createRouter } from "@tanstack/react-router";
 import { routeTree } from "./routeTree.gen";
 import "./global-middleware";
@@ -9,6 +10,20 @@ export function getRouter() {
 		routeTree,
 		scrollRestoration: true,
 	});
+
+	if (!router.isServer) {
+		const dsn = import.meta.env.VITE_SENTRY_DSN;
+		if (dsn) {
+			Sentry.init({
+				dsn,
+				environment: import.meta.env.MODE,
+				enabled: !import.meta.env.DEV,
+				sendDefaultPii: true,
+				integrations: [Sentry.tanstackRouterBrowserTracingIntegration(router)],
+				tracesSampleRate: 0.2,
+			});
+		}
+	}
 
 	routerInstance = router;
 
