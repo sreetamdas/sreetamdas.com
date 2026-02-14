@@ -31,16 +31,17 @@ export const RepoContributors = () => {
 						<LinkTo href={html_url} key={login} target="_blank">
 							<div className="flex flex-col items-center gap-1">
 								{avatar_url ? (
-									<img
-										src={avatar_url}
-										alt={login ?? ""}
-										width={128}
-										height={128}
-										className="rounded-full"
-										loading="lazy"
-									/>
+									<span className="rounded-global overflow-hidden">
+										<img
+											src={avatar_url}
+											alt={login ?? ""}
+											width={128}
+											height={128}
+											loading="lazy"
+										/>
+									</span>
 								) : null}
-								<span className="text-sm">{login}</span>
+								<p className="m-0 pb-2 text-sm">{login}</p>
 							</div>
 						</LinkTo>
 					),
