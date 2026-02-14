@@ -13,6 +13,7 @@ export const RepoContributors = () => {
 	const { data: contributors, isLoading } = useQuery({
 		queryFn: fetchContributors,
 		queryKey: ["repo-contributors"],
+		staleTime: Infinity,
 	});
 
 	if (isLoading) {
