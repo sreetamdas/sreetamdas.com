@@ -23,6 +23,7 @@ export function initSentryBrowser() {
 }
 
 export function captureException(error: unknown) {
-	if (!getSentryDsn()) return;
+	initSentryBrowser();
+	if (!hasInitializedSentry) return;
 	Sentry.captureException(error);
 }
