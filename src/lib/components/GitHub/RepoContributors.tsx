@@ -1,26 +1,17 @@
 /**
  * Displays avatars of non-bot contributors to the site's GitHub repo.
- * Data is fetched server-side via createServerFn, queried client-side
- * with useQuery so the page shell renders immediately.
+ * Data is fetched server-side in the route loader and passed as a prop —
+ * no client-side fetch needed.
  */
-import { useQuery } from "@tanstack/react-query";
-import { useServerFn } from "@tanstack/react-start";
-import { fetchRepoContributors } from "@/lib/domains/GitHub";
+import { type RepoContributor } from "@/lib/domains/GitHub";
 import { LinkTo } from "@/lib/components/Anchor";
 
-export const RepoContributors = () => {
-	const fetchContributors = useServerFn(fetchRepoContributors);
-	const { data: contributors, isLoading } = useQuery({
-		queryFn: fetchContributors,
-		queryKey: ["repo-contributors"],
-		staleTime: Infinity,
-	});
+type RepoContributorsProps = {
+	contributors: Array<RepoContributor>;
+};
 
-	if (isLoading) {
-		return <p className="animate-pulse text-sm">Loading contributors...</p>;
-	}
-
-	if (!contributors || contributors.length === 0) {
+export const RepoContributors = ({ contributors }: RepoContributorsProps) => {
+	if (contributors.length === 0) {
 		return <p className="text-sm">No contributors found.</p>;
 	}
 
