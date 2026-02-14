@@ -1,33 +1,33 @@
 {
-  "editor.quickSuggestions": {
-    "strings": true
-  },
-  "editor.defaultFormatter": "oxc.oxc-vscode",
-  "files.associations": {
-    "*.css": "tailwindcss",
-    "*.module.css": "tailwindcss"
-  },
-  "tailwindCSS.classAttributes": ["class", "className", "ngClass", "tw"],
-  "tailwindCSS.classFunctions": ["tw", "clsx", "cva", "cx", "cn"],
-  "tailwindCSS.includeLanguages": {
-    "plaintext": "html"
-  },
-  "typescript.tsdk": "node_modules/typescript/lib",
-  "typescript.enablePromptUseWorkspaceTsdk": true,
-  "oxc.enable": true,
-  "oxc.path.oxlint": "node_modules/oxlint/bin/oxlint",
-  "oxc.configPath": ".config/.oxlintrc.json",
-  "oxc.typeAware": true,
-  "oxc.lint.run": "onType",
-  "oxc.path.oxfmt": "node_modules/oxfmt/bin/oxfmt",
-  "oxc.fmt.configPath": ".config/.oxfmtrc.json",
-  "files.watcherExclude": {
-    "**/routeTree.gen.ts": true
-  },
-  "search.exclude": {
-    "**/routeTree.gen.ts": true
-  },
-  "files.readonlyInclude": {
-    "**/routeTree.gen.ts": true
-  }
+	"editor.quickSuggestions": {
+		"strings": true
+	},
+	"editor.defaultFormatter": "oxc.oxc-vscode",
+	"files.associations": {
+		"*.css": "tailwindcss",
+		"*.module.css": "tailwindcss"
+	},
+	"tailwindCSS.classAttributes": ["class", "className", "ngClass", "tw"],
+	"tailwindCSS.classFunctions": ["tw", "clsx", "cva", "cx", "cn"],
+	"tailwindCSS.includeLanguages": {
+		"plaintext": "html"
+	},
+	"typescript.tsdk": "node_modules/typescript/lib",
+	"typescript.enablePromptUseWorkspaceTsdk": true,
+	"oxc.enable": true,
+	"oxc.path.oxlint": "node_modules/oxlint/bin/oxlint",
+	"oxc.configPath": ".config/.oxlintrc.json",
+	"oxc.typeAware": true,
+	"oxc.lint.run": "onType",
+	"oxc.path.oxfmt": "node_modules/oxfmt/bin/oxfmt",
+	"oxc.fmt.configPath": ".config/.oxfmtrc.json",
+	"files.watcherExclude": {
+		"**/routeTree.gen.ts": true
+	},
+	"search.exclude": {
+		"**/routeTree.gen.ts": true
+	},
+	"files.readonlyInclude": {
+		"**/routeTree.gen.ts": true
+	}
 }
