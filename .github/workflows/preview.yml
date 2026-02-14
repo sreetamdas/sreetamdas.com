@@ -1,20 +1,20 @@
-name: Preview Deploy
+name: Staging Deploy
 
 on:
-  pull_request:
+  push:
+    branches:
+      - dev
 
 concurrency:
-  group: preview-${{ github.event.pull_request.number }}
+  group: staging-deploy
   cancel-in-progress: true
 
 jobs:
-  preview:
-    name: Preview
+  deploy:
+    name: Deploy to staging
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      pull-requests: write
-      deployments: write
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -47,79 +47,8 @@ jobs:
       - name: Build
         run: pnpm build
 
-      - name: Strip Durable Objects from built wrangler config
-        run: |
-          node -e "
-            const fs = require('fs');
-            const cfg = JSON.parse(fs.readFileSync('dist/server/wrangler.json', 'utf-8'));
-            delete cfg.durable_objects;
-            delete cfg.migrations;
-            fs.writeFileSync('dist/server/wrangler.json', JSON.stringify(cfg, null, 2));
-          "
-
-      - name: Sanitize branch name
-        id: alias
-        run: |
-          SLUG=$(echo "${{ github.head_ref }}" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9-]/-/g' | sed 's/--*/-/g' | sed 's/^-//' | sed 's/-$//' | cut -c1-28)
-          echo "slug=$SLUG" >> "$GITHUB_OUTPUT"
-
-      - name: Upload preview version
-        if: ${{ env.HAS_CF_SECRETS == 'true' }}
-        id: preview
-        run: |
-          OUTPUT=$(pnpm exec wrangler versions upload --preview-alias "${{ steps.alias.outputs.slug }}" 2>&1)
-          echo "$OUTPUT"
-          VERSION_ID=$(echo "$OUTPUT" | grep -oP 'Worker Version ID: \K[0-9a-f-]+')
-          VERSION_PREFIX=$(echo "$VERSION_ID" | cut -c1-8)
-          PREVIEW_URL="https://${VERSION_PREFIX}-sreetamdas-com.sreetamdas.workers.dev"
-          echo "preview_url=$PREVIEW_URL" >> "$GITHUB_OUTPUT"
+      - name: Deploy to staging
+        run: pnpm exec wrangler deploy --env staging
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          HAS_CF_SECRETS: ${{ secrets.CLOUDFLARE_API_TOKEN != '' }}
-
-      - name: Comment preview URL on PR
-        if: ${{ env.HAS_CF_SECRETS == 'true' }}
-        uses: actions/github-script@v7
-        env:
-          HAS_CF_SECRETS: ${{ secrets.CLOUDFLARE_API_TOKEN != '' }}
-        with:
-          script: |
-            const previewUrl = '${{ steps.preview.outputs.preview_url }}';
-            const alias = '${{ steps.alias.outputs.slug }}';
-            const branchAlias = `https://${alias}-sreetamdas-com.sreetamdas.workers.dev`;
-            const body = [
-              '## Workers Preview Deploy',
-              '',
-              `| Preview URL | Branch Alias |`,
-              `| --- | --- |`,
-              `| ${previewUrl || 'N/A'} | [${branchAlias}](${branchAlias}) |`,
-              '',
-              `_Deployed via \`wrangler versions upload\` at ${new Date().toISOString()}_`,
-            ].join('\n');
-
-            const { data: comments } = await github.rest.issues.listComments({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.issue.number,
-            });
-
-            const existing = comments.find(c =>
-              c.user.type === 'Bot' && c.body?.includes('## Workers Preview Deploy')
-            );
-
-            if (existing) {
-              await github.rest.issues.updateComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                comment_id: existing.id,
-                body,
-              });
-            } else {
-              await github.rest.issues.createComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: context.issue.number,
-                body,
-              });
-            }
