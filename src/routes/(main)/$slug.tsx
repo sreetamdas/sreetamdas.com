@@ -1,5 +1,6 @@
 import { rootPages } from "@/generated";
 import { MDXContent } from "@/lib/components/MDX";
+import { RepoContributors } from "@/lib/components/GitHub/RepoContributors";
 import { ViewsCounter } from "@/lib/components/ViewsCounter";
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { isNil } from "lodash-es";
@@ -54,7 +55,7 @@ function MDXPageSlugPage() {
 			<h1 className="pt-10 pb-20 font-serif text-8xl font-bold tracking-tighter">
 				/{post.page_slug}
 			</h1>
-			<MDXContent source={post.raw} />
+			<MDXContent source={post.raw} components={{ RepoContributors }} />
 			<ViewsCounter />
 		</>
 	);
