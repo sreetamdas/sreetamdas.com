@@ -2,6 +2,8 @@
 User-agent: *
 Disallow: /foobar
 Disallow: /foobar/
+Disallow: /aoc
+Disallow: /aoc/
 
 # Host
 Host: https://sreetamdas.com
