@@ -1,59 +1,116 @@
 import { transformerColorizedBrackets } from "@shikijs/colorized-brackets";
 import { defaultTheme } from "@sreetamdas/karma";
 import { omit } from "lodash-es";
+import type { KarmaHighlighter } from "./highlighter";
 import { type BundledLanguage } from "shiki/langs";
 import { type Node } from "unist";
 import { visit } from "unist-util-visit";
 
 import { getSlimKarmaHighlighter } from "./highlighter";
 
-type TreeNode = Node & {
-	lang: BundledLanguage;
-	meta: string;
+type CodeTreeNode = Node & {
+	type: string;
+	lang?: string;
+	meta?: string | null;
 	value: string;
 };
 
-export function remarkShiki() {
-	return async (tree: TreeNode) => {
-		const karma_highlighter = await getSlimKarmaHighlighter();
+function renderCodeBlockToHtml(
+	highlighter: KarmaHighlighter,
+	code: string,
+	lang: string | undefined,
+	meta: string | null,
+) {
+	const language = lang ?? "plain";
 
-		function visitor(node: TreeNode) {
-			const lines_to_highlight = calculateLinesToHighlight(node.meta);
-			const meta = parseMeta(node.meta);
-			const html = karma_highlighter.codeToHtml(node.value, {
-				lang: node.lang,
-				theme: "karma",
-				transformers: [
-					{
-						code(code) {
-							code.properties["data-language"] = node.lang;
-						},
-						line(el, line) {
-							if (Array.isArray(lines_to_highlight) && lines_to_highlight.includes(line)) {
-								el.properties["data-highlight"] = "true";
-							}
-						},
+	try {
+		const lines_to_highlight = calculateLinesToHighlight(meta ?? "");
+		const parsedMeta = parseMeta(meta);
+
+		return highlighter.codeToHtml(code, {
+			lang: language as BundledLanguage,
+			theme: "karma",
+			transformers: [
+				{
+					code(ast) {
+						ast.properties["data-language"] = language;
 					},
-					transformerColorizedBrackets({
-						themes: {
-							karma: [
-								defaultTheme.colors["editorBracketHighlight.foreground1"],
-								defaultTheme.colors["editorBracketHighlight.foreground2"],
-								defaultTheme.colors["editorBracketHighlight.foreground3"],
-								defaultTheme.colors["editorBracketHighlight.unexpectedBracket.foreground"],
-							],
-						},
-					}),
-				],
-				meta: meta ?? {},
-			});
+					line(el, line) {
+						if (Array.isArray(lines_to_highlight) && lines_to_highlight.includes(line)) {
+							el.properties["data-highlight"] = "true";
+						}
+					},
+				},
+				transformerColorizedBrackets({
+					themes: {
+						karma: [
+							defaultTheme.colors["editorBracketHighlight.foreground1"],
+							defaultTheme.colors["editorBracketHighlight.foreground2"],
+							defaultTheme.colors["editorBracketHighlight.foreground3"],
+							defaultTheme.colors["editorBracketHighlight.unexpectedBracket.foreground"],
+						],
+					},
+				}),
+			],
+			meta: parsedMeta ?? {},
+		});
+	} catch {
+		return null;
+	}
+}
 
-			node.type = "html";
-			node.value = html;
+export async function highlightCodeBlocks(tree: Node) {
+	const karma_highlighter = await getSlimKarmaHighlighter();
+
+	visit(tree, "code", (node) => {
+		const currentNode = node as CodeTreeNode;
+		if (typeof currentNode.value !== "string") {
+			return;
 		}
 
-		visit(tree, "code", visitor);
+		const html = renderCodeBlockToHtml(
+			karma_highlighter,
+			currentNode.value,
+			currentNode.lang,
+			currentNode.meta ?? null,
+		);
+		if (html === null) {
+			return;
+		}
+
+		currentNode.type = "html";
+		currentNode.value = html;
+	});
+}
+
+export function remarkShiki() {
+	return async (tree: Node) => {
+		await highlightCodeBlocks(tree);
 	};
+}
+
+const CODE_FENCE_REGEX = /```([\w-]+)?([^\n]*)\n([\s\S]*?)```/g;
+export async function highlightMarkdownCodeFences(markdown: string) {
+	const karma_highlighter = await getSlimKarmaHighlighter();
+
+	let lastIndex = 0;
+	let result = "";
+
+	for (const match of markdown.matchAll(CODE_FENCE_REGEX)) {
+		const [fullMatch, lang, meta = "", code = ""] = match;
+		const start = match.index ?? 0;
+
+		result += markdown.slice(lastIndex, start);
+
+		const highlighted = renderCodeBlockToHtml(karma_highlighter, code, lang, meta.trim() || null);
+		result += highlighted ?? fullMatch;
+
+		lastIndex = start + fullMatch.length;
+	}
+
+	result += markdown.slice(lastIndex);
+
+	return result;
 }
 
 /**
