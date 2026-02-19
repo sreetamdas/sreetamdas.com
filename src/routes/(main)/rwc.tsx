@@ -1,15 +1,65 @@
 import { SITE_DESCRIPTION, SITE_TITLE_APPEND } from "@/config";
-import rwcData from "@/generated/rwc.json";
 import { ViewsCounter } from "@/lib/components/ViewsCounter";
 import { canonicalUrl, defaultOgImageUrl } from "@/lib/seo";
+import { fetchGist } from "@/lib/domains/GitHub";
+import { getSlimKarmaHighlighter } from "@/lib/domains/shiki";
 
 import { createFileRoute, ErrorComponent } from "@tanstack/react-router";
+import { createServerFn } from "@tanstack/react-start";
 
 import { FiLink } from "react-icons/fi";
 
+const GITHUB_RWC_GIST_ID =
+	process.env.VITE_GITHUB_RWC_GIST_ID ??
+	process.env.GITHUB_RWC_GIST_ID ??
+	import.meta.env.VITE_GITHUB_RWC_GIST_ID;
+
+const FALLBACK_RWC_BACKGROUND = "#17181c";
+
+const getHighlightedCode = createServerFn({ method: "GET" }).handler(async () => {
+	if (!GITHUB_RWC_GIST_ID) {
+		return { all_solutions: [], background_color: FALLBACK_RWC_BACKGROUND };
+	}
+
+	let gist: Awaited<ReturnType<typeof fetchGist>>;
+	try {
+		gist = await fetchGist(GITHUB_RWC_GIST_ID);
+	} catch {
+		return { all_solutions: [], background_color: FALLBACK_RWC_BACKGROUND };
+	}
+
+	if (typeof gist.files === "undefined" || Object.keys(gist.files).length === 0) {
+		return { all_solutions: [], background_color: FALLBACK_RWC_BACKGROUND };
+	}
+
+	const files = Object.values(gist.files);
+	if (files.length === 0) {
+		return { all_solutions: [], background_color: FALLBACK_RWC_BACKGROUND };
+	}
+
+	const karma_highlighter = await getSlimKarmaHighlighter();
+	const background_color = karma_highlighter.getTheme("karma").bg;
+
+	const all_solutions = files.flatMap((file) => {
+		const code = file?.content;
+		const slug = file?.filename?.replaceAll(/[\s.]/g, "_").toLowerCase()!;
+		const filename = file?.filename;
+		const lang = file?.language?.toLowerCase() ?? "js";
+		if (code == null) {
+			return [];
+		}
+		const html = karma_highlighter.codeToHtml(code, { theme: "karma", lang });
+		const cleaned_html = html.replace(/(^<pre [^>]*>)/, "").replace(/(<\/pre>$)/, "");
+
+		return [{ html: cleaned_html, slug, filename, lang }];
+	});
+
+	return { all_solutions, background_color };
+});
+
 export const Route = createFileRoute("/(main)/rwc")({
 	component: RWCPage,
-	loader: () => rwcData,
+	loader: async () => getHighlightedCode(),
 	errorComponent: (err) => <ErrorComponent error={err} />,
 	head: () => ({
 		links: [{ rel: "canonical", href: canonicalUrl("/rwc") }],
