@@ -95,7 +95,7 @@
 		"lint-staged": "^16.2.7",
 		"oxfmt": "^0.32.0",
 		"oxlint": "^1.47.0",
-		"oxlint-tsgolint": "^0.12.2",
+		"oxlint-tsgolint": "^0.14.0",
 		"tailwindcss": "^4.1.17",
 		"tsx": "^4.21.0",
 		"typescript": "^5.9.3",
