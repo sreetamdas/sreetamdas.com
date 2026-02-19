@@ -15,7 +15,7 @@ type CodeTreeNode = Node & {
 	value: string;
 };
 
-function renderCodeBlockToHtml(
+export function renderCodeBlockToHtml(
 	highlighter: KarmaHighlighter,
 	code: string,
 	lang: string | undefined,
