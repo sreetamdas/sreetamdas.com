@@ -6,6 +6,7 @@ import remarkToc from "remark-toc";
 import { defineCollection, defineConfig, s, type Schema } from "velite";
 
 import { OWNER_NAME, SITE_OG_IMAGE, SITE_URL } from "../src/config";
+import { mdxParseWithShiki } from "../src/lib/components/MDX/parse";
 import { rehypeImgSize } from "../src/lib/components/MDX/plugins";
 import { remarkShiki } from "../src/lib/domains/shiki";
 
@@ -27,27 +28,32 @@ const aoc_solutions = defineCollection({
 			image: s.string().optional(),
 			raw_path: s.path(),
 		})
-		.transform((data, { meta }) => ({
-			...data,
-			// computed fields
-			page_path: `/${data.raw_path}` as `/blog/${string}`,
-			page_slug: data.raw_path.split("/").slice(-2).join("/"),
-			structured_data: {
-				type: "json",
-				"@context": "https://schema.org",
-				"@type": "BlogPosting",
-				headline: data.title,
-				datePublished: data.published_at,
-				dateModified: data.updated_at,
-				description: data.description,
-				image: data.image ? `${SITE_URL}${data.image}` : `${SITE_URL}${SITE_OG_IMAGE}`,
-				url: `${SITE_URL}${data?.url ?? meta.path}`,
-				author: {
-					"@type": "Person",
-					name: OWNER_NAME,
+		.transform(async (data, { meta }) => {
+			const { mdast, shikiHighlights } = await mdxParseWithShiki(data.raw);
+			return {
+				...data,
+				// computed fields
+				mdast,
+				shikiHighlights,
+				page_path: `/${data.raw_path}` as `/blog/${string}`,
+				page_slug: data.raw_path.split("/").slice(-2).join("/"),
+				structured_data: {
+					type: "json",
+					"@context": "https://schema.org",
+					"@type": "BlogPosting",
+					headline: data.title,
+					datePublished: data.published_at,
+					dateModified: data.updated_at,
+					description: data.description,
+					image: data.image ? `${SITE_URL}${data.image}` : `${SITE_URL}${SITE_OG_IMAGE}`,
+					url: `${SITE_URL}${data?.url ?? meta.path}`,
+					author: {
+						"@type": "Person",
+						name: OWNER_NAME,
+					},
 				},
-			},
-		})),
+			};
+		}),
 });
 
 export default defineConfig({
@@ -79,14 +85,20 @@ export default defineConfig({
 						.optional(),
 					raw_path: s.path(),
 				})
-				.transform((data, { meta }) => {
+				.transform(async (data, { meta }) => {
 					// Estimate reading time: ~238 wpm average reading speed
 					const wordCount = data.raw.split(/\s+/g).filter(Boolean).length;
 					const readingTime = Math.max(1, Math.round(wordCount / 238));
 
+					// Pre-compute MDAST with Shiki highlighting at build time so safe-mdx
+					// can render syntax-highlighted code blocks without runtime processing
+					const { mdast, shikiHighlights } = await mdxParseWithShiki(data.raw);
+
 					return {
 						...data,
 						// computed fields
+						mdast,
+						shikiHighlights,
 						reading_time: readingTime,
 						page_path: `/${data.raw_path}` as `/blog/${string}`,
 						page_slug: data.raw_path.split("/").at(-1),
@@ -129,12 +141,17 @@ export default defineConfig({
 						.optional(),
 					raw_path: s.path(),
 				})
-				.transform((data) => ({
-					...data,
-					// computed fields
-					page_path: `/${data.raw_path.split("/").at(-1)}` as `/${string}`,
-					page_slug: data.raw_path.split("/").at(-1),
-				})),
+				.transform(async (data) => {
+					const { mdast, shikiHighlights } = await mdxParseWithShiki(data.raw);
+					return {
+						...data,
+						// computed fields
+						mdast,
+						shikiHighlights,
+						page_path: `/${data.raw_path.split("/").at(-1)}` as `/${string}`,
+						page_slug: data.raw_path.split("/").at(-1),
+					};
+				}),
 		},
 		aoc_solutions,
 	},
