@@ -1,10 +1,3 @@
-/**
- * /rwc page — "Real World Code" showcase.
- *
- * Fetches a GitHub Gist and runs Shiki syntax highlighting. Both operations
- * are expensive (~1s round-trip), so the result is cached in Cloudflare KV
- * with a 1-hour TTL to keep subsequent page loads fast.
- */
 import { SITE_DESCRIPTION, SITE_TITLE_APPEND } from "@/config";
 import { ViewsCounter } from "@/lib/components/ViewsCounter";
 import { canonicalUrl, defaultOgImageUrl } from "@/lib/seo";
@@ -13,7 +6,6 @@ import { getSlimKarmaHighlighter } from "@/lib/domains/shiki";
 
 import { createFileRoute, ErrorComponent } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
-import { env } from "cloudflare:workers";
 
 import { FiLink } from "react-icons/fi";
 
@@ -23,45 +15,26 @@ const GITHUB_RWC_GIST_ID =
 	import.meta.env.VITE_GITHUB_RWC_GIST_ID;
 
 const FALLBACK_RWC_BACKGROUND = "#17181c";
-const RWC_CACHE_KEY = "rwc:highlighted-code";
-const RWC_CACHE_TTL_SECONDS = 3600; // 1 hour
-
-type RwcData = {
-	all_solutions: Array<{ html: string; slug: string; filename: string | undefined; lang: string }>;
-	background_color: string;
-};
-
-const FALLBACK_DATA: RwcData = { all_solutions: [], background_color: FALLBACK_RWC_BACKGROUND };
 
 const getHighlightedCode = createServerFn({ method: "GET" }).handler(async () => {
 	if (!GITHUB_RWC_GIST_ID) {
-		return FALLBACK_DATA;
-	}
-
-	// Try reading from KV cache first
-	try {
-		const cached = await env.KV.get<RwcData>(RWC_CACHE_KEY, "json");
-		if (cached) {
-			return cached;
-		}
-	} catch {
-		// KV read failed — fall through to fresh fetch
+		return { all_solutions: [], background_color: FALLBACK_RWC_BACKGROUND };
 	}
 
 	let gist: Awaited<ReturnType<typeof fetchGist>>;
 	try {
 		gist = await fetchGist(GITHUB_RWC_GIST_ID);
 	} catch {
-		return FALLBACK_DATA;
+		return { all_solutions: [], background_color: FALLBACK_RWC_BACKGROUND };
 	}
 
 	if (typeof gist.files === "undefined" || Object.keys(gist.files).length === 0) {
-		return FALLBACK_DATA;
+		return { all_solutions: [], background_color: FALLBACK_RWC_BACKGROUND };
 	}
 
 	const files = Object.values(gist.files);
 	if (files.length === 0) {
-		return FALLBACK_DATA;
+		return { all_solutions: [], background_color: FALLBACK_RWC_BACKGROUND };
 	}
 
 	const karma_highlighter = await getSlimKarmaHighlighter();
@@ -81,18 +54,7 @@ const getHighlightedCode = createServerFn({ method: "GET" }).handler(async () =>
 		return [{ html: cleaned_html, slug, filename, lang }];
 	});
 
-	const result: RwcData = { all_solutions, background_color };
-
-	// Write to KV cache (non-blocking, best-effort)
-	try {
-		await env.KV.put(RWC_CACHE_KEY, JSON.stringify(result), {
-			expirationTtl: RWC_CACHE_TTL_SECONDS,
-		});
-	} catch {
-		// Cache write failed — not critical, page still works
-	}
-
-	return result;
+	return { all_solutions, background_color };
 });
 
 export const Route = createFileRoute("/(main)/rwc")({
