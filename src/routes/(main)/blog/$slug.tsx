@@ -92,6 +92,8 @@ function RouteComponent() {
 
 			<MDXContent
 				source={post.raw}
+				mdast={post.mdast}
+				shikiHighlights={post.shikiHighlights}
 				components={{
 					ChameleonHighlight,
 					Gradient,

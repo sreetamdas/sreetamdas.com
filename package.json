@@ -10,7 +10,7 @@
 		"dev:content": "velite --config './.config/velite.config.ts' --watch",
 		"build:content": "velite --config './.config/velite.config.ts' --clean",
 		"generate-feeds": "tsx scripts/generate-feeds.ts",
-		"dev": "pnpm run build:content && pnpm run dev:content & vite dev",
+		"dev": "pnpm run dev:content & vite dev",
 		"prebuild": "pnpm run build:content && pnpm run generate-feeds",
 		"build": "vite build",
 		"preview": "vite preview",

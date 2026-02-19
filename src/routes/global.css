@@ -123,3 +123,52 @@ strong > em {
 	/* color: theme(colors.primary); */
 	color: var(--color-primary);
 }
+
+/* Shiki code block: line numbers via CSS counters and highlight styling */
+pre.shiki-code-block > code {
+	counter-reset: line;
+}
+
+pre.shiki-code-block > code > .line {
+	display: block;
+}
+
+pre.shiki-line-numbers > code > .line::before {
+	counter-increment: line;
+	content: counter(line);
+	display: inline-block;
+	width: 0;
+	text-align: right;
+	color: rgb(113 113 122); /* zinc-600 */
+	user-select: none;
+
+	@media (min-width: 640px) {
+		width: 2rem;
+		margin-left: -0.5rem;
+		margin-right: 0.5rem;
+		padding-right: 0.5rem;
+	}
+
+	@media (max-width: 639px) {
+		opacity: 0;
+	}
+}
+
+pre.shiki-code-block > code > .line[data-highlight="true"] {
+	margin-left: -1.25rem;
+	margin-right: -1.25rem;
+	padding-left: 1rem;
+	padding-right: 1.25rem;
+	border-left: 4px solid #a86efd;
+	background-color: #d0b2ff1a;
+}
+
+pre.shiki-code-block > code > .line[data-highlight="true"]::before {
+	color: #a86efd;
+}
+
+@media (max-width: 639px) {
+	pre.shiki-code-block > code > .line {
+		white-space: pre-wrap;
+	}
+}

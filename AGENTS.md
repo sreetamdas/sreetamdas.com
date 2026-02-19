@@ -8,6 +8,7 @@ This file documents project conventions for humans and coding agents.
 - Prefer file header comments over inline comments: if documentation is needed, add a short multi-line comment at the start of the file explaining intent/constraints/flow. Use inline comments only when they are clearly the best fit for a very local, non-obvious detail.
 - When committing, prefer Conventional Commits when possible, and stage/commit changes in logical units so they are easy to revert later (avoid bundling unrelated changes in a single commit).
 - Bugs: add a regression test when it fits (especially for non-trivial or previously broken behavior).
+- Don't run typecheck/build/other scripts until told so.
 
 ## Quick Commands
 

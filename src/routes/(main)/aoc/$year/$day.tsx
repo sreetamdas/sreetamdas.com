@@ -112,6 +112,8 @@ function AdventOfCodeSolutionPage() {
 
 			<MDXContent
 				source={post.raw}
+				mdast={post.mdast}
+				shikiHighlights={post.shikiHighlights}
 				components={{
 					blockquote: (props) => (
 						<Blockquote

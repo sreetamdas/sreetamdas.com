@@ -47,7 +47,12 @@ function AboutPage() {
 	return (
 		<>
 			<h1 className="pt-10 pb-20 font-serif text-8xl font-bold tracking-tighter">/about</h1>
-			<MDXContent source={post.raw} components={{ SocialLinks }} />
+			<MDXContent
+				source={post.raw}
+				mdast={post.mdast}
+				shikiHighlights={post.shikiHighlights}
+				components={{ SocialLinks }}
+			/>
 			<ViewsCounter />
 			<FoobarEntry />
 		</>

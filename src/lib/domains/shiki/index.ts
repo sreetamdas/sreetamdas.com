@@ -1,2 +1,2 @@
 export { getSlimKarmaHighlighter } from "./highlighter";
-export { remarkShiki } from "./plugin";
+export { highlightCodeBlocks, highlightMarkdownCodeFences, remarkShiki } from "./plugin";

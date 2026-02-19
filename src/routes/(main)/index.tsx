@@ -53,7 +53,7 @@ function Home() {
 					👋
 				</span>
 			</h1>
-			<MDXContent source={post.raw} />
+			<MDXContent source={post.raw} mdast={post.mdast} shikiHighlights={post.shikiHighlights} />
 
 			<ViewsCounter hidden />
 		</>

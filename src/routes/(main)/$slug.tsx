@@ -61,6 +61,8 @@ function MDXPageSlugPage() {
 			</h1>
 			<MDXContent
 				source={post.raw}
+				mdast={post.mdast}
+				shikiHighlights={post.shikiHighlights}
 				components={{
 					RepoContributors: () => <RepoContributors contributors={contributors} />,
 				}}
