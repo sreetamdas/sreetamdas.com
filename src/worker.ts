@@ -15,7 +15,19 @@ import handler, { createServerEntry } from "@tanstack/react-start/server-entry";
 
 export { PresenceDurableObject } from "./lib/cloudflare/PresenceDurableObject";
 
-const serverEntry = createServerEntry({ fetch: handler.fetch });
+const serverEntry = createServerEntry({
+	fetch: (request, opts) => {
+		if (request.method === "GET" || request.method === "HEAD") {
+			const url = new URL(request.url);
+			if (url.pathname.length > 1 && url.pathname.endsWith("/")) {
+				url.pathname = url.pathname.slice(0, -1);
+				return Response.redirect(url.toString(), 308);
+			}
+		}
+
+		return handler.fetch(request, opts);
+	},
+});
 
 // Cast required: createServerEntry returns a narrower type than the
 // ExportedHandler<CloudflareEnv> that Sentry.withSentry() expects.

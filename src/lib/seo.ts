@@ -17,8 +17,11 @@ export function absoluteUrl(urlOrPath: string) {
 }
 
 export function canonicalUrl(pathname: string) {
-	if (pathname === "/") return SITE_URL;
-	return absoluteUrl(pathname);
+	const normalizedPathname =
+		pathname !== "/" && pathname.endsWith("/") ? pathname.slice(0, -1) : pathname;
+
+	if (normalizedPathname === "/") return SITE_URL;
+	return absoluteUrl(normalizedPathname);
 }
 
 export function defaultOgImageUrl() {
