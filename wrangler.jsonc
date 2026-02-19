@@ -83,7 +83,7 @@
 			]
 		},
 		"production": {
-			"name": "sreetamdas-com",
+			"name": "sreetamdas-com-staging",
 			"routes": [
 				{
 					"custom_domain": true,
