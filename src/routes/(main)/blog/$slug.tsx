@@ -11,7 +11,6 @@ import { InfoBlock } from "@/lib/components/sink";
 import { Gradient } from "@/lib/components/Typography";
 import { ChameleonHighlight, Sparkles } from "@/lib/components/Typography.client";
 import { ViewsCounter } from "@/lib/components/ViewsCounter";
-import { highlightMarkdownCodeFences } from "@/lib/domains/shiki";
 
 import {
 	HighlightWithUseEffect,
@@ -22,7 +21,6 @@ import { createServerFn } from "@tanstack/react-start";
 import z from "zod";
 
 type BlogPost = (typeof blogPosts)[number];
-type BlogPostLoaderData = BlogPost & { source: string };
 
 const page_slug = z.object({
 	slug: z.string().min(1),
@@ -30,21 +28,19 @@ const page_slug = z.object({
 
 const getBlogContent = createServerFn({ method: "GET" })
 	.inputValidator((data) => page_slug.parse(data))
-	.handler(async ({ data: { slug } }) => {
+	.handler(({ data: { slug } }) => {
 		const post = blogPosts.find((page) => page.page_slug === slug);
 
 		if (isNil(post)) {
 			throw notFound();
 		}
 
-		const source = await highlightMarkdownCodeFences(post.raw);
-
-		return { ...post, source };
+		return post;
 	});
 
 export const Route = createFileRoute("/(main)/blog/$slug")({
 	component: RouteComponent,
-	head: ({ loaderData }: { loaderData?: BlogPostLoaderData }) => {
+	head: ({ loaderData }: { loaderData?: BlogPost }) => {
 		const post = loaderData;
 		const title = `${post?.seo_title ?? post?.title ?? "Blog"} ${SITE_TITLE_APPEND}`;
 		const description = post?.description ?? SITE_DESCRIPTION;
@@ -95,7 +91,9 @@ function RouteComponent() {
 			</p>
 
 			<MDXContent
-				source={post.source}
+				source={post.raw}
+				mdast={post.mdast}
+				shikiHighlights={post.shikiHighlights}
 				components={{
 					ChameleonHighlight,
 					Gradient,
