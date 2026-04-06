@@ -74,7 +74,7 @@
 		"shiki-magic-move": "^1.2.1",
 		"tailwind-merge": "^3.4.0",
 		"unist-util-visit": "^5.0.0",
-		"vite": "^7.2.7",
+		"vite": "^7.3.2",
 		"zod": "^4.1.13",
 		"zustand": "^5.0.9"
 	},
