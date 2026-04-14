@@ -25,12 +25,13 @@ const fetchViewCountServerFn = createServerFn<"GET", "data", PageViewCount>({
 	})
 	.handler(async ({ data }) => {
 		const db = getDb(env);
+		const normalizedSlug = normalizePathname(data.slug);
 
 		if (data.disabled) {
-			return getPageViews(db, data.slug);
+			return getPageViews(db, normalizedSlug);
 		}
 
-		return upsertPageViews(db, data.slug);
+		return upsertPageViews(db, normalizedSlug);
 	});
 
 type ViewsCounterProps = {
@@ -60,15 +61,16 @@ export const ViewsCounter = ({
 	);
 };
 
-const Views = ({ page_type, disabled }: Omit<ViewsCounterProps, "hidden">) => {
+const Views = ({ slug, page_type, disabled }: Omit<ViewsCounterProps, "hidden">) => {
 	const { pathname } = useLocation();
+	const normalizedPathname = normalizePathname(slug ?? pathname);
 
 	const fetchViewCount = useServerFn<() => Promise<PageViewCount>>(() =>
-		fetchViewCountServerFn({ data: { slug: pathname, disabled } }),
+		fetchViewCountServerFn({ data: { slug: normalizedPathname, disabled } }),
 	);
 	const { data, isLoading } = useQuery({
 		queryFn: fetchViewCount,
-		queryKey: [pathname, "get-views"],
+		queryKey: [normalizedPathname, "get-views"],
 	});
 
 	if (isLoading) {
@@ -144,3 +146,11 @@ const ViewCount = ({ children }: { children: string }) => (
 		{children}
 	</span>
 );
+
+function normalizePathname(pathname: string) {
+	if (pathname !== "/" && pathname.endsWith("/")) {
+		return pathname.slice(0, -1);
+	}
+
+	return pathname;
+}

@@ -53,6 +53,7 @@ export default defineConfig({
 			pages: prerenderPages,
 			prerender: {
 				enabled: true,
+				autoSubfolderIndex: false,
 				crawlLinks: true,
 				autoStaticPathsDiscovery: true,
 				filter: ({ path }) => !path.startsWith("/aoc"),
