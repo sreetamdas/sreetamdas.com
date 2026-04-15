@@ -4,7 +4,7 @@ import { canonicalUrl, defaultOgImageUrl } from "@/lib/seo";
 import { rootPages } from "@/generated";
 import { MDXContent } from "@/lib/components/MDX";
 import { ViewsCounter } from "@/lib/components/ViewsCounter";
-import { FoobarEntry } from "@/lib/domains/foobar/Entry.client";
+import { FoobarEntry } from "@/lib/domains/foobar/Entry";
 
 import { createFileRoute, notFound } from "@tanstack/react-router";
 

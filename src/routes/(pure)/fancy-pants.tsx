@@ -3,7 +3,7 @@ import { ImArrowUpRight2 } from "react-icons/im";
 
 import { SITE_TITLE_APPEND } from "@/config";
 import { canonicalUrl, defaultOgImageUrl } from "@/lib/seo";
-import { ChameleonHighlight } from "@/lib/components/Typography.client";
+import { ChameleonHighlight } from "@/lib/components/TypographyClient";
 import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/(pure)/fancy-pants")({

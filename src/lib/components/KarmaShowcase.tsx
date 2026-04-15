@@ -32,7 +32,6 @@ type Props = {
 	}>;
 };
 export const KarmaShowcase = ({ examples }: Props) => {
-	// default is dark mode :)
 	const [isDefaultTheme, setIsDefaultTheme] = useState(true);
 
 	function handleThemeToggle(checked: boolean) {

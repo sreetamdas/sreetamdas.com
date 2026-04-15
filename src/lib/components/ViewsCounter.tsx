@@ -4,9 +4,8 @@ import { cn } from "@/lib/helpers/utils";
 import { createServerFn, useServerFn } from "@tanstack/react-start";
 import { useLocation } from "@tanstack/react-router";
 import { z } from "zod";
-import { env } from "cloudflare:workers";
 import { getDb } from "@/db";
-import { getPageViews, upsertPageViews } from "@/lib/domains/PageViews";
+import { upsertPageViews } from "@/lib/domains/PageViews";
 
 type PageViewCount = {
 	view_count: number;
@@ -24,12 +23,15 @@ const fetchViewCountServerFn = createServerFn<"GET", "data", PageViewCount>({
 		return PagePathname.parse(data);
 	})
 	.handler(async ({ data }) => {
-		const db = getDb(env);
 		const normalizedSlug = normalizePathname(data.slug);
 
 		if (data.disabled) {
-			return getPageViews(db, normalizedSlug);
+			return { view_count: 0 };
 		}
+
+		const workersModule = "cloudflare:workers";
+		const { env } = await import(/* @vite-ignore */ workersModule);
+		const db = getDb(env);
 
 		return upsertPageViews(db, normalizedSlug);
 	});

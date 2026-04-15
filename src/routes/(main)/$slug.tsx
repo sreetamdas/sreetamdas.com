@@ -44,7 +44,6 @@ export const Route = createFileRoute("/(main)/$slug")({
 			throw notFound();
 		}
 
-		// Only fetch contributors for the credits page where RepoContributors is used
 		const contributors = params.slug === "credits" ? await fetchRepoContributors() : [];
 
 		return { post, contributors };

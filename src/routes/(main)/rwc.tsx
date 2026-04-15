@@ -5,7 +5,6 @@ import { fetchGist } from "@/lib/domains/GitHub";
 import { getSlimKarmaHighlighter } from "@/lib/domains/shiki";
 
 import { createFileRoute, ErrorComponent } from "@tanstack/react-router";
-import { createServerFn } from "@tanstack/react-start";
 
 import { FiLink } from "react-icons/fi";
 
@@ -16,7 +15,7 @@ const GITHUB_RWC_GIST_ID =
 
 const FALLBACK_RWC_BACKGROUND = "#17181c";
 
-const getHighlightedCode = createServerFn({ method: "GET" }).handler(async () => {
+async function getHighlightedCode() {
 	if (!GITHUB_RWC_GIST_ID) {
 		return { all_solutions: [], background_color: FALLBACK_RWC_BACKGROUND };
 	}
@@ -55,7 +54,7 @@ const getHighlightedCode = createServerFn({ method: "GET" }).handler(async () =>
 	});
 
 	return { all_solutions, background_color };
-});
+}
 
 export const Route = createFileRoute("/(main)/rwc")({
 	component: RWCPage,
