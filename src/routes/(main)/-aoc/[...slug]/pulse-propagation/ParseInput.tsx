@@ -1,3 +1,5 @@
+"use client";
+
 import "shiki-magic-move/dist/style.css";
 
 import { useEffect, useId, useState } from "react";

@@ -1,3 +1,5 @@
+"use client";
+
 import { type HTMLAttributes } from "react";
 import { FaRegStar } from "react-icons/fa";
 import { VscRepoForked } from "react-icons/vsc";

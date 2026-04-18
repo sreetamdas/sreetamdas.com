@@ -1,3 +1,5 @@
+"use client";
+
 import { random } from "lodash-es";
 import { useCallback, useEffect, useRef, useState } from "react";
 

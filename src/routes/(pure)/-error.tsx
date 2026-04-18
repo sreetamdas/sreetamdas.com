@@ -1,3 +1,5 @@
+"use client";
+
 import { useEffect } from "react";
 import { captureException } from "@/lib/domains/Sentry";
 

@@ -1,3 +1,5 @@
+"use client";
+
 import { useQuery } from "@tanstack/react-query";
 import { IS_CI, IS_DEV } from "@/config";
 import { cn } from "@/lib/helpers/utils";

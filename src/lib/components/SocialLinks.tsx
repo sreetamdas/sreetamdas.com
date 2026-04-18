@@ -1,3 +1,5 @@
+"use client";
+
 import { type ReactElement } from "react";
 import { IconBaseProps } from "react-icons";
 import {

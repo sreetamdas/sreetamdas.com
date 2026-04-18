@@ -1,1 +1,3 @@
-export * from "./sink";
+"use client";
+
+export { InfoBlock } from "./sink";
