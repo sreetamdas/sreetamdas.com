@@ -3,40 +3,12 @@
 import { useQuery } from "@tanstack/react-query";
 import { IS_CI, IS_DEV } from "@/config";
 import { cn } from "@/lib/helpers/utils";
-import { createServerFn, useServerFn } from "@tanstack/react-start";
+import { useServerFn } from "@tanstack/react-start";
 import { useLocation } from "@tanstack/react-router";
-import { z } from "zod";
-import { getDb } from "@/db";
-import { upsertPageViews } from "@/lib/domains/PageViews";
-
-type PageViewCount = {
-	view_count: number;
-};
-
-const PagePathname = z.object({
-	slug: z.string().min(1),
-	disabled: z.boolean(),
-});
-
-const fetchViewCountServerFn = createServerFn<"GET", "data", PageViewCount>({
-	method: "GET",
-})
-	.inputValidator((data) => {
-		return PagePathname.parse(data);
-	})
-	.handler(async ({ data }) => {
-		const normalizedSlug = normalizePathname(data.slug);
-
-		if (data.disabled) {
-			return { view_count: 0 };
-		}
-
-		const workersModule = "cloudflare:workers";
-		const { env } = await import(/* @vite-ignore */ workersModule);
-		const db = getDb(env);
-
-		return upsertPageViews(db, normalizedSlug);
-	});
+import {
+	fetchViewCountServerFn,
+	type PageViewCount,
+} from "@/lib/components/ViewsCounter.serverFns";
 
 type ViewsCounterProps = {
 	slug?: string;
@@ -73,7 +45,6 @@ const Views = ({ slug, page_type, disabled }: Omit<ViewsCounterProps, "hidden">)
 		fetchViewCountServerFn({ data: { slug: normalizedPathname, disabled } }),
 	);
 	const { data, isLoading } = useQuery({
-		enabled: !import.meta.env.SSR,
 		queryFn: fetchViewCount,
 		queryKey: [normalizedPathname, "get-views"],
 	});
