@@ -8,6 +8,7 @@ import { sentryTanstackStart } from "@sentry/tanstackstart-react/vite";
 import { tanstackStart } from "@tanstack/react-start/plugin/vite";
 
 import viteReact from "@vitejs/plugin-react";
+import rsc from "@vitejs/plugin-rsc";
 import tailwindcss from "@tailwindcss/vite";
 
 type RootPage = { page_path: string };
@@ -31,7 +32,6 @@ const prerenderPages = [
 	"/blog",
 	"/newsletter",
 	"/keebs",
-	"/rwc",
 	"/karma",
 	"/fancy-pants",
 	"/resume",
@@ -50,15 +50,19 @@ export default defineConfig({
 		}),
 		cloudflare({ viteEnvironment: { name: "ssr" } }),
 		tanstackStart({
+			rsc: {
+				enabled: true,
+			},
 			pages: prerenderPages,
 			prerender: {
 				enabled: true,
 				autoSubfolderIndex: false,
 				crawlLinks: true,
 				autoStaticPathsDiscovery: true,
-				filter: ({ path }) => !path.startsWith("/aoc"),
+				filter: ({ path }) => !path.startsWith("/aoc") && path !== "/rwc",
 			},
 		}),
+		rsc(),
 		viteReact(),
 		tailwindcss(),
 		...(process.env.SENTRY_AUTH_TOKEN

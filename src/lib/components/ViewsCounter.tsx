@@ -73,6 +73,7 @@ const Views = ({ slug, page_type, disabled }: Omit<ViewsCounterProps, "hidden">)
 		fetchViewCountServerFn({ data: { slug: normalizedPathname, disabled } }),
 	);
 	const { data, isLoading } = useQuery({
+		enabled: !import.meta.env.SSR,
 		queryFn: fetchViewCount,
 		queryKey: [normalizedPathname, "get-views"],
 	});
