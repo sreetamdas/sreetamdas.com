@@ -2,7 +2,7 @@ import { SITE_DESCRIPTION, SITE_TITLE_APPEND } from "@/config";
 import { ViewsCounter } from "@/lib/components/ViewsCounter";
 import { canonicalUrl, defaultOgImageUrl } from "@/lib/seo";
 import { fetchGist } from "@/lib/domains/GitHub/fetchGist";
-import { getSlimKarmaHighlighter } from "@/lib/domains/shiki";
+import { getSlimKarmaHighlighter } from "@/lib/domains/shiki/highlighter";
 
 import { createFileRoute, ErrorComponent } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
