@@ -1,7 +1,6 @@
 import { existsSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { defineConfig } from "vite";
-import tsConfigPaths from "vite-tsconfig-paths";
 import { cloudflare } from "@cloudflare/vite-plugin";
 import { sentryTanstackStart } from "@sentry/tanstackstart-react/vite";
 
@@ -44,10 +43,10 @@ export default defineConfig({
 	server: {
 		port: 3000,
 	},
+	resolve: {
+		tsconfigPaths: true,
+	},
 	plugins: [
-		tsConfigPaths({
-			projects: ["./tsconfig.json"],
-		}),
 		cloudflare({ viteEnvironment: { name: "ssr", childEnvironments: ["rsc"] } }),
 		tanstackStart({
 			rsc: {
