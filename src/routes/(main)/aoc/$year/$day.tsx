@@ -6,7 +6,7 @@ import { IS_DEV, SITE_TITLE_APPEND } from "@/config";
 import { absoluteUrl, canonicalUrl, defaultOgImageUrl } from "@/lib/seo";
 import { aoc_solutions } from "@/generated";
 import { MDXContent } from "@/lib/components/MDX";
-import { ReadingProgress } from "@/lib/components/ProgressBar.client";
+import { ReadingProgress } from "@/lib/components/ProgressBar";
 import { InfoBlock } from "@/lib/components/sink";
 import { Blockquote, Highlight } from "@/lib/components/Typography";
 import { ViewsCounter } from "@/lib/components/ViewsCounter";

@@ -1,3 +1,5 @@
+"use client";
+
 import { useEffect } from "react";
 import { IoMdMoon } from "react-icons/io";
 import { LuMonitor, LuSun } from "react-icons/lu";

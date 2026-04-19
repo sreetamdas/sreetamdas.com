@@ -5,7 +5,7 @@ import { ColorSchemeToggle } from "@/lib/domains/colorScheme/client";
 import { cn } from "@/lib/helpers/utils";
 
 import { NavbarDesktop } from "./Nav";
-import { NavbarMobile } from "./Nav.mobile.client";
+import { NavbarMobile } from "./Nav.mobile";
 
 export const Header = ({ className }: HTMLAttributes<HTMLDivElement>) => (
 	<div className={cn("sticky top-0 z-20 h-[60px] w-screen max-w-full bg-background", className)}>

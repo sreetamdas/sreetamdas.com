@@ -1,7 +1,9 @@
+"use client";
+
 import { random } from "lodash-es";
 import { type PropsWithChildren, useEffect } from "react";
 
-import { ChameleonHighlight } from "@/lib/components/Typography.client";
+import { ChameleonHighlight } from "@/lib/components/TypographyClient";
 import { useInterval } from "@/lib/helpers/hooks";
 
 let root: HTMLElement;

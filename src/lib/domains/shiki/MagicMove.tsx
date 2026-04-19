@@ -1,3 +1,5 @@
+"use client";
+
 import { ReactElement, useEffect, useId, useState } from "react";
 import { FaLongArrowAltLeft, FaLongArrowAltRight } from "react-icons/fa";
 import { ShikiMagicMove } from "shiki-magic-move/react";

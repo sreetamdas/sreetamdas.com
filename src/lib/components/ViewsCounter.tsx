@@ -1,38 +1,14 @@
+"use client";
+
 import { useQuery } from "@tanstack/react-query";
 import { IS_CI, IS_DEV } from "@/config";
 import { cn } from "@/lib/helpers/utils";
-import { createServerFn, useServerFn } from "@tanstack/react-start";
+import { useServerFn } from "@tanstack/react-start";
 import { useLocation } from "@tanstack/react-router";
-import { z } from "zod";
-import { env } from "cloudflare:workers";
-import { getDb } from "@/db";
-import { getPageViews, upsertPageViews } from "@/lib/domains/PageViews";
-
-type PageViewCount = {
-	view_count: number;
-};
-
-const PagePathname = z.object({
-	slug: z.string().min(1),
-	disabled: z.boolean(),
-});
-
-const fetchViewCountServerFn = createServerFn<"GET", "data", PageViewCount>({
-	method: "GET",
-})
-	.inputValidator((data) => {
-		return PagePathname.parse(data);
-	})
-	.handler(async ({ data }) => {
-		const db = getDb(env);
-		const normalizedSlug = normalizePathname(data.slug);
-
-		if (data.disabled) {
-			return getPageViews(db, normalizedSlug);
-		}
-
-		return upsertPageViews(db, normalizedSlug);
-	});
+import {
+	fetchViewCountServerFn,
+	type PageViewCount,
+} from "@/lib/components/ViewsCounter.serverFns";
 
 type ViewsCounterProps = {
 	slug?: string;

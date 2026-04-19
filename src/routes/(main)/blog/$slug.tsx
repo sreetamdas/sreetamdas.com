@@ -6,37 +6,28 @@ import { absoluteUrl, canonicalUrl, defaultOgImageUrl } from "@/lib/seo";
 
 import { NotFound404 } from "@/lib/components/Error";
 import { MDXContent } from "@/lib/components/MDX";
-import { ReadingProgress } from "@/lib/components/ProgressBar.client";
+import { ReadingProgress } from "@/lib/components/ProgressBar";
 import { InfoBlock } from "@/lib/components/sink";
 import { Gradient } from "@/lib/components/Typography";
-import { ChameleonHighlight, Sparkles } from "@/lib/components/Typography.client";
+import { ChameleonHighlight, Sparkles } from "@/lib/components/TypographyClient";
 import { ViewsCounter } from "@/lib/components/ViewsCounter";
 
 import {
 	HighlightWithUseEffect,
 	HighlightWithUseInterval,
-} from "./-chameleon-text/components.client";
+} from "./-chameleon-text/componentsClient";
 import { isNil } from "lodash-es";
-import { createServerFn } from "@tanstack/react-start";
-import z from "zod";
 
 type BlogPost = (typeof blogPosts)[number];
+async function getBlogContent(slug: string): Promise<BlogPost> {
+	const post = blogPosts.find((page) => page.page_slug === slug);
 
-const page_slug = z.object({
-	slug: z.string().min(1),
-});
+	if (isNil(post)) {
+		throw notFound();
+	}
 
-const getBlogContent = createServerFn({ method: "GET" })
-	.inputValidator((data) => page_slug.parse(data))
-	.handler(({ data: { slug } }) => {
-		const post = blogPosts.find((page) => page.page_slug === slug);
-
-		if (isNil(post)) {
-			throw notFound();
-		}
-
-		return post;
-	});
+	return post;
+}
 
 export const Route = createFileRoute("/(main)/blog/$slug")({
 	component: RouteComponent,
@@ -65,7 +56,7 @@ export const Route = createFileRoute("/(main)/blog/$slug")({
 	},
 
 	loader: ({ params }: { params: { slug: string } }) => {
-		return getBlogContent({ data: { slug: params.slug } });
+		return getBlogContent(params.slug);
 	},
 	notFoundComponent: () => (
 		<NotFound404 message="The blog post you're looking for doesn't exist :/" />
@@ -100,7 +91,6 @@ function RouteComponent() {
 					InfoBlock,
 					Sparkles,
 
-					// Post specific components
 					HighlightWithUseEffect,
 					HighlightWithUseInterval,
 				}}

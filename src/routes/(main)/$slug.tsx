@@ -2,7 +2,8 @@ import { rootPages } from "@/generated";
 import { MDXContent } from "@/lib/components/MDX";
 import { RepoContributors } from "@/lib/components/GitHub/RepoContributors";
 import { ViewsCounter } from "@/lib/components/ViewsCounter";
-import { fetchRepoContributors, type RepoContributor } from "@/lib/domains/GitHub";
+import { fetchRepoContributors } from "@/lib/domains/GitHub/serverFns";
+import { type RepoContributor } from "@/lib/domains/GitHub/types";
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { isNil } from "lodash-es";
 import { SITE_DESCRIPTION, SITE_TITLE_APPEND } from "@/config";
@@ -44,7 +45,6 @@ export const Route = createFileRoute("/(main)/$slug")({
 			throw notFound();
 		}
 
-		// Only fetch contributors for the credits page where RepoContributors is used
 		const contributors = params.slug === "credits" ? await fetchRepoContributors() : [];
 
 		return { post, contributors };

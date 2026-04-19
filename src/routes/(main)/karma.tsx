@@ -2,9 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { SITE_TITLE_APPEND, SITE_URL } from "@/config";
 import { canonicalUrl } from "@/lib/seo";
 import { ViewsCounter } from "@/lib/components/ViewsCounter";
-import { KarmaShowcase } from "@/lib/components/KarmaShowcase.client";
-import { createServerFn } from "@tanstack/react-start";
-// import { staticFunctionMiddleware } from "@tanstack/start-static-server-functions";
+import { KarmaShowcase } from "@/lib/components/KarmaShowcase";
 
 export const Route = createFileRoute("/(main)/karma")({
 	component: KarmaPage,
@@ -71,19 +69,17 @@ function KarmaPage() {
 	);
 }
 
-const getShowcaseImages = createServerFn({ method: "GET" })
-	// .middleware([staticFunctionMiddleware])
-	.handler(async () => {
-		return theme_language_map.map(({ name, default_image, light_image }) => ({
-			name,
-			dark: {
-				src: default_image,
-			},
-			light: {
-				src: light_image,
-			},
-		}));
-	});
+async function getShowcaseImages() {
+	return theme_language_map.map(({ name, default_image, light_image }) => ({
+		name,
+		dark: {
+			src: default_image,
+		},
+		light: {
+			src: light_image,
+		},
+	}));
+}
 
 const theme_language_map = [
 	{

@@ -1,3 +1,5 @@
+"use client";
+
 import { useShallow } from "zustand/react/shallow";
 
 import { Gradient } from "@/lib/components/Typography";

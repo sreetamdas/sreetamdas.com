@@ -1,9 +1,11 @@
+"use client";
+
 import { type HTMLAttributes } from "react";
 import { FaRegStar } from "react-icons/fa";
 import { VscRepoForked } from "react-icons/vsc";
 
-import { LiveViewersBadge } from "@/lib/components/LiveViewersBadge.client";
-import { fetchGitHubStats } from "@/lib/domains/GitHub";
+import { LiveViewersBadge } from "@/lib/components/LiveViewersBadge";
+import { fetchGitHubStats } from "@/lib/domains/GitHub/serverFns";
 import { cn } from "@/lib/helpers/utils";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery } from "@tanstack/react-query";

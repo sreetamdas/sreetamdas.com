@@ -1,13 +1,13 @@
 import { existsSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { defineConfig } from "vite";
-import tsConfigPaths from "vite-tsconfig-paths";
 import { cloudflare } from "@cloudflare/vite-plugin";
-import { sentryTanstackStart } from "@sentry/tanstackstart-react";
+import { sentryTanstackStart } from "@sentry/tanstackstart-react/vite";
 
 import { tanstackStart } from "@tanstack/react-start/plugin/vite";
 
 import viteReact from "@vitejs/plugin-react";
+import rsc from "@vitejs/plugin-rsc";
 import tailwindcss from "@tailwindcss/vite";
 
 type RootPage = { page_path: string };
@@ -31,7 +31,6 @@ const prerenderPages = [
 	"/blog",
 	"/newsletter",
 	"/keebs",
-	"/rwc",
 	"/karma",
 	"/fancy-pants",
 	"/resume",
@@ -44,21 +43,25 @@ export default defineConfig({
 	server: {
 		port: 3000,
 	},
+	resolve: {
+		tsconfigPaths: true,
+	},
 	plugins: [
-		tsConfigPaths({
-			projects: ["./tsconfig.json"],
-		}),
-		cloudflare({ viteEnvironment: { name: "ssr" } }),
+		cloudflare({ viteEnvironment: { name: "ssr", childEnvironments: ["rsc"] } }),
 		tanstackStart({
+			rsc: {
+				enabled: true,
+			},
 			pages: prerenderPages,
 			prerender: {
 				enabled: true,
 				autoSubfolderIndex: false,
 				crawlLinks: true,
 				autoStaticPathsDiscovery: true,
-				filter: ({ path }) => !path.startsWith("/aoc"),
+				filter: ({ path }) => !path.startsWith("/aoc") && path !== "/rwc",
 			},
 		}),
+		rsc(),
 		viteReact(),
 		tailwindcss(),
 		...(process.env.SENTRY_AUTH_TOKEN

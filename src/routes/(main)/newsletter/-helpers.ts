@@ -1,5 +1,4 @@
 import { BUTTONDOWN_EMAIL_MOCKS } from "./-mocks";
-import { createServerFn } from "@tanstack/react-start";
 const BUTTONDOWN_BASE_URL = "https://api.buttondown.email/v1";
 const BUTTONDOWN_API_KEY = import.meta.env.VITE_BUTTONDOWN_API_KEY;
 
@@ -43,9 +42,7 @@ export type ButtondownAPIEmailsResponse = {
 	}>;
 };
 
-export const fetchNewsletterEmails = createServerFn({
-	method: "GET",
-}).handler(async (): Promise<ButtondownAPIEmailsResponse> => {
+export async function fetchNewsletterEmails(): Promise<ButtondownAPIEmailsResponse> {
 	try {
 		const response = await fetch(`${BUTTONDOWN_BASE_URL}/emails`, {
 			headers: {
@@ -60,4 +57,4 @@ export const fetchNewsletterEmails = createServerFn({
 	} catch (_error: unknown) {
 		return BUTTONDOWN_EMAIL_MOCKS as ButtondownAPIEmailsResponse;
 	}
-});
+}

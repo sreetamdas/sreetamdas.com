@@ -1,3 +1,5 @@
+"use client";
+
 import { random } from "lodash-es";
 import {
 	type HTMLAttributes,
@@ -10,7 +12,15 @@ import {
 import { useInterval, usePrefersReducedMotion, useRandomInterval } from "@/lib/helpers/hooks";
 import { cn } from "@/lib/helpers/utils";
 
-export * from "./Typography";
+export {
+	Blockquote,
+	Code,
+	Gradient,
+	Heading,
+	Highlight,
+	LinkAnchor,
+	UnorderedList,
+} from "./Typography";
 
 let root: HTMLElement;
 
