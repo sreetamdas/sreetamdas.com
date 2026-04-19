@@ -4,7 +4,7 @@
 	"compatibility_date": "2025-09-27",
 	"compatibility_flags": ["nodejs_compat"],
 	"main": "./src/worker.ts",
-	"workers_dev": true,
+	"workers_dev": false,
 	"preview_urls": true,
 	"durable_objects": {
 		"bindings": [
@@ -45,7 +45,7 @@
 	"env": {
 		"staging": {
 			"name": "sreetamdas-com-staging",
-			"workers_dev": true,
+			"workers_dev": false,
 			"routes": [
 				{
 					"custom_domain": true,
@@ -84,6 +84,7 @@
 		},
 		"production": {
 			"name": "sreetamdas-com",
+			"workers_dev": false,
 			"routes": [
 				{
 					"custom_domain": true,
