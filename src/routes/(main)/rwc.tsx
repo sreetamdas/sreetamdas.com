@@ -3,6 +3,7 @@ import { ViewsCounter } from "@/lib/components/ViewsCounter";
 import { canonicalUrl, defaultOgImageUrl } from "@/lib/seo";
 import { fetchGist } from "@/lib/domains/GitHub/fetchGist";
 import { getSlimKarmaHighlighter } from "@/lib/domains/shiki/highlighter";
+import { staticFunctionMiddleware } from "@tanstack/start-static-server-functions";
 
 import { createFileRoute, ErrorComponent } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
@@ -32,6 +33,8 @@ async function getHighlightedCode() {
 	let gist: Awaited<ReturnType<typeof fetchGist>>;
 	try {
 		gist = await fetchGist(GITHUB_RWC_GIST_ID);
+		// oxlint-disable-next-line no-console
+		console.log("fetched gist");
 	} catch {
 		return { all_solutions: [], background_color: FALLBACK_RWC_BACKGROUND };
 	}
@@ -88,15 +91,20 @@ export const Route = createFileRoute("/(main)/rwc")({
 	}),
 });
 
-const getRWCRenderable = createServerFn({ method: "GET" }).handler(async () => {
-	const { all_solutions, background_color } = await getHighlightedCode();
+const getRWCRenderable = createServerFn({ method: "GET" })
+	.middleware([staticFunctionMiddleware])
+	.handler(async () => {
+		const { all_solutions, background_color } = await getHighlightedCode();
 
-	const Renderable = await renderServerComponent(
-		<RWCCodeSamples all_solutions={all_solutions} backgroundColor={background_color} />,
-	);
+		// oxlint-disable-next-line no-console
+		console.log("got highlighted code", background_color);
 
-	return { Renderable };
-});
+		const Renderable = await renderServerComponent(
+			<RWCCodeSamples all_solutions={all_solutions} backgroundColor={background_color} />,
+		);
+
+		return { Renderable };
+	});
 
 function RWCPage() {
 	const { Renderable } = Route.useLoaderData();
@@ -126,7 +134,7 @@ function RWCCodeSamples({
 	}
 
 	return (
-		<section className="[&_pre]:rounded-global [&_pre]:-mr-5 [&_pre]:-ml-12 [&_pre]:overflow-x-scroll [&_pre]:p-5 [&_pre]:text-sm [&_pre]:leading-5 [&_pre]:min-md:-ml-6 [&_pre>code]:[counter-increment:step_0] [&_pre>code]:[counter-reset:step] [&_pre>code>span]:before:mr-2 [&_pre>code>span]:before:-ml-2 [&_pre>code>span]:before:hidden [&_pre>code>span]:before:h-4 [&_pre>code>span]:before:w-8 [&_pre>code>span]:before:pr-2 [&_pre>code>span]:before:text-right [&_pre>code>span]:before:[color:rgb(82_82_91)] [&_pre>code>span]:before:content-[counter(step)] [&_pre>code>span]:before:[counter-increment:step] [&_pre>code>span]:before:min-md:inline-block">
+		<section className="[&_pre]:rounded-global [&_pre]:-mr-5 [&_pre]:-ml-12 [&_pre]:overflow-x-scroll [&_pre]:p-5 [&_pre]:text-sm [&_pre]:leading-5 [&_pre]:md:-ml-6 [&_pre>code]:[counter-increment:step_0] [&_pre>code]:[counter-reset:step] [&_pre>code>span]:before:mr-2 [&_pre>code>span]:before:-ml-2 [&_pre>code>span]:before:hidden [&_pre>code>span]:before:h-4 [&_pre>code>span]:before:w-8 [&_pre>code>span]:before:pr-2 [&_pre>code>span]:before:text-right [&_pre>code>span]:before:text-[rgb(82_82_91)] [&_pre>code>span]:before:content-[counter(step)] [&_pre>code>span]:before:[counter-increment:step] [&_pre>code>span]:before:md:inline-block">
 			{all_solutions.map(({ html, slug, filename, lang }) => (
 				<article className="my-20 flex flex-col" key={slug}>
 					<div className="flex justify-between">
