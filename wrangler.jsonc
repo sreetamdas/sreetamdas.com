@@ -6,6 +6,12 @@
 	"main": "./src/worker.ts",
 	"workers_dev": false,
 	"preview_urls": true,
+	"routes": [
+		{
+			"custom_domain": true,
+			"pattern": "sreetamdas.com"
+		}
+	],
 	"durable_objects": {
 		"bindings": [
 			{
