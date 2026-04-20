@@ -115,7 +115,17 @@ export const Route = createRootRoute({
 });
 
 function RootComponent() {
-	const [queryClient] = useState(() => new QueryClient());
+	const [queryClient] = useState(
+		() =>
+			new QueryClient({
+				defaultOptions: {
+					queries: {
+						refetchOnWindowFocus: false,
+						refetchOnReconnect: false,
+					},
+				},
+			}),
+	);
 
 	return (
 		<RootDocument>
