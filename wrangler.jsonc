@@ -50,7 +50,7 @@
 	],
 	"env": {
 		"staging": {
-			"name": "sreetamdas-com",
+			"name": "sreetamdas-com-staging",
 			"workers_dev": false,
 			"routes": [
 				{
