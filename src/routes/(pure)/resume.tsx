@@ -2,9 +2,12 @@ import { SITE_DESCRIPTION, SITE_TITLE_APPEND } from "@/config";
 import { ViewsCounter } from "@/lib/components/ViewsCounter";
 import { canonicalUrl, defaultOgImageUrl } from "@/lib/seo";
 import { createFileRoute } from "@tanstack/react-router";
+import { createServerFn } from "@tanstack/react-start";
+import { renderServerComponent } from "@tanstack/react-start/rsc";
 
 export const Route = createFileRoute("/(pure)/resume")({
 	component: ResumePage,
+	loader: () => getResumeRenderable(),
 	head: () => ({
 		links: [{ rel: "canonical", href: canonicalUrl("/resume") }],
 		meta: [
@@ -24,7 +27,19 @@ export const Route = createFileRoute("/(pure)/resume")({
 	}),
 });
 
+const getResumeRenderable = createServerFn({ method: "GET" }).handler(async () => {
+	const Renderable = await renderServerComponent(<ResumeContent />);
+
+	return { Renderable };
+});
+
 function ResumePage() {
+	const { Renderable } = Route.useLoaderData();
+
+	return <>{Renderable}</>;
+}
+
+function ResumeContent() {
 	return (
 		<div className="min-h-full px-2">
 			<div className="rounded-global border-primary mx-auto my-5 w-fit max-w-sm border-2 px-5 py-5 font-mono text-sm sm:max-w-none print:my-0 print:border-none">

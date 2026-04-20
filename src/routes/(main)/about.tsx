@@ -7,19 +7,17 @@ import { ViewsCounter } from "@/lib/components/ViewsCounter";
 import { FoobarEntry } from "@/lib/domains/foobar/Entry";
 
 import { createFileRoute, notFound } from "@tanstack/react-router";
+import { createServerFn } from "@tanstack/react-start";
+import { renderServerComponent } from "@tanstack/react-start/rsc";
 
 export const Route = createFileRoute("/(main)/about")({
 	component: AboutPage,
 	loader: () => {
-		const post = rootPages.find((page) => page.page_path === "/about");
-		if (!post) {
-			throw notFound();
-		}
-		return post;
+		return getAboutRenderable();
 	},
 	head: ({ loaderData }) => {
 		const title = `About ${SITE_TITLE_APPEND}`;
-		const description = loaderData?.description ?? SITE_DESCRIPTION;
+		const description = loaderData?.post?.description ?? SITE_DESCRIPTION;
 		const canonical = canonicalUrl("/about");
 		const ogImage = defaultOgImageUrl();
 
@@ -41,18 +39,31 @@ export const Route = createFileRoute("/(main)/about")({
 	},
 });
 
+const getAboutRenderable = createServerFn({ method: "GET" }).handler(async () => {
+	const post = rootPages.find((page) => page.page_path === "/about");
+	if (!post) {
+		throw notFound();
+	}
+
+	const Renderable = await renderServerComponent(
+		<MDXContent
+			source={post.raw}
+			mdast={post.mdast}
+			shikiHighlights={post.shikiHighlights}
+			components={{ SocialLinks }}
+		/>,
+	);
+
+	return { post, Renderable };
+});
+
 function AboutPage() {
-	const post = Route.useLoaderData();
+	const { Renderable } = Route.useLoaderData();
 
 	return (
 		<>
 			<h1 className="pt-10 pb-20 font-serif text-8xl font-bold tracking-tighter">/about</h1>
-			<MDXContent
-				source={post.raw}
-				mdast={post.mdast}
-				shikiHighlights={post.shikiHighlights}
-				components={{ SocialLinks }}
-			/>
+			{Renderable}
 			<ViewsCounter />
 			<FoobarEntry />
 		</>

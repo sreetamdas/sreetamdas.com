@@ -1,4 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { createServerFn } from "@tanstack/react-start";
+import { renderServerComponent } from "@tanstack/react-start/rsc";
 
 import { isUndefined } from "lodash-es";
 
@@ -33,18 +35,26 @@ export const Route = createFileRoute("/(main)/")({
 		};
 	},
 	loader: () => {
-		const post = rootPages.find((page) => page.page_slug === "introduction");
-
-		if (isUndefined(post)) {
-			throw new Error("introduction.mdx is missing");
-		}
-
-		return { post };
+		return getHomeRenderable();
 	},
 });
 
+const getHomeRenderable = createServerFn({ method: "GET" }).handler(async () => {
+	const post = rootPages.find((page) => page.page_slug === "introduction");
+
+	if (isUndefined(post)) {
+		throw new Error("introduction.mdx is missing");
+	}
+
+	const Renderable = await renderServerComponent(
+		<MDXContent source={post.raw} mdast={post.mdast} shikiHighlights={post.shikiHighlights} />,
+	);
+
+	return { Renderable };
+});
+
 function Home() {
-	const { post } = Route.useLoaderData();
+	const { Renderable } = Route.useLoaderData();
 	return (
 		<>
 			<h1 className="py-20 text-center font-serif text-6xl font-bold tracking-tighter">
@@ -53,7 +63,7 @@ function Home() {
 					👋
 				</span>
 			</h1>
-			<MDXContent source={post.raw} mdast={post.mdast} shikiHighlights={post.shikiHighlights} />
+			{Renderable}
 
 			<ViewsCounter hidden />
 		</>

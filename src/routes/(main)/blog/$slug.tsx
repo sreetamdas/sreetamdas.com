@@ -11,6 +11,8 @@ import { InfoBlock } from "@/lib/components/sink";
 import { Gradient } from "@/lib/components/Typography";
 import { ChameleonHighlight, Sparkles } from "@/lib/components/TypographyClient";
 import { ViewsCounter } from "@/lib/components/ViewsCounter";
+import { createServerFn } from "@tanstack/react-start";
+import { renderServerComponent } from "@tanstack/react-start/rsc";
 
 import {
 	HighlightWithUseEffect,
@@ -56,15 +58,49 @@ export const Route = createFileRoute("/(main)/blog/$slug")({
 	},
 
 	loader: ({ params }: { params: { slug: string } }) => {
-		return getBlogContent(params.slug);
+		return getBlogRenderable({ data: { slug: params.slug } });
 	},
 	notFoundComponent: () => (
 		<NotFound404 message="The blog post you're looking for doesn't exist :/" />
 	),
 });
 
+const getBlogRenderable = createServerFn({ method: "GET" })
+	.inputValidator((data) => {
+		if (
+			typeof data !== "object" ||
+			data === null ||
+			typeof (data as { slug?: unknown }).slug !== "string"
+		) {
+			throw new Error("Invalid blog slug payload");
+		}
+
+		return { slug: (data as { slug: string }).slug };
+	})
+	.handler(async ({ data }) => {
+		const post = await getBlogContent(data.slug);
+		const Renderable = await renderServerComponent(
+			<MDXContent
+				source={post.raw}
+				mdast={post.mdast}
+				shikiHighlights={post.shikiHighlights}
+				components={{
+					ChameleonHighlight,
+					Gradient,
+					InfoBlock,
+					Sparkles,
+
+					HighlightWithUseEffect,
+					HighlightWithUseInterval,
+				}}
+			/>,
+		);
+
+		return { post, Renderable };
+	});
+
 function RouteComponent() {
-	const post = Route.useLoaderData();
+	const { post, Renderable } = Route.useLoaderData();
 
 	return (
 		<>
@@ -81,20 +117,7 @@ function RouteComponent() {
 				{post.reading_time ? ` · ${post.reading_time} min read` : null}
 			</p>
 
-			<MDXContent
-				source={post.raw}
-				mdast={post.mdast}
-				shikiHighlights={post.shikiHighlights}
-				components={{
-					ChameleonHighlight,
-					Gradient,
-					InfoBlock,
-					Sparkles,
-
-					HighlightWithUseEffect,
-					HighlightWithUseInterval,
-				}}
-			/>
+			{Renderable}
 
 			<ViewsCounter />
 		</>
