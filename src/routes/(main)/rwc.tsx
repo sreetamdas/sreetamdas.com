@@ -25,48 +25,63 @@ type RWCSolution = {
 	lang: string;
 };
 
-async function getHighlightedCode() {
-	if (!GITHUB_RWC_GIST_ID) {
-		return { all_solutions: [], background_color: FALLBACK_RWC_BACKGROUND };
-	}
-
-	let gist: Awaited<ReturnType<typeof fetchGist>>;
-	try {
-		gist = await fetchGist(GITHUB_RWC_GIST_ID);
-		// oxlint-disable-next-line no-console
-		console.log("fetched gist");
-	} catch {
-		return { all_solutions: [], background_color: FALLBACK_RWC_BACKGROUND };
-	}
-
-	if (typeof gist.files === "undefined" || Object.keys(gist.files).length === 0) {
-		return { all_solutions: [], background_color: FALLBACK_RWC_BACKGROUND };
-	}
-
-	const files = Object.values(gist.files);
-	if (files.length === 0) {
-		return { all_solutions: [], background_color: FALLBACK_RWC_BACKGROUND };
-	}
-
-	const karma_highlighter = await getSlimKarmaHighlighter();
-	const background_color = karma_highlighter.getTheme("karma").bg;
-
-	const all_solutions = files.flatMap((file) => {
-		const code = file?.content;
-		const slug = file?.filename?.replaceAll(/[\s.]/g, "_").toLowerCase()!;
-		const filename = file?.filename;
-		const lang = file?.language?.toLowerCase() ?? "js";
-		if (code == null) {
-			return [];
+const getHighlightedCode = createServerFn({ method: "GET" })
+	.middleware([staticFunctionMiddleware])
+	.handler(async () => {
+		if (!GITHUB_RWC_GIST_ID) {
+			return { all_solutions: [], background_color: FALLBACK_RWC_BACKGROUND };
 		}
-		const html = karma_highlighter.codeToHtml(code, { theme: "karma", lang });
-		const cleaned_html = html.replace(/(^<pre [^>]*>)/, "").replace(/(<\/pre>$)/, "");
 
-		return [{ html: cleaned_html, slug, filename, lang }];
+		let gist: Awaited<ReturnType<typeof fetchGist>>;
+		try {
+			gist = await fetchGist(GITHUB_RWC_GIST_ID);
+			// oxlint-disable-next-line no-console
+			console.log("static fetched gist");
+		} catch {
+			return { all_solutions: [], background_color: FALLBACK_RWC_BACKGROUND };
+		}
+
+		if (typeof gist.files === "undefined" || Object.keys(gist.files).length === 0) {
+			return { all_solutions: [], background_color: FALLBACK_RWC_BACKGROUND };
+		}
+
+		const files = Object.values(gist.files);
+		if (files.length === 0) {
+			return { all_solutions: [], background_color: FALLBACK_RWC_BACKGROUND };
+		}
+
+		const karma_highlighter = await getSlimKarmaHighlighter();
+		const background_color = karma_highlighter.getTheme("karma").bg;
+
+		const all_solutions = files.flatMap((file) => {
+			const code = file?.content;
+			const slug = file?.filename?.replaceAll(/[\s.]/g, "_").toLowerCase()!;
+			const filename = file?.filename;
+			const lang = file?.language?.toLowerCase() ?? "js";
+			if (code == null) {
+				return [];
+			}
+			const html = karma_highlighter.codeToHtml(code, { theme: "karma", lang });
+			const cleaned_html = html.replace(/(^<pre [^>]*>)/, "").replace(/(<\/pre>$)/, "");
+
+			return [{ html: cleaned_html, slug, filename, lang }];
+		});
+
+		return { all_solutions, background_color };
 	});
 
-	return { all_solutions, background_color };
-}
+const getRWCRenderable = createServerFn({ method: "GET" }).handler(async () => {
+	const { all_solutions, background_color } = await getHighlightedCode();
+
+	// oxlint-disable-next-line no-console
+	console.log("non-static got highlighted code", background_color);
+
+	const Renderable = await renderServerComponent(
+		<RWCCodeSamples all_solutions={all_solutions} backgroundColor={background_color} />,
+	);
+
+	return { Renderable };
+});
 
 export const Route = createFileRoute("/(main)/rwc")({
 	component: RWCPage,
@@ -90,21 +105,6 @@ export const Route = createFileRoute("/(main)/rwc")({
 		],
 	}),
 });
-
-const getRWCRenderable = createServerFn({ method: "GET" })
-	.middleware([staticFunctionMiddleware])
-	.handler(async () => {
-		const { all_solutions, background_color } = await getHighlightedCode();
-
-		// oxlint-disable-next-line no-console
-		console.log("got highlighted code", background_color);
-
-		const Renderable = await renderServerComponent(
-			<RWCCodeSamples all_solutions={all_solutions} backgroundColor={background_color} />,
-		);
-
-		return { Renderable };
-	});
 
 function RWCPage() {
 	const { Renderable } = Route.useLoaderData();
