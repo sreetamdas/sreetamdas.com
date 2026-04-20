@@ -1,5 +1,5 @@
-import { existsSync, readFileSync } from "node:fs";
-import { resolve } from "node:path";
+// import { existsSync, readFileSync } from "node:fs";
+// import { resolve } from "node:path";
 import { defineConfig } from "vite";
 import { cloudflare } from "@cloudflare/vite-plugin";
 import { sentryTanstackStart } from "@sentry/tanstackstart-react/vite";
@@ -10,34 +10,34 @@ import viteReact from "@vitejs/plugin-react";
 import rsc from "@vitejs/plugin-rsc";
 import tailwindcss from "@tailwindcss/vite";
 
-type RootPage = { page_path: string };
-type BlogPost = { page_path: string; published: boolean };
+// type RootPage = { page_path: string };
+// type BlogPost = { page_path: string; published: boolean };
 
-function readGeneratedJson<T>(fileName: string, fallback: T): T {
-	const filePath = resolve(process.cwd(), ".velite", fileName);
-	if (!existsSync(filePath)) {
-		return fallback;
-	}
+// function readGeneratedJson<T>(fileName: string, fallback: T): T {
+// 	const filePath = resolve(process.cwd(), ".velite", fileName);
+// 	if (!existsSync(filePath)) {
+// 		return fallback;
+// 	}
 
-	return JSON.parse(readFileSync(filePath, "utf-8")) as T;
-}
+// 	return JSON.parse(readFileSync(filePath, "utf-8")) as T;
+// }
 
-const rootPages = readGeneratedJson<Array<RootPage>>("rootPages.json", []);
-const blogPosts = readGeneratedJson<Array<BlogPost>>("blogPosts.json", []);
+// const rootPages = readGeneratedJson<Array<RootPage>>("rootPages.json", []);
+// const blogPosts = readGeneratedJson<Array<BlogPost>>("blogPosts.json", []);
 
-const prerenderPages = [
-	"/",
-	"/about",
-	"/blog",
-	"/newsletter",
-	"/keebs",
-	"/karma",
-	"/fancy-pants",
-	"/resume",
-	"/foobar",
-	...rootPages.map((page) => page.page_path),
-	...blogPosts.filter((post) => post.published).map((post) => post.page_path),
-].map((path) => ({ path }));
+// const prerenderPages = [
+// 	"/",
+// 	"/about",
+// 	"/blog",
+// 	"/newsletter",
+// 	"/keebs",
+// 	"/karma",
+// 	"/fancy-pants",
+// 	"/resume",
+// 	"/foobar",
+// 	...rootPages.map((page) => page.page_path),
+// 	...blogPosts.filter((post) => post.published).map((post) => post.page_path),
+// ].map((path) => ({ path }));
 
 export default defineConfig({
 	server: {
@@ -52,14 +52,14 @@ export default defineConfig({
 			rsc: {
 				enabled: true,
 			},
-			pages: prerenderPages,
-			prerender: {
-				enabled: true,
-				autoSubfolderIndex: false,
-				crawlLinks: true,
-				autoStaticPathsDiscovery: true,
-				filter: ({ path }) => !path.startsWith("/aoc") && path !== "/rwc",
-			},
+			// pages: prerenderPages,
+			// prerender: {
+			// 	enabled: true,
+			// 	autoSubfolderIndex: false,
+			// 	crawlLinks: true,
+			// 	autoStaticPathsDiscovery: true,
+			// 	filter: ({ path }) => !path.startsWith("/aoc") && path !== "/rwc",
+			// },
 		}),
 		rsc(),
 		viteReact(),
