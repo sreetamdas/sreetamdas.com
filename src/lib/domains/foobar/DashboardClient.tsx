@@ -1,3 +1,5 @@
+"use client";
+
 import * as AlertDialogPrimitive from "@radix-ui/react-alert-dialog";
 import { isUndefined } from "lodash-es";
 import { useEffect } from "react";

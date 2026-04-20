@@ -6,42 +6,39 @@ import { absoluteUrl, canonicalUrl, defaultOgImageUrl } from "@/lib/seo";
 
 import { NotFound404 } from "@/lib/components/Error";
 import { MDXContent } from "@/lib/components/MDX";
-import { ReadingProgress } from "@/lib/components/ProgressBar.client";
+import { ReadingProgress } from "@/lib/components/ProgressBar";
 import { InfoBlock } from "@/lib/components/sink";
 import { Gradient } from "@/lib/components/Typography";
-import { ChameleonHighlight, Sparkles } from "@/lib/components/Typography.client";
+import { ChameleonHighlight, Sparkles } from "@/lib/components/TypographyClient";
 import { ViewsCounter } from "@/lib/components/ViewsCounter";
+import { createServerFn } from "@tanstack/react-start";
+import { renderServerComponent } from "@tanstack/react-start/rsc";
 
 import {
 	HighlightWithUseEffect,
 	HighlightWithUseInterval,
-} from "./-chameleon-text/components.client";
+} from "./-chameleon-text/componentsClient";
 import { isNil } from "lodash-es";
-import { createServerFn } from "@tanstack/react-start";
-import z from "zod";
 
 type BlogPost = (typeof blogPosts)[number];
+type BlogLoaderData = {
+	post: BlogPost;
+	Renderable: unknown;
+};
+async function getBlogContent(slug: string): Promise<BlogPost> {
+	const post = blogPosts.find((page) => page.page_slug === slug);
 
-const page_slug = z.object({
-	slug: z.string().min(1),
-});
+	if (isNil(post)) {
+		throw notFound();
+	}
 
-const getBlogContent = createServerFn({ method: "GET" })
-	.inputValidator((data) => page_slug.parse(data))
-	.handler(({ data: { slug } }) => {
-		const post = blogPosts.find((page) => page.page_slug === slug);
-
-		if (isNil(post)) {
-			throw notFound();
-		}
-
-		return post;
-	});
+	return post;
+}
 
 export const Route = createFileRoute("/(main)/blog/$slug")({
 	component: RouteComponent,
-	head: ({ loaderData }: { loaderData?: BlogPost }) => {
-		const post = loaderData;
+	head: ({ loaderData }: { loaderData?: BlogLoaderData }) => {
+		const post = loaderData?.post;
 		const title = `${post?.seo_title ?? post?.title ?? "Blog"} ${SITE_TITLE_APPEND}`;
 		const description = post?.description ?? SITE_DESCRIPTION;
 		const canonical = canonicalUrl(post?.page_path ?? "/blog");
@@ -65,15 +62,49 @@ export const Route = createFileRoute("/(main)/blog/$slug")({
 	},
 
 	loader: ({ params }: { params: { slug: string } }) => {
-		return getBlogContent({ data: { slug: params.slug } });
+		return getBlogRenderable({ data: { slug: params.slug } });
 	},
 	notFoundComponent: () => (
 		<NotFound404 message="The blog post you're looking for doesn't exist :/" />
 	),
 });
 
+const getBlogRenderable = createServerFn({ method: "GET" })
+	.inputValidator((data) => {
+		if (
+			typeof data !== "object" ||
+			data === null ||
+			typeof (data as { slug?: unknown }).slug !== "string"
+		) {
+			throw new Error("Invalid blog slug payload");
+		}
+
+		return { slug: (data as { slug: string }).slug };
+	})
+	.handler(async ({ data }) => {
+		const post = await getBlogContent(data.slug);
+		const Renderable = await renderServerComponent(
+			<MDXContent
+				source={post.raw}
+				mdast={post.mdast}
+				shikiHighlights={post.shikiHighlights}
+				components={{
+					ChameleonHighlight,
+					Gradient,
+					InfoBlock,
+					Sparkles,
+
+					HighlightWithUseEffect,
+					HighlightWithUseInterval,
+				}}
+			/>,
+		);
+
+		return { post, Renderable };
+	});
+
 function RouteComponent() {
-	const post = Route.useLoaderData();
+	const { post, Renderable } = Route.useLoaderData();
 
 	return (
 		<>
@@ -90,21 +121,7 @@ function RouteComponent() {
 				{post.reading_time ? ` · ${post.reading_time} min read` : null}
 			</p>
 
-			<MDXContent
-				source={post.raw}
-				mdast={post.mdast}
-				shikiHighlights={post.shikiHighlights}
-				components={{
-					ChameleonHighlight,
-					Gradient,
-					InfoBlock,
-					Sparkles,
-
-					// Post specific components
-					HighlightWithUseEffect,
-					HighlightWithUseInterval,
-				}}
-			/>
+			{Renderable}
 
 			<ViewsCounter />
 		</>

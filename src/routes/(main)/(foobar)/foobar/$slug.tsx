@@ -1,4 +1,4 @@
-import { FoobarSchrodinger } from "@/lib/domains/foobar/Dashboard.client";
+import { FoobarSchrodinger } from "@/lib/domains/foobar/DashboardClient";
 import { type FoobaFlagPageSlug, FOOBAR_FLAGS } from "@/lib/domains/foobar/flags";
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import z from "zod";

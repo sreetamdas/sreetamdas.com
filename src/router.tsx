@@ -9,6 +9,7 @@ export function getRouter() {
 	const router = createRouter({
 		routeTree,
 		scrollRestoration: true,
+		trailingSlash: "never",
 	});
 
 	if (!router.isServer) {

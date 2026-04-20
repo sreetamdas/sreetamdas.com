@@ -2,8 +2,11 @@ import { rootPages } from "@/generated";
 import { MDXContent } from "@/lib/components/MDX";
 import { RepoContributors } from "@/lib/components/GitHub/RepoContributors";
 import { ViewsCounter } from "@/lib/components/ViewsCounter";
-import { fetchRepoContributors, type RepoContributor } from "@/lib/domains/GitHub";
+import { fetchRepoContributors } from "@/lib/domains/GitHub/serverFns";
+import { type RepoContributor } from "@/lib/domains/GitHub/types";
 import { createFileRoute, notFound } from "@tanstack/react-router";
+import { createServerFn } from "@tanstack/react-start";
+import { renderServerComponent } from "@tanstack/react-start/rsc";
 import { isNil } from "lodash-es";
 import { SITE_DESCRIPTION, SITE_TITLE_APPEND } from "@/config";
 import { canonicalUrl, defaultOgImageUrl } from "@/lib/seo";
@@ -37,28 +40,32 @@ export const Route = createFileRoute("/(main)/$slug")({
 			],
 		};
 	},
-	loader: async ({ params }: { params: { slug: string } }) => {
-		const post = rootPages.find((page) => page.page_slug === params.slug);
+	loader: ({ params }: { params: { slug: string } }) => {
+		return getRootPageRenderable({ data: { slug: params.slug } });
+	},
+});
+
+const getRootPageRenderable = createServerFn({ method: "GET" })
+	.inputValidator((data) => {
+		if (
+			typeof data !== "object" ||
+			data === null ||
+			typeof (data as { slug?: unknown }).slug !== "string"
+		) {
+			throw new Error("Invalid root page slug payload");
+		}
+
+		return { slug: (data as { slug: string }).slug };
+	})
+	.handler(async ({ data }) => {
+		const post = rootPages.find((page) => page.page_slug === data.slug);
 
 		if (isNil(post)) {
 			throw notFound();
 		}
 
-		// Only fetch contributors for the credits page where RepoContributors is used
-		const contributors = params.slug === "credits" ? await fetchRepoContributors() : [];
-
-		return { post, contributors };
-	},
-});
-
-function MDXPageSlugPage() {
-	const { post, contributors } = Route.useLoaderData();
-
-	return (
-		<>
-			<h1 className="pt-10 pb-20 font-serif text-8xl font-bold tracking-tighter">
-				/{post.page_slug}
-			</h1>
+		const contributors = data.slug === "credits" ? await fetchRepoContributors() : [];
+		const Renderable = await renderServerComponent(
 			<MDXContent
 				source={post.raw}
 				mdast={post.mdast}
@@ -66,7 +73,21 @@ function MDXPageSlugPage() {
 				components={{
 					RepoContributors: () => <RepoContributors contributors={contributors} />,
 				}}
-			/>
+			/>,
+		);
+
+		return { post, contributors, Renderable };
+	});
+
+function MDXPageSlugPage() {
+	const { post, Renderable } = Route.useLoaderData();
+
+	return (
+		<>
+			<h1 className="pt-10 pb-20 font-serif text-8xl font-bold tracking-tighter">
+				/{post.page_slug}
+			</h1>
+			{Renderable}
 			<ViewsCounter />
 		</>
 	);

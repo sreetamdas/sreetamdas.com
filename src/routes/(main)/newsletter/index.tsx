@@ -5,12 +5,13 @@ import { canonicalUrl, defaultOgImageUrl } from "@/lib/seo";
 import { NewsletterEmailsPreviews } from "./-components";
 import { fetchNewsletterEmails } from "./-helpers";
 import { createFileRoute } from "@tanstack/react-router";
+import { createServerFn } from "@tanstack/react-start";
+import { renderServerComponent } from "@tanstack/react-start/rsc";
 
 export const Route = createFileRoute("/(main)/newsletter/")({
 	component: NewsletterEmailsPage,
 	loader: async () => {
-		const newsletter_emails_previews_data = await getNewsletterEmailsPreviewsData();
-		return { newsletter_emails_previews_data };
+		return getNewsletterEmailsPreviewsRenderable();
 	},
 	head: () => ({
 		links: [{ rel: "canonical", href: canonicalUrl("/newsletter") }],
@@ -43,13 +44,24 @@ export const Route = createFileRoute("/(main)/newsletter/")({
 	}),
 });
 
+const getNewsletterEmailsPreviewsRenderable = createServerFn({ method: "GET" }).handler(
+	async () => {
+		const newsletter_emails_previews_data = await getNewsletterEmailsPreviewsData();
+		const Renderable = await renderServerComponent(
+			<NewsletterEmailsPreviews emails={newsletter_emails_previews_data} />,
+		);
+
+		return { Renderable };
+	},
+);
+
 function NewsletterEmailsPage() {
-	const { newsletter_emails_previews_data } = Route.useLoaderData();
+	const { Renderable } = Route.useLoaderData();
 
 	return (
 		<>
 			<h1 className="pt-10 pb-20 font-serif text-8xl font-bold tracking-tighter">/newsletter</h1>
-			<NewsletterEmailsPreviews emails={newsletter_emails_previews_data} />
+			{Renderable}
 			<ViewsCounter />
 		</>
 	);

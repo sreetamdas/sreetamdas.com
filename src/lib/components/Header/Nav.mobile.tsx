@@ -1,3 +1,5 @@
+"use client";
+
 import { LuMenu } from "react-icons/lu";
 
 import { DrawerContent, DrawerRoot, DrawerTitle, DrawerTrigger } from "@/lib/components/Drawer";

@@ -8,6 +8,8 @@ import { ViewsCounter } from "@/lib/components/ViewsCounter";
 import { ImgurClient, type KeebDetails } from "@/lib/domains/Imgur";
 import { NotionClient } from "@/lib/domains/Notion";
 import { createFileRoute } from "@tanstack/react-router";
+import { createServerFn } from "@tanstack/react-start";
+import { renderServerComponent } from "@tanstack/react-start/rsc";
 
 const KEEBS_DATABASE_ID =
 	process.env.VITE_NOTION_KEEBS_PAGE_ID ??
@@ -27,10 +29,7 @@ const IMGUR_KEEBS_ALBUM_HASH =
 
 export const Route = createFileRoute("/(main)/keebs")({
 	component: KeebsPage,
-	loader: async () => {
-		const keebs = await getKeebsFromNotion();
-		return { keebs };
-	},
+	loader: () => getKeebsRenderable(),
 	head: () => ({
 		links: [{ rel: "canonical", href: canonicalUrl("/keebs") }],
 		meta: (() => {
@@ -59,12 +58,28 @@ export type KeebDetailsFromNotion = Omit<KeebDetails, "image"> & {
 	image: Omit<KeebDetails["image"], "height" | "width">;
 };
 
-async function KeebsPage() {
-	const { keebs } = Route.useLoaderData();
+const getKeebsRenderable = createServerFn({ method: "GET" }).handler(async () => {
+	const keebs = await getKeebsFromNotion();
+	const Renderable = await renderServerComponent(<KeebsList keebs={keebs} />);
+
+	return { Renderable };
+});
+
+function KeebsPage() {
+	const { Renderable } = Route.useLoaderData();
 
 	return (
 		<>
 			<h1 className="pt-10 pb-20 font-serif text-8xl font-bold tracking-tighter">/keebs</h1>
+			{Renderable}
+			<ViewsCounter />
+		</>
+	);
+}
+
+function KeebsList({ keebs }: { keebs: Array<KeebDetails | KeebDetailsFromNotion> }) {
+	return (
+		<>
 			{keebs.length === 0 ? (
 				<p className="pb-8">Keyboard data is temporarily unavailable in this preview deployment.</p>
 			) : null}
@@ -95,8 +110,6 @@ async function KeebsPage() {
 					</article>
 				))}
 			</section>
-
-			<ViewsCounter />
 		</>
 	);
 }

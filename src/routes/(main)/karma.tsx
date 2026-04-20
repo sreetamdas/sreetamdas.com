@@ -1,16 +1,14 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { createServerFn } from "@tanstack/react-start";
+import { renderServerComponent } from "@tanstack/react-start/rsc";
 import { SITE_TITLE_APPEND, SITE_URL } from "@/config";
 import { canonicalUrl } from "@/lib/seo";
 import { ViewsCounter } from "@/lib/components/ViewsCounter";
-import { KarmaShowcase } from "@/lib/components/KarmaShowcase.client";
-import { createServerFn } from "@tanstack/react-start";
-// import { staticFunctionMiddleware } from "@tanstack/start-static-server-functions";
+import { KarmaShowcase } from "@/lib/components/KarmaShowcase";
 
 export const Route = createFileRoute("/(main)/karma")({
 	component: KarmaPage,
-	loader: () => {
-		return getShowcaseImages();
-	},
+	loader: () => getKarmaRenderable(),
 	head: () => ({
 		links: [{ rel: "canonical", href: canonicalUrl("/karma") }],
 		meta: [
@@ -53,8 +51,31 @@ export const Route = createFileRoute("/(main)/karma")({
 });
 
 function KarmaPage() {
-	const examples = Route.useLoaderData();
+	const { Renderable } = Route.useLoaderData();
 
+	return <>{Renderable}</>;
+}
+
+const getKarmaRenderable = createServerFn({ method: "GET" }).handler(async () => {
+	const examples = await getShowcaseImages();
+	const Renderable = await renderServerComponent(<KarmaContent examples={examples} />);
+
+	return { Renderable };
+});
+
+function KarmaContent({
+	examples,
+}: {
+	examples: Array<{
+		name: string;
+		dark: {
+			src: string;
+		};
+		light: {
+			src: string;
+		};
+	}>;
+}) {
 	return (
 		<>
 			<h1 className="pt-10 pb-20 text-center font-serif text-9xl leading-none font-bold tracking-tighter">
@@ -71,19 +92,17 @@ function KarmaPage() {
 	);
 }
 
-const getShowcaseImages = createServerFn({ method: "GET" })
-	// .middleware([staticFunctionMiddleware])
-	.handler(async () => {
-		return theme_language_map.map(({ name, default_image, light_image }) => ({
-			name,
-			dark: {
-				src: default_image,
-			},
-			light: {
-				src: light_image,
-			},
-		}));
-	});
+async function getShowcaseImages() {
+	return theme_language_map.map(({ name, default_image, light_image }) => ({
+		name,
+		dark: {
+			src: default_image,
+		},
+		light: {
+			src: light_image,
+		},
+	}));
+}
 
 const theme_language_map = [
 	{

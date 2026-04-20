@@ -1,3 +1,5 @@
+"use client";
+
 import { isObject } from "lodash-es";
 import {
 	Children,

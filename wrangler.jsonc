@@ -1,7 +1,7 @@
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
 	"name": "sreetamdas-com",
-	"compatibility_date": "2025-09-27",
+	"compatibility_date": "2026-04-20",
 	"compatibility_flags": ["nodejs_compat"],
 	"main": "./src/worker.ts",
 	"workers_dev": true,
@@ -21,7 +21,13 @@
 		}
 	],
 	"observability": {
-		"enabled": true
+		"logs": {
+			"enabled": true,
+			"invocation_logs": true
+		},
+		"traces": {
+			"enabled": true
+		}
 	},
 	"placement": {
 		"mode": "smart"

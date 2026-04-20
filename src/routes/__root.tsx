@@ -1,4 +1,6 @@
 // <reference types="vite/client" />
+"use client";
+
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { HeadContent, Outlet, Scripts, createRootRoute } from "@tanstack/react-router";
@@ -113,7 +115,17 @@ export const Route = createRootRoute({
 });
 
 function RootComponent() {
-	const [queryClient] = useState(() => new QueryClient());
+	const [queryClient] = useState(
+		() =>
+			new QueryClient({
+				defaultOptions: {
+					queries: {
+						refetchOnWindowFocus: false,
+						refetchOnReconnect: false,
+					},
+				},
+			}),
+	);
 
 	return (
 		<RootDocument>

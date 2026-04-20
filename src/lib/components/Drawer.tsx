@@ -1,3 +1,5 @@
+"use client";
+
 import * as DrawerPrimitive from "@radix-ui/react-dialog";
 import * as VisuallyHidden from "@radix-ui/react-visually-hidden";
 import {

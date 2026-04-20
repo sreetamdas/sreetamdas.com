@@ -3,7 +3,7 @@
  * Data is fetched server-side in the route loader and passed as a prop —
  * no client-side fetch needed.
  */
-import { type RepoContributor } from "@/lib/domains/GitHub";
+import { type RepoContributor } from "@/lib/domains/GitHub/types";
 import { LinkTo } from "@/lib/components/Anchor";
 
 type RepoContributorsProps = {

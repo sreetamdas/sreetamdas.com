@@ -3,6 +3,8 @@ import { fetchNewsletterEmails } from "./-helpers";
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { SITE_DESCRIPTION, SITE_TITLE_APPEND } from "@/config";
 import { canonicalUrl, defaultOgImageUrl } from "@/lib/seo";
+import { createServerFn } from "@tanstack/react-start";
+import { renderServerComponent } from "@tanstack/react-start/rsc";
 
 type NewsletterIssue = Awaited<ReturnType<typeof fetchNewsletterEmails>>["results"][number];
 type NewsletterLoaderData = {
@@ -57,6 +59,31 @@ export const Route = createFileRoute("/(main)/newsletter/$slug")({
 		};
 	},
 	loader: async ({ params: { slug } }) => {
+		return getNewsletterEmailRenderable({ data: { slug } });
+	},
+	notFoundComponent: () => (
+		<>
+			<h1>Not Found</h1>
+			<p>The newsletter issue/email you&apos;re trying to find doesn&apos;t exist :/</p>
+		</>
+	),
+});
+
+const getNewsletterEmailRenderable = createServerFn({
+	method: "GET",
+})
+	.inputValidator((data) => {
+		if (
+			typeof data !== "object" ||
+			data === null ||
+			typeof (data as { slug?: unknown }).slug !== "string"
+		) {
+			throw new Error("Invalid newsletter slug payload");
+		}
+		return { slug: (data as { slug: string }).slug };
+	})
+	.handler(async ({ data }) => {
+		const { slug } = data;
 		const buttondown_api_emails_response = await fetchNewsletterEmails();
 		const newsletter_email_by_slug = buttondown_api_emails_response.results.find(
 			(issue) => issue.slug === slug,
@@ -81,20 +108,18 @@ export const Route = createFileRoute("/(main)/newsletter/$slug")({
 			...newsletter_email_by_slug,
 			body: trimmed_email_body,
 		};
-		return { newsletter_email_data };
-	},
-	notFoundComponent: () => (
-		<>
-			<h1>Not Found</h1>
-			<p>The newsletter issue/email you&apos;re trying to find doesn&apos;t exist :/</p>
-		</>
-	),
-});
+
+		const Renderable = await renderServerComponent(
+			<NewsletterEmailDetail email={newsletter_email_data} />,
+		);
+
+		return { newsletter_email_data, Renderable };
+	});
 
 function NewsletterEmailDetailPage() {
-	const { newsletter_email_data } = Route.useLoaderData();
+	const { Renderable } = Route.useLoaderData();
 
-	return <NewsletterEmailDetail email={newsletter_email_data} />;
+	return <>{Renderable}</>;
 }
 
 // async function getNewsletterEmailsSlugs() {
