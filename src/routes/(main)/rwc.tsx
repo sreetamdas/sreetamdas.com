@@ -7,7 +7,6 @@ import { staticFunctionMiddleware } from "@tanstack/start-static-server-function
 
 import { createFileRoute, ErrorComponent } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
-import { renderServerComponent } from "@tanstack/react-start/rsc";
 
 import { FiLink } from "react-icons/fi";
 
@@ -70,22 +69,9 @@ const getHighlightedCode = createServerFn({ method: "GET" })
 		return { all_solutions, background_color };
 	});
 
-const getRWCRenderable = createServerFn({ method: "GET" }).handler(async () => {
-	const { all_solutions, background_color } = await getHighlightedCode();
-
-	// oxlint-disable-next-line no-console
-	console.log("non-static got highlighted code", background_color);
-
-	const Renderable = await renderServerComponent(
-		<RWCCodeSamples all_solutions={all_solutions} backgroundColor={background_color} />,
-	);
-
-	return { Renderable };
-});
-
 export const Route = createFileRoute("/(main)/rwc")({
 	component: RWCPage,
-	loader: async () => getRWCRenderable(),
+	loader: async () => getHighlightedCode(),
 	errorComponent: (err) => <ErrorComponent error={err} />,
 	head: () => ({
 		links: [{ rel: "canonical", href: canonicalUrl("/rwc") }],
@@ -107,12 +93,12 @@ export const Route = createFileRoute("/(main)/rwc")({
 });
 
 function RWCPage() {
-	const { Renderable } = Route.useLoaderData();
+	const { all_solutions, background_color } = Route.useLoaderData();
 
 	return (
 		<>
 			<h1 className="pt-10 pb-20 font-serif text-8xl font-bold tracking-tighter">/rwc</h1>
-			{Renderable}
+			<RWCCodeSamples all_solutions={all_solutions} backgroundColor={background_color} />
 			<ViewsCounter />
 		</>
 	);
