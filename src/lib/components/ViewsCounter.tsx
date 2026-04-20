@@ -47,6 +47,8 @@ const Views = ({ slug, page_type, disabled }: Omit<ViewsCounterProps, "hidden">)
 	const { data, isLoading } = useQuery({
 		queryFn: fetchViewCount,
 		queryKey: [normalizedPathname, "get-views"],
+		refetchOnWindowFocus: false,
+		refetchOnReconnect: false,
 	});
 
 	if (isLoading) {
