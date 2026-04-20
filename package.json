@@ -35,9 +35,9 @@
 		"lint": "pnpm run oxfmt:check && pnpm run oxlint:check",
 		"lint:fix": "pnpm run oxfmt:write && pnpm run oxlint:fix",
 		"format": "pnpm run oxfmt:write",
-		"deploy": "pnpm run build && wrangler deploy -e production",
-		"deploy:production": "pnpm run build && wrangler deploy -e production",
-		"deploy:staging": "pnpm run build && wrangler deploy -e staging",
+		"deploy": "wrangler deploy -e production",
+		"deploy:production": "wrangler deploy -e production",
+		"deploy:staging": "wrangler deploy -e staging",
 		"prepare": "husky",
 		"lint-staged": "lint-staged"
 	},
