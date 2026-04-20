@@ -21,6 +21,10 @@ import {
 import { isNil } from "lodash-es";
 
 type BlogPost = (typeof blogPosts)[number];
+type BlogLoaderData = {
+	post: BlogPost;
+	Renderable: unknown;
+};
 async function getBlogContent(slug: string): Promise<BlogPost> {
 	const post = blogPosts.find((page) => page.page_slug === slug);
 
@@ -33,8 +37,8 @@ async function getBlogContent(slug: string): Promise<BlogPost> {
 
 export const Route = createFileRoute("/(main)/blog/$slug")({
 	component: RouteComponent,
-	head: ({ loaderData }: { loaderData?: BlogPost }) => {
-		const post = loaderData;
+	head: ({ loaderData }: { loaderData?: BlogLoaderData }) => {
+		const post = loaderData?.post;
 		const title = `${post?.seo_title ?? post?.title ?? "Blog"} ${SITE_TITLE_APPEND}`;
 		const description = post?.description ?? SITE_DESCRIPTION;
 		const canonical = canonicalUrl(post?.page_path ?? "/blog");
