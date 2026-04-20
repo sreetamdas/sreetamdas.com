@@ -53,13 +53,9 @@ export default defineConfig({
 				enabled: true,
 			},
 			// pages: prerenderPages,
-			// prerender: {
-			// 	enabled: true,
-			// 	autoSubfolderIndex: false,
-			// 	crawlLinks: true,
-			// 	autoStaticPathsDiscovery: true,
-			// 	filter: ({ path }) => !path.startsWith("/aoc") && path !== "/rwc",
-			// },
+			prerender: {
+				enabled: true,
+			},
 		}),
 		rsc(),
 		viteReact(),
