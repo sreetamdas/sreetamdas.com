@@ -1,6 +1,6 @@
 "use client";
 
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useSearch } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 
 import { SlideDeck, type Slide } from "@/lib/domains/slides";
@@ -10,6 +10,9 @@ export const Route = createFileRoute("/slides/mdx/")({
 });
 
 function MainLayout() {
+	const search = useSearch({ from: "/slides/mdx/" }) as { presenter?: string };
+	const presenterMode = search.presenter === "1" || search.presenter === "true";
+
 	const [slides, setSlides] = useState<Slide[]>([]);
 	const [error, setError] = useState<string | null>(null);
 	const [loading, setLoading] = useState(true);
@@ -56,7 +59,7 @@ function MainLayout() {
 
 	return (
 		<div className="fixed inset-0 bg-white dark:bg-gray-900">
-			<SlideDeck slides={slides} />
+			<SlideDeck slides={slides} presenterMode={presenterMode} />
 		</div>
 	);
 }

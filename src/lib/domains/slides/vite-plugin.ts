@@ -7,11 +7,12 @@
  * 1. Extracts top-level import/export statements and hoists them to the module scope
  * 2. Splits the file on --- lines into individual slides (code-fence aware)
  * 3. Parses YAML frontmatter per slide using gray-matter
- * 4. Pre-computes MDAST + Shiki highlights at build time
- * 5. Generates a module where each slide is a lazy React component
+ * 4. Extracts <Notes> blocks from slide content
+ * 5. Pre-computes MDAST + Shiki highlights at build time
+ * 6. Generates a module where each slide is a lazy React component
  *
  * The output module exports:
- *   export default [{ Component: Slide1, data: {...} }, ...]
+ *   export default [{ Component: Slide1, data: {...}, notes: "..." }, ...]
  */
 import { type Plugin } from "vite-plus";
 
@@ -20,6 +21,12 @@ import { type Plugin } from "vite-plus";
  * inside backticks. Group 1 captures the import/export statement.
  */
 const MODULE_REGEXP = /\\`|`(?:\\`|[^`])*`|(^(?:import|export)[^;]+;)/gm;
+
+/**
+ * Matches <Notes>...</Notes> blocks. Extracts content between tags.
+ * Supports multiline content.
+ */
+const NOTES_REGEXP = /<Notes>([\s\S]*?)<\/Notes>/g;
 
 export function slideDeckPlugin(): Plugin {
 	return {
@@ -95,13 +102,32 @@ export function slideDeckPlugin(): Plugin {
 				return slides;
 			}
 
+			/**
+			 * Extracts <Notes> blocks from slide content and returns
+			 * the cleaned content (without notes) and the notes text.
+			 */
+			function extractNotes(text: string): { content: string; notes: string | null } {
+				const notes: string[] = [];
+				const content = text.replaceAll(NOTES_REGEXP, (_match, noteContent) => {
+					notes.push(noteContent.trim());
+					return "";
+				});
+				return {
+					content: content.trim(),
+					notes: notes.length > 0 ? notes.join("\n\n") : null,
+				};
+			}
+
 			const slideTexts = splitSlides(sourceWithoutModules);
 
 			const compiledSlides = await Promise.all(
 				slideTexts.map(async (text, index) => {
 					const parsed = matter(text);
-					const content = parsed.content.trim();
+					const matterContent = parsed.content.trim();
 					const data = parsed.data as Record<string, string | undefined>;
+
+					// Extract notes from content
+					const { content, notes } = extractNotes(matterContent);
 
 					// Build MDAST
 					const mdast = mdxParse(content);
@@ -136,6 +162,7 @@ export function slideDeckPlugin(): Plugin {
 						mdast: JSON.stringify(mdast),
 						shikiHighlights,
 						data,
+						notes,
 					};
 				}),
 			);
@@ -152,7 +179,8 @@ export function slideDeckPlugin(): Plugin {
 								...props
 							});
 						},
-						data: ${JSON.stringify(slide.data)}
+						data: ${JSON.stringify(slide.data)},
+						notes: ${JSON.stringify(slide.notes)}
 					}
 				`,
 			)

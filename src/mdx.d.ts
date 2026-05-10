@@ -15,6 +15,7 @@ interface ReMdxSlideData {
 interface ReMdxSlide {
 	Component: () => ReactElement;
 	data: ReMdxSlideData;
+	notes: string | null;
 }
 
 declare module "*.re.mdx" {
