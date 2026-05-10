@@ -16,6 +16,7 @@ import {
 } from "react";
 
 export interface SlideData {
+	title?: string;
 	theme?: string;
 	transition?: string;
 	image?: string;
@@ -52,7 +53,6 @@ export function SlideDeck({
 	swipeEnabled = true,
 }: SlideDeckProps) {
 	const [currentIndex, setCurrentIndex] = useState(0);
-	const [direction, setDirection] = useState<"forward" | "backward">("forward");
 	const [presenterMode, setPresenterMode] = useState(initialPresenterMode);
 	const [elapsedTime, setElapsedTime] = useState(0);
 	const containerRef = useRef<HTMLDivElement>(null);
@@ -62,10 +62,9 @@ export function SlideDeck({
 	const goTo = useCallback(
 		(index: number) => {
 			if (index < 0 || index >= slides.length) return;
-			setDirection(index > currentIndex ? "forward" : "backward");
 			setCurrentIndex(index);
 		},
-		[currentIndex, slides.length],
+		[slides.length],
 	);
 
 	const goNext = useCallback(() => {
@@ -91,6 +90,11 @@ export function SlideDeck({
 	goPrevRef.current = goPrev;
 	togglePresenterRef.current = togglePresenterMode;
 
+	// Auto-focus container so keyboard navigation works immediately.
+	useEffect(() => {
+		containerRef.current?.focus();
+	}, []);
+
 	// Register hotkeys once on mount via @tanstack/hotkeys
 	useEffect(() => {
 		const manager = getHotkeyManager();
@@ -101,14 +105,7 @@ export function SlideDeck({
 			manager.register("PageUp", () => goPrevRef.current(), { preventDefault: true }),
 			manager.register("PageDown", () => goNextRef.current(), { preventDefault: true }),
 			manager.register("Space", () => goNextRef.current(), { preventDefault: true }),
-			manager.register(
-				{ key: "p", alt: true },
-				() => togglePresenterRef.current(),
-				{
-					preventDefault: true,
-					ignoreInputs: true,
-				},
-			),
+			manager.register("Alt+b", () => togglePresenterRef.current(), { preventDefault: true }),
 		];
 
 		return () => {
@@ -141,10 +138,6 @@ export function SlideDeck({
 			timerRef.current = setInterval(() => {
 				setElapsedTime((prev) => prev + 1);
 			}, 1000);
-		} else {
-			if (timerRef.current) {
-				clearInterval(timerRef.current);
-			}
 		}
 
 		return () => {
@@ -156,15 +149,14 @@ export function SlideDeck({
 
 	if (presenterMode) {
 		return (
-			<PresenterMode
-				slides={slides}
-				currentIndex={currentIndex}
-				elapsedTime={elapsedTime}
-				goTo={goTo}
-				goNext={goNext}
-				goPrev={goPrev}
-				direction={direction}
-			/>
+		<PresenterMode
+			slides={slides}
+			currentIndex={currentIndex}
+			elapsedTime={elapsedTime}
+			goTo={goTo}
+			goNext={goNext}
+			goPrev={goPrev}
+		/>
 		);
 	}
 
@@ -183,7 +175,7 @@ export function SlideDeck({
 				<SlideWrapper
 					key={index}
 					isActive={index === currentIndex}
-					direction={direction}
+					isBefore={index < currentIndex}
 					data={slide.data}
 				>
 					<slide.Component />
@@ -201,14 +193,14 @@ export function SlideDeck({
 interface SlideWrapperProps {
 	children: ReactNode;
 	isActive: boolean;
-	direction: "forward" | "backward";
+	isBefore: boolean;
 	data: SlideData;
 }
 
-function SlideWrapper({ children, isActive, direction, data }: SlideWrapperProps) {
+function SlideWrapper({ children, isActive, isBefore, data }: SlideWrapperProps) {
 	const translateClass = isActive
 		? "translate-x-0 opacity-100 z-10"
-		: direction === "forward"
+		: isBefore
 			? "-translate-x-full opacity-0 -z-10"
 			: "translate-x-full opacity-0 -z-10";
 
@@ -226,7 +218,12 @@ function SlideWrapper({ children, isActive, direction, data }: SlideWrapperProps
 			}
 			aria-hidden={!isActive}
 		>
-			<div className="h-full w-full overflow-auto p-12">{children}</div>
+			<div className="h-full w-full overflow-auto p-12">
+				{data.title && (
+					<h1 className="mb-8 text-4xl font-bold text-gray-900 dark:text-white">{data.title}</h1>
+				)}
+				{children}
+			</div>
 		</div>
 	);
 }
@@ -238,7 +235,6 @@ interface PresenterModeProps {
 	goTo: (index: number) => void;
 	goNext: () => void;
 	goPrev: () => void;
-	direction: "forward" | "backward";
 }
 
 function formatTime(seconds: number): string {
@@ -299,7 +295,7 @@ function PresenterMode({ slides, currentIndex, elapsedTime, goTo, goNext, goPrev
 					</div>
 
 					{/* Speaker notes */}
-					<div className="flex-1 flex-col">
+					<div className="flex flex-1 flex-col">
 						<div className="mb-2 text-xs uppercase tracking-wider text-gray-400">Speaker Notes</div>
 						<div className="flex-1 overflow-auto rounded-lg bg-gray-800 p-4">
 							{currentSlide.notes ? (
