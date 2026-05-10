@@ -1,11 +1,12 @@
 import { cloudflare } from "@cloudflare/vite-plugin";
-import remdx from "@nkzw/vite-plugin-remdx";
 import { sentryTanstackStart } from "@sentry/tanstackstart-react/vite";
 import tailwindcss from "@tailwindcss/vite";
 import { tanstackStart } from "@tanstack/react-start/plugin/vite";
 import viteReact from "@vitejs/plugin-react";
 import rsc from "@vitejs/plugin-rsc";
 import { defineConfig } from "vite-plus";
+
+import { slideDeckPlugin } from "./src/lib/domains/slides/vite-plugin.ts";
 
 export default defineConfig({
 	fmt: {
@@ -216,7 +217,7 @@ export default defineConfig({
 			},
 		}),
 		rsc(),
-		remdx(),
+		slideDeckPlugin(),
 		viteReact(),
 		tailwindcss(),
 		...(process.env.SENTRY_AUTH_TOKEN

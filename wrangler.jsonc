@@ -1,7 +1,7 @@
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
 	"name": "sreetamdas-com",
-	"compatibility_date": "2026-04-20",
+	"compatibility_date": "2026-05-10",
 	"compatibility_flags": ["nodejs_compat"],
 	"main": "./src/worker.ts",
 	"workers_dev": true,
@@ -52,6 +52,7 @@
 		"staging": {
 			"name": "sreetamdas-com-staging",
 			"workers_dev": true,
+			"preview_urls": true,
 			"routes": [
 				{
 					"custom_domain": true,
