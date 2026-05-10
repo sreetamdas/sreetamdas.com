@@ -33,6 +33,7 @@ interface SlideDeckProps {
 	className?: string;
 	style?: CSSProperties;
 	presenterMode?: boolean;
+	swipeEnabled?: boolean;
 }
 
 /**
@@ -43,13 +44,20 @@ interface SlideDeckProps {
  * - Right arrow / Page Down / Space: next slide
  * - Alt+P: toggle presenter mode
  */
-export function SlideDeck({ slides, className, style, presenterMode: initialPresenterMode = false }: SlideDeckProps) {
+export function SlideDeck({
+	slides,
+	className,
+	style,
+	presenterMode: initialPresenterMode = false,
+	swipeEnabled = true,
+}: SlideDeckProps) {
 	const [currentIndex, setCurrentIndex] = useState(0);
 	const [direction, setDirection] = useState<"forward" | "backward">("forward");
 	const [presenterMode, setPresenterMode] = useState(initialPresenterMode);
 	const [elapsedTime, setElapsedTime] = useState(0);
 	const containerRef = useRef<HTMLDivElement>(null);
 	const timerRef = useRef<ReturnType<typeof setInterval>>();
+	const touchStartX = useRef<number>(0);
 
 	const goTo = useCallback(
 		(index: number) => {
@@ -93,6 +101,25 @@ export function SlideDeck({ slides, className, style, presenterMode: initialPres
 		};
 	}, [goNext, goPrev, togglePresenterMode]);
 
+	// Touch swipe handlers
+	const handleTouchStart = useCallback((event: React.TouchEvent) => {
+		touchStartX.current = event.touches[0].clientX;
+	}, []);
+
+	const handleTouchEnd = useCallback(
+		(event: React.TouchEvent) => {
+			if (!swipeEnabled) return;
+			const deltaX = event.changedTouches[0].clientX - touchStartX.current;
+			const threshold = 50;
+			if (deltaX > threshold) {
+				goPrev();
+			} else if (deltaX < -threshold) {
+				goNext();
+			}
+		},
+		[swipeEnabled, goNext, goPrev],
+	);
+
 	// Timer for presenter mode
 	useEffect(() => {
 		if (presenterMode) {
@@ -134,6 +161,8 @@ export function SlideDeck({ slides, className, style, presenterMode: initialPres
 			tabIndex={0}
 			role="region"
 			aria-label="Slide deck"
+			onTouchStart={handleTouchStart}
+			onTouchEnd={handleTouchEnd}
 		>
 			{slides.map((slide, index) => (
 				<SlideWrapper
