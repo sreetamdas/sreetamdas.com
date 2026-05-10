@@ -5,7 +5,15 @@
  * into the rest of the site. Supports keyboard navigation, basic slide
  * transitions, and presenter mode with speaker notes.
  */
-import { useCallback, useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
+import { getHotkeyManager } from "@tanstack/hotkeys";
+import {
+	useCallback,
+	useEffect,
+	useRef,
+	useState,
+	type CSSProperties,
+	type ReactNode,
+} from "react";
 
 export interface SlideData {
 	theme?: string;
@@ -33,7 +41,7 @@ interface SlideDeckProps {
  * Keyboard shortcuts:
  * - Left arrow / Page Up: previous slide
  * - Right arrow / Page Down / Space: next slide
- * - p: toggle presenter mode
+ * - Alt+P: toggle presenter mode
  */
 export function SlideDeck({ slides, className, style, presenterMode: initialPresenterMode = false }: SlideDeckProps) {
 	const [currentIndex, setCurrentIndex] = useState(0);
@@ -60,38 +68,30 @@ export function SlideDeck({ slides, className, style, presenterMode: initialPres
 		goTo(currentIndex - 1);
 	}, [currentIndex, goTo]);
 
+	const togglePresenterMode = useCallback(() => {
+		setPresenterMode((prev) => !prev);
+	}, []);
+
+	// Register hotkeys via @tanstack/hotkeys
 	useEffect(() => {
-		function handleKeyDown(event: KeyboardEvent) {
-			if (
-				event.target instanceof HTMLInputElement ||
-				event.target instanceof HTMLTextAreaElement
-			) {
-				return;
-			}
+		const manager = getHotkeyManager();
 
-			switch (event.key) {
-				case "ArrowLeft":
-				case "PageUp":
-					event.preventDefault();
-					goPrev();
-					break;
-				case "ArrowRight":
-				case "PageDown":
-				case " ":
-					event.preventDefault();
-					goNext();
-					break;
-				case "p":
-				case "P":
-					event.preventDefault();
-					setPresenterMode((prev) => !prev);
-					break;
-			}
-		}
+		const handles = [
+			manager.register("ArrowLeft", goPrev, { preventDefault: true }),
+			manager.register("ArrowRight", goNext, { preventDefault: true }),
+			manager.register("PageUp", goPrev, { preventDefault: true }),
+			manager.register("PageDown", goNext, { preventDefault: true }),
+			manager.register("Space", goNext, { preventDefault: true }),
+			manager.register("alt+p", togglePresenterMode, {
+				preventDefault: true,
+				ignoreInputs: true,
+			}),
+		];
 
-		window.addEventListener("keydown", handleKeyDown);
-		return () => window.removeEventListener("keydown", handleKeyDown);
-	}, [goNext, goPrev]);
+		return () => {
+			handles.forEach((h) => h.unregister());
+		};
+	}, [goNext, goPrev, togglePresenterMode]);
 
 	// Timer for presenter mode
 	useEffect(() => {
