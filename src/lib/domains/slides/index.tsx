@@ -149,14 +149,14 @@ export function SlideDeck({
 
 	if (presenterMode) {
 		return (
-		<PresenterMode
-			slides={slides}
-			currentIndex={currentIndex}
-			elapsedTime={elapsedTime}
-			goTo={goTo}
-			goNext={goNext}
-			goPrev={goPrev}
-		/>
+			<PresenterMode
+				slides={slides}
+				currentIndex={currentIndex}
+				elapsedTime={elapsedTime}
+				goTo={goTo}
+				goNext={goNext}
+				goPrev={goPrev}
+			/>
 		);
 	}
 
@@ -183,7 +183,7 @@ export function SlideDeck({
 			))}
 
 			{/* Slide counter */}
-			<div className="absolute bottom-4 right-4 z-20 text-sm text-gray-500 dark:text-gray-400">
+			<div className="absolute right-4 bottom-4 z-20 text-sm text-gray-500 dark:text-gray-400">
 				{currentIndex + 1} / {slides.length}
 			</div>
 		</div>
@@ -243,7 +243,14 @@ function formatTime(seconds: number): string {
 	return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
 }
 
-function PresenterMode({ slides, currentIndex, elapsedTime, goTo, goNext, goPrev }: PresenterModeProps) {
+function PresenterMode({
+	slides,
+	currentIndex,
+	elapsedTime,
+	goTo,
+	goNext,
+	goPrev,
+}: PresenterModeProps) {
 	const currentSlide = slides[currentIndex];
 	const nextSlide = slides[currentIndex + 1];
 	const progress = ((currentIndex + 1) / slides.length) * 100;
@@ -252,7 +259,7 @@ function PresenterMode({ slides, currentIndex, elapsedTime, goTo, goNext, goPrev
 		<div className="flex h-screen flex-col bg-gray-900 text-white">
 			{/* Top bar: Timer and progress */}
 			<div className="flex items-center justify-between border-b border-gray-700 px-4 py-2">
-				<div className="text-lg font-mono">{formatTime(elapsedTime)}</div>
+				<div className="font-mono text-lg">{formatTime(elapsedTime)}</div>
 				<div className="flex-1 px-8">
 					<div className="h-2 rounded-full bg-gray-700">
 						<div
@@ -269,8 +276,8 @@ function PresenterMode({ slides, currentIndex, elapsedTime, goTo, goNext, goPrev
 			{/* Main content */}
 			<div className="flex flex-1 gap-4 p-4">
 				{/* Current slide */}
-				<div className="flex flex-[2] flex-col">
-					<div className="mb-2 text-xs uppercase tracking-wider text-gray-400">Current Slide</div>
+				<div className="flex flex-2 flex-col">
+					<div className="mb-2 text-xs tracking-wider text-gray-400 uppercase">Current Slide</div>
 					<div className="flex-1 overflow-hidden rounded-lg bg-black">
 						<div className="h-full w-full overflow-auto p-8">
 							<currentSlide.Component />
@@ -282,21 +289,23 @@ function PresenterMode({ slides, currentIndex, elapsedTime, goTo, goNext, goPrev
 				<div className="flex flex-1 flex-col gap-4">
 					{/* Next slide preview */}
 					<div className="flex flex-1 flex-col">
-						<div className="mb-2 text-xs uppercase tracking-wider text-gray-400">Next Slide</div>
+						<div className="mb-2 text-xs tracking-wider text-gray-400 uppercase">Next Slide</div>
 						<div className="flex-1 overflow-hidden rounded-lg bg-black">
 							{nextSlide ? (
 								<div className="h-full w-full overflow-auto p-4 opacity-70">
 									<nextSlide.Component />
 								</div>
 							) : (
-								<div className="flex h-full items-center justify-center text-gray-500">End of deck</div>
+								<div className="flex h-full items-center justify-center text-gray-500">
+									End of deck
+								</div>
 							)}
 						</div>
 					</div>
 
 					{/* Speaker notes */}
 					<div className="flex flex-1 flex-col">
-						<div className="mb-2 text-xs uppercase tracking-wider text-gray-400">Speaker Notes</div>
+						<div className="mb-2 text-xs tracking-wider text-gray-400 uppercase">Speaker Notes</div>
 						<div className="flex-1 overflow-auto rounded-lg bg-gray-800 p-4">
 							{currentSlide.notes ? (
 								<div className="prose prose-invert prose-sm max-w-none whitespace-pre-wrap">

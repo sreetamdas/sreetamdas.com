@@ -6,7 +6,7 @@ import viteReact from "@vitejs/plugin-react";
 import rsc from "@vitejs/plugin-rsc";
 import { defineConfig } from "vite-plus";
 
-import { slideDeckPlugin } from "./src/lib/domains/slides/vite-plugin";
+import { slideDeckPlugin } from "./src/lib/domains/slides/vite-plugin.ts";
 
 export default defineConfig({
 	fmt: {

@@ -1,6 +1,8 @@
 {
 	"compilerOptions": {
+		"allowImportingTsExtensions": true,
 		"esModuleInterop": true,
+		"noEmit": true,
 		"forceConsistentCasingInFileNames": true,
 		"isolatedModules": true,
 		"jsx": "react-jsx",

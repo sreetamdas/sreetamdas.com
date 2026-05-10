@@ -27,7 +27,9 @@ const NOTES_REGEXP = /<Notes>([\s\S]*?)<\/Notes>/g;
  */
 let _mdxParse: typeof import("safe-mdx/parse").mdxParse | undefined;
 let _visit: typeof import("unist-util-visit").visit | undefined;
-let _getSlimKarmaHighlighter: typeof import("../shiki/highlighter").getSlimKarmaHighlighter | undefined;
+let _getSlimKarmaHighlighter:
+	| typeof import("../shiki/highlighter").getSlimKarmaHighlighter
+	| undefined;
 let _renderCodeBlockToHtml: typeof import("../shiki/plugin").renderCodeBlockToHtml | undefined;
 
 async function loadDeps() {
@@ -59,7 +61,10 @@ async function loadDeps() {
  * Parse simple YAML frontmatter (key: value pairs only).
  * Returns parsed data and the remaining content.
  */
-function parseFrontmatter(text: string): { data: Record<string, string | undefined>; content: string } {
+function parseFrontmatter(text: string): {
+	data: Record<string, string | undefined>;
+	content: string;
+} {
 	const lines = text.split("\n");
 	if (lines[0]?.trim() !== "---") {
 		return { data: {}, content: text };
@@ -95,7 +100,10 @@ function parseFrontmatter(text: string): { data: Record<string, string | undefin
  * Only applies when the file starts with `---`. Returns the parsed data
  * and the source with the frontmatter block removed.
  */
-function extractTopLevelFrontmatter(source: string): { data: Record<string, string | undefined>; source: string } {
+function extractTopLevelFrontmatter(source: string): {
+	data: Record<string, string | undefined>;
+	source: string;
+} {
 	const result = parseFrontmatter(source);
 	return { data: result.data, source: result.content };
 }
@@ -220,7 +228,7 @@ export function slideDeckPlugin(): Plugin {
 			if (!id.endsWith(".re.mdx")) return;
 
 			try {
-				const { matter, mdxParse, visit, getSlimKarmaHighlighter, renderCodeBlockToHtml } =
+				const { mdxParse, visit, getSlimKarmaHighlighter, renderCodeBlockToHtml } =
 					await loadDeps();
 
 				const highlighter = await getSlimKarmaHighlighter();

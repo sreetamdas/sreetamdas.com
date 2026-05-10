@@ -51,6 +51,7 @@
 	"env": {
 		"staging": {
 			"name": "sreetamdas-com-staging",
+			"workers_dev": true,
 			"preview_urls": true,
 			"routes": [
 				{
