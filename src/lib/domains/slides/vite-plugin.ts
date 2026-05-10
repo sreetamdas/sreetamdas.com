@@ -25,17 +25,12 @@ const NOTES_REGEXP = /<Notes>([\s\S]*?)<\/Notes>/g;
 /**
  * Cached lazy imports — resolved once on first transform call.
  */
-let _matter: ((text: string) => { data: Record<string, unknown>; content: string }) | undefined;
 let _mdxParse: typeof import("safe-mdx/parse").mdxParse | undefined;
 let _visit: typeof import("unist-util-visit").visit | undefined;
 let _getSlimKarmaHighlighter: typeof import("../shiki/highlighter").getSlimKarmaHighlighter | undefined;
 let _renderCodeBlockToHtml: typeof import("../shiki/plugin").renderCodeBlockToHtml | undefined;
 
 async function loadDeps() {
-	if (!_matter) {
-		const matterMod = await import("gray-matter");
-		_matter = matterMod.default;
-	}
 	if (!_mdxParse) {
 		const parseMod = await import("safe-mdx/parse");
 		_mdxParse = parseMod.mdxParse;
@@ -53,7 +48,6 @@ async function loadDeps() {
 		_renderCodeBlockToHtml = pluginMod.renderCodeBlockToHtml;
 	}
 	return {
-		matter: _matter!,
 		mdxParse: _mdxParse!,
 		visit: _visit!,
 		getSlimKarmaHighlighter: _getSlimKarmaHighlighter!,
@@ -62,17 +56,13 @@ async function loadDeps() {
 }
 
 /**
- * Extract top-level YAML frontmatter from the beginning of the source.
- * Only applies when the file starts with `---`. Returns the parsed data
- * and the source with the frontmatter block removed.
+ * Parse simple YAML frontmatter (key: value pairs only).
+ * Returns parsed data and the remaining content.
  */
-function extractTopLevelFrontmatter(
-	source: string,
-	matter: (text: string) => { data: Record<string, unknown>; content: string },
-): { data: Record<string, string | undefined>; source: string } {
-	const lines = source.split("\n");
+function parseFrontmatter(text: string): { data: Record<string, string | undefined>; content: string } {
+	const lines = text.split("\n");
 	if (lines[0]?.trim() !== "---") {
-		return { data: {}, source };
+		return { data: {}, content: text };
 	}
 
 	let end = -1;
@@ -84,16 +74,30 @@ function extractTopLevelFrontmatter(
 	}
 
 	if (end === -1) {
-		return { data: {}, source };
+		return { data: {}, content: text };
 	}
 
-	const fmText = lines.slice(1, end).join("\n");
-	const parsed = matter(`---\n${fmText}\n---`);
+	const data: Record<string, string | undefined> = {};
+	for (let i = 1; i < end; i++) {
+		const line = lines[i];
+		const match = line.match(/^(\w[\w-]*):\s*(.*)$/);
+		if (match) {
+			const [, key, value] = match;
+			data[key] = value.trim() || undefined;
+		}
+	}
 
-	return {
-		data: parsed.data as Record<string, string | undefined>,
-		source: lines.slice(end + 1).join("\n"),
-	};
+	return { data, content: lines.slice(end + 1).join("\n") };
+}
+
+/**
+ * Extract top-level YAML frontmatter from the beginning of the source.
+ * Only applies when the file starts with `---`. Returns the parsed data
+ * and the source with the frontmatter block removed.
+ */
+function extractTopLevelFrontmatter(source: string): { data: Record<string, string | undefined>; source: string } {
+	const result = parseFrontmatter(source);
+	return { data: result.data, source: result.content };
 }
 
 /**
@@ -226,16 +230,15 @@ export function slideDeckPlugin(): Plugin {
 				const uniqueModules = [...new Set(modules)];
 
 				// Extract top-level frontmatter (code-fence aware)
-				const topLevelData = extractTopLevelFrontmatter(source, matter);
+				const topLevelData = extractTopLevelFrontmatter(source);
 
 				// Split into slides
 				const slideTexts = splitSlides(topLevelData.source);
 
 				const compiledSlides = await Promise.all(
 					slideTexts.map(async (text, index) => {
-						const parsed = matter(text);
-						const matterContent = parsed.content.trim();
-						const slideData = parsed.data as Record<string, string | undefined>;
+						const { data: slideData, content: slideContent } = parseFrontmatter(text);
+						const matterContent = slideContent.trim();
 
 						// Merge top-level frontmatter into the first slide.
 						const data = index === 0 ? { ...topLevelData.data, ...slideData } : slideData;

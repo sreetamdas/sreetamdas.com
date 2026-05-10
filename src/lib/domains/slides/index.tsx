@@ -105,7 +105,7 @@ export function SlideDeck({
 			manager.register("PageUp", () => goPrevRef.current(), { preventDefault: true }),
 			manager.register("PageDown", () => goNextRef.current(), { preventDefault: true }),
 			manager.register("Space", () => goNextRef.current(), { preventDefault: true }),
-			manager.register("Alt+b", () => togglePresenterRef.current(), { preventDefault: true }),
+			manager.register("Alt+B", () => togglePresenterRef.current(), { preventDefault: true }),
 		];
 
 		return () => {
