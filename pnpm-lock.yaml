@@ -27,12 +27,6 @@ importers:
       '@fontsource-variable/inter':
         specifier: ^5.2.8
         version: 5.2.8
-      '@nkzw/remdx':
-        specifier: ^20.0.0
-        version: 20.0.0(@types/react@19.2.14)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
-      '@nkzw/vite-plugin-remdx':
-        specifier: ^20.0.0
-        version: 20.0.0
       '@notionhq/client':
         specifier: ^5.20.0
         version: 5.20.0
@@ -178,6 +172,9 @@ importers:
       drizzle-kit:
         specifier: 1.0.0-beta.15-859cf75
         version: 1.0.0-beta.15-859cf75
+      gray-matter:
+        specifier: ^4.0.3
+        version: 4.0.3
       tailwindcss:
         specifier: ^4.3.0
         version: 4.3.0
@@ -933,26 +930,11 @@ packages:
   '@mdx-js/mdx@3.1.1':
     resolution: {integrity: sha512-f6ZO2ifpwAQIpzGWaBQT2TXxPv6z3RBzQKpVftEWN78Vl/YweF1uwussDx8ECAXVtr3Rs89fKyG9YlzUs9DyGQ==}
 
-  '@mdx-js/react@3.1.1':
-    resolution: {integrity: sha512-f++rKLQgUVYDAtECQ6fn/is15GkEH9+nZPM3MS0RcxVqoTfawHvDlSCH7JbMhAM6uJ32v3eXLvLmLvjGu7PTQw==}
-    peerDependencies:
-      '@types/react': '>=16'
-      react: '>=16'
-
   '@napi-rs/wasm-runtime@1.1.4':
     resolution: {integrity: sha512-3NQNNgA1YSlJb/kMH1ildASP9HW7/7kYnRI2szWJaofaS1hWmbGI4H+d3+22aGzXXN9IJ+n+GiFVcGipJP18ow==}
     peerDependencies:
       '@emnapi/core': ^1.7.1
       '@emnapi/runtime': ^1.7.1
-
-  '@nkzw/remdx@20.0.0':
-    resolution: {integrity: sha512-lUxbWS6O8KS5M0diVDAkoBntd6QdoI/WdP7ncLFwuN5eM2uy+LkvIZHi3pbM3Svq8AouaWFaeQwOKw1JSBzCSQ==}
-    peerDependencies:
-      react: ^19.1.0
-      react-dom: ^19.1.0
-
-  '@nkzw/vite-plugin-remdx@20.0.0':
-    resolution: {integrity: sha512-FFOowswRuZMtdGD9Zd+m8cfHEewRTm7OJQlQrwHGNx6vvykqE3bmgMwaa8XzTpD9NUbpWEtPFSb4Epay8mfQug==}
 
   '@notionhq/client@5.20.0':
     resolution: {integrity: sha512-MS0DFSfHPLZ0wi+e9mOP16gCCYbWAkaiMuu/rVK9KxDlKac4oAgHReOfTglcd77g/nlg78snp+KB7fNWP75bEw==}
@@ -1997,16 +1979,8 @@ packages:
     resolution: {integrity: sha512-M6UMPrSa3fN5ayeJwFVl9qWofl273wtK1VG8ySDZ1mQBfhCpdd8nEx7nPZ/tk7k+TYcpqBZzj/AnwxT9lO+HJw==}
     engines: {node: '>=20'}
 
-  '@shikijs/rehype@4.0.2':
-    resolution: {integrity: sha512-cmPlKLD8JeojasNFoY64162ScpEdEdQUMuVodPCrv1nx1z3bjmGwoKWDruQWa/ejSznImlaeB0Ty6Q3zPaVQAA==}
-    engines: {node: '>=20'}
-
   '@shikijs/themes@4.0.2':
     resolution: {integrity: sha512-mjCafwt8lJJaVSsQvNVrJumbnnj1RI8jbUKrPKgE6E3OvQKxnuRoBaYC51H4IGHePsGN/QtALglWBU7DoKDFnA==}
-    engines: {node: '>=20'}
-
-  '@shikijs/transformers@4.0.2':
-    resolution: {integrity: sha512-1+L0gf9v+SdDXs08vjaLb3mBFa8U7u37cwcBQIv/HCocLwX69Tt6LpUCjtB+UUTvQxI7BnjZKhN/wMjhHBcJGg==}
     engines: {node: '>=20'}
 
   '@shikijs/types@4.0.2':
@@ -3709,10 +3683,6 @@ packages:
   node-releases@2.0.38:
     resolution: {integrity: sha512-3qT/88Y3FbH/Kx4szpQQ4HzUbVrHPKTLVpVocKiLfoYvw9XSGOX2FmD2d6DrXbVYyAQTF2HeF6My8jmzx7/CRw==}
 
-  normalize-newline@5.0.0:
-    resolution: {integrity: sha512-pOL2BbzV4kuopIEK91m7lfn3GISx+yT0N4Nq7jH4YzNMXNkpS7d7WYW11EfH1k9U1YZ7yxJoGfBLXFHc5v2uPQ==}
-    engines: {node: '>=20'}
-
   normalize-path@3.0.0:
     resolution: {integrity: sha512-6eZs5Ls3WtCisHWp9S2GUy8dqkpGi4BVSz3GaqiE6ezub0512ESztXUwUB6C6IKbQkY2Pnb/mD4WYojCRwcwLA==}
     engines: {node: '>=0.10.0'}
@@ -5179,38 +5149,12 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@mdx-js/react@3.1.1(@types/react@19.2.14)(react@19.2.6)':
-    dependencies:
-      '@types/mdx': 2.0.13
-      '@types/react': 19.2.14
-      react: 19.2.6
-
   '@napi-rs/wasm-runtime@1.1.4(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)':
     dependencies:
       '@emnapi/core': 1.10.0
       '@emnapi/runtime': 1.10.0
       '@tybys/wasm-util': 0.10.2
     optional: true
-
-  '@nkzw/remdx@20.0.0(@types/react@19.2.14)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)':
-    dependencies:
-      '@mdx-js/react': 3.1.1(@types/react@19.2.14)(react@19.2.6)
-      react: 19.2.6
-      react-dom: 19.2.6(react@19.2.6)
-    transitivePeerDependencies:
-      - '@types/react'
-
-  '@nkzw/vite-plugin-remdx@20.0.0':
-    dependencies:
-      '@mdx-js/mdx': 3.1.1
-      '@shikijs/rehype': 4.0.2
-      '@shikijs/transformers': 4.0.2
-      gray-matter: 4.0.3
-      normalize-newline: 5.0.0
-      rehype-raw: 7.0.0
-      shiki: 4.0.2
-    transitivePeerDependencies:
-      - supports-color
 
   '@notionhq/client@5.20.0': {}
 
@@ -6115,22 +6059,8 @@ snapshots:
       '@shikijs/vscode-textmate': 10.0.2
       '@types/hast': 3.0.4
 
-  '@shikijs/rehype@4.0.2':
-    dependencies:
-      '@shikijs/types': 4.0.2
-      '@types/hast': 3.0.4
-      hast-util-to-string: 3.0.1
-      shiki: 4.0.2
-      unified: 11.0.5
-      unist-util-visit: 5.1.0
-
   '@shikijs/themes@4.0.2':
     dependencies:
-      '@shikijs/types': 4.0.2
-
-  '@shikijs/transformers@4.0.2':
-    dependencies:
-      '@shikijs/core': 4.0.2
       '@shikijs/types': 4.0.2
 
   '@shikijs/types@4.0.2':
@@ -8069,8 +7999,6 @@ snapshots:
       whatwg-url: 5.0.0
 
   node-releases@2.0.38: {}
-
-  normalize-newline@5.0.0: {}
 
   normalize-path@3.0.0: {}
 

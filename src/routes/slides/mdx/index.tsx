@@ -1,38 +1,62 @@
 "use client";
 
-import remdxCss from "@nkzw/remdx/style.css?inline";
-import { render } from "@nkzw/remdx";
 import { createFileRoute } from "@tanstack/react-router";
-import { useCallback, useRef } from "react";
+import { useEffect, useState } from "react";
+
+import { SlideDeck, type Slide } from "@/lib/domains/slides";
 
 export const Route = createFileRoute("/slides/mdx/")({
 	component: MainLayout,
 });
 
-const STYLE_ID = "remdx-route-styles";
-
 function MainLayout() {
-	const hasRenderedRef = useRef(false);
+	const [slides, setSlides] = useState<Slide[]>([]);
+	const [error, setError] = useState<string | null>(null);
+	const [loading, setLoading] = useState(true);
 
-	const setContainerRef = useCallback((node: HTMLElement | null) => {
-		if (!node || hasRenderedRef.current) {
-			return;
-		}
-
-		const style = document.createElement("style");
-		style.id = STYLE_ID;
-		style.textContent = remdxCss;
-		document.head.appendChild(style);
-
-		hasRenderedRef.current = true;
-		const slidesModule = import("./slides.re.mdx") as Parameters<typeof render>[1];
-		void render(node, slidesModule);
-
-		return () => {
-			document.getElementById(STYLE_ID)?.remove();
-			hasRenderedRef.current = false;
-		};
+	useEffect(() => {
+		// Vite transforms .re.mdx files via slideDeckPlugin at build time.
+		// TypeScript doesn't recognize this non-standard extension, so we
+		// suppress the error. The module is guaranteed to exist at runtime.
+		// @ts-expect-error .re.mdx is transformed by custom Vite plugin
+		import("./slides.re.mdx")
+			.then((mod: { default: Slide[] }) => {
+				setSlides(mod.default);
+				setLoading(false);
+			})
+			.catch(() => {
+				setError("Failed to load slides.");
+				setLoading(false);
+			});
 	}, []);
 
-	return <main id="main-content" ref={setContainerRef} />;
+	if (loading) {
+		return (
+			<div className="fixed inset-0 flex items-center justify-center bg-white dark:bg-gray-900">
+				<p className="text-gray-500">Loading slides...</p>
+			</div>
+		);
+	}
+
+	if (error) {
+		return (
+			<div className="fixed inset-0 flex items-center justify-center bg-white dark:bg-gray-900">
+				<p className="text-red-500">{error}</p>
+			</div>
+		);
+	}
+
+	if (slides.length === 0) {
+		return (
+			<div className="fixed inset-0 flex items-center justify-center bg-white dark:bg-gray-900">
+				<p className="text-gray-500">No slides found</p>
+			</div>
+		);
+	}
+
+	return (
+		<div className="fixed inset-0 bg-white dark:bg-gray-900">
+			<SlideDeck slides={slides} />
+		</div>
+	);
 }
