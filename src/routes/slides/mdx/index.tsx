@@ -1,20 +1,38 @@
 "use client";
 
-import "@nkzw/remdx/style.css";
+import remdxCss from "@nkzw/remdx/style.css?inline";
 import { render } from "@nkzw/remdx";
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useRef } from "react";
+import { useCallback, useRef } from "react";
 
 export const Route = createFileRoute("/slides/mdx/")({
 	component: MainLayout,
 });
 
-function MainLayout() {
-	const containerRef = useRef<HTMLElement | null>(null);
+const STYLE_ID = "remdx-route-styles";
 
-	useEffect(() => {
-		void render(containerRef.current, import("./slides.re.mdx"));
+function MainLayout() {
+	const hasRenderedRef = useRef(false);
+
+	const setContainerRef = useCallback((node: HTMLElement | null) => {
+		if (!node || hasRenderedRef.current) {
+			return;
+		}
+
+		const style = document.createElement("style");
+		style.id = STYLE_ID;
+		style.textContent = remdxCss;
+		document.head.appendChild(style);
+
+		hasRenderedRef.current = true;
+		const slidesModule = import("./slides.re.mdx") as Parameters<typeof render>[1];
+		void render(node, slidesModule);
+
+		return () => {
+			document.getElementById(STYLE_ID)?.remove();
+			hasRenderedRef.current = false;
+		};
 	}, []);
 
-	return <main id="main-content" ref={containerRef} />;
+	return <main id="main-content" ref={setContainerRef} />;
 }

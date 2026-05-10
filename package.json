@@ -93,7 +93,6 @@
 		"@types/react": "^19.2.14",
 		"@types/react-dom": "^19.2.3",
 		"@types/unist": "~3.0.3",
-		"@typescript/native-preview": "7.0.0-dev.20260508.1",
 		"@vitejs/plugin-react": "^6.0.1",
 		"@vitejs/plugin-rsc": "^0.5.26",
 		"better-sqlite3": "^12.9.0",

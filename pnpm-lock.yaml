@@ -166,9 +166,6 @@ importers:
       '@types/unist':
         specifier: ~3.0.3
         version: 3.0.3
-      '@typescript/native-preview':
-        specifier: 7.0.0-dev.20260508.1
-        version: 7.0.0-dev.20260508.1
       '@vitejs/plugin-react':
         specifier: ^6.0.1
         version: 6.0.1(vite@8.0.11(@types/node@25.6.2)(esbuild@0.27.3)(jiti@2.7.0)(terser@5.44.1)(tsx@4.21.0))
@@ -2373,53 +2370,6 @@ packages:
 
   '@types/unist@3.0.3':
     resolution: {integrity: sha512-ko/gIFJRv177XgZsZcBwnqJN5x/Gien8qNOn0D5bQU/zAzVf9Zt3BlcUiLqhV9y4ARk0GbT3tnUiPNgnTXzc/Q==}
-
-  '@typescript/native-preview-darwin-arm64@7.0.0-dev.20260508.1':
-    resolution: {integrity: sha512-/JxBvBLSUK0RR5c+baWcdyI1U5VuVrpXScG0IBm8oxstJ0HuFdj6LjRGqe2YbypKBz2VD2EjifLzEwXMWx6VtQ==}
-    engines: {node: '>=16.20.0'}
-    cpu: [arm64]
-    os: [darwin]
-
-  '@typescript/native-preview-darwin-x64@7.0.0-dev.20260508.1':
-    resolution: {integrity: sha512-EZbPeQLpNrQf8T3gOpDVC1+dVSBP2TYEoVbpDFzC/oReUiDJ0ZYPC4mQXdJrqodc4NB5nkiqyzzhu8auCBLJjQ==}
-    engines: {node: '>=16.20.0'}
-    cpu: [x64]
-    os: [darwin]
-
-  '@typescript/native-preview-linux-arm64@7.0.0-dev.20260508.1':
-    resolution: {integrity: sha512-YSuAsGvWDhGA+O3kE85ghqZXN/RORlX8P12jMidI/KJKk37+HNjwG+jeNUIx+8Vc3fA6ax8+jQX92MbnRS4DXQ==}
-    engines: {node: '>=16.20.0'}
-    cpu: [arm64]
-    os: [linux]
-
-  '@typescript/native-preview-linux-arm@7.0.0-dev.20260508.1':
-    resolution: {integrity: sha512-WJ4g9jTJXlQvBVB051um28oOeH31p0K6LVIJeaVtozaMpoV+HfuAP6NLHYaFP3ra4cQvCrHmlLJ02PlRXv/ioA==}
-    engines: {node: '>=16.20.0'}
-    cpu: [arm]
-    os: [linux]
-
-  '@typescript/native-preview-linux-x64@7.0.0-dev.20260508.1':
-    resolution: {integrity: sha512-6wK5V0wQDMkHhbL0gUzoISkY3B7S8iOdv/nYBKTTCaq8CSDkxzZfLcaNbC1ibRW6CHJ2IVPHv4BtVBKlGhsEiA==}
-    engines: {node: '>=16.20.0'}
-    cpu: [x64]
-    os: [linux]
-
-  '@typescript/native-preview-win32-arm64@7.0.0-dev.20260508.1':
-    resolution: {integrity: sha512-hbI1RWku9PTgEIH9jzynN2fLinQDuwvIhhhwEPw4qaQo3zqbwcusrZob8wbUMc7hXZPWqA/KcOVO5sLXauCf6g==}
-    engines: {node: '>=16.20.0'}
-    cpu: [arm64]
-    os: [win32]
-
-  '@typescript/native-preview-win32-x64@7.0.0-dev.20260508.1':
-    resolution: {integrity: sha512-7ri3Pefxw9B4UjRBtPZSpUJYcWD+7a3vKPi8aXZkOlONIzYsvr+oNnaImBjooOCp35Bbpoiih24Mt9wGv6oNOA==}
-    engines: {node: '>=16.20.0'}
-    cpu: [x64]
-    os: [win32]
-
-  '@typescript/native-preview@7.0.0-dev.20260508.1':
-    resolution: {integrity: sha512-YOkOVCg9oyVbC45mdHpxMuRujVMiK9jSsf82w+/DZNr4lnY0xJK97mCbzfNBxs90OL9Pp/YWls024ZRPhezcsw==}
-    engines: {node: '>=16.20.0'}
-    hasBin: true
 
   '@typespec/ts-http-runtime@0.3.5':
     resolution: {integrity: sha512-yURCknZhvywvQItHMMmFSo+fq5arCUIyz/CVk7jD89MSai7dkaX8ufjCWp3NttLojoTVbcE72ri+be/TnEbMHw==}
@@ -6590,37 +6540,6 @@ snapshots:
   '@types/unist@2.0.11': {}
 
   '@types/unist@3.0.3': {}
-
-  '@typescript/native-preview-darwin-arm64@7.0.0-dev.20260508.1':
-    optional: true
-
-  '@typescript/native-preview-darwin-x64@7.0.0-dev.20260508.1':
-    optional: true
-
-  '@typescript/native-preview-linux-arm64@7.0.0-dev.20260508.1':
-    optional: true
-
-  '@typescript/native-preview-linux-arm@7.0.0-dev.20260508.1':
-    optional: true
-
-  '@typescript/native-preview-linux-x64@7.0.0-dev.20260508.1':
-    optional: true
-
-  '@typescript/native-preview-win32-arm64@7.0.0-dev.20260508.1':
-    optional: true
-
-  '@typescript/native-preview-win32-x64@7.0.0-dev.20260508.1':
-    optional: true
-
-  '@typescript/native-preview@7.0.0-dev.20260508.1':
-    optionalDependencies:
-      '@typescript/native-preview-darwin-arm64': 7.0.0-dev.20260508.1
-      '@typescript/native-preview-darwin-x64': 7.0.0-dev.20260508.1
-      '@typescript/native-preview-linux-arm': 7.0.0-dev.20260508.1
-      '@typescript/native-preview-linux-arm64': 7.0.0-dev.20260508.1
-      '@typescript/native-preview-linux-x64': 7.0.0-dev.20260508.1
-      '@typescript/native-preview-win32-arm64': 7.0.0-dev.20260508.1
-      '@typescript/native-preview-win32-x64': 7.0.0-dev.20260508.1
 
   '@typespec/ts-http-runtime@0.3.5':
     dependencies:
