@@ -56,7 +56,7 @@ export function SlideDeck({
 	const [presenterMode, setPresenterMode] = useState(initialPresenterMode);
 	const [elapsedTime, setElapsedTime] = useState(0);
 	const containerRef = useRef<HTMLDivElement>(null);
-	const timerRef = useRef<ReturnType<typeof setInterval>>();
+	const timerRef = useRef<ReturnType<typeof setInterval>>(undefined);
 	const touchStartX = useRef<number>(0);
 
 	const goTo = useCallback(
@@ -80,26 +80,41 @@ export function SlideDeck({
 		setPresenterMode((prev) => !prev);
 	}, []);
 
-	// Register hotkeys via @tanstack/hotkeys
+	// Keep latest callbacks in refs so hotkey registrations never go stale.
+	// This lets us register once on mount instead of re-registering on every
+	// slide change.
+	const goNextRef = useRef(goNext);
+	const goPrevRef = useRef(goPrev);
+	const togglePresenterRef = useRef(togglePresenterMode);
+
+	goNextRef.current = goNext;
+	goPrevRef.current = goPrev;
+	togglePresenterRef.current = togglePresenterMode;
+
+	// Register hotkeys once on mount via @tanstack/hotkeys
 	useEffect(() => {
 		const manager = getHotkeyManager();
 
 		const handles = [
-			manager.register("ArrowLeft", goPrev, { preventDefault: true }),
-			manager.register("ArrowRight", goNext, { preventDefault: true }),
-			manager.register("PageUp", goPrev, { preventDefault: true }),
-			manager.register("PageDown", goNext, { preventDefault: true }),
-			manager.register("Space", goNext, { preventDefault: true }),
-			manager.register("alt+p", togglePresenterMode, {
-				preventDefault: true,
-				ignoreInputs: true,
-			}),
+			manager.register("ArrowLeft", () => goPrevRef.current(), { preventDefault: true }),
+			manager.register("ArrowRight", () => goNextRef.current(), { preventDefault: true }),
+			manager.register("PageUp", () => goPrevRef.current(), { preventDefault: true }),
+			manager.register("PageDown", () => goNextRef.current(), { preventDefault: true }),
+			manager.register("Space", () => goNextRef.current(), { preventDefault: true }),
+			manager.register(
+				{ key: "p", alt: true },
+				() => togglePresenterRef.current(),
+				{
+					preventDefault: true,
+					ignoreInputs: true,
+				},
+			),
 		];
 
 		return () => {
 			handles.forEach((h) => h.unregister());
 		};
-	}, [goNext, goPrev, togglePresenterMode]);
+	}, []);
 
 	// Touch swipe handlers
 	const handleTouchStart = useCallback((event: React.TouchEvent) => {
@@ -232,7 +247,7 @@ function formatTime(seconds: number): string {
 	return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
 }
 
-function PresenterMode({ slides, currentIndex, elapsedTime, goTo, goNext, goPrev, direction }: PresenterModeProps) {
+function PresenterMode({ slides, currentIndex, elapsedTime, goTo, goNext, goPrev }: PresenterModeProps) {
 	const currentSlide = slides[currentIndex];
 	const nextSlide = slides[currentIndex + 1];
 	const progress = ((currentIndex + 1) / slides.length) * 100;

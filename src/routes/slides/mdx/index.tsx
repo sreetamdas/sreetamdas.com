@@ -1,7 +1,7 @@
 "use client";
 
+import { Suspense, use } from "react";
 import { createFileRoute, useSearch } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
 
 import { SlideDeck, type Slide } from "@/lib/domains/slides";
 
@@ -9,57 +9,31 @@ export const Route = createFileRoute("/slides/mdx/")({
 	component: MainLayout,
 });
 
+// Module-level promise starts loading immediately when the chunk is parsed.
+// React.use() suspends until it resolves, letting Suspense show a fallback.
+// @ts-expect-error .re.mdx is transformed by custom Vite plugin
+const slidesPromise = import("./slides.re.mdx") as Promise<{ default: Slide[] }>;
+
+function SlideDeckLoader({ presenterMode }: { presenterMode: boolean }) {
+	const mod = use(slidesPromise);
+	return <SlideDeck slides={mod.default} presenterMode={presenterMode} />;
+}
+
 function MainLayout() {
 	const search = useSearch({ from: "/slides/mdx/" }) as { presenter?: string };
 	const presenterMode = search.presenter === "1" || search.presenter === "true";
 
-	const [slides, setSlides] = useState<Slide[]>([]);
-	const [error, setError] = useState<string | null>(null);
-	const [loading, setLoading] = useState(true);
-
-	useEffect(() => {
-		// Vite transforms .re.mdx files via slideDeckPlugin at build time.
-		// TypeScript doesn't recognize this non-standard extension, so we
-		// suppress the error. The module is guaranteed to exist at runtime.
-		// @ts-expect-error .re.mdx is transformed by custom Vite plugin
-		import("./slides.re.mdx")
-			.then((mod: { default: Slide[] }) => {
-				setSlides(mod.default);
-				setLoading(false);
-			})
-			.catch(() => {
-				setError("Failed to load slides.");
-				setLoading(false);
-			});
-	}, []);
-
-	if (loading) {
-		return (
-			<div className="fixed inset-0 flex items-center justify-center bg-white dark:bg-gray-900">
-				<p className="text-gray-500">Loading slides...</p>
-			</div>
-		);
-	}
-
-	if (error) {
-		return (
-			<div className="fixed inset-0 flex items-center justify-center bg-white dark:bg-gray-900">
-				<p className="text-red-500">{error}</p>
-			</div>
-		);
-	}
-
-	if (slides.length === 0) {
-		return (
-			<div className="fixed inset-0 flex items-center justify-center bg-white dark:bg-gray-900">
-				<p className="text-gray-500">No slides found</p>
-			</div>
-		);
-	}
-
 	return (
 		<div className="fixed inset-0 bg-white dark:bg-gray-900">
-			<SlideDeck slides={slides} presenterMode={presenterMode} />
+			<Suspense
+				fallback={
+					<div className="flex h-full items-center justify-center">
+						<p className="text-gray-500">Loading slides...</p>
+					</div>
+				}
+			>
+				<SlideDeckLoader presenterMode={presenterMode} />
+			</Suspense>
 		</div>
 	);
 }
