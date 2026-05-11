@@ -35,9 +35,9 @@
 		"lint": "pnpm run oxfmt:check && pnpm run oxlint:check",
 		"lint:fix": "pnpm run oxfmt:write && pnpm run oxlint:fix",
 		"format": "pnpm run oxfmt:write",
-		"deploy": "wrangler deploy -e production",
-		"deploy:production": "wrangler deploy -e production",
-		"deploy:staging": "wrangler deploy -e staging",
+		"deploy": "CLOUDFLARE_ENV=production wrangler deploy -e production",
+		"deploy:production": "CLOUDFLARE_ENV=production wrangler deploy -e production",
+		"deploy:staging": "CLOUDFLARE_ENV=staging wrangler deploy -e staging",
 		"prepare": "vp config",
 		"lint-staged": "vp staged"
 	},
