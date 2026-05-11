@@ -38,6 +38,7 @@
 		"deploy": "CLOUDFLARE_ENV=production wrangler deploy -e production",
 		"deploy:production": "CLOUDFLARE_ENV=production wrangler deploy -e production",
 		"deploy:staging": "CLOUDFLARE_ENV=staging wrangler deploy -e staging",
+		"deploy:preview": "node scripts/deploy-preview.mjs",
 		"prepare": "vp config",
 		"lint-staged": "vp staged"
 	},

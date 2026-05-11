@@ -55,6 +55,10 @@
 				{
 					"custom_domain": true,
 					"pattern": "dev.sreetamdas.com"
+				},
+				{
+					"custom_domain": true,
+					"pattern": "staging.sreetamdas.com"
 				}
 			],
 			"durable_objects": {
