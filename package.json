@@ -37,7 +37,7 @@
 		"format": "pnpm run oxfmt:write",
 		"deploy": "wrangler deploy -e production",
 		"deploy:production": "wrangler deploy -e production",
-		"deploy:staging": "wrangler versions upload --env staging",
+		"deploy:staging": "wrangler deploy -e staging",
 		"prepare": "vp config",
 		"lint-staged": "vp staged"
 	},
