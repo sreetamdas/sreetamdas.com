@@ -4,11 +4,11 @@ import { readFileSync, writeFileSync, unlinkSync } from "node:fs";
 const branch = process.env.WORKERS_CI_BRANCH ?? "";
 
 if (branch === "dev") {
-	// The @cloudflare/vite-plugin generates dist/server/wrangler.json and
-	// .wrangler/deploy/config.json, making Wrangler treat it as a "redirected"
-	// configuration. Wrangler rejects deploying redirected configs that contain
-	// env sections. We write a brand-new standalone config (without redirect
-	// metadata), remove the deploy redirect file, and deploy from the new file.
+	// The @cloudflare/vite-plugin generates dist/server/wrangler.json as a
+	// "redirected" config (via .wrangler/deploy/config.json) and strips env
+	// sections. Wrangler refuses to deploy redirected configs with env blocks.
+	// We inject env sections into the generated config, delete the redirect
+	// file, and deploy directly from the modified generated config.
 	const generated = JSON.parse(readFileSync("dist/server/wrangler.json", "utf-8"));
 	const original = JSON.parse(readFileSync("wrangler.jsonc", "utf-8"));
 
@@ -19,17 +19,17 @@ if (branch === "dev") {
 		generated.env = original.env;
 	}
 
-	const standaloneConfigPath = ".wrangler/deploy/wrangler.json";
-	writeFileSync(standaloneConfigPath, JSON.stringify(generated, null, "\t"));
+	writeFileSync("dist/server/wrangler.json", JSON.stringify(generated, null, "\t"));
 
-	// Remove the redirect file so Wrangler doesn't detect this as a redirected config
+	// Remove the redirect file so Wrangler treats dist/server/wrangler.json as
+	// a standalone config instead of a redirected one.
 	try {
 		unlinkSync(".wrangler/deploy/config.json");
 	} catch {
 		// ignore if missing
 	}
 
-	execSync(`CLOUDFLARE_ENV=staging wrangler deploy --config ${standaloneConfigPath} -e staging`, {
+	execSync("CLOUDFLARE_ENV=staging wrangler deploy --config dist/server/wrangler.json -e staging", {
 		stdio: "inherit",
 	});
 } else {
