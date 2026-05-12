@@ -53,6 +53,9 @@ export async function fetchNewsletterEmails(): Promise<ButtondownAPIEmailsRespon
 				"Access-Control-Allow-Origin": "*",
 			},
 		});
+		if (!response.ok) {
+			return BUTTONDOWN_EMAIL_MOCKS as ButtondownAPIEmailsResponse;
+		}
 		return (await response.json()) as ButtondownAPIEmailsResponse;
 	} catch (_error: unknown) {
 		return BUTTONDOWN_EMAIL_MOCKS as ButtondownAPIEmailsResponse;
