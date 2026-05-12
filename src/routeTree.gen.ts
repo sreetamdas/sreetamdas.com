@@ -13,6 +13,7 @@ import { Route as SlidesRouteRouteImport } from './routes/slides/route'
 import { Route as pureRouteRouteImport } from './routes/(pure)/route'
 import { Route as mainRouteRouteImport } from './routes/(main)/route'
 import { Route as mainIndexRouteImport } from './routes/(main)/index'
+import { Route as pureVersionRouteImport } from './routes/(pure)/version'
 import { Route as pureResumeRouteImport } from './routes/(pure)/resume'
 import { Route as pureFancyPantsRouteImport } from './routes/(pure)/fancy-pants'
 import { Route as mainRwcRouteImport } from './routes/(main)/rwc'
@@ -20,7 +21,7 @@ import { Route as mainKeebsRouteImport } from './routes/(main)/keebs'
 import { Route as mainKarmaRouteImport } from './routes/(main)/karma'
 import { Route as mainAboutRouteImport } from './routes/(main)/about'
 import { Route as mainSlugRouteImport } from './routes/(main)/$slug'
-import { Route as SlidesMdxIndexRouteImport } from './routes/slides/mdx/index'
+import { Route as SlidesJsonSchemaFormIndexRouteImport } from './routes/slides/json-schema-form/index'
 import { Route as mainNewsletterIndexRouteImport } from './routes/(main)/newsletter/index'
 import { Route as mainBlogIndexRouteImport } from './routes/(main)/blog/index'
 import { Route as mainNewsletterSlugRouteImport } from './routes/(main)/newsletter/$slug'
@@ -49,6 +50,11 @@ const mainIndexRoute = mainIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => mainRouteRoute,
+} as any)
+const pureVersionRoute = pureVersionRouteImport.update({
+  id: '/version',
+  path: '/version',
+  getParentRoute: () => pureRouteRoute,
 } as any)
 const pureResumeRoute = pureResumeRouteImport.update({
   id: '/resume',
@@ -85,11 +91,12 @@ const mainSlugRoute = mainSlugRouteImport.update({
   path: '/$slug',
   getParentRoute: () => mainRouteRoute,
 } as any)
-const SlidesMdxIndexRoute = SlidesMdxIndexRouteImport.update({
-  id: '/mdx/',
-  path: '/mdx/',
-  getParentRoute: () => SlidesRouteRoute,
-} as any)
+const SlidesJsonSchemaFormIndexRoute =
+  SlidesJsonSchemaFormIndexRouteImport.update({
+    id: '/json-schema-form/',
+    path: '/json-schema-form/',
+    getParentRoute: () => SlidesRouteRoute,
+  } as any)
 const mainNewsletterIndexRoute = mainNewsletterIndexRouteImport.update({
   id: '/newsletter/',
   path: '/newsletter/',
@@ -150,6 +157,7 @@ export interface FileRoutesByFullPath {
   '/rwc': typeof mainRwcRoute
   '/fancy-pants': typeof pureFancyPantsRoute
   '/resume': typeof pureResumeRoute
+  '/version': typeof pureVersionRoute
   '/': typeof mainIndexRoute
   '/api/coffee': typeof apiApiCoffeeRoute
   '/api/presence': typeof apiApiPresenceRoute
@@ -157,7 +165,7 @@ export interface FileRoutesByFullPath {
   '/newsletter/$slug': typeof mainNewsletterSlugRoute
   '/blog/': typeof mainBlogIndexRoute
   '/newsletter/': typeof mainNewsletterIndexRoute
-  '/slides/mdx/': typeof SlidesMdxIndexRoute
+  '/slides/json-schema-form/': typeof SlidesJsonSchemaFormIndexRoute
   '/foobar/$slug': typeof mainfoobarFoobarSlugRoute
   '/foobar/': typeof mainfoobarFoobarIndexRoute
   '/prxy/plsbl/api/event': typeof apiPrxyPlsblApiEventRoute
@@ -172,6 +180,7 @@ export interface FileRoutesByTo {
   '/rwc': typeof mainRwcRoute
   '/fancy-pants': typeof pureFancyPantsRoute
   '/resume': typeof pureResumeRoute
+  '/version': typeof pureVersionRoute
   '/': typeof mainIndexRoute
   '/api/coffee': typeof apiApiCoffeeRoute
   '/api/presence': typeof apiApiPresenceRoute
@@ -179,7 +188,7 @@ export interface FileRoutesByTo {
   '/newsletter/$slug': typeof mainNewsletterSlugRoute
   '/blog': typeof mainBlogIndexRoute
   '/newsletter': typeof mainNewsletterIndexRoute
-  '/slides/mdx': typeof SlidesMdxIndexRoute
+  '/slides/json-schema-form': typeof SlidesJsonSchemaFormIndexRoute
   '/foobar/$slug': typeof mainfoobarFoobarSlugRoute
   '/foobar': typeof mainfoobarFoobarIndexRoute
   '/prxy/plsbl/api/event': typeof apiPrxyPlsblApiEventRoute
@@ -197,6 +206,7 @@ export interface FileRoutesById {
   '/(main)/rwc': typeof mainRwcRoute
   '/(pure)/fancy-pants': typeof pureFancyPantsRoute
   '/(pure)/resume': typeof pureResumeRoute
+  '/(pure)/version': typeof pureVersionRoute
   '/(main)/': typeof mainIndexRoute
   '/(api)/api/coffee': typeof apiApiCoffeeRoute
   '/(api)/api/presence': typeof apiApiPresenceRoute
@@ -204,7 +214,7 @@ export interface FileRoutesById {
   '/(main)/newsletter/$slug': typeof mainNewsletterSlugRoute
   '/(main)/blog/': typeof mainBlogIndexRoute
   '/(main)/newsletter/': typeof mainNewsletterIndexRoute
-  '/slides/mdx/': typeof SlidesMdxIndexRoute
+  '/slides/json-schema-form/': typeof SlidesJsonSchemaFormIndexRoute
   '/(main)/(foobar)/foobar/$slug': typeof mainfoobarFoobarSlugRoute
   '/(main)/(foobar)/foobar/': typeof mainfoobarFoobarIndexRoute
   '/(api)/prxy/plsbl/api/event': typeof apiPrxyPlsblApiEventRoute
@@ -221,6 +231,7 @@ export interface FileRouteTypes {
     | '/rwc'
     | '/fancy-pants'
     | '/resume'
+    | '/version'
     | '/'
     | '/api/coffee'
     | '/api/presence'
@@ -228,7 +239,7 @@ export interface FileRouteTypes {
     | '/newsletter/$slug'
     | '/blog/'
     | '/newsletter/'
-    | '/slides/mdx/'
+    | '/slides/json-schema-form/'
     | '/foobar/$slug'
     | '/foobar/'
     | '/prxy/plsbl/api/event'
@@ -243,6 +254,7 @@ export interface FileRouteTypes {
     | '/rwc'
     | '/fancy-pants'
     | '/resume'
+    | '/version'
     | '/'
     | '/api/coffee'
     | '/api/presence'
@@ -250,7 +262,7 @@ export interface FileRouteTypes {
     | '/newsletter/$slug'
     | '/blog'
     | '/newsletter'
-    | '/slides/mdx'
+    | '/slides/json-schema-form'
     | '/foobar/$slug'
     | '/foobar'
     | '/prxy/plsbl/api/event'
@@ -267,6 +279,7 @@ export interface FileRouteTypes {
     | '/(main)/rwc'
     | '/(pure)/fancy-pants'
     | '/(pure)/resume'
+    | '/(pure)/version'
     | '/(main)/'
     | '/(api)/api/coffee'
     | '/(api)/api/presence'
@@ -274,7 +287,7 @@ export interface FileRouteTypes {
     | '/(main)/newsletter/$slug'
     | '/(main)/blog/'
     | '/(main)/newsletter/'
-    | '/slides/mdx/'
+    | '/slides/json-schema-form/'
     | '/(main)/(foobar)/foobar/$slug'
     | '/(main)/(foobar)/foobar/'
     | '/(api)/prxy/plsbl/api/event'
@@ -320,6 +333,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof mainIndexRouteImport
       parentRoute: typeof mainRouteRoute
+    }
+    '/(pure)/version': {
+      id: '/(pure)/version'
+      path: '/version'
+      fullPath: '/version'
+      preLoaderRoute: typeof pureVersionRouteImport
+      parentRoute: typeof pureRouteRoute
     }
     '/(pure)/resume': {
       id: '/(pure)/resume'
@@ -370,11 +390,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof mainSlugRouteImport
       parentRoute: typeof mainRouteRoute
     }
-    '/slides/mdx/': {
-      id: '/slides/mdx/'
-      path: '/mdx'
-      fullPath: '/slides/mdx/'
-      preLoaderRoute: typeof SlidesMdxIndexRouteImport
+    '/slides/json-schema-form/': {
+      id: '/slides/json-schema-form/'
+      path: '/json-schema-form'
+      fullPath: '/slides/json-schema-form/'
+      preLoaderRoute: typeof SlidesJsonSchemaFormIndexRouteImport
       parentRoute: typeof SlidesRouteRoute
     }
     '/(main)/newsletter/': {
@@ -487,11 +507,13 @@ const mainRouteRouteWithChildren = mainRouteRoute._addFileChildren(
 interface pureRouteRouteChildren {
   pureFancyPantsRoute: typeof pureFancyPantsRoute
   pureResumeRoute: typeof pureResumeRoute
+  pureVersionRoute: typeof pureVersionRoute
 }
 
 const pureRouteRouteChildren: pureRouteRouteChildren = {
   pureFancyPantsRoute: pureFancyPantsRoute,
   pureResumeRoute: pureResumeRoute,
+  pureVersionRoute: pureVersionRoute,
 }
 
 const pureRouteRouteWithChildren = pureRouteRoute._addFileChildren(
@@ -499,11 +521,11 @@ const pureRouteRouteWithChildren = pureRouteRoute._addFileChildren(
 )
 
 interface SlidesRouteRouteChildren {
-  SlidesMdxIndexRoute: typeof SlidesMdxIndexRoute
+  SlidesJsonSchemaFormIndexRoute: typeof SlidesJsonSchemaFormIndexRoute
 }
 
 const SlidesRouteRouteChildren: SlidesRouteRouteChildren = {
-  SlidesMdxIndexRoute: SlidesMdxIndexRoute,
+  SlidesJsonSchemaFormIndexRoute: SlidesJsonSchemaFormIndexRoute,
 }
 
 const SlidesRouteRouteWithChildren = SlidesRouteRoute._addFileChildren(
