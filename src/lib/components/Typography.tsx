@@ -111,8 +111,13 @@ export const Code = ({ children, className, ...props }: HTMLAttributes<HTMLSpanE
 	</code>
 );
 
-export const Gradient = ({ children }: { children: ReactNode }) => (
-	<span className="from-primary to-secondary w-fit bg-gradient-to-r box-decoration-slice bg-clip-text text-transparent">
+export const Gradient = ({ children, className }: HTMLAttributes<HTMLSpanElement>) => (
+	<span
+		className={cn(
+			"from-primary to-secondary w-fit bg-linear-to-r box-decoration-slice bg-clip-text text-transparent",
+			className,
+		)}
+	>
 		{children}
 	</span>
 );

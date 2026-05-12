@@ -1,10 +1,3 @@
-/**
- * Custom slide deck components that replace @nkzw/remdx.
- *
- * Uses Tailwind for all styling instead of the global CSS that was leaking
- * into the rest of the site. Supports keyboard navigation, basic slide
- * transitions, and presenter mode with speaker notes.
- */
 import { getHotkeyManager } from "@tanstack/hotkeys";
 import {
 	useCallback,
@@ -14,6 +7,16 @@ import {
 	type CSSProperties,
 	type ReactNode,
 } from "react";
+
+/**
+ * Custom slide deck components that replace @nkzw/remdx.
+ *
+ * Uses Tailwind for all styling instead of the global CSS that was leaking
+ * into the rest of the site. Supports keyboard navigation, basic slide
+ * transitions, and presenter mode with speaker notes.
+ */
+import { Gradient } from "@/lib/components/Typography";
+import { cn } from "@/lib/helpers/utils";
 
 export interface SlideData {
 	title?: string;
@@ -163,7 +166,7 @@ export function SlideDeck({
 	return (
 		<div
 			ref={containerRef}
-			className={`relative h-full w-full overflow-hidden bg-white dark:bg-gray-900 ${className ?? ""}`}
+			className={cn("relative h-full w-full overflow-hidden", className)}
 			style={style}
 			tabIndex={0}
 			role="region"
@@ -220,7 +223,9 @@ function SlideWrapper({ children, isActive, isBefore, data }: SlideWrapperProps)
 		>
 			<div className="h-full w-full overflow-auto p-12">
 				{data.title && (
-					<h1 className="mb-8 text-4xl font-bold text-gray-900 dark:text-white">{data.title}</h1>
+					<h1 className="pt-10 font-serif text-8xl font-bold tracking-tighter text-balance">
+						<Gradient className="">{data.title}</Gradient>
+					</h1>
 				)}
 				{children}
 			</div>

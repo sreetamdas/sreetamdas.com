@@ -1,0 +1,47 @@
+import { type MDXComponents } from "mdx/types";
+import { type HTMLAttributes } from "react";
+
+import { LinkTo } from "@/lib/components/Anchor";
+import { Image } from "@/lib/components/Image";
+import { Blockquote, Code, Heading, UnorderedList } from "@/lib/components/Typography";
+import { CodeBlock } from "@/lib/domains/shiki/CodeBlock";
+
+export const slideMDXComponents: MDXComponents = {
+	h1: ({ children, ...props }: HTMLAttributes<HTMLHeadingElement>) => (
+		<Heading.h1
+			className="group text-primary pt-10 font-serif text-8xl leading-normal font-bold tracking-tighter"
+			{...props}
+		>
+			{children}
+		</Heading.h1>
+	),
+	h2: ({ children, ...props }: HTMLAttributes<HTMLHeadingElement>) => (
+		<Heading.h2
+			className="group text-primary pt-10 font-serif text-5xl leading-normal font-bold tracking-tighter"
+			{...props}
+		>
+			{children}
+		</Heading.h2>
+	),
+	h3: ({ children, ...props }: HTMLAttributes<HTMLHeadingElement>) => (
+		<Heading.h3
+			className="group text-primary pt-10 font-serif text-3xl leading-normal font-bold tracking-tighter"
+			{...props}
+		>
+			{children}
+		</Heading.h3>
+	),
+	p: ({ children, ...props }: HTMLAttributes<HTMLParagraphElement>) => (
+		<p className="py-3 text-2xl first:pt-0 last:pb-0" {...props}>
+			{children}
+		</p>
+	),
+
+	a: LinkTo,
+	code: Code,
+	pre: CodeBlock,
+	ul: UnorderedList,
+	img: Image,
+	hr: () => <hr className="my-4" />,
+	blockquote: Blockquote,
+};

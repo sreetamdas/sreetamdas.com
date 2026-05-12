@@ -88,7 +88,14 @@ function parseFrontmatter(text: string): {
 		const match = line.match(/^(\w[\w-]*):\s*(.*)$/);
 		if (match) {
 			const [, key, value] = match;
-			data[key] = value.trim() || undefined;
+			let trimmed = value.trim();
+			if (
+				(trimmed.startsWith('"') && trimmed.endsWith('"')) ||
+				(trimmed.startsWith("'") && trimmed.endsWith("'"))
+			) {
+				trimmed = trimmed.slice(1, -1);
+			}
+			data[key] = trimmed || undefined;
 		}
 	}
 
@@ -205,6 +212,51 @@ function extractTopLevelModules(source: string): { modules: string[]; source: st
 }
 
 /**
+ * Parse import statements to extract the named/default identifiers that
+ * could be used as MDX components. Returns a map like { SlideTitle: SlideTitle }.
+ */
+function extractComponentBindings(modules: string[]): string {
+	const bindings: string[] = [];
+
+	for (const mod of modules) {
+		// Named imports: import { Foo, Bar } from "..."
+		const namedMatch = mod.match(/import\s*\{([^}]+)\}\s*from/);
+		if (namedMatch) {
+			const names = namedMatch[1].split(",").map((n) => {
+				const trimmed = n.trim();
+				// Handle "X as Y" — use the local binding name
+				const asMatch = trimmed.match(/\bas\s+(\w+)/);
+				return asMatch ? asMatch[1] : trimmed;
+			});
+			bindings.push(...names);
+		}
+
+		// Default import: import Foo from "..."
+		const defaultMatch = mod.match(/import\s+(\w+)\s+from/);
+		if (defaultMatch) {
+			bindings.push(defaultMatch[1]);
+		}
+
+		// Namespace import: import * as Foo from "..."
+		const nsMatch = mod.match(/import\s*\*\s*as\s+(\w+)\s+from/);
+		if (nsMatch) {
+			bindings.push(nsMatch[1]);
+		}
+	}
+
+	if (bindings.length === 0) return "components: { ..._slideMDXComponents },";
+
+	const entries = bindings
+		.filter((b) => /^[A-Z]/.test(b))
+		.map((b) => `${JSON.stringify(b)}: ${b}`)
+		.join(", ");
+
+	return entries
+		? `components: { ..._slideMDXComponents, ${entries} },`
+		: "components: { ..._slideMDXComponents },";
+}
+
+/**
  * Extracts <Notes> blocks from slide content and returns
  * the cleaned content (without notes) and the notes text.
  */
@@ -236,6 +288,7 @@ export function slideDeckPlugin(): Plugin {
 				// Extract import/export statements (code-fence aware)
 				const { modules, source } = extractTopLevelModules(code);
 				const uniqueModules = [...new Set(modules)];
+				const componentsProp = extractComponentBindings(uniqueModules);
 
 				// Extract top-level frontmatter (code-fence aware)
 				const topLevelData = extractTopLevelFrontmatter(source);
@@ -298,6 +351,7 @@ export function slideDeckPlugin(): Plugin {
 								source: ${JSON.stringify(slide.content)},
 								mdast: ${JSON.stringify(slide.mdast)},
 								shikiHighlights: ${JSON.stringify(slide.shikiHighlights)},
+								${componentsProp}
 								...props
 							});
 						},
@@ -311,6 +365,7 @@ export function slideDeckPlugin(): Plugin {
 				return `
 				import { jsx as _jsx } from "react/jsx-runtime";
 				import { MDXContent } from "@/lib/components/MDX";
+				import { slideMDXComponents as _slideMDXComponents } from "@/lib/components/MDX/slide-components";
 				${uniqueModules.join("\n")}
 
 				export default [${slideComponents}];
