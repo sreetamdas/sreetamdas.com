@@ -15,11 +15,18 @@ interface SlideSearch {
 }
 
 export const Route = createFileRoute("/slides/json-schema-form/")({
-	validateSearch: (search: Record<string, string>): SlideSearch => ({
-		presenter: search.presenter,
-		slide: search.slide ? Number(search.slide) : undefined,
-		step: search.step ? Number(search.step) : undefined,
-	}),
+	validateSearch: (search: Record<string, string>): SlideSearch => {
+		const parseNonNegativeInt = (raw: string | undefined): number | undefined => {
+			if (!raw) return undefined;
+			const n = Number(raw);
+			return Number.isFinite(n) && Number.isInteger(n) && n >= 0 ? n : undefined;
+		};
+		return {
+			presenter: search.presenter,
+			slide: parseNonNegativeInt(search.slide),
+			step: parseNonNegativeInt(search.step),
+		};
+	},
 	component: MainLayout,
 	head: () => ({
 		links: [{ rel: "canonical", href: canonicalUrl("/slides/json-schema-form") }],
@@ -96,7 +103,10 @@ function MainLayout() {
 
 	const handleNavigate = useCallback(
 		(slide: number, step: number) => {
-			void navigate({ search: { slide, step }, replace: true });
+			void navigate({
+				search: (prev) => ({ ...prev, slide, step }),
+				replace: true,
+			});
 		},
 		[navigate],
 	);
