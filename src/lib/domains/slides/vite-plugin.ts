@@ -10,10 +10,11 @@
  * 4. Splits each slide on -- lines into steps (code-fence aware)
  * 5. Extracts <Notes> blocks from step content
  * 6. Runs mdxParseWithShiki per step to pre-compute MDAST + Shiki highlights
- * 7. Generates a module where each slide contains an array of step components
+ * 7. Exports slide data and component bindings for the runtime SlideDeck renderer
  *
  * The output module exports:
- *   export default [{ Component, stepCount, data, notes }, ...]
+ *   export default [{ steps, stepCount, data, notes }, ...]
+ *   export const _components = { ..._slideMDXComponents, ...userImports }
  */
 import { type Plugin } from "vite-plus";
 
@@ -184,44 +185,34 @@ function extractTopLevelModules(source: string): { modules: string[]; source: st
 
 /**
  * Parse import statements to extract the named/default identifiers that
- * could be used as MDX components. Returns a string for the generated
- * `components` prop:  `components: { ..._slideMDXComponents, Foo: Foo },`
+ * could be used as MDX components. Returns a map like { Gradient: "Gradient" }.
  */
-function extractComponentBindings(modules: string[]): string {
-	const bindings: string[] = [];
+function extractComponentBindings(modules: string[]): Record<string, string> {
+	const bindings: Record<string, string> = {};
 
 	for (const mod of modules) {
 		const namedMatch = mod.match(/import\s*\{([^}]+)\}\s*from/);
 		if (namedMatch) {
-			const names = namedMatch[1].split(",").map((n) => {
-				const trimmed = n.trim();
+			for (const name of namedMatch[1].split(",")) {
+				const trimmed = name.trim();
 				const asMatch = trimmed.match(/\bas\s+(\w+)/);
-				return asMatch ? asMatch[1] : trimmed;
-			});
-			bindings.push(...names);
+				const binding = asMatch ? asMatch[1] : trimmed;
+				if (/^[A-Z]/.test(binding)) bindings[binding] = binding;
+			}
 		}
 
 		const defaultMatch = mod.match(/import\s+(\w+)\s+from/);
-		if (defaultMatch) {
-			bindings.push(defaultMatch[1]);
+		if (defaultMatch?.[1] && /^[A-Z]/.test(defaultMatch[1])) {
+			bindings[defaultMatch[1]] = defaultMatch[1];
 		}
 
 		const nsMatch = mod.match(/import\s*\*\s*as\s+(\w+)\s+from/);
-		if (nsMatch) {
-			bindings.push(nsMatch[1]);
+		if (nsMatch?.[1] && /^[A-Z]/.test(nsMatch[1])) {
+			bindings[nsMatch[1]] = nsMatch[1];
 		}
 	}
 
-	if (bindings.length === 0) return "components: { ..._slideMDXComponents },";
-
-	const entries = bindings
-		.filter((b) => /^[A-Z]/.test(b))
-		.map((b) => `${JSON.stringify(b)}: ${b}`)
-		.join(", ");
-
-	return entries
-		? `components: { ..._slideMDXComponents, ${entries} },`
-		: "components: { ..._slideMDXComponents },";
+	return bindings;
 }
 
 function extractNotes(text: string): { content: string; notes: string | null } {
@@ -246,13 +237,16 @@ export function slideDeckPlugin(): Plugin {
 			try {
 				const { modules, source } = extractTopLevelModules(code);
 				const uniqueModules = [...new Set(modules)];
-				const componentsProp = extractComponentBindings(uniqueModules);
+
+				const userBindings = extractComponentBindings(uniqueModules);
 
 				const topLevelData = extractTopLevelFrontmatter(source);
 
 				const slideTexts = splitSlides(topLevelData.source);
 
-				const compiledSlides = await Promise.all(
+				const { mdxParseWithShiki } = await import("@/lib/components/MDX/parse");
+
+				const slides = await Promise.all(
 					slideTexts.map(async (text, index) => {
 						const { data: slideData, content: slideContent } = parseFrontmatter(text);
 
@@ -262,46 +256,30 @@ export function slideDeckPlugin(): Plugin {
 
 						const stepTexts = splitSteps(noNotesContent);
 
-						const { mdxParseWithShiki } = await import("@/lib/components/MDX/parse");
-
 						const steps = await Promise.all(
-							stepTexts.map((stepContent) => mdxParseWithShiki(stepContent)),
+							stepTexts.map(async (content) => ({
+								content,
+								...(await mdxParseWithShiki(content)),
+							})),
 						);
 
-						return { index, steps, data, notes };
+						return { steps, stepCount: steps.length, data, notes };
 					}),
 				);
 
-				const slideComponents = compiledSlides
-					.map(
-						(slide) => `
-					{
-						Component: function Slide${slide.index}(props) {
-							const steps = ${JSON.stringify(slide.steps)};
-							const step = steps[props.stepIndex ?? 0] || steps[0];
-							return _jsx(MDXContent, {
-								source: step.content,
-								mdast: step.mdast,
-								shikiHighlights: step.shikiHighlights,
-								${componentsProp}
-								...props
-							});
-						},
-						stepCount: ${slide.steps.length},
-						data: ${JSON.stringify(slide.data)},
-						notes: ${JSON.stringify(slide.notes)}
-					}
-				`,
-					)
-					.join(",\n");
+				const bindingsBlock = Object.entries(userBindings).length
+					? `{ ..._slideMDXComponents, ${Object.entries(userBindings)
+							.map(([k]) => `${k}: ${k}`)
+							.join(", ")} }`
+					: "{ ..._slideMDXComponents }";
 
 				return `
-				import { jsx as _jsx } from "react/jsx-runtime";
-				import { MDXContent } from "@/lib/components/MDX";
 				import { slideMDXComponents as _slideMDXComponents } from "@/lib/components/MDX/slide-components";
 				${uniqueModules.join("\n")}
 
-				export default [${slideComponents}];
+				export default ${JSON.stringify(slides)};
+
+				export const _components = ${bindingsBlock};
 			`;
 			} catch (error) {
 				const message = error instanceof Error ? error.message : String(error);

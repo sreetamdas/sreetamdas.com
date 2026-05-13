@@ -1,6 +1,7 @@
 "use client";
 
 import { createFileRoute, useNavigate, useSearch } from "@tanstack/react-router";
+import { type MDXComponents } from "mdx/types";
 import { useCallback, Suspense, use } from "react";
 
 import { SITE_TITLE_APPEND } from "@/config";
@@ -56,16 +57,21 @@ export const Route = createFileRoute("/slides/json-schema-form/")({
 });
 
 // @ts-expect-error .re.mdx is transformed by slideDeckPlugin at build time
-const slidesPromise = import("./slides.re.mdx") as Promise<{ default: Slide[] }>;
+const slidesPromise = import("./slides.re.mdx") as Promise<{
+	default: Slide[];
+	_components: MDXComponents;
+}>;
 
 function SlideDeckLoader({
 	slides,
+	components,
 	presenterMode,
 	initialSlide,
 	initialStep,
 	onNavigate,
 }: {
 	slides: Slide[];
+	components: MDXComponents;
 	presenterMode: boolean;
 	initialSlide?: number;
 	initialStep?: number;
@@ -74,6 +80,7 @@ function SlideDeckLoader({
 	return (
 		<SlideDeck
 			slides={slides}
+			components={components}
 			presenterMode={presenterMode}
 			initialSlide={initialSlide}
 			initialStep={initialStep}
@@ -105,6 +112,7 @@ function MainLayout() {
 			>
 				<SlideDeckLoader
 					slides={use(slidesPromise).default}
+					components={use(slidesPromise)._components}
 					presenterMode={presenterMode}
 					initialSlide={search.slide}
 					initialStep={search.step}

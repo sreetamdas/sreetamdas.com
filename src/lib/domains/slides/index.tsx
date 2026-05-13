@@ -1,4 +1,13 @@
 import { getHotkeyManager } from "@tanstack/hotkeys";
+/**
+ * Custom slide deck renderer — replaces @nkzw/remdx.
+ *
+ * Key differences from remdx: Tailwind-only styling (no global CSS leak),
+ * @tanstack/hotkeys instead of mousetrap, native touch handling instead of
+ * react-swipeable, and a plain ResizeObserver for aspect-ratio fitting instead
+ * of use-resize-observer.
+ */
+import { type MDXComponents } from "mdx/types";
 import {
 	useCallback,
 	useEffect,
@@ -8,14 +17,7 @@ import {
 	type ReactNode,
 } from "react";
 
-/**
- * Custom slide deck renderer — replaces @nkzw/remdx.
- *
- * Key differences from remdx: Tailwind-only styling (no global CSS leak),
- * @tanstack/hotkeys instead of mousetrap, native touch handling instead of
- * react-swipeable, and a plain ResizeObserver for aspect-ratio fitting instead
- * of use-resize-observer.
- */
+import { MDXContent } from "@/lib/components/MDX";
 import { Gradient } from "@/lib/components/Typography";
 import { cn } from "@/lib/helpers/utils";
 
@@ -29,8 +31,14 @@ export interface SlideData {
 	[key: string]: string | undefined;
 }
 
+interface StepData {
+	content: string;
+	mdast: string;
+	shikiHighlights: Record<string, string>;
+}
+
 export interface Slide {
-	Component: (props: { stepIndex?: number }) => ReactNode;
+	steps: StepData[];
 	stepCount: number;
 	data: SlideData;
 	notes: string | null;
@@ -46,6 +54,7 @@ interface SlideDeckProps {
 	initialSlide?: number;
 	initialStep?: number;
 	onNavigate?: (slide: number, step: number) => void;
+	components?: MDXComponents;
 }
 
 /**
@@ -66,6 +75,7 @@ export function SlideDeck({
 	initialSlide = 0,
 	initialStep = 0,
 	onNavigate,
+	components,
 }: SlideDeckProps) {
 	const [currentIndex, setCurrentIndex] = useState(() => {
 		const safe = Math.max(0, Math.min(initialSlide, slides.length - 1));
@@ -197,6 +207,7 @@ export function SlideDeck({
 				goTo={goTo}
 				goNext={stepForward}
 				goPrev={stepBackward}
+				components={components}
 			/>
 		);
 	}
@@ -225,7 +236,7 @@ export function SlideDeck({
 							isBefore={index < currentIndex}
 							data={slide.data}
 						>
-							<slide.Component stepIndex={currentStep} />
+							<SlideRenderer slide={slide} stepIndex={currentStep} components={components} />
 						</SlideWrapper>
 					))}
 
@@ -235,6 +246,27 @@ export function SlideDeck({
 				</div>
 			</div>
 		</div>
+	);
+}
+
+function SlideRenderer({
+	slide,
+	stepIndex,
+	components,
+}: {
+	slide: Slide;
+	stepIndex: number;
+	components?: MDXComponents;
+}) {
+	const step = slide.steps[stepIndex] || slide.steps[0];
+	if (!step) return null;
+	return (
+		<MDXContent
+			source={step.content}
+			mdast={step.mdast}
+			shikiHighlights={step.shikiHighlights}
+			components={components}
+		/>
 	);
 }
 
@@ -286,6 +318,7 @@ interface PresenterModeProps {
 	goTo: (index: number, step?: number) => void;
 	goNext: () => void;
 	goPrev: () => void;
+	components?: MDXComponents;
 }
 
 function formatTime(seconds: number): string {
@@ -302,6 +335,7 @@ function PresenterMode({
 	goTo,
 	goNext,
 	goPrev,
+	components,
 }: PresenterModeProps) {
 	const currentSlide = slides[currentIndex];
 	const nextSlide = slides[currentIndex + 1];
@@ -332,7 +366,7 @@ function PresenterMode({
 					<div className="mb-2 text-xs tracking-wider text-gray-400 uppercase">Current Slide</div>
 					<div className="flex-1 overflow-hidden rounded-lg bg-black">
 						<div className="h-full w-full overflow-auto p-8">
-							<currentSlide.Component stepIndex={currentStep} />
+							<SlideRenderer slide={currentSlide} stepIndex={currentStep} components={components} />
 						</div>
 					</div>
 				</div>
@@ -343,7 +377,7 @@ function PresenterMode({
 						<div className="flex-1 overflow-hidden rounded-lg bg-black">
 							{nextSlide ? (
 								<div className="h-full w-full overflow-auto p-4 opacity-70">
-									<nextSlide.Component stepIndex={0} />
+									<SlideRenderer slide={nextSlide} stepIndex={0} components={components} />
 								</div>
 							) : (
 								<div className="flex h-full items-center justify-center text-gray-500">
