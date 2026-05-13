@@ -47,17 +47,22 @@ export const LinkAnchor = ({ id }: LinkAnchorProp) => (
 	<LinkTo
 		href={`#${id}`}
 		replaceClasses
-		className="text-primary focus-visible:outline-secondary absolute -translate-x-[125%] translate-y-2 opacity-0 transition-opacity group-hover:opacity-75 focus-visible:opacity-75 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-dashed max-md:hidden"
+		className="text-primary focus-visible:outline-secondary absolute translate-x-[-125%] translate-y-2 opacity-0 transition-opacity group-hover:opacity-75 focus-visible:opacity-75 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-dashed max-md:hidden"
 	>
 		<FiLink aria-label={id} />
 	</LinkTo>
 );
 
-type HeadingProps = DetailedHTMLProps<HTMLAttributes<HTMLHeadingElement>, HTMLHeadingElement>;
+type HeadingProps = DetailedHTMLProps<HTMLAttributes<HTMLHeadingElement>, HTMLHeadingElement> & {
+	disable_slug?: boolean;
+};
 const getHeading = (
 	el: "h1" | "h2" | "h3" | "h4" | "h5" | "h6",
-	{ children, ...propsWithoutChildren }: HeadingProps,
+	{ children, disable_slug = false, ...propsWithoutChildren }: HeadingProps,
 ) => {
+	if (disable_slug) {
+		return createElement(el, propsWithoutChildren, children);
+	}
 	// Prefer an id from rehype-slug (build-time), fall back to runtime slugification.
 	const id = propsWithoutChildren.id || slugify(children);
 
@@ -79,14 +84,28 @@ export const Heading = {
 	h6: (props: HeadingProps) => getHeading("h6", props),
 };
 
-export const UnorderedList = (props: HTMLAttributes<HTMLUListElement>) => (
-	<ul className="mx-0 my-3 pl-0" {...props}>
+export const UnorderedList = ({
+	className,
+	listClasses,
+	markClasses,
+	...props
+}: HTMLAttributes<HTMLUListElement> & {
+	listClasses?: Pick<HTMLAttributes<HTMLLIElement>, "className">;
+	markClasses?: Pick<HTMLAttributes<HTMLLIElement>, "className">;
+}) => (
+	<ul className={cn("mx-0 my-3 pl-0", className)} {...props}>
 		{Children.map(props.children, (child) => {
 			if (isValidElement(child)) {
 				return (
-					// @ts-expect-error child props is not unknown
-					<li className="mb-3 flex list-none items-start p-0 last:mb-0 only:mt-3" {...child.props}>
-						<FaLongArrowAltRight aria-label="marker" className="text-primary mt-1 mr-2.5" />
+					<li
+						className={cn("mb-3 flex list-none items-start p-0 last:mb-0 only:mt-3", listClasses)}
+						// @ts-expect-error child props is not unknown
+						{...child.props}
+					>
+						<FaLongArrowAltRight
+							aria-label="marker"
+							className={cn("text-primary mt-1 mr-2.5", markClasses)}
+						/>
 						<span className="shrink grow basis-0 [&>ul]:my-0 [&>ul>li]:m-0">
 							{/* @ts-expect-error child props is not unknown */}
 							{child.props.children}

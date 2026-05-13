@@ -16,16 +16,18 @@ import { CodeBlock } from "@/lib/domains/shiki/CodeBlock";
 export const slideMDXComponents: MDXComponents = {
 	h1: ({ children, ...props }: HTMLAttributes<HTMLHeadingElement>) => (
 		<Heading.h1
-			className="group text-primary pt-10 font-serif text-8xl leading-normal font-bold"
+			className="group text-primary pt-10 font-serif text-7xl leading-normal font-bold"
 			{...props}
+			disable_slug
 		>
 			{children}
 		</Heading.h1>
 	),
 	h2: ({ children, ...props }: HTMLAttributes<HTMLHeadingElement>) => (
 		<Heading.h2
-			className="group text-primary pt-10 font-serif text-5xl leading-normal font-bold"
+			className="group text-primary pt-10 font-serif text-4xl leading-normal font-bold"
 			{...props}
+			disable_slug
 		>
 			{children}
 		</Heading.h2>
@@ -34,6 +36,7 @@ export const slideMDXComponents: MDXComponents = {
 		<Heading.h3
 			className="group text-primary pt-10 font-serif text-3xl leading-normal font-bold"
 			{...props}
+			disable_slug
 		>
 			{children}
 		</Heading.h3>
@@ -47,7 +50,9 @@ export const slideMDXComponents: MDXComponents = {
 	a: LinkTo,
 	code: Code,
 	pre: CodeBlock,
-	ul: UnorderedList,
+	ul: (props) => (
+		<UnorderedList {...props} listClasses="mb-4 only:mt-4" markClasses="mt-1.5 text-2xl" />
+	),
 	img: Image,
 	hr: () => <hr className="my-4" />,
 	blockquote: Blockquote,

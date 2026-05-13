@@ -50,6 +50,7 @@ interface SlideDeckProps {
 	style?: CSSProperties;
 	presenterMode?: boolean;
 	swipeEnabled?: boolean;
+	transitions?: boolean;
 	aspectRatio?: number;
 	initialSlide?: number;
 	initialStep?: number;
@@ -64,6 +65,7 @@ interface SlideDeckProps {
  * - Left arrow / Page Up: previous slide or step
  * - Right arrow / Page Down / Space: next slide or step
  * - Alt+B: toggle presenter mode
+ * - Alt+T: toggle slide transitions
  */
 export function SlideDeck({
 	slides,
@@ -71,6 +73,7 @@ export function SlideDeck({
 	style,
 	presenterMode: initialPresenterMode = false,
 	swipeEnabled = true,
+	transitions: initialTransitions = true,
 	aspectRatio = 16 / 9,
 	initialSlide = 0,
 	initialStep = 0,
@@ -87,6 +90,7 @@ export function SlideDeck({
 		return Math.max(0, Math.min(initialStep, maxStep));
 	});
 	const [presenterMode, setPresenterMode] = useState(initialPresenterMode);
+	const [transitionsEnabled, setTransitionsEnabled] = useState(initialTransitions);
 	const [elapsedTime, setElapsedTime] = useState(0);
 	const containerRef = useRef<HTMLDivElement>(null);
 	const timerRef = useRef<ReturnType<typeof setInterval>>(undefined);
@@ -136,13 +140,19 @@ export function SlideDeck({
 		setPresenterMode((prev) => !prev);
 	}, []);
 
+	const toggleTransitions = useCallback(() => {
+		setTransitionsEnabled((prev) => !prev);
+	}, []);
+
 	const goNextRef = useRef(stepForward);
 	const goPrevRef = useRef(stepBackward);
 	const togglePresenterRef = useRef(togglePresenterMode);
+	const toggleTransitionsRef = useRef(toggleTransitions);
 
 	goNextRef.current = stepForward;
 	goPrevRef.current = stepBackward;
 	togglePresenterRef.current = togglePresenterMode;
+	toggleTransitionsRef.current = toggleTransitions;
 
 	useEffect(() => {
 		containerRef.current?.focus();
@@ -158,6 +168,7 @@ export function SlideDeck({
 			manager.register("PageDown", () => goNextRef.current(), { preventDefault: true }),
 			manager.register("Space", () => goNextRef.current(), { preventDefault: true }),
 			manager.register("Alt+B", () => togglePresenterRef.current(), { preventDefault: true }),
+			manager.register("Alt+T", () => toggleTransitionsRef.current(), { preventDefault: true }),
 		];
 
 		return () => {
@@ -235,6 +246,7 @@ export function SlideDeck({
 							isActive={index === currentIndex}
 							isBefore={index < currentIndex}
 							data={slide.data}
+							transitions={transitionsEnabled}
 						>
 							<SlideRenderer slide={slide} stepIndex={currentStep} components={components} />
 						</SlideWrapper>
@@ -275,9 +287,10 @@ interface SlideWrapperProps {
 	isActive: boolean;
 	isBefore: boolean;
 	data: SlideData;
+	transitions: boolean;
 }
 
-function SlideWrapper({ children, isActive, isBefore, data }: SlideWrapperProps) {
+function SlideWrapper({ children, isActive, isBefore, data, transitions }: SlideWrapperProps) {
 	const translateClass = isActive
 		? "translate-x-0 opacity-100 z-10"
 		: isBefore
@@ -286,7 +299,11 @@ function SlideWrapper({ children, isActive, isBefore, data }: SlideWrapperProps)
 
 	return (
 		<div
-			className={`absolute inset-0 transition-all duration-500 ease-in-out ${translateClass}`}
+			className={cn(
+				"absolute inset-0",
+				translateClass,
+				transitions && "transition-all duration-500 ease-in-out",
+			)}
 			style={
 				data.image
 					? {
@@ -366,6 +383,11 @@ function PresenterMode({
 					<div className="mb-2 text-xs tracking-wider text-gray-400 uppercase">Current Slide</div>
 					<div className="flex-1 overflow-hidden rounded-lg bg-black">
 						<div className="h-full w-full overflow-auto p-8">
+							{currentSlide.data.title && (
+								<h1 className="pt-10 font-serif text-7xl font-bold text-balance whitespace-pre-line font-stretch-semi-condensed">
+									<Gradient className="">{currentSlide.data.title}</Gradient>
+								</h1>
+							)}
 							<SlideRenderer slide={currentSlide} stepIndex={currentStep} components={components} />
 						</div>
 					</div>
