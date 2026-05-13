@@ -6,25 +6,19 @@
  *
  * 1. Extracts top-level import/export statements and hoists them to the module scope
  * 2. Splits the file on --- lines into individual slides (code-fence aware)
- * 3. Parses YAML frontmatter per slide using gray-matter
- * 4. Extracts <Notes> blocks from slide content
- * 5. Pre-computes MDAST + Shiki highlights at build time
- * 6. Generates a module where each slide is a lazy React component
+ * 3. Parses YAML frontmatter per slide
+ * 4. Splits each slide on -- lines into steps (code-fence aware)
+ * 5. Extracts <Notes> blocks from step content
+ * 6. Pre-computes MDAST + Shiki highlights at build time per step
+ * 7. Generates a module where each slide contains an array of step components
  *
  * The output module exports:
- *   export default [{ Component: Slide1, data: {...}, notes: "..." }, ...]
+ *   export default [{ Component, stepCount, data, notes }, ...]
  */
 import { type Plugin } from "vite-plus";
 
-/**
- * Matches <Notes>...</Notes> blocks. Extracts content between tags.
- * Supports multiline content.
- */
 const NOTES_REGEXP = /<Notes>([\s\S]*?)<\/Notes>/g;
 
-/**
- * Cached lazy imports — resolved once on first transform call.
- */
 let _mdxParse: typeof import("safe-mdx/parse").mdxParse | undefined;
 let _visit: typeof import("unist-util-visit").visit | undefined;
 let _getSlimKarmaHighlighter:
@@ -335,15 +329,12 @@ export function slideDeckPlugin(): Plugin {
 
 				const highlighter = await getSlimKarmaHighlighter();
 
-				// Extract import/export statements (code-fence aware)
 				const { modules, source } = extractTopLevelModules(code);
 				const uniqueModules = [...new Set(modules)];
 				const componentsProp = extractComponentBindings(uniqueModules);
 
-				// Extract top-level frontmatter (code-fence aware)
 				const topLevelData = extractTopLevelFrontmatter(source);
 
-				// Split into slides
 				const slideTexts = splitSlides(topLevelData.source);
 
 				const compiledSlides = await Promise.all(
@@ -351,12 +342,10 @@ export function slideDeckPlugin(): Plugin {
 						const { data: slideData, content: slideContent } = parseFrontmatter(text);
 						const matterContent = slideContent.trim();
 
-						// Merge top-level frontmatter into the first slide.
 						const data = index === 0 ? { ...topLevelData.data, ...slideData } : slideData;
 
 						const { content: noNotesContent, notes } = extractNotes(matterContent);
 
-						// Split into steps based on -- markers
 						const stepTexts = splitSteps(noNotesContent);
 
 						const steps = await Promise.all(

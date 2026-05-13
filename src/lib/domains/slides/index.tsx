@@ -9,11 +9,12 @@ import {
 } from "react";
 
 /**
- * Custom slide deck components that replace @nkzw/remdx.
+ * Custom slide deck renderer — replaces @nkzw/remdx.
  *
- * Uses Tailwind for all styling instead of the global CSS that was leaking
- * into the rest of the site. Supports keyboard navigation, slide transitions,
- * presenter mode with speaker notes, URL-synced position, and step indices.
+ * Key differences from remdx: Tailwind-only styling (no global CSS leak),
+ * @tanstack/hotkeys instead of mousetrap, native touch handling instead of
+ * react-swipeable, and a plain ResizeObserver for aspect-ratio fitting instead
+ * of use-resize-observer.
  */
 import { Gradient } from "@/lib/components/Typography";
 import { cn } from "@/lib/helpers/utils";

@@ -55,9 +55,7 @@ export const Route = createFileRoute("/slides/json-schema-form/")({
 	}),
 });
 
-// Module-level promise starts loading immediately when the chunk is parsed.
-// React.use() suspends until it resolves, letting Suspense show a fallback.
-// @ts-expect-error .re.mdx is transformed by custom Vite plugin
+// @ts-expect-error .re.mdx is transformed by slideDeckPlugin at build time
 const slidesPromise = import("./slides.re.mdx") as Promise<{ default: Slide[] }>;
 
 function SlideDeckLoader({

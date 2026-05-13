@@ -1,3 +1,10 @@
+/**
+ * MDX component overrides for slide decks.
+ *
+ * Larger text sizes and adjusted spacing compared to the blog defaults
+ * in ./components.tsx. Automatically merged into every slide deck by
+ * the slideDeckPlugin Vite plugin.
+ */
 import { type MDXComponents } from "mdx/types";
 import { type HTMLAttributes } from "react";
 
