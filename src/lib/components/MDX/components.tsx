@@ -9,7 +9,7 @@ import { CodeBlock } from "@/lib/domains/shiki/CodeBlock";
 export const customMDXComponents: MDXComponents = {
 	h1: ({ children, ...props }: HTMLAttributes<HTMLHeadingElement>) => (
 		<Heading.h1
-			className="group text-primary pt-10 font-serif text-8xl leading-normal font-bold tracking-tighter"
+			className="group text-primary pt-10 font-serif text-8xl leading-normal font-bold"
 			{...props}
 		>
 			{children}
@@ -17,7 +17,7 @@ export const customMDXComponents: MDXComponents = {
 	),
 	h2: ({ children, ...props }: HTMLAttributes<HTMLHeadingElement>) => (
 		<Heading.h2
-			className="group text-primary pt-10 font-serif text-4xl leading-normal font-bold tracking-tighter"
+			className="group text-primary pt-10 font-serif text-4xl leading-normal font-bold"
 			{...props}
 		>
 			{children}
@@ -25,7 +25,7 @@ export const customMDXComponents: MDXComponents = {
 	),
 	h3: ({ children, ...props }: HTMLAttributes<HTMLHeadingElement>) => (
 		<Heading.h3
-			className="group text-primary pt-10 font-serif text-2xl leading-normal font-bold tracking-tighter"
+			className="group text-primary pt-10 font-serif text-2xl leading-normal font-bold"
 			{...props}
 		>
 			{children}

@@ -1,12 +1,13 @@
+import { createFileRoute } from "@tanstack/react-router";
+import { createServerFn } from "@tanstack/react-start";
+import { renderServerComponent } from "@tanstack/react-start/rsc";
+
 import { SITE_TITLE_APPEND } from "@/config";
 import { ViewsCounter } from "@/lib/components/ViewsCounter";
 import { canonicalUrl, defaultOgImageUrl } from "@/lib/seo";
 
 import { NewsletterEmailsPreviews } from "./-components";
 import { fetchNewsletterEmails } from "./-helpers";
-import { createFileRoute } from "@tanstack/react-router";
-import { createServerFn } from "@tanstack/react-start";
-import { renderServerComponent } from "@tanstack/react-start/rsc";
 
 export const Route = createFileRoute("/(main)/newsletter/")({
 	component: NewsletterEmailsPage,
@@ -60,7 +61,7 @@ function NewsletterEmailsPage() {
 
 	return (
 		<>
-			<h1 className="pt-10 pb-20 font-serif text-8xl font-bold tracking-tighter">/newsletter</h1>
+			<h1 className="pt-10 pb-20 font-serif text-8xl font-bold">/newsletter</h1>
 			{Renderable}
 			<ViewsCounter />
 		</>

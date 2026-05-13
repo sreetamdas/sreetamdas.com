@@ -1,14 +1,14 @@
-import { SocialLinks } from "@/lib/components/SocialLinks";
-import { SITE_DESCRIPTION, SITE_TITLE_APPEND } from "@/config";
-import { canonicalUrl, defaultOgImageUrl } from "@/lib/seo";
-import { rootPages } from "@/generated";
-import { MDXContent } from "@/lib/components/MDX";
-import { ViewsCounter } from "@/lib/components/ViewsCounter";
-import { FoobarEntry } from "@/lib/domains/foobar/Entry";
-
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
 import { renderServerComponent } from "@tanstack/react-start/rsc";
+
+import { SITE_DESCRIPTION, SITE_TITLE_APPEND } from "@/config";
+import { rootPages } from "@/generated";
+import { MDXContent } from "@/lib/components/MDX";
+import { SocialLinks } from "@/lib/components/SocialLinks";
+import { ViewsCounter } from "@/lib/components/ViewsCounter";
+import { FoobarEntry } from "@/lib/domains/foobar/Entry";
+import { canonicalUrl, defaultOgImageUrl } from "@/lib/seo";
 
 export const Route = createFileRoute("/(main)/about")({
 	component: AboutPage,
@@ -62,7 +62,7 @@ function AboutPage() {
 
 	return (
 		<>
-			<h1 className="pt-10 pb-20 font-serif text-8xl font-bold tracking-tighter">/about</h1>
+			<h1 className="pt-10 pb-20 font-serif text-8xl font-bold">/about</h1>
 			{Renderable}
 			<ViewsCounter />
 			<FoobarEntry />

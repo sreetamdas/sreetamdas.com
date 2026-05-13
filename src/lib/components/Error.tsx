@@ -1,17 +1,17 @@
 "use client";
 
+import { ReactNode } from "react";
 import { useShallow } from "zustand/react/shallow";
 
 import { Gradient } from "@/lib/components/Typography";
 import { FOOBAR_FLAGS } from "@/lib/domains/foobar/flags";
 import { useGlobalStore } from "@/lib/domains/global";
 import { useCustomPlausible } from "@/lib/domains/Plausible";
-import { ReactNode } from "react";
 
 export const NotFound404 = ({ message }: { message?: ReactNode }) => {
 	return (
 		<>
-			<h1 className="pt-10 text-center font-serif text-[160px] font-bold tracking-tighter">
+			<h1 className="pt-10 text-center font-serif text-[160px] font-bold">
 				<Gradient>404!</Gradient>
 			</h1>
 			{typeof message === "undefined" ? (

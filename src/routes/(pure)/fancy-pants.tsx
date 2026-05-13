@@ -1,10 +1,10 @@
+import { createFileRoute } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { ImArrowUpRight2 } from "react-icons/im";
 
 import { SITE_TITLE_APPEND } from "@/config";
-import { canonicalUrl, defaultOgImageUrl } from "@/lib/seo";
 import { ChameleonHighlight } from "@/lib/components/TypographyClient";
-import { createFileRoute } from "@tanstack/react-router";
+import { canonicalUrl, defaultOgImageUrl } from "@/lib/seo";
 
 export const Route = createFileRoute("/(pure)/fancy-pants")({
 	component: FancyPantsPage,
@@ -49,7 +49,7 @@ function FancyPantsPage() {
 			<h1 className="font-mono text-[clamp(4rem,10vw,10rem)] leading-normal font-black -tracking-[0.065em]">
 				<ChameleonHighlight>Sreetam Das</ChameleonHighlight>
 			</h1>
-			<p className="w-3/4 font-serif text-7xl leading-none font-bold tracking-tighter">
+			<p className="w-3/4 font-serif text-7xl leading-none font-bold">
 				is a{" "}
 				<ChameleonHighlight className="font-mono font-black -tracking-[0.065em]">
 					Senior Software Tinkerer

@@ -1,14 +1,13 @@
-import { SITE_DESCRIPTION, SITE_TITLE_APPEND } from "@/config";
-import { ViewsCounter } from "@/lib/components/ViewsCounter";
-import { canonicalUrl, defaultOgImageUrl } from "@/lib/seo";
-import { fetchGist } from "@/lib/domains/GitHub/fetchGist";
-import { getSlimKarmaHighlighter } from "@/lib/domains/shiki/highlighter";
-import { staticFunctionMiddleware } from "@tanstack/start-static-server-functions";
-
 import { createFileRoute, ErrorComponent } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
-
+import { staticFunctionMiddleware } from "@tanstack/start-static-server-functions";
 import { FiLink } from "react-icons/fi";
+
+import { SITE_DESCRIPTION, SITE_TITLE_APPEND } from "@/config";
+import { ViewsCounter } from "@/lib/components/ViewsCounter";
+import { fetchGist } from "@/lib/domains/GitHub/fetchGist";
+import { getSlimKarmaHighlighter } from "@/lib/domains/shiki/highlighter";
+import { canonicalUrl, defaultOgImageUrl } from "@/lib/seo";
 
 const GITHUB_RWC_GIST_ID =
 	process.env.VITE_GITHUB_RWC_GIST_ID ??
@@ -97,7 +96,7 @@ function RWCPage() {
 
 	return (
 		<>
-			<h1 className="pt-10 pb-20 font-serif text-8xl font-bold tracking-tighter">/rwc</h1>
+			<h1 className="pt-10 pb-20 font-serif text-8xl font-bold">/rwc</h1>
 			<RWCCodeSamples all_solutions={all_solutions} backgroundColor={background_color} />
 			<ViewsCounter />
 		</>

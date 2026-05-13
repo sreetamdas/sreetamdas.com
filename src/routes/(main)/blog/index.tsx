@@ -1,10 +1,11 @@
+import { createFileRoute } from "@tanstack/react-router";
+import { createServerFn } from "@tanstack/react-start";
+import { renderServerComponent } from "@tanstack/react-start/rsc";
+
 import { IS_DEV, SITE_DESCRIPTION, SITE_TITLE_APPEND } from "@/config";
 import { blogPosts } from "@/generated";
 import { LinkTo } from "@/lib/components/Anchor";
 import { canonicalUrl, defaultOgImageUrl } from "@/lib/seo";
-import { createFileRoute } from "@tanstack/react-router";
-import { createServerFn } from "@tanstack/react-start";
-import { renderServerComponent } from "@tanstack/react-start/rsc";
 
 export const Route = createFileRoute("/(main)/blog/")({
 	component: BlogArchivePage,
@@ -104,7 +105,7 @@ function BlogArchivePage() {
 
 	return (
 		<>
-			<h1 className="pt-10 pb-20 font-serif text-8xl font-bold tracking-tighter">/blog</h1>
+			<h1 className="pt-10 pb-20 font-serif text-8xl font-bold">/blog</h1>
 			{Renderable}
 		</>
 	);

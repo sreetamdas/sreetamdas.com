@@ -1,13 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
 import { renderServerComponent } from "@tanstack/react-start/rsc";
-
 import { isUndefined } from "lodash-es";
 
+import { SITE_DESCRIPTION, SITE_TITLE_APPEND } from "@/config";
 import { rootPages } from "@/generated";
 import { MDXContent } from "@/lib/components/MDX";
 import { ViewsCounter } from "@/lib/components/ViewsCounter";
-import { SITE_DESCRIPTION, SITE_TITLE_APPEND } from "@/config";
 import { canonicalUrl, defaultOgImageUrl } from "@/lib/seo";
 
 export const Route = createFileRoute("/(main)/")({
@@ -57,7 +56,7 @@ function Home() {
 	const { Renderable } = Route.useLoaderData();
 	return (
 		<>
-			<h1 className="py-20 text-center font-serif text-6xl font-bold tracking-tighter">
+			<h1 className="py-20 text-center font-serif text-6xl font-bold">
 				Hey, I&apos;m Sreetam!{" "}
 				<span role="img" aria-label="wave">
 					👋
