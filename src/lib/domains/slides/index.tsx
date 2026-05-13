@@ -219,7 +219,7 @@ export function SlideDeck({
 	return (
 		<div
 			ref={containerRef}
-			className={cn("relative h-full w-full overflow-hidden", className)}
+			className={cn("relative h-full w-full overflow-hidden outline-none", className)}
 			style={style}
 			tabIndex={0}
 			role="region"
