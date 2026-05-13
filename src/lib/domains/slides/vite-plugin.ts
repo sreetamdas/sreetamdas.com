@@ -165,6 +165,56 @@ function splitSlides(source: string): string[] {
 }
 
 /**
+ * Split slide content into step sections based on -- markers.
+ * A -- line starts a new step when it's outside a code fence.
+ * Returns an array of step content strings.
+ */
+function splitSteps(source: string): string[] {
+	const lines = source.split("\n");
+	const steps: string[] = [];
+	let current: string[] = [];
+	let inFence = false;
+	let fenceChar = "";
+
+	for (const line of lines) {
+		const trimmed = line.trim();
+
+		if (trimmed.startsWith("```")) {
+			if (!inFence) {
+				inFence = true;
+				fenceChar = "```";
+			} else if (fenceChar === "```") {
+				inFence = false;
+				fenceChar = "";
+			}
+		} else if (trimmed.startsWith("~~~")) {
+			if (!inFence) {
+				inFence = true;
+				fenceChar = "~~~";
+			} else if (fenceChar === "~~~") {
+				inFence = false;
+				fenceChar = "";
+			}
+		}
+
+		if (!inFence && trimmed === "--") {
+			if (current.length > 0) {
+				steps.push(current.join("\n").trim());
+				current = [];
+			}
+		} else {
+			current.push(line);
+		}
+	}
+
+	if (current.length > 0) {
+		steps.push(current.join("\n").trim());
+	}
+
+	return steps.length > 0 ? steps : [source];
+}
+
+/**
  * Extract top-level import/export statements that are NOT inside code fences.
  * Returns { modules: string[], source: string } with imports hoisted and removed.
  */
@@ -304,38 +354,48 @@ export function slideDeckPlugin(): Plugin {
 						// Merge top-level frontmatter into the first slide.
 						const data = index === 0 ? { ...topLevelData.data, ...slideData } : slideData;
 
-						const { content, notes } = extractNotes(matterContent);
+						const { content: noNotesContent, notes } = extractNotes(matterContent);
 
-						const mdast = mdxParse(content);
+						// Split into steps based on -- markers
+						const stepTexts = splitSteps(noNotesContent);
 
-						const shikiHighlights: Record<string, string> = {};
-						visit(mdast, "code", (node: unknown) => {
-							const codeNode = node as {
-								type: string;
-								lang?: string;
-								meta?: string | null;
-								value: string;
-								position?: { start: { line: number; column: number } };
-							};
-							if (typeof codeNode.value !== "string") return;
+						const steps = await Promise.all(
+							stepTexts.map(async (stepContent) => {
+								const mdast = mdxParse(stepContent);
+								const shikiHighlights: Record<string, string> = {};
+								visit(mdast, "code", (node: unknown) => {
+									const codeNode = node as {
+										type: string;
+										lang?: string;
+										meta?: string | null;
+										value: string;
+										position?: { start: { line: number; column: number } };
+									};
+									if (typeof codeNode.value !== "string") return;
 
-							const html = renderCodeBlockToHtml(
-								highlighter,
-								codeNode.value,
-								codeNode.lang,
-								codeNode.meta ?? null,
-							);
-							if (html === null) return;
+									const html = renderCodeBlockToHtml(
+										highlighter,
+										codeNode.value,
+										codeNode.lang,
+										codeNode.meta ?? null,
+									);
+									if (html === null) return;
 
-							const key = `${codeNode.position?.start.line ?? 0}:${codeNode.position?.start.column ?? 0}`;
-							shikiHighlights[key] = html;
-						});
+									const key = `${codeNode.position?.start.line ?? 0}:${codeNode.position?.start.column ?? 0}`;
+									shikiHighlights[key] = html;
+								});
+
+								return {
+									content: stepContent,
+									mdast: JSON.stringify(mdast),
+									shikiHighlights,
+								};
+							}),
+						);
 
 						return {
 							index,
-							content,
-							mdast: JSON.stringify(mdast),
-							shikiHighlights,
+							steps,
 							data,
 							notes,
 						};
@@ -347,14 +407,17 @@ export function slideDeckPlugin(): Plugin {
 						(slide) => `
 					{
 						Component: function Slide${slide.index}(props) {
+							const stepIndex = props.stepIndex ?? 0;
+							const step = ${JSON.stringify(slide.steps)}[stepIndex] || ${JSON.stringify(slide.steps)}[0];
 							return _jsx(MDXContent, {
-								source: ${JSON.stringify(slide.content)},
-								mdast: ${JSON.stringify(slide.mdast)},
-								shikiHighlights: ${JSON.stringify(slide.shikiHighlights)},
+								source: step.content,
+								mdast: step.mdast,
+								shikiHighlights: step.shikiHighlights,
 								${componentsProp}
 								...props
 							});
 						},
+						stepCount: ${slide.steps.length},
 						data: ${JSON.stringify(slide.data)},
 						notes: ${JSON.stringify(slide.notes)}
 					}

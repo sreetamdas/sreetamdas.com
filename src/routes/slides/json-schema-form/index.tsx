@@ -1,13 +1,24 @@
 "use client";
 
-import { createFileRoute, useSearch } from "@tanstack/react-router";
-import { Suspense, use } from "react";
+import { createFileRoute, useNavigate, useSearch } from "@tanstack/react-router";
+import { useCallback, Suspense, use } from "react";
 
 import { SITE_TITLE_APPEND } from "@/config";
 import { SlideDeck, type Slide } from "@/lib/domains/slides";
 import { canonicalUrl, defaultOgImageUrl } from "@/lib/seo";
 
+interface SlideSearch {
+	presenter?: string;
+	slide?: number;
+	step?: number;
+}
+
 export const Route = createFileRoute("/slides/json-schema-form/")({
+	validateSearch: (search: Record<string, string>): SlideSearch => ({
+		presenter: search.presenter,
+		slide: search.slide ? Number(search.slide) : undefined,
+		step: search.step ? Number(search.step) : undefined,
+	}),
 	component: MainLayout,
 	head: () => ({
 		links: [{ rel: "canonical", href: canonicalUrl("/slides/json-schema-form") }],
@@ -49,14 +60,41 @@ export const Route = createFileRoute("/slides/json-schema-form/")({
 // @ts-expect-error .re.mdx is transformed by custom Vite plugin
 const slidesPromise = import("./slides.re.mdx") as Promise<{ default: Slide[] }>;
 
-function SlideDeckLoader({ presenterMode }: { presenterMode: boolean }) {
-	const mod = use(slidesPromise);
-	return <SlideDeck slides={mod.default} presenterMode={presenterMode} />;
+function SlideDeckLoader({
+	slides,
+	presenterMode,
+	initialSlide,
+	initialStep,
+	onNavigate,
+}: {
+	slides: Slide[];
+	presenterMode: boolean;
+	initialSlide?: number;
+	initialStep?: number;
+	onNavigate: (slide: number, step: number) => void;
+}) {
+	return (
+		<SlideDeck
+			slides={slides}
+			presenterMode={presenterMode}
+			initialSlide={initialSlide}
+			initialStep={initialStep}
+			onNavigate={onNavigate}
+		/>
+	);
 }
 
 function MainLayout() {
-	const search = useSearch({ from: "/slides/json-schema-form/" }) as { presenter?: string };
+	const search = useSearch({ from: "/slides/json-schema-form/" });
+	const navigate = useNavigate({ from: "/slides/json-schema-form/" });
 	const presenterMode = search.presenter === "1" || search.presenter === "true";
+
+	const handleNavigate = useCallback(
+		(slide: number, step: number) => {
+			void navigate({ search: { slide, step }, replace: true });
+		},
+		[navigate],
+	);
 
 	return (
 		<div className="fixed inset-0">
@@ -67,7 +105,13 @@ function MainLayout() {
 					</div>
 				}
 			>
-				<SlideDeckLoader presenterMode={presenterMode} />
+				<SlideDeckLoader
+					slides={use(slidesPromise).default}
+					presenterMode={presenterMode}
+					initialSlide={search.slide}
+					initialStep={search.step}
+					onNavigate={handleNavigate}
+				/>
 			</Suspense>
 		</div>
 	);

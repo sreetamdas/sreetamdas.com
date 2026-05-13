@@ -12,11 +12,13 @@ import {
  * Custom slide deck components that replace @nkzw/remdx.
  *
  * Uses Tailwind for all styling instead of the global CSS that was leaking
- * into the rest of the site. Supports keyboard navigation, basic slide
- * transitions, and presenter mode with speaker notes.
+ * into the rest of the site. Supports keyboard navigation, slide transitions,
+ * presenter mode with speaker notes, URL-synced position, and step indices.
  */
 import { Gradient } from "@/lib/components/Typography";
 import { cn } from "@/lib/helpers/utils";
+
+import { useAspectRatioFitting } from "./use-aspect-ratio-fitting";
 
 export interface SlideData {
 	title?: string;
@@ -27,7 +29,8 @@ export interface SlideData {
 }
 
 export interface Slide {
-	Component: () => ReactNode;
+	Component: (props: { stepIndex?: number }) => ReactNode;
+	stepCount: number;
 	data: SlideData;
 	notes: string | null;
 }
@@ -38,15 +41,19 @@ interface SlideDeckProps {
 	style?: CSSProperties;
 	presenterMode?: boolean;
 	swipeEnabled?: boolean;
+	aspectRatio?: number;
+	initialSlide?: number;
+	initialStep?: number;
+	onNavigate?: (slide: number, step: number) => void;
 }
 
 /**
  * SlideDeck manages keyboard navigation and renders the current slide.
  *
  * Keyboard shortcuts:
- * - Left arrow / Page Up: previous slide
- * - Right arrow / Page Down / Space: next slide
- * - Alt+P: toggle presenter mode
+ * - Left arrow / Page Up: previous slide or step
+ * - Right arrow / Page Down / Space: next slide or step
+ * - Alt+B: toggle presenter mode
  */
 export function SlideDeck({
 	slides,
@@ -54,51 +61,82 @@ export function SlideDeck({
 	style,
 	presenterMode: initialPresenterMode = false,
 	swipeEnabled = true,
+	aspectRatio = 16 / 9,
+	initialSlide = 0,
+	initialStep = 0,
+	onNavigate,
 }: SlideDeckProps) {
-	const [currentIndex, setCurrentIndex] = useState(0);
+	const [currentIndex, setCurrentIndex] = useState(() => {
+		const safe = Math.max(0, Math.min(initialSlide, slides.length - 1));
+		return safe;
+	});
+	const [currentStep, setCurrentStep] = useState(() => {
+		const slide = slides[Math.max(0, Math.min(initialSlide, slides.length - 1))];
+		const maxStep = slide ? slide.stepCount - 1 : 0;
+		return Math.max(0, Math.min(initialStep, maxStep));
+	});
 	const [presenterMode, setPresenterMode] = useState(initialPresenterMode);
 	const [elapsedTime, setElapsedTime] = useState(0);
 	const containerRef = useRef<HTMLDivElement>(null);
 	const timerRef = useRef<ReturnType<typeof setInterval>>(undefined);
 	const touchStartX = useRef<number>(0);
+	const [containerRefFit, fitStyle] = useAspectRatioFitting(aspectRatio);
+
+	const currentSlide = slides[currentIndex];
+	const maxStep = currentSlide ? currentSlide.stepCount - 1 : 0;
 
 	const goTo = useCallback(
-		(index: number) => {
+		(index: number, step = 0) => {
 			if (index < 0 || index >= slides.length) return;
+			const targetSlide = slides[index];
+			const safeStep = Math.max(0, Math.min(step, targetSlide.stepCount - 1));
 			setCurrentIndex(index);
+			setCurrentStep(safeStep);
+			onNavigate?.(index, safeStep);
 		},
-		[slides.length],
+		[slides, onNavigate],
 	);
 
-	const goNext = useCallback(() => {
-		goTo(currentIndex + 1);
-	}, [currentIndex, goTo]);
+	const stepForward = useCallback(() => {
+		if (currentStep < maxStep) {
+			setCurrentStep((s) => s + 1);
+			onNavigate?.(currentIndex, currentStep + 1);
+		} else if (currentIndex < slides.length - 1) {
+			setCurrentIndex((i) => i + 1);
+			setCurrentStep(0);
+			onNavigate?.(currentIndex + 1, 0);
+		}
+	}, [currentStep, maxStep, currentIndex, slides.length, onNavigate]);
 
-	const goPrev = useCallback(() => {
-		goTo(currentIndex - 1);
-	}, [currentIndex, goTo]);
+	const stepBackward = useCallback(() => {
+		if (currentStep > 0) {
+			setCurrentStep((s) => s - 1);
+			onNavigate?.(currentIndex, currentStep - 1);
+		} else if (currentIndex > 0) {
+			const prevSlide = slides[currentIndex - 1];
+			const prevStep = prevSlide.stepCount - 1;
+			setCurrentIndex((i) => i - 1);
+			setCurrentStep(prevStep);
+			onNavigate?.(currentIndex - 1, prevStep);
+		}
+	}, [currentStep, currentIndex, slides, onNavigate]);
 
 	const togglePresenterMode = useCallback(() => {
 		setPresenterMode((prev) => !prev);
 	}, []);
 
-	// Keep latest callbacks in refs so hotkey registrations never go stale.
-	// This lets us register once on mount instead of re-registering on every
-	// slide change.
-	const goNextRef = useRef(goNext);
-	const goPrevRef = useRef(goPrev);
+	const goNextRef = useRef(stepForward);
+	const goPrevRef = useRef(stepBackward);
 	const togglePresenterRef = useRef(togglePresenterMode);
 
-	goNextRef.current = goNext;
-	goPrevRef.current = goPrev;
+	goNextRef.current = stepForward;
+	goPrevRef.current = stepBackward;
 	togglePresenterRef.current = togglePresenterMode;
 
-	// Auto-focus container so keyboard navigation works immediately.
 	useEffect(() => {
 		containerRef.current?.focus();
 	}, []);
 
-	// Register hotkeys once on mount via @tanstack/hotkeys
 	useEffect(() => {
 		const manager = getHotkeyManager();
 
@@ -116,7 +154,6 @@ export function SlideDeck({
 		};
 	}, []);
 
-	// Touch swipe handlers
 	const handleTouchStart = useCallback((event: React.TouchEvent) => {
 		touchStartX.current = event.touches[0].clientX;
 	}, []);
@@ -127,15 +164,14 @@ export function SlideDeck({
 			const deltaX = event.changedTouches[0].clientX - touchStartX.current;
 			const threshold = 50;
 			if (deltaX > threshold) {
-				goPrev();
+				goPrevRef.current();
 			} else if (deltaX < -threshold) {
-				goNext();
+				goNextRef.current();
 			}
 		},
-		[swipeEnabled, goNext, goPrev],
+		[swipeEnabled],
 	);
 
-	// Timer for presenter mode
 	useEffect(() => {
 		if (presenterMode) {
 			timerRef.current = setInterval(() => {
@@ -155,13 +191,18 @@ export function SlideDeck({
 			<PresenterMode
 				slides={slides}
 				currentIndex={currentIndex}
+				currentStep={currentStep}
 				elapsedTime={elapsedTime}
 				goTo={goTo}
-				goNext={goNext}
-				goPrev={goPrev}
+				goNext={stepForward}
+				goPrev={stepBackward}
 			/>
 		);
 	}
+
+	const totalSteps = slides.reduce((sum, s) => sum + s.stepCount, 0);
+	const globalStepIndex =
+		slides.slice(0, currentIndex).reduce((sum, s) => sum + s.stepCount, 0) + currentStep;
 
 	return (
 		<div
@@ -174,20 +215,23 @@ export function SlideDeck({
 			onTouchStart={handleTouchStart}
 			onTouchEnd={handleTouchEnd}
 		>
-			{slides.map((slide, index) => (
-				<SlideWrapper
-					key={index}
-					isActive={index === currentIndex}
-					isBefore={index < currentIndex}
-					data={slide.data}
-				>
-					<slide.Component />
-				</SlideWrapper>
-			))}
+			<div ref={containerRefFit} className="h-full w-full">
+				<div style={fitStyle}>
+					{slides.map((slide, index) => (
+						<SlideWrapper
+							key={index}
+							isActive={index === currentIndex}
+							isBefore={index < currentIndex}
+							data={slide.data}
+						>
+							<slide.Component stepIndex={currentStep} />
+						</SlideWrapper>
+					))}
 
-			{/* Slide counter */}
-			<div className="absolute right-4 bottom-4 z-20 text-sm text-gray-500 dark:text-gray-400">
-				{currentIndex + 1} / {slides.length}
+					<div className="absolute right-4 bottom-4 z-20 text-sm text-gray-500 dark:text-gray-400">
+						{globalStepIndex + 1} / {totalSteps}
+					</div>
+				</div>
 			</div>
 		</div>
 	);
@@ -236,8 +280,9 @@ function SlideWrapper({ children, isActive, isBefore, data }: SlideWrapperProps)
 interface PresenterModeProps {
 	slides: Slide[];
 	currentIndex: number;
+	currentStep: number;
 	elapsedTime: number;
-	goTo: (index: number) => void;
+	goTo: (index: number, step?: number) => void;
 	goNext: () => void;
 	goPrev: () => void;
 }
@@ -251,6 +296,7 @@ function formatTime(seconds: number): string {
 function PresenterMode({
 	slides,
 	currentIndex,
+	currentStep,
 	elapsedTime,
 	goTo,
 	goNext,
@@ -258,11 +304,13 @@ function PresenterMode({
 }: PresenterModeProps) {
 	const currentSlide = slides[currentIndex];
 	const nextSlide = slides[currentIndex + 1];
-	const progress = ((currentIndex + 1) / slides.length) * 100;
+	const totalSteps = slides.reduce((sum, s) => sum + s.stepCount, 0);
+	const globalStepIndex =
+		slides.slice(0, currentIndex).reduce((sum, s) => sum + s.stepCount, 0) + currentStep;
+	const progress = ((globalStepIndex + 1) / totalSteps) * 100;
 
 	return (
 		<div className="flex h-screen flex-col bg-gray-900 text-white">
-			{/* Top bar: Timer and progress */}
 			<div className="flex items-center justify-between border-b border-gray-700 px-4 py-2">
 				<div className="font-mono text-lg">{formatTime(elapsedTime)}</div>
 				<div className="flex-1 px-8">
@@ -274,31 +322,27 @@ function PresenterMode({
 					</div>
 				</div>
 				<div className="text-sm text-gray-400">
-					{currentIndex + 1} / {slides.length}
+					{globalStepIndex + 1} / {totalSteps}
 				</div>
 			</div>
 
-			{/* Main content */}
 			<div className="flex flex-1 gap-4 p-4">
-				{/* Current slide */}
 				<div className="flex flex-2 flex-col">
 					<div className="mb-2 text-xs tracking-wider text-gray-400 uppercase">Current Slide</div>
 					<div className="flex-1 overflow-hidden rounded-lg bg-black">
 						<div className="h-full w-full overflow-auto p-8">
-							<currentSlide.Component />
+							<currentSlide.Component stepIndex={currentStep} />
 						</div>
 					</div>
 				</div>
 
-				{/* Right column: Next slide + Notes */}
 				<div className="flex flex-1 flex-col gap-4">
-					{/* Next slide preview */}
 					<div className="flex flex-1 flex-col">
 						<div className="mb-2 text-xs tracking-wider text-gray-400 uppercase">Next Slide</div>
 						<div className="flex-1 overflow-hidden rounded-lg bg-black">
 							{nextSlide ? (
 								<div className="h-full w-full overflow-auto p-4 opacity-70">
-									<nextSlide.Component />
+									<nextSlide.Component stepIndex={0} />
 								</div>
 							) : (
 								<div className="flex h-full items-center justify-center text-gray-500">
@@ -308,7 +352,6 @@ function PresenterMode({
 						</div>
 					</div>
 
-					{/* Speaker notes */}
 					<div className="flex flex-1 flex-col">
 						<div className="mb-2 text-xs tracking-wider text-gray-400 uppercase">Speaker Notes</div>
 						<div className="flex-1 overflow-auto rounded-lg bg-gray-800 p-4">
@@ -324,22 +367,20 @@ function PresenterMode({
 				</div>
 			</div>
 
-			{/* Bottom bar: Navigation controls */}
 			<div className="flex items-center justify-center gap-4 border-t border-gray-700 px-4 py-3">
 				<button
 					onClick={goPrev}
-					disabled={currentIndex === 0}
+					disabled={currentIndex === 0 && currentStep === 0}
 					className="rounded bg-gray-700 px-4 py-2 text-sm transition-colors hover:bg-gray-600 disabled:opacity-30 disabled:hover:bg-gray-700"
 				>
 					Previous
 				</button>
 
-				{/* Quick jump buttons */}
 				<div className="flex max-w-md gap-1 overflow-x-auto">
-					{slides.map((_, index) => (
+					{slides.map((_slide, index) => (
 						<button
 							key={index}
-							onClick={() => goTo(index)}
+							onClick={() => goTo(index, 0)}
 							className={`h-8 w-8 rounded text-xs transition-colors ${
 								index === currentIndex
 									? "bg-blue-500 text-white"
@@ -353,7 +394,10 @@ function PresenterMode({
 
 				<button
 					onClick={goNext}
-					disabled={currentIndex === slides.length - 1}
+					disabled={
+						currentIndex === slides.length - 1 &&
+						currentStep === slides[slides.length - 1]?.stepCount - 1
+					}
 					className="rounded bg-gray-700 px-4 py-2 text-sm transition-colors hover:bg-gray-600 disabled:opacity-30 disabled:hover:bg-gray-700"
 				>
 					Next

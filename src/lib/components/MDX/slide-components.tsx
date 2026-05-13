@@ -32,7 +32,7 @@ export const slideMDXComponents: MDXComponents = {
 		</Heading.h3>
 	),
 	p: ({ children, ...props }: HTMLAttributes<HTMLParagraphElement>) => (
-		<p className="py-3 text-2xl first:pt-0 last:pb-0" {...props}>
+		<p className="py-3 text-3xl first:pt-0 last:pb-0" {...props}>
 			{children}
 		</p>
 	),
