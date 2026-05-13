@@ -267,10 +267,11 @@ export function slideDeckPlugin(): Plugin {
 					}),
 				);
 
-				const bindingsBlock = Object.entries(userBindings).length
-					? `{ ..._slideMDXComponents, ${Object.entries(userBindings)
-							.map(([k]) => `${k}: ${k}`)
-							.join(", ")} }`
+				// The _components export references runtime imports by name,
+				// so it must be generated as source — can't use JSON.stringify here.
+				const userKeys = Object.keys(userBindings).join(", ");
+				const componentsExport = userKeys
+					? `{ ..._slideMDXComponents, ${userKeys} }`
 					: "{ ..._slideMDXComponents }";
 
 				return `
@@ -279,7 +280,7 @@ export function slideDeckPlugin(): Plugin {
 
 				export default ${JSON.stringify(slides)};
 
-				export const _components = ${bindingsBlock};
+				export const _components = ${componentsExport};
 			`;
 			} catch (error) {
 				const message = error instanceof Error ? error.message : String(error);
