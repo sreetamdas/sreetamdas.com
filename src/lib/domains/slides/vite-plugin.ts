@@ -116,11 +116,13 @@ function parseFrontmatter(text: string): {
 		if (match) {
 			const [, key, value] = match;
 			let trimmed = value.trim();
-			if (
-				(trimmed.startsWith('"') && trimmed.endsWith('"')) ||
-				(trimmed.startsWith("'") && trimmed.endsWith("'"))
-			) {
+			const isDoubleQuoted = trimmed.startsWith('"') && trimmed.endsWith('"');
+			const isSingleQuoted = trimmed.startsWith("'") && trimmed.endsWith("'");
+			if (isDoubleQuoted || isSingleQuoted) {
 				trimmed = trimmed.slice(1, -1);
+			}
+			if (isDoubleQuoted) {
+				trimmed = trimmed.replace(/\\n/g, "\n").replace(/\\t/g, "\t").replace(/\\(.)/g, "$1");
 			}
 			data[key] = trimmed || undefined;
 		}

@@ -1,67 +1,34 @@
-import { useCallback, useLayoutEffect, useRef, useState } from "react";
-
 /**
- * Scales content to fit the viewport while maintaining a target aspect ratio.
- * Returns a ref to attach to the container and inline styles for the content wrapper.
+ * CSS-only aspect-ratio fitting using container query units and zoom.
+ *
+ * Unlike the previous JS approach (ResizeObserver → setState → layout shift),
+ * this computes the scale purely in CSS so there is zero flash on mount.
+ * Container query units resolve synchronously from the parent's size, and
+ * `zoom` (unlike `transform: scale`) adjusts the element's layout box so
+ * flex centering works without a manual transform-origin calculation.
+ *
+ * Browser support: container units (cqw/cqh) — Chrome 105, Firefox 110,
+ * Safari 16. Browsers that don't support them will render the canvas at
+ * its native 1366 × (1366/aspectRatio) size with no scaling.
  */
-export function useAspectRatioFitting(aspectRatio: number) {
+export function aspectRatioFittingStyles(aspectRatio: number) {
 	const targetWidth = 1366;
 	const targetHeight = targetWidth / aspectRatio;
-	const containerRef = useRef<HTMLDivElement>(null);
-	const [scaleFactor, setScaleFactor] = useState(1);
-	const [transformOrigin, setTransformOrigin] = useState({ x: 0, y: 0 });
 
-	const recalculate = useCallback(() => {
-		const el = containerRef.current;
-		if (!el) return;
+	const containerStyle: React.CSSProperties = {
+		alignItems: "center",
+		containerType: "size",
+		display: "flex",
+		justifyContent: "center",
+	};
 
-		const containerWidth = el.clientWidth || 0.01;
-		const containerHeight = el.clientHeight || 0.01;
-
-		const containerRatio = containerWidth / containerHeight;
-		const targetRatio = targetWidth / targetHeight;
-		const useVertical = containerRatio > targetRatio;
-
-		const scale = useVertical ? containerHeight / targetHeight : containerWidth / targetWidth;
-
-		const scaledWidth = targetWidth * scale;
-		const scaledHeight = targetHeight * scale;
-
-		let x0 = 0;
-		if (useVertical) {
-			x0 = (0.5 * (containerWidth - scaledWidth)) / (1 - scale);
-		}
-
-		let y0 = 0;
-		if (!useVertical) {
-			y0 = (0.5 * (containerHeight - scaledHeight)) / (1 - scale);
-		}
-
-		setScaleFactor(scale);
-		setTransformOrigin({ x: x0, y: y0 });
-	}, [targetWidth, targetHeight]);
-
-	useLayoutEffect(() => {
-		recalculate();
-	}, [recalculate]);
-
-	useLayoutEffect(() => {
-		const el = containerRef.current;
-		if (!el) return;
-
-		const observer = new ResizeObserver(() => recalculate());
-		observer.observe(el);
-		return () => observer.disconnect();
-	}, [recalculate]);
-
-	const style: React.CSSProperties = {
+	const canvasStyle: React.CSSProperties = {
 		height: targetHeight,
 		overflow: "hidden",
 		position: "relative",
-		transform: `scale(${scaleFactor})`,
-		transformOrigin: `${transformOrigin.x}px ${transformOrigin.y}px`,
 		width: targetWidth,
+		zoom: `min(100cqw / ${targetWidth}px, 100cqh / ${targetHeight}px)`,
 	};
 
-	return [containerRef, style] as const;
+	return [containerStyle, canvasStyle] as const;
 }

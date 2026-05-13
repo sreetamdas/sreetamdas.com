@@ -4,8 +4,8 @@ import { getHotkeyManager } from "@tanstack/hotkeys";
  *
  * Key differences from remdx: Tailwind-only styling (no global CSS leak),
  * @tanstack/hotkeys instead of mousetrap, native touch handling instead of
- * react-swipeable, and a plain ResizeObserver for aspect-ratio fitting instead
- * of use-resize-observer.
+ * react-swipeable, and CSS zoom + container queries for aspect-ratio fitting
+ * (no JS layout shift).
  */
 import { type MDXComponents } from "mdx/types";
 import {
@@ -21,7 +21,7 @@ import { MDXContent } from "@/lib/components/MDX";
 import { Gradient } from "@/lib/components/Typography";
 import { cn } from "@/lib/helpers/utils";
 
-import { useAspectRatioFitting } from "./use-aspect-ratio-fitting";
+import { aspectRatioFittingStyles } from "./use-aspect-ratio-fitting";
 
 export interface SlideData {
 	title?: string;
@@ -91,7 +91,7 @@ export function SlideDeck({
 	const containerRef = useRef<HTMLDivElement>(null);
 	const timerRef = useRef<ReturnType<typeof setInterval>>(undefined);
 	const touchStartX = useRef<number>(0);
-	const [containerRefFit, fitStyle] = useAspectRatioFitting(aspectRatio);
+	const [fitContainerStyle, fitCanvasStyle] = aspectRatioFittingStyles(aspectRatio);
 
 	const currentSlide = slides[currentIndex];
 	const maxStep = currentSlide ? currentSlide.stepCount - 1 : 0;
@@ -227,8 +227,8 @@ export function SlideDeck({
 			onTouchStart={handleTouchStart}
 			onTouchEnd={handleTouchEnd}
 		>
-			<div ref={containerRefFit} className="h-full w-full">
-				<div style={fitStyle}>
+			<div className="h-full w-full" style={fitContainerStyle}>
+				<div style={fitCanvasStyle}>
 					{slides.map((slide, index) => (
 						<SlideWrapper
 							key={index}
@@ -300,7 +300,7 @@ function SlideWrapper({ children, isActive, isBefore, data }: SlideWrapperProps)
 		>
 			<div className="h-full w-full overflow-auto p-12">
 				{data.title && (
-					<h1 className="pt-10 font-serif text-8xl font-bold tracking-tighter text-balance">
+					<h1 className="pt-10 font-serif text-9xl font-bold text-balance whitespace-pre-line font-stretch-semi-condensed">
 						<Gradient className="">{data.title}</Gradient>
 					</h1>
 				)}
