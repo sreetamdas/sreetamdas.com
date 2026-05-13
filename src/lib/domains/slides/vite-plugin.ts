@@ -244,7 +244,7 @@ export function slideDeckPlugin(): Plugin {
 
 				const slideTexts = splitSlides(topLevelData.source);
 
-				const { mdxParseWithShiki } = await import("@/lib/components/MDX/parse");
+				const { mdxParseWithShiki } = await import("../../components/MDX/parse");
 
 				const slides = await Promise.all(
 					slideTexts.map(async (text, index) => {
