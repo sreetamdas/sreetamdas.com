@@ -4,12 +4,12 @@
  * Instead of compiling MDX via @mdx-js/mdx (which requires @mdx-js/react and
  * global CSS), this plugin:
  *
- * 1. Extracts top-level import/export statements and hoists them to the module scope
- * 2. Splits the file on --- lines into individual slides (code-fence aware)
+ * 1. Hoists top-level import/export statements to the module scope
+ * 2. Splits on --- lines into slides (code-fence aware)
  * 3. Parses YAML frontmatter per slide
  * 4. Splits each slide on -- lines into steps (code-fence aware)
  * 5. Extracts <Notes> blocks from step content
- * 6. Pre-computes MDAST + Shiki highlights at build time per step
+ * 6. Runs mdxParseWithShiki per step to pre-compute MDAST + Shiki highlights
  * 7. Generates a module where each slide contains an array of step components
  *
  * The output module exports:
@@ -19,41 +19,73 @@ import { type Plugin } from "vite-plus";
 
 const NOTES_REGEXP = /<Notes>([\s\S]*?)<\/Notes>/g;
 
-let _mdxParse: typeof import("safe-mdx/parse").mdxParse | undefined;
-let _visit: typeof import("unist-util-visit").visit | undefined;
-let _getSlimKarmaHighlighter:
-	| typeof import("../shiki/highlighter").getSlimKarmaHighlighter
-	| undefined;
-let _renderCodeBlockToHtml: typeof import("../shiki/plugin").renderCodeBlockToHtml | undefined;
+/**
+ * Split source on delimiter lines, respecting code fences (``` and ~~~).
+ * A delimiter line only triggers a split when outside a fence.
+ */
+function splitOnDelimiter(source: string, delimiter: string): string[] {
+	const lines = source.split("\n");
+	const segments: string[] = [];
+	let current: string[] = [];
+	let inFence = false;
+	let fenceChar = "";
 
-async function loadDeps() {
-	if (!_mdxParse) {
-		const parseMod = await import("safe-mdx/parse");
-		_mdxParse = parseMod.mdxParse;
+	for (const line of lines) {
+		const trimmed = line.trim();
+
+		if (trimmed.startsWith("```")) {
+			if (!inFence) {
+				inFence = true;
+				fenceChar = "```";
+			} else if (fenceChar === "```") {
+				inFence = false;
+				fenceChar = "";
+			}
+		} else if (trimmed.startsWith("~~~")) {
+			if (!inFence) {
+				inFence = true;
+				fenceChar = "~~~";
+			} else if (fenceChar === "~~~") {
+				inFence = false;
+				fenceChar = "";
+			}
+		}
+
+		if (!inFence && trimmed === delimiter) {
+			if (current.length > 0) {
+				segments.push(current.join("\n").trim());
+				current = [];
+			}
+		} else {
+			current.push(line);
+		}
 	}
-	if (!_visit) {
-		const visitMod = await import("unist-util-visit");
-		_visit = visitMod.visit;
+
+	if (current.length > 0) {
+		segments.push(current.join("\n").trim());
 	}
-	if (!_getSlimKarmaHighlighter) {
-		const highlighterMod = await import("../shiki/highlighter");
-		_getSlimKarmaHighlighter = highlighterMod.getSlimKarmaHighlighter;
-	}
-	if (!_renderCodeBlockToHtml) {
-		const pluginMod = await import("../shiki/plugin");
-		_renderCodeBlockToHtml = pluginMod.renderCodeBlockToHtml;
-	}
-	return {
-		mdxParse: _mdxParse!,
-		visit: _visit!,
-		getSlimKarmaHighlighter: _getSlimKarmaHighlighter!,
-		renderCodeBlockToHtml: _renderCodeBlockToHtml!,
-	};
+
+	return segments;
+}
+
+/**
+ * Split source into slide sections. A --- line starts a new slide.
+ */
+function splitSlides(source: string): string[] {
+	const slides = splitOnDelimiter(source, "---");
+	return slides.length > 0 ? slides : [source];
+}
+
+/**
+ * Split slide content into step sections based on -- markers.
+ */
+function splitSteps(source: string): string[] {
+	const steps = splitOnDelimiter(source, "--");
+	return steps.length > 0 ? steps : [source];
 }
 
 /**
  * Parse simple YAML frontmatter (key: value pairs only).
- * Returns parsed data and the remaining content.
  */
 function parseFrontmatter(text: string): {
 	data: Record<string, string | undefined>;
@@ -96,11 +128,6 @@ function parseFrontmatter(text: string): {
 	return { data, content: lines.slice(end + 1).join("\n") };
 }
 
-/**
- * Extract top-level YAML frontmatter from the beginning of the source.
- * Only applies when the file starts with `---`. Returns the parsed data
- * and the source with the frontmatter block removed.
- */
 function extractTopLevelFrontmatter(source: string): {
 	data: Record<string, string | undefined>;
 	source: string;
@@ -110,107 +137,7 @@ function extractTopLevelFrontmatter(source: string): {
 }
 
 /**
- * Split source into slide sections, respecting code fences.
- * A --- line only starts a new slide when it's outside a ``` or ~~~ fence.
- */
-function splitSlides(source: string): string[] {
-	const lines = source.split("\n");
-	const slides: string[] = [];
-	let current: string[] = [];
-	let inFence = false;
-	let fenceChar = "";
-
-	for (const line of lines) {
-		const trimmed = line.trim();
-
-		if (trimmed.startsWith("```")) {
-			if (!inFence) {
-				inFence = true;
-				fenceChar = "```";
-			} else if (fenceChar === "```") {
-				inFence = false;
-				fenceChar = "";
-			}
-		} else if (trimmed.startsWith("~~~")) {
-			if (!inFence) {
-				inFence = true;
-				fenceChar = "~~~";
-			} else if (fenceChar === "~~~") {
-				inFence = false;
-				fenceChar = "";
-			}
-		}
-
-		if (!inFence && trimmed === "---") {
-			if (current.length > 0) {
-				slides.push(current.join("\n").trim());
-				current = [];
-			}
-		} else {
-			current.push(line);
-		}
-	}
-
-	if (current.length > 0) {
-		slides.push(current.join("\n").trim());
-	}
-
-	return slides;
-}
-
-/**
- * Split slide content into step sections based on -- markers.
- * A -- line starts a new step when it's outside a code fence.
- * Returns an array of step content strings.
- */
-function splitSteps(source: string): string[] {
-	const lines = source.split("\n");
-	const steps: string[] = [];
-	let current: string[] = [];
-	let inFence = false;
-	let fenceChar = "";
-
-	for (const line of lines) {
-		const trimmed = line.trim();
-
-		if (trimmed.startsWith("```")) {
-			if (!inFence) {
-				inFence = true;
-				fenceChar = "```";
-			} else if (fenceChar === "```") {
-				inFence = false;
-				fenceChar = "";
-			}
-		} else if (trimmed.startsWith("~~~")) {
-			if (!inFence) {
-				inFence = true;
-				fenceChar = "~~~";
-			} else if (fenceChar === "~~~") {
-				inFence = false;
-				fenceChar = "";
-			}
-		}
-
-		if (!inFence && trimmed === "--") {
-			if (current.length > 0) {
-				steps.push(current.join("\n").trim());
-				current = [];
-			}
-		} else {
-			current.push(line);
-		}
-	}
-
-	if (current.length > 0) {
-		steps.push(current.join("\n").trim());
-	}
-
-	return steps.length > 0 ? steps : [source];
-}
-
-/**
  * Extract top-level import/export statements that are NOT inside code fences.
- * Returns { modules: string[], source: string } with imports hoisted and removed.
  */
 function extractTopLevelModules(source: string): { modules: string[]; source: string } {
 	const lines = source.split("\n");
@@ -257,31 +184,28 @@ function extractTopLevelModules(source: string): { modules: string[]; source: st
 
 /**
  * Parse import statements to extract the named/default identifiers that
- * could be used as MDX components. Returns a map like { SlideTitle: SlideTitle }.
+ * could be used as MDX components. Returns a string for the generated
+ * `components` prop:  `components: { ..._slideMDXComponents, Foo: Foo },`
  */
 function extractComponentBindings(modules: string[]): string {
 	const bindings: string[] = [];
 
 	for (const mod of modules) {
-		// Named imports: import { Foo, Bar } from "..."
 		const namedMatch = mod.match(/import\s*\{([^}]+)\}\s*from/);
 		if (namedMatch) {
 			const names = namedMatch[1].split(",").map((n) => {
 				const trimmed = n.trim();
-				// Handle "X as Y" — use the local binding name
 				const asMatch = trimmed.match(/\bas\s+(\w+)/);
 				return asMatch ? asMatch[1] : trimmed;
 			});
 			bindings.push(...names);
 		}
 
-		// Default import: import Foo from "..."
 		const defaultMatch = mod.match(/import\s+(\w+)\s+from/);
 		if (defaultMatch) {
 			bindings.push(defaultMatch[1]);
 		}
 
-		// Namespace import: import * as Foo from "..."
 		const nsMatch = mod.match(/import\s*\*\s*as\s+(\w+)\s+from/);
 		if (nsMatch) {
 			bindings.push(nsMatch[1]);
@@ -300,10 +224,6 @@ function extractComponentBindings(modules: string[]): string {
 		: "components: { ..._slideMDXComponents },";
 }
 
-/**
- * Extracts <Notes> blocks from slide content and returns
- * the cleaned content (without notes) and the notes text.
- */
 function extractNotes(text: string): { content: string; notes: string | null } {
 	const notes: string[] = [];
 	const content = text.replaceAll(NOTES_REGEXP, (_match, noteContent) => {
@@ -324,11 +244,6 @@ export function slideDeckPlugin(): Plugin {
 			if (!id.endsWith(".re.mdx")) return;
 
 			try {
-				const { mdxParse, visit, getSlimKarmaHighlighter, renderCodeBlockToHtml } =
-					await loadDeps();
-
-				const highlighter = await getSlimKarmaHighlighter();
-
 				const { modules, source } = extractTopLevelModules(code);
 				const uniqueModules = [...new Set(modules)];
 				const componentsProp = extractComponentBindings(uniqueModules);
@@ -340,54 +255,20 @@ export function slideDeckPlugin(): Plugin {
 				const compiledSlides = await Promise.all(
 					slideTexts.map(async (text, index) => {
 						const { data: slideData, content: slideContent } = parseFrontmatter(text);
-						const matterContent = slideContent.trim();
 
 						const data = index === 0 ? { ...topLevelData.data, ...slideData } : slideData;
 
-						const { content: noNotesContent, notes } = extractNotes(matterContent);
+						const { content: noNotesContent, notes } = extractNotes(slideContent.trim());
 
 						const stepTexts = splitSteps(noNotesContent);
 
+						const { mdxParseWithShiki } = await import("@/lib/components/MDX/parse");
+
 						const steps = await Promise.all(
-							stepTexts.map(async (stepContent) => {
-								const mdast = mdxParse(stepContent);
-								const shikiHighlights: Record<string, string> = {};
-								visit(mdast, "code", (node: unknown) => {
-									const codeNode = node as {
-										type: string;
-										lang?: string;
-										meta?: string | null;
-										value: string;
-										position?: { start: { line: number; column: number } };
-									};
-									if (typeof codeNode.value !== "string") return;
-
-									const html = renderCodeBlockToHtml(
-										highlighter,
-										codeNode.value,
-										codeNode.lang,
-										codeNode.meta ?? null,
-									);
-									if (html === null) return;
-
-									const key = `${codeNode.position?.start.line ?? 0}:${codeNode.position?.start.column ?? 0}`;
-									shikiHighlights[key] = html;
-								});
-
-								return {
-									content: stepContent,
-									mdast: JSON.stringify(mdast),
-									shikiHighlights,
-								};
-							}),
+							stepTexts.map((stepContent) => mdxParseWithShiki(stepContent)),
 						);
 
-						return {
-							index,
-							steps,
-							data,
-							notes,
-						};
+						return { index, steps, data, notes };
 					}),
 				);
 
@@ -396,8 +277,8 @@ export function slideDeckPlugin(): Plugin {
 						(slide) => `
 					{
 						Component: function Slide${slide.index}(props) {
-							const stepIndex = props.stepIndex ?? 0;
-							const step = ${JSON.stringify(slide.steps)}[stepIndex] || ${JSON.stringify(slide.steps)}[0];
+							const steps = ${JSON.stringify(slide.steps)};
+							const step = steps[props.stepIndex ?? 0] || steps[0];
 							return _jsx(MDXContent, {
 								source: step.content,
 								mdast: step.mdast,
