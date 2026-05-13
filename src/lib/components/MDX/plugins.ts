@@ -1,6 +1,5 @@
-import path from "node:path";
-
 import { imageSizeFromFile } from "image-size/fromFile";
+import path from "node:path";
 import { type Node } from "unist";
 import { visit } from "unist-util-visit";
 

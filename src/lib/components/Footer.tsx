@@ -1,5 +1,7 @@
 "use client";
 
+import { useQuery } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
 import { type HTMLAttributes } from "react";
 import { FaRegStar } from "react-icons/fa";
 import { VscRepoForked } from "react-icons/vsc";
@@ -7,8 +9,6 @@ import { VscRepoForked } from "react-icons/vsc";
 import { LiveViewersBadge } from "@/lib/components/LiveViewersBadge";
 import { fetchGitHubStats } from "@/lib/domains/GitHub/serverFns";
 import { cn } from "@/lib/helpers/utils";
-import { useServerFn } from "@tanstack/react-start";
-import { useQuery } from "@tanstack/react-query";
 
 /**
  * Allow passing `FoobarPixel` as a child so that we can optionally set the `path` prop for it

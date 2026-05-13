@@ -1,10 +1,11 @@
 import { transformerColorizedBrackets } from "@shikijs/colorized-brackets";
 import { defaultTheme } from "@sreetamdas/karma";
 import { omit } from "lodash-es";
-import type { KarmaHighlighter } from "./highlighter";
 import { type BundledLanguage } from "shiki/langs";
 import { type Node } from "unist";
 import { visit } from "unist-util-visit";
+
+import type { KarmaHighlighter } from "./highlighter";
 
 import { getSlimKarmaHighlighter } from "./highlighter";
 

@@ -1,11 +1,13 @@
 "use client";
 
 import * as AlertDialogPrimitive from "@radix-ui/react-alert-dialog";
+import { useNavigate } from "@tanstack/react-router";
 import { isUndefined } from "lodash-es";
 import { useEffect } from "react";
 import { useShallow } from "zustand/react/shallow";
 
 import { IS_DEV } from "@/config";
+import { NotFound404 } from "@/lib/components/Error";
 import { Code } from "@/lib/components/Typography";
 import { ShowCompletedBadges } from "@/lib/domains/foobar/badges";
 import { FOOBAR_FLAGS } from "@/lib/domains/foobar/flags";
@@ -13,8 +15,6 @@ import { type FoobarSchrodingerProps, initialFoobarData } from "@/lib/domains/fo
 import { useGlobalStore } from "@/lib/domains/global";
 import { useCustomPlausible } from "@/lib/domains/Plausible";
 import { useHasMounted } from "@/lib/helpers/hooks";
-import { useNavigate } from "@tanstack/react-router";
-import { NotFound404 } from "@/lib/components/Error";
 
 /**
  * Foobar page, that is only shown once foobar is unlocked

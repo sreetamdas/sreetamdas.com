@@ -1,5 +1,6 @@
-import { defaultTheme } from "@sreetamdas/karma";
 import type { BundledLanguage, HighlighterGeneric, ThemeRegistration } from "shiki";
+
+import { defaultTheme } from "@sreetamdas/karma";
 import { createHighlighterCore, normalizeTheme } from "shiki/core";
 import { createJavaScriptRegexEngine } from "shiki/engine/javascript";
 

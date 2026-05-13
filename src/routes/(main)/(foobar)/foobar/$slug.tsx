@@ -1,7 +1,8 @@
-import { FoobarSchrodinger } from "@/lib/domains/foobar/DashboardClient";
-import { type FoobaFlagPageSlug, FOOBAR_FLAGS } from "@/lib/domains/foobar/flags";
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import z from "zod";
+
+import { FoobarSchrodinger } from "@/lib/domains/foobar/DashboardClient";
+import { type FoobaFlagPageSlug, FOOBAR_FLAGS } from "@/lib/domains/foobar/flags";
 
 const foobar_routes_schema = z.object({
 	slug: z.enum(getAllFoobarPagesSlugs()),

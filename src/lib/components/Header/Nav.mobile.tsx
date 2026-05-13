@@ -1,13 +1,13 @@
 "use client";
 
+import { useEffect } from "react";
 import { LuMenu } from "react-icons/lu";
+import { create } from "zustand";
 
 import { DrawerContent, DrawerRoot, DrawerTitle, DrawerTrigger } from "@/lib/components/Drawer";
+import { routerInstance } from "@/router";
 
 import { NavigationItems } from "./NavItems";
-import { create } from "zustand";
-import { routerInstance } from "@/router";
-import { useEffect } from "react";
 
 type MobileNavDrawerState = {
 	open: boolean;
