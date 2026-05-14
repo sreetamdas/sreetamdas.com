@@ -7,14 +7,16 @@
  * 1. Hoists top-level import/export statements to the module scope
  * 2. Splits on --- lines into slides (code-fence aware)
  * 3. Parses YAML frontmatter per slide
- * 4. Splits each slide on -- lines into steps (code-fence aware)
- * 5. Extracts <Notes> blocks from step content
- * 6. Runs mdxParseWithShiki per step to pre-compute MDAST + Shiki highlights
- * 7. Exports slide data and component bindings for the runtime SlideDeck renderer
+ * 4. Extracts <Notes> blocks from slide content
+ * 5. Runs mdxParseWithShiki once per slide to pre-compute MDAST + Shiki highlights
+ * 6. Exports slide data and component bindings for the runtime SlideDeck renderer
  *
  * The output module exports:
- *   export default [{ steps, stepCount, data, notes }, ...]
+ *   export default [{ content, mdast, shikiHighlights, data, notes }, ...]
  *   export const _components = { ..._slideMDXComponents, ...userImports }
+ *
+ * Steps are handled at runtime by the <Steps> component (see slide-components.tsx),
+ * not by build-time content splitting.
  */
 import { type Plugin } from "vite-plus";
 
@@ -75,14 +77,6 @@ function splitOnDelimiter(source: string, delimiter: string): string[] {
 function splitSlides(source: string): string[] {
 	const slides = splitOnDelimiter(source, "---");
 	return slides.length > 0 ? slides : [source];
-}
-
-/**
- * Split slide content into step sections based on -- markers.
- */
-function splitSteps(source: string): string[] {
-	const steps = splitOnDelimiter(source, "--");
-	return steps.length > 0 ? steps : [source];
 }
 
 /**
@@ -256,16 +250,12 @@ export function slideDeckPlugin(): Plugin {
 
 						const { content: noNotesContent, notes } = extractNotes(slideContent.trim());
 
-						const stepTexts = splitSteps(noNotesContent);
-
-						const steps = await Promise.all(
-							stepTexts.map(async (content) => ({
-								content,
-								...(await mdxParseWithShiki(content)),
-							})),
-						);
-
-						return { steps, stepCount: steps.length, data, notes };
+						return {
+							...(await mdxParseWithShiki(noNotesContent)),
+							content: noNotesContent,
+							data,
+							notes,
+						};
 					}),
 				);
 

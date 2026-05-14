@@ -2,7 +2,9 @@ import { getHotkeyManager } from "@tanstack/hotkeys";
 /**
  * Custom slide deck renderer — replaces @nkzw/remdx.
  *
- * Key differences from remdx: Tailwind-only styling (no global CSS leak),
+ * Steps are handled at runtime by the <Steps> component, which progressively
+ * reveals children within a single slide. There is no build-time step splitting;
+ * each slide is one MDX parse. Key differences from remdx: Tailwind-only styling,
  * @tanstack/hotkeys instead of mousetrap, native touch handling instead of
  * react-swipeable, and CSS zoom + container queries for aspect-ratio fitting
  * (no JS layout shift).
@@ -11,6 +13,7 @@ import { type MDXComponents } from "mdx/types";
 import {
 	useCallback,
 	useEffect,
+	useLayoutEffect,
 	useRef,
 	useState,
 	type CSSProperties,
@@ -21,6 +24,7 @@ import { MDXContent } from "@/lib/components/MDX";
 import { Gradient } from "@/lib/components/Typography";
 import { cn } from "@/lib/helpers/utils";
 
+import { StepContext, SlideActiveContext, type StepContextValue } from "./steps";
 import { aspectRatioFittingStyles } from "./use-aspect-ratio-fitting";
 
 export interface SlideData {
@@ -31,17 +35,17 @@ export interface SlideData {
 	[key: string]: string | undefined;
 }
 
-interface StepData {
+export interface Slide {
 	content: string;
 	mdast: string;
 	shikiHighlights: Record<string, string>;
-}
-
-export interface Slide {
-	steps: StepData[];
-	stepCount: number;
 	data: SlideData;
 	notes: string | null;
+}
+
+interface StepEntry {
+	id: string;
+	count: number;
 }
 
 interface SlideDeckProps {
@@ -80,34 +84,52 @@ export function SlideDeck({
 	onNavigate,
 	components,
 }: SlideDeckProps) {
-	const [currentIndex, setCurrentIndex] = useState(() => {
-		const safe = Math.max(0, Math.min(initialSlide, slides.length - 1));
-		return safe;
-	});
-	const [currentStep, setCurrentStep] = useState(() => {
-		const slide = slides[Math.max(0, Math.min(initialSlide, slides.length - 1))];
-		const maxStep = slide ? slide.stepCount - 1 : 0;
-		return Math.max(0, Math.min(initialStep, maxStep));
-	});
+	const [currentIndex, setCurrentIndex] = useState(() =>
+		Math.max(0, Math.min(initialSlide, slides.length - 1)),
+	);
+	const [currentStep, setCurrentStep] = useState(initialStep);
 	const [presenterMode, setPresenterMode] = useState(initialPresenterMode);
 	const [transitionsEnabled, setTransitionsEnabled] = useState(initialTransitions);
 	const [elapsedTime, setElapsedTime] = useState(0);
 	const containerRef = useRef<HTMLDivElement>(null);
 	const timerRef = useRef<ReturnType<typeof setInterval>>(undefined);
 	const touchStartX = useRef<number>(0);
+	const stepRegistrations = useRef<StepEntry[]>([]);
+	const [_stepVersion, setStepVersion] = useState(0);
 	const [fitContainerStyle, fitCanvasStyle] = aspectRatioFittingStyles(aspectRatio);
 
-	const currentSlide = slides[currentIndex];
-	const maxStep = currentSlide ? currentSlide.stepCount - 1 : 0;
+	const registerSteps = useCallback((count: number) => {
+		const entry: StepEntry = { id: crypto.randomUUID(), count };
+		stepRegistrations.current.push(entry);
+		setStepVersion((v) => v + 1);
+	}, []);
+
+	const unregisterSteps = useCallback((id: string) => {
+		stepRegistrations.current = stepRegistrations.current.filter((e) => e.id !== id);
+		setStepVersion((v) => v + 1);
+	}, []);
+
+	useLayoutEffect(() => {
+		stepRegistrations.current = [];
+		setStepVersion((v) => v + 1);
+	}, [currentIndex]);
+
+	const dynamicMaxStep = stepRegistrations.current.reduce((sum, e) => sum + e.count, 0) - 1;
+	const maxStep = dynamicMaxStep;
+
+	const stepContextValue = useRef<StepContextValue>({
+		currentStep: 0,
+		registerSteps,
+		unregisterSteps,
+	});
+	stepContextValue.current = { currentStep, registerSteps, unregisterSteps };
 
 	const goTo = useCallback(
 		(index: number, step = 0) => {
 			if (index < 0 || index >= slides.length) return;
-			const targetSlide = slides[index];
-			const safeStep = Math.max(0, Math.min(step, targetSlide.stepCount - 1));
 			setCurrentIndex(index);
-			setCurrentStep(safeStep);
-			onNavigate?.(index, safeStep);
+			setCurrentStep(step);
+			onNavigate?.(index, step);
 		},
 		[slides, onNavigate],
 	);
@@ -128,13 +150,11 @@ export function SlideDeck({
 			setCurrentStep((s) => s - 1);
 			onNavigate?.(currentIndex, currentStep - 1);
 		} else if (currentIndex > 0) {
-			const prevSlide = slides[currentIndex - 1];
-			const prevStep = prevSlide.stepCount - 1;
 			setCurrentIndex((i) => i - 1);
-			setCurrentStep(prevStep);
-			onNavigate?.(currentIndex - 1, prevStep);
+			setCurrentStep(0);
+			onNavigate?.(currentIndex - 1, 0);
 		}
-	}, [currentStep, currentIndex, slides, onNavigate]);
+	}, [currentStep, currentIndex, slides.length, onNavigate]);
 
 	const togglePresenterMode = useCallback(() => {
 		setPresenterMode((prev) => !prev);
@@ -223,60 +243,49 @@ export function SlideDeck({
 		);
 	}
 
-	const totalSteps = slides.reduce((sum, s) => sum + s.stepCount, 0);
-	const globalStepIndex =
-		slides.slice(0, currentIndex).reduce((sum, s) => sum + s.stepCount, 0) + currentStep;
-
 	return (
-		<div
-			ref={containerRef}
-			className={cn("relative h-full w-full overflow-hidden outline-none", className)}
-			style={style}
-			tabIndex={0}
-			role="region"
-			aria-label="Slide deck"
-			onTouchStart={handleTouchStart}
-			onTouchEnd={handleTouchEnd}
-		>
-			<div className="h-full w-full" style={fitContainerStyle}>
-				<div style={fitCanvasStyle}>
-					{slides.map((slide, index) => (
-						<SlideWrapper
-							key={index}
-							isActive={index === currentIndex}
-							isBefore={index < currentIndex}
-							data={slide.data}
-							transitions={transitionsEnabled}
-						>
-							<SlideRenderer slide={slide} stepIndex={currentStep} components={components} />
-						</SlideWrapper>
-					))}
+		<StepContext.Provider value={stepContextValue.current}>
+			<div
+				ref={containerRef}
+				className={cn("relative h-full w-full overflow-hidden outline-none", className)}
+				style={style}
+				tabIndex={0}
+				role="region"
+				aria-label="Slide deck"
+				onTouchStart={handleTouchStart}
+				onTouchEnd={handleTouchEnd}
+			>
+				<div className="h-full w-full" style={fitContainerStyle}>
+					<div style={fitCanvasStyle}>
+						{slides.map((slide, index) => (
+							<SlideActiveContext.Provider key={index} value={index === currentIndex}>
+								<SlideWrapper
+									isActive={index === currentIndex}
+									isBefore={index < currentIndex}
+									data={slide.data}
+									transitions={transitionsEnabled}
+								>
+									<SlideRenderer slide={slide} components={components} />
+								</SlideWrapper>
+							</SlideActiveContext.Provider>
+						))}
 
-					<div className="absolute right-4 bottom-4 z-20 text-sm text-gray-500 dark:text-gray-400">
-						{globalStepIndex + 1} / {totalSteps}
+						<div className="absolute right-4 bottom-4 z-20 text-sm text-gray-500 dark:text-gray-400">
+							{currentIndex + 1} / {slides.length}
+						</div>
 					</div>
 				</div>
 			</div>
-		</div>
+		</StepContext.Provider>
 	);
 }
 
-function SlideRenderer({
-	slide,
-	stepIndex,
-	components,
-}: {
-	slide: Slide;
-	stepIndex: number;
-	components?: MDXComponents;
-}) {
-	const step = slide.steps[stepIndex] || slide.steps[0];
-	if (!step) return null;
+function SlideRenderer({ slide, components }: { slide: Slide; components?: MDXComponents }) {
 	return (
 		<MDXContent
-			source={step.content}
-			mdast={step.mdast}
-			shikiHighlights={step.shikiHighlights}
+			source={slide.content}
+			mdast={slide.mdast}
+			shikiHighlights={slide.shikiHighlights}
 			components={components}
 		/>
 	);
@@ -356,9 +365,8 @@ function PresenterMode({
 }: PresenterModeProps) {
 	const currentSlide = slides[currentIndex];
 	const nextSlide = slides[currentIndex + 1];
-	const totalSteps = slides.reduce((sum, s) => sum + s.stepCount, 0);
-	const globalStepIndex =
-		slides.slice(0, currentIndex).reduce((sum, s) => sum + s.stepCount, 0) + currentStep;
+	const totalSteps = slides.length;
+	const globalStepIndex = currentIndex;
 	const progress = ((globalStepIndex + 1) / totalSteps) * 100;
 
 	return (
@@ -388,7 +396,7 @@ function PresenterMode({
 									<Gradient className="">{currentSlide.data.title}</Gradient>
 								</h1>
 							)}
-							<SlideRenderer slide={currentSlide} stepIndex={currentStep} components={components} />
+							<SlideRenderer slide={currentSlide} components={components} />
 						</div>
 					</div>
 				</div>
@@ -399,7 +407,7 @@ function PresenterMode({
 						<div className="flex-1 overflow-hidden rounded-lg bg-black">
 							{nextSlide ? (
 								<div className="h-full w-full overflow-auto p-4 opacity-70">
-									<SlideRenderer slide={nextSlide} stepIndex={0} components={components} />
+									<SlideRenderer slide={nextSlide} components={components} />
 								</div>
 							) : (
 								<div className="flex h-full items-center justify-center text-gray-500">
@@ -451,10 +459,7 @@ function PresenterMode({
 
 				<button
 					onClick={goNext}
-					disabled={
-						currentIndex === slides.length - 1 &&
-						currentStep === slides[slides.length - 1]?.stepCount - 1
-					}
+					disabled={currentIndex === slides.length - 1}
 					className="rounded bg-gray-700 px-4 py-2 text-sm transition-colors hover:bg-gray-600 disabled:opacity-30 disabled:hover:bg-gray-700"
 				>
 					Next

@@ -12,6 +12,7 @@ import { LinkTo } from "@/lib/components/Anchor";
 import { Image } from "@/lib/components/Image";
 import { Blockquote, Code, Heading, UnorderedList } from "@/lib/components/Typography";
 import { CodeBlock } from "@/lib/domains/shiki/CodeBlock";
+import { Steps } from "@/lib/domains/slides/steps";
 
 export const slideMDXComponents: MDXComponents = {
 	h1: ({ children, ...props }: HTMLAttributes<HTMLHeadingElement>) => (
@@ -56,4 +57,5 @@ export const slideMDXComponents: MDXComponents = {
 	img: Image,
 	hr: () => <hr className="my-4" />,
 	blockquote: Blockquote,
+	Steps,
 };
