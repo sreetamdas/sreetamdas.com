@@ -66,64 +66,50 @@ Senior Frontend Engineer II @ Remote
 - Backend-owned
 
 <Notes>
-Forms at Remote are not just "collect an email address" forms.
+Power everything: country  employment type rules, payroll setup, contract details, onboarding
+details, address formats, tax details, leave policies
 
-They encode country rules, employment type rules, payroll setup, contract details, onboarding
-details, address formats, tax details, leave policies, and a bunch of product-specific constraints.
-
-The important framing: the person closest to the rule is often not the React engineer. It is usually
-someone working from legal, payroll, country operations, or the backend code that packages those rules
-for the product.
-
-Codebase-backed stat to verify/possibly use: Tiger currently has around 550 JSON schema files under
-`priv/json_schemas` at shallow depth, plus programmatic `rmt-components` that generate more schema
-shape at runtime.
+Tiger currently has around 550 JSON schema files
 
 </Notes>
 
 ---
 
-# The drift problem
+# Validation
 
 <Steps>
 
-- Frontend validation
-- Backend validation
-- API / docs shape
+- Client side: Yup, Zod, Valibot, web-native
+- Server side: actual validation
 
 </Steps>
 
 <Notes>
-Be careful with wording here.
 
-This is the common form-system failure mode, and Remote still has ordinary forms that look like this:
-Yup/Formik in Dragon, changesets or explicit validation in Tiger, and OpenAPI/API type definitions
-elsewhere.
-
-For JSF-backed forms, the pitch is not "Remote has three copies everywhere." The pitch is:
-
-"This is the trap forms fall into. JSON Schema Forms is how we avoid it for the dynamic
-country/product forms where drift is expensive."
+- Drift
+- Update, Maintenance, Sync
+- SSoT
 
 </Notes>
 
 ---
 
-# One source of truth
+# SSoT: Single Source of Truth
 
-- Shape
+Backend defines:
+
+<Steps>
+
+- Expected shape
 - Constraints
 - Conditional logic
 - Error copy
 
+</Steps>
+
 <Notes>
-This is where JSON Schema enters the story.
 
-JSON Schema gives us a data format for describing the shape and constraints of JSON payloads. That is
-already useful for backend validation. JSF makes the same schema useful to the frontend: the schema
-does not just validate a payload, it can describe the form fields needed to produce that payload.
-
-The core idea: make the rule data travel across the wire, instead of re-implementing the rule in
+ore idea: make the rule data travel across the server-client interface, instead of re-implementing the rule in
 React and then again in Elixir.
 
 </Notes>
@@ -182,7 +168,6 @@ const { fields, handleValidation } = createHeadlessForm(schema, {
 ```
 
 <Notes>
-The public surface is intentionally small.
 
 `createHeadlessForm()` is the main entrypoint. It returns fields that your UI can render, and a
 `handleValidation()` function that validates values against the schema.
