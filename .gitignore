@@ -60,3 +60,6 @@ dist/
 
 # Localflare generated files
 .localflare/
+
+# Build info (generated at build time)
+src/build-info.json
