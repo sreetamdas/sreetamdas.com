@@ -28,7 +28,7 @@ test("home page renders shared chrome and introduction content", async ({ page }
 	);
 	await expect(page.locator("#main-content")).toBeVisible();
 	await expect(page).toHaveTitle(/Hello hello!/);
-	await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
+	await expect(page.locator('link[rel="canonical"]').first()).toHaveAttribute(
 		"href",
 		"https://sreetamdas.com",
 	);
@@ -76,7 +76,7 @@ test("mobile navigation drawer opens and closes during route navigation", async 
 	await expect(page.locator('main a[href="https://twitter.com/_SreetamDas"]')).toBeVisible();
 	await expect(page.locator('main a[href="https://www.linkedin.com/in/sreetamdas"]')).toBeVisible();
 	await expect(page.locator('main a[href="mailto:sreetam@sreetamdas.com"]')).toBeVisible();
-	await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
+	await expect(page.locator('link[rel="canonical"]').first()).toHaveAttribute(
 		"href",
 		"https://sreetamdas.com/about",
 	);
@@ -99,7 +99,7 @@ test("blog archive and blog detail route render content-heavy pages correctly", 
 	await expect(
 		page.getByText("How to add a moving RGB effect to your text using styled-components"),
 	).toBeVisible();
-	await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
+	await expect(page.locator('link[rel="canonical"]').first()).toHaveAttribute(
 		"href",
 		"https://sreetamdas.com/blog",
 	);
@@ -115,7 +115,7 @@ test("blog archive and blog detail route render content-heavy pages correctly", 
 	await expect(page.locator("main")).toContainText("Let's break down what's happening here:");
 	await expect(page.locator("main")).toContainText("Hello there!");
 	await expect.poll(() => page.locator("pre code").count()).toBeGreaterThan(0);
-	await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
+	await expect(page.locator('link[rel="canonical"]').first()).toHaveAttribute(
 		"href",
 		"https://sreetamdas.com/blog/chameleon-text",
 	);
@@ -152,7 +152,7 @@ test("root content routes render MDX and embedded route-specific components", as
 		.poll(async () => (await contributorCopy.count()) + (await contributorLinks.count()))
 		.toBeGreaterThan(1);
 
-	await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
+	await expect(page.locator('link[rel="canonical"]').first()).toHaveAttribute(
 		"href",
 		"https://sreetamdas.com/credits",
 	);
@@ -160,7 +160,7 @@ test("root content routes render MDX and embedded route-specific components", as
 
 	await page.goto("/uses");
 	await expect(page.getByRole("heading", { level: 1, name: "/uses" })).toBeVisible();
-	await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
+	await expect(page.locator('link[rel="canonical"]').first()).toHaveAttribute(
 		"href",
 		"https://sreetamdas.com/uses",
 	);
@@ -182,7 +182,7 @@ test("karma route supports theme switching without losing the showcase", async (
 	await expect(page.getByAltText("Karma Light theme screenshot for React")).toBeVisible();
 	await expect(page.locator('a[href="#react"]')).toBeVisible();
 	await expect(page.locator('a[href="#typescript"]')).toBeVisible();
-	await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
+	await expect(page.locator('link[rel="canonical"]').first()).toHaveAttribute(
 		"href",
 		"https://sreetamdas.com/karma",
 	);
