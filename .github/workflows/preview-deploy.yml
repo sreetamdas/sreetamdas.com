@@ -52,7 +52,13 @@ jobs:
         run: pnpm build
 
       - name: Deploy preview
-        run: pnpm deploy:preview
+        id: deploy
+        run: |
+          OUTPUT=$(pnpm deploy:preview 2>&1)
+          echo "$OUTPUT"
+          # Extract preview URL from wrangler output
+          URL=$(echo "$OUTPUT" | grep -oE 'https://[a-zA-Z0-9_-]+\.[a-zA-Z0-9_-]+\.workers\.dev' | head -1)
+          echo "preview_url=$URL" >> "$GITHUB_OUTPUT"
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
@@ -72,9 +78,11 @@ jobs:
             const botPrefix = "<!-- preview-deploy-bot -->";
             const existing = comments.find(c => c.body?.startsWith(botPrefix));
 
-            const outcome = ${{ job.status == 'success' }} ? "✅" : "❌";
+            const outcome = '${{ job.status }}' === 'success' ? "✅" : "❌";
             const sha = context.sha.substring(0, 7);
-            const body = `${botPrefix}\n${outcome} Preview deploy for \`${sha}\` — see Cloudflare dashboard for URL.`;
+            const previewUrl = '${{ steps.deploy.outputs.preview_url }}';
+            const urlLine = previewUrl ? `🔗 [Preview URL](${previewUrl})` : '❌ No preview URL found in deploy output';
+            const body = `${botPrefix}\n${outcome} Preview deploy for \`${sha}\`\n\n${urlLine}`;
 
             if (existing) {
               await github.rest.issues.updateComment({
