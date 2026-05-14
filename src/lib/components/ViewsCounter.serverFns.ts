@@ -12,7 +12,7 @@ type PagePathname = {
 	disabled: boolean;
 };
 
-export const fetchViewCountServerFn = createServerFn<"GET", "data", PageViewCount>({
+export const fetchViewCountServerFn = createServerFn({
 	method: "GET",
 })
 	.inputValidator((data) => {

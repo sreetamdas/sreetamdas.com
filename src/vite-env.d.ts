@@ -7,6 +7,11 @@ interface ViteTypeOptions {
 }
 
 interface ImportMetaEnv {
+	readonly MODE: string;
+	readonly DEV: boolean;
+	readonly PROD: boolean;
+	readonly BASE_URL: string;
+	readonly SSR: boolean;
 	readonly VITE_BUTTONDOWN_API_KEY: string;
 	readonly VITE_GITHUB_RWC_GIST_ID: string;
 	readonly VITE_GITHUB_TOKEN: string;

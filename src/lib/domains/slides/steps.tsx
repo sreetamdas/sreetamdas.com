@@ -10,8 +10,8 @@
  *
  * When a child wraps native <li> elements (e.g. a markdown list rendered
  * through the slide's custom ul component), the li content is extracted and
- * re-rendered directly with the same <ul>/<li>/arrow-marker structure that
- * UnorderedList uses, so styling is consistent.
+ * re-rendered through UnorderedList so that arrow markers and list styling
+ * are preserved.
  */
 import {
 	Children,
@@ -25,8 +25,8 @@ import {
 	type ReactElement,
 	type ReactNode,
 } from "react";
-import { FaLongArrowAltRight } from "react-icons/fa";
 
+import { UnorderedList } from "@/lib/components/Typography";
 import { cn } from "@/lib/helpers/utils";
 
 export interface StepContextValue {
@@ -100,20 +100,13 @@ export function Steps({ children }: { children: ReactNode }) {
 
 	if (liContent.length > 0) {
 		return (
-			<ul className="mx-0 my-3 pl-0">
+			<UnorderedList listClasses="mb-4 only:mt-4" markClasses="mt-1.5 text-2xl">
 				{liContent.map((content, i) => (
-					<li
-						key={i}
-						className={cn(
-							"mb-3 flex list-none items-start p-0 last:mb-0 only:mt-3",
-							i > currentStep && "hidden",
-						)}
-					>
-						<FaLongArrowAltRight aria-label="marker" className="text-primary mt-1 mr-2.5" />
-						<span className="shrink grow basis-0 [&>ul]:my-0 [&>ul>li]:m-0">{content}</span>
-					</li>
+					<div key={i} className={cn(i > currentStep && "hidden")}>
+						{content}
+					</div>
 				))}
-			</ul>
+			</UnorderedList>
 		);
 	}
 

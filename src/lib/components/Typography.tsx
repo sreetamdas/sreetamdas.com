@@ -90,17 +90,24 @@ export const UnorderedList = ({
 	markClasses,
 	...props
 }: HTMLAttributes<HTMLUListElement> & {
-	listClasses?: Pick<HTMLAttributes<HTMLLIElement>, "className">;
-	markClasses?: Pick<HTMLAttributes<HTMLLIElement>, "className">;
+	listClasses?: string;
+	markClasses?: string;
 }) => (
 	<ul className={cn("mx-0 my-3 pl-0", className)} {...props}>
 		{Children.map(props.children, (child) => {
 			if (isValidElement(child)) {
+				// Destructure className from child.props so we can merge it instead of
+				// letting the spread override the base classes.
+				// @ts-expect-error child props is not unknown
+				const { className: childClassName, ...restChildProps } = child.props;
 				return (
 					<li
-						className={cn("mb-3 flex list-none items-start p-0 last:mb-0 only:mt-3", listClasses)}
-						// @ts-expect-error child props is not unknown
-						{...child.props}
+						className={cn(
+							"mb-3 flex list-none items-start p-0 last:mb-0 only:mt-3",
+							listClasses,
+							childClassName,
+						)}
+						{...restChildProps}
 					>
 						<FaLongArrowAltRight
 							aria-label="marker"
