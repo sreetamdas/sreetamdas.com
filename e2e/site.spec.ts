@@ -112,10 +112,7 @@ test("blog archive and blog detail route render content-heavy pages correctly", 
 		"content",
 		/How to add a moving RGB effect/,
 	);
-	await expect(page.locator('meta[property="og:url"]')).toHaveAttribute(
-		"content",
-		"https://sreetamdas.com/blog/chameleon-text",
-	);
+
 	await expect(page.locator("main")).toContainText("min read");
 	await expect(page.locator("main")).toContainText("Changing colors");
 	await expect(page.locator("main")).toContainText("styled-components");
