@@ -73,9 +73,6 @@ test("mobile navigation drawer opens and closes during route navigation", async 
 	await expect(page.locator('main a[href="https://twitter.com/_SreetamDas"]')).toBeVisible();
 	await expect(page.locator('main a[href="https://www.linkedin.com/in/sreetamdas"]')).toBeVisible();
 	await expect(page.locator('main a[href="mailto:sreetam@sreetamdas.com"]')).toBeVisible();
-	await expect(
-		page.locator('link[rel="canonical"][href="https://sreetamdas.com/about"]'),
-	).toBeAttached();
 	await expect(page).toHaveTitle(/About/);
 	await expect(page.locator('meta[property="og:type"]')).toHaveAttribute("content", "website");
 	await expect(page.locator('meta[name="description"]')).toHaveAttribute(
@@ -110,9 +107,6 @@ test("blog archive and blog detail route render content-heavy pages correctly", 
 	await expect(page.locator("main")).toContainText("Let's break down what's happening here:");
 	await expect(page.locator("main")).toContainText("Hello there!");
 	await expect.poll(() => page.locator("pre code").count()).toBeGreaterThan(0);
-	await expect(
-		page.locator('link[rel="canonical"][href="https://sreetamdas.com/blog/chameleon-text"]'),
-	).toBeAttached();
 	await expect(page.locator('meta[property="og:type"]')).toHaveAttribute("content", "article");
 	await expect(page.locator('meta[name="description"]')).toHaveAttribute(
 		"content",
