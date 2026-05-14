@@ -42,6 +42,9 @@ importers:
       '@radix-ui/react-visually-hidden':
         specifier: ^1.2.4
         version: 1.2.4(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+      '@remoteoss/json-schema-form':
+        specifier: ^1.2.11
+        version: 1.2.11
       '@sentry/cloudflare':
         specifier: ^10.53.0
         version: 10.53.0
@@ -1697,6 +1700,10 @@ packages:
       '@types/react-dom':
         optional: true
 
+  '@remoteoss/json-schema-form@1.2.11':
+    resolution: {integrity: sha512-LShJp6jxVoZPn/zI35ReJykznaUXydO3GdlUtDCVS9mzA4xdf9ElDl6NHP83SSNMsAT/EPrLd8yYoX8vxsS8hw==}
+    engines: {node: '>=18.14.0'}
+
   '@rolldown/binding-android-arm64@1.0.0-rc.18':
     resolution: {integrity: sha512-lIDyUAfD7U3+BWKzdxMbJcsYHuqXqmGz40aeRqvuAm3y5TkJSYTBW2RDrn65DJFPQqVjUAUqq5uz8urzQ8aBdQ==}
     engines: {node: ^20.19.0 || >=22.12.0}
@@ -3329,6 +3336,9 @@ packages:
     resolution: {integrity: sha512-/sM3dO2FOzXjKQhJuo0Q173wf2KOo8t4I8vHy6lF9poUp7bKT0/NHE8fPX23PwfhnykfqnC2xRxOnVw5XuGIaA==}
     engines: {node: '>=6'}
     hasBin: true
+
+  json-logic-js@2.0.5:
+    resolution: {integrity: sha512-rTT2+lqcuUmj4DgWfmzupZqQDA64AdmYqizzMPWj3DxGdfFNsxPpcNVSaTj4l8W2tG/+hg7/mQhxjU3aPacO6g==}
 
   json5@2.2.3:
     resolution: {integrity: sha512-XmOWe7eyHYH14cLdVPoyg+GOH3rYX++KpzrylJwSW98t3Nk+U8XOl8FWKOgwtzdb8lXGf6zYwDUzeHMWfxasyg==}
@@ -5794,6 +5804,10 @@ snapshots:
       '@types/react': 19.2.14
       '@types/react-dom': 19.2.3(@types/react@19.2.14)
 
+  '@remoteoss/json-schema-form@1.2.11':
+    dependencies:
+      json-logic-js: 2.0.5
+
   '@rolldown/binding-android-arm64@1.0.0-rc.18':
     optional: true
 
@@ -7361,6 +7375,8 @@ snapshots:
   jsbi@4.3.2: {}
 
   jsesc@3.1.0: {}
+
+  json-logic-js@2.0.5: {}
 
   json5@2.2.3: {}
 
