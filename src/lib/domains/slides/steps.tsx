@@ -8,21 +8,24 @@
  * SlideActiveContext prevents Steps on inactive (off-screen) slides from
  * registering, since all slides render at once for transition animations.
  *
- * When a child is a <ul> or <ol>, its <li> children are flattened and
- * revealed one-by-one while preserving the list structure.
+ * When a child wraps native <li> elements (e.g. a markdown list rendered
+ * through the slide's custom ul component), the li content is extracted and
+ * re-rendered directly with the same <ul>/<li>/arrow-marker structure that
+ * UnorderedList uses, so styling is consistent.
  */
 import {
 	Children,
-	cloneElement,
 	createContext,
 	isValidElement,
 	useContext,
 	useEffect,
 	useId,
+	useMemo,
 	useRef,
 	type ReactElement,
 	type ReactNode,
 } from "react";
+import { FaLongArrowAltRight } from "react-icons/fa";
 
 import { cn } from "@/lib/helpers/utils";
 
@@ -40,20 +43,30 @@ export const StepContext = createContext<StepContextValue>({
 
 export const SlideActiveContext = createContext(false);
 
-function useStepItems(children: ReactNode) {
-	const array = Children.toArray(children);
-	const items: ReactNode[] = [];
+type LiElement = ReactElement<{ className?: string; children?: ReactNode }>;
 
-	for (const child of array) {
-		if (isValidElement(child) && (child.type === "ul" || child.type === "ol")) {
+function isNativeLi(node: ReactNode): node is LiElement {
+	return isValidElement(node) && typeof node.type === "string" && node.type === "li";
+}
+
+function hasNativeLiGrandchild(child: ReactNode): boolean {
+	if (!isValidElement(child)) return false;
+	const el = child as ReactElement<{ children?: ReactNode }>;
+	return Children.toArray(el.props.children).some(isNativeLi);
+}
+
+function extractLiContent(children: ReactNode): ReactNode[] {
+	const items: ReactNode[] = [];
+	for (const child of Children.toArray(children)) {
+		if (isNativeLi(child)) {
+			items.push(child.props.children);
+		} else if (hasNativeLiGrandchild(child)) {
 			const el = child as ReactElement<{ children?: ReactNode }>;
-			const listItems = Children.toArray(el.props.children).filter(isValidElement);
-			items.push(...listItems);
-		} else {
-			items.push(child);
+			for (const gc of Children.toArray(el.props.children)) {
+				if (isNativeLi(gc)) items.push(gc.props.children);
+			}
 		}
 	}
-
 	return items;
 }
 
@@ -65,16 +78,18 @@ function useStepItems(children: ReactNode) {
  * advances to the next slide. Multiple <Steps> blocks on the same slide
  * accumulate sequentially — the second block's children follow the first's.
  *
- * Markdown lists are flattened: each <li> becomes a separate step while
- * preserving the list structure.
+ * Markdown lists are rendered with arrow markers and list styling
+ * matching the slide's UnorderedList component.
  */
 export function Steps({ children }: { children: ReactNode }) {
 	const { currentStep, registerSteps, unregisterSteps } = useContext(StepContext);
 	const active = useContext(SlideActiveContext);
-	const items = useStepItems(children);
-	const count = items.length;
+
 	const id = useId();
 	const idRef = useRef(id);
+
+	const liContent = useMemo(() => extractLiContent(children), [children]);
+	const count = liContent.length;
 
 	useEffect(() => {
 		if (active) {
@@ -83,24 +98,42 @@ export function Steps({ children }: { children: ReactNode }) {
 		}
 	}, [active, count, registerSteps, unregisterSteps]);
 
-	const needsList = count > 0 && items.every((item) => isValidElement(item) && item.type === "li");
-
-	const renderedItems = items.map((child, i) => {
-		if (isValidElement(child) && needsList) {
-			const li = child as ReactElement<{ className?: string }>;
-			return cloneElement(li, {
-				key: i,
-				className: cn(li.props.className, i > currentStep && "hidden"),
-			});
-		}
+	if (liContent.length > 0) {
 		return (
-			<div key={i} className={cn(i > currentStep && "hidden")}>
-				{child}
-			</div>
+			<ul className="mx-0 my-3 pl-0">
+				{liContent.map((content, i) => (
+					<li
+						key={i}
+						className={cn(
+							"mb-3 flex list-none items-start p-0 last:mb-0 only:mt-3",
+							i > currentStep && "hidden",
+						)}
+					>
+						<FaLongArrowAltRight aria-label="marker" className="text-primary mt-1 mr-2.5" />
+						<span className="shrink grow basis-0 [&>ul]:my-0 [&>ul>li]:m-0">{content}</span>
+					</li>
+				))}
+			</ul>
 		);
-	});
+	}
 
-	if (needsList) return <ul className="mx-0 my-3 pl-0">{renderedItems}</ul>;
+	// Non-list children: wrap each in a div, reveal one at a time
+	const array = Children.toArray(children);
 
-	return <>{renderedItems}</>;
+	useEffect(() => {
+		if (active && count === 0) {
+			registerSteps(array.length);
+			return () => unregisterSteps(idRef.current);
+		}
+	}, [active, array.length, count, registerSteps, unregisterSteps]);
+
+	return (
+		<>
+			{array.map((child, i) => (
+				<div key={i} className={cn(i > currentStep && "hidden")}>
+					{child}
+				</div>
+			))}
+		</>
+	);
 }
