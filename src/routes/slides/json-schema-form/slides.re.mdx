@@ -60,25 +60,475 @@ Senior Frontend Engineer II @ Remote
 
 # Forms at Remote
 
-{/* TODO */}
-
-- \<domains\>
-- Forms in each domain
-- Different for every country
-- Inter-field dependency
+- Country-specific
+- Product-specific
+- Rule-heavy
+- Backend-owned
 
 <Notes>
-  90+ countries, so over 500+ combinations of forms to update,
-  maintain and support.
+Forms at Remote are not just "collect an email address" forms.
+
+They encode country rules, employment type rules, payroll setup, contract details, onboarding
+details, address formats, tax details, leave policies, and a bunch of product-specific constraints.
+
+The important framing: the person closest to the rule is often not the React engineer. It is usually
+someone working from legal, payroll, country operations, or the backend code that packages those rules
+for the product.
+
+Codebase-backed stat to verify/possibly use: Tiger currently has around 550 JSON schema files under
+`priv/json_schemas` at shallow depth, plus programmatic `rmt-components` that generate more schema
+shape at runtime.
 </Notes>
 
 ---
 
-# Form validation
+# The drift problem
 
 <Steps>
 
-- Client side: Yup, Zod, Valibot, web-native
-- Server side: actual validation
+- Frontend validation
+- Backend validation
+- API / docs shape
 
 </Steps>
+
+<Notes>
+Be careful with wording here.
+
+This is the common form-system failure mode, and Remote still has ordinary forms that look like this:
+Yup/Formik in Dragon, changesets or explicit validation in Tiger, and OpenAPI/API type definitions
+elsewhere.
+
+For JSF-backed forms, the pitch is not "Remote has three copies everywhere." The pitch is:
+
+"This is the trap forms fall into. JSON Schema Forms is how we avoid it for the dynamic
+country/product forms where drift is expensive."
+</Notes>
+
+---
+
+# One source of truth
+
+- Shape
+- Constraints
+- Conditional logic
+- Error copy
+
+<Notes>
+This is where JSON Schema enters the story.
+
+JSON Schema gives us a data format for describing the shape and constraints of JSON payloads. That is
+already useful for backend validation. JSF makes the same schema useful to the frontend: the schema
+does not just validate a payload, it can describe the form fields needed to produce that payload.
+
+The core idea: make the rule data travel across the wire, instead of re-implementing the rule in
+React and then again in Elixir.
+</Notes>
+
+---
+
+# JSON Schema
+
+- `type`
+- `properties`
+- `required`
+- `allOf`
+
+<Notes>
+Keep this short. The audience does not need a full JSON Schema tutorial.
+
+Show enough that the rest of the talk is legible:
+
+- `type: "object"` means the payload is an object
+- `properties` lists the fields
+- `required` lists mandatory fields
+- `allOf` / `if` / `then` can model conditional constraints
+
+Then make the transition: JSON Schema can say what data is valid, but it does not really tell us how
+to render a great product form. That is where JSF adds a thin layer of UI-oriented metadata.
+</Notes>
+
+---
+
+# JSF
+
+- Schema in
+- Fields out
+- Validation out
+
+<Notes>
+This is the simplest definition of the library.
+
+`@remoteoss/json-schema-form` is headless. It does not render inputs. You give it a schema and it
+gives you a list of fields, plus validation.
+
+The important thing for the audience: this is not "yet another React component library." It is closer
+to a compiler step from schema to field model.
+</Notes>
+
+---
+
+# Core API
+
+```tsx
+const { fields, handleValidation } = createHeadlessForm(schema, {
+	initialValues,
+})
+```
+
+<Notes>
+The public surface is intentionally small.
+
+`createHeadlessForm()` is the main entrypoint. It returns fields that your UI can render, and a
+`handleValidation()` function that validates values against the schema.
+
+There is also `modify()`, which lets consumers transform a schema without mutating the backend source
+schema directly.
+</Notes>
+
+---
+
+# Headless
+
+- No components
+- No CSS
+- No design system
+- Bring your own form library
+
+<Notes>
+At Remote, Dragon renders the fields with our internal form system, Norma components, and Formik.
+
+Another team could render the same field model using MUI, React Hook Form, native HTML, or something
+else entirely.
+
+This is the important architectural split: JSF knows about schema and validation; product code knows
+about React lifecycle, layout, design system details, analytics, drafts, and submission flows.
+</Notes>
+
+---
+
+# `x-jsf-*`
+
+- `x-jsf-presentation`
+- `x-jsf-order`
+- `x-jsf-errorMessage`
+- `x-jsf-logic`
+
+<Notes>
+JSON Schema lets consumers define custom keywords. JSF uses `x-jsf-*` keys for form-specific
+metadata.
+
+The backend can ship these keys in the same schema payload. Servers can ignore UI hints that do not
+matter to backend validation; the frontend can use them for rendering.
+
+Important codebase detail: Dragon's API schema transform explicitly preserves `x-jsf-*` keys because
+JSF expects those exact names. It camel-cases field names where needed, but not the extension keys.
+</Notes>
+
+---
+
+# Presentation
+
+- Input type
+- Description
+- Options
+- Field order
+
+<Notes>
+This is the "how does JSON Schema become a form?" slide.
+
+Basic JSON Schema tells us "string", "number", "required", "minimum". Presentation metadata tells
+Dragon whether that should be a text field, money input, select, radio group, file upload, statement,
+fieldset, etc.
+
+Backend helper example from Tiger: `Remote.RmtJson.Components` has builders like `text_field`,
+`number_field`, `money_field`, `radio_field`, `select_field`, and helpers like `add_property`,
+`add_required`, `add_all_of`, and `add_fieldset`.
+</Notes>
+
+---
+
+# Conditional fields
+
+- `if`
+- `then`
+- `else`
+- `allOf`
+
+<Notes>
+This is the bridge from "form rendering" to "rules as data."
+
+The basic version can be pure JSON Schema:
+
+If country is US, require state.
+If work schedule is part-time, ask for hours per week.
+If a radio answer is "yes", reveal follow-up fields.
+
+Tiger's `rmt-components` use helpers like `add_all_of()` to attach these conditions programmatically.
+</Notes>
+
+---
+
+# JSON Logic
+
+- Cross-field rules
+- Computed values
+- Date math
+- Custom operators
+
+<Notes>
+JSON Schema conditionals cover a lot, but richer business logic often wants cross-field calculations.
+
+This is where `x-jsf-logic` comes in. Remote uses it for validations and computed values. Dragon and
+server-side validation can both evaluate those rules.
+
+Good codebase-backed examples to pull into a later pass:
+
+- date difference in months from the lambda test
+- `date_add_days` / date helper operators from the kit
+- country-specific salary/probation computed values from Tiger RMT components
+</Notes>
+
+---
+
+# Tiger
+
+- Elixir
+- JSON schemas
+- `rmt-components`
+- Knowledge data
+
+<Notes>
+This is the Elixir-crowd anchor.
+
+Tiger does not just store static JSON files. It has an Elixir layer for composing schemas:
+`Remote.RmtJson` and Tiger-specific `rmt-components`.
+
+Those components add fields, required lists, conditionals, computed value definitions, and logic.
+
+This is worth emphasizing: the backend is not passively serving a blob. It is authoring and expanding
+the schema using Elixir code, context, and knowledge data.
+</Notes>
+
+---
+
+# Dragon
+
+- React
+- DynamicForm
+- `useCreateHeadlessForm`
+- Formik bridge
+
+<Notes>
+Dragon has the product-specific wrapper around JSF.
+
+The wrapper handles things the OSS library should not own:
+
+- memoization for React lifecycle
+- snake_case API fields to frontend values
+- picked and omitted fields for partial forms
+- parsing Formik values before validation
+- hiding fields
+- error reporting
+- v0/v1 switching
+
+This is the "OSS ends here, product code starts here" section.
+</Notes>
+
+---
+
+# Remote kit
+
+- Version routing
+- Custom logic ops
+- Server bundle
+
+<Notes>
+The public Remote kit wraps the core library for Remote-specific behavior.
+
+Key point to verify before presenting: the exact current relationship between
+`@remoteoss/json-schema-form` and `@remoteoss/remote-json-schema-form-kit`, but the code clearly uses
+the kit from Dragon and from server-side validation paths.
+
+The strongest story: schemas can opt into newer JSF behavior with metadata such as
+`x-rmt-meta.jsfVersion`, so migration can happen per schema instead of one big flag day.
+</Notes>
+
+---
+
+# Server validation
+
+- Tiger calls validator
+- Same schema
+- Same JSF logic
+- Same error shape
+
+<Notes>
+This is probably the biggest "wow" moment for an Elixir audience.
+
+The old path: Tiger can call an AWS Lambda client for JSON Logic validation.
+
+The newer path: Tiger can route through `ExJsfLogic`, a local Port-based sidecar that runs
+`@remoteoss/remote-json-schema-form-kit`.
+
+Dragon also has a `json-schemas-validate` lambda where the core code is essentially:
+
+`createHeadlessForm(schema).handleValidation(data)`
+
+That is the concrete proof of the single-source-of-truth story.
+</Notes>
+
+---
+
+# Real gotchas
+
+- snake_case / camelCase
+- Nested conditionals
+- Schema mutation
+- Partial forms
+
+<Notes>
+These are good because they make the talk credible.
+
+Dragon's wrapper exists because the core idea is clean, but product reality is not.
+
+Specific gotchas from code:
+
+- API schemas arrive with snake_case field names, while Dragon often works in camelCase
+- `x-jsf-*` extension keys must be preserved exactly
+- JSF has had mutation issues around `initialValues`, so Dragon defensively deep-copies
+- nested conditional fieldsets may need multiple validation passes
+- partial forms need picked/omitted fields so hidden steps do not block validation
+</Notes>
+
+---
+
+# Multi-pass validation
+
+- One pass
+- One visibility level
+- Repeat until stable
+
+<Notes>
+This is a nice deep-dive slide if time allows.
+
+In Dragon's wrapper, `handleValidation()` can be re-run when nested conditional fieldsets reveal more
+fields. The code computes the maximum nesting depth and short-circuits when values stop changing.
+
+This is a good lesson slide: "Headless" does not mean "no integration work." It means the integration
+work has a clean boundary.
+</Notes>
+
+---
+
+# Migration
+
+- v0
+- v1
+- Schema-level flag
+- No flag day
+
+<Notes>
+This is the migration pattern you liked from the notes.
+
+The schema can carry metadata saying which JSF version should handle it. That lets backend owners roll
+forms forward one at a time.
+
+Keep this short unless you have a concrete migration story. The takeaway is more important than the
+implementation detail: data can select behavior, so product rollout does not require a global frontend
+switch.
+</Notes>
+
+---
+
+# War story: HubSpot
+
+- Marketing owns fields
+- Engineering owns rendering
+- Definition as data
+
+<Notes>
+This is the growth-engineering story.
+
+The shape of the problem was already JSF-shaped before JSF: marketing wanted to control fields, copy,
+and ordering, while engineering wanted performance, styling, tracking, and product-quality rendering.
+
+The lesson: let the source of truth live where the rules are owned, but render it in the product
+surface you control.
+
+TODO: verify how much detail you want here and whether there is a concrete example worth naming.
+</Notes>
+
+---
+
+# War story: cost calculator
+
+- Country rules
+- Age-based logic
+- Computed inputs
+
+<Notes>
+Use this only after verifying the exact Japan / Italy details.
+
+The anecdote you want: cost calculation is not just "salary in, cost out." Country-specific rules can
+depend on employee age, employment type, social-security bands, pension contributions, and other
+inputs.
+
+This is a perfect JSF/JSON Logic shape: the form collects the inputs, the schema describes which
+inputs matter, and computed values can derive what downstream calculations need.
+</Notes>
+
+---
+
+# Live demo
+
+- Playground
+- Edit schema
+- Watch form change
+- Break validation
+
+<Notes>
+Lowest-risk demo: use the public playground and edit a schema live.
+
+Best narrative demo: show a payload that the UI rejects, then show the server validation rejecting the
+same shape with the same rule.
+
+Higher-risk idea: interactive Cloudflare Durable Object polling/message queue where the audience
+changes the schema live. Good if scoped with Areena; not necessary for the core talk.
+</Notes>
+
+---
+
+# Lessons
+
+- Rules as data
+- UI as consumer
+- Backend as author
+- Validation everywhere
+
+<Notes>
+This is the closing distillation.
+
+The point is not "everyone should use our exact library." The point is the architecture:
+
+When form rules change by country, product, employment type, or legal requirement, the rule should not
+live inside a React component. Put it in data, ship it across the wire, render it headlessly, and
+validate it wherever the data enters the system.
+</Notes>
+
+---
+
+# What's next
+
+- Admin builders
+- AI schema editing
+- More surfaces
+
+<Notes>
+This is where Sandrina's AI/admin builder direction fits.
+
+If the schema is the source of truth, then a form builder is not just editing UI. It is editing the
+contract between frontend, backend validation, documentation, and any future automation.
+
+Keep this as a brief tease unless you have concrete current product details you can safely share.
+</Notes>
