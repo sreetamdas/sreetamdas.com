@@ -1,5 +1,10 @@
 import { createHeadlessForm } from "@remoteoss/json-schema-form";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect, useMemo, useRef } from "react";
+
+import type { KarmaHighlighter } from "@/lib/domains/shiki/highlighter";
+
+import { getSlimKarmaHighlighter } from "@/lib/domains/shiki/highlighter";
+import { renderCodeBlockToHtml } from "@/lib/domains/shiki/plugin";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type JsfObjectSchema = Record<string, any>;
@@ -216,6 +221,56 @@ function FieldRenderer({
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type FormValues = Record<string, any>;
 
+function ShikiEditor({ value, onChange }: { value: string; onChange: (v: string) => void }) {
+	const [highlighter, setHighlighter] = useState<KarmaHighlighter | null>(null);
+	const textareaRef = useRef<HTMLTextAreaElement>(null);
+	const shikiRef = useRef<HTMLDivElement>(null);
+
+	useEffect(() => {
+		getSlimKarmaHighlighter().then(setHighlighter);
+	}, []);
+
+	const highlighted = useMemo(() => {
+		if (!highlighter) return null;
+		const html = renderCodeBlockToHtml(highlighter, value, "json", null);
+		return html ? html.replace(/ tabindex="0"/g, "") : null;
+	}, [highlighter, value]);
+
+	const handleScroll = useCallback(() => {
+		if (textareaRef.current && shikiRef.current) {
+			shikiRef.current.scrollTop = textareaRef.current.scrollTop;
+			shikiRef.current.scrollLeft = textareaRef.current.scrollLeft;
+		}
+	}, []);
+
+	return (
+		<div className="relative flex-1 overflow-hidden">
+			{/* Shiki highlighted layer — read-only, synced scroll */}
+			<div
+				ref={shikiRef}
+				className="pointer-events-none absolute inset-0 overflow-auto p-3 [&_pre]:m-0"
+				aria-hidden="true"
+			>
+				{highlighted ? (
+					<div dangerouslySetInnerHTML={{ __html: highlighted }} />
+				) : (
+					<pre className="m-0 font-mono text-xs leading-relaxed text-green-300">{value}</pre>
+				)}
+			</div>
+
+			{/* Transparent textarea — captures all input */}
+			<textarea
+				ref={textareaRef}
+				className="absolute inset-0 h-full w-full resize-none bg-transparent p-3 font-mono text-xs leading-relaxed text-transparent caret-white focus:outline-none"
+				value={value}
+				onChange={(e) => onChange(e.target.value)}
+				onScroll={handleScroll}
+				spellCheck={false}
+			/>
+		</div>
+	);
+}
+
 export function JsfPlayground() {
 	const [activePreset, setActivePreset] = useState(0);
 	const [schemaText, setSchemaText] = useState(() => JSON.stringify(PRESETS[0].schema, null, 2));
@@ -285,19 +340,17 @@ export function JsfPlayground() {
 					<div className="border-b border-white/10 px-3 py-1.5 text-xs font-medium text-white/50">
 						JSON Schema
 					</div>
-					<textarea
-						className="flex-1 resize-none bg-transparent p-3 font-mono text-xs leading-relaxed text-green-300 focus:outline-none"
+					<ShikiEditor
 						value={schemaText}
-						onChange={(e) => {
-							setSchemaText(e.target.value);
+						onChange={(v) => {
+							setSchemaText(v);
 							try {
-								JSON.parse(e.target.value);
+								JSON.parse(v);
 								setParseError(null);
 							} catch (err) {
 								setParseError((err as Error).message);
 							}
 						}}
-						spellCheck={false}
 					/>
 					{parseError ? (
 						<div className="border-t border-white/10 px-3 py-1.5 text-xs text-red-400">
