@@ -7,6 +7,7 @@ url: "/blog/chameleon-text"
 ---
 
 import { Gradient } from "@/lib/components/Typography";
+import { JsfPlayground } from "./-components";
 
 ---
 
@@ -48,6 +49,7 @@ Senior Frontend Engineer II @ Remote
 - Customer onboarding
 - Defining discounts
 - Any kind of structured input from the user really
+- ...and they get expensive when the rules change
 
 <Notes>
 
@@ -75,12 +77,13 @@ Tiger currently has around 550 JSON schema files
 
 ---
 
-# Validation
+# The Drift Problem
 
 <Steps>
 
-- Client side: Yup, Zod, Valibot, web-native
-- Server side: actual validation
+- Frontend validates with Yup, Zod, Valibot
+- Backend validates differently
+- Rules drift. Bugs happen.
 
 </Steps>
 
@@ -94,7 +97,7 @@ Tiger currently has around 550 JSON schema files
 
 ---
 
-# SSoT: Single Source of Truth
+# Single Source of Truth
 
 Backend defines:
 
@@ -109,7 +112,7 @@ Backend defines:
 
 <Notes>
 
-ore idea: make the rule data travel across the server-client interface, instead of re-implementing the rule in
+Core idea: make the rule data travel across the server-client interface, instead of re-implementing the rule in
 React and then again in Elixir.
 
 </Notes>
@@ -118,10 +121,9 @@ React and then again in Elixir.
 
 # JSON Schema
 
-- `type`
-- `properties`
-- `required`
-- `allOf`
+- Standard way to describe data shape
+- `type`, `properties`, `required`
+- Conditional logic with `allOf`
 
 <Notes>
 Keep this short. The audience does not need a full JSON Schema tutorial.
@@ -194,6 +196,74 @@ else entirely.
 
 This is the important architectural split: JSF knows about schema and validation; product code knows
 about React lifecycle, layout, design system details, analytics, drafts, and submission flows.
+
+</Notes>
+
+---
+
+# Architecture Overview
+
+- Tiger (Elixir) writes schemas
+- JSF transforms schema → fields
+- Dragon (React) renders them
+
+<Notes>
+This is the high-level flow.
+
+Tiger authors the schema using Elixir code, knowledge data, and business rules.
+JSF is the translation layer: schema goes in, field model and validation come out.
+Dragon is the product layer: it takes the field model and renders actual UI with React, Formik, and
+the design system.
+
+The key insight: each layer has one job, and the contract between them is just data.
+
+</Notes>
+
+---
+
+# Tiger
+
+- Elixir
+- JSON schemas
+- `rmt-components`
+- Knowledge data
+
+<Notes>
+This is the Elixir-crowd anchor.
+
+Tiger does not just store static JSON files. It has an Elixir layer for composing schemas:
+`Remote.RmtJson` and Tiger-specific `rmt-components`.
+
+Those components add fields, required lists, conditionals, computed value definitions, and logic.
+
+This is worth emphasizing: the backend is not passively serving a blob. It is authoring and expanding
+the schema using Elixir code, context, and knowledge data.
+
+</Notes>
+
+---
+
+# Dragon
+
+- React
+- DynamicForm
+- `useCreateHeadlessForm`
+- Formik bridge
+
+<Notes>
+Dragon has the product-specific wrapper around JSF.
+
+The wrapper handles things the OSS library should not own:
+
+- memoization for React lifecycle
+- snake_case API fields to frontend values
+- picked and omitted fields for partial forms
+- parsing Formik values before validation
+- hiding fields
+- error reporting
+- v0/v1 switching
+
+This is the "OSS ends here, product code starts here" section.
 
 </Notes>
 
@@ -286,74 +356,6 @@ Good codebase-backed examples to pull into a later pass:
 
 ---
 
-# Tiger
-
-- Elixir
-- JSON schemas
-- `rmt-components`
-- Knowledge data
-
-<Notes>
-This is the Elixir-crowd anchor.
-
-Tiger does not just store static JSON files. It has an Elixir layer for composing schemas:
-`Remote.RmtJson` and Tiger-specific `rmt-components`.
-
-Those components add fields, required lists, conditionals, computed value definitions, and logic.
-
-This is worth emphasizing: the backend is not passively serving a blob. It is authoring and expanding
-the schema using Elixir code, context, and knowledge data.
-
-</Notes>
-
----
-
-# Dragon
-
-- React
-- DynamicForm
-- `useCreateHeadlessForm`
-- Formik bridge
-
-<Notes>
-Dragon has the product-specific wrapper around JSF.
-
-The wrapper handles things the OSS library should not own:
-
-- memoization for React lifecycle
-- snake_case API fields to frontend values
-- picked and omitted fields for partial forms
-- parsing Formik values before validation
-- hiding fields
-- error reporting
-- v0/v1 switching
-
-This is the "OSS ends here, product code starts here" section.
-
-</Notes>
-
----
-
-# Remote kit
-
-- Version routing
-- Custom logic ops
-- Server bundle
-
-<Notes>
-The public Remote kit wraps the core library for Remote-specific behavior.
-
-Key point to verify before presenting: the exact current relationship between
-`@remoteoss/json-schema-form` and `@remoteoss/remote-json-schema-form-kit`, but the code clearly uses
-the kit from Dragon and from server-side validation paths.
-
-The strongest story: schemas can opt into newer JSF behavior with metadata such as
-`x-rmt-meta.jsfVersion`, so migration can happen per schema instead of one big flag day.
-
-</Notes>
-
----
-
 # Server validation
 
 - Tiger calls validator
@@ -374,6 +376,26 @@ Dragon also has a `json-schemas-validate` lambda where the core code is essentia
 `createHeadlessForm(schema).handleValidation(data)`
 
 That is the concrete proof of the single-source-of-truth story.
+
+</Notes>
+
+---
+
+# Remote kit
+
+- Version routing
+- Custom logic ops
+- Server bundle
+
+<Notes>
+The public Remote kit wraps the core library for Remote-specific behavior.
+
+Key point to verify before presenting: the exact current relationship between
+`@remoteoss/json-schema-form` and `@remoteoss/remote-json-schema-form-kit`, but the code clearly uses
+the kit from Dragon and from server-side validation paths.
+
+The strongest story: schemas can opt into newer JSF behavior with metadata such as
+`x-rmt-meta.jsfVersion`, so migration can happen per schema instead of one big flag day.
 
 </Notes>
 
@@ -485,19 +507,19 @@ inputs matter, and computed values can derive what downstream calculations need.
 
 # Live demo
 
-- Playground
-- Edit schema
-- Watch form change
-- Break validation
+<JsfPlayground />
 
 <Notes>
-Lowest-risk demo: use the public playground and edit a schema live.
+Use the built-in playground to demo live.
 
-Best narrative demo: show a payload that the UI rejects, then show the server validation rejecting the
-same shape with the same rule.
+Preset flow:
 
-Higher-risk idea: interactive Cloudflare Durable Object polling/message queue where the audience
-changes the schema live. Good if scoped with Areena; not necessary for the core talk.
+1. "Simple" — show basic schema → form mapping
+2. "Conditional" — edit country, watch state field appear/disappear based on allOf/if/then
+3. "Computed" — type salary and bonus, watch total auto-calculate via x-jsf-logic
+
+Then show validation: submit empty form to see required errors, or type invalid email to see format
+errors. Same schema, same rules, running client-side right here.
 
 </Notes>
 
@@ -518,23 +540,5 @@ The point is not "everyone should use our exact library." The point is the archi
 When form rules change by country, product, employment type, or legal requirement, the rule should not
 live inside a React component. Put it in data, ship it across the wire, render it headlessly, and
 validate it wherever the data enters the system.
-
-</Notes>
-
----
-
-# What's next
-
-- Admin builders
-- AI schema editing
-- More surfaces
-
-<Notes>
-This is where Sandrina's AI/admin builder direction fits.
-
-If the schema is the source of truth, then a form builder is not just editing UI. It is editing the
-contract between frontend, backend validation, documentation, and any future automation.
-
-Keep this as a brief tease unless you have concrete current product details you can safely share.
 
 </Notes>
