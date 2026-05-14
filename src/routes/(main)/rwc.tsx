@@ -126,7 +126,7 @@ function RWCCodeSamples({
 						<h2 className="group text-primary font-mono text-xl" id={slug}>
 							<a
 								href={`#${slug}`}
-								className="text-primary focus-visible:outline-secondary absolute -translate-x-[125%] translate-y-2 opacity-0 transition-opacity group-hover:opacity-75 focus-visible:opacity-75 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-dashed max-md:hidden"
+								className="text-primary focus-visible:outline-secondary absolute translate-x-[-125%] translate-y-2 opacity-0 transition-opacity group-hover:opacity-75 focus-visible:opacity-75 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-dashed max-md:hidden"
 							>
 								<FiLink aria-label={slug} />
 							</a>
