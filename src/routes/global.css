@@ -246,10 +246,6 @@
 	}
 }
 
-@utility font-code {
-	font-family: var(--font-iosevka);
-}
-
 @utility link-base {
 	color: var(--color-primary);
 	background-image: linear-gradient(90deg, var(--color-secondary) 0%, var(--color-secondary) 100%);

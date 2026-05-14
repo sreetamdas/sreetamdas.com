@@ -17,7 +17,7 @@ import { Steps } from "@/lib/domains/slides/steps";
 export const slideMDXComponents: MDXComponents = {
 	h1: ({ children, ...props }: HTMLAttributes<HTMLHeadingElement>) => (
 		<Heading.h1
-			className="group text-primary pt-10 font-serif text-7xl leading-normal font-bold font-stretch-semi-condensed"
+			className="group text-primary pt-10 pb-6 font-serif text-7xl leading-normal font-bold font-stretch-semi-condensed"
 			{...props}
 			disable_slug
 		>
@@ -26,7 +26,7 @@ export const slideMDXComponents: MDXComponents = {
 	),
 	h2: ({ children, ...props }: HTMLAttributes<HTMLHeadingElement>) => (
 		<Heading.h2
-			className="group text-primary pt-10 font-serif text-4xl leading-normal font-bold font-stretch-semi-condensed"
+			className="group text-primary pt-10 pb-6 font-serif text-4xl leading-normal font-bold font-stretch-semi-condensed"
 			{...props}
 			disable_slug
 		>
@@ -35,7 +35,7 @@ export const slideMDXComponents: MDXComponents = {
 	),
 	h3: ({ children, ...props }: HTMLAttributes<HTMLHeadingElement>) => (
 		<Heading.h3
-			className="group text-primary pt-10 font-serif text-3xl leading-normal font-bold font-stretch-semi-condensed"
+			className="group text-primary pt-10 pb-6 font-serif text-3xl leading-normal font-bold font-stretch-semi-condensed"
 			{...props}
 			disable_slug
 		>
@@ -43,7 +43,7 @@ export const slideMDXComponents: MDXComponents = {
 		</Heading.h3>
 	),
 	p: ({ children, ...props }: HTMLAttributes<HTMLParagraphElement>) => (
-		<p className="py-3 text-3xl first:pt-0 last:pb-0" {...props}>
+		<p className="py-3 font-serif text-3xl first:pt-0 last:pb-0" {...props}>
 			{children}
 		</p>
 	),
