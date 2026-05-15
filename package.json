@@ -43,7 +43,7 @@
 		"lint-staged": "vp staged"
 	},
 	"dependencies": {
-		"@cloudflare/vite-plugin": "^1.36.4",
+		"@cloudflare/vite-plugin": "^1.37.0",
 		"@fontsource-variable/bricolage-grotesque": "^5.2.10",
 		"@fontsource-variable/inter": "^5.2.8",
 		"@notionhq/client": "^5.21.0",
@@ -68,6 +68,7 @@
 		"drizzle-orm": "1.0.0-beta.15-859cf75",
 		"image-size": "^2.0.2",
 		"lodash-es": "^4.18.1",
+		"modern-monaco": "^0.4.1",
 		"react": "19.2.6",
 		"react-dom": "19.2.6",
 		"react-icons": "^5.6.0",
@@ -94,22 +95,20 @@
 		"@types/react": "^19.2.14",
 		"@types/react-dom": "^19.2.3",
 		"@types/unist": "~3.0.3",
-		"@typescript/native-preview": "7.0.0-dev.20260513.1",
 		"@vitejs/plugin-react": "^6.0.1",
 		"@vitejs/plugin-rsc": "^0.5.26",
 		"better-sqlite3": "^12.10.0",
 		"drizzle-kit": "1.0.0-beta.15-859cf75",
 		"tailwindcss": "^4.3.0",
-		"tsx": "^4.21.0",
 		"typescript": "^6.0.3",
 		"velite": "^0.3.1",
 		"vite-plus": "catalog:",
-		"wrangler": "^4.90.1"
+		"wrangler": "^4.91.0"
 	},
 	"engines": {
 		"node": "24"
 	},
-	"packageManager": "pnpm@11.0.9",
+	"packageManager": "pnpm@11.1.2",
 	"pnpm": {
 		"onlyBuiltDependencies": [
 			"@parcel/watcher",
