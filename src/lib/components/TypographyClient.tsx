@@ -56,7 +56,7 @@ export const ChameleonHighlight = ({
 	return (
 		<span
 			className={cn(
-				"font-serif text-[clamp(4rem,10vw,8rem)] leading-none font-bold tracking-tighter text-(--color-fancy-pants,var(--color-primary)) transition-colors duration-3000 ease-linear",
+				"font-serif text-[clamp(4rem,10vw,8rem)] leading-none font-bold text-(--color-fancy-pants,var(--color-primary)) transition-colors duration-3000 ease-linear",
 				passedClasses,
 			)}
 		>

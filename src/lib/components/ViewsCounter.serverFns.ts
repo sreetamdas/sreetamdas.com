@@ -1,4 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
+
 import { getDb } from "@/db";
 import { upsertPageViews } from "@/lib/domains/PageViews";
 
@@ -11,7 +12,7 @@ type PagePathname = {
 	disabled: boolean;
 };
 
-export const fetchViewCountServerFn = createServerFn<"GET", "data", PageViewCount>({
+export const fetchViewCountServerFn = createServerFn({
 	method: "GET",
 })
 	.inputValidator((data) => {

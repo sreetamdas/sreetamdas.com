@@ -1,0 +1,382 @@
+---
+title: "Match made \non the server: \nJSON Schema Forms"
+published: true
+published_at: "2026-05-16"
+---
+
+import { Gradient } from "@/lib/components/Typography";
+import { JsfPlayground } from "./-components";
+
+---
+
+# Sreetam Das
+
+<img
+  src="/SreetamDas.jpg"
+  alt="Sreetam Das"
+  className="mx-auto absolute top-28 right-28 mb-6 size-60 rounded-full border-4 border-white/10 object-cover"
+/>
+
+- Senior Frontend Engineer II
+- Web Experience at Remote
+
+---
+
+# Remote
+
+- Help companies hire, manage and pay people
+
+<Steps>
+
+- Full time Employment, Contractors, Payroll
+- No offices!
+- Yes, I work remotely for Remote
+- Yes, we have received questions about TV remote issues
+
+</Steps>
+
+<Notes>
+
+- Talk about my sponsor
+
+</Notes>
+
+---
+
+# Engineering at Remote
+
+- Since 2020: Growth Engineering for 4 years, now WebXP
+- ~300 across the entire engineering org, ~50 teams across 40+ countries
+- Elixir backend: 5 million+ lines of code
+- One of the largest Elixir codebases - working directly with the lang creator
+- Next.js SPA, TanStack goodies
+
+---
+
+# Forms
+
+- Sign-up, sign-in
+- Customer onboarding, defining discounts
+- Employment contracts, time-off policies
+- Any kind of structured input from the user really
+- ...and they get expensive when the rules change
+
+<Notes>
+
+- Who's worked on/with forms
+- Update, Maintenance, Sync
+
+</Notes>
+
+---
+
+# Forms at Remote
+
+- Country-specific, with over 100 countries
+- Product-specific
+- Rule-heavy
+- Bugs are costly!
+
+<Notes>
+Power everything: country  employment type rules, payroll setup, contract details, onboarding
+details, address formats, tax details, leave policies
+
+Tiger currently has around 550 JSON schema files
+
+</Notes>
+
+---
+
+# The Drift Problem
+
+- Frontend validates with Yup — you might use Zod, Valibot, etc.
+- Backend must validate as well
+- Coordinate development, sync deployments
+
+## Rules drift. Bugs happen.
+
+<Notes>
+
+- Drift
+- Update, Maintenance, Sync
+- SSoT
+
+</Notes>
+
+---
+
+# Our fix: Single Source of Truth
+
+Backend defines:
+
+- Expected shape
+- Constraints
+- Conditional logic
+- even the error copy
+
+<Notes>
+
+Core idea: make the rule data travel across the server-client interface, instead of re-implementing the rule in
+React/on your FE, and then again in Elixir/on your BE.
+
+</Notes>
+
+---
+
+# JSON Schema
+
+- Standard way to describe data shape
+- `type`, `properties`, `required`
+- Conditional logic with `allOf`, `if`, `then`
+
+<Notes>
+
+What we use to make those rules travel across the server-client barrier
+
+- `type: "object"` means the payload is an object
+- `properties` lists the fields
+- `required` lists mandatory fields
+- `allOf` / `if` / `then` can model conditional constraints
+
+JSON Schema can say what data is valid, but it does not really tell us how
+to render a great product form. That is where JSF adds a thin layer of UI-oriented metadata.
+
+</Notes>
+
+---
+
+# JSON Schema Form
+
+- Headless
+- Schema in
+- Fields out
+- Validation out
+
+<Notes>
+does not render inputs. give it a schema and it returns a list of fields, plus validation fn.
+
+not "yet another React component library."
+
+</Notes>
+
+---
+
+# Core API
+
+```tsx
+const { fields, handleValidation } = createHeadlessForm(schema, {
+  initialValues,
+});
+```
+
+- No components
+- No CSS
+- No design system
+- Bring your own form library
+
+<Notes>
+
+`createHeadlessForm()` is the main entrypoint. It returns fields that your UI can render, and a
+`handleValidation()` function that validates values against the schema.
+
+fields rendered with our internal form system: design system Norma and Formik.
+
+Different domain teams can still have custom-looking/themed form elements, while JSF takes care of the schema and validation
+
+</Notes>
+
+---
+
+# Architecture Overview
+
+- Backend defines the schemas
+- JSON Schema Form transforms schema → fields
+- FE handles rendering
+
+<Notes>
+
+Backend authors the schema based on requested form - can change depending on country, employment type, role, etc.
+
+each layer has one job, and the contract between them is just data.
+
+</Notes>
+
+---
+
+{/* TODO: consult codebase */}
+
+# JSON Schema Form Kit
+
+- Remote-specific wrapper
+- Handles things that we need internally, not suited for OSS
+- memoization for React lifecycle
+- snake_case API fields to frontend values
+- picked and omitted fields for partial forms
+- parsing Formik values before validation
+- hiding fields
+- error reporting
+- v0/v1 routing
+
+---
+
+# `x-jsf-*`
+
+- JSON Schema Form allows custom keywords
+- `x-jsf-presentation`
+- `x-jsf-order`
+- `x-jsf-errorMessage`
+- `x-jsf-logic`
+
+---
+
+# Presentation `x-jsf-presentation`
+
+- Input type
+- Description
+- Options
+- Field order
+
+<Notes>
+
+Basic JSON Schema tells us "string", "number", "required", "minimum". Presentation metadata tells
+Dragon whether that should be a text field, money input, select, radio group, file upload, statement,
+fieldset, etc.
+
+</Notes>
+
+---
+
+# Conditional fields
+
+- `if`
+- `then`
+- `else`
+- `allOf`
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "employment_type": {
+      "type": "string",
+      "enum": ["employee", "contractor"]
+    },
+    "annual_salary": {
+      "type": "number",
+      "minimum": 0
+    },
+    "hourly_rate": {
+      "type": "number",
+      "minimum": 0
+    }
+  },
+  "required": ["employment_type"],
+  "allOf": [
+    {
+      "if": {
+        "properties": { "employment_type": { "const": "employee" } },
+        "required": ["employment_type"]
+      },
+      "then": {
+        "required": ["annual_salary"],
+        "not": { "required": ["hourly_rate"] }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "employment_type": { "const": "contractor" }
+        },
+        "required": ["employment_type"]
+      },
+      "then": {
+        "required": ["hourly_rate"],
+        "not": { "required": ["annual_salary"] }
+      }
+    }
+  ]
+}
+```
+
+---
+
+# JSON Logic
+
+- Cross-field rules
+- Computed values
+- Date math
+- Custom operators
+
+<Notes>
+JSON Schema conditionals cover a lot, but richer business logic often wants intra-form, cross-field dependencies.
+
+This is where `x-jsf-logic` comes in. Remote uses it for validations and computed values. Dragon and
+server-side validation can both evaluate those rules.
+
+Good codebase-backed examples to pull into a later pass:
+
+- date difference in months from the lambda test
+- `date_add_days` / date helper operators from the kit
+- country-specific salary/probation computed values from Tiger RMT components
+
+</Notes>
+
+---
+
+# Logical operations
+
+```json
+{ "==": [1, 1] }
+// → true
+```
+
+---
+
+# Live demo
+
+<JsfPlayground />
+
+<Notes>
+Use the built-in playground to demo live.
+
+Preset flow:
+
+1. "Simple" — show basic schema → form mapping
+2. "Conditional" — edit country, watch state field appear/disappear based on allOf/if/then
+3. "Computed" — type salary and bonus, watch total auto-calculate via x-jsf-logic
+
+Then show validation: submit empty form to see required errors, or type invalid email to see format
+errors. Same schema, same rules, running client-side right here.
+
+</Notes>
+
+---
+
+# So, why JSF?
+
+- Backend as author
+- UI as consumer
+- Validation everywhere
+
+<Notes>
+This is the closing distillation.
+
+The point is not "everyone should use our exact library." The point is the architecture:
+
+When form rules change by country, product, employment type, or legal requirement, the rule should not
+live inside a React component. Put it in data, ship it across the wire, render it headlessly, and
+validate it wherever the data enters the system.
+
+</Notes>
+
+---
+
+# What's next?
+
+## React Nexus, Bengaluru
+
+---
+
+# Thanks!
+
+- [srtm.fyi/jsf](https://srtm.fyi/jsf)

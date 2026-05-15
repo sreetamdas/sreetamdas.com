@@ -1,9 +1,10 @@
-import { blogPosts } from "@/generated";
 import { createFileRoute, notFound } from "@tanstack/react-router";
+import { createServerFn } from "@tanstack/react-start";
+import { renderServerComponent } from "@tanstack/react-start/rsc";
+import { isNil } from "lodash-es";
 
 import { SITE_DESCRIPTION, SITE_TITLE_APPEND } from "@/config";
-import { absoluteUrl, canonicalUrl, defaultOgImageUrl } from "@/lib/seo";
-
+import { blogPosts } from "@/generated";
 import { NotFound404 } from "@/lib/components/Error";
 import { MDXContent } from "@/lib/components/MDX";
 import { ReadingProgress } from "@/lib/components/ProgressBar";
@@ -11,14 +12,12 @@ import { InfoBlock } from "@/lib/components/sink";
 import { Gradient } from "@/lib/components/Typography";
 import { ChameleonHighlight, Sparkles } from "@/lib/components/TypographyClient";
 import { ViewsCounter } from "@/lib/components/ViewsCounter";
-import { createServerFn } from "@tanstack/react-start";
-import { renderServerComponent } from "@tanstack/react-start/rsc";
+import { absoluteUrl, canonicalUrl, defaultOgImageUrl } from "@/lib/seo";
 
 import {
 	HighlightWithUseEffect,
 	HighlightWithUseInterval,
 } from "./-chameleon-text/componentsClient";
-import { isNil } from "lodash-es";
 
 type BlogPost = (typeof blogPosts)[number];
 type BlogLoaderData = {
@@ -109,7 +108,7 @@ function RouteComponent() {
 	return (
 		<>
 			<ReadingProgress />
-			<h1 className="pt-10 font-serif text-8xl font-bold tracking-tighter">
+			<h1 className="pt-10 font-serif text-8xl font-bold">
 				<Gradient>{post.title}</Gradient>
 			</h1>
 			<p className="text-foreground/60 pb-20 text-sm">

@@ -1,7 +1,6 @@
+import { Link } from "@tanstack/react-router";
 import { FaGithub, FaTwitter } from "react-icons/fa";
 import { FiRss } from "react-icons/fi";
-
-import { Link } from "@tanstack/react-router";
 
 export const NavigationItems = () => (
 	<nav className="contents w-min">

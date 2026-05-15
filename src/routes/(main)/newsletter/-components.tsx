@@ -82,7 +82,7 @@ export const NewsletterEmailDetail = ({ email }: NewsletterEmailDetailProps) => 
 	return (
 		<section>
 			<article>
-				<h1 className="pt-20 font-serif text-6xl font-bold tracking-tighter">{email.subject}</h1>
+				<h1 className="pt-20 font-serif text-6xl font-bold">{email.subject}</h1>
 				<div className="mt-5 mb-12 flex justify-end gap-5">
 					<span className="flex items-center gap-1.5 text-base">
 						<HiOutlineNewspaper className="text-2xl" /> #{email.secondary_id}

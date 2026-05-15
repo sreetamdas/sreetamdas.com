@@ -1,5 +1,6 @@
 "use client";
 
+import { Link, useLocation } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { useShallow } from "zustand/react/shallow";
 
@@ -16,7 +17,6 @@ import { useHasMounted } from "@/lib/helpers/hooks";
 
 import { type FoobaFlagPageSlug, FOOBAR_FLAGS } from "./flags";
 import { type FoobarSliceType } from "./store";
-import { Link, useLocation } from "@tanstack/react-router";
 
 const foobarDataSelector = (state: FoobarSliceType) => ({
 	foobar_data: state.foobar_data,

@@ -2,7 +2,6 @@
 	"editor.quickSuggestions": {
 		"strings": true
 	},
-	"editor.defaultFormatter": "oxc.oxc-vscode",
 	"files.associations": {
 		"*.css": "tailwindcss",
 		"*.module.css": "tailwindcss"
@@ -12,16 +11,27 @@
 	"tailwindCSS.includeLanguages": {
 		"plaintext": "html"
 	},
-	"typescript.tsdk": "node_modules/typescript/lib",
-	"typescript.enablePromptUseWorkspaceTsdk": true,
-	"typescript.experimental.useTsgo": true,
+	"js/ts.tsdk.path": "node_modules/typescript/lib",
+	"js/ts.tsdk.promptToUseWorkspaceVersion": true,
+	"js/ts.experimental.useTsgo": true,
+	"editor.defaultFormatter": "oxc.oxc-vscode",
+	"[json]": { "editor.defaultFormatter": "oxc.oxc-vscode" },
+	"[jsonc]": { "editor.defaultFormatter": "oxc.oxc-vscode" },
+	"[mdx]": { "editor.defaultFormatter": "oxc.oxc-vscode" },
+	"[javascript]": { "editor.defaultFormatter": "oxc.oxc-vscode" },
+	"[javascriptreact]": { "editor.defaultFormatter": "oxc.oxc-vscode" },
+	"[typescript]": { "editor.defaultFormatter": "oxc.oxc-vscode" },
+	"[typescriptreact]": { "editor.defaultFormatter": "oxc.oxc-vscode" },
+	"editor.formatOnSave": true,
+	"editor.formatOnSaveMode": "file",
+	"editor.codeActionsOnSave": {
+		"source.fixAll.oxc": "explicit"
+	},
 	"oxc.enable": true,
-	"oxc.path.oxlint": "node_modules/oxlint/bin/oxlint",
-	"oxc.configPath": ".config/.oxlintrc.json",
+	"oxc.configPath": "./vite.config.ts",
 	"oxc.typeAware": true,
 	"oxc.lint.run": "onType",
-	"oxc.path.oxfmt": "node_modules/oxfmt/bin/oxfmt",
-	"oxc.fmt.configPath": ".config/.oxfmtrc.json",
+	"oxc.fmt.configPath": "./vite.config.ts",
 	"files.watcherExclude": {
 		"**/routeTree.gen.ts": true
 	},

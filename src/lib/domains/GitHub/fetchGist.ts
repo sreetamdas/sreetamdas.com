@@ -1,4 +1,5 @@
 import { type Endpoints } from "@octokit/types";
+
 import { GITHUB_API_BASE_URL, getGitHubHeaders } from "@/lib/domains/GitHub/shared";
 
 export async function fetchGist(gist_id: string) {

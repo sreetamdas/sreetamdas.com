@@ -1,10 +1,12 @@
-import { NewsletterEmailDetail } from "./-components";
-import { fetchNewsletterEmails } from "./-helpers";
 import { createFileRoute, notFound } from "@tanstack/react-router";
-import { SITE_DESCRIPTION, SITE_TITLE_APPEND } from "@/config";
-import { canonicalUrl, defaultOgImageUrl } from "@/lib/seo";
 import { createServerFn } from "@tanstack/react-start";
 import { renderServerComponent } from "@tanstack/react-start/rsc";
+
+import { SITE_DESCRIPTION, SITE_TITLE_APPEND } from "@/config";
+import { canonicalUrl, defaultOgImageUrl } from "@/lib/seo";
+
+import { NewsletterEmailDetail } from "./-components";
+import { fetchNewsletterEmails } from "./-helpers";
 
 type NewsletterIssue = Awaited<ReturnType<typeof fetchNewsletterEmails>>["results"][number];
 type NewsletterLoaderData = {

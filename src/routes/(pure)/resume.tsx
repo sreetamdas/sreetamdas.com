@@ -1,9 +1,10 @@
-import { SITE_DESCRIPTION, SITE_TITLE_APPEND } from "@/config";
-import { ViewsCounter } from "@/lib/components/ViewsCounter";
-import { canonicalUrl, defaultOgImageUrl } from "@/lib/seo";
 import { createFileRoute } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
 import { renderServerComponent } from "@tanstack/react-start/rsc";
+
+import { SITE_DESCRIPTION, SITE_TITLE_APPEND } from "@/config";
+import { ViewsCounter } from "@/lib/components/ViewsCounter";
+import { canonicalUrl, defaultOgImageUrl } from "@/lib/seo";
 
 export const Route = createFileRoute("/(pure)/resume")({
 	component: ResumePage,

@@ -1,14 +1,15 @@
-import { rootPages } from "@/generated";
-import { MDXContent } from "@/lib/components/MDX";
-import { RepoContributors } from "@/lib/components/GitHub/RepoContributors";
-import { ViewsCounter } from "@/lib/components/ViewsCounter";
-import { fetchRepoContributors } from "@/lib/domains/GitHub/serverFns";
-import { type RepoContributor } from "@/lib/domains/GitHub/types";
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
 import { renderServerComponent } from "@tanstack/react-start/rsc";
 import { isNil } from "lodash-es";
+
 import { SITE_DESCRIPTION, SITE_TITLE_APPEND } from "@/config";
+import { rootPages } from "@/generated";
+import { RepoContributors } from "@/lib/components/GitHub/RepoContributors";
+import { MDXContent } from "@/lib/components/MDX";
+import { ViewsCounter } from "@/lib/components/ViewsCounter";
+import { fetchRepoContributors } from "@/lib/domains/GitHub/serverFns";
+import { type RepoContributor } from "@/lib/domains/GitHub/types";
 import { canonicalUrl, defaultOgImageUrl } from "@/lib/seo";
 
 type RootPage = (typeof rootPages)[number];
@@ -84,9 +85,7 @@ function MDXPageSlugPage() {
 
 	return (
 		<>
-			<h1 className="pt-10 pb-20 font-serif text-8xl font-bold tracking-tighter">
-				/{post.page_slug}
-			</h1>
+			<h1 className="pt-10 pb-20 font-serif text-8xl font-bold">/{post.page_slug}</h1>
 			{Renderable}
 			<ViewsCounter />
 		</>

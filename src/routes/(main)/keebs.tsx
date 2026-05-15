@@ -1,15 +1,15 @@
 import { type PageObjectResponse } from "@notionhq/client/build/src/api-endpoints";
+import { createFileRoute } from "@tanstack/react-router";
+import { createServerFn } from "@tanstack/react-start";
+import { renderServerComponent } from "@tanstack/react-start/rsc";
 import { isEmpty, isUndefined } from "lodash-es";
 
 import { SITE_TITLE_APPEND } from "@/config";
-import { canonicalUrl, defaultOgImageUrl } from "@/lib/seo";
 import { Image } from "@/lib/components/Image";
 import { ViewsCounter } from "@/lib/components/ViewsCounter";
 import { ImgurClient, type KeebDetails } from "@/lib/domains/Imgur";
 import { NotionClient } from "@/lib/domains/Notion";
-import { createFileRoute } from "@tanstack/react-router";
-import { createServerFn } from "@tanstack/react-start";
-import { renderServerComponent } from "@tanstack/react-start/rsc";
+import { canonicalUrl, defaultOgImageUrl } from "@/lib/seo";
 
 const KEEBS_DATABASE_ID =
 	process.env.VITE_NOTION_KEEBS_PAGE_ID ??
@@ -70,7 +70,7 @@ function KeebsPage() {
 
 	return (
 		<>
-			<h1 className="pt-10 pb-20 font-serif text-8xl font-bold tracking-tighter">/keebs</h1>
+			<h1 className="pt-10 pb-20 font-serif text-8xl font-bold">/keebs</h1>
 			{Renderable}
 			<ViewsCounter />
 		</>

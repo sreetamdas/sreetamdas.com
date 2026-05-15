@@ -1,3 +1,4 @@
+import { mdxParse } from "safe-mdx/parse";
 /**
  * Produces a JSON-serialized MDAST and a separate map of Shiki-highlighted code blocks.
  *
@@ -8,9 +9,8 @@
  */
 import { type Node } from "unist";
 import { visit } from "unist-util-visit";
-import { mdxParse } from "safe-mdx/parse";
 
-import { getSlimKarmaHighlighter } from "@/lib/domains/shiki";
+import { getSlimKarmaHighlighter } from "../../domains/shiki";
 
 type CodeTreeNode = Node & {
 	type: string;
@@ -28,7 +28,7 @@ export type MdxParseResult = {
 };
 
 export async function mdxParseWithShiki(code: string): Promise<MdxParseResult> {
-	const { renderCodeBlockToHtml } = await import("@/lib/domains/shiki/plugin");
+	const { renderCodeBlockToHtml } = await import("../../domains/shiki/plugin");
 	const highlighter = await getSlimKarmaHighlighter();
 	const mdast = mdxParse(code);
 	const shikiHighlights: ShikiHighlightMap = {};

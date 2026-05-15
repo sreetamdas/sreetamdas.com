@@ -2,10 +2,11 @@ import { type MDXComponents } from "mdx/types";
 import { SafeMdxRenderer } from "safe-mdx";
 import { mdxParse } from "safe-mdx/parse";
 
-import { customMDXComponents } from "./components";
 import { ShikiCodeBlock } from "@/lib/domains/shiki/CodeBlock";
 
 import type { ShikiHighlightMap } from "./parse";
+
+import { customMDXComponents } from "./components";
 
 export { customMDXComponents };
 
@@ -58,7 +59,9 @@ export const MDXContent = ({
 							const key = `${pos.line}:${pos.column}`;
 							const html = shikiHighlights[key];
 							if (!html) return undefined;
-							return <ShikiCodeBlock html={html} meta={codeNode.meta} />;
+							return (
+								<ShikiCodeBlock html={html} meta={codeNode.meta} className="ml-12 *:text-2xl!" />
+							);
 						}
 					: undefined
 			}
