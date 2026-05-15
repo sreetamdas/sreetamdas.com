@@ -50,7 +50,7 @@ export const slideMDXComponents: MDXComponents = {
 
 	a: LinkTo,
 	code: Code,
-	pre: CodeBlock,
+	pre: (props) => <CodeBlock {...props} className="ml-12" />,
 	ul: (props) => (
 		<UnorderedList {...props} listClasses="mb-4 only:mt-4" markClasses="mt-1.5 text-2xl" />
 	),

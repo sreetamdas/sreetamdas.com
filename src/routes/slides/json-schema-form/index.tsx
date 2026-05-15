@@ -92,6 +92,7 @@ function SlideDeckLoader({
 			initialSlide={initialSlide}
 			initialStep={initialStep}
 			onNavigate={onNavigate}
+			transitions={false}
 		/>
 	);
 }
