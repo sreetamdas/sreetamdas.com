@@ -59,7 +59,9 @@ export const MDXContent = ({
 							const key = `${pos.line}:${pos.column}`;
 							const html = shikiHighlights[key];
 							if (!html) return undefined;
-							return <ShikiCodeBlock html={html} meta={codeNode.meta} className="ml-12" />;
+							return (
+								<ShikiCodeBlock html={html} meta={codeNode.meta} className="ml-12 *:text-2xl!" />
+							);
 						}
 					: undefined
 			}
