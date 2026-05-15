@@ -60,6 +60,7 @@ interface SlideDeckProps {
 	initialStep?: number;
 	onNavigate?: (slide: number, step: number) => void;
 	components?: MDXComponents;
+	hide_slide_index?: boolean;
 }
 
 /**
@@ -81,6 +82,7 @@ export function SlideDeck({
 	aspectRatio = 16 / 9,
 	initialSlide = 0,
 	initialStep = 0,
+	hide_slide_index = false,
 	onNavigate,
 	components,
 }: SlideDeckProps) {
@@ -270,9 +272,11 @@ export function SlideDeck({
 							</SlideActiveContext.Provider>
 						))}
 
-						<div className="absolute right-4 bottom-4 z-20 text-sm text-gray-500 dark:text-gray-400">
-							{currentIndex + 1} / {slides.length}
-						</div>
+						{!hide_slide_index ? (
+							<div className="absolute right-4 bottom-4 z-20 text-sm text-gray-500 dark:text-gray-400">
+								{currentIndex + 1} / {slides.length}
+							</div>
+						) : null}
 					</div>
 				</div>
 			</div>

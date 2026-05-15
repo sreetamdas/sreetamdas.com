@@ -93,6 +93,7 @@ function SlideDeckLoader({
 			initialStep={initialStep}
 			onNavigate={onNavigate}
 			transitions={false}
+			hide_slide_index
 		/>
 	);
 }
