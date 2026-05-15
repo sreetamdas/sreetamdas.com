@@ -7,7 +7,6 @@ url: "/blog/chameleon-text"
 ---
 
 import { Gradient } from "@/lib/components/Typography";
-import { JsfPlayground } from "./-components";
 
 ---
 
@@ -142,11 +141,16 @@ to render a great product form. That is where JSF adds a thin layer of UI-orient
 
 ---
 
-# JSF
+# JSON Schema Form
 
+<Steps>
+
+- Headless
 - Schema in
 - Fields out
 - Validation out
+
+</Steps>
 
 <Notes>
 This is the simplest definition of the library.
@@ -352,7 +356,8 @@ Good codebase-backed examples to pull into a later pass:
 - date difference in months from the lambda test
 - `date_add_days` / date helper operators from the kit
 - country-specific salary/probation computed values from Tiger RMT components
-  </Notes>
+
+</Notes>
 
 ---
 
@@ -420,7 +425,8 @@ Specific gotchas from code:
 - JSF has had mutation issues around `initialValues`, so Dragon defensively deep-copies
 - nested conditional fieldsets may need multiple validation passes
 - partial forms need picked/omitted fields so hidden steps do not block validation
-  </Notes>
+
+</Notes>
 
 ---
 
@@ -506,8 +512,6 @@ inputs matter, and computed values can derive what downstream calculations need.
 ---
 
 # Live demo
-
-<JsfPlayground />
 
 <Notes>
 Use the built-in playground to demo live.
