@@ -52,7 +52,7 @@ export const slideMDXComponents: MDXComponents = {
 	code: Code,
 	pre: (props) => <CodeBlock {...props} className="ml-12" />,
 	ul: (props) => (
-		<UnorderedList {...props} listClasses="mb-4 only:mt-4" markClasses="mt-1.5 text-2xl" />
+		<UnorderedList {...props} listClasses="mb-5 only:mt-4" markClasses="mt-1.5 text-2xl" />
 	),
 	img: Image,
 	hr: () => <hr className="my-4" />,
