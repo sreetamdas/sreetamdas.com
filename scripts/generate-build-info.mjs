@@ -1,7 +1,7 @@
 import { execSync } from "node:child_process";
 import { writeFileSync } from "node:fs";
 
-function safe(cmd: string) {
+function safe(cmd) {
 	try {
 		return execSync(cmd, { encoding: "utf-8" }).trim();
 	} catch {
