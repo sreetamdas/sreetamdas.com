@@ -281,15 +281,15 @@ strong > em {
 }
 
 /* Shiki code block: line numbers via CSS counters and highlight styling */
-pre.shiki-code-block > code {
+pre.shiki-code-block code {
 	counter-reset: line;
 }
 
-pre.shiki-code-block > code > .line {
+pre.shiki-code-block code > .line {
 	display: block;
 }
 
-pre.shiki-line-numbers > code > .line::before {
+pre.shiki-line-numbers code > .line::before {
 	counter-increment: line;
 	content: counter(line);
 	display: inline-block;
@@ -310,7 +310,7 @@ pre.shiki-line-numbers > code > .line::before {
 	}
 }
 
-pre.shiki-code-block > code > .line[data-highlight="true"] {
+pre.shiki-code-block code > .line[data-highlight="true"] {
 	margin-left: -1.25rem;
 	margin-right: -1.25rem;
 	padding-left: 1rem;
@@ -319,12 +319,12 @@ pre.shiki-code-block > code > .line[data-highlight="true"] {
 	background-color: #d0b2ff1a;
 }
 
-pre.shiki-code-block > code > .line[data-highlight="true"]::before {
+pre.shiki-code-block code > .line[data-highlight="true"]::before {
 	color: #a86efd;
 }
 
 @media (max-width: 639px) {
-	pre.shiki-code-block > code > .line {
+	pre.shiki-code-block code > .line {
 		white-space: pre-wrap;
 	}
 }

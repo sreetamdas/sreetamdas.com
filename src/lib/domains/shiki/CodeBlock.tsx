@@ -7,16 +7,13 @@ import {
 	type DetailedHTMLProps,
 	type HTMLAttributes,
 	isValidElement,
+	PropsWithChildren,
 	type ReactNode,
 	useState,
 } from "react";
 import { FaChevronDown } from "react-icons/fa";
 
 import { cn } from "@/lib/helpers/utils";
-
-/* ---------------------------------------------------------------------------
- * Shared frame — used by both ShikiCodeBlock (HTML string) and CodeBlock (React children)
- * --------------------------------------------------------------------------- */
 
 type CodeBlockFrameProps = {
 	filename: string | null;
@@ -26,8 +23,7 @@ type CodeBlockFrameProps = {
 	onToggleExpand: () => void;
 	preClassName: string;
 	preStyle?: CSSProperties;
-	children: ReactNode;
-};
+} & HTMLAttributes<HTMLElement>;
 
 function CodeBlockFrame({
 	filename,
@@ -35,13 +31,13 @@ function CodeBlockFrame({
 	allowBlockExpand,
 	isBlockExpanded,
 	onToggleExpand,
+	className,
 	preClassName,
 	preStyle,
 	children,
 }: CodeBlockFrameProps) {
 	return (
-		<figure className="my-5 flex flex-col">
-			{/* Header bar */}
+		<figure className={cn("my-5 flex flex-col", className)}>
 			<div
 				className="rounded-tl-global rounded-tr-global -mx-4 grid grid-flow-col overflow-x-scroll pr-2 pl-2 sm:-mr-5 sm:-ml-12 sm:pr-5 sm:pl-12"
 				style={preStyle}
@@ -70,12 +66,10 @@ function CodeBlockFrame({
 				) : null}
 			</div>
 
-			{/* Code content */}
 			<pre className={preClassName} style={preStyle}>
 				{children}
 			</pre>
 
-			{/* Expand footer */}
 			{allowBlockExpand && !isBlockExpanded ? (
 				<div className="rounded-bl-global rounded-br-global sm:-mr-5 sm:-ml-12" style={preStyle}>
 					<button
@@ -90,11 +84,6 @@ function CodeBlockFrame({
 	);
 }
 
-/* ---------------------------------------------------------------------------
- * ShikiCodeBlock — renders pre-highlighted Shiki HTML string
- * --------------------------------------------------------------------------- */
-
-/** Extracts style and data-language from a Shiki HTML string, and counts the lines. */
 function parseShikiMeta(html: string) {
 	const styleMatch = html.match(/style="([^"]*)"/);
 	const style: CSSProperties = {};
@@ -116,17 +105,22 @@ function parseShikiMeta(html: string) {
 	return { style, language, lineCount };
 }
 
-/** Extracts the inner content of the <code> tag from Shiki HTML */
 function extractCodeInner(html: string): string {
 	const codeStart = html.indexOf("<code");
 	const codeEnd = html.lastIndexOf("</code>");
 	if (codeStart === -1 || codeEnd === -1) return html;
+
 	const innerStart = html.indexOf(">", codeStart) + 1;
-	const inner = html.slice(innerStart, codeEnd).replace(/\n/g, "");
-	return `<code>${inner}</code>`;
+	const inner = html.slice(innerStart, codeEnd);
+
+	// Only strip newlines that appear between HTML tags (formatting whitespace),
+	// not newlines that are part of actual code content within text nodes.
+	// Pattern: newline + optional whitespace between closing and opening tags
+	const cleaned = inner.replace(/>\n[\t ]*</g, "><").replace(/\n[\t ]*<\/span>/g, "</span>");
+
+	return `<code>${cleaned}</code>`;
 }
 
-/** Parse meta string like 'highlight="1,3-5" filename="test.ts"' into key/value pairs */
 function parseCodeMeta(meta: string): Record<string, string> {
 	const result: Record<string, string> = {};
 	const regex = /([\w-]+)(?:="([^"]*)")?/g;
@@ -140,9 +134,16 @@ function parseCodeMeta(meta: string): Record<string, string> {
 type ShikiCodeBlockProps = {
 	html: string;
 	meta?: string | null;
+	preClassName?: string;
+	className?: string;
 };
 
-export const ShikiCodeBlock = ({ html, meta }: ShikiCodeBlockProps) => {
+export const ShikiCodeBlock = ({
+	html,
+	meta,
+	className,
+	preClassName: passedPreClassName,
+}: ShikiCodeBlockProps) => {
 	const { style, language, lineCount } = parseShikiMeta(html);
 	const parsedMeta = meta ? parseCodeMeta(meta) : {};
 	const hideLineNumbers = parsedMeta["hide-line-numbers"] === "true";
@@ -157,10 +158,11 @@ export const ShikiCodeBlock = ({ html, meta }: ShikiCodeBlockProps) => {
 
 	const preClassName = cn(
 		"-mx-4 overflow-x-scroll p-5 text-xs max-sm:px-2 sm:-mr-5 sm:-ml-12 sm:text-sm",
+		passedPreClassName,
 		"shiki-code-block",
 		!hideLineNumbers && "shiki-line-numbers",
 		filename === null && language === "plain" && "rounded-global",
-		isBlockExpanded ? "rounded-bl-global rounded-br-global" : "max-h-[calc(100svh-120px-40px)]",
+		"rounded-bl-global rounded-br-global",
 	);
 
 	return (
@@ -170,6 +172,7 @@ export const ShikiCodeBlock = ({ html, meta }: ShikiCodeBlockProps) => {
 			allowBlockExpand={allowBlockExpand}
 			isBlockExpanded={isBlockExpanded}
 			onToggleExpand={toggleExpand}
+			className={className}
 			preClassName={preClassName}
 			preStyle={style}
 		>
@@ -178,18 +181,14 @@ export const ShikiCodeBlock = ({ html, meta }: ShikiCodeBlockProps) => {
 	);
 };
 
-/* ---------------------------------------------------------------------------
- * CodeBlock — renders React children (code elements) with line numbers
- * --------------------------------------------------------------------------- */
-
 type CodeBlockProps = DetailedHTMLProps<HTMLAttributes<HTMLPreElement>, HTMLPreElement> & {
 	children?: ReactNode;
 	language?: string;
 	highlight?: string;
 	"hide-line-numbers"?: "true";
 	filename?: string;
-
 	className?: string;
+	preClassName?: string;
 	style?: CSSProperties;
 };
 
@@ -200,6 +199,7 @@ export const CodeBlock = (props: CodeBlockProps) => {
 		"hide-line-numbers": hide_line_numbers = false,
 		filename = null,
 		className,
+		preClassName: passedPreClassName,
 	} = props;
 
 	if (!isValidElement(code)) {
@@ -221,7 +221,7 @@ export const CodeBlock = (props: CodeBlockProps) => {
 
 	const preClassName = cn(
 		"-mx-4 overflow-x-scroll p-5 text-xs max-sm:px-2 sm:-mr-5 sm:-ml-12 sm:text-sm max-sm:[&>code>.block>.line]:whitespace-pre-wrap",
-		className,
+		passedPreClassName,
 		filename === null && code_lang === "plain" && "rounded-global",
 		is_block_expanded ? "rounded-bl-global rounded-br-global" : "max-h-[calc(100svh-120px-40px)]",
 	);
@@ -233,6 +233,7 @@ export const CodeBlock = (props: CodeBlockProps) => {
 			allowBlockExpand={allow_block_expand}
 			isBlockExpanded={is_block_expanded}
 			onToggleExpand={toggleExpand}
+			className={className}
 			preClassName={preClassName}
 			preStyle={style}
 		>
@@ -245,8 +246,11 @@ export const CodeBlock = (props: CodeBlockProps) => {
 	);
 };
 
-type CodeBlockChildrenProps = { children: ReactNode; hide_line_numbers?: boolean };
-const CodeBlockChildren = ({ children, hide_line_numbers }: CodeBlockChildrenProps) => {
+type CodeBlockChildrenProps = { hide_line_numbers?: boolean };
+const CodeBlockChildren = ({
+	children,
+	hide_line_numbers,
+}: PropsWithChildren<CodeBlockChildrenProps>) => {
 	if (typeof children === "string") {
 		return children.split("\n").map((line, index) => (
 			<span key={index} className="block">
@@ -255,37 +259,33 @@ const CodeBlockChildren = ({ children, hide_line_numbers }: CodeBlockChildrenPro
 		));
 	}
 
-	return (
-		Children.toArray(children)
-			// .filter((line) => line !== "\n")
-			.map((line, i) => {
-				const should_line_highlight =
-					// @ts-expect-error line props is not unknown
-					isObject(line) && "props" in line && (line.props["data-highlight"] ?? "false") === "true";
+	return Children.toArray(children).map((line, i) => {
+		const should_line_highlight =
+			// @ts-expect-error line props is not unknown
+			isObject(line) && "props" in line && (line.props["data-highlight"] ?? "false") === "true";
 
-				return (
+		return (
+			<span
+				key={i}
+				className={cn(
+					"block",
+					should_line_highlight && "-mx-5 border-l-4 border-[#a86efd] bg-[#d0b2ff1a] px-4",
+					hide_line_numbers && "pl-8",
+				)}
+			>
+				{hide_line_numbers ? null : (
 					<span
-						key={i}
 						className={cn(
-							"block",
-							should_line_highlight && "-mx-5 border-l-4 border-[#a86efd] bg-[#d0b2ff1a] px-4",
-							hide_line_numbers && "pl-8",
+							"inline-block w-0 text-right text-zinc-600 select-none max-sm:opacity-0 sm:mr-2 sm:-ml-2 sm:w-8 sm:pr-2",
+							should_line_highlight && "text-[#a86efd]",
 						)}
+						aria-hidden="true"
 					>
-						{hide_line_numbers ? null : (
-							<span
-								className={cn(
-									"inline-block w-0 text-right text-zinc-600 select-none max-sm:opacity-0 sm:mr-2 sm:-ml-2 sm:w-8 sm:pr-2",
-									should_line_highlight && "text-[#a86efd]",
-								)}
-								aria-hidden="true"
-							>
-								{i + 1}
-							</span>
-						)}
-						{line}
+						{i + 1}
 					</span>
-				);
-			})
-	);
+				)}
+				{line}
+			</span>
+		);
+	});
 };
