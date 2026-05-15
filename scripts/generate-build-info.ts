@@ -1,7 +1,7 @@
 import { execSync } from "node:child_process";
 import { writeFileSync } from "node:fs";
 
-function safe(cmd) {
+function safe(cmd: string) {
 	try {
 		return execSync(cmd, { encoding: "utf-8" }).trim();
 	} catch {
@@ -10,7 +10,10 @@ function safe(cmd) {
 }
 
 const info = {
-	branch: process.env.WORKERS_CI_BRANCH || process.env.CF_PAGES_BRANCH || safe("git rev-parse --abbrev-ref HEAD"),
+	branch:
+		process.env.WORKERS_CI_BRANCH ||
+		process.env.CF_PAGES_BRANCH ||
+		safe("git rev-parse --abbrev-ref HEAD"),
 	commit: safe("git rev-parse --short HEAD"),
 	commitUrl: safe("git rev-parse HEAD"),
 	time: new Date().toISOString(),
