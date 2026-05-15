@@ -1,10 +1,9 @@
+import type * as monaco from "modern-monaco/editor-core";
+
 import { createHeadlessForm } from "@remoteoss/json-schema-form";
-import { useState, useCallback, useEffect, useMemo, useRef } from "react";
-
-import type { KarmaHighlighter } from "@/lib/domains/shiki/highlighter";
-
-import { getSlimKarmaHighlighter } from "@/lib/domains/shiki/highlighter";
-import { renderCodeBlockToHtml } from "@/lib/domains/shiki/plugin";
+import karmaTheme from "@sreetamdas/karma/themes/default.json" with { type: "json" };
+import { init } from "modern-monaco";
+import { useState, useCallback, useEffect, useRef } from "react";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type JsfObjectSchema = Record<string, any>;
@@ -221,52 +220,104 @@ function FieldRenderer({
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type FormValues = Record<string, any>;
 
-function ShikiEditor({ value, onChange }: { value: string; onChange: (v: string) => void }) {
-	const [highlighter, setHighlighter] = useState<KarmaHighlighter | null>(null);
-	const textareaRef = useRef<HTMLTextAreaElement>(null);
-	const shikiRef = useRef<HTMLDivElement>(null);
+function MonacoEditor({ value, onChange }: { value: string; onChange: (v: string) => void }) {
+	const containerRef = useRef<HTMLDivElement>(null);
+	const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null);
+	const modelRef = useRef<monaco.editor.ITextModel | null>(null);
+	const isUpdatingRef = useRef(false);
 
 	useEffect(() => {
-		getSlimKarmaHighlighter().then(setHighlighter);
+		if (!containerRef.current) return;
+
+		let disposed = false;
+
+		init({
+			langs: ["json"],
+			defaultTheme: "one-dark-pro",
+			lsp: {
+				json: {
+					allowComments: true,
+				},
+			},
+		}).then((monaco) => {
+			if (disposed || !containerRef.current) return;
+
+			// Register Karma theme using Monaco's native defineTheme API
+			const karmaTokenColors = (karmaTheme as Record<string, unknown>).tokenColors as Array<{
+				scope: string | string[];
+				settings: { foreground?: string; fontStyle?: string };
+			}>;
+			const rules = karmaTokenColors.flatMap((tc) => {
+				const scopes = typeof tc.scope === "string" ? [tc.scope] : (tc.scope ?? []);
+				return scopes.map((scope) => {
+					const rule: { token: string; foreground?: string; fontStyle?: string } = { token: scope };
+					if (tc.settings?.foreground) rule.foreground = tc.settings.foreground.replace("#", "");
+					if (tc.settings?.fontStyle) rule.fontStyle = tc.settings.fontStyle;
+					return rule;
+				});
+			});
+
+			monaco.editor.defineTheme("karma", {
+				base: "vs-dark",
+				inherit: true,
+				rules,
+				colors: (karmaTheme as Record<string, unknown>).colors as Record<string, string>,
+			});
+
+			const model = monaco.editor.createModel(value, "json");
+			modelRef.current = model;
+
+			const editor = monaco.editor.create(containerRef.current, {
+				model,
+				theme: "karma",
+				automaticLayout: true,
+				fontSize: 12,
+				lineHeight: 1.625,
+				padding: { top: 12, bottom: 12 },
+				minimap: { enabled: false },
+				scrollBeyondLastLine: false,
+				overviewRulerLanes: 0,
+				hideCursorInOverviewRuler: true,
+				renderLineHighlight: "none",
+				scrollbar: {
+					verticalScrollbarSize: 6,
+					horizontalScrollbarSize: 6,
+					useShadows: false,
+				},
+				wordWrap: "off",
+				tabSize: 2,
+			});
+
+			editorRef.current = editor;
+
+			editor.onDidChangeModelContent(() => {
+				if (isUpdatingRef.current) return;
+				const newValue = model.getValue();
+				onChange(newValue);
+			});
+		});
+
+		return () => {
+			disposed = true;
+			editorRef.current?.dispose();
+			modelRef.current?.dispose();
+			editorRef.current = null;
+			modelRef.current = null;
+		};
 	}, []);
 
-	const highlighted = useMemo(() => {
-		if (!highlighter) return null;
-		const html = renderCodeBlockToHtml(highlighter, value, "json", null);
-		return html ? html.replace(/ tabindex="0"/g, "") : null;
-	}, [highlighter, value]);
-
-	const handleScroll = useCallback(() => {
-		if (textareaRef.current && shikiRef.current) {
-			shikiRef.current.scrollTop = textareaRef.current.scrollTop;
-			shikiRef.current.scrollLeft = textareaRef.current.scrollLeft;
+	// Sync external value changes (e.g., preset switch) to editor
+	useEffect(() => {
+		if (modelRef.current && value !== modelRef.current.getValue()) {
+			isUpdatingRef.current = true;
+			modelRef.current.setValue(value);
+			isUpdatingRef.current = false;
 		}
-	}, []);
+	}, [value]);
 
 	return (
 		<div className="relative flex-1 overflow-hidden">
-			{/* Shiki highlighted layer — read-only, synced scroll */}
-			<div
-				ref={shikiRef}
-				className="pointer-events-none absolute inset-0 overflow-auto p-3 [&_pre]:m-0"
-				aria-hidden="true"
-			>
-				{highlighted ? (
-					<div dangerouslySetInnerHTML={{ __html: highlighted }} />
-				) : (
-					<pre className="m-0 font-mono text-xs leading-relaxed text-green-300">{value}</pre>
-				)}
-			</div>
-
-			{/* Transparent textarea — captures all input */}
-			<textarea
-				ref={textareaRef}
-				className="absolute inset-0 h-full w-full resize-none bg-transparent p-3 font-mono text-xs leading-relaxed text-transparent caret-white focus:outline-none"
-				value={value}
-				onChange={(e) => onChange(e.target.value)}
-				onScroll={handleScroll}
-				spellCheck={false}
-			/>
+			<div ref={containerRef} className="absolute inset-0" />
 		</div>
 	);
 }
@@ -340,7 +391,7 @@ export function JsfPlayground() {
 					<div className="border-b border-white/10 px-3 py-1.5 text-xs font-medium text-white/50">
 						JSON Schema
 					</div>
-					<ShikiEditor
+					<MonacoEditor
 						value={schemaText}
 						onChange={(v) => {
 							setSchemaText(v);
