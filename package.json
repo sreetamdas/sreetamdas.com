@@ -11,7 +11,7 @@
 		"build:content": "velite --config './.config/velite.config.ts' --clean",
 		"generate-feeds": "tsx scripts/generate-feeds.ts",
 		"dev": "vp run dev:content & vp dev",
-		"prebuild": "vp run build:content && vp run generate-feeds && tsx scripts/generate-build-info.ts",
+		"prebuild": "vp run build:content && vp run generate-feeds && node scripts/generate-build-info.mjs",
 		"build": "vp build",
 		"preview": "vp preview",
 		"test:e2e": "playwright test",
