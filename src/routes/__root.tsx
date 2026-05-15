@@ -7,8 +7,10 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { HeadContent, Outlet, Scripts, createRootRoute } from "@tanstack/react-router";
 import { type ReactNode, useEffect, useState } from "react";
 import "@fontsource-variable/bricolage-grotesque/standard.css";
+
 import { IS_DEV, SITE_TITLE_APPEND } from "@/config";
 import "@fontsource-variable/inter/index.css";
+
 import { FOOBAR_SOURCE_CODE } from "@/lib/domains/foobar/helpers";
 import { captureException } from "@/lib/domains/Sentry";
 
