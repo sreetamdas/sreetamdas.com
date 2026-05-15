@@ -1,12 +1,15 @@
 {
 	"compilerOptions": {
+		"allowImportingTsExtensions": true,
 		"esModuleInterop": true,
+		"noEmit": true,
 		"forceConsistentCasingInFileNames": true,
 		"isolatedModules": true,
 		"jsx": "react-jsx",
 		"module": "ESNext",
 		"moduleResolution": "Bundler",
 		"noImplicitAny": true,
+		"noUncheckedSideEffectImports": false,
 		"noUnusedLocals": true,
 		"noUnusedParameters": true,
 		"resolveJsonModule": true,

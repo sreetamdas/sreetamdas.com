@@ -1,6 +1,8 @@
 import { eq, sql } from "drizzle-orm";
-import { pageDetails } from "@/db/schema";
+
 import type { Db } from "@/db";
+
+import { pageDetails } from "@/db/schema";
 
 export type PageViewCount = {
 	view_count: number;

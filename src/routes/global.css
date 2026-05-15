@@ -1,32 +1,12 @@
 @import "tailwindcss";
 
-@font-face {
-	font-family: "Iosevka";
-	src: url("/fonts/iosevka/iosevka-das-version-regular.subset.woff2") format("woff2");
-	font-weight: normal;
-	font-style: normal;
-	font-display: swap;
-}
-@font-face {
-	font-family: "Iosevka";
-	src: url("/fonts/iosevka/iosevka-das-version-italic.subset.woff2") format("woff2");
-	font-weight: normal;
-	font-style: italic;
-	font-display: swap;
-}
-@font-face {
-	font-family: "Iosevka";
-	src: url("/fonts/iosevka/iosevka-das-version-bold.subset.woff2") format("woff2");
-	font-weight: 700;
-	font-style: normal;
-	font-display: swap;
-}
-@font-face {
-	font-family: "Iosevka";
-	src: url("/fonts/iosevka/iosevka-das-version-bold-italic.subset.woff2") format("woff2");
-	font-weight: 700;
-	font-style: italic;
-	font-display: swap;
+@custom-variant dark {
+	&:where([data-color-scheme="dark"], [data-color-scheme="dark"] *) {
+		--color-primary: var(--dark-purple);
+		--color-secondary: var(--dark-blue);
+		--color-foreground: var(--not-white);
+		--color-background: var(--black);
+	}
 }
 
 @theme {
@@ -52,42 +32,8 @@
 	--transition-duration: 250ms;
 }
 
-[data-color-scheme="dark"] {
-	--color-primary: var(--dark-purple);
-	--color-secondary: var(--dark-blue);
-	--color-foreground: var(--not-white);
-	--color-background: var(--black);
-}
-
-@custom-variant dark {
-	&:where([data-color-scheme="dark"], [data-color-scheme="dark"] *) {
-		--color-primary: var(--dark-purple);
-		--color-secondary: var(--dark-blue);
-		--color-foreground: var(--not-white);
-		--color-background: var(--black);
-	}
-}
-
-@media print {
-	@page {
-		margin: 0;
-	}
-
-	/* Use light mode when printing */
-	[data-color-scheme="dark"] {
-		--color-primary: var(--light-purple);
-		--color-secondary: var(--light-blue);
-		--color-foreground: var(--black);
-		--color-background: var(--not-white);
-	}
-}
-
 @utility gradient {
-	@apply from-primary to-secondary bg-gradient-to-r box-decoration-slice bg-clip-text text-transparent;
-}
-
-@utility font-code {
-	font-family: var(--font-iosevka);
+	@apply from-primary to-secondary bg-linear-to-r box-decoration-slice bg-clip-text text-transparent;
 }
 
 @utility link-base {
@@ -119,21 +65,231 @@
 	}
 }
 
+@font-face {
+	font-family: "Iosevka";
+	src: url("/fonts/iosevka/iosevka-das-version-regular.subset.woff2") format("woff2");
+	font-weight: normal;
+	font-style: normal;
+	font-display: swap;
+}
+@font-face {
+	font-family: "Iosevka";
+	src: url("/fonts/iosevka/iosevka-das-version-italic.subset.woff2") format("woff2");
+	font-weight: normal;
+	font-style: italic;
+	font-display: swap;
+}
+@font-face {
+	font-family: "Iosevka";
+	src: url("/fonts/iosevka/iosevka-das-version-bold.subset.woff2") format("woff2");
+	font-weight: 700;
+	font-style: normal;
+	font-display: swap;
+}
+@font-face {
+	font-family: "Iosevka";
+	src: url("/fonts/iosevka/iosevka-das-version-bold-italic.subset.woff2") format("woff2");
+	font-weight: 700;
+	font-style: italic;
+	font-display: swap;
+}
+
+[data-color-scheme="dark"] {
+	--color-primary: var(--dark-purple);
+	--color-secondary: var(--dark-blue);
+	--color-foreground: var(--not-white);
+	--color-background: var(--black);
+}
+
+@media print {
+	@page {
+		margin: 0;
+	}
+
+	/* Use light mode when printing */
+	[data-color-scheme="dark"] {
+		--color-primary: var(--light-purple);
+		--color-secondary: var(--light-blue);
+		--color-foreground: var(--black);
+		--color-background: var(--not-white);
+	}
+}
+
+/* Register per-blob position as animatable percentages */
+@property --blob-1-x {
+	syntax: "<percentage>";
+	inherits: false;
+	initial-value: 12%;
+}
+@property --blob-1-y {
+	syntax: "<percentage>";
+	inherits: false;
+	initial-value: 26%;
+}
+@property --blob-2-x {
+	syntax: "<percentage>";
+	inherits: false;
+	initial-value: 82%;
+}
+@property --blob-2-y {
+	syntax: "<percentage>";
+	inherits: false;
+	initial-value: 30%;
+}
+@property --blob-3-x {
+	syntax: "<percentage>";
+	inherits: false;
+	initial-value: 62%;
+}
+@property --blob-3-y {
+	syntax: "<percentage>";
+	inherits: false;
+	initial-value: 76%;
+}
+@property --blob-4-x {
+	syntax: "<percentage>";
+	inherits: false;
+	initial-value: 22%;
+}
+@property --blob-4-y {
+	syntax: "<percentage>";
+	inherits: false;
+	initial-value: 82%;
+}
+@property --blob-5-x {
+	syntax: "<percentage>";
+	inherits: false;
+	initial-value: 52%;
+}
+@property --blob-5-y {
+	syntax: "<percentage>";
+	inherits: false;
+	initial-value: 46%;
+}
+
+.gradient-title {
+	background-blend-mode: screen;
+	animation:
+		blob-1 19s ease-in-out infinite alternate,
+		blob-2 23s ease-in-out infinite alternate,
+		blob-3 29s ease-in-out infinite alternate,
+		blob-4 31s ease-in-out infinite alternate,
+		blob-5 37s ease-in-out infinite alternate;
+	contain: paint;
+}
+
+@keyframes blob-1 {
+	0% {
+		--blob-1-x: 8%;
+		--blob-1-y: 24%;
+	}
+	37% {
+		--blob-1-x: 24%;
+		--blob-1-y: 18%;
+	}
+	71% {
+		--blob-1-x: 18%;
+		--blob-1-y: 44%;
+	}
+	100% {
+		--blob-1-x: 34%;
+		--blob-1-y: 32%;
+	}
+}
+@keyframes blob-2 {
+	0% {
+		--blob-2-x: 86%;
+		--blob-2-y: 26%;
+	}
+	43% {
+		--blob-2-x: 70%;
+		--blob-2-y: 18%;
+	}
+	78% {
+		--blob-2-x: 78%;
+		--blob-2-y: 48%;
+	}
+	100% {
+		--blob-2-x: 92%;
+		--blob-2-y: 40%;
+	}
+}
+@keyframes blob-3 {
+	0% {
+		--blob-3-x: 64%;
+		--blob-3-y: 78%;
+	}
+	34% {
+		--blob-3-x: 48%;
+		--blob-3-y: 68%;
+	}
+	69% {
+		--blob-3-x: 72%;
+		--blob-3-y: 58%;
+	}
+	100% {
+		--blob-3-x: 56%;
+		--blob-3-y: 88%;
+	}
+}
+@keyframes blob-4 {
+	0% {
+		--blob-4-x: 20%;
+		--blob-4-y: 84%;
+	}
+	41% {
+		--blob-4-x: 34%;
+		--blob-4-y: 72%;
+	}
+	76% {
+		--blob-4-x: 16%;
+		--blob-4-y: 62%;
+	}
+	100% {
+		--blob-4-x: 30%;
+		--blob-4-y: 92%;
+	}
+}
+@keyframes blob-5 {
+	0% {
+		--blob-5-x: 50%;
+		--blob-5-y: 44%;
+	}
+	39% {
+		--blob-5-x: 42%;
+		--blob-5-y: 36%;
+	}
+	73% {
+		--blob-5-x: 58%;
+		--blob-5-y: 56%;
+	}
+	100% {
+		--blob-5-x: 48%;
+		--blob-5-y: 62%;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.gradient-title {
+		animation: none;
+	}
+}
+
 strong > em {
 	/* color: theme(colors.primary); */
 	color: var(--color-primary);
 }
 
 /* Shiki code block: line numbers via CSS counters and highlight styling */
-pre.shiki-code-block > code {
+pre.shiki-code-block code {
 	counter-reset: line;
 }
 
-pre.shiki-code-block > code > .line {
+pre.shiki-code-block code > .line {
 	display: block;
 }
 
-pre.shiki-line-numbers > code > .line::before {
+pre.shiki-line-numbers code > .line::before {
 	counter-increment: line;
 	content: counter(line);
 	display: inline-block;
@@ -154,7 +310,7 @@ pre.shiki-line-numbers > code > .line::before {
 	}
 }
 
-pre.shiki-code-block > code > .line[data-highlight="true"] {
+pre.shiki-code-block code > .line[data-highlight="true"] {
 	margin-left: -1.25rem;
 	margin-right: -1.25rem;
 	padding-left: 1rem;
@@ -163,12 +319,12 @@ pre.shiki-code-block > code > .line[data-highlight="true"] {
 	background-color: #d0b2ff1a;
 }
 
-pre.shiki-code-block > code > .line[data-highlight="true"]::before {
+pre.shiki-code-block code > .line[data-highlight="true"]::before {
 	color: #a86efd;
 }
 
 @media (max-width: 639px) {
-	pre.shiki-code-block > code > .line {
+	pre.shiki-code-block code > .line {
 		white-space: pre-wrap;
 	}
 }

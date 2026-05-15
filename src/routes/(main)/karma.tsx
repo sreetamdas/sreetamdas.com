@@ -1,10 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
 import { renderServerComponent } from "@tanstack/react-start/rsc";
+
 import { SITE_TITLE_APPEND, SITE_URL } from "@/config";
-import { canonicalUrl } from "@/lib/seo";
-import { ViewsCounter } from "@/lib/components/ViewsCounter";
 import { KarmaShowcase } from "@/lib/components/KarmaShowcase";
+import { ViewsCounter } from "@/lib/components/ViewsCounter";
+import { canonicalUrl } from "@/lib/seo";
 
 export const Route = createFileRoute("/(main)/karma")({
 	component: KarmaPage,
@@ -78,9 +79,7 @@ function KarmaContent({
 }) {
 	return (
 		<>
-			<h1 className="pt-10 pb-20 text-center font-serif text-9xl leading-none font-bold tracking-tighter">
-				Karma
-			</h1>
+			<h1 className="pt-10 pb-20 text-center font-serif text-9xl leading-none font-bold">Karma</h1>
 			<p className="text-center font-serif text-4xl font-medium tracking-tight">
 				A colorful VS Code theme
 			</p>
