@@ -316,7 +316,7 @@ export function JsfPlayground() {
 	};
 
 	return (
-		<div className="flex h-[60vh] flex-col">
+		<div className="flex h-full flex-col">
 			{/* Preset tabs */}
 			<div className="mb-2 flex gap-2">
 				{PRESETS.map((p, i) => (
