@@ -56,6 +56,6 @@ export const slideMDXComponents: MDXComponents = {
 	),
 	img: Image,
 	hr: () => <hr className="my-4" />,
-	blockquote: Blockquote,
+	blockquote: (props) => <Blockquote {...props} className="border-secondary border-l-6 italic" />,
 	Steps,
 };
