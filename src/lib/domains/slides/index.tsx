@@ -25,7 +25,7 @@ import { Gradient } from "@/lib/components/Typography";
 import { cn } from "@/lib/helpers/utils";
 
 import { StepContext, SlideActiveContext, type StepContextValue } from "./steps";
-import { aspectRatioFittingStyles } from "./use-aspect-ratio-fitting";
+import { useAspectRatioFittingStyles } from "./use-aspect-ratio-fitting";
 
 export interface SlideData {
 	title?: string;
@@ -100,7 +100,8 @@ export function SlideDeck({
 	const touchStartX = useRef<number>(0);
 	const stepRegistrations = useRef<StepEntry[]>([]);
 	const [_stepVersion, setStepVersion] = useState(0);
-	const [fitContainerStyle, fitCanvasStyle] = aspectRatioFittingStyles(aspectRatio);
+	const [fitContainerRef, fitContainerStyle, fitFrameStyle, fitCanvasStyle] =
+		useAspectRatioFittingStyles(aspectRatio);
 
 	const registerSteps = useCallback((count: number) => {
 		const entry: StepEntry = { id: crypto.randomUUID(), count };
@@ -259,31 +260,37 @@ export function SlideDeck({
 				onTouchStart={handleTouchStart}
 				onTouchEnd={handleTouchEnd}
 			>
-				<div className="h-full w-full" style={fitContainerStyle}>
-					<div style={fitCanvasStyle}>
-						{slides.map((slide, index) => (
-							<SlideActiveContext.Provider key={index} value={index === currentIndex}>
-								<SlideWrapper
-									isActive={index === currentIndex}
-									isBefore={index < currentIndex}
-									data={slide.data}
-									transitions={transitionsEnabled}
-								>
-									<SlideRenderer slide={slide} components={components} />
-								</SlideWrapper>
-							</SlideActiveContext.Provider>
-						))}
+				<div
+					ref={fitContainerRef}
+					className="h-full w-full overflow-hidden"
+					style={fitContainerStyle}
+				>
+					<div style={fitFrameStyle}>
+						<div style={fitCanvasStyle}>
+							{slides.map((slide, index) => (
+								<SlideActiveContext.Provider key={index} value={index === currentIndex}>
+									<SlideWrapper
+										isActive={index === currentIndex}
+										isBefore={index < currentIndex}
+										data={slide.data}
+										transitions={transitionsEnabled}
+									>
+										<SlideRenderer slide={slide} components={components} />
+									</SlideWrapper>
+								</SlideActiveContext.Provider>
+							))}
 
-						{!hide_step_index && maxStep > 0 ? (
-							<div className="absolute right-4 bottom-4 z-20 text-sm text-gray-500 dark:text-gray-400">
-								{stepContextValue.current.currentStep} / {maxStep}
-							</div>
-						) : null}
-						{!hide_slide_index ? (
-							<div className="absolute right-4 bottom-4 z-20 text-sm text-gray-500 dark:text-gray-400">
-								{currentIndex + 1} / {slides.length}
-							</div>
-						) : null}
+							{!hide_step_index && maxStep > 0 ? (
+								<div className="absolute right-4 bottom-4 z-20 text-sm text-gray-500 dark:text-gray-400">
+									{stepContextValue.current.currentStep} / {maxStep}
+								</div>
+							) : null}
+							{!hide_slide_index ? (
+								<div className="absolute right-4 bottom-4 z-20 text-sm text-gray-500 dark:text-gray-400">
+									{currentIndex + 1} / {slides.length}
+								</div>
+							) : null}
+						</div>
 					</div>
 				</div>
 			</div>

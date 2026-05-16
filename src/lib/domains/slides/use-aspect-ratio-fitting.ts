@@ -1,34 +1,61 @@
+import { useLayoutEffect, useRef, useState } from "react";
+
 /**
- * CSS-only aspect-ratio fitting using container query units and zoom.
+ * Aspect-ratio fitting for the fixed-size slide canvas.
  *
- * Unlike the previous JS approach (ResizeObserver → setState → layout shift),
- * this computes the scale purely in CSS so there is zero flash on mount.
- * Container query units resolve synchronously from the parent's size, and
- * `zoom` (unlike `transform: scale`) adjusts the element's layout box so
- * flex centering works without a manual transform-origin calculation.
+ * The canvas itself stays at the design resolution so slide typography and
+ * absolute positioning remain stable. The wrapper gets the scaled layout size,
+ * and the canvas is transformed inside it.
  *
- * Browser support: container units (cqw/cqh) — Chrome 105, Firefox 110,
- * Safari 16. Browsers that don't support them will render the canvas at
- * its native 1366 × (1366/aspectRatio) size with no scaling.
+ * Avoid CSS `zoom` here. Mobile browsers can keep the unscaled 1366px canvas
+ * in the scrollable page area, which makes portrait users pinch-zoom out before
+ * the deck appears to fit.
  */
-export function aspectRatioFittingStyles(aspectRatio: number) {
+export function useAspectRatioFittingStyles(aspectRatio: number) {
 	const targetWidth = 1366;
 	const targetHeight = targetWidth / aspectRatio;
+	const containerRef = useRef<HTMLDivElement>(null);
+	const [scale, setScale] = useState(1);
+
+	useLayoutEffect(() => {
+		const node = containerRef.current;
+		if (!node) return;
+
+		const updateScale = () => {
+			const { width, height } = node.getBoundingClientRect();
+			if (width <= 0 || height <= 0) return;
+
+			setScale(Math.min(width / targetWidth, height / targetHeight));
+		};
+
+		updateScale();
+
+		const observer = new ResizeObserver(updateScale);
+		observer.observe(node);
+
+		return () => observer.disconnect();
+	}, [targetHeight]);
 
 	const containerStyle: React.CSSProperties = {
 		alignItems: "center",
-		containerType: "size",
 		display: "flex",
 		justifyContent: "center",
+	};
+
+	const frameStyle: React.CSSProperties = {
+		height: targetHeight * scale,
+		position: "relative",
+		width: targetWidth * scale,
 	};
 
 	const canvasStyle: React.CSSProperties = {
 		height: targetHeight,
 		overflow: "hidden",
 		position: "relative",
+		transform: `scale(${Number.isFinite(scale) ? scale : 1})`,
+		transformOrigin: "top left",
 		width: targetWidth,
-		zoom: `min(100cqw / ${targetWidth}px, 100cqh / ${targetHeight}px)`,
 	};
 
-	return [containerStyle, canvasStyle] as const;
+	return [containerRef, containerStyle, frameStyle, canvasStyle] as const;
 }
