@@ -46,18 +46,25 @@ const PRESETS: { name: string; schema: JsfObjectSchema }[] = [
 					enum: ["US", "CA", "Other"],
 					"x-jsf-presentation": { inputType: "select" },
 				},
-				state: {
-					type: "string",
-					title: "State",
-					"x-jsf-presentation": { inputType: "text" },
-				},
 			},
 			required: ["country"],
 			allOf: [
 				{
-					if: { properties: { country: { const: "US" } } },
+					if: {
+						properties: { country: { const: "US" } },
+						required: ["country"],
+					},
 					// oxlint-disable-next-line unicorn/no-thenable
-					then: { required: ["state"] },
+					then: {
+						properties: {
+							state: {
+								type: "string",
+								title: "State",
+								"x-jsf-presentation": { inputType: "text" },
+							},
+						},
+						required: ["state"],
+					},
 				},
 			],
 		},
@@ -81,6 +88,10 @@ const PRESETS: { name: string; schema: JsfObjectSchema }[] = [
 					type: "number",
 					title: "Total compensation",
 					"x-jsf-presentation": { inputType: "money" },
+					"x-jsf-logic-computedAttrs": {
+						const: "total",
+						default: "total",
+					},
 					readOnly: true,
 				},
 			},
@@ -127,7 +138,7 @@ function FieldRenderer({
 
 	const commonProps = {
 		className: inputClasses,
-		value: (value as string | number) ?? "",
+		value: ((value ?? field.const ?? field.default) as string | number) ?? "",
 		onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
 			onChange(e.target.type === "number" ? Number(e.target.value) : e.target.value);
 		},
@@ -158,10 +169,10 @@ function FieldRenderer({
 			break;
 		case "number":
 		case "money":
-			input = <input type="number" {...commonProps} />;
+			input = <input type="number" readOnly={field.readOnly === true} {...commonProps} />;
 			break;
 		case "email":
-			input = <input type="email" {...commonProps} />;
+			input = <input type="email" readOnly={field.readOnly === true} {...commonProps} />;
 			break;
 		case "checkbox":
 			input = (
@@ -200,7 +211,7 @@ function FieldRenderer({
 			);
 			break;
 		default:
-			input = <input type="text" {...commonProps} />;
+			input = <input type="text" readOnly={field.readOnly === true} {...commonProps} />;
 	}
 
 	return (
