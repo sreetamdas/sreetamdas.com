@@ -56,6 +56,7 @@ const PRESETS: { name: string; schema: JsfObjectSchema }[] = [
 			allOf: [
 				{
 					if: { properties: { country: { const: "US" } } },
+					// oxlint-disable-next-line unicorn/no-thenable
 					then: { required: ["state"] },
 				},
 			],
@@ -231,7 +232,7 @@ function MonacoEditor({ value, onChange }: { value: string; onChange: (v: string
 
 		let disposed = false;
 
-		init({
+		void init({
 			langs: ["json"],
 			defaultTheme: "one-dark-pro",
 			lsp: {

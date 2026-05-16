@@ -53,7 +53,7 @@ import { JsfPlayground } from "./-components";
 
 ---
 
-# Forms
+# Forms 🖐️
 
 - Sign-up, sign-in
 - Customer onboarding, defining discounts
@@ -73,8 +73,7 @@ import { JsfPlayground } from "./-components";
 # Forms at Remote
 
 - Country-specific, with over 100 countries
-- Product-specific
-- Rule-heavy
+- Product-specific and rule-heavy
 - Bugs are costly!
 
 <Notes>
@@ -87,7 +86,7 @@ Tiger currently has around 550 JSON schema files
 
 ---
 
-# The Drift Problem
+# The Drift Problem 🖐️
 
 - Frontend validates with Yup — you might use Zod, Valibot, etc.
 - Backend must validate as well
@@ -128,6 +127,15 @@ React/on your FE, and then again in Elixir/on your BE.
 - Standard way to describe data shape
 - `type`, `properties`, `required`
 - Conditional logic with `allOf`, `if`, `then`
+
+## HackerNews agrees!
+
+<img
+  src="/images/slides/json-schema-form/hackernews.png"
+  alt="HackerNews comment: I strongly recommend to automate form generation based on JSON schema what will enable zero coding for maintenance tasks like e.g. synchronization with model changes.
+As form code is the most important entry point for security flaws in web applications it is also the most expensive and it is not a good idea having to touch production code for every little backend change. This looks like PHP coding 15 years ago. Do not do that."
+  className="mx-auto absolute bottom-4 right-4 mb-6 rounded-global border-4 border-white/10 object-cover h-72"
+/>
 
 <Notes>
 
@@ -203,19 +211,13 @@ each layer has one job, and the contract between them is just data.
 
 ---
 
-{/* TODO: consult codebase */}
-
 # JSON Schema Form Kit
 
 - Remote-specific wrapper
 - Handles things that we need internally, not suited for OSS
-- memoization for React lifecycle
+- custom JSON Logic operators - more on that soon
 - snake_case API fields to frontend values
-- picked and omitted fields for partial forms
-- parsing Formik values before validation
-- hiding fields
-- error reporting
-- v0/v1 routing
+- error reporting and version routing
 
 ---
 
@@ -300,6 +302,8 @@ fieldset, etc.
 
 ---
 
+{/* TODO */}
+
 # JSON Logic
 
 - Cross-field rules
@@ -308,16 +312,10 @@ fieldset, etc.
 - Custom operators
 
 <Notes>
-JSON Schema conditionals cover a lot, but richer business logic often wants intra-form, cross-field dependencies.
+usiness logic often wants intra-form, cross-field dependencies.
 
-This is where `x-jsf-logic` comes in. Remote uses it for validations and computed values. Dragon and
-server-side validation can both evaluate those rules.
-
-Good codebase-backed examples to pull into a later pass:
-
-- date difference in months from the lambda test
-- `date_add_days` / date helper operators from the kit
-- country-specific salary/probation computed values from Tiger RMT components
+While JSON Schema handles shape and basic constraints - required fields, etc.
+JSON Logic handles behaviour between fields!
 
 </Notes>
 
@@ -332,14 +330,100 @@ Good codebase-backed examples to pull into a later pass:
 
 ---
 
+```json
+{
+  "or": [
+    { "==": [{ "var": "country" }, "Vietnam"] },
+    {
+      ">=": [
+        {
+          "date_difference_in_months": [
+            { "var": "today" },
+            { "var": "start_date" }
+          ]
+        },
+        6
+      ]
+    }
+  ]
+}
+// true if either: selected country is Vietnam, or: Start date is 6 months away from variable "today"
+```
+
+———
+
+# JSON Logic: Validations
+
+- Rule returns true/false
+- False => field-level error
+- Error message comes from schema
+
+```json
+{
+  "x-jsf-logic": {
+    "validations": {
+      "valid_temperature_recording": {
+        "rule": {
+          ">": [
+            { "var": "highest_temperature" },
+            { "var": "lowest_temperature" }
+          ]
+        },
+        "errorMessage": "Highest must exceed lowest"
+      }
+    }
+  },
+  "properties": {
+    "highest_temperature": {
+      "type": "number",
+      "x-jsf-logic-validations": ["valid_temperature_recording"]
+    }
+  }
+}
+```
+
+———
+
+# JSON Logic: Computed Values
+
+- Derive values from inputs
+- Recompute on field changes
+- Drive UX without hardcoded UI logic
+
+```json
+{
+  "x-jsf-logic": {
+    "computedValues": {
+      "average_temp": {
+        "rule": {
+          "/": [
+            {
+              "+": [
+                { "var": "lowest_temperature" },
+                { "var": "highest_temperature" }
+              ]
+            },
+            2
+          ]
+        }
+      }
+    }
+  }
+}
+```
+
+<Notes>
+  can feed constraints and presentation attributes, like dynamic
+  min/max dates or helper copy.
+</Notes>
+
+---
+
 # Live demo
 
 <JsfPlayground />
 
 <Notes>
-Use the built-in playground to demo live.
-
-Preset flow:
 
 1. "Simple" — show basic schema → form mapping
 2. "Conditional" — edit country, watch state field appear/disappear based on allOf/if/then
@@ -352,16 +436,24 @@ errors. Same schema, same rules, running client-side right here.
 
 ---
 
+# Shared usage
+
+<img
+  src="/images/slides/json-schema-form/cost-calculator.png"
+  alt="Remote.com cost calculator"
+  className="mx-auto absolute top-48 left-4 mb-6 rounded-global border-4 border-white/10 object-cover h-auto"
+/>
+
+---
+
 # So, why JSF?
 
 - Backend as author
 - UI as consumer
-- Validation everywhere
+- Can be extended
 
 <Notes>
-This is the closing distillation.
-
-The point is not "everyone should use our exact library." The point is the architecture:
+The point is the architecture:
 
 When form rules change by country, product, employment type, or legal requirement, the rule should not
 live inside a React component. Put it in data, ship it across the wire, render it headlessly, and
@@ -371,9 +463,16 @@ validate it wherever the data enters the system.
 
 ---
 
+# Check it out!
+
+- [github.com/remoteoss/json-schema-form](https://github.com/remoteoss/json-schema-form)
+- [json-schema-form.vercel.app](https//json-schema-form.vercel.app)
+
+---
+
 # What's next?
 
-## React Nexus, Bengaluru
+**React Nexus**: talking about TanStack Start!
 
 ---
 
