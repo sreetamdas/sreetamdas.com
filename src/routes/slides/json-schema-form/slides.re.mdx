@@ -254,51 +254,6 @@ fieldset, etc.
 - `else`
 - `allOf`
 
-```json
-{
-  "type": "object",
-  "properties": {
-    "employment_type": {
-      "type": "string",
-      "enum": ["employee", "contractor"]
-    },
-    "annual_salary": {
-      "type": "number",
-      "minimum": 0
-    },
-    "hourly_rate": {
-      "type": "number",
-      "minimum": 0
-    }
-  },
-  "required": ["employment_type"],
-  "allOf": [
-    {
-      "if": {
-        "properties": { "employment_type": { "const": "employee" } },
-        "required": ["employment_type"]
-      },
-      "then": {
-        "required": ["annual_salary"],
-        "not": { "required": ["hourly_rate"] }
-      }
-    },
-    {
-      "if": {
-        "properties": {
-          "employment_type": { "const": "contractor" }
-        },
-        "required": ["employment_type"]
-      },
-      "then": {
-        "required": ["hourly_rate"],
-        "not": { "required": ["annual_salary"] }
-      }
-    }
-  ]
-}
-```
-
 ---
 
 # JSON Logic
@@ -355,6 +310,8 @@ JSON Logic handles behaviour between fields!
 - False => field-level error
 - Error message comes from schema
 
+---
+
 ```json
 {
   "x-jsf-logic": {
@@ -387,6 +344,8 @@ JSON Logic handles behaviour between fields!
 - Recompute on field changes
 - Drive UX without hardcoded UI logic
 
+---
+
 ```json
 {
   "x-jsf-logic": {
@@ -417,29 +376,6 @@ JSON Logic handles behaviour between fields!
 ---
 
 # Live demo
-
-<JsfPlayground />
-
-<Notes>
-
-1. "Simple" — show basic schema → form mapping
-2. "Conditional" — edit country, watch state field appear/disappear based on allOf/if/then
-3. "Computed" — type salary and bonus, watch total auto-calculate via x-jsf-logic
-
-Then show validation: submit empty form to see required errors, or type invalid email to see format
-errors. Same schema, same rules, running client-side right here.
-
-</Notes>
-
----
-
-# Shared usage
-
-<img
-  src="/images/slides/json-schema-form/cost-calculator.png"
-  alt="Remote.com cost calculator"
-  className="mx-auto absolute top-48 left-4 mb-6 rounded-global border-4 border-white/10 object-cover h-auto"
-/>
 
 ---
 
