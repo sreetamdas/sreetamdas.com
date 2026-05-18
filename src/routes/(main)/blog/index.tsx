@@ -1,11 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
 import { renderServerComponent } from "@tanstack/react-start/rsc";
+import { allBlogPosts } from "content-collections";
 
 import { IS_DEV, SITE_DESCRIPTION, SITE_TITLE_APPEND } from "@/config";
-import { blogPosts } from "@/generated";
 import { LinkTo } from "@/lib/components/Anchor";
 import { canonicalUrl, defaultOgImageUrl } from "@/lib/seo";
+
+const blogPosts = allBlogPosts;
 
 export const Route = createFileRoute("/(main)/blog/")({
 	component: BlogArchivePage,
