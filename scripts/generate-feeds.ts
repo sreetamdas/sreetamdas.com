@@ -1,11 +1,12 @@
+import { allBlogPosts } from "content-collections";
 /**
  * Post-content build script.
  *
- * Generates sitemap.xml and rss/feed.xml from the Velite-built content
+ * Generates sitemap.xml and rss/feed.xml from generated content
  * collections and writes them into `public/` so they are served as static
  * assets by Cloudflare Workers.
  *
- * Run after `build:content` (Velite) so the .velite output is available.
+ * Run after `build:content` and `build:content-collections`.
  */
 import { writeFileSync, readFileSync, mkdirSync, existsSync } from "node:fs";
 import { resolve, dirname } from "node:path";
@@ -20,7 +21,7 @@ const SITE_URL = "https://sreetamdas.com";
 const OWNER_NAME = "Sreetam Das";
 
 // ---------------------------------------------------------------------------
-// Load Velite JSON output
+// Load generated content output
 // ---------------------------------------------------------------------------
 
 type BlogPost = {
@@ -170,7 +171,7 @@ function escapeXml(str: string): string {
 // ---------------------------------------------------------------------------
 
 function main() {
-	const blogPosts = loadJson<Array<BlogPost>>("blogPosts.json");
+	const blogPosts = allBlogPosts as Array<BlogPost>;
 	const rootPages = loadJson<Array<RootPage>>("rootPages.json");
 
 	// Sitemap
