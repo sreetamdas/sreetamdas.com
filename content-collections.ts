@@ -32,6 +32,21 @@ function toStructuredData(input: StructuredDataInput) {
 	};
 }
 
+function normalizeIsoDate(value: string): string {
+	const parsed = new Date(value);
+	if (Number.isNaN(parsed.getTime())) {
+		throw new Error(`Invalid date value: ${value}`);
+	}
+	return parsed.toISOString();
+}
+
+function normalizeOptionalIsoDate(value?: string): string | undefined {
+	if (!value) {
+		return undefined;
+	}
+	return normalizeIsoDate(value);
+}
+
 const blogPosts = defineCollection({
 	name: "blogPosts",
 	directory: "content/blog",
@@ -45,10 +60,12 @@ const blogPosts = defineCollection({
 		published: z.boolean(),
 		url: z.string().optional(),
 		image: z.string().optional(),
-		use_client: z.boolean().optional().default(false),
+		use_client: z.boolean().optional(),
 		content: z.string(),
 	}),
 	transform: async (doc) => {
+		const publishedAt = normalizeIsoDate(doc.published_at);
+		const updatedAt = normalizeOptionalIsoDate(doc.updated_at);
 		const raw = doc.content;
 		const rawPath = `blog/${doc._meta.path}`;
 		const pagePath = `/${rawPath}` as `/blog/${string}`;
@@ -59,6 +76,8 @@ const blogPosts = defineCollection({
 
 		return {
 			...doc,
+			published_at: publishedAt,
+			updated_at: updatedAt,
 			code: raw,
 			raw,
 			raw_path: rawPath,
@@ -67,7 +86,12 @@ const blogPosts = defineCollection({
 			reading_time: readingTime,
 			page_path: pagePath,
 			page_slug: pageSlug,
-			structured_data: toStructuredData({ ...doc, fallbackPath: pagePath }),
+			structured_data: toStructuredData({
+				...doc,
+				published_at: publishedAt,
+				updated_at: updatedAt,
+				fallbackPath: pagePath,
+			}),
 		};
 	},
 });
@@ -83,10 +107,12 @@ const rootPages = defineCollection({
 		published_at: z.string(),
 		updated_at: z.string().optional(),
 		published: z.boolean(),
-		skip_page: z.boolean().optional().default(false),
+		skip_page: z.boolean().optional(),
 		content: z.string(),
 	}),
 	transform: async (doc) => {
+		const publishedAt = normalizeIsoDate(doc.published_at);
+		const updatedAt = normalizeOptionalIsoDate(doc.updated_at);
 		const raw = doc.content;
 		const rawPath = `rootPage/${doc._meta.path}`;
 		const pageSlug = rawPath.split("/").at(-1) ?? doc._meta.path;
@@ -95,6 +121,8 @@ const rootPages = defineCollection({
 
 		return {
 			...doc,
+			published_at: publishedAt,
+			updated_at: updatedAt,
 			code: raw,
 			raw,
 			raw_path: rawPath,
@@ -123,6 +151,8 @@ const aocSolutions = defineCollection({
 		content: z.string(),
 	}),
 	transform: async (doc) => {
+		const publishedAt = normalizeIsoDate(doc.published_at);
+		const updatedAt = normalizeOptionalIsoDate(doc.updated_at);
 		const raw = doc.content;
 		const rawPath = `aoc/${doc._meta.path}`;
 		const pagePath = `/${rawPath}` as `/${string}`;
@@ -131,6 +161,8 @@ const aocSolutions = defineCollection({
 
 		return {
 			...doc,
+			published_at: publishedAt,
+			updated_at: updatedAt,
 			code: raw,
 			raw,
 			raw_path: rawPath,
@@ -138,7 +170,12 @@ const aocSolutions = defineCollection({
 			shikiHighlights,
 			page_path: pagePath,
 			page_slug: pageSlug,
-			structured_data: toStructuredData({ ...doc, fallbackPath: pagePath }),
+			structured_data: toStructuredData({
+				...doc,
+				published_at: publishedAt,
+				updated_at: updatedAt,
+				fallbackPath: pagePath,
+			}),
 		};
 	},
 });
