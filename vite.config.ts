@@ -1,4 +1,5 @@
 import { cloudflare } from "@cloudflare/vite-plugin";
+import contentCollections from "@content-collections/vite";
 import { sentryTanstackStart } from "@sentry/tanstackstart-react/vite";
 import tailwindcss from "@tailwindcss/vite";
 import { tanstackStart } from "@tanstack/react-start/plugin/vite";
@@ -31,6 +32,7 @@ export default defineConfig({
 		ignorePatterns: [
 			"node_modules",
 			"dist",
+			".content-collections",
 			".velite",
 			"coverage",
 			".next",
@@ -196,7 +198,7 @@ export default defineConfig({
 		tsconfigPaths: true,
 	},
 	test: {
-		exclude: ["e2e/**", "node_modules", "dist", ".velite"],
+		exclude: ["e2e/**", "node_modules", "dist", ".content-collections", ".velite"],
 		passWithNoTests: true,
 	},
 	plugins: [
@@ -207,6 +209,7 @@ export default defineConfig({
 						viteEnvironment: { name: "ssr", childEnvironments: ["rsc"] },
 					}),
 				]),
+		contentCollections({ environment: "ssr" }),
 		tanstackStart({
 			rsc: {
 				enabled: true,
