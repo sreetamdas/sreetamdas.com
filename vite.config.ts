@@ -33,7 +33,6 @@ export default defineConfig({
 			"node_modules",
 			"dist",
 			".content-collections",
-			".velite",
 			"coverage",
 			".next",
 			"out",
@@ -198,7 +197,7 @@ export default defineConfig({
 		tsconfigPaths: true,
 	},
 	test: {
-		exclude: ["e2e/**", "node_modules", "dist", ".content-collections", ".velite"],
+		exclude: ["e2e/**", "node_modules", "dist", ".content-collections"],
 		passWithNoTests: true,
 	},
 	plugins: [
