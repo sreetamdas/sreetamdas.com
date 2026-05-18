@@ -38,11 +38,11 @@ public/sitemap*.xml
 # Sentry
 .sentryclirc
 
-# Velite
-.velite
-
 # Content Collections
 .content-collections
+
+# Legacy local generated content
+.velite
 
 # Cloudflare
 .open-next

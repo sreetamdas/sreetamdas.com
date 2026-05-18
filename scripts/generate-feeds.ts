@@ -1,4 +1,3 @@
-import { allBlogPosts } from "content-collections";
 /**
  * Post-content build script.
  *
@@ -6,16 +5,16 @@ import { allBlogPosts } from "content-collections";
  * collections and writes them into `public/` so they are served as static
  * assets by Cloudflare Workers.
  *
- * Run after `build:content` and `build:content-collections`.
+ * Run after `build:content-collections`.
  */
-import { writeFileSync, readFileSync, mkdirSync, existsSync } from "node:fs";
+import { allBlogPosts, allRootPages } from "content-collections";
+import { writeFileSync, mkdirSync, existsSync } from "node:fs";
 import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, "..");
 const PUBLIC = resolve(ROOT, "public");
-const VELITE_DIR = resolve(ROOT, ".velite");
 
 const SITE_URL = "https://sreetamdas.com";
 const OWNER_NAME = "Sreetam Das";
@@ -42,15 +41,6 @@ type RootPage = {
 	published_at: string;
 	updated_at?: string;
 };
-
-function loadJson<T>(filename: string): T {
-	const filepath = resolve(VELITE_DIR, filename);
-	if (!existsSync(filepath)) {
-		throw new Error(`${filepath} not found — run "pnpm build:content" before generating feeds.`);
-	}
-	const content = readFileSync(filepath, "utf-8");
-	return JSON.parse(content) as T;
-}
 
 // ---------------------------------------------------------------------------
 // Sitemap
@@ -172,7 +162,7 @@ function escapeXml(str: string): string {
 
 function main() {
 	const blogPosts = allBlogPosts as Array<BlogPost>;
-	const rootPages = loadJson<Array<RootPage>>("rootPages.json");
+	const rootPages = allRootPages as Array<RootPage>;
 
 	// Sitemap
 	const sitemap = generateSitemap(blogPosts, rootPages);

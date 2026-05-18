@@ -13,7 +13,7 @@ This file documents project conventions for humans and coding agents.
 ## Quick Commands
 
 - Install: `pnpm install`
-- Dev: `pnpm dev` (runs Velite watch + Vite dev server)
+- Dev: `pnpm dev` (runs Vite dev server with Content Collections plugin)
 - Typecheck: `pnpm typecheck`
 - Build: `pnpm build` (includes content build via `prebuild`)
 - Lint/format check: `pnpm lint` (oxfmt check + oxlint)
@@ -37,7 +37,7 @@ This file documents project conventions for humans and coding agents.
 ## Architecture Conventions
 
 - Routes live under `src/routes/` (TanStack Start).
-- Content is MDX processed through Velite (see `./.config/velite.config.ts`).
+- Content is MDX processed through Content Collections (see `./content-collections.ts`).
 - Cloudflare Workers entry is `src/worker.ts` (wrapper around `@tanstack/react-start/server-entry`) (see `wrangler.jsonc`).
 
 ## Environment + Secrets
