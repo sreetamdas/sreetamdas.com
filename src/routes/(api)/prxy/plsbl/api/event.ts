@@ -20,10 +20,13 @@ export const Route = createFileRoute("/(api)/prxy/plsbl/api/event")({
 				});
 			},
 			GET: () => {
-				return new Response(JSON.stringify({}), {
-					status: 405,
-					headers: { Allow: "POST" },
-				});
+				return Response.json(
+					{},
+					{
+						status: 405,
+						headers: { Allow: "POST" },
+					},
+				);
 			},
 		},
 	},
