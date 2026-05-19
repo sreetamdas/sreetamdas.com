@@ -33,6 +33,7 @@ export const Route = createFileRoute("/(main)/blog/")({
 			],
 		};
 	},
+	staleTime: 1000 * 60 * 60 * 24,
 	loader: () => getBlogArchiveRenderable(),
 });
 

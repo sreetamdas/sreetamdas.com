@@ -6,7 +6,7 @@ import { SITE_DESCRIPTION, SITE_TITLE_APPEND } from "@/config";
 import { canonicalUrl, defaultOgImageUrl } from "@/lib/seo";
 
 import { NewsletterEmailDetail } from "./-components";
-import { fetchNewsletterEmails } from "./-helpers";
+import { fetchNewsletterEmails, getButtondownApiKey } from "./-helpers";
 
 type NewsletterIssue = Awaited<ReturnType<typeof fetchNewsletterEmails>>["results"][number];
 type NewsletterLoaderData = {
@@ -15,28 +15,9 @@ type NewsletterLoaderData = {
 	};
 };
 
-export const dynamicParams = false;
-
-// export async function generateStaticParams() {
-// 	const newsletter_emails_slugs = await getNewsletterEmailsSlugs();
-
-// 	return newsletter_emails_slugs;
-// }
-
-// export async function generateMetadata(props: PageProps): Promise<Metadata> {
-// 	const params = await props.params;
-
-// 	const { slug } = params;
-
-// 	const newsletter_email_data = await getNewsletterEmailsDataBySlug(slug);
-
-// 	return {
-// 		title: newsletter_email_data.subject,
-// 	};
-// }
-
 export const Route = createFileRoute("/(main)/newsletter/$slug")({
 	component: NewsletterEmailDetailPage,
+	staleTime: 1000 * 60 * 10,
 	head: ({ loaderData }: { loaderData?: NewsletterLoaderData }) => {
 		const email = loaderData?.newsletter_email_data;
 		const title = `${email?.subject ?? "Newsletter"} ${SITE_TITLE_APPEND}`;
@@ -84,9 +65,10 @@ const getNewsletterEmailRenderable = createServerFn({
 		}
 		return { slug: (data as { slug: string }).slug };
 	})
-	.handler(async ({ data }) => {
+	.handler(async ({ data, context }) => {
 		const { slug } = data;
-		const buttondown_api_emails_response = await fetchNewsletterEmails();
+		const apiKey = getButtondownApiKey(context.env);
+		const buttondown_api_emails_response = await fetchNewsletterEmails(apiKey);
 		const newsletter_email_by_slug = buttondown_api_emails_response.results.find(
 			(issue) => issue.slug === slug,
 		);
@@ -123,9 +105,3 @@ function NewsletterEmailDetailPage() {
 
 	return <>{Renderable}</>;
 }
-
-// async function getNewsletterEmailsSlugs() {
-// 	const buttondown_api_emails_response = await fetchNewsletterEmails();
-
-// 	return buttondown_api_emails_response.results.map(({ slug }) => ({ slug }));
-// }

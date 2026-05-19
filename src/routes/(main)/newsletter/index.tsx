@@ -7,10 +7,11 @@ import { ViewsCounter } from "@/lib/components/ViewsCounter";
 import { canonicalUrl, defaultOgImageUrl } from "@/lib/seo";
 
 import { NewsletterEmailsPreviews } from "./-components";
-import { fetchNewsletterEmails } from "./-helpers";
+import { fetchNewsletterEmails, getButtondownApiKey } from "./-helpers";
 
 export const Route = createFileRoute("/(main)/newsletter/")({
 	component: NewsletterEmailsPage,
+	staleTime: 1000 * 60 * 10,
 	loader: async () => {
 		return getNewsletterEmailsPreviewsRenderable();
 	},
@@ -46,8 +47,9 @@ export const Route = createFileRoute("/(main)/newsletter/")({
 });
 
 const getNewsletterEmailsPreviewsRenderable = createServerFn({ method: "GET" }).handler(
-	async () => {
-		const newsletter_emails_previews_data = await getNewsletterEmailsPreviewsData();
+	async ({ context }) => {
+		const apiKey = getButtondownApiKey(context.env);
+		const newsletter_emails_previews_data = await getNewsletterEmailsPreviewsData(apiKey);
 		const Renderable = await renderServerComponent(
 			<NewsletterEmailsPreviews emails={newsletter_emails_previews_data} />,
 		);
@@ -85,8 +87,8 @@ function getEmailPreviewContent(content: string) {
 			.join("\n")
 	);
 }
-async function getNewsletterEmailsPreviewsData() {
-	const buttondown_api_emails_response = await fetchNewsletterEmails();
+async function getNewsletterEmailsPreviewsData(apiKey?: string) {
+	const buttondown_api_emails_response = await fetchNewsletterEmails(apiKey);
 
 	return await Promise.all(
 		buttondown_api_emails_response.results

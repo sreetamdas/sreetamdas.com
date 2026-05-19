@@ -9,6 +9,7 @@ import { canonicalUrl } from "@/lib/seo";
 
 export const Route = createFileRoute("/(main)/karma")({
 	component: KarmaPage,
+	staleTime: 1000 * 60 * 60 * 24,
 	loader: () => getKarmaRenderable(),
 	head: () => ({
 		links: [{ rel: "canonical", href: canonicalUrl("/karma") }],

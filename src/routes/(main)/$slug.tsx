@@ -43,6 +43,7 @@ export const Route = createFileRoute("/(main)/$slug")({
 			],
 		};
 	},
+	staleTime: 1000 * 60 * 60 * 24,
 	loader: ({ params }: { params: { slug: string } }) => {
 		return getRootPageRenderable({ data: { slug: params.slug } });
 	},
