@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
 import { renderServerComponent } from "@tanstack/react-start/rsc";
+import { staticFunctionMiddleware } from "@tanstack/start-static-server-functions";
 import { allRootPages } from "content-collections";
 import { isUndefined } from "lodash-es";
 
@@ -35,24 +36,27 @@ export const Route = createFileRoute("/(main)/")({
 			],
 		};
 	},
+	staleTime: 1000 * 60 * 60 * 24,
 	loader: () => {
 		return getHomeRenderable();
 	},
 });
 
-const getHomeRenderable = createServerFn({ method: "GET" }).handler(async () => {
-	const post = rootPages.find((page) => page.page_slug === "introduction");
+const getHomeRenderable = createServerFn({ method: "GET" })
+	.middleware([staticFunctionMiddleware])
+	.handler(async () => {
+		const post = rootPages.find((page) => page.page_slug === "introduction");
 
-	if (isUndefined(post)) {
-		throw new Error("introduction.mdx is missing");
-	}
+		if (isUndefined(post)) {
+			throw new Error("introduction.mdx is missing");
+		}
 
-	const Renderable = await renderServerComponent(
-		<MDXContent source={post.raw} mdast={post.mdast} shikiHighlights={post.shikiHighlights} />,
-	);
+		const Renderable = await renderServerComponent(
+			<MDXContent source={post.raw} mdast={post.mdast} shikiHighlights={post.shikiHighlights} />,
+		);
 
-	return { Renderable };
-});
+		return { Renderable };
+	});
 
 function Home() {
 	const { Renderable } = Route.useLoaderData();
