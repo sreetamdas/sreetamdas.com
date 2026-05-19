@@ -9,11 +9,6 @@ import { fetchGist } from "@/lib/domains/GitHub/fetchGist";
 import { getSlimKarmaHighlighter } from "@/lib/domains/shiki/highlighter";
 import { canonicalUrl, defaultOgImageUrl } from "@/lib/seo";
 
-const GITHUB_RWC_GIST_ID =
-	process.env.VITE_GITHUB_RWC_GIST_ID ??
-	process.env.GITHUB_RWC_GIST_ID ??
-	import.meta.env.VITE_GITHUB_RWC_GIST_ID;
-
 const FALLBACK_RWC_BACKGROUND = "#17181c";
 
 type RWCSolution = {
@@ -25,14 +20,20 @@ type RWCSolution = {
 
 const getHighlightedCode = createServerFn({ method: "GET" })
 	.middleware([staticFunctionMiddleware])
-	.handler(async () => {
-		if (!GITHUB_RWC_GIST_ID) {
+	.handler(async ({ context }) => {
+		const githubGistId = readEnvString(context.env, [
+			"VITE_GITHUB_RWC_GIST_ID",
+			"GITHUB_RWC_GIST_ID",
+		]);
+		const githubToken = readEnvString(context.env, ["VITE_GITHUB_TOKEN", "GITHUB_TOKEN"]);
+
+		if (!githubGistId) {
 			return { all_solutions: [], background_color: FALLBACK_RWC_BACKGROUND };
 		}
 
 		let gist: Awaited<ReturnType<typeof fetchGist>>;
 		try {
-			gist = await fetchGist(GITHUB_RWC_GIST_ID);
+			gist = await fetchGist(githubGistId, githubToken);
 			// oxlint-disable-next-line no-console
 			console.log("static fetched gist");
 		} catch {
@@ -67,6 +68,17 @@ const getHighlightedCode = createServerFn({ method: "GET" })
 
 		return { all_solutions, background_color };
 	});
+
+function readEnvString(env: CloudflareEnv, keys: ReadonlyArray<string>): string | undefined {
+	const values = env as unknown as Record<string, unknown>;
+	for (const key of keys) {
+		const value = values[key];
+		if (typeof value === "string" && value.length > 0) {
+			return value;
+		}
+	}
+	return undefined;
+}
 
 export const Route = createFileRoute("/(main)/rwc")({
 	component: RWCPage,

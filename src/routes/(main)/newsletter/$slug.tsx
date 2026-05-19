@@ -6,7 +6,7 @@ import { SITE_DESCRIPTION, SITE_TITLE_APPEND } from "@/config";
 import { canonicalUrl, defaultOgImageUrl } from "@/lib/seo";
 
 import { NewsletterEmailDetail } from "./-components";
-import { fetchNewsletterEmails } from "./-helpers";
+import { fetchNewsletterEmails, getButtondownApiKey } from "./-helpers";
 
 type NewsletterIssue = Awaited<ReturnType<typeof fetchNewsletterEmails>>["results"][number];
 type NewsletterLoaderData = {
@@ -65,9 +65,10 @@ const getNewsletterEmailRenderable = createServerFn({
 		}
 		return { slug: (data as { slug: string }).slug };
 	})
-	.handler(async ({ data }) => {
+	.handler(async ({ data, context }) => {
 		const { slug } = data;
-		const buttondown_api_emails_response = await fetchNewsletterEmails();
+		const apiKey = getButtondownApiKey(context.env);
+		const buttondown_api_emails_response = await fetchNewsletterEmails(apiKey);
 		const newsletter_email_by_slug = buttondown_api_emails_response.results.find(
 			(issue) => issue.slug === slug,
 		);
