@@ -1,4 +1,4 @@
-import { createMiddleware, createStart } from "@tanstack/react-start";
+import { createCsrfMiddleware, createMiddleware, createStart } from "@tanstack/react-start";
 
 declare module "@tanstack/react-router" {
 	interface Register {
@@ -32,6 +32,10 @@ const cloudflareContextMiddleware = createMiddleware().server(async ({ next }) =
 	});
 });
 
+const csrfMiddleware = createCsrfMiddleware({
+	filter: (ctx) => ctx.handlerType === "serverFn",
+});
+
 export const startInstance = createStart(() => ({
-	requestMiddleware: [cloudflareContextMiddleware],
+	requestMiddleware: [csrfMiddleware, cloudflareContextMiddleware],
 }));
