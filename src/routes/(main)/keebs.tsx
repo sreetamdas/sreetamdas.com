@@ -99,18 +99,9 @@ function KeebsList({ keebs }: { keebs: Array<KeebDetails | KeebDetailsFromNotion
 	);
 }
 
-const propertiesToRetrieve = ["Name", "Type", "Image"];
+import { readEnvString } from "@/lib/helpers/utils";
 
-function readEnvString(env: CloudflareEnv, keys: ReadonlyArray<string>): string | undefined {
-	const values = env as unknown as Record<string, unknown>;
-	for (const key of keys) {
-		const value = values[key];
-		if (typeof value === "string" && value.length > 0) {
-			return value;
-		}
-	}
-	return undefined;
-}
+const propertiesToRetrieve = ["Name", "Type", "Image"];
 
 async function getKeebsFromNotion(
 	env: CloudflareEnv,

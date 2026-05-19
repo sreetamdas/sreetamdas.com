@@ -1,17 +1,9 @@
+import { readEnvString } from "@/lib/helpers/utils";
+
 export const GITHUB_API_BASE_URL = "https://api.github.com";
 
 export function getGitHubToken(env: CloudflareEnv): string | undefined {
-	const keys = ["VITE_GITHUB_TOKEN", "GITHUB_TOKEN"];
-	const values = env as unknown as Record<string, unknown>;
-
-	for (const key of keys) {
-		const value = values[key];
-		if (typeof value === "string" && value.length > 0) {
-			return value;
-		}
-	}
-
-	return undefined;
+	return readEnvString(env, ["VITE_GITHUB_TOKEN", "GITHUB_TOKEN"]);
 }
 
 export function getGitHubHeaders(token?: string) {

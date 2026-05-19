@@ -28,6 +28,7 @@ export function MainTitle({ stage }: Props) {
 					</>
 				);
 			case "final":
+			default:
 				return (
 					<>
 						React
@@ -39,9 +40,6 @@ export function MainTitle({ stage }: Props) {
 						TanStack Start
 					</>
 				);
-
-			default:
-				break;
 		}
 	};
 
