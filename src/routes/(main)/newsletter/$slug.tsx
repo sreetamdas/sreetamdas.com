@@ -15,28 +15,9 @@ type NewsletterLoaderData = {
 	};
 };
 
-export const dynamicParams = false;
-
-// export async function generateStaticParams() {
-// 	const newsletter_emails_slugs = await getNewsletterEmailsSlugs();
-
-// 	return newsletter_emails_slugs;
-// }
-
-// export async function generateMetadata(props: PageProps): Promise<Metadata> {
-// 	const params = await props.params;
-
-// 	const { slug } = params;
-
-// 	const newsletter_email_data = await getNewsletterEmailsDataBySlug(slug);
-
-// 	return {
-// 		title: newsletter_email_data.subject,
-// 	};
-// }
-
 export const Route = createFileRoute("/(main)/newsletter/$slug")({
 	component: NewsletterEmailDetailPage,
+	staleTime: 1000 * 60 * 10,
 	head: ({ loaderData }: { loaderData?: NewsletterLoaderData }) => {
 		const email = loaderData?.newsletter_email_data;
 		const title = `${email?.subject ?? "Newsletter"} ${SITE_TITLE_APPEND}`;
@@ -123,9 +104,3 @@ function NewsletterEmailDetailPage() {
 
 	return <>{Renderable}</>;
 }
-
-// async function getNewsletterEmailsSlugs() {
-// 	const buttondown_api_emails_response = await fetchNewsletterEmails();
-
-// 	return buttondown_api_emails_response.results.map(({ slug }) => ({ slug }));
-// }
