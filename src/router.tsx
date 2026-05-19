@@ -2,7 +2,6 @@ import * as Sentry from "@sentry/tanstackstart-react";
 import { createRouter } from "@tanstack/react-router";
 
 import { routeTree } from "./routeTree.gen";
-import "./global-middleware";
 
 export let routerInstance: ReturnType<typeof getRouter> | null = null;
 
