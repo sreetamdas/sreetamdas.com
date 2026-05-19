@@ -1,6 +1,7 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
 import { renderServerComponent } from "@tanstack/react-start/rsc";
+import { staticFunctionMiddleware } from "@tanstack/start-static-server-functions";
 import { allRootPages } from "content-collections";
 
 import { SITE_DESCRIPTION, SITE_TITLE_APPEND } from "@/config";
@@ -39,25 +40,28 @@ export const Route = createFileRoute("/(main)/about")({
 			],
 		};
 	},
+	staleTime: 1000 * 60 * 60 * 24,
 });
 
-const getAboutRenderable = createServerFn({ method: "GET" }).handler(async () => {
-	const post = rootPages.find((page) => page.page_path === "/about");
-	if (!post) {
-		throw notFound();
-	}
+const getAboutRenderable = createServerFn({ method: "GET" })
+	.middleware([staticFunctionMiddleware])
+	.handler(async () => {
+		const post = rootPages.find((page) => page.page_path === "/about");
+		if (!post) {
+			throw notFound();
+		}
 
-	const Renderable = await renderServerComponent(
-		<MDXContent
-			source={post.raw}
-			mdast={post.mdast}
-			shikiHighlights={post.shikiHighlights}
-			components={{ SocialLinks }}
-		/>,
-	);
+		const Renderable = await renderServerComponent(
+			<MDXContent
+				source={post.raw}
+				mdast={post.mdast}
+				shikiHighlights={post.shikiHighlights}
+				components={{ SocialLinks }}
+			/>,
+		);
 
-	return { post, Renderable };
-});
+		return { post, Renderable };
+	});
 
 function AboutPage() {
 	const { Renderable } = Route.useLoaderData();

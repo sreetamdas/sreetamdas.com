@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
 import { renderServerComponent } from "@tanstack/react-start/rsc";
+import { staticFunctionMiddleware } from "@tanstack/start-static-server-functions";
 
 import { SITE_DESCRIPTION, SITE_TITLE_APPEND } from "@/config";
 import { ViewsCounter } from "@/lib/components/ViewsCounter";
@@ -8,6 +9,7 @@ import { canonicalUrl, defaultOgImageUrl } from "@/lib/seo";
 
 export const Route = createFileRoute("/(pure)/resume")({
 	component: ResumePage,
+	staleTime: 1000 * 60 * 60 * 24,
 	loader: () => getResumeRenderable(),
 	head: () => ({
 		links: [{ rel: "canonical", href: canonicalUrl("/resume") }],
@@ -28,11 +30,13 @@ export const Route = createFileRoute("/(pure)/resume")({
 	}),
 });
 
-const getResumeRenderable = createServerFn({ method: "GET" }).handler(async () => {
-	const Renderable = await renderServerComponent(<ResumeContent />);
+const getResumeRenderable = createServerFn({ method: "GET" })
+	.middleware([staticFunctionMiddleware])
+	.handler(async () => {
+		const Renderable = await renderServerComponent(<ResumeContent />);
 
-	return { Renderable };
-});
+		return { Renderable };
+	});
 
 function ResumePage() {
 	const { Renderable } = Route.useLoaderData();

@@ -1,6 +1,7 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
 import { renderServerComponent } from "@tanstack/react-start/rsc";
+import { staticFunctionMiddleware } from "@tanstack/start-static-server-functions";
 import { allBlogPosts } from "content-collections";
 import { isNil } from "lodash-es";
 
@@ -61,6 +62,7 @@ export const Route = createFileRoute("/(main)/blog/$slug")({
 			],
 		};
 	},
+	staleTime: 1000 * 60 * 60 * 24,
 
 	loader: ({ params }: { params: { slug: string } }) => {
 		return getBlogRenderable({ data: { slug: params.slug } });
@@ -71,6 +73,7 @@ export const Route = createFileRoute("/(main)/blog/$slug")({
 });
 
 const getBlogRenderable = createServerFn({ method: "GET" })
+	.middleware([staticFunctionMiddleware])
 	.inputValidator((data) => {
 		if (
 			typeof data !== "object" ||

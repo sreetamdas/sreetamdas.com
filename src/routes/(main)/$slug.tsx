@@ -1,6 +1,7 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
 import { renderServerComponent } from "@tanstack/react-start/rsc";
+import { staticFunctionMiddleware } from "@tanstack/start-static-server-functions";
 import { allRootPages } from "content-collections";
 import { isNil } from "lodash-es";
 
@@ -43,12 +44,14 @@ export const Route = createFileRoute("/(main)/$slug")({
 			],
 		};
 	},
+	staleTime: 1000 * 60 * 60 * 24,
 	loader: ({ params }: { params: { slug: string } }) => {
 		return getRootPageRenderable({ data: { slug: params.slug } });
 	},
 });
 
 const getRootPageRenderable = createServerFn({ method: "GET" })
+	.middleware([staticFunctionMiddleware])
 	.inputValidator((data) => {
 		if (
 			typeof data !== "object" ||
