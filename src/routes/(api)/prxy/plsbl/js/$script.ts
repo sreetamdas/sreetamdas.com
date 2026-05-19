@@ -8,18 +8,25 @@ export const Route = createFileRoute("/(api)/prxy/plsbl/js/$script")({
 				const targetUrl = new URL(`https://plausible.io/js/${params.script}`);
 				targetUrl.search = incomingUrl.search;
 
-				const upstream = await fetch(targetUrl, {
-					method: "GET",
-					headers: {
-						"user-agent": request.headers.get("user-agent") ?? "",
-						accept: request.headers.get("accept") ?? "*/*",
-					},
-				});
+				try {
+					const upstream = await fetch(targetUrl, {
+						method: "GET",
+						headers: {
+							"user-agent": request.headers.get("user-agent") ?? "",
+							accept: request.headers.get("accept") ?? "*/*",
+						},
+					});
 
-				return new Response(upstream.body, {
-					status: upstream.status,
-					headers: upstream.headers,
-				});
+					return new Response(upstream.body, {
+						status: upstream.status,
+						headers: upstream.headers,
+					});
+				} catch {
+					return Response.json(
+						{ error: "Plausible script upstream is unavailable" },
+						{ status: 502 },
+					);
+				}
 			},
 		},
 	},

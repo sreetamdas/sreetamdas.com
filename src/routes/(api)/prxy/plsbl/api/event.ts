@@ -4,24 +4,28 @@ export const Route = createFileRoute("/(api)/prxy/plsbl/api/event")({
 	server: {
 		handlers: {
 			POST: async ({ request }: { request: Request }) => {
-				const upstream = await fetch("https://plausible.io/api/event", {
-					method: "POST",
-					headers: {
-						"content-type": request.headers.get("content-type") ?? "text/plain",
-						"user-agent": request.headers.get("user-agent") ?? "",
-						"x-forwarded-for": request.headers.get("cf-connecting-ip") ?? "",
-					},
-					body: request.body,
-				});
+				try {
+					const upstream = await fetch("https://plausible.io/api/event", {
+						method: "POST",
+						headers: {
+							"content-type": request.headers.get("content-type") ?? "text/plain",
+							"user-agent": request.headers.get("user-agent") ?? "",
+							"x-forwarded-for": request.headers.get("cf-connecting-ip") ?? "",
+						},
+						body: request.body,
+					});
 
-				return new Response(upstream.body, {
-					status: upstream.status,
-					headers: upstream.headers,
-				});
+					return new Response(upstream.body, {
+						status: upstream.status,
+						headers: upstream.headers,
+					});
+				} catch {
+					return Response.json({ error: "Plausible upstream is unavailable" }, { status: 502 });
+				}
 			},
 			GET: () => {
 				return Response.json(
-					{},
+					{ error: "Method not allowed", allowed: ["POST"] },
 					{
 						status: 405,
 						headers: { Allow: "POST" },
