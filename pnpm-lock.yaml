@@ -78,9 +78,6 @@ importers:
       '@tanstack/react-start':
         specifier: ^1.168.6
         version: 1.168.6(@vitejs/plugin-rsc@0.5.26(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(vite@8.0.11(@types/node@25.8.0)(esbuild@0.28.0)(jiti@2.7.0)(tsx@4.22.1)(yaml@2.9.0)))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(vite@8.0.11(@types/node@25.8.0)(esbuild@0.28.0)(jiti@2.7.0)(tsx@4.22.1)(yaml@2.9.0))
-      '@tanstack/start-static-server-functions':
-        specifier: ^1.167.4
-        version: 1.167.4(@tanstack/react-start@1.168.6(@vitejs/plugin-rsc@0.5.26(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(vite@8.0.11(@types/node@25.8.0)(esbuild@0.28.0)(jiti@2.7.0)(tsx@4.22.1)(yaml@2.9.0)))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(vite@8.0.11(@types/node@25.8.0)(esbuild@0.28.0)(jiti@2.7.0)(tsx@4.22.1)(yaml@2.9.0)))
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
@@ -2453,18 +2450,6 @@ packages:
   '@tanstack/start-server-core@1.168.4':
     resolution: {integrity: sha512-YF9HRjIh8SyprQxOiAB1puXkGI4PqF2/StX00CXtmLOphFTfuShYOPvmQZXl2XZp6H9vt+qY+BNXucSuLzag9g==}
     engines: {node: '>=22.12.0'}
-
-  '@tanstack/start-static-server-functions@1.167.4':
-    resolution: {integrity: sha512-Oa9BM0ncCLDSr9sTKxqXpGkT+nKtvO6XBM4gQgNb3j00bmFvBG6vCTrD/b/iwA+WUpWnDR2FTT+gFDi0Pbbsqw==}
-    engines: {node: '>=22.12.0'}
-    peerDependencies:
-      '@tanstack/react-start': ^1.168.6
-      '@tanstack/solid-start': ^1.168.6
-    peerDependenciesMeta:
-      '@tanstack/react-start':
-        optional: true
-      '@tanstack/solid-start':
-        optional: true
 
   '@tanstack/start-storage-context@1.167.4':
     resolution: {integrity: sha512-hI93yABbvcaMWkCtewjxNAZOXcJIWhh7P8um7A76OHA2LmLFaR36Sm8eZ6OQHhPdFob4DMOkwDiCv9sckRvCow==}
@@ -6676,13 +6661,6 @@ snapshots:
       seroval: 1.5.4
     transitivePeerDependencies:
       - crossws
-
-  '@tanstack/start-static-server-functions@1.167.4(@tanstack/react-start@1.168.6(@vitejs/plugin-rsc@0.5.26(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(vite@8.0.11(@types/node@25.8.0)(esbuild@0.28.0)(jiti@2.7.0)(tsx@4.22.1)(yaml@2.9.0)))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(vite@8.0.11(@types/node@25.8.0)(esbuild@0.28.0)(jiti@2.7.0)(tsx@4.22.1)(yaml@2.9.0)))':
-    dependencies:
-      '@tanstack/start-client-core': 1.169.4
-      seroval: 1.5.4
-    optionalDependencies:
-      '@tanstack/react-start': 1.168.6(@vitejs/plugin-rsc@0.5.26(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(vite@8.0.11(@types/node@25.8.0)(esbuild@0.28.0)(jiti@2.7.0)(tsx@4.22.1)(yaml@2.9.0)))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(vite@8.0.11(@types/node@25.8.0)(esbuild@0.28.0)(jiti@2.7.0)(tsx@4.22.1)(yaml@2.9.0))
 
   '@tanstack/start-storage-context@1.167.4':
     dependencies:

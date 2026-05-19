@@ -1,7 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
 import { renderServerComponent } from "@tanstack/react-start/rsc";
-import { staticFunctionMiddleware } from "@tanstack/start-static-server-functions";
 
 import { SITE_TITLE_APPEND, SITE_URL } from "@/config";
 import { KarmaShowcase } from "@/lib/components/KarmaShowcase";
@@ -59,14 +58,12 @@ function KarmaPage() {
 	return <>{Renderable}</>;
 }
 
-const getKarmaRenderable = createServerFn({ method: "GET" })
-	.middleware([staticFunctionMiddleware])
-	.handler(async () => {
-		const examples = await getShowcaseImages();
-		const Renderable = await renderServerComponent(<KarmaContent examples={examples} />);
+const getKarmaRenderable = createServerFn({ method: "GET" }).handler(async () => {
+	const examples = await getShowcaseImages();
+	const Renderable = await renderServerComponent(<KarmaContent examples={examples} />);
 
-		return { Renderable };
-	});
+	return { Renderable };
+});
 
 function KarmaContent({
 	examples,

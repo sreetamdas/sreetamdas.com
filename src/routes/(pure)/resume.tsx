@@ -1,7 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
 import { renderServerComponent } from "@tanstack/react-start/rsc";
-import { staticFunctionMiddleware } from "@tanstack/start-static-server-functions";
 
 import { SITE_DESCRIPTION, SITE_TITLE_APPEND } from "@/config";
 import { ViewsCounter } from "@/lib/components/ViewsCounter";
@@ -30,13 +29,11 @@ export const Route = createFileRoute("/(pure)/resume")({
 	}),
 });
 
-const getResumeRenderable = createServerFn({ method: "GET" })
-	.middleware([staticFunctionMiddleware])
-	.handler(async () => {
-		const Renderable = await renderServerComponent(<ResumeContent />);
+const getResumeRenderable = createServerFn({ method: "GET" }).handler(async () => {
+	const Renderable = await renderServerComponent(<ResumeContent />);
 
-		return { Renderable };
-	});
+	return { Renderable };
+});
 
 function ResumePage() {
 	const { Renderable } = Route.useLoaderData();
