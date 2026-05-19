@@ -79,11 +79,11 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pnpm-store-
 
-      - name: Cache Velite output
+      - name: Cache Content Collections output
         uses: actions/cache@v5
         with:
-          path: .velite
-          key: velite-${{ hashFiles('content/**/*', '.config/velite.config.ts') }}
+          path: .content-collections
+          key: content-collections-${{ hashFiles('content/**/*', 'content-collections.ts') }}
 
       - name: Install
         run: pnpm install --frozen-lockfile
@@ -92,7 +92,7 @@ jobs:
         run: node scripts/generate-build-info.mjs
 
       - name: Build content
-        run: pnpm run build:content
+        run: pnpm run build:content-collections
 
       - name: Lint
         run: pnpm lint
@@ -126,11 +126,11 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pnpm-store-
 
-      - name: Cache Velite output
+      - name: Cache Content Collections output
         uses: actions/cache@v5
         with:
-          path: .velite
-          key: velite-${{ hashFiles('content/**/*', '.config/velite.config.ts') }}
+          path: .content-collections
+          key: content-collections-${{ hashFiles('content/**/*', 'content-collections.ts') }}
 
       - name: Install
         run: pnpm install --frozen-lockfile

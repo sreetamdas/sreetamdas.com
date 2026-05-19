@@ -1,10 +1,10 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
 import { renderServerComponent } from "@tanstack/react-start/rsc";
+import { allBlogPosts } from "content-collections";
 import { isNil } from "lodash-es";
 
 import { SITE_DESCRIPTION, SITE_TITLE_APPEND } from "@/config";
-import { blogPosts } from "@/generated";
 import { NotFound404 } from "@/lib/components/Error";
 import { MDXContent } from "@/lib/components/MDX";
 import { ReadingProgress } from "@/lib/components/ProgressBar";
@@ -18,6 +18,8 @@ import {
 	HighlightWithUseEffect,
 	HighlightWithUseInterval,
 } from "./-chameleon-text/componentsClient";
+
+const blogPosts = allBlogPosts;
 
 type BlogPost = (typeof blogPosts)[number];
 type BlogLoaderData = {

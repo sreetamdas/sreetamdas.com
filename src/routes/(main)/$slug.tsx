@@ -1,16 +1,18 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
 import { renderServerComponent } from "@tanstack/react-start/rsc";
+import { allRootPages } from "content-collections";
 import { isNil } from "lodash-es";
 
 import { SITE_DESCRIPTION, SITE_TITLE_APPEND } from "@/config";
-import { rootPages } from "@/generated";
 import { RepoContributors } from "@/lib/components/GitHub/RepoContributors";
 import { MDXContent } from "@/lib/components/MDX";
 import { ViewsCounter } from "@/lib/components/ViewsCounter";
 import { fetchRepoContributors } from "@/lib/domains/GitHub/serverFns";
 import { type RepoContributor } from "@/lib/domains/GitHub/types";
 import { canonicalUrl, defaultOgImageUrl } from "@/lib/seo";
+
+const rootPages = allRootPages;
 
 type RootPage = (typeof rootPages)[number];
 type RootPageLoaderData = { post: RootPage; contributors: Array<RepoContributor> };
