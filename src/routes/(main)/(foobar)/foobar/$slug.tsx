@@ -10,10 +10,11 @@ const foobar_routes_schema = z.object({
 
 export const Route = createFileRoute("/(main)/(foobar)/foobar/$slug")({
 	component: FoobarCompletedPage,
+	staleTime: 1000 * 60 * 60 * 24,
 	loader: ({ params: { slug } }: { params: { slug: Exclude<FoobaFlagPageSlug, "/"> } }) => {
 		const all_foobar_pages_slugs = getAllFoobarPagesSlugs();
 		if (!all_foobar_pages_slugs.includes(slug)) {
-			notFound();
+			throw notFound();
 		}
 
 		return { slug };
