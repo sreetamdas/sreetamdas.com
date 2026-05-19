@@ -4,7 +4,10 @@ export const Route = createFileRoute("/(api)/api/coffee")({
 	server: {
 		handlers: {
 			GET: () => {
-				return Response.json({}, { status: 405, headers: { Allow: "POST" } });
+				return Response.json(
+					{ error: "Method not allowed", allowed: ["POST"] },
+					{ status: 405, headers: { Allow: "POST" } },
+				);
 			},
 			POST: () => {
 				return Response.json(
