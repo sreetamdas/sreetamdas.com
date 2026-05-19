@@ -39,6 +39,7 @@ export const Route = createFileRoute("/(main)/about")({
 			],
 		};
 	},
+	staleTime: 1000 * 60 * 60 * 24,
 });
 
 const getAboutRenderable = createServerFn({ method: "GET" }).handler(async () => {

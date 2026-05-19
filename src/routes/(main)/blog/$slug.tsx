@@ -61,6 +61,7 @@ export const Route = createFileRoute("/(main)/blog/$slug")({
 			],
 		};
 	},
+	staleTime: 1000 * 60 * 60 * 24,
 
 	loader: ({ params }: { params: { slug: string } }) => {
 		return getBlogRenderable({ data: { slug: params.slug } });

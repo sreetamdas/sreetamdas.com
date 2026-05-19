@@ -35,6 +35,7 @@ export const Route = createFileRoute("/(main)/")({
 			],
 		};
 	},
+	staleTime: 1000 * 60 * 60 * 24,
 	loader: () => {
 		return getHomeRenderable();
 	},

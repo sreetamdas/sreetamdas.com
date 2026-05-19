@@ -1,6 +1,16 @@
 import { BUTTONDOWN_EMAIL_MOCKS } from "./-mocks";
 const BUTTONDOWN_BASE_URL = "https://api.buttondown.email/v1";
-const BUTTONDOWN_API_KEY = import.meta.env.VITE_BUTTONDOWN_API_KEY;
+
+export function getButtondownApiKey(env: CloudflareEnv): string | undefined {
+	const values = env as unknown as Record<string, unknown>;
+	for (const key of ["VITE_BUTTONDOWN_API_KEY", "BUTTONDOWN_API_KEY"]) {
+		const value = values[key];
+		if (typeof value === "string" && value.length > 0) {
+			return value;
+		}
+	}
+	return undefined;
+}
 
 export type ButtondownAPISubscribersResponse = {
 	count: number;
@@ -42,15 +52,14 @@ export type ButtondownAPIEmailsResponse = {
 	}>;
 };
 
-export async function fetchNewsletterEmails(): Promise<ButtondownAPIEmailsResponse> {
+export async function fetchNewsletterEmails(apiKey?: string): Promise<ButtondownAPIEmailsResponse> {
 	try {
 		const response = await fetch(`${BUTTONDOWN_BASE_URL}/emails`, {
 			headers: {
-				...(BUTTONDOWN_API_KEY !== "" && {
+				...(apiKey && {
 					"X-API-Version": "2024-08-15",
-					Authorization: `Token ${BUTTONDOWN_API_KEY}`,
+					Authorization: `Token ${apiKey}`,
 				}),
-				"Access-Control-Allow-Origin": "*",
 			},
 		});
 		if (!response.ok) {
