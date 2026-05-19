@@ -200,6 +200,7 @@ export default defineConfig({
 		exclude: ["e2e/**", "node_modules", "dist", ".content-collections"],
 		passWithNoTests: true,
 	},
+	// @ts-expect-error TS2321 — excessive stack depth from multiple vite Plugin instances in pnpm
 	plugins: [
 		...(process.env.VITEST
 			? []
