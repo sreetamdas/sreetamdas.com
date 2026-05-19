@@ -11,6 +11,7 @@ import { fetchNewsletterEmails } from "./-helpers";
 
 export const Route = createFileRoute("/(main)/newsletter/")({
 	component: NewsletterEmailsPage,
+	staleTime: 1000 * 60 * 10,
 	loader: async () => {
 		return getNewsletterEmailsPreviewsRenderable();
 	},

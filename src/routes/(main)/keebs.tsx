@@ -29,6 +29,7 @@ const IMGUR_KEEBS_ALBUM_HASH =
 
 export const Route = createFileRoute("/(main)/keebs")({
 	component: KeebsPage,
+	staleTime: 1000 * 60 * 15,
 	loader: () => getKeebsRenderable(),
 	head: () => ({
 		links: [{ rel: "canonical", href: canonicalUrl("/keebs") }],
