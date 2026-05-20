@@ -1,17 +1,33 @@
 import { createFileRoute } from "@tanstack/react-router";
 
+type PresenceBinding = {
+	getByName: (name: string) => {
+		fetch: (request: Request) => Promise<Response> | Response;
+	};
+};
+
+type PresenceEnv = {
+	SITE_PRESENCE?: PresenceBinding;
+};
+
+export function handlePresenceGet(
+	request: Request,
+	env: PresenceEnv,
+): Promise<Response> | Response {
+	const presence = env.SITE_PRESENCE;
+	if (!presence) {
+		return Response.json({ error: "SITE_PRESENCE binding is not available" }, { status: 500 });
+	}
+
+	const stub = presence.getByName("global");
+	return stub.fetch(request);
+}
+
 export const Route = createFileRoute("/(api)/api/presence")({
 	server: {
 		handlers: {
-			GET: async ({ request }: { request: Request }) => {
-				const workersModule = "cloudflare:workers";
-				const { env } = await import(/* @vite-ignore */ workersModule);
-
-				// Intentional singleton: one global DO instance tracks site-wide presence.
-				// Non-null assertion: SITE_PRESENCE binding is always present at runtime
-				// (wrangler types mark it optional due to Sentry.withSentry wrapper in worker.ts)
-				const stub = env.SITE_PRESENCE!.getByName("global");
-				return stub.fetch(request);
+			GET: async ({ request, context }) => {
+				return handlePresenceGet(request, context.env);
 			},
 		},
 	},

@@ -11,24 +11,9 @@ import { ImgurClient, type KeebDetails } from "@/lib/domains/Imgur";
 import { NotionClient } from "@/lib/domains/Notion";
 import { canonicalUrl, defaultOgImageUrl } from "@/lib/seo";
 
-const KEEBS_DATABASE_ID =
-	process.env.VITE_NOTION_KEEBS_PAGE_ID ??
-	process.env.NOTION_KEEBS_PAGE_ID ??
-	import.meta.env.VITE_NOTION_KEEBS_PAGE_ID;
-
-const NOTION_TOKEN =
-	process.env.VITE_NOTION_TOKEN ?? process.env.NOTION_TOKEN ?? import.meta.env.VITE_NOTION_TOKEN;
-const IMGUR_API_CLIENT_ID =
-	process.env.VITE_IMGUR_API_CLIENT_ID ??
-	process.env.IMGUR_API_CLIENT_ID ??
-	import.meta.env.VITE_IMGUR_API_CLIENT_ID;
-const IMGUR_KEEBS_ALBUM_HASH =
-	process.env.VITE_IMGUR_KEEBS_ALBUM_HASH ??
-	process.env.IMGUR_KEEBS_ALBUM_HASH ??
-	import.meta.env.VITE_IMGUR_KEEBS_ALBUM_HASH;
-
 export const Route = createFileRoute("/(main)/keebs")({
 	component: KeebsPage,
+	staleTime: 1000 * 60 * 15,
 	loader: () => getKeebsRenderable(),
 	head: () => ({
 		links: [{ rel: "canonical", href: canonicalUrl("/keebs") }],
@@ -58,8 +43,8 @@ export type KeebDetailsFromNotion = Omit<KeebDetails, "image"> & {
 	image: Omit<KeebDetails["image"], "height" | "width">;
 };
 
-const getKeebsRenderable = createServerFn({ method: "GET" }).handler(async () => {
-	const keebs = await getKeebsFromNotion();
+const getKeebsRenderable = createServerFn({ method: "GET" }).handler(async ({ context }) => {
+	const keebs = await getKeebsFromNotion(context.env);
 	const Renderable = await renderServerComponent(<KeebsList keebs={keebs} />);
 
 	return { Renderable };
@@ -114,30 +99,43 @@ function KeebsList({ keebs }: { keebs: Array<KeebDetails | KeebDetailsFromNotion
 	);
 }
 
+import { readEnvString } from "@/lib/helpers/utils";
+
 const propertiesToRetrieve = ["Name", "Type", "Image"];
-async function getKeebsFromNotion(): Promise<Array<KeebDetails | KeebDetailsFromNotion>> {
+
+async function getKeebsFromNotion(
+	env: CloudflareEnv,
+): Promise<Array<KeebDetails | KeebDetailsFromNotion>> {
+	const keebsDatabaseId = readEnvString(env, ["VITE_NOTION_KEEBS_PAGE_ID", "NOTION_KEEBS_PAGE_ID"]);
+	const notionToken = readEnvString(env, ["VITE_NOTION_TOKEN", "NOTION_TOKEN"]);
+	const imgurApiClientId = readEnvString(env, ["VITE_IMGUR_API_CLIENT_ID", "IMGUR_API_CLIENT_ID"]);
+	const imgurKeebsAlbumHash = readEnvString(env, [
+		"VITE_IMGUR_KEEBS_ALBUM_HASH",
+		"IMGUR_KEEBS_ALBUM_HASH",
+	]);
+
 	if (
-		isUndefined(KEEBS_DATABASE_ID) ||
-		isEmpty(KEEBS_DATABASE_ID) ||
-		isUndefined(NOTION_TOKEN) ||
-		isEmpty(NOTION_TOKEN) ||
-		isUndefined(IMGUR_API_CLIENT_ID) ||
-		isEmpty(IMGUR_API_CLIENT_ID) ||
-		isUndefined(IMGUR_KEEBS_ALBUM_HASH) ||
-		isEmpty(IMGUR_KEEBS_ALBUM_HASH)
+		isUndefined(keebsDatabaseId) ||
+		isEmpty(keebsDatabaseId) ||
+		isUndefined(notionToken) ||
+		isEmpty(notionToken) ||
+		isUndefined(imgurApiClientId) ||
+		isEmpty(imgurApiClientId) ||
+		isUndefined(imgurKeebsAlbumHash) ||
+		isEmpty(imgurKeebsAlbumHash)
 	) {
 		return [];
 	}
 
-	const notionClient = new NotionClient({ token: NOTION_TOKEN });
+	const notionClient = new NotionClient({ token: notionToken });
 	const imgurClient = new ImgurClient({
-		client_id: IMGUR_API_CLIENT_ID,
-		album_url: IMGUR_KEEBS_ALBUM_HASH,
+		client_id: imgurApiClientId,
+		album_url: imgurKeebsAlbumHash,
 	});
 
 	let results: Awaited<ReturnType<typeof notionClient.queryDatabase>>["results"] = [];
 	try {
-		const response = await notionClient.queryDatabase(KEEBS_DATABASE_ID, {
+		const response = await notionClient.queryDatabase(keebsDatabaseId, {
 			filter: {
 				and: [
 					{ property: "Bought", checkbox: { equals: true } },

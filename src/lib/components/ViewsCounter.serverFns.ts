@@ -18,15 +18,18 @@ export const fetchViewCountServerFn = createServerFn({
 	.inputValidator((data) => {
 		return validatePagePathname(data);
 	})
-	.handler(async ({ data }) => {
+	.handler(async ({ data, context }) => {
 		const normalizedSlug = normalizePathname(data.slug);
 
 		if (data.disabled) {
 			return { view_count: 0 };
 		}
 
-		const workersModule = "cloudflare:workers";
-		const { env } = await import(/* @vite-ignore */ workersModule);
+		const env = context.env;
+		if (!env) {
+			throw new Error("Cloudflare env not available in Start request context");
+		}
+
 		const db = getDb(env);
 
 		return upsertPageViews(db, normalizedSlug);

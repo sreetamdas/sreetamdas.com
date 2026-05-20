@@ -18,7 +18,7 @@
 		"strictNullChecks": true,
 		"target": "ES2022",
 		"paths": {
-			"@/generated": ["./.velite"],
+			"content-collections": ["./.content-collections/generated"],
 			"@/*": ["./src/*"],
 			"@/public/*": ["./public/*"]
 		}

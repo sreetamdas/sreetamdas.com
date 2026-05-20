@@ -8,7 +8,7 @@ Thanks for checking out my personal website and blog! Here's the source code for
 - [Vite](https://vitejs.dev)
 - [TypeScript](https://www.typescriptlang.org)
 - [Tailwind CSS](https://tailwindcss.com)
-- Content: MDX processed via [Velite](https://github.com/zce/velite)
+- Content: MDX processed via [Content Collections](https://github.com/sdorra/content-collections)
 - [Plausible](https://plausible.io)
 - [React Icons](https://react-icons.github.io/react-icons)
 
@@ -50,8 +50,8 @@ pnpm dev
 
 Notes:
 
-- `pnpm dev` runs Velite in watch mode (`pnpm dev:content`) and the Vite dev server.
-- `pnpm build` runs `pnpm build:content` automatically via `prebuild`.
+- `pnpm dev` runs the Vite dev server with Content Collections integration.
+- `pnpm build` runs `pnpm build:content-collections` automatically via `prebuild`.
 - `pnpm deploy` builds and deploys to Cloudflare via Wrangler.
 
 ### Environment variables

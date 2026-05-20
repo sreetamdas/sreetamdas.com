@@ -21,6 +21,7 @@ import { Route as mainKeebsRouteImport } from './routes/(main)/keebs'
 import { Route as mainKarmaRouteImport } from './routes/(main)/karma'
 import { Route as mainAboutRouteImport } from './routes/(main)/about'
 import { Route as mainSlugRouteImport } from './routes/(main)/$slug'
+import { Route as SlidesTanstackStartRouteRouteImport } from './routes/slides/tanstack-start/route'
 import { Route as SlidesJsonSchemaFormIndexRouteImport } from './routes/slides/json-schema-form/index'
 import { Route as mainNewsletterIndexRouteImport } from './routes/(main)/newsletter/index'
 import { Route as mainBlogIndexRouteImport } from './routes/(main)/blog/index'
@@ -91,6 +92,12 @@ const mainSlugRoute = mainSlugRouteImport.update({
   path: '/$slug',
   getParentRoute: () => mainRouteRoute,
 } as any)
+const SlidesTanstackStartRouteRoute =
+  SlidesTanstackStartRouteRouteImport.update({
+    id: '/tanstack-start',
+    path: '/tanstack-start',
+    getParentRoute: () => SlidesRouteRoute,
+  } as any)
 const SlidesJsonSchemaFormIndexRoute =
   SlidesJsonSchemaFormIndexRouteImport.update({
     id: '/json-schema-form/',
@@ -150,6 +157,7 @@ const apiPrxyPlsblApiEventRoute = apiPrxyPlsblApiEventRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/slides': typeof SlidesRouteRouteWithChildren
+  '/slides/tanstack-start': typeof SlidesTanstackStartRouteRoute
   '/$slug': typeof mainSlugRoute
   '/about': typeof mainAboutRoute
   '/karma': typeof mainKarmaRoute
@@ -173,6 +181,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/slides': typeof SlidesRouteRouteWithChildren
+  '/slides/tanstack-start': typeof SlidesTanstackStartRouteRoute
   '/$slug': typeof mainSlugRoute
   '/about': typeof mainAboutRoute
   '/karma': typeof mainKarmaRoute
@@ -199,6 +208,7 @@ export interface FileRoutesById {
   '/(main)': typeof mainRouteRouteWithChildren
   '/(pure)': typeof pureRouteRouteWithChildren
   '/slides': typeof SlidesRouteRouteWithChildren
+  '/slides/tanstack-start': typeof SlidesTanstackStartRouteRoute
   '/(main)/$slug': typeof mainSlugRoute
   '/(main)/about': typeof mainAboutRoute
   '/(main)/karma': typeof mainKarmaRoute
@@ -224,6 +234,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/slides'
+    | '/slides/tanstack-start'
     | '/$slug'
     | '/about'
     | '/karma'
@@ -247,6 +258,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/slides'
+    | '/slides/tanstack-start'
     | '/$slug'
     | '/about'
     | '/karma'
@@ -272,6 +284,7 @@ export interface FileRouteTypes {
     | '/(main)'
     | '/(pure)'
     | '/slides'
+    | '/slides/tanstack-start'
     | '/(main)/$slug'
     | '/(main)/about'
     | '/(main)/karma'
@@ -389,6 +402,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/$slug'
       preLoaderRoute: typeof mainSlugRouteImport
       parentRoute: typeof mainRouteRoute
+    }
+    '/slides/tanstack-start': {
+      id: '/slides/tanstack-start'
+      path: '/tanstack-start'
+      fullPath: '/slides/tanstack-start'
+      preLoaderRoute: typeof SlidesTanstackStartRouteRouteImport
+      parentRoute: typeof SlidesRouteRoute
     }
     '/slides/json-schema-form/': {
       id: '/slides/json-schema-form/'
@@ -521,10 +541,12 @@ const pureRouteRouteWithChildren = pureRouteRoute._addFileChildren(
 )
 
 interface SlidesRouteRouteChildren {
+  SlidesTanstackStartRouteRoute: typeof SlidesTanstackStartRouteRoute
   SlidesJsonSchemaFormIndexRoute: typeof SlidesJsonSchemaFormIndexRoute
 }
 
 const SlidesRouteRouteChildren: SlidesRouteRouteChildren = {
+  SlidesTanstackStartRouteRoute: SlidesTanstackStartRouteRoute,
   SlidesJsonSchemaFormIndexRoute: SlidesJsonSchemaFormIndexRoute,
 }
 
@@ -546,10 +568,11 @@ export const routeTree = rootRouteImport
   ._addFileTypes<FileRouteTypes>()
 
 import type { getRouter } from './router.tsx'
-import type { createStart } from '@tanstack/react-start'
+import type { startInstance } from './start.ts'
 declare module '@tanstack/react-start' {
   interface Register {
     ssr: true
     router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
   }
 }
