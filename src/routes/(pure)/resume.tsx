@@ -8,6 +8,7 @@ import { canonicalUrl, defaultOgImageUrl } from "@/lib/seo";
 
 export const Route = createFileRoute("/(pure)/resume")({
 	component: ResumePage,
+	staleTime: 1000 * 60 * 60 * 24,
 	loader: () => getResumeRenderable(),
 	head: () => ({
 		links: [{ rel: "canonical", href: canonicalUrl("/resume") }],

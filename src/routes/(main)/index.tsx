@@ -1,13 +1,15 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
 import { renderServerComponent } from "@tanstack/react-start/rsc";
+import { allRootPages } from "content-collections";
 import { isUndefined } from "lodash-es";
 
 import { SITE_DESCRIPTION, SITE_TITLE_APPEND } from "@/config";
-import { rootPages } from "@/generated";
 import { MDXContent } from "@/lib/components/MDX";
 import { ViewsCounter } from "@/lib/components/ViewsCounter";
 import { canonicalUrl, defaultOgImageUrl } from "@/lib/seo";
+
+const rootPages = allRootPages;
 
 export const Route = createFileRoute("/(main)/")({
 	component: Home,
@@ -33,6 +35,7 @@ export const Route = createFileRoute("/(main)/")({
 			],
 		};
 	},
+	staleTime: 1000 * 60 * 60 * 24,
 	loader: () => {
 		return getHomeRenderable();
 	},

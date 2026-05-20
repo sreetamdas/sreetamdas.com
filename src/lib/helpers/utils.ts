@@ -32,3 +32,14 @@ export async function wrapPromise<T>(promise: Promise<T>): PromiseSettled<T> {
 		error: reason,
 	}));
 }
+
+export function readEnvString(env: CloudflareEnv, keys: ReadonlyArray<string>): string | undefined {
+	const values = env as unknown as Record<string, unknown>;
+	for (const key of keys) {
+		const value = values[key];
+		if (typeof value === "string" && value.length > 0) {
+			return value;
+		}
+	}
+	return undefined;
+}

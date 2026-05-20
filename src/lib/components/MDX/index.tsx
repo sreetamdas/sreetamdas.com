@@ -29,12 +29,14 @@ type MDXContentCodeType = {
 	 */
 	shikiHighlights?: ShikiHighlightMap;
 	components?: MDXComponents;
+	shikiCodeBlockClassName?: string;
 };
 export const MDXContent = ({
 	source,
 	mdast,
 	shikiHighlights,
 	components = {},
+	shikiCodeBlockClassName,
 }: MDXContentCodeType) => {
 	const mergedComponents = { ...customMDXComponents, ...components };
 
@@ -60,7 +62,11 @@ export const MDXContent = ({
 							const html = shikiHighlights[key];
 							if (!html) return undefined;
 							return (
-								<ShikiCodeBlock html={html} meta={codeNode.meta} className="ml-12 *:text-2xl!" />
+								<ShikiCodeBlock
+									html={html}
+									meta={codeNode.meta}
+									className={shikiCodeBlockClassName}
+								/>
 							);
 						}
 					: undefined

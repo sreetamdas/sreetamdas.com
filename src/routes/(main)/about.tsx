@@ -1,14 +1,16 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
 import { renderServerComponent } from "@tanstack/react-start/rsc";
+import { allRootPages } from "content-collections";
 
 import { SITE_DESCRIPTION, SITE_TITLE_APPEND } from "@/config";
-import { rootPages } from "@/generated";
 import { MDXContent } from "@/lib/components/MDX";
 import { SocialLinks } from "@/lib/components/SocialLinks";
 import { ViewsCounter } from "@/lib/components/ViewsCounter";
 import { FoobarEntry } from "@/lib/domains/foobar/Entry";
 import { canonicalUrl, defaultOgImageUrl } from "@/lib/seo";
+
+const rootPages = allRootPages;
 
 export const Route = createFileRoute("/(main)/about")({
 	component: AboutPage,
@@ -37,6 +39,7 @@ export const Route = createFileRoute("/(main)/about")({
 			],
 		};
 	},
+	staleTime: 1000 * 60 * 60 * 24,
 });
 
 const getAboutRenderable = createServerFn({ method: "GET" }).handler(async () => {
