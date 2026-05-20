@@ -17,7 +17,7 @@ function RouteComponent() {
 			<Header />
 			<main
 				id="main-content"
-				className="relative grid grid-flow-col grid-cols-[1fr_min(var(--max-width),calc(100%-2rem))_1fr] gap-x-4 *:col-2"
+				className="relative grid grid-flow-col grid-cols-[1fr_min(var(--max-width),calc(100%-2rem))_1fr] gap-x-4 *:[grid-column:2]"
 			>
 				<Outlet />
 			</main>

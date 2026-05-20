@@ -297,6 +297,7 @@ function SlideRenderer({ slide, components }: { slide: Slide; components?: MDXCo
 			source={slide.content}
 			mdast={slide.mdast}
 			shikiHighlights={slide.shikiHighlights}
+			shikiCodeBlockClassName="ml-12 *:text-2xl!"
 			components={components}
 		/>
 	);

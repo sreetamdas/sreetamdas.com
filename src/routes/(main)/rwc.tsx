@@ -6,6 +6,7 @@ import { SITE_DESCRIPTION, SITE_TITLE_APPEND } from "@/config";
 import { ViewsCounter } from "@/lib/components/ViewsCounter";
 import { fetchGist } from "@/lib/domains/GitHub/fetchGist";
 import { getSlimKarmaHighlighter } from "@/lib/domains/shiki/highlighter";
+import { readEnvString } from "@/lib/helpers/utils";
 import { canonicalUrl, defaultOgImageUrl } from "@/lib/seo";
 
 const FALLBACK_RWC_BACKGROUND = "#17181c";
@@ -65,17 +66,6 @@ const getHighlightedCode = createServerFn({ method: "GET" }).handler(async ({ co
 
 	return { all_solutions, background_color };
 });
-
-function readEnvString(env: CloudflareEnv, keys: ReadonlyArray<string>): string | undefined {
-	const values = env as unknown as Record<string, unknown>;
-	for (const key of keys) {
-		const value = values[key];
-		if (typeof value === "string" && value.length > 0) {
-			return value;
-		}
-	}
-	return undefined;
-}
 
 export const Route = createFileRoute("/(main)/rwc")({
 	component: RWCPage,
