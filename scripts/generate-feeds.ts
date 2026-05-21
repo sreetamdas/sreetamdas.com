@@ -54,7 +54,7 @@ type SitemapEntry = {
 };
 
 function generateSitemap(blogPosts: Array<BlogPost>, rootPages: Array<RootPage>): string {
-	const staticRoutes = ["/", "/blog", "/karma", "/keebs", "/newsletter", "/fancy-pants", "/resume"];
+	const staticRoutes = ["/", "/blog", "/karma", "/keebs", "/newsletter", "/fancy-pants", "/resume", "/rwc"];
 
 	const seen = new Set<string>();
 	const entries: Array<SitemapEntry> = [];
