@@ -5,6 +5,9 @@
  * collections and writes them into `public/` so they are served as static
  * assets by Cloudflare Workers.
  *
+ * Also fetches newsletter emails from Buttondown API at build time
+ * for sitemap generation.
+ *
  * Run after `build:content-collections`.
  */
 import { allBlogPosts, allRootPages } from "content-collections";
@@ -12,12 +15,15 @@ import { writeFileSync, mkdirSync, existsSync } from "node:fs";
 import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 
+import { BUTTONDOWN_EMAIL_MOCKS } from "../src/routes/(main)/newsletter/-mocks";
+
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, "..");
 const PUBLIC = resolve(ROOT, "public");
 
 const SITE_URL = "https://sreetamdas.com";
 const OWNER_NAME = "Sreetam Das";
+const BUTTONDOWN_BASE_URL = "https://api.buttondown.email/v1";
 
 // ---------------------------------------------------------------------------
 // Load generated content output
@@ -53,8 +59,19 @@ type SitemapEntry = {
 	priority?: string;
 };
 
-function generateSitemap(blogPosts: Array<BlogPost>, rootPages: Array<RootPage>): string {
-	const staticRoutes = ["/", "/blog", "/karma", "/keebs", "/newsletter", "/fancy-pants", "/resume", "/rwc"];
+type NewsletterEmail = {
+	slug: string;
+	subject: string;
+	publish_date: string;
+	body: string;
+};
+
+function generateSitemap(
+	blogPosts: Array<BlogPost>,
+	rootPages: Array<RootPage>,
+	newsletterEmails: Array<NewsletterEmail>,
+): string {
+	const staticRoutes = ["/", "/about", "/blog", "/karma", "/keebs", "/newsletter", "/fancy-pants", "/resume", "/rwc"];
 
 	const seen = new Set<string>();
 	const entries: Array<SitemapEntry> = [];
@@ -82,6 +99,10 @@ function generateSitemap(blogPosts: Array<BlogPost>, rootPages: Array<RootPage>)
 	for (const post of blogPosts) {
 		if (!post.published) continue;
 		add(post.url ?? post.page_path, post.updated_at ?? post.published_at);
+	}
+
+	for (const email of newsletterEmails) {
+		add(`/newsletter/${email.slug}`, email.publish_date);
 	}
 
 	const urlEntries = entries
@@ -160,15 +181,63 @@ function escapeXml(str: string): string {
 // Main
 // ---------------------------------------------------------------------------
 
-function main() {
+async function fetchNewsletterEmails(): Promise<Array<NewsletterEmail>> {
+	try {
+		const response = await fetch(`${BUTTONDOWN_BASE_URL}/emails`);
+		if (!response.ok) {
+			return BUTTONDOWN_EMAIL_MOCKS.results.map(
+				({ slug, subject, publish_date, body, id, secondary_id }) => ({
+					slug,
+					subject,
+					publish_date,
+					body,
+					id,
+					secondary_id,
+				}),
+			);
+		}
+		const data = (await response.json()) as {
+			results: Array<{
+				slug: string;
+				subject: string;
+				publish_date: string;
+				body: string;
+				id: string;
+				secondary_id: number;
+			}>;
+		};
+		return data.results.map(({ slug, subject, publish_date, body, id, secondary_id }) => ({
+			slug,
+			subject,
+			publish_date,
+			body,
+			id,
+			secondary_id,
+		}));
+	} catch {
+		return BUTTONDOWN_EMAIL_MOCKS.results.map(
+			({ slug, subject, publish_date, body, id, secondary_id }) => ({
+				slug,
+				subject,
+				publish_date,
+				body,
+				id,
+				secondary_id,
+			}),
+		);
+	}
+}
+
+async function main() {
 	const blogPosts = allBlogPosts as Array<BlogPost>;
 	const rootPages = allRootPages as Array<RootPage>;
+	const newsletterEmails = await fetchNewsletterEmails();
 
 	// Sitemap
-	const sitemap = generateSitemap(blogPosts, rootPages);
+	const sitemap = generateSitemap(blogPosts, rootPages, newsletterEmails);
 	writeFileSync(resolve(PUBLIC, "sitemap.xml"), sitemap, "utf-8");
 	process.stdout.write(
-		`  Generated public/sitemap.xml (${blogPosts.filter((p) => p.published).length} blog posts, ${rootPages.filter((p) => p.published && !p.skip_page).length} pages)\n`,
+		`  Generated public/sitemap.xml (${blogPosts.filter((p) => p.published).length} blog posts, ${rootPages.filter((p) => p.published && !p.skip_page).length} pages, ${newsletterEmails.length} newsletter emails)\n`,
 	);
 
 	// RSS
