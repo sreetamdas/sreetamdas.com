@@ -15,8 +15,6 @@ import { writeFileSync, mkdirSync, existsSync, readFileSync } from "node:fs";
 import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { BUTTONDOWN_EMAIL_MOCKS } from "../src/routes/(main)/newsletter/-mocks";
-
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, "..");
 const PUBLIC = resolve(ROOT, "public");
@@ -203,11 +201,7 @@ async function fetchNewsletterEmails(): Promise<Array<NewsletterEmail>> {
 	try {
 		const response = await fetch(`${BUTTONDOWN_BASE_URL}/emails`);
 		if (!response.ok) {
-			return BUTTONDOWN_EMAIL_MOCKS.results.map(({ slug, subject, publish_date }) => ({
-				slug,
-				subject,
-				publish_date,
-			}));
+			return [];
 		}
 		const data = (await response.json()) as {
 			results: Array<{ slug: string; subject: string; publish_date: string }>;
@@ -218,11 +212,7 @@ async function fetchNewsletterEmails(): Promise<Array<NewsletterEmail>> {
 			publish_date,
 		}));
 	} catch {
-		return BUTTONDOWN_EMAIL_MOCKS.results.map(({ slug, subject, publish_date }) => ({
-			slug,
-			subject,
-			publish_date,
-		}));
+		return [];
 	}
 }
 
