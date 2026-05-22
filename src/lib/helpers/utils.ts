@@ -45,8 +45,5 @@ function firstStringValue(
 }
 
 export function readEnvString(env: CloudflareEnv, keys: ReadonlyArray<string>): string | undefined {
-	return (
-		firstStringValue(env as unknown as Record<string, unknown>, keys) ??
-		firstStringValue(process.env as Record<string, unknown>, keys)
-	);
+	return firstStringValue(env as unknown as Record<string, unknown>, keys);
 }
