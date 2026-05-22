@@ -15,17 +15,30 @@ import handler, { createServerEntry } from "@tanstack/react-start/server-entry";
 
 export { PresenceDurableObject } from "./lib/cloudflare/PresenceDurableObject";
 
+function isProductionHostname(hostname: string): boolean {
+	return hostname === "sreetamdas.com" || hostname === "www.sreetamdas.com";
+}
+
+function maybeHideFromSeo(response: Response, request: Request): Response {
+	const hostname = new URL(request.url).hostname;
+	if (!isProductionHostname(hostname)) {
+		response.headers.set("X-Robots-Tag", "noindex");
+	}
+	return response;
+}
+
 const serverEntry = createServerEntry({
-	fetch: (request, opts) => {
+	fetch: async (request, opts) => {
 		if (request.method === "GET" || request.method === "HEAD") {
 			const url = new URL(request.url);
 			if (url.pathname.length > 1 && url.pathname.endsWith("/")) {
 				url.pathname = url.pathname.slice(0, -1);
-				return Response.redirect(url.toString(), 308);
+				return maybeHideFromSeo(Response.redirect(url.toString(), 308), request);
 			}
 		}
 
-		return handler.fetch(request, opts);
+		const response = await handler.fetch(request, opts);
+		return maybeHideFromSeo(response, request);
 	},
 });
 
