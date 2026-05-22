@@ -122,7 +122,9 @@ export const LiveViewersBadge = ({ className }: { className?: string }) => {
 				if (typeof event.data !== "string") return;
 				let payload: LiveViewersPayload;
 				try {
-					payload = JSON.parse(event.data) as LiveViewersPayload;
+					const parsed: unknown = JSON.parse(event.data);
+					if (typeof parsed !== "object" || parsed === null) return;
+					payload = parsed as LiveViewersPayload;
 				} catch {
 					return;
 				}

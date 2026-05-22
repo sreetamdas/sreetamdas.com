@@ -50,7 +50,11 @@ export class ImgurClient {
 			},
 		});
 
-		const response = (await request.json()) as ImgurAPIResponse<Array<ImgurImage>>;
+		const data = await request.json();
+		if (typeof data !== "object" || data === null) {
+			throw new Error("Imgur API returned unexpected data");
+		}
+		const response = data as ImgurAPIResponse<Array<ImgurImage>>;
 		return response.data;
 	}
 
@@ -64,14 +68,15 @@ export class ImgurClient {
 
 			const imgurImage = albumImagesData?.find(({ link }) => link === image.url);
 			if (typeof imgurImage !== "undefined") {
-				return {
+				const enriched: KeebDetails = {
 					...imageData,
 					image: {
 						...imageData.image,
 						height: imgurImage.height,
 						width: imgurImage.width,
 					},
-				} as KeebDetails;
+				};
+				return enriched;
 			}
 
 			return imageData;

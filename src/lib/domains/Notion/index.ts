@@ -48,7 +48,11 @@ export class NotionClient {
 				continue;
 			}
 
-			return (await response.json()) as DatabaseObjectResponse;
+			const data = await response.json();
+			if (typeof data !== "object" || data === null) {
+				throw new Error("Notion API returned unexpected data");
+			}
+			return data as DatabaseObjectResponse;
 		}
 
 		throw new Error("Notion database not found");
@@ -56,11 +60,8 @@ export class NotionClient {
 
 	async getPropertiesIDs(database_id: string, filter_properties: Array<string>) {
 		const data = await this.retrieveDatabase(database_id);
-		const properties = (
-			data as unknown as {
-				properties: Record<string, { id: string }>;
-			}
-		).properties;
+		const raw = data as Record<string, unknown>;
+		const properties = (raw.properties ?? {}) as Record<string, { id: string }>;
 
 		return filter_properties.map((property) => ({
 			name: property,
@@ -98,7 +99,11 @@ export class NotionClient {
 				continue;
 			}
 
-			return (await response.json()) as QueryDatabasePageObjectResponse;
+			const data = await response.json();
+			if (typeof data !== "object" || data === null) {
+				throw new Error("Notion API returned unexpected data");
+			}
+			return data as QueryDatabasePageObjectResponse;
 		}
 
 		return { results: [] };
