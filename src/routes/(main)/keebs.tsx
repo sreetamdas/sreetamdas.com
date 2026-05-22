@@ -106,13 +106,10 @@ const propertiesToRetrieve = ["Name", "Type", "Image"];
 async function getKeebsFromNotion(
 	env: CloudflareEnv,
 ): Promise<Array<KeebDetails | KeebDetailsFromNotion>> {
-	const keebsDatabaseId = readEnvString(env, ["VITE_NOTION_KEEBS_PAGE_ID", "NOTION_KEEBS_PAGE_ID"]);
-	const notionToken = readEnvString(env, ["VITE_NOTION_TOKEN", "NOTION_TOKEN"]);
-	const imgurApiClientId = readEnvString(env, ["VITE_IMGUR_API_CLIENT_ID", "IMGUR_API_CLIENT_ID"]);
-	const imgurKeebsAlbumHash = readEnvString(env, [
-		"VITE_IMGUR_KEEBS_ALBUM_HASH",
-		"IMGUR_KEEBS_ALBUM_HASH",
-	]);
+	const keebsDatabaseId = readEnvString(env, ["NOTION_KEEBS_PAGE_ID"]);
+	const notionToken = readEnvString(env, ["NOTION_TOKEN"]);
+	const imgurApiClientId = readEnvString(env, ["IMGUR_API_CLIENT_ID"]);
+	const imgurKeebsAlbumHash = readEnvString(env, ["IMGUR_KEEBS_ALBUM_HASH"]);
 
 	// oxlint-disable-next-line no-console
 	console.log("[keebs] env presence", {

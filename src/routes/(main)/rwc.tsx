@@ -1,6 +1,5 @@
 import { createFileRoute, ErrorComponent } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
-import { env } from "cloudflare:workers";
 import { FiLink } from "react-icons/fi";
 
 import { SITE_DESCRIPTION, SITE_TITLE_APPEND } from "@/config";
@@ -20,16 +19,11 @@ type RWCSolution = {
 };
 
 const getHighlightedCode = createServerFn({ method: "GET" }).handler(async ({ context }) => {
-	const other = env.VITE_GITHUB_RWC_GIST_ID;
-	const another = process.env.VITE_GITHUB_RWC_GIST_ID;
 	// oxlint-disable-next-line no-console
-	console.log({ context, other, another });
+	console.log({ context });
 
-	const githubGistId = readEnvString(context.env, [
-		"VITE_GITHUB_RWC_GIST_ID",
-		"GITHUB_RWC_GIST_ID",
-	]);
-	const githubToken = readEnvString(context.env, ["VITE_GITHUB_TOKEN", "GITHUB_TOKEN"]);
+	const githubGistId = readEnvString(context.env, ["GITHUB_RWC_GIST_ID"]);
+	const githubToken = readEnvString(context.env, ["GITHUB_TOKEN"]);
 
 	// oxlint-disable-next-line no-console
 	console.log("[rwc] env presence", {
