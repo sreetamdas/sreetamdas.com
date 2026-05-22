@@ -29,18 +29,29 @@ export class NotionClient {
 	}
 
 	async retrieveDatabase(database_id: string) {
-		const query_string = `https://api.notion.com/v1/databases/${database_id}`;
-		const response = await fetch(query_string, {
-			method: "GET",
-			headers: {
-				Authorization: `Bearer ${this.#token}`,
-				"Notion-Version": "2022-06-28",
-				"Content-Type": "application/json",
-			},
-		});
-		const data: DatabaseObjectResponse = await response.json();
+		const endpoints = [
+			`https://api.notion.com/v1/databases/${database_id}`,
+			`https://api.notion.com/v1/data_sources/${database_id}`,
+		];
 
-		return data;
+		for (const endpoint of endpoints) {
+			const response = await fetch(endpoint, {
+				method: "GET",
+				headers: {
+					Authorization: `Bearer ${this.#token}`,
+					"Notion-Version": "2022-06-28",
+					"Content-Type": "application/json",
+				},
+			});
+
+			if (!response.ok) {
+				continue;
+			}
+
+			return (await response.json()) as DatabaseObjectResponse;
+		}
+
+		throw new Error("Notion database not found");
 	}
 
 	async getPropertiesIDs(database_id: string, filter_properties: Array<string>) {
@@ -67,20 +78,30 @@ export class NotionClient {
 			filter_properties_query = `?${property_ids?.map(({ id }) => `filter_properties=${id}`).join("&")}`;
 		}
 
-		const query_string = `https://api.notion.com/v1/databases/${database_id}/query${filter_properties_query}`;
+		const endpoints = [
+			`https://api.notion.com/v1/databases/${database_id}/query${filter_properties_query}`,
+			`https://api.notion.com/v1/data_sources/${database_id}/query${filter_properties_query}`,
+		];
 
-		const response = await fetch(query_string, {
-			method: "POST",
-			headers: {
-				Authorization: `Bearer ${this.#token}`,
-				"Notion-Version": "2022-06-28",
-				"Content-Type": "application/json",
-			},
-			body: JSON.stringify(filter),
-		});
+		for (const endpoint of endpoints) {
+			const response = await fetch(endpoint, {
+				method: "POST",
+				headers: {
+					Authorization: `Bearer ${this.#token}`,
+					"Notion-Version": "2022-06-28",
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify(filter),
+			});
 
-		const data: QueryDatabasePageObjectResponse = await response.json();
-		return data;
+			if (!response.ok) {
+				continue;
+			}
+
+			return (await response.json()) as QueryDatabasePageObjectResponse;
+		}
+
+		return { results: [] };
 	}
 }
 
