@@ -1,12 +1,21 @@
 import type * as monaco from "modern-monaco/editor-core";
 
-import { createHeadlessForm } from "@remoteoss/json-schema-form";
+import { createHeadlessForm, type CreateHeadlessFormOptions } from "@remoteoss/json-schema-form";
 import karmaTheme from "@sreetamdas/karma/themes/default.json" with { type: "json" };
 import { init } from "modern-monaco";
 import { useState, useCallback, useEffect, useRef } from "react";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type JsfObjectSchema = Record<string, any>;
+type KarmaThemeJson = {
+	tokenColors: Array<{
+		scope: string | string[];
+		settings: { foreground?: string; fontStyle?: string };
+	}>;
+	colors: Record<string, string>;
+};
+
+const themeConfig = karmaTheme as KarmaThemeJson;
+
+type JsfObjectSchema = Parameters<typeof createHeadlessForm>[0];
 
 const PRESETS: { name: string; schema: JsfObjectSchema }[] = [
 	{
@@ -95,6 +104,12 @@ const PRESETS: { name: string; schema: JsfObjectSchema }[] = [
 	},
 ];
 
+function resolveFieldValue(value: unknown, const_: unknown, default_: unknown): string | number {
+	const resolved = value ?? const_ ?? default_;
+	if (typeof resolved === "string" || typeof resolved === "number") return resolved;
+	return "";
+}
+
 function FieldRenderer({
 	field,
 	value,
@@ -126,7 +141,7 @@ function FieldRenderer({
 
 	const commonProps = {
 		className: inputClasses,
-		value: ((value ?? field.const ?? field.default) as string | number) ?? "",
+		value: resolveFieldValue(value, field.const, field.default),
 		onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
 			onChange(e.target.type === "number" ? Number(e.target.value) : e.target.value);
 		},
@@ -217,8 +232,9 @@ function FieldRenderer({
 	);
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type FormValues = Record<string, any>;
+type FormValues = {
+	[key: string]: NonNullable<CreateHeadlessFormOptions["initialValues"]>;
+};
 
 function MonacoEditor({ value, onChange }: { value: string; onChange: (v: string) => void }) {
 	const containerRef = useRef<HTMLDivElement>(null);
@@ -243,10 +259,7 @@ function MonacoEditor({ value, onChange }: { value: string; onChange: (v: string
 			if (disposed || !containerRef.current) return;
 
 			// Register Karma theme using Monaco's native defineTheme API
-			const karmaTokenColors = (karmaTheme as Record<string, unknown>).tokenColors as Array<{
-				scope: string | string[];
-				settings: { foreground?: string; fontStyle?: string };
-			}>;
+			const karmaTokenColors = themeConfig.tokenColors;
 			const rules = karmaTokenColors.flatMap((tc) => {
 				const scopes = typeof tc.scope === "string" ? [tc.scope] : (tc.scope ?? []);
 				return scopes.map((scope) => {
@@ -261,7 +274,7 @@ function MonacoEditor({ value, onChange }: { value: string; onChange: (v: string
 				base: "vs-dark",
 				inherit: true,
 				rules,
-				colors: (karmaTheme as Record<string, unknown>).colors as Record<string, string>,
+				colors: themeConfig.colors,
 			});
 
 			const model = monaco.editor.createModel(value, "json");
@@ -350,7 +363,7 @@ export function JsfPlayground() {
 		const flatten = (obj: Record<string, unknown>, prefix = "") => {
 			for (const [key, val] of Object.entries(obj)) {
 				if (typeof val === "string") flatErrors[prefix + key] = val;
-				else if (val && typeof val === "object")
+				else if (val && typeof val === "object" && !Array.isArray(val))
 					flatten(val as Record<string, unknown>, prefix + key + ".");
 			}
 		};
@@ -399,7 +412,7 @@ export function JsfPlayground() {
 								JSON.parse(v);
 								setParseError(null);
 							} catch (err) {
-								setParseError((err as Error).message);
+								setParseError(err instanceof Error ? err.message : String(err));
 							}
 						}}
 					/>
@@ -431,8 +444,10 @@ export function JsfPlayground() {
 										field={field}
 										value={values[field.name]}
 										onChange={(val) => {
-											setValues((prev) => ({ ...prev, [field.name]: val }));
-											// Clear error for this field on change
+											setValues((prev) => {
+												const next = { ...prev, [field.name]: val } as FormValues;
+												return next;
+											});
 											setErrors((prev) => {
 												const next = { ...prev };
 												delete next[field.name];
@@ -490,7 +505,10 @@ export function SchemaFormPreview({ schema }: { schema: JsfObjectSchema }) {
 									field={field}
 									value={values[field.name]}
 									onChange={(val) => {
-										setValues((prev) => ({ ...prev, [field.name]: val }));
+										setValues((prev) => {
+											const next = { ...prev, [field.name]: val } as FormValues;
+											return next;
+										});
 									}}
 								/>
 							))}
