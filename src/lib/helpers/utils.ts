@@ -41,5 +41,12 @@ export function readEnvString(env: CloudflareEnv, keys: ReadonlyArray<string>): 
 			return value;
 		}
 	}
+	// Fallback to process.env for build-time / prerender environments
+	for (const key of keys) {
+		const value = process.env[key];
+		if (typeof value === "string" && value.length > 0) {
+			return value;
+		}
+	}
 	return undefined;
 }
