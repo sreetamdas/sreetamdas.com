@@ -155,23 +155,26 @@ async function getKeebsFromNotion(
 	}
 
 	const keebsDetailsFormatted = results.map((keebDetails) => {
-		const keebDetailsFormatted = Object.keys(keebDetails.properties).reduce((details, property) => {
-			const propertyValue = keebDetails.properties[property];
+		const partial = Object.keys(keebDetails.properties).reduce<Partial<KeebDetailsFromNotion>>(
+			(details, property) => {
+				const propertyValue = keebDetails.properties[property];
 
-			if (propertyValue.type === "title") {
-				details.name = getTitlePlainText(propertyValue);
-			}
-			if (propertyValue?.type === "files") {
-				details.image = { url: getFiles(propertyValue)[0] };
-			}
-			if (propertyValue?.type === "multi_select") {
-				details.tags = getMultiSelectNames(propertyValue);
-			}
+				if (propertyValue.type === "title") {
+					details.name = getTitlePlainText(propertyValue);
+				}
+				if (propertyValue?.type === "files") {
+					details.image = { url: getFiles(propertyValue)[0] };
+				}
+				if (propertyValue?.type === "multi_select") {
+					details.tags = getMultiSelectNames(propertyValue);
+				}
 
-			return details;
-		}, {} as KeebDetailsFromNotion);
+				return details;
+			},
+			{},
+		);
 
-		return keebDetailsFormatted;
+		return partial as KeebDetailsFromNotion;
 	});
 
 	if (

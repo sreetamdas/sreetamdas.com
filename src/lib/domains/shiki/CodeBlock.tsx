@@ -86,13 +86,13 @@ function CodeBlockFrame({
 
 function parseShikiMeta(html: string) {
 	const styleMatch = html.match(/style="([^"]*)"/);
-	const style: CSSProperties = {};
+	const style: Record<string, string | undefined> = {};
 	if (styleMatch) {
 		for (const decl of styleMatch[1].split(";")) {
 			const [prop, val] = decl.split(":");
 			if (prop && val) {
 				const camelProp = prop.trim().replace(/-([a-z])/g, (_, c: string) => c.toUpperCase());
-				(style as Record<string, string>)[camelProp] = val.trim();
+				style[camelProp] = val.trim();
 			}
 		}
 	}
@@ -102,7 +102,7 @@ function parseShikiMeta(html: string) {
 
 	const lineCount = (html.match(/class="line"/g) || []).length;
 
-	return { style, language, lineCount };
+	return { style: style as CSSProperties, language, lineCount };
 }
 
 function extractCodeInner(html: string): string {
