@@ -33,17 +33,11 @@ export async function wrapPromise<T>(promise: Promise<T>): PromiseSettled<T> {
 	}));
 }
 
-function firstStringValue(
-	source: Record<string, unknown>,
-	keys: ReadonlyArray<string>,
-): string | undefined {
-	return keys.reduce<string | undefined>((found, key) => {
-		if (found !== undefined) return found;
-		const value = source[key];
-		return typeof value === "string" && value.length > 0 ? value : found;
-	}, undefined);
-}
-
 export function readEnvString(env: CloudflareEnv, keys: ReadonlyArray<string>): string | undefined {
-	return firstStringValue(env as unknown as Record<string, unknown>, keys);
+	for (const [key, value] of Object.entries(env)) {
+		if (keys.includes(key) && typeof value === "string" && value.length > 0) {
+			return value;
+		}
+	}
+	return undefined;
 }
