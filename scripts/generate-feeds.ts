@@ -198,8 +198,16 @@ function escapeXml(str: string): string {
 }
 
 async function fetchNewsletterEmails(): Promise<Array<NewsletterEmail>> {
+	const apiKey = process.env.VITE_BUTTONDOWN_API_KEY;
 	try {
-		const response = await fetch(`${BUTTONDOWN_BASE_URL}/emails`);
+		const response = await fetch(`${BUTTONDOWN_BASE_URL}/emails`, {
+			headers: apiKey
+				? {
+						"X-API-Version": "2024-08-15",
+						Authorization: `Token ${apiKey}`,
+					}
+				: {},
+		});
 		if (!response.ok) {
 			return [];
 		}
