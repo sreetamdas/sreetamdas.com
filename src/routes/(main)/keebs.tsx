@@ -114,24 +114,15 @@ async function getKeebsFromNotion(
 		"IMGUR_KEEBS_ALBUM_HASH",
 	]);
 
-	if (
-		isUndefined(keebsDatabaseId) ||
-		isEmpty(keebsDatabaseId) ||
-		isUndefined(notionToken) ||
-		isEmpty(notionToken) ||
-		isUndefined(imgurApiClientId) ||
-		isEmpty(imgurApiClientId) ||
-		isUndefined(imgurKeebsAlbumHash) ||
-		isEmpty(imgurKeebsAlbumHash)
-	) {
+	if (isUndefined(keebsDatabaseId) || isEmpty(keebsDatabaseId)) {
+		return [];
+	}
+
+	if (isUndefined(notionToken) || isEmpty(notionToken)) {
 		return [];
 	}
 
 	const notionClient = new NotionClient({ token: notionToken });
-	const imgurClient = new ImgurClient({
-		client_id: imgurApiClientId,
-		album_url: imgurKeebsAlbumHash,
-	});
 
 	let results: Awaited<ReturnType<typeof notionClient.queryDatabase>>["results"] = [];
 	try {
@@ -149,7 +140,7 @@ async function getKeebsFromNotion(
 		return [];
 	}
 
-	const keebsDetailsFormatted = results?.map((keebDetails) => {
+	const keebsDetailsFormatted = results.map((keebDetails) => {
 		const keebDetailsFormatted = Object.keys(keebDetails.properties).reduce((details, property) => {
 			const propertyValue = keebDetails.properties[property];
 
@@ -169,7 +160,25 @@ async function getKeebsFromNotion(
 		return keebDetailsFormatted;
 	});
 
-	return await imgurClient.addImgurImagesData(keebsDetailsFormatted);
+	if (
+		isUndefined(imgurApiClientId) ||
+		isEmpty(imgurApiClientId) ||
+		isUndefined(imgurKeebsAlbumHash) ||
+		isEmpty(imgurKeebsAlbumHash)
+	) {
+		return keebsDetailsFormatted;
+	}
+
+	const imgurClient = new ImgurClient({
+		client_id: imgurApiClientId,
+		album_url: imgurKeebsAlbumHash,
+	});
+
+	try {
+		return await imgurClient.addImgurImagesData(keebsDetailsFormatted);
+	} catch {
+		return keebsDetailsFormatted;
+	}
 }
 
 type PageObjectResponseProperty =
@@ -183,5 +192,10 @@ function getMultiSelectNames(input: Extract<PageObjectResponseProperty, { type: 
 }
 
 function getFiles(input: Extract<PageObjectResponseProperty, { type: "files" }>) {
-	return input.files.map((item) => item.name);
+	return input.files
+		.map((item) => {
+			if (item.type === "external") return item.external.url;
+			return item.file.url;
+		})
+		.filter((value): value is string => typeof value === "string" && value.length > 0);
 }

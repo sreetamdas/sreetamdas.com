@@ -19,7 +19,18 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, "..");
 const PUBLIC = resolve(ROOT, "public");
 
-const SITE_URL = "https://sreetamdas.com";
+function resolveSiteUrl(): string {
+	const explicitSiteUrl = process.env.VITE_SITE_URL ?? process.env.SITE_URL;
+	if (explicitSiteUrl) {
+		return explicitSiteUrl.replace(/\/$/, "");
+	}
+
+	return process.env.CLOUDFLARE_ENV === "staging"
+		? "https://staging.sreetamdas.com"
+		: "https://sreetamdas.com";
+}
+
+const SITE_URL = resolveSiteUrl();
 const OWNER_NAME = "Sreetam Das";
 const BUTTONDOWN_BASE_URL = "https://api.buttondown.email/v1";
 
