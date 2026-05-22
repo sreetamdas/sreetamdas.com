@@ -9,12 +9,14 @@ import { useGlobalStore } from "@/lib/domains/global";
 
 import { type ColorSchemeSliceType } from "./store";
 
-function getDocumentColorScheme() {
-	const documentColorScheme = window.document.documentElement.style.getPropertyValue(
-		"--initial-color-scheme",
-	) as NonNullable<ColorSchemeSliceType["colorScheme"]> | "";
+function parseColorScheme(value: string): NonNullable<ColorSchemeSliceType["colorScheme"]> | "" {
+	if (value === "system" || value === "light" || value === "dark") return value;
+	return "";
+}
 
-	return documentColorScheme;
+function getDocumentColorScheme() {
+	const raw = window.document.documentElement.style.getPropertyValue("--initial-color-scheme");
+	return parseColorScheme(raw);
 }
 
 function getSystemColorSchemePreference(): Extract<

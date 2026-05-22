@@ -48,7 +48,7 @@ export const LinkTo = ({
 	if (isRouterLink(href)) {
 		return (
 			<Link
-				{...(restProps as unknown as Omit<LinkProps, "to">)}
+				{...(restProps as Omit<LinkProps, "to">)}
 				to={href as LinkProps["to"]}
 				params={params as LinkProps["params"]}
 				preload="intent"
