@@ -209,7 +209,7 @@ function escapeXml(str: string): string {
 }
 
 async function fetchNewsletterEmails(): Promise<Array<NewsletterEmail>> {
-	const apiKey = process.env.VITE_BUTTONDOWN_API_KEY;
+	const apiKey = process.env.BUTTONDOWN_API_KEY;
 	try {
 		const response = await fetch(`${BUTTONDOWN_BASE_URL}/emails`, {
 			headers: apiKey
