@@ -44,6 +44,7 @@ export type ButtondownAPIEmailsResponse = {
 		publish_date: string;
 		secondary_id: number;
 		slug: string;
+		status?: string;
 		subject: string;
 	}>;
 };
@@ -59,10 +60,14 @@ export async function fetchNewsletterEmails(apiKey?: string): Promise<Buttondown
 			},
 		});
 		if (!response.ok) {
-			return BUTTONDOWN_EMAIL_MOCKS as ButtondownAPIEmailsResponse;
+			return BUTTONDOWN_EMAIL_MOCKS;
 		}
-		return (await response.json()) as ButtondownAPIEmailsResponse;
+		const data = await response.json();
+		if (typeof data !== "object" || data === null) {
+			return BUTTONDOWN_EMAIL_MOCKS;
+		}
+		return data as ButtondownAPIEmailsResponse;
 	} catch (_error: unknown) {
-		return BUTTONDOWN_EMAIL_MOCKS as ButtondownAPIEmailsResponse;
+		return BUTTONDOWN_EMAIL_MOCKS;
 	}
 }
