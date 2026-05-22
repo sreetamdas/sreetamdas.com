@@ -25,7 +25,15 @@ const getHighlightedCode = createServerFn({ method: "GET" }).handler(async ({ co
 	]);
 	const githubToken = readEnvString(context.env, ["VITE_GITHUB_TOKEN", "GITHUB_TOKEN"]);
 
+	// oxlint-disable-next-line no-console
+	console.log("[rwc] env presence", {
+		hasGithubGistId: typeof githubGistId === "string" && githubGistId.length > 0,
+		hasGithubToken: typeof githubToken === "string" && githubToken.length > 0,
+	});
+
 	if (!githubGistId) {
+		// oxlint-disable-next-line no-console
+		console.log("[rwc] missing gist id");
 		return { all_solutions: [], background_color: FALLBACK_RWC_BACKGROUND };
 	}
 
@@ -33,17 +41,26 @@ const getHighlightedCode = createServerFn({ method: "GET" }).handler(async ({ co
 	try {
 		gist = await fetchGist(githubGistId, githubToken);
 		// oxlint-disable-next-line no-console
-		console.log("static fetched gist");
-	} catch {
+		console.log("[rwc] fetched gist", {
+			gistId: githubGistId,
+			fileCount: gist.files ? Object.keys(gist.files).length : 0,
+		});
+	} catch (error) {
+		// oxlint-disable-next-line no-console
+		console.error("[rwc] failed to fetch gist", error);
 		return { all_solutions: [], background_color: FALLBACK_RWC_BACKGROUND };
 	}
 
 	if (typeof gist.files === "undefined" || Object.keys(gist.files).length === 0) {
+		// oxlint-disable-next-line no-console
+		console.log("[rwc] gist has no files");
 		return { all_solutions: [], background_color: FALLBACK_RWC_BACKGROUND };
 	}
 
 	const files = Object.values(gist.files);
 	if (files.length === 0) {
+		// oxlint-disable-next-line no-console
+		console.log("[rwc] gist files array is empty");
 		return { all_solutions: [], background_color: FALLBACK_RWC_BACKGROUND };
 	}
 
