@@ -20,12 +20,10 @@ type RWCSolution = {
 };
 
 const getHighlightedCode = createServerFn({ method: "GET" }).handler(async ({ context }) => {
-	// oxlint-disable-next-line no-console
-	console.log({ context });
-
 	const other = env.VITE_GITHUB_RWC_GIST_ID;
+	const another = process.env.VITE_GITHUB_RWC_GIST_ID;
 	// oxlint-disable-next-line no-console
-	console.log({ other });
+	console.log({ context, other, another });
 
 	const githubGistId = readEnvString(context.env, [
 		"VITE_GITHUB_RWC_GIST_ID",
