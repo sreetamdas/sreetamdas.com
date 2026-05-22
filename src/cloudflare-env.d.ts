@@ -11,15 +11,13 @@ declare namespace Cloudflare {
 		D1: D1Database;
 		VITE_SITE_URL: string;
 		DEBUG_MODE: string;
-		VITE_BUTTONDOWN_API_KEY: string;
-		VITE_IMGUR_API_CLIENT_ID: string;
-		VITE_IMGUR_KEEBS_ALBUM_HASH: string;
-		VITE_NOTION_TOKEN: string;
-		VITE_NOTION_KEEBS_PAGE_ID: string;
-		VITE_GITHUB_TOKEN: string;
-		VITE_GITHUB_RWC_GIST_ID: string;
-		VITE_SUPABASE_URL: string;
-		VITE_SUPABASE_ANON_KEY: string;
+		BUTTONDOWN_API_KEY: string;
+		IMGUR_API_CLIENT_ID: string;
+		IMGUR_KEEBS_ALBUM_HASH: string;
+		NOTION_TOKEN: string;
+		NOTION_KEEBS_PAGE_ID: string;
+		GITHUB_TOKEN: string;
+		GITHUB_RWC_GIST_ID: string;
 		SENTRY_ORG: string;
 		SENTRY_PROJECT: string;
 		SENTRY_AUTH_TOKEN: string;
@@ -29,15 +27,13 @@ declare namespace Cloudflare {
 	interface Env {
 		VITE_SITE_URL: string;
 		DEBUG_MODE: string;
-		VITE_BUTTONDOWN_API_KEY: string;
-		VITE_IMGUR_API_CLIENT_ID: string;
-		VITE_IMGUR_KEEBS_ALBUM_HASH: string;
-		VITE_NOTION_TOKEN: string;
-		VITE_NOTION_KEEBS_PAGE_ID: string;
-		VITE_GITHUB_TOKEN: string;
-		VITE_GITHUB_RWC_GIST_ID: string;
-		VITE_SUPABASE_URL: string;
-		VITE_SUPABASE_ANON_KEY: string;
+		BUTTONDOWN_API_KEY: string;
+		IMGUR_API_CLIENT_ID: string;
+		IMGUR_KEEBS_ALBUM_HASH: string;
+		NOTION_TOKEN: string;
+		NOTION_KEEBS_PAGE_ID: string;
+		GITHUB_TOKEN: string;
+		GITHUB_RWC_GIST_ID: string;
 		SENTRY_ORG: string;
 		SENTRY_PROJECT: string;
 		SENTRY_AUTH_TOKEN: string;
@@ -58,15 +54,13 @@ declare namespace NodeJS {
 			Cloudflare.Env,
 			| "VITE_SITE_URL"
 			| "DEBUG_MODE"
-			| "VITE_BUTTONDOWN_API_KEY"
-			| "VITE_IMGUR_API_CLIENT_ID"
-			| "VITE_IMGUR_KEEBS_ALBUM_HASH"
-			| "VITE_NOTION_TOKEN"
-			| "VITE_NOTION_KEEBS_PAGE_ID"
-			| "VITE_GITHUB_TOKEN"
-			| "VITE_GITHUB_RWC_GIST_ID"
-			| "VITE_SUPABASE_URL"
-			| "VITE_SUPABASE_ANON_KEY"
+			| "BUTTONDOWN_API_KEY"
+			| "IMGUR_API_CLIENT_ID"
+			| "IMGUR_KEEBS_ALBUM_HASH"
+			| "NOTION_TOKEN"
+			| "NOTION_KEEBS_PAGE_ID"
+			| "GITHUB_TOKEN"
+			| "GITHUB_RWC_GIST_ID"
 			| "SENTRY_ORG"
 			| "SENTRY_PROJECT"
 			| "SENTRY_AUTH_TOKEN"

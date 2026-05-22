@@ -5,7 +5,7 @@ import { BUTTONDOWN_EMAIL_MOCKS } from "./-mocks";
 const BUTTONDOWN_BASE_URL = "https://api.buttondown.email/v1";
 
 export function getButtondownApiKey(env: CloudflareEnv): string | undefined {
-	return readEnvString(env, ["VITE_BUTTONDOWN_API_KEY", "BUTTONDOWN_API_KEY"]);
+	return readEnvString(env, ["BUTTONDOWN_API_KEY"]);
 }
 
 export type ButtondownAPISubscribersResponse = {
