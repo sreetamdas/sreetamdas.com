@@ -15,7 +15,14 @@ const _preloaded_langs = [
 	"shell",
 	"elixir",
 ] satisfies Array<BundledLanguage>;
+type TokenColorRule = {
+	scope: Array<string>;
+	settings: { fontStyle: string; foreground?: string; background?: string };
+};
+
 function convertToThemeRegistration(theme: typeof defaultTheme): ThemeRegistration {
+	const themeType = theme.type === "dark" ? "dark" : ("light" as const);
+
 	return {
 		name: theme.name.toLowerCase(),
 		displayName: theme.name,
@@ -23,11 +30,8 @@ function convertToThemeRegistration(theme: typeof defaultTheme): ThemeRegistrati
 		// @ts-expect-error possibly wrong type
 		semanticTokenColors: theme.semanticTokenColors,
 		colors: theme.colors,
-		type: theme.type as "light" | "dark",
-		tokenColors: theme.tokenColors as Array<{
-			scope: Array<string>;
-			settings: { fontStyle: string; foreground?: string; background?: string };
-		}>,
+		type: themeType,
+		tokenColors: theme.tokenColors as TokenColorRule[],
 	};
 }
 
