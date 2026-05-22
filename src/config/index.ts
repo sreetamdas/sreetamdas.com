@@ -10,12 +10,11 @@ function getProcessEnv(name: string): string | undefined {
 }
 
 function getViteEnvString(name: "VITE_SITE_URL"): string | undefined {
-	// `import.meta.env` exists in Vite, but not when running plain Node (e.g. Velite).
-	return (import.meta as unknown as { env?: Partial<ImportMetaEnv> }).env?.[name];
+	return (import.meta as { env?: Partial<ImportMetaEnv> }).env?.[name];
 }
 
 function getViteEnvBoolean(name: "DEV"): boolean | undefined {
-	return (import.meta as unknown as { env?: Partial<ImportMetaEnv> }).env?.[name];
+	return (import.meta as { env?: Partial<ImportMetaEnv> }).env?.[name];
 }
 
 // Prefer Vite-exposed env, but fall back to runtime origin (client)
