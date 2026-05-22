@@ -114,11 +114,23 @@ async function getKeebsFromNotion(
 		"IMGUR_KEEBS_ALBUM_HASH",
 	]);
 
+	// oxlint-disable-next-line no-console
+	console.log("[keebs] env presence", {
+		hasKeebsDatabaseId: !isUndefined(keebsDatabaseId) && !isEmpty(keebsDatabaseId),
+		hasNotionToken: !isUndefined(notionToken) && !isEmpty(notionToken),
+		hasImgurApiClientId: !isUndefined(imgurApiClientId) && !isEmpty(imgurApiClientId),
+		hasImgurKeebsAlbumHash: !isUndefined(imgurKeebsAlbumHash) && !isEmpty(imgurKeebsAlbumHash),
+	});
+
 	if (isUndefined(keebsDatabaseId) || isEmpty(keebsDatabaseId)) {
+		// oxlint-disable-next-line no-console
+		console.log("[keebs] missing Notion database id");
 		return [];
 	}
 
 	if (isUndefined(notionToken) || isEmpty(notionToken)) {
+		// oxlint-disable-next-line no-console
+		console.log("[keebs] missing Notion token");
 		return [];
 	}
 
@@ -136,7 +148,9 @@ async function getKeebsFromNotion(
 			filter_properties: propertiesToRetrieve,
 		});
 		results = response.results;
-	} catch {
+	} catch (error) {
+		// oxlint-disable-next-line no-console
+		console.error("[keebs] failed to query Notion", error);
 		return [];
 	}
 
@@ -166,6 +180,8 @@ async function getKeebsFromNotion(
 		isUndefined(imgurKeebsAlbumHash) ||
 		isEmpty(imgurKeebsAlbumHash)
 	) {
+		// oxlint-disable-next-line no-console
+		console.log("[keebs] skipping Imgur enrichment (missing env)");
 		return keebsDetailsFormatted;
 	}
 
@@ -176,7 +192,9 @@ async function getKeebsFromNotion(
 
 	try {
 		return await imgurClient.addImgurImagesData(keebsDetailsFormatted);
-	} catch {
+	} catch (error) {
+		// oxlint-disable-next-line no-console
+		console.error("[keebs] failed to enrich images from Imgur", error);
 		return keebsDetailsFormatted;
 	}
 }
