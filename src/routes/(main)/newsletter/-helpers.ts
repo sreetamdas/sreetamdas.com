@@ -9,6 +9,13 @@ export function getButtondownApiKey(env: CloudflareEnv): string | undefined {
 			return value;
 		}
 	}
+	// Fallback to process.env for build-time / prerender environments
+	for (const key of ["VITE_BUTTONDOWN_API_KEY", "BUTTONDOWN_API_KEY"]) {
+		const value = process.env[key];
+		if (typeof value === "string" && value.length > 0) {
+			return value;
+		}
+	}
 	return undefined;
 }
 
