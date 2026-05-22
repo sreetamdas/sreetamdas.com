@@ -144,19 +144,16 @@ function parseMeta(meta: string | null) {
 	if (meta === null) {
 		return null;
 	}
-	let matches = meta.split(" ").reduce(
-		(matchesObj, string) => {
-			const match = string.match(META_REGEX);
-			if (match === null) {
-				return matchesObj;
-			}
+	let matches = meta.split(" ").reduce<Record<string, boolean | string>>((matchesObj, string) => {
+		const match = string.match(META_REGEX);
+		if (match === null) {
+			return matchesObj;
+		}
 
-			return Object.assign(matchesObj, {
-				[match[1]]: match[2] ?? "true",
-			});
-		},
-		{} as Record<string, boolean | string>,
-	);
+		return Object.assign(matchesObj, {
+			[match[1]]: match[2] ?? "true",
+		});
+	}, {});
 
 	matches = omit(matches, ["highlight"]);
 
