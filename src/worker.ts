@@ -29,10 +29,6 @@ const serverEntry = createServerEntry({
 	},
 });
 
-// Cast required: createServerEntry returns a narrower type than the
-// ExportedHandler<CloudflareEnv> that Sentry.withSentry() expects.
-// Tracked upstream — remove when @sentry/cloudflare accepts the TanStack
-// Start server entry type directly.
 export default Sentry.withSentry(
 	(env: CloudflareEnv) => ({
 		dsn: env.VITE_SENTRY_DSN,
