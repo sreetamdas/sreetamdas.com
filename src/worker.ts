@@ -15,33 +15,35 @@ import handler, { createServerEntry } from "@tanstack/react-start/server-entry";
 
 export { PresenceDurableObject } from "./lib/cloudflare/PresenceDurableObject";
 
-function isProductionHostname(hostname: string): boolean {
-	return hostname === "sreetamdas.com" || hostname === "www.sreetamdas.com";
+function shouldHideFromSeo(hostname: string): boolean {
+	const isProduction = hostname === "sreetamdas.com" || hostname === "www.sreetamdas.com";
+	const isLocalDev =
+		hostname === "localhost" || hostname === "127.0.0.1" || hostname.startsWith("[");
+	return !isProduction && !isLocalDev;
 }
 
 function maybeHideFromSeo(response: Response, request: Request): Response {
-	const hostname = new URL(request.url).hostname;
-	if (!isProductionHostname(hostname)) {
-		response.headers.set("X-Robots-Tag", "noindex");
+	if (!shouldHideFromSeo(new URL(request.url).hostname)) {
+		return response;
 	}
-	return response;
+
+	const headers = new Headers(response.headers);
+	headers.set("X-Robots-Tag", "noindex");
+
+	return new Response(response.body, {
+		status: response.status,
+		statusText: response.statusText,
+		headers,
+	});
 }
 
 const serverEntry = createServerEntry({
 	fetch: (request, opts) => {
-		if (request.method === "GET" || request.method === "HEAD") {
-			const url = new URL(request.url);
-			if (url.pathname.length > 1 && url.pathname.endsWith("/")) {
-				url.pathname = url.pathname.slice(0, -1);
-				return maybeHideFromSeo(Response.redirect(url.toString(), 308), request);
-			}
-		}
-
 		const result = handler.fetch(request, opts);
 		if (result instanceof Response) {
 			return maybeHideFromSeo(result, request);
 		}
-		return (result as Promise<Response>).then((response) => maybeHideFromSeo(response, request));
+		return result.then((response) => maybeHideFromSeo(response, request));
 	},
 });
 
