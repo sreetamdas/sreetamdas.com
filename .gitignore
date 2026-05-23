@@ -47,6 +47,7 @@ public/sitemap*.xml
 # Cloudflare
 .open-next
 .wrangler
+.pnpm-store/
 
 
 # Local agent planning artifacts

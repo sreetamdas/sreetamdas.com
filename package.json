@@ -42,7 +42,7 @@
 		"lint-staged": "vp staged"
 	},
 	"dependencies": {
-		"@cloudflare/vite-plugin": "^1.37.2",
+		"@cloudflare/vite-plugin": "^1.38.0",
 		"@fontsource-variable/bricolage-grotesque": "^5.2.10",
 		"@fontsource-variable/inter": "^5.2.8",
 		"@notionhq/client": "^5.22.0",
@@ -58,10 +58,10 @@
 		"@sreetamdas/karma": "^3.1.1",
 		"@tailwindcss/vite": "^4.3.0",
 		"@tanstack/hotkeys": "^0.8.0",
-		"@tanstack/react-query": "^5.100.11",
-		"@tanstack/react-query-devtools": "^5.100.11",
-		"@tanstack/react-router": "^1.170.6",
-		"@tanstack/react-start": "^1.168.9",
+		"@tanstack/react-query": "^5.100.13",
+		"@tanstack/react-query-devtools": "^5.100.13",
+		"@tanstack/react-router": "^1.170.7",
+		"@tanstack/react-start": "^1.168.10",
 		"clsx": "^2.1.1",
 		"drizzle-orm": "1.0.0-beta.15-859cf75",
 		"image-size": "^2.0.2",
@@ -96,7 +96,7 @@
 		"@types/react": "^19.2.15",
 		"@types/react-dom": "^19.2.3",
 		"@types/unist": "~3.0.3",
-		"@typescript/native-preview": "7.0.0-dev.20260519.1",
+		"@typescript/native-preview": "7.0.0-dev.20260523.1",
 		"@vitejs/plugin-react": "^6.0.2",
 		"@vitejs/plugin-rsc": "^0.5.26",
 		"better-sqlite3": "^12.10.0",
@@ -105,22 +105,12 @@
 		"tsx": "^4.22.3",
 		"typescript": "^6.0.3",
 		"vite-plus": "catalog:",
-		"wrangler": "^4.93.0"
+		"wrangler": "^4.94.0"
 	},
 	"engines": {
 		"node": "24"
 	},
 	"packageManager": "pnpm@11.1.2",
-	"pnpm": {
-		"onlyBuiltDependencies": [
-			"@parcel/watcher",
-			"@tailwindcss/oxide",
-			"better-sqlite3",
-			"esbuild",
-			"sharp",
-			"workerd"
-		]
-	},
 	"msw": {
 		"workerDirectory": "public"
 	}
