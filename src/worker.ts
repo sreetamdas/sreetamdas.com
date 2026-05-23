@@ -28,7 +28,7 @@ function maybeHideFromSeo(response: Response, request: Request): Response {
 }
 
 const serverEntry = createServerEntry({
-	fetch: async (request, opts) => {
+	fetch: (request, opts) => {
 		if (request.method === "GET" || request.method === "HEAD") {
 			const url = new URL(request.url);
 			if (url.pathname.length > 1 && url.pathname.endsWith("/")) {
@@ -37,8 +37,11 @@ const serverEntry = createServerEntry({
 			}
 		}
 
-		const response = await handler.fetch(request, opts);
-		return maybeHideFromSeo(response, request);
+		const result = handler.fetch(request, opts);
+		if (result instanceof Response) {
+			return maybeHideFromSeo(result, request);
+		}
+		return (result as Promise<Response>).then((response) => maybeHideFromSeo(response, request));
 	},
 });
 

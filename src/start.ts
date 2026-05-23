@@ -22,18 +22,6 @@ const csrfMiddleware = createCsrfMiddleware({
 	filter: (ctx) => ctx.handlerType === "serverFn",
 });
 
-function createCustomFetch() {
-	if (typeof process === "undefined") return fetch;
-	return (url: RequestInfo | URL, init?: RequestInit) => {
-		const headers = new Headers(init?.headers);
-		headers.delete("accept-encoding");
-		return fetch(url, { ...init, headers });
-	};
-}
-
 export const startInstance = createStart(() => ({
 	requestMiddleware: [csrfMiddleware, cloudflareContextMiddleware],
-	serverFns: {
-		fetch: createCustomFetch(),
-	},
 }));
