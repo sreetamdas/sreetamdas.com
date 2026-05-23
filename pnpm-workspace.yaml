@@ -4,6 +4,8 @@ allowBuilds:
   esbuild: true
   sharp: true
   workerd: true
+  '@parcel/watcher': true
+  '@tailwindcss/oxide': true
 catalog:
   vite: npm:@voidzero-dev/vite-plus-core@latest
   vitest: npm:@voidzero-dev/vite-plus-test@latest
@@ -18,3 +20,6 @@ peerDependencyRules:
   allowedVersions:
     vite: "*"
     vitest: "*"
+autoInstallPeers: true
+enablePrePostScripts: true
+minimumReleaseAge: 0
