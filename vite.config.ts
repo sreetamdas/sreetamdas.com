@@ -1,6 +1,5 @@
 import { cloudflare } from "@cloudflare/vite-plugin";
 import contentCollections from "@content-collections/vite";
-import { sentryTanstackStart } from "@sentry/tanstackstart-react/vite";
 import tailwindcss from "@tailwindcss/vite";
 import { tanstackStart } from "@tanstack/react-start/plugin/vite";
 import viteReact from "@vitejs/plugin-react";
@@ -200,7 +199,6 @@ export default defineConfig({
 		exclude: ["e2e/**", "node_modules", "dist", ".content-collections"],
 		passWithNoTests: true,
 	},
-	// @ts-expect-error TS2321 — excessive stack depth from multiple vite Plugin instances in pnpm
 	plugins: [
 		...(process.env.VITEST
 			? []
@@ -223,14 +221,5 @@ export default defineConfig({
 		slideDeckPlugin(),
 		viteReact(),
 		tailwindcss(),
-		...(process.env.SENTRY_AUTH_TOKEN
-			? [
-					sentryTanstackStart({
-						org: process.env.SENTRY_ORG,
-						project: process.env.SENTRY_PROJECT,
-						authToken: process.env.SENTRY_AUTH_TOKEN,
-					}),
-				]
-			: []),
 	],
 });
