@@ -33,11 +33,30 @@ export async function wrapPromise<T>(promise: Promise<T>): PromiseSettled<T> {
 	}));
 }
 
-export function readEnvString(env: CloudflareEnv, keys: ReadonlyArray<string>): string | undefined {
-	for (const [key, value] of Object.entries(env)) {
-		if (keys.includes(key) && typeof value === "string" && value.length > 0) {
+function readStringValue(env: object | undefined, key: string): string | undefined {
+	if (env === undefined) {
+		return undefined;
+	}
+
+	const value = Reflect.get(env, key);
+
+	if (typeof value === "string" && value.length > 0) {
+		return value;
+	}
+
+	return undefined;
+}
+
+export function readEnvString(
+	env: object | undefined,
+	keys: ReadonlyArray<string>,
+): string | undefined {
+	for (const key of keys) {
+		const value = readStringValue(env, key) ?? readStringValue(env, `VITE_${key}`);
+		if (typeof value === "string") {
 			return value;
 		}
 	}
+
 	return undefined;
 }
