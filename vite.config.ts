@@ -8,6 +8,33 @@ import { defineConfig } from "vite-plus";
 
 import { slideDeckPlugin } from "./src/lib/domains/slides/vite-plugin.ts";
 
+function getPlugins(): Array<unknown> {
+	// Widen to unknown[] so Vite's recursive plugin types don't blow up tsgo here.
+	return [
+		...(process.env.VITEST
+			? []
+			: [
+					cloudflare({
+						viteEnvironment: { name: "ssr", childEnvironments: ["rsc"] },
+					}) as unknown,
+				]),
+		contentCollections({ environment: "ssr" }),
+		tanstackStart({
+			rsc: {
+				enabled: true,
+			},
+			prerender: {
+				enabled: true,
+				autoSubfolderIndex: false,
+			},
+		}),
+		rsc(),
+		slideDeckPlugin(),
+		viteReact(),
+		tailwindcss(),
+	] as Array<unknown>;
+}
+
 export default defineConfig({
 	fmt: {
 		useTabs: true,
@@ -199,27 +226,6 @@ export default defineConfig({
 		exclude: ["e2e/**", "node_modules", "dist", ".content-collections"],
 		passWithNoTests: true,
 	},
-	plugins: [
-		...(process.env.VITEST
-			? []
-			: [
-					cloudflare({
-						viteEnvironment: { name: "ssr", childEnvironments: ["rsc"] },
-					}),
-				]),
-		contentCollections({ environment: "ssr" }),
-		tanstackStart({
-			rsc: {
-				enabled: true,
-			},
-			prerender: {
-				enabled: true,
-				autoSubfolderIndex: false,
-			},
-		}),
-		rsc(),
-		slideDeckPlugin(),
-		viteReact(),
-		tailwindcss(),
-	],
+	// @ts-expect-error TS2322 — plugin inference is recursive unless widened first
+	plugins: getPlugins(),
 });

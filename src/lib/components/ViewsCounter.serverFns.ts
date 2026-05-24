@@ -12,6 +12,16 @@ type PagePathname = {
 	disabled: boolean;
 };
 
+type ViewCountDeps = {
+	getDb: typeof getDb;
+	upsertPageViews: typeof upsertPageViews;
+};
+
+const defaultViewCountDeps: ViewCountDeps = {
+	getDb,
+	upsertPageViews,
+};
+
 export const fetchViewCountServerFn = createServerFn({
 	method: "GET",
 })
@@ -19,21 +29,32 @@ export const fetchViewCountServerFn = createServerFn({
 		return validatePagePathname(data);
 	})
 	.handler(async ({ data, context }) => {
-		const normalizedSlug = normalizePathname(data.slug);
+		return fetchViewCount(data, context.env);
+	});
 
-		if (data.disabled) {
+export async function fetchViewCount(
+	data: PagePathname,
+	env: CloudflareEnv | undefined,
+	deps: ViewCountDeps = defaultViewCountDeps,
+) {
+	const normalizedSlug = normalizePathname(data.slug);
+
+	if (data.disabled) {
+		return { view_count: 0 };
+	}
+
+	try {
+		if (!env) {
 			return { view_count: 0 };
 		}
 
-		const env = context.env;
-		if (!env) {
-			throw new Error("Cloudflare env not available in Start request context");
-		}
+		const db = deps.getDb(env);
 
-		const db = getDb(env);
-
-		return upsertPageViews(db, normalizedSlug);
-	});
+		return await deps.upsertPageViews(db, normalizedSlug);
+	} catch {
+		return { view_count: 0 };
+	}
+}
 
 function validatePagePathname(data: unknown): PagePathname {
 	if (typeof data !== "object" || data === null) {
