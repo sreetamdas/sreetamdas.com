@@ -13,29 +13,9 @@
 import * as Sentry from "@sentry/cloudflare";
 import handler, { createServerEntry } from "@tanstack/react-start/server-entry";
 
+import { maybeHideFromSeo } from "@/lib/cloudflare/seo";
+
 export { PresenceDurableObject } from "./lib/cloudflare/PresenceDurableObject";
-
-function shouldHideFromSeo(hostname: string): boolean {
-	const isProduction = hostname === "sreetamdas.com" || hostname === "www.sreetamdas.com";
-	const isLocalDev =
-		hostname === "localhost" || hostname === "127.0.0.1" || hostname.startsWith("[");
-	return !isProduction && !isLocalDev;
-}
-
-function maybeHideFromSeo(response: Response, request: Request): Response {
-	if (!shouldHideFromSeo(new URL(request.url).hostname)) {
-		return response;
-	}
-
-	const headers = new Headers(response.headers);
-	headers.set("X-Robots-Tag", "noindex");
-
-	return new Response(response.body, {
-		status: response.status,
-		statusText: response.statusText,
-		headers,
-	});
-}
 
 const serverEntry = createServerEntry({
 	fetch: (request, opts) => {
