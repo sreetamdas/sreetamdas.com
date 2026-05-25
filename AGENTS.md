@@ -9,7 +9,7 @@ This file documents project conventions for humans and coding agents.
 - When committing, prefer Conventional Commits when possible, and stage/commit changes in logical units so they are easy to revert later (avoid bundling unrelated changes in a single commit).
 - Bugs: add a regression test when it fits (especially for non-trivial or previously broken behavior).
 - Don't run typecheck/build/other scripts until told so.
-- **Avoid type assertions** (`as`, `as unknown`, `as any`) wherever possible. Prefer narrowing, proper typing, or runtime validation. If a cast is truly unavoidable, add a comment explaining why.
+- **Avoid type assertions** (`as`, `as unknown`, `as any`) as a default rule. Prefer narrowing, better function signatures (for example `Pick<T, "field">` at boundaries), proper typing, or runtime validation. Treat `as unknown as` as disallowed unless there is no alternative. If any cast is truly unavoidable, keep it local and add a short comment explaining why.
 
 ## Quick Commands
 
