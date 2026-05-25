@@ -1,5 +1,4 @@
 import * as Sentry from "@sentry/cloudflare";
-import { wrapFetchWithSentry } from "@sentry/tanstackstart-react";
 import handler, { createServerEntry } from "@tanstack/react-start/server-entry";
 
 import { maybeHideFromSeo } from "@/lib/cloudflare/seo";
@@ -38,17 +37,15 @@ function fetchWithSeo(request: Request, opts: TanStackRequestOptions) {
 	return result.then((response) => maybeHideFromSeo(response, request));
 }
 
-const serverEntry = createServerEntry(
-	wrapFetchWithSentry({
-		fetch: (request, opts) => {
-			if (!isTanStackRequestOptions(opts)) {
-				return new Response("Invalid request context", { status: 500 });
-			}
+const serverEntry = createServerEntry({
+	fetch: (request, opts) => {
+		if (!isTanStackRequestOptions(opts)) {
+			return new Response("Invalid request context", { status: 500 });
+		}
 
-			return fetchWithSeo(request, opts);
-		},
-	}),
-);
+		return fetchWithSeo(request, opts);
+	},
+});
 
 const exportedHandler: ExportedHandler<CloudflareEnv> = {
 	fetch: (request, env, context) =>
