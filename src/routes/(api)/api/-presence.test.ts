@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { describe, test } from "node:test";
 
-import { handlePresenceGet } from "./presence";
+import { handlePresenceGet, type PresenceEnv } from "./presence";
 
 type PresenceStub = {
 	fetch: (request: Request) => Promise<Response> | Response;
@@ -11,7 +11,7 @@ describe("handlePresenceGet", () => {
 	test("returns 500 json when SITE_PRESENCE binding is missing", async () => {
 		const request = new Request("https://example.com/api/presence");
 
-		const response = await handlePresenceGet(request, {} as CloudflareEnv);
+		const response = await handlePresenceGet(request, {});
 
 		assert.equal(response.status, 500);
 		assert.match(response.headers.get("content-type") ?? "", /^application\/json/);
@@ -32,14 +32,14 @@ describe("handlePresenceGet", () => {
 			},
 		};
 
-		const env = {
+		const env: PresenceEnv = {
 			SITE_PRESENCE: {
 				getByName: (name: string) => {
 					calledWithName = name;
 					return stub;
 				},
 			},
-		} as unknown as CloudflareEnv;
+		};
 
 		const response = await handlePresenceGet(request, env);
 
