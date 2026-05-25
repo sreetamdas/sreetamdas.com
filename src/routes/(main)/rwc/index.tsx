@@ -1,6 +1,5 @@
 import { createFileRoute, ErrorComponent } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
-import { staticFunctionMiddleware } from "@tanstack/start-static-server-functions";
 import { FiLink } from "react-icons/fi";
 
 import { SITE_DESCRIPTION, SITE_TITLE_APPEND } from "@/config";
@@ -11,19 +10,17 @@ import { canonicalUrl, defaultOgImageUrl } from "@/lib/seo";
 
 import { loadRwcCodeSamples, resolveRwcEnv, type RWCSolution } from "./-data";
 
-const getHighlightedCode = createServerFn({ method: "GET" })
-	.middleware([staticFunctionMiddleware])
-	.handler(async ({ context }) => {
-		const buildEnv = typeof process === "undefined" ? undefined : process.env;
-		const { githubGistId, githubToken } = resolveRwcEnv(context.env, buildEnv);
+const getHighlightedCode = createServerFn({ method: "GET" }).handler(async ({ context }) => {
+	const buildEnv = typeof process === "undefined" ? undefined : process.env;
+	const { githubGistId, githubToken } = resolveRwcEnv(context.env, buildEnv);
 
-		return await loadRwcCodeSamples({
-			githubGistId,
-			githubToken,
-			fetchGist,
-			getHighlighter: getSlimKarmaHighlighter,
-		});
+	return await loadRwcCodeSamples({
+		githubGistId,
+		githubToken,
+		fetchGist,
+		getHighlighter: getSlimKarmaHighlighter,
 	});
+});
 
 export const Route = createFileRoute("/(main)/rwc/")({
 	component: RWCPage,
