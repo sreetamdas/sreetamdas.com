@@ -31,8 +31,7 @@ function getPlugins(): Array<unknown> {
 			prerender: {
 				enabled: true,
 				autoSubfolderIndex: false,
-				filter: ({ path }) =>
-					!path.startsWith("/newsletter") && path !== "/rwc" && path !== "/keebs",
+				filter: ({ path }) => !path.startsWith("/newsletter") && path !== "/keebs",
 			},
 		}),
 		rsc(),
