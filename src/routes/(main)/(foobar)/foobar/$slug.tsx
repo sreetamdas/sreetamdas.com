@@ -27,7 +27,7 @@ export const Route = createFileRoute("/(main)/(foobar)/foobar/$slug")({
 });
 
 function FoobarCompletedPage() {
-	const { slug } = Route.useLoaderData() as { slug: Exclude<FoobaFlagPageSlug, "/"> };
+	const { slug } = Route.useLoaderData();
 
 	return <FoobarSchrodinger completed_page={slug} />;
 }

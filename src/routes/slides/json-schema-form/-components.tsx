@@ -112,6 +112,18 @@ function resolveFieldValue(value: unknown, const_: unknown, default_: unknown): 
 
 type SelectOption = { value: string; label: string };
 
+function isRecord(value: unknown): value is Record<string, unknown> {
+	return typeof value === "object" && value !== null;
+}
+
+function isJsfObjectSchema(value: unknown): value is JsfObjectSchema {
+	if (!isRecord(value)) {
+		return false;
+	}
+
+	return value.type === "object";
+}
+
 function toSelectOption(input: unknown): SelectOption | undefined {
 	if (typeof input === "string") {
 		return { value: input, label: input };
@@ -367,7 +379,7 @@ export function JsfPlayground() {
 	const parsedSchema: JsfObjectSchema | null = (() => {
 		try {
 			const parsed = JSON.parse(schemaText);
-			if (parsed.type === "object") return parsed as JsfObjectSchema;
+			if (isJsfObjectSchema(parsed)) return parsed;
 			return null;
 		} catch {
 			return null;
@@ -385,8 +397,7 @@ export function JsfPlayground() {
 		const flatten = (obj: Record<string, unknown>, prefix = "") => {
 			for (const [key, val] of Object.entries(obj)) {
 				if (typeof val === "string") flatErrors[prefix + key] = val;
-				else if (val && typeof val === "object" && !Array.isArray(val))
-					flatten(val as Record<string, unknown>, prefix + key + ".");
+				else if (isRecord(val) && !Array.isArray(val)) flatten(val, prefix + key + ".");
 			}
 		};
 		if (result.formErrors) flatten(result.formErrors);

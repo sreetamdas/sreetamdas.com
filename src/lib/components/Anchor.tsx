@@ -1,4 +1,3 @@
-import { Link, type LinkProps } from "@tanstack/react-router";
 import { type AnchorHTMLAttributes, type ReactNode } from "react";
 import { ImArrowUpRight2 } from "react-icons/im";
 
@@ -45,17 +44,13 @@ export const LinkTo = ({
 	const external = isExternal(href);
 	const classNames = cn(!replaceClasses && "link-base", className);
 
-	if (isRouterLink(href)) {
+	if (isRouterLink(href) && params !== undefined) {
+		const search = new URLSearchParams(params).toString();
+		const hrefWithQuery = search.length > 0 ? `${href}?${search}` : href;
 		return (
-			<Link
-				{...(restProps as Omit<LinkProps, "to">)}
-				to={href as LinkProps["to"]}
-				params={params as LinkProps["params"]}
-				preload="intent"
-				className={classNames}
-			>
+			<a {...restProps} href={hrefWithQuery} className={classNames}>
 				{children}
-			</Link>
+			</a>
 		);
 	}
 

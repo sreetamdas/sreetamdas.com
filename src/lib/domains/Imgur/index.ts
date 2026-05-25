@@ -51,11 +51,10 @@ export class ImgurClient {
 		});
 
 		const data = await request.json();
-		if (typeof data !== "object" || data === null) {
+		if (!isImgurAlbumResponse(data)) {
 			throw new Error("Imgur API returned unexpected data");
 		}
-		const response = data as ImgurAPIResponse<Array<ImgurImage>>;
-		return response.data;
+		return data.data;
 	}
 
 	async addImgurImagesData(
@@ -83,6 +82,30 @@ export class ImgurClient {
 		});
 		return enrichedImagesData;
 	}
+}
+
+function isImgurImage(value: unknown): value is ImgurImage {
+	if (typeof value !== "object" || value === null) {
+		return false;
+	}
+
+	if (!("link" in value) || !("height" in value) || !("width" in value)) {
+		return false;
+	}
+
+	return (
+		typeof value.link === "string" &&
+		typeof value.height === "number" &&
+		typeof value.width === "number"
+	);
+}
+
+function isImgurAlbumResponse(value: unknown): value is ImgurAPIResponse<Array<ImgurImage>> {
+	if (typeof value !== "object" || value === null || !("data" in value)) {
+		return false;
+	}
+
+	return Array.isArray(value.data) && value.data.every((image) => isImgurImage(image));
 }
 
 interface ImgurImage {

@@ -49,6 +49,35 @@ export type ButtondownAPIEmailsResponse = {
 	}>;
 };
 
+function isButtondownEmail(
+	value: unknown,
+): value is ButtondownAPIEmailsResponse["results"][number] {
+	if (typeof value !== "object" || value === null) {
+		return false;
+	}
+
+	return (
+		"body" in value &&
+		"slug" in value &&
+		"subject" in value &&
+		typeof value.body === "string" &&
+		typeof value.slug === "string" &&
+		typeof value.subject === "string"
+	);
+}
+
+function isButtondownEmailsResponse(value: unknown): value is ButtondownAPIEmailsResponse {
+	if (typeof value !== "object" || value === null) {
+		return false;
+	}
+
+	if (!("results" in value) || !Array.isArray(value.results)) {
+		return false;
+	}
+
+	return value.results.every((entry) => isButtondownEmail(entry));
+}
+
 export async function fetchNewsletterEmails(apiKey?: string): Promise<ButtondownAPIEmailsResponse> {
 	try {
 		const response = await fetch(`${BUTTONDOWN_BASE_URL}/emails`, {
@@ -62,11 +91,13 @@ export async function fetchNewsletterEmails(apiKey?: string): Promise<Buttondown
 		if (!response.ok) {
 			return BUTTONDOWN_EMAIL_MOCKS;
 		}
+
 		const data = await response.json();
-		if (typeof data !== "object" || data === null) {
+		if (!isButtondownEmailsResponse(data)) {
 			return BUTTONDOWN_EMAIL_MOCKS;
 		}
-		return data as ButtondownAPIEmailsResponse;
+
+		return data;
 	} catch (_error: unknown) {
 		return BUTTONDOWN_EMAIL_MOCKS;
 	}
