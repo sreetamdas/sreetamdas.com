@@ -1,6 +1,7 @@
 import { readEnvString } from "@/lib/helpers/utils";
 
 export const FALLBACK_RWC_BACKGROUND = "#17181c";
+export const DEFAULT_RWC_GIST_ID = "5c6d921605493f5e0a8877aa716b02d4";
 
 export type RWCSolution = {
 	html: string;
@@ -50,7 +51,8 @@ export function resolveRwcEnv(
 		githubGistId:
 			readEnvString(runtimeEnv, ["GITHUB_RWC_GIST_ID"]) ??
 			readEnvString(buildEnv, ["GITHUB_RWC_GIST_ID"]) ??
-			readEnvString(viteEnv, ["GITHUB_RWC_GIST_ID"]),
+			readEnvString(viteEnv, ["GITHUB_RWC_GIST_ID"]) ??
+			DEFAULT_RWC_GIST_ID,
 		githubToken:
 			readEnvString(runtimeEnv, ["GITHUB_TOKEN"]) ??
 			readEnvString(buildEnv, ["GITHUB_TOKEN"]) ??

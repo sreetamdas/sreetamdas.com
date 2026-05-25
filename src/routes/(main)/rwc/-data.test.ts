@@ -1,7 +1,12 @@
 import assert from "node:assert/strict";
 import { describe, test } from "node:test";
 
-import { FALLBACK_RWC_BACKGROUND, loadRwcCodeSamples, resolveRwcEnv } from "./-data";
+import {
+	DEFAULT_RWC_GIST_ID,
+	FALLBACK_RWC_BACKGROUND,
+	loadRwcCodeSamples,
+	resolveRwcEnv,
+} from "./-data";
 
 describe("resolveRwcEnv", () => {
 	test("prefers runtime Cloudflare env over build env", () => {
@@ -41,6 +46,13 @@ describe("resolveRwcEnv", () => {
 		assert.deepEqual(resolveRwcEnv(undefined, undefined, viteEnv), {
 			githubGistId: "vite_gist",
 			githubToken: "vite_token",
+		});
+	});
+
+	test("falls back to default public gist id when env is missing", () => {
+		assert.deepEqual(resolveRwcEnv(undefined, undefined, undefined), {
+			githubGistId: DEFAULT_RWC_GIST_ID,
+			githubToken: undefined,
 		});
 	});
 });
