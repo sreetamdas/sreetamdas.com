@@ -70,16 +70,25 @@ export async function fetchViewCount<TDb>(
 }
 
 function validatePagePathname(data: unknown): PagePathname {
+	if (!isPagePathnamePayload(data)) {
+		throw new Error("Invalid page views payload");
+	}
+
+	return { slug: data.slug, disabled: data.disabled };
+}
+
+function isPagePathnamePayload(data: unknown): data is PagePathname {
 	if (typeof data !== "object" || data === null) {
-		throw new Error("Invalid page views payload");
+		return false;
 	}
 
-	const { slug, disabled } = data as Record<string, unknown>;
-	if (typeof slug !== "string" || slug.length === 0 || typeof disabled !== "boolean") {
-		throw new Error("Invalid page views payload");
+	if (!("slug" in data) || !("disabled" in data)) {
+		return false;
 	}
 
-	return { slug, disabled };
+	return (
+		typeof data.slug === "string" && data.slug.length > 0 && typeof data.disabled === "boolean"
+	);
 }
 
 function normalizePathname(pathname: string) {
