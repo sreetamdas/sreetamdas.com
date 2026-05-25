@@ -79,15 +79,15 @@ export function injectTableOfContents(tree: MarkdownNode): void {
 
 	if (headings.length === 0) return;
 
-	const listNode: MarkdownNode = {
-		type: "list",
-		ordered: false,
-		start: null,
-		spread: false,
-		children: headings.map((heading) => {
-			const text = extractText(heading).trim();
-			const id = slugify(text);
-			return {
+	const listItems = headings.flatMap((heading) => {
+		const text = extractText(heading).trim();
+		const id = slugify(text);
+		if (id.length === 0) {
+			return [];
+		}
+
+		return [
+			{
 				type: "listItem",
 				spread: false,
 				checked: null,
@@ -104,8 +104,20 @@ export function injectTableOfContents(tree: MarkdownNode): void {
 						],
 					},
 				],
-			};
-		}),
+			},
+		];
+	});
+
+	if (listItems.length === 0) {
+		return;
+	}
+
+	const listNode: MarkdownNode = {
+		type: "list",
+		ordered: false,
+		start: null,
+		spread: false,
+		children: listItems,
 	};
 
 	tree.children.splice(index + 1, 0, listNode);

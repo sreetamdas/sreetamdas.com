@@ -13,6 +13,7 @@
 		"prebuild": "vp run build:content-collections && vp run generate-feeds && node scripts/generate-build-info.mjs",
 		"build": "vp build",
 		"preview": "vp preview",
+		"test:unit": "tsx --test \"src/**/*.test.ts\"",
 		"test:e2e": "playwright test",
 		"test:e2e:headed": "playwright test --headed",
 		"test:e2e:ui": "playwright test --ui",
@@ -110,7 +111,7 @@
 	"engines": {
 		"node": "24"
 	},
-	"packageManager": "pnpm@11.1.2",
+	"packageManager": "pnpm@11.3.0",
 	"msw": {
 		"workerDirectory": "public"
 	}
