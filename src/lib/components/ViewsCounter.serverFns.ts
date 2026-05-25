@@ -12,12 +12,12 @@ type PagePathname = {
 	disabled: boolean;
 };
 
-type ViewCountDeps = {
-	getDb: typeof getDb;
-	upsertPageViews: typeof upsertPageViews;
+type ViewCountDeps<TDb> = {
+	getDb: (env: CloudflareEnv) => TDb;
+	upsertPageViews: (db: TDb, slug: string) => Promise<PageViewCount>;
 };
 
-const defaultViewCountDeps: ViewCountDeps = {
+const defaultViewCountDeps = {
 	getDb,
 	upsertPageViews,
 };
@@ -35,8 +35,17 @@ export const fetchViewCountServerFn = createServerFn({
 export async function fetchViewCount(
 	data: PagePathname,
 	env: CloudflareEnv | undefined,
-	deps: ViewCountDeps = defaultViewCountDeps,
-) {
+): Promise<PageViewCount>;
+export async function fetchViewCount<TDb>(
+	data: PagePathname,
+	env: CloudflareEnv | undefined,
+	deps: ViewCountDeps<TDb>,
+): Promise<PageViewCount>;
+export async function fetchViewCount<TDb>(
+	data: PagePathname,
+	env: CloudflareEnv | undefined,
+	deps?: ViewCountDeps<TDb>,
+): Promise<PageViewCount> {
 	const normalizedSlug = normalizePathname(data.slug);
 
 	if (data.disabled) {
@@ -48,9 +57,13 @@ export async function fetchViewCount(
 			return { view_count: 0 };
 		}
 
-		const db = deps.getDb(env);
+		if (deps) {
+			const db = deps.getDb(env);
+			return await deps.upsertPageViews(db, normalizedSlug);
+		}
 
-		return await deps.upsertPageViews(db, normalizedSlug);
+		const db = defaultViewCountDeps.getDb(env);
+		return await defaultViewCountDeps.upsertPageViews(db, normalizedSlug);
 	} catch {
 		return { view_count: 0 };
 	}

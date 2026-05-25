@@ -1,14 +1,17 @@
+import type { BaseSQLiteDatabase } from "drizzle-orm/sqlite-core";
+
 import { eq, sql } from "drizzle-orm";
 
-import type { Db } from "@/db";
-
+import * as schema from "@/db/schema";
 import { pageDetails } from "@/db/schema";
 
 export type PageViewCount = {
 	view_count: number;
 };
 
-export async function getPageViews(db: Db, slug: string): Promise<PageViewCount> {
+export type PageViewsDb = BaseSQLiteDatabase<"sync" | "async", unknown, typeof schema>;
+
+export async function getPageViews(db: PageViewsDb, slug: string): Promise<PageViewCount> {
 	const rows = await db
 		.select({ view_count: pageDetails.viewCount })
 		.from(pageDetails)
@@ -25,7 +28,7 @@ export async function getPageViews(db: Db, slug: string): Promise<PageViewCount>
 	return row;
 }
 
-export async function upsertPageViews(db: Db, slug: string): Promise<PageViewCount> {
+export async function upsertPageViews(db: PageViewsDb, slug: string): Promise<PageViewCount> {
 	const rows = await db
 		.insert(pageDetails)
 		.values({ slug, viewCount: 1, likes: 0 })
