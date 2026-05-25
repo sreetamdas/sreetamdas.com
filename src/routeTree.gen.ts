@@ -21,8 +21,8 @@ import { Route as mainKarmaRouteImport } from './routes/(main)/karma'
 import { Route as mainAboutRouteImport } from './routes/(main)/about'
 import { Route as mainSlugRouteImport } from './routes/(main)/$slug'
 import { Route as SlidesTanstackStartRouteRouteImport } from './routes/slides/tanstack-start/route'
+import { Route as mainRwcRouteRouteImport } from './routes/(main)/rwc/route'
 import { Route as SlidesJsonSchemaFormIndexRouteImport } from './routes/slides/json-schema-form/index'
-import { Route as mainRwcIndexRouteImport } from './routes/(main)/rwc/index'
 import { Route as mainNewsletterIndexRouteImport } from './routes/(main)/newsletter/index'
 import { Route as mainBlogIndexRouteImport } from './routes/(main)/blog/index'
 import { Route as mainNewsletterSlugRouteImport } from './routes/(main)/newsletter/$slug'
@@ -93,17 +93,17 @@ const SlidesTanstackStartRouteRoute =
     path: '/tanstack-start',
     getParentRoute: () => SlidesRouteRoute,
   } as any)
+const mainRwcRouteRoute = mainRwcRouteRouteImport.update({
+  id: '/rwc',
+  path: '/rwc',
+  getParentRoute: () => mainRouteRoute,
+} as any)
 const SlidesJsonSchemaFormIndexRoute =
   SlidesJsonSchemaFormIndexRouteImport.update({
     id: '/json-schema-form/',
     path: '/json-schema-form/',
     getParentRoute: () => SlidesRouteRoute,
   } as any)
-const mainRwcIndexRoute = mainRwcIndexRouteImport.update({
-  id: '/rwc/',
-  path: '/rwc/',
-  getParentRoute: () => mainRouteRoute,
-} as any)
 const mainNewsletterIndexRoute = mainNewsletterIndexRouteImport.update({
   id: '/newsletter/',
   path: '/newsletter/',
@@ -157,6 +157,7 @@ const apiPrxyPlsblApiEventRoute = apiPrxyPlsblApiEventRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/slides': typeof SlidesRouteRouteWithChildren
+  '/rwc': typeof mainRwcRouteRoute
   '/slides/tanstack-start': typeof SlidesTanstackStartRouteRoute
   '/$slug': typeof mainSlugRoute
   '/about': typeof mainAboutRoute
@@ -172,7 +173,6 @@ export interface FileRoutesByFullPath {
   '/newsletter/$slug': typeof mainNewsletterSlugRoute
   '/blog/': typeof mainBlogIndexRoute
   '/newsletter/': typeof mainNewsletterIndexRoute
-  '/rwc/': typeof mainRwcIndexRoute
   '/slides/json-schema-form/': typeof SlidesJsonSchemaFormIndexRoute
   '/foobar/$slug': typeof mainfoobarFoobarSlugRoute
   '/foobar/': typeof mainfoobarFoobarIndexRoute
@@ -181,6 +181,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/slides': typeof SlidesRouteRouteWithChildren
+  '/rwc': typeof mainRwcRouteRoute
   '/slides/tanstack-start': typeof SlidesTanstackStartRouteRoute
   '/$slug': typeof mainSlugRoute
   '/about': typeof mainAboutRoute
@@ -196,7 +197,6 @@ export interface FileRoutesByTo {
   '/newsletter/$slug': typeof mainNewsletterSlugRoute
   '/blog': typeof mainBlogIndexRoute
   '/newsletter': typeof mainNewsletterIndexRoute
-  '/rwc': typeof mainRwcIndexRoute
   '/slides/json-schema-form': typeof SlidesJsonSchemaFormIndexRoute
   '/foobar/$slug': typeof mainfoobarFoobarSlugRoute
   '/foobar': typeof mainfoobarFoobarIndexRoute
@@ -208,6 +208,7 @@ export interface FileRoutesById {
   '/(main)': typeof mainRouteRouteWithChildren
   '/(pure)': typeof pureRouteRouteWithChildren
   '/slides': typeof SlidesRouteRouteWithChildren
+  '/(main)/rwc': typeof mainRwcRouteRoute
   '/slides/tanstack-start': typeof SlidesTanstackStartRouteRoute
   '/(main)/$slug': typeof mainSlugRoute
   '/(main)/about': typeof mainAboutRoute
@@ -223,7 +224,6 @@ export interface FileRoutesById {
   '/(main)/newsletter/$slug': typeof mainNewsletterSlugRoute
   '/(main)/blog/': typeof mainBlogIndexRoute
   '/(main)/newsletter/': typeof mainNewsletterIndexRoute
-  '/(main)/rwc/': typeof mainRwcIndexRoute
   '/slides/json-schema-form/': typeof SlidesJsonSchemaFormIndexRoute
   '/(main)/(foobar)/foobar/$slug': typeof mainfoobarFoobarSlugRoute
   '/(main)/(foobar)/foobar/': typeof mainfoobarFoobarIndexRoute
@@ -234,6 +234,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/slides'
+    | '/rwc'
     | '/slides/tanstack-start'
     | '/$slug'
     | '/about'
@@ -249,7 +250,6 @@ export interface FileRouteTypes {
     | '/newsletter/$slug'
     | '/blog/'
     | '/newsletter/'
-    | '/rwc/'
     | '/slides/json-schema-form/'
     | '/foobar/$slug'
     | '/foobar/'
@@ -258,6 +258,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/slides'
+    | '/rwc'
     | '/slides/tanstack-start'
     | '/$slug'
     | '/about'
@@ -273,7 +274,6 @@ export interface FileRouteTypes {
     | '/newsletter/$slug'
     | '/blog'
     | '/newsletter'
-    | '/rwc'
     | '/slides/json-schema-form'
     | '/foobar/$slug'
     | '/foobar'
@@ -284,6 +284,7 @@ export interface FileRouteTypes {
     | '/(main)'
     | '/(pure)'
     | '/slides'
+    | '/(main)/rwc'
     | '/slides/tanstack-start'
     | '/(main)/$slug'
     | '/(main)/about'
@@ -299,7 +300,6 @@ export interface FileRouteTypes {
     | '/(main)/newsletter/$slug'
     | '/(main)/blog/'
     | '/(main)/newsletter/'
-    | '/(main)/rwc/'
     | '/slides/json-schema-form/'
     | '/(main)/(foobar)/foobar/$slug'
     | '/(main)/(foobar)/foobar/'
@@ -403,19 +403,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SlidesTanstackStartRouteRouteImport
       parentRoute: typeof SlidesRouteRoute
     }
+    '/(main)/rwc': {
+      id: '/(main)/rwc'
+      path: '/rwc'
+      fullPath: '/rwc'
+      preLoaderRoute: typeof mainRwcRouteRouteImport
+      parentRoute: typeof mainRouteRoute
+    }
     '/slides/json-schema-form/': {
       id: '/slides/json-schema-form/'
       path: '/json-schema-form'
       fullPath: '/slides/json-schema-form/'
       preLoaderRoute: typeof SlidesJsonSchemaFormIndexRouteImport
       parentRoute: typeof SlidesRouteRoute
-    }
-    '/(main)/rwc/': {
-      id: '/(main)/rwc/'
-      path: '/rwc'
-      fullPath: '/rwc/'
-      preLoaderRoute: typeof mainRwcIndexRouteImport
-      parentRoute: typeof mainRouteRoute
     }
     '/(main)/newsletter/': {
       id: '/(main)/newsletter/'
@@ -491,6 +491,7 @@ declare module '@tanstack/react-router' {
 }
 
 interface mainRouteRouteChildren {
+  mainRwcRouteRoute: typeof mainRwcRouteRoute
   mainSlugRoute: typeof mainSlugRoute
   mainAboutRoute: typeof mainAboutRoute
   mainKarmaRoute: typeof mainKarmaRoute
@@ -500,12 +501,12 @@ interface mainRouteRouteChildren {
   mainNewsletterSlugRoute: typeof mainNewsletterSlugRoute
   mainBlogIndexRoute: typeof mainBlogIndexRoute
   mainNewsletterIndexRoute: typeof mainNewsletterIndexRoute
-  mainRwcIndexRoute: typeof mainRwcIndexRoute
   mainfoobarFoobarSlugRoute: typeof mainfoobarFoobarSlugRoute
   mainfoobarFoobarIndexRoute: typeof mainfoobarFoobarIndexRoute
 }
 
 const mainRouteRouteChildren: mainRouteRouteChildren = {
+  mainRwcRouteRoute: mainRwcRouteRoute,
   mainSlugRoute: mainSlugRoute,
   mainAboutRoute: mainAboutRoute,
   mainKarmaRoute: mainKarmaRoute,
@@ -515,7 +516,6 @@ const mainRouteRouteChildren: mainRouteRouteChildren = {
   mainNewsletterSlugRoute: mainNewsletterSlugRoute,
   mainBlogIndexRoute: mainBlogIndexRoute,
   mainNewsletterIndexRoute: mainNewsletterIndexRoute,
-  mainRwcIndexRoute: mainRwcIndexRoute,
   mainfoobarFoobarSlugRoute: mainfoobarFoobarSlugRoute,
   mainfoobarFoobarIndexRoute: mainfoobarFoobarIndexRoute,
 }

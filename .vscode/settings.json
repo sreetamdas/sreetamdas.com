@@ -41,5 +41,5 @@
 	"files.readonlyInclude": {
 		"**/routeTree.gen.ts": true
 	},
-	"typescript.native-preview.tsdk": "/Users/sreetamdas/dev/projects/sreetamdas.com/node_modules/@typescript/native-preview"
+	"typescript.native-preview.tsdk": "node_modules/@typescript/native-preview"
 }
