@@ -90,7 +90,7 @@ describe("loadRwcCodeSamples", () => {
 							filename: "README.md",
 							language: "Markdown",
 						},
-						"script": {
+						script: {
 							content: "console.log('ok')",
 							filename: "script",
 							language: undefined,
