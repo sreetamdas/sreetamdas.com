@@ -189,6 +189,14 @@ export default defineConfig({
 			"@typescript-eslint/no-duplicate-enum-values": "error",
 			"@typescript-eslint/no-empty-object-type": "error",
 			"@typescript-eslint/no-explicit-any": "error",
+			"@typescript-eslint/no-unnecessary-type-assertion": "error",
+			"@typescript-eslint/consistent-type-assertions": [
+				"error",
+				{
+					assertionStyle: "as",
+					objectLiteralTypeAssertions: "never",
+				},
+			],
 			"@typescript-eslint/no-extra-non-null-assertion": "error",
 			"@typescript-eslint/no-misused-new": "error",
 			"@typescript-eslint/no-namespace": "error",

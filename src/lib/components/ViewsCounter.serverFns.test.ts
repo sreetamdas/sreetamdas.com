@@ -30,11 +30,7 @@ describe("fetchViewCount", () => {
 			},
 		};
 
-		const result = await fetchViewCount(
-			{ slug: "/about/", disabled: false },
-			{} as CloudflareEnv,
-			deps,
-		);
+		const result = await fetchViewCount({ slug: "/about/", disabled: false }, undefined, deps);
 
 		assert.deepEqual(result, { view_count: 7 });
 		assert.deepEqual(calls, ["getDb", "/about"]);
@@ -53,7 +49,7 @@ describe("fetchViewCount", () => {
 			},
 		};
 
-		await fetchViewCount({ slug: "/", disabled: false }, {} as CloudflareEnv, deps);
+		await fetchViewCount({ slug: "/", disabled: false }, undefined, deps);
 
 		assert.equal(receivedSlug, "/");
 	});
@@ -66,10 +62,9 @@ describe("fetchViewCount", () => {
 			upsertPageViews: async () => ({ view_count: 99 }),
 		};
 
-		assert.deepEqual(
-			await fetchViewCount({ slug: "/about", disabled: false }, {} as CloudflareEnv, deps),
-			{ view_count: 0 },
-		);
+		assert.deepEqual(await fetchViewCount({ slug: "/about", disabled: false }, undefined, deps), {
+			view_count: 0,
+		});
 	});
 
 	test("fails open when upsert throws", async () => {
@@ -83,10 +78,9 @@ describe("fetchViewCount", () => {
 			},
 		};
 
-		assert.deepEqual(
-			await fetchViewCount({ slug: "/about", disabled: false }, {} as CloudflareEnv, deps),
-			{ view_count: 0 },
-		);
+		assert.deepEqual(await fetchViewCount({ slug: "/about", disabled: false }, undefined, deps), {
+			view_count: 0,
+		});
 	});
 
 	test("does not call dependencies when counter is disabled", async () => {
@@ -103,11 +97,7 @@ describe("fetchViewCount", () => {
 			},
 		};
 
-		const result = await fetchViewCount(
-			{ slug: "/about", disabled: true },
-			{} as CloudflareEnv,
-			deps,
-		);
+		const result = await fetchViewCount({ slug: "/about", disabled: true }, undefined, deps);
 
 		assert.deepEqual(result, { view_count: 0 });
 		assert.equal(called, false);

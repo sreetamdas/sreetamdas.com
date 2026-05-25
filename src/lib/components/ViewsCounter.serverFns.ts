@@ -13,7 +13,7 @@ type PagePathname = {
 };
 
 type ViewCountDeps<TDb> = {
-	getDb: (env: CloudflareEnv) => TDb;
+	getDb: (env: CloudflareEnv | undefined) => TDb;
 	upsertPageViews: (db: TDb, slug: string) => Promise<PageViewCount>;
 };
 
@@ -53,13 +53,13 @@ export async function fetchViewCount<TDb>(
 	}
 
 	try {
-		if (!env) {
-			return { view_count: 0 };
-		}
-
 		if (deps) {
 			const db = deps.getDb(env);
 			return await deps.upsertPageViews(db, normalizedSlug);
+		}
+
+		if (!env) {
+			return { view_count: 0 };
 		}
 
 		const db = defaultViewCountDeps.getDb(env);
