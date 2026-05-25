@@ -14,7 +14,7 @@ describe("resolveRwcEnv", () => {
 			GITHUB_TOKEN: "build_token",
 		};
 
-		assert.deepEqual(resolveRwcEnv(runtimeEnv, buildEnv), {
+		assert.deepEqual(resolveRwcEnv(runtimeEnv, buildEnv, undefined), {
 			githubGistId: "runtime_gist",
 			githubToken: "runtime_token",
 		});
@@ -26,9 +26,21 @@ describe("resolveRwcEnv", () => {
 			GITHUB_TOKEN: "build_token",
 		};
 
-		assert.deepEqual(resolveRwcEnv(undefined, buildEnv), {
+		assert.deepEqual(resolveRwcEnv(undefined, buildEnv, undefined), {
 			githubGistId: "build_gist",
 			githubToken: "build_token",
+		});
+	});
+
+	test("falls back to Vite env when runtime and build env are missing", () => {
+		const viteEnv = {
+			VITE_GITHUB_RWC_GIST_ID: "vite_gist",
+			VITE_GITHUB_TOKEN: "vite_token",
+		};
+
+		assert.deepEqual(resolveRwcEnv(undefined, undefined, viteEnv), {
+			githubGistId: "vite_gist",
+			githubToken: "vite_token",
 		});
 	});
 });

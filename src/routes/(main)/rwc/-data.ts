@@ -41,13 +41,20 @@ const fallbackRwcCodeSamples: RWCCodeSamples = {
 	background_color: FALLBACK_RWC_BACKGROUND,
 };
 
-export function resolveRwcEnv(runtimeEnv: object | undefined, buildEnv: object | undefined) {
+export function resolveRwcEnv(
+	runtimeEnv: object | undefined,
+	buildEnv: object | undefined,
+	viteEnv: object | undefined,
+) {
 	return {
 		githubGistId:
 			readEnvString(runtimeEnv, ["GITHUB_RWC_GIST_ID"]) ??
-			readEnvString(buildEnv, ["GITHUB_RWC_GIST_ID"]),
+			readEnvString(buildEnv, ["GITHUB_RWC_GIST_ID"]) ??
+			readEnvString(viteEnv, ["GITHUB_RWC_GIST_ID"]),
 		githubToken:
-			readEnvString(runtimeEnv, ["GITHUB_TOKEN"]) ?? readEnvString(buildEnv, ["GITHUB_TOKEN"]),
+			readEnvString(runtimeEnv, ["GITHUB_TOKEN"]) ??
+			readEnvString(buildEnv, ["GITHUB_TOKEN"]) ??
+			readEnvString(viteEnv, ["GITHUB_TOKEN"]),
 	};
 }
 
