@@ -5,6 +5,25 @@ import { injectTableOfContents } from "./parse";
 
 type TocTree = Parameters<typeof injectTableOfContents>[0];
 
+function asObject(value: unknown): Record<string, unknown> | undefined {
+	if (typeof value !== "object" || value === null || Array.isArray(value)) {
+		return undefined;
+	}
+
+	const entries = Object.entries(value);
+	return Object.fromEntries(entries);
+}
+
+function getChildObject(value: unknown, index: number): Record<string, unknown> | undefined {
+	const objectValue = asObject(value);
+	const children = objectValue?.children;
+	if (!objectValue || !Array.isArray(children)) {
+		return undefined;
+	}
+
+	return asObject(children[index]);
+}
+
 describe("injectTableOfContents", () => {
 	test("inserts a TOC list below the toc heading", () => {
 		const tree: TocTree = {
@@ -32,17 +51,20 @@ describe("injectTableOfContents", () => {
 		injectTableOfContents(tree);
 
 		assert.equal(tree.children?.[1]?.type, "list");
-		const list = tree.children?.[1] as {
-			type: string;
-			children: Array<{
-				children: Array<{ children: Array<{ url: string; children: Array<{ value: string }> }> }>;
-			}>;
-		};
+		const list = getChildObject(tree, 1);
+		const firstItem = getChildObject(list, 0);
+		const firstParagraph = getChildObject(firstItem, 0);
+		const firstLink = getChildObject(firstParagraph, 0);
+		const firstText = getChildObject(firstLink, 0);
+		const secondItem = getChildObject(list, 1);
+		const secondParagraph = getChildObject(secondItem, 0);
+		const secondLink = getChildObject(secondParagraph, 0);
 
-		assert.equal(list.children.length, 2);
-		assert.equal(list.children[0].children[0].children[0].url, "#the-problem");
-		assert.equal(list.children[0].children[0].children[0].children[0].value, "The Problem");
-		assert.equal(list.children[1].children[0].children[0].url, "#sub-section");
+		const children = list?.children;
+		assert.equal(Array.isArray(children) ? children.length : 0, 2);
+		assert.equal(firstLink?.url, "#the-problem");
+		assert.equal(firstText?.value, "The Problem");
+		assert.equal(secondLink?.url, "#sub-section");
 	});
 
 	test("does not duplicate toc when list already exists", () => {

@@ -9,6 +9,18 @@ type LiveViewersPayload = {
 	count: number;
 };
 
+function isLiveViewersPayload(value: unknown): value is LiveViewersPayload {
+	if (typeof value !== "object" || value === null) {
+		return false;
+	}
+
+	if (!("type" in value) || !("count" in value)) {
+		return false;
+	}
+
+	return value.type === "count" && typeof value.count === "number";
+}
+
 const PING_INTERVAL_MS = 60_000;
 const PING_JITTER_MAX_MS = 2_000;
 
@@ -123,8 +135,8 @@ export const LiveViewersBadge = ({ className }: { className?: string }) => {
 				let payload: LiveViewersPayload;
 				try {
 					const parsed: unknown = JSON.parse(event.data);
-					if (typeof parsed !== "object" || parsed === null) return;
-					payload = parsed as LiveViewersPayload;
+					if (!isLiveViewersPayload(parsed)) return;
+					payload = parsed;
 				} catch {
 					return;
 				}

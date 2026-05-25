@@ -38,11 +38,13 @@ enum COLOR_SCHEME {
 	dark = 2,
 }
 type COLOR_SCHEMES = keyof typeof COLOR_SCHEME;
+const COLOR_SCHEME_ORDER: COLOR_SCHEMES[] = ["system", "light", "dark"];
+
 function* colorSchemeGenerator(): Generator<COLOR_SCHEMES, never, COLOR_SCHEMES | undefined> {
 	let current = COLOR_SCHEME.system;
 
 	while (true) {
-		const override: COLOR_SCHEMES | undefined = yield COLOR_SCHEME[current] as COLOR_SCHEMES;
+		const override: COLOR_SCHEMES | undefined = yield COLOR_SCHEME_ORDER[current];
 
 		current = (current + 1) % 3;
 		if (override) {

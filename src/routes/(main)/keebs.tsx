@@ -151,28 +151,30 @@ async function getKeebsFromNotion(
 		return [];
 	}
 
-	const keebsDetailsFormatted = results.map((keebDetails) => {
-		const partial = Object.keys(keebDetails.properties).reduce<Partial<KeebDetailsFromNotion>>(
-			(details, property) => {
-				const propertyValue = keebDetails.properties[property];
+	const keebsDetailsFormatted = results
+		.map((keebDetails) => {
+			const partial = Object.keys(keebDetails.properties).reduce<Partial<KeebDetailsFromNotion>>(
+				(details, property) => {
+					const propertyValue = keebDetails.properties[property];
 
-				if (propertyValue.type === "title") {
-					details.name = getTitlePlainText(propertyValue);
-				}
-				if (propertyValue?.type === "files") {
-					details.image = { url: getFiles(propertyValue)[0] };
-				}
-				if (propertyValue?.type === "multi_select") {
-					details.tags = getMultiSelectNames(propertyValue);
-				}
+					if (propertyValue.type === "title") {
+						details.name = getTitlePlainText(propertyValue);
+					}
+					if (propertyValue?.type === "files") {
+						details.image = { url: getFiles(propertyValue)[0] };
+					}
+					if (propertyValue?.type === "multi_select") {
+						details.tags = getMultiSelectNames(propertyValue);
+					}
 
-				return details;
-			},
-			{},
-		);
+					return details;
+				},
+				{},
+			);
 
-		return partial as KeebDetailsFromNotion;
-	});
+			return partial;
+		})
+		.filter((entry): entry is KeebDetailsFromNotion => isKeebDetailsFromNotion(entry));
 
 	if (
 		isUndefined(imgurApiClientId) ||
@@ -203,6 +205,28 @@ type PageObjectResponseProperty =
 	PageObjectResponse["properties"][keyof PageObjectResponse["properties"]];
 function getTitlePlainText(input: Extract<PageObjectResponseProperty, { type: "title" }>) {
 	return input.title[0].plain_text;
+}
+
+function isKeebDetailsFromNotion(
+	value: Partial<KeebDetailsFromNotion>,
+): value is KeebDetailsFromNotion {
+	if (typeof value.name !== "string") {
+		return false;
+	}
+
+	if (!Array.isArray(value.tags)) {
+		return false;
+	}
+
+	if (
+		typeof value.image !== "object" ||
+		value.image === null ||
+		typeof value.image.url !== "string"
+	) {
+		return false;
+	}
+
+	return true;
 }
 
 function getMultiSelectNames(input: Extract<PageObjectResponseProperty, { type: "multi_select" }>) {

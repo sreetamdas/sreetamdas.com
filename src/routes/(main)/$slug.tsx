@@ -17,6 +17,18 @@ const rootPages = allRootPages;
 type RootPage = (typeof rootPages)[number];
 type RootPageLoaderData = { post: RootPage; contributors: Array<RepoContributor> };
 
+function parseSlugPayload(data: unknown): { slug: string } {
+	if (typeof data !== "object" || data === null || !("slug" in data)) {
+		throw new Error("Invalid root page slug payload");
+	}
+
+	if (typeof data.slug !== "string") {
+		throw new Error("Invalid root page slug payload");
+	}
+
+	return { slug: data.slug };
+}
+
 export const Route = createFileRoute("/(main)/$slug")({
 	component: MDXPageSlugPage,
 	head: ({ loaderData }: { loaderData?: RootPageLoaderData }) => {
@@ -50,17 +62,7 @@ export const Route = createFileRoute("/(main)/$slug")({
 });
 
 const getRootPageRenderable = createServerFn({ method: "GET" })
-	.inputValidator((data) => {
-		if (
-			typeof data !== "object" ||
-			data === null ||
-			typeof (data as { slug?: unknown }).slug !== "string"
-		) {
-			throw new Error("Invalid root page slug payload");
-		}
-
-		return { slug: (data as { slug: string }).slug };
-	})
+	.inputValidator((data) => parseSlugPayload(data))
 	.handler(async ({ data }) => {
 		const post = rootPages.find((page) => page.page_slug === data.slug);
 

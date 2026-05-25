@@ -73,15 +73,15 @@ export const Route = createFileRoute("/(main)/blog/$slug")({
 
 const getBlogRenderable = createServerFn({ method: "GET" })
 	.inputValidator((data) => {
-		if (
-			typeof data !== "object" ||
-			data === null ||
-			typeof (data as { slug?: unknown }).slug !== "string"
-		) {
+		if (typeof data !== "object" || data === null || !("slug" in data)) {
 			throw new Error("Invalid blog slug payload");
 		}
 
-		return { slug: (data as { slug: string }).slug };
+		if (typeof data.slug !== "string") {
+			throw new Error("Invalid blog slug payload");
+		}
+
+		return { slug: data.slug };
 	})
 	.handler(async ({ data }) => {
 		const post = await getBlogContent(data.slug);
