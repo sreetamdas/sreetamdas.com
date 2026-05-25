@@ -1,5 +1,6 @@
 import { cloudflare } from "@cloudflare/vite-plugin";
 import contentCollections from "@content-collections/vite";
+import { sentryTanstackStart } from "@sentry/tanstackstart-react/vite";
 import tailwindcss from "@tailwindcss/vite";
 import { tanstackStart } from "@tanstack/react-start/plugin/vite";
 import viteReact from "@vitejs/plugin-react";
@@ -9,6 +10,10 @@ import { defineConfig } from "vite-plus";
 import { slideDeckPlugin } from "./src/lib/domains/slides/vite-plugin.ts";
 
 function getPlugins(): Array<unknown> {
+	const hasSentryBuildEnv = Boolean(
+		process.env.SENTRY_AUTH_TOKEN && process.env.SENTRY_ORG && process.env.SENTRY_PROJECT,
+	);
+
 	// Widen to unknown[] so Vite's recursive plugin types don't blow up tsgo here.
 	return [
 		...(process.env.VITEST
@@ -34,6 +39,17 @@ function getPlugins(): Array<unknown> {
 		slideDeckPlugin(),
 		viteReact(),
 		tailwindcss(),
+		...(hasSentryBuildEnv
+			? [
+					sentryTanstackStart({
+						authToken: process.env.SENTRY_AUTH_TOKEN,
+						autoInstrumentMiddleware: false,
+						org: process.env.SENTRY_ORG,
+						project: process.env.SENTRY_PROJECT,
+						tunnelRoute: true,
+					}) as unknown,
+				]
+			: []),
 	] as Array<unknown>;
 }
 
