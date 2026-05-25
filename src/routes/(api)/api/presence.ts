@@ -1,18 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 
-type PresenceBinding = {
-	getByName: (name: string) => {
-		fetch: (request: Request) => Promise<Response> | Response;
-	};
-};
-
-type PresenceEnv = {
-	SITE_PRESENCE?: PresenceBinding;
-};
-
 export function handlePresenceGet(
 	request: Request,
-	env: PresenceEnv,
+	env: CloudflareEnv,
 ): Promise<Response> | Response {
 	const presence = env.SITE_PRESENCE;
 	if (!presence) {
