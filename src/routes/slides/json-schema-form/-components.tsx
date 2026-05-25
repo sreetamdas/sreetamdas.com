@@ -155,8 +155,8 @@ function FieldRenderer({
 				: never
 			: never
 		: never;
-	value: unknown;
-	onChange: (val: unknown) => void;
+	value: FormValues[string] | undefined;
+	onChange: (val: FormValues[string]) => void;
 	error?: string;
 }) {
 	const inputClasses =
@@ -467,8 +467,7 @@ export function JsfPlayground() {
 										value={values[field.name]}
 										onChange={(val) => {
 											setValues((prev) => {
-												const next = { ...prev, [field.name]: val } as FormValues;
-												return next;
+												return { ...prev, [field.name]: val };
 											});
 											setErrors((prev) => {
 												const next = { ...prev };
@@ -528,8 +527,7 @@ export function SchemaFormPreview({ schema }: { schema: JsfObjectSchema }) {
 									value={values[field.name]}
 									onChange={(val) => {
 										setValues((prev) => {
-											const next = { ...prev, [field.name]: val } as FormValues;
-											return next;
+											return { ...prev, [field.name]: val };
 										});
 									}}
 								/>
