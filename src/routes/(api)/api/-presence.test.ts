@@ -7,19 +7,11 @@ type PresenceStub = {
 	fetch: (request: Request) => Promise<Response> | Response;
 };
 
-type PresenceBinding = {
-	getByName: (name: string) => PresenceStub;
-};
-
-type PresenceEnv = {
-	SITE_PRESENCE?: PresenceBinding;
-};
-
 describe("handlePresenceGet", () => {
 	test("returns 500 json when SITE_PRESENCE binding is missing", async () => {
 		const request = new Request("https://example.com/api/presence");
 
-		const response = await handlePresenceGet(request, {} as PresenceEnv);
+		const response = await handlePresenceGet(request, {} as CloudflareEnv);
 
 		assert.equal(response.status, 500);
 		assert.match(response.headers.get("content-type") ?? "", /^application\/json/);
@@ -40,14 +32,14 @@ describe("handlePresenceGet", () => {
 			},
 		};
 
-		const env: PresenceEnv = {
+		const env = {
 			SITE_PRESENCE: {
-				getByName: (name) => {
+				getByName: (name: string) => {
 					calledWithName = name;
 					return stub;
 				},
 			},
-		};
+		} as unknown as CloudflareEnv;
 
 		const response = await handlePresenceGet(request, env);
 
