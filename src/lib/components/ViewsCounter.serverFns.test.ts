@@ -10,7 +10,7 @@ describe("fetchViewCount", () => {
 		});
 	});
 
-	test("returns zero for disabled counters", async () => {
+	test("returns zero for disabled counters when the Cloudflare env is unavailable", async () => {
 		assert.deepEqual(await fetchViewCount({ slug: "/about", disabled: true }, undefined), {
 			view_count: 0,
 		});
@@ -24,6 +24,7 @@ describe("fetchViewCount", () => {
 				calls.push("getDb");
 				return fakeDb;
 			},
+			getPageViews: async () => ({ view_count: 0 }),
 			upsertPageViews: async (_db: object, slug: string) => {
 				calls.push(slug);
 				return { view_count: 7 };
@@ -43,6 +44,7 @@ describe("fetchViewCount", () => {
 			getDb: () => {
 				return fakeDb;
 			},
+			getPageViews: async () => ({ view_count: 0 }),
 			upsertPageViews: async (_db: object, slug: string) => {
 				receivedSlug = slug;
 				return { view_count: 3 };
@@ -59,6 +61,7 @@ describe("fetchViewCount", () => {
 			getDb: () => {
 				throw new Error("db init failed");
 			},
+			getPageViews: async () => ({ view_count: 0 }),
 			upsertPageViews: async () => ({ view_count: 99 }),
 		};
 
@@ -73,6 +76,7 @@ describe("fetchViewCount", () => {
 			getDb: () => {
 				return fakeDb;
 			},
+			getPageViews: async () => ({ view_count: 0 }),
 			upsertPageViews: async () => {
 				throw new Error("write failed");
 			},
@@ -83,23 +87,27 @@ describe("fetchViewCount", () => {
 		});
 	});
 
-	test("does not call dependencies when counter is disabled", async () => {
-		let called = false;
+	test("reads existing counts when counter is disabled", async () => {
+		const calls: string[] = [];
 		const fakeDb = {};
 		const deps = {
 			getDb: () => {
-				called = true;
+				calls.push("getDb");
 				return fakeDb;
 			},
+			getPageViews: async (_db: object, slug: string) => {
+				calls.push(`read:${slug}`);
+				return { view_count: 42 };
+			},
 			upsertPageViews: async () => {
-				called = true;
+				calls.push("upsert");
 				return { view_count: 1 };
 			},
 		};
 
-		const result = await fetchViewCount({ slug: "/about", disabled: true }, undefined, deps);
+		const result = await fetchViewCount({ slug: "/about/", disabled: true }, undefined, deps);
 
-		assert.deepEqual(result, { view_count: 0 });
-		assert.equal(called, false);
+		assert.deepEqual(result, { view_count: 42 });
+		assert.deepEqual(calls, ["getDb", "read:/about"]);
 	});
 });

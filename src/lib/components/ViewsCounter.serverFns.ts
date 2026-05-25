@@ -1,7 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 
 import { getDb } from "@/db";
-import { upsertPageViews } from "@/lib/domains/PageViews";
+import { getPageViews, upsertPageViews } from "@/lib/domains/PageViews";
 
 export type PageViewCount = {
 	view_count: number;
@@ -14,11 +14,13 @@ type PagePathname = {
 
 type ViewCountDeps<TDb> = {
 	getDb: (env: CloudflareEnv | undefined) => TDb;
+	getPageViews: (db: TDb, slug: string) => Promise<PageViewCount>;
 	upsertPageViews: (db: TDb, slug: string) => Promise<PageViewCount>;
 };
 
 const defaultViewCountDeps = {
 	getDb,
+	getPageViews,
 	upsertPageViews,
 };
 
@@ -48,13 +50,12 @@ export async function fetchViewCount<TDb>(
 ): Promise<PageViewCount> {
 	const normalizedSlug = normalizePathname(data.slug);
 
-	if (data.disabled) {
-		return { view_count: 0 };
-	}
-
 	try {
 		if (deps) {
 			const db = deps.getDb(env);
+			if (data.disabled) {
+				return await deps.getPageViews(db, normalizedSlug);
+			}
 			return await deps.upsertPageViews(db, normalizedSlug);
 		}
 
@@ -63,6 +64,9 @@ export async function fetchViewCount<TDb>(
 		}
 
 		const db = defaultViewCountDeps.getDb(env);
+		if (data.disabled) {
+			return await defaultViewCountDeps.getPageViews(db, normalizedSlug);
+		}
 		return await defaultViewCountDeps.upsertPageViews(db, normalizedSlug);
 	} catch {
 		return { view_count: 0 };
