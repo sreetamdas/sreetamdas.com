@@ -4,17 +4,21 @@ type PresenceStub = {
 	fetch: (request: Request) => Promise<Response> | Response;
 };
 
-export type PresenceEnv = {
-	SITE_PRESENCE?: {
-		getByName: (name: string) => PresenceStub;
-	};
+type PresenceNamespace = {
+	getByName: (name: string) => PresenceStub;
 };
 
 export function handlePresenceGet(
 	request: Request,
-	env: PresenceEnv,
+	env: CloudflareEnv,
 ): Promise<Response> | Response {
-	const presence = env.SITE_PRESENCE;
+	return handlePresenceGetForNamespace(request, env.SITE_PRESENCE);
+}
+
+export function handlePresenceGetForNamespace(
+	request: Request,
+	presence: PresenceNamespace | undefined,
+): Promise<Response> | Response {
 	if (!presence) {
 		return Response.json({ error: "SITE_PRESENCE binding is not available" }, { status: 500 });
 	}

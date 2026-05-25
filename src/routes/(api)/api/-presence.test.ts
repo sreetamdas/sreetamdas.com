@@ -1,17 +1,17 @@
 import assert from "node:assert/strict";
 import { describe, test } from "node:test";
 
-import { handlePresenceGet, type PresenceEnv } from "./presence";
+import { handlePresenceGetForNamespace } from "./presence";
 
 type PresenceStub = {
 	fetch: (request: Request) => Promise<Response> | Response;
 };
 
-describe("handlePresenceGet", () => {
+describe("handlePresenceGetForNamespace", () => {
 	test("returns 500 json when SITE_PRESENCE binding is missing", async () => {
 		const request = new Request("https://example.com/api/presence");
 
-		const response = await handlePresenceGet(request, {});
+		const response = await handlePresenceGetForNamespace(request, undefined);
 
 		assert.equal(response.status, 500);
 		assert.match(response.headers.get("content-type") ?? "", /^application\/json/);
@@ -32,16 +32,14 @@ describe("handlePresenceGet", () => {
 			},
 		};
 
-		const env: PresenceEnv = {
-			SITE_PRESENCE: {
-				getByName: (name: string) => {
-					calledWithName = name;
-					return stub;
-				},
+		const presence = {
+			getByName: (name: string) => {
+				calledWithName = name;
+				return stub;
 			},
 		};
 
-		const response = await handlePresenceGet(request, env);
+		const response = await handlePresenceGetForNamespace(request, presence);
 
 		assert.equal(calledWithName, "global");
 		assert.equal(calledWithRequest, request);
@@ -51,19 +49,17 @@ describe("handlePresenceGet", () => {
 
 	test("supports async durable object fetch responses", async () => {
 		const request = new Request("https://example.com/api/presence");
-		const env: PresenceEnv = {
-			SITE_PRESENCE: {
-				getByName: () => {
-					return {
-						fetch: async () => {
-							return new Response("async-ok", { status: 200 });
-						},
-					};
-				},
+		const presence = {
+			getByName: () => {
+				return {
+					fetch: async () => {
+						return new Response("async-ok", { status: 200 });
+					},
+				};
 			},
 		};
 
-		const response = await handlePresenceGet(request, env);
+		const response = await handlePresenceGetForNamespace(request, presence);
 
 		assert.equal(response.status, 200);
 		assert.equal(await response.text(), "async-ok");
@@ -71,15 +67,13 @@ describe("handlePresenceGet", () => {
 
 	test("bubbles durable object lookup failures", async () => {
 		const request = new Request("https://example.com/api/presence");
-		const env: PresenceEnv = {
-			SITE_PRESENCE: {
-				getByName: () => {
-					throw new Error("lookup failed");
-				},
+		const presence = {
+			getByName: () => {
+				throw new Error("lookup failed");
 			},
 		};
 
-		assert.throws(() => handlePresenceGet(request, env), {
+		assert.throws(() => handlePresenceGetForNamespace(request, presence), {
 			message: "lookup failed",
 		});
 	});
