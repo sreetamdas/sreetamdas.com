@@ -48,4 +48,39 @@ describe("handlePresenceGet", () => {
 		assert.equal(response.status, 200);
 		assert.equal(await response.text(), "ok");
 	});
+
+	test("supports async durable object fetch responses", async () => {
+		const request = new Request("https://example.com/api/presence");
+		const env: PresenceEnv = {
+			SITE_PRESENCE: {
+				getByName: () => {
+					return {
+						fetch: async () => {
+							return new Response("async-ok", { status: 200 });
+						},
+					};
+				},
+			},
+		};
+
+		const response = await handlePresenceGet(request, env);
+
+		assert.equal(response.status, 200);
+		assert.equal(await response.text(), "async-ok");
+	});
+
+	test("bubbles durable object lookup failures", async () => {
+		const request = new Request("https://example.com/api/presence");
+		const env: PresenceEnv = {
+			SITE_PRESENCE: {
+				getByName: () => {
+					throw new Error("lookup failed");
+				},
+			},
+		};
+
+		assert.throws(() => handlePresenceGet(request, env), {
+			message: "lookup failed",
+		});
+	});
 });

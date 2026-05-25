@@ -1,3 +1,7 @@
+import {
+	sentryGlobalFunctionMiddleware,
+	sentryGlobalRequestMiddleware,
+} from "@sentry/tanstackstart-react";
 import { createCsrfMiddleware, createMiddleware, createStart } from "@tanstack/react-start";
 
 declare module "@tanstack/react-router" {
@@ -23,5 +27,6 @@ const csrfMiddleware = createCsrfMiddleware({
 });
 
 export const startInstance = createStart(() => ({
-	requestMiddleware: [csrfMiddleware, cloudflareContextMiddleware],
+	requestMiddleware: [sentryGlobalRequestMiddleware, csrfMiddleware, cloudflareContextMiddleware],
+	functionMiddleware: [sentryGlobalFunctionMiddleware],
 }));
