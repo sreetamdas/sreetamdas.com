@@ -1,92 +1,32 @@
 import { createFileRoute, ErrorComponent } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
+import { staticFunctionMiddleware } from "@tanstack/start-static-server-functions";
 import { FiLink } from "react-icons/fi";
 
 import { SITE_DESCRIPTION, SITE_TITLE_APPEND } from "@/config";
 import { ViewsCounter } from "@/lib/components/ViewsCounter";
 import { fetchGist } from "@/lib/domains/GitHub/fetchGist";
 import { getSlimKarmaHighlighter } from "@/lib/domains/shiki/highlighter";
-import { readEnvString } from "@/lib/helpers/utils";
 import { canonicalUrl, defaultOgImageUrl } from "@/lib/seo";
 
-const FALLBACK_RWC_BACKGROUND = "#17181c";
+import { loadRwcCodeSamples, resolveRwcEnv, type RWCSolution } from "./-data";
 
-type RWCSolution = {
-	html: string;
-	slug: string;
-	filename: string | undefined;
-	lang: string;
-};
+const getHighlightedCode = createServerFn({ method: "GET" })
+	.middleware([staticFunctionMiddleware])
+	.handler(async ({ context }) => {
+		const buildEnv = typeof process === "undefined" ? undefined : process.env;
+		const { githubGistId, githubToken } = resolveRwcEnv(context.env, buildEnv);
 
-const getHighlightedCode = createServerFn({ method: "GET" }).handler(async ({ context }) => {
-	// oxlint-disable-next-line no-console
-	console.log({ context });
-
-	const githubGistId = readEnvString(context.env, ["GITHUB_RWC_GIST_ID"]);
-	const githubToken = readEnvString(context.env, ["GITHUB_TOKEN"]);
-
-	// oxlint-disable-next-line no-console
-	console.log("[rwc] env presence", {
-		hasGithubGistId: typeof githubGistId === "string" && githubGistId.length > 0,
-		hasGithubToken: typeof githubToken === "string" && githubToken.length > 0,
-	});
-
-	if (!githubGistId) {
-		// oxlint-disable-next-line no-console
-		console.log("[rwc] missing gist id");
-		return { all_solutions: [], background_color: FALLBACK_RWC_BACKGROUND };
-	}
-
-	let gist: Awaited<ReturnType<typeof fetchGist>>;
-	try {
-		gist = await fetchGist(githubGistId, githubToken);
-		// oxlint-disable-next-line no-console
-		console.log("[rwc] fetched gist", {
-			gistId: githubGistId,
-			fileCount: gist.files ? Object.keys(gist.files).length : 0,
+		return await loadRwcCodeSamples({
+			githubGistId,
+			githubToken,
+			fetchGist,
+			getHighlighter: getSlimKarmaHighlighter,
 		});
-	} catch (error) {
-		// oxlint-disable-next-line no-console
-		console.error("[rwc] failed to fetch gist", error);
-		return { all_solutions: [], background_color: FALLBACK_RWC_BACKGROUND };
-	}
-
-	if (typeof gist.files === "undefined" || Object.keys(gist.files).length === 0) {
-		// oxlint-disable-next-line no-console
-		console.log("[rwc] gist has no files");
-		return { all_solutions: [], background_color: FALLBACK_RWC_BACKGROUND };
-	}
-
-	const files = Object.values(gist.files);
-	if (files.length === 0) {
-		// oxlint-disable-next-line no-console
-		console.log("[rwc] gist files array is empty");
-		return { all_solutions: [], background_color: FALLBACK_RWC_BACKGROUND };
-	}
-
-	const karma_highlighter = await getSlimKarmaHighlighter();
-	const background_color = karma_highlighter.getTheme("karma").bg;
-
-	const all_solutions = files.flatMap((file) => {
-		const code = file?.content;
-		const slug = file?.filename?.replaceAll(/[\s.]/g, "_").toLowerCase()!;
-		const filename = file?.filename;
-		const lang = file?.language?.toLowerCase() ?? "js";
-		if (code == null) {
-			return [];
-		}
-		const html = karma_highlighter.codeToHtml(code, { theme: "karma", lang });
-		const cleaned_html = html.replace(/(^<pre [^>]*>)/, "").replace(/(<\/pre>$)/, "");
-
-		return [{ html: cleaned_html, slug, filename, lang }];
 	});
 
-	return { all_solutions, background_color };
-});
-
-export const Route = createFileRoute("/(main)/rwc")({
+export const Route = createFileRoute("/(main)/rwc/")({
 	component: RWCPage,
-	staleTime: 1000 * 60 * 15,
 	loader: async () => getHighlightedCode(),
 	errorComponent: (err) => <ErrorComponent error={err} />,
 	head: () => ({
