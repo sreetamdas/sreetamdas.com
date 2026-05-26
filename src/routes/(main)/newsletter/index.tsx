@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
 import { renderServerComponent } from "@tanstack/react-start/rsc";
+import { staticFunctionMiddleware } from "@tanstack/start-static-server-functions";
 
 import { SITE_TITLE_APPEND } from "@/config";
 import { ViewsCounter } from "@/lib/components/ViewsCounter";
@@ -46,8 +47,9 @@ export const Route = createFileRoute("/(main)/newsletter/")({
 	}),
 });
 
-const getNewsletterEmailsPreviewsRenderable = createServerFn({ method: "GET" }).handler(
-	async ({ context }) => {
+const getNewsletterEmailsPreviewsRenderable = createServerFn({ method: "GET" })
+	.middleware([staticFunctionMiddleware])
+	.handler(async ({ context }) => {
 		const apiKey = getButtondownApiKey(context.env);
 		const newsletter_emails_previews_data = await getNewsletterEmailsPreviewsData(apiKey);
 		const Renderable = await renderServerComponent(
@@ -55,8 +57,7 @@ const getNewsletterEmailsPreviewsRenderable = createServerFn({ method: "GET" }).
 		);
 
 		return { Renderable };
-	},
-);
+	});
 
 function NewsletterEmailsPage() {
 	const { Renderable } = Route.useLoaderData();
