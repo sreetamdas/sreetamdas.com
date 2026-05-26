@@ -26,12 +26,6 @@ const getHighlightedCode = createServerFn({ method: "GET" })
 			hasGithubToken: typeof githubToken === "string" && githubToken.length > 0,
 		});
 
-		if (!githubGistId) {
-			throw new Error(
-				"Missing GITHUB_RWC_GIST_ID (or VITE_GITHUB_RWC_GIST_ID) for /rwc static build",
-			);
-		}
-
 		const result = await loadRwcCodeSamples({
 			githubGistId,
 			githubToken,
