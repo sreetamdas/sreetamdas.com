@@ -13,6 +13,7 @@ function getPlugins(): Array<unknown> {
 	const hasSentryBuildEnv = Boolean(
 		process.env.SENTRY_AUTH_TOKEN && process.env.SENTRY_ORG && process.env.SENTRY_PROJECT,
 	);
+	const sitemapHost = (process.env.VITE_SITE_URL ?? "https://sreetamdas.com").replace(/\/$/, "");
 
 	// Widen to unknown[] so Vite's recursive plugin types don't blow up tsgo here.
 	return [
@@ -34,6 +35,7 @@ function getPlugins(): Array<unknown> {
 			},
 			sitemap: {
 				enabled: true,
+				host: sitemapHost,
 			},
 		}),
 		rsc(),
