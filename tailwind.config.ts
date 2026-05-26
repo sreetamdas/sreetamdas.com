@@ -6,9 +6,9 @@ export default {
 	content: ["./src/**/*.{js,ts,jsx,tsx,mdx}", "./content/**/*.mdx"],
 	theme: {
 		fontFamily: {
-			sans: ["var(--font-inter)", ...defaultTheme.fontFamily.sans],
-			serif: ["var(--font-bricolage-grotesque)", ...defaultTheme.fontFamily.serif],
-			mono: ["var(--font-iosevka)", ...defaultTheme.fontFamily.mono],
+			sans: ["Inter Variable", ...defaultTheme.fontFamily.sans],
+			serif: ["Bricolage Grotesque Variable", ...defaultTheme.fontFamily.serif],
+			mono: ["var(--font-mono)", ...defaultTheme.fontFamily.mono],
 		},
 		extend: {
 			colors: {
