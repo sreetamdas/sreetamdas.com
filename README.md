@@ -67,6 +67,24 @@ Commonly used values:
   - `IMGUR_KEEBS_ALBUM_HASH` / `VITE_IMGUR_KEEBS_ALBUM_HASH`
 - RWC page gist: `GITHUB_RWC_GIST_ID` / `VITE_GITHUB_RWC_GIST_ID`
 
+#### Prerendering in Cloudflare CI/Workers Builds
+
+TanStack Start prerendering runs at build time, so missing build-time env vars can fail data loading.
+
+- Set `CLOUDFLARE_INCLUDE_PROCESS_ENV=true` in CI/Workers Builds.
+- Provide the required env vars in your CI environment.
+- Optionally commit a reference-style `.env` file (not secrets) so build-time resolution works:
+
+```env
+BUTTONDOWN_API_KEY=${BUTTONDOWN_API_KEY}
+NOTION_TOKEN=${NOTION_TOKEN}
+NOTION_KEEBS_PAGE_ID=${NOTION_KEEBS_PAGE_ID}
+IMGUR_API_CLIENT_ID=${IMGUR_API_CLIENT_ID}
+IMGUR_KEEBS_ALBUM_HASH=${IMGUR_KEEBS_ALBUM_HASH}
+GITHUB_RWC_GIST_ID=${GITHUB_RWC_GIST_ID}
+GITHUB_TOKEN=${GITHUB_TOKEN}
+```
+
 ### Newsletter
 
 I also run a _very awesome_ newsletter! It's got curated links keeping up with the JavaScript, React and webdev world.
