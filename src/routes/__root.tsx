@@ -1,16 +1,13 @@
 // @ts-expect-error fix module
-import bricolageGrotesqueFont from "@fontsource-variable/bricolage-grotesque/files/bricolage-grotesque-latin-standard-normal.woff2?url";
+import bricolageGrotesqueFont from "@fontsource-variable/bricolage-grotesque/files/bricolage-grotesque-latin-wght-normal.woff2?url";
 // @ts-expect-error fix module
 import interFont from "@fontsource-variable/inter/files/inter-latin-ext-wght-normal.woff2?url";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { HeadContent, Outlet, Scripts, createRootRoute } from "@tanstack/react-router";
 import { type ReactNode, useEffect, useState } from "react";
-import "@fontsource-variable/bricolage-grotesque/standard.css";
 
 import { IS_DEV, SITE_TITLE_APPEND } from "@/config";
-import "@fontsource-variable/inter/index.css";
-
 import { FOOBAR_SOURCE_CODE } from "@/lib/domains/foobar/helpers";
 import { captureException } from "@/lib/domains/Sentry";
 

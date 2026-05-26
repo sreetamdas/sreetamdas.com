@@ -1,4 +1,6 @@
 @import "tailwindcss";
+@import "@fontsource-variable/bricolage-grotesque/index.css";
+@import "@fontsource-variable/inter/index.css";
 
 @custom-variant dark {
 	&:where([data-color-scheme="dark"], [data-color-scheme="dark"] *) {
