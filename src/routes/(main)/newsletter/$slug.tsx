@@ -1,6 +1,7 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
 import { renderServerComponent } from "@tanstack/react-start/rsc";
+import { staticFunctionMiddleware } from "@tanstack/start-static-server-functions";
 
 import { SITE_DESCRIPTION, SITE_TITLE_APPEND } from "@/config";
 import { canonicalUrl, defaultOgImageUrl } from "@/lib/seo";
@@ -55,6 +56,7 @@ export const Route = createFileRoute("/(main)/newsletter/$slug")({
 const getNewsletterEmailRenderable = createServerFn({
 	method: "GET",
 })
+	.middleware([staticFunctionMiddleware])
 	.inputValidator((data) => {
 		if (typeof data !== "object" || data === null || !("slug" in data)) {
 			throw new Error("Invalid newsletter slug payload");
