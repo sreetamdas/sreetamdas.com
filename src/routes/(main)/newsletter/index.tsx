@@ -51,7 +51,15 @@ const getNewsletterEmailsPreviewsRenderable = createServerFn({ method: "GET" })
 	.middleware([staticFunctionMiddleware])
 	.handler(async ({ context }) => {
 		const apiKey = getButtondownApiKey(context.env);
+		// oxlint-disable-next-line no-console
+		console.log("[newsletter:index] env presence", {
+			hasButtondownApiKey: typeof apiKey === "string" && apiKey.length > 0,
+		});
 		const newsletter_emails_previews_data = await getNewsletterEmailsPreviewsData(apiKey);
+		// oxlint-disable-next-line no-console
+		console.log("[newsletter:index] loaded previews", {
+			count: newsletter_emails_previews_data.length,
+		});
 		const Renderable = await renderServerComponent(
 			<NewsletterEmailsPreviews emails={newsletter_emails_previews_data} />,
 		);

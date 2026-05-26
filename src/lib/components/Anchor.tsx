@@ -32,6 +32,31 @@ function isRouterLink(href: string) {
 	return href.startsWith("/") && !isExternal(href) && !href.startsWith("//");
 }
 
+function buildHrefWithParams(href: string, params: Record<string, string>) {
+	const consumedKeys = new Set<string>();
+	const hrefWithPathParams = href.replaceAll(/\$([a-zA-Z0-9_]+)/g, (_full, key: string) => {
+		const value = params[key];
+		if (typeof value !== "string") {
+			return `$${key}`;
+		}
+
+		consumedKeys.add(key);
+		return encodeURIComponent(value);
+	});
+
+	const searchParams = new URLSearchParams();
+	for (const [key, value] of Object.entries(params)) {
+		if (consumedKeys.has(key)) {
+			continue;
+		}
+
+		searchParams.set(key, value);
+	}
+
+	const query = searchParams.toString();
+	return query.length > 0 ? `${hrefWithPathParams}?${query}` : hrefWithPathParams;
+}
+
 export const LinkTo = ({
 	href,
 	params,
@@ -45,10 +70,8 @@ export const LinkTo = ({
 	const classNames = cn(!replaceClasses && "link-base", className);
 
 	if (isRouterLink(href) && params !== undefined) {
-		const search = new URLSearchParams(params).toString();
-		const hrefWithQuery = search.length > 0 ? `${href}?${search}` : href;
 		return (
-			<a {...restProps} href={hrefWithQuery} className={classNames}>
+			<a {...restProps} href={buildHrefWithParams(href, params)} className={classNames}>
 				{children}
 			</a>
 		);
