@@ -1,17 +1,15 @@
 /**
  * Post-content build script.
  *
- * Generates sitemap.xml and rss/feed.xml from generated content
- * collections and writes them into `public/` so they are served as static
- * assets by Cloudflare Workers.
+ * Generates rss/feed.xml from generated content collections and writes
+ * it into `public/` so it is served as a static asset by Cloudflare Workers.
  *
- * Sitemap is auto-generated from the TanStack Router route tree so it
- * stays in sync with actual file routes — no hardcoded list.
+ * Sitemap generation is handled by TanStack Start's built-in sitemap support.
  *
  * Run after `build:content-collections`.
  */
-import { allBlogPosts, allRootPages } from "content-collections";
-import { writeFileSync, mkdirSync, existsSync, readFileSync } from "node:fs";
+import { allBlogPosts } from "content-collections";
+import { writeFileSync, mkdirSync, existsSync } from "node:fs";
 import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -32,49 +30,6 @@ function resolveSiteUrl(): string {
 
 const SITE_URL = resolveSiteUrl();
 const OWNER_NAME = "Sreetam Das";
-const BUTTONDOWN_BASE_URL = "https://api.buttondown.email/v1";
-
-// ---------------------------------------------------------------------------
-// Route tree parsing
-// ---------------------------------------------------------------------------
-
-function extractRoutesFromRouteTree(): Array<string> {
-	const routeTreePath = resolve(ROOT, "src/routeTree.gen.ts");
-	const content = readFileSync(routeTreePath, "utf-8");
-
-	// Extract keys from `FileRoutesByTo` interface
-	const match = content.match(/export interface FileRoutesByTo\s*\{([^}]+)\}/s);
-	if (!match) {
-		throw new Error("Could not find FileRoutesByTo in routeTree.gen.ts");
-	}
-
-	const body = match[1];
-	const routes: Array<string> = [];
-
-	// Match lines like: `  '/about': typeof mainAboutRoute`
-	const lineRegex = /'([^']+)':\s*typeof\s+\w+/g;
-	let m;
-	while ((m = lineRegex.exec(body)) !== null) {
-		routes.push(m[1]);
-	}
-
-	return routes;
-}
-
-function isVisibleRoute(path: string): boolean {
-	// Exclude API routes
-	if (path.startsWith("/api/")) return false;
-	if (path.startsWith("/prxy/")) return false;
-
-	// Exclude internal/presentation routes
-	if (path.startsWith("/slides")) return false;
-	if (path.startsWith("/foobar")) return false;
-
-	// Exclude raw param patterns (we expand them via content collections/newsletter data)
-	if (path.includes("/$")) return false;
-
-	return true;
-}
 
 // ---------------------------------------------------------------------------
 // Content types
@@ -89,85 +44,6 @@ type BlogPost = {
 	published_at: string;
 	updated_at?: string;
 };
-
-type RootPage = {
-	title: string;
-	published: boolean;
-	skip_page?: boolean;
-	page_path: string;
-	published_at: string;
-	updated_at?: string;
-};
-
-type NewsletterEmail = {
-	slug: string;
-	subject: string;
-	publish_date: string;
-};
-
-// ---------------------------------------------------------------------------
-// Sitemap
-// ---------------------------------------------------------------------------
-
-type SitemapEntry = {
-	loc: string;
-	lastmod?: string;
-	changefreq?: string;
-	priority?: string;
-};
-
-function generateSitemap(
-	routes: Array<string>,
-	blogPosts: Array<BlogPost>,
-	rootPages: Array<RootPage>,
-	newsletterEmails: Array<NewsletterEmail>,
-): string {
-	const seen = new Set<string>();
-	const entries: Array<SitemapEntry> = [];
-
-	const add = (path: string, lastmod?: string) => {
-		if (seen.has(path)) return;
-		seen.add(path);
-		entries.push({
-			loc: `${SITE_URL}${path}`,
-			...(lastmod ? { lastmod } : {}),
-			changefreq: "weekly",
-			priority: "0.7",
-		});
-	};
-
-	// Auto-discovered file routes
-	for (const path of routes) {
-		add(path);
-	}
-
-	// Content collection pages (these override or supplement file routes)
-	for (const page of rootPages) {
-		if (!page.published || page.skip_page) continue;
-		add(page.page_path, page.updated_at ?? page.published_at);
-	}
-
-	for (const post of blogPosts) {
-		if (!post.published) continue;
-		add(post.url ?? post.page_path, post.updated_at ?? post.published_at);
-	}
-
-	for (const email of newsletterEmails) {
-		add(`/newsletter/${email.slug}`, email.publish_date);
-	}
-
-	const urlEntries = entries
-		.map(({ loc, lastmod, changefreq, priority }) => {
-			const parts = [`<loc>${escapeXml(loc)}</loc>`];
-			if (lastmod) parts.push(`<lastmod>${lastmod}</lastmod>`);
-			if (changefreq) parts.push(`<changefreq>${changefreq}</changefreq>`);
-			if (priority) parts.push(`<priority>${priority}</priority>`);
-			return `  <url>\n    ${parts.join("\n    ")}\n  </url>`;
-		})
-		.join("\n");
-
-	return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urlEntries}\n</urlset>`;
-}
 
 // ---------------------------------------------------------------------------
 // RSS Feed
@@ -208,52 +84,8 @@ function escapeXml(str: string): string {
 		.replace(/'/g, "&apos;");
 }
 
-async function fetchNewsletterEmails(): Promise<Array<NewsletterEmail>> {
-	const apiKey = process.env.BUTTONDOWN_API_KEY;
-	try {
-		const response = await fetch(`${BUTTONDOWN_BASE_URL}/emails`, {
-			headers: apiKey
-				? {
-						"X-API-Version": "2024-08-15",
-						Authorization: `Token ${apiKey}`,
-					}
-				: {},
-		});
-		if (!response.ok) {
-			return [];
-		}
-		const data = (await response.json()) as {
-			results: Array<{ slug: string; subject: string; publish_date: string }>;
-		};
-		return data.results.map(({ slug, subject, publish_date }) => ({
-			slug,
-			subject,
-			publish_date,
-		}));
-	} catch {
-		return [];
-	}
-}
-
-// ---------------------------------------------------------------------------
-// Main
-// ---------------------------------------------------------------------------
-
 async function main() {
 	const blogPosts = allBlogPosts as Array<BlogPost>;
-	const rootPages = allRootPages as Array<RootPage>;
-	const newsletterEmails = await fetchNewsletterEmails();
-
-	// Discover routes from TanStack Router's generated route tree
-	const rawRoutes = extractRoutesFromRouteTree();
-	const fileRoutes = rawRoutes.filter(isVisibleRoute);
-
-	// Sitemap
-	const sitemap = generateSitemap(fileRoutes, blogPosts, rootPages, newsletterEmails);
-	writeFileSync(resolve(PUBLIC, "sitemap.xml"), sitemap, "utf-8");
-	process.stdout.write(
-		`  Generated public/sitemap.xml (${fileRoutes.length} file routes, ${blogPosts.filter((p) => p.published).length} blog posts, ${rootPages.filter((p) => p.published && !p.skip_page).length} pages, ${newsletterEmails.length} newsletter emails)\n`,
-	);
 
 	// RSS
 	const rssDir = resolve(PUBLIC, "rss");
