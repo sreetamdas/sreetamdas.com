@@ -17,25 +17,11 @@ const getHighlightedCode = createServerFn({ method: "GET" })
 		const buildEnv = typeof process === "undefined" ? undefined : process.env;
 		const { githubGistId, githubToken } = resolveRwcEnv(context.env, buildEnv, import.meta.env);
 
-		// oxlint-disable-next-line no-console
-		console.log("[rwc] resolved env", {
-			hasRuntimeEnv: typeof context.env !== "undefined",
-			hasBuildEnv: typeof buildEnv !== "undefined",
-			hasViteEnv: typeof import.meta.env !== "undefined",
-			hasGithubGistId: typeof githubGistId === "string" && githubGistId.length > 0,
-			hasGithubToken: typeof githubToken === "string" && githubToken.length > 0,
-		});
-
 		const result = await loadRwcCodeSamples({
 			githubGistId,
 			githubToken,
 			fetchGist,
 			getHighlighter: getSlimKarmaHighlighter,
-		});
-
-		// oxlint-disable-next-line no-console
-		console.log("[rwc] loaded solutions", {
-			solutionsCount: result.all_solutions.length,
 		});
 
 		return result;

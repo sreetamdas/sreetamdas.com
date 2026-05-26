@@ -114,23 +114,11 @@ async function getKeebsFromNotion(
 	const imgurApiClientId = readEnvString(env, ["IMGUR_API_CLIENT_ID"]);
 	const imgurKeebsAlbumHash = readEnvString(env, ["IMGUR_KEEBS_ALBUM_HASH"]);
 
-	// oxlint-disable-next-line no-console
-	console.log("[keebs] env presence", {
-		hasKeebsDatabaseId: !isUndefined(keebsDatabaseId) && !isEmpty(keebsDatabaseId),
-		hasNotionToken: !isUndefined(notionToken) && !isEmpty(notionToken),
-		hasImgurApiClientId: !isUndefined(imgurApiClientId) && !isEmpty(imgurApiClientId),
-		hasImgurKeebsAlbumHash: !isUndefined(imgurKeebsAlbumHash) && !isEmpty(imgurKeebsAlbumHash),
-	});
-
 	if (isUndefined(keebsDatabaseId) || isEmpty(keebsDatabaseId)) {
-		// oxlint-disable-next-line no-console
-		console.log("[keebs] missing Notion database id");
 		return [];
 	}
 
 	if (isUndefined(notionToken) || isEmpty(notionToken)) {
-		// oxlint-disable-next-line no-console
-		console.log("[keebs] missing Notion token");
 		return [];
 	}
 
@@ -185,8 +173,6 @@ async function getKeebsFromNotion(
 		isUndefined(imgurKeebsAlbumHash) ||
 		isEmpty(imgurKeebsAlbumHash)
 	) {
-		// oxlint-disable-next-line no-console
-		console.log("[keebs] skipping Imgur enrichment (missing env)");
 		return keebsDetailsFormatted;
 	}
 

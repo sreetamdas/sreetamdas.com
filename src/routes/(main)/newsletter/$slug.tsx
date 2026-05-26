@@ -71,30 +71,14 @@ const getNewsletterEmailRenderable = createServerFn({
 	.handler(async ({ data, context }) => {
 		const { slug } = data;
 		const apiKey = getButtondownApiKey(context.env);
-		// oxlint-disable-next-line no-console
-		console.log("[newsletter:detail] resolving", {
-			slug,
-			hasButtondownApiKey: typeof apiKey === "string" && apiKey.length > 0,
-		});
 		const buttondown_api_emails_response = await fetchNewsletterEmails(apiKey);
 		const newsletter_email_by_slug = buttondown_api_emails_response.results.find(
 			(issue) => issue.slug === slug,
 		);
 
 		if (typeof newsletter_email_by_slug === "undefined") {
-			// oxlint-disable-next-line no-console
-			console.log("[newsletter:detail] slug not found", {
-				slug,
-				totalEmails: buttondown_api_emails_response.results.length,
-			});
 			throw notFound();
 		}
-
-		// oxlint-disable-next-line no-console
-		console.log("[newsletter:detail] slug resolved", {
-			slug,
-			totalEmails: buttondown_api_emails_response.results.length,
-		});
 
 		/**
 		 * Buttondown now includes a `<!-- buttondown-editor-mode: plaintext -->` at the start of the
