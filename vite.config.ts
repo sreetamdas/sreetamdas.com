@@ -33,6 +33,9 @@ function getPlugins(): Array<unknown> {
 				autoSubfolderIndex: false,
 				filter: ({ path }) => !path.startsWith("/newsletter") && path !== "/keebs",
 			},
+			sitemap: {
+				enabled: true,
+			},
 		}),
 		rsc(),
 		slideDeckPlugin(),
