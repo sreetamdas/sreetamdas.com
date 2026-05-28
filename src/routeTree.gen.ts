@@ -27,6 +27,7 @@ import { Route as mainNewsletterIndexRouteImport } from './routes/(main)/newslet
 import { Route as mainBlogIndexRouteImport } from './routes/(main)/blog/index'
 import { Route as mainNewsletterSlugRouteImport } from './routes/(main)/newsletter/$slug'
 import { Route as mainBlogSlugRouteImport } from './routes/(main)/blog/$slug'
+import { Route as apiApiStagingSmokeRouteImport } from './routes/(api)/api/staging-smoke'
 import { Route as apiApiPresenceRouteImport } from './routes/(api)/api/presence'
 import { Route as apiApiCoffeeRouteImport } from './routes/(api)/api/coffee'
 import { Route as mainfoobarFoobarIndexRouteImport } from './routes/(main)/(foobar)/foobar/index'
@@ -124,6 +125,11 @@ const mainBlogSlugRoute = mainBlogSlugRouteImport.update({
   path: '/blog/$slug',
   getParentRoute: () => mainRouteRoute,
 } as any)
+const apiApiStagingSmokeRoute = apiApiStagingSmokeRouteImport.update({
+  id: '/(api)/api/staging-smoke',
+  path: '/api/staging-smoke',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const apiApiPresenceRoute = apiApiPresenceRouteImport.update({
   id: '/(api)/api/presence',
   path: '/api/presence',
@@ -169,6 +175,7 @@ export interface FileRoutesByFullPath {
   '/': typeof mainIndexRoute
   '/api/coffee': typeof apiApiCoffeeRoute
   '/api/presence': typeof apiApiPresenceRoute
+  '/api/staging-smoke': typeof apiApiStagingSmokeRoute
   '/blog/$slug': typeof mainBlogSlugRoute
   '/newsletter/$slug': typeof mainNewsletterSlugRoute
   '/blog/': typeof mainBlogIndexRoute
@@ -193,6 +200,7 @@ export interface FileRoutesByTo {
   '/': typeof mainIndexRoute
   '/api/coffee': typeof apiApiCoffeeRoute
   '/api/presence': typeof apiApiPresenceRoute
+  '/api/staging-smoke': typeof apiApiStagingSmokeRoute
   '/blog/$slug': typeof mainBlogSlugRoute
   '/newsletter/$slug': typeof mainNewsletterSlugRoute
   '/blog': typeof mainBlogIndexRoute
@@ -220,6 +228,7 @@ export interface FileRoutesById {
   '/(main)/': typeof mainIndexRoute
   '/(api)/api/coffee': typeof apiApiCoffeeRoute
   '/(api)/api/presence': typeof apiApiPresenceRoute
+  '/(api)/api/staging-smoke': typeof apiApiStagingSmokeRoute
   '/(main)/blog/$slug': typeof mainBlogSlugRoute
   '/(main)/newsletter/$slug': typeof mainNewsletterSlugRoute
   '/(main)/blog/': typeof mainBlogIndexRoute
@@ -246,6 +255,7 @@ export interface FileRouteTypes {
     | '/'
     | '/api/coffee'
     | '/api/presence'
+    | '/api/staging-smoke'
     | '/blog/$slug'
     | '/newsletter/$slug'
     | '/blog/'
@@ -270,6 +280,7 @@ export interface FileRouteTypes {
     | '/'
     | '/api/coffee'
     | '/api/presence'
+    | '/api/staging-smoke'
     | '/blog/$slug'
     | '/newsletter/$slug'
     | '/blog'
@@ -296,6 +307,7 @@ export interface FileRouteTypes {
     | '/(main)/'
     | '/(api)/api/coffee'
     | '/(api)/api/presence'
+    | '/(api)/api/staging-smoke'
     | '/(main)/blog/$slug'
     | '/(main)/newsletter/$slug'
     | '/(main)/blog/'
@@ -313,6 +325,7 @@ export interface RootRouteChildren {
   SlidesRouteRoute: typeof SlidesRouteRouteWithChildren
   apiApiCoffeeRoute: typeof apiApiCoffeeRoute
   apiApiPresenceRoute: typeof apiApiPresenceRoute
+  apiApiStagingSmokeRoute: typeof apiApiStagingSmokeRoute
   apiPrxyPlsblApiEventRoute: typeof apiPrxyPlsblApiEventRoute
   apiPrxyPlsblJsScriptRoute: typeof apiPrxyPlsblJsScriptRoute
 }
@@ -445,6 +458,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof mainBlogSlugRouteImport
       parentRoute: typeof mainRouteRoute
     }
+    '/(api)/api/staging-smoke': {
+      id: '/(api)/api/staging-smoke'
+      path: '/api/staging-smoke'
+      fullPath: '/api/staging-smoke'
+      preLoaderRoute: typeof apiApiStagingSmokeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/(api)/api/presence': {
       id: '/(api)/api/presence'
       path: '/api/presence'
@@ -560,6 +580,7 @@ const rootRouteChildren: RootRouteChildren = {
   SlidesRouteRoute: SlidesRouteRouteWithChildren,
   apiApiCoffeeRoute: apiApiCoffeeRoute,
   apiApiPresenceRoute: apiApiPresenceRoute,
+  apiApiStagingSmokeRoute: apiApiStagingSmokeRoute,
   apiPrxyPlsblApiEventRoute: apiPrxyPlsblApiEventRoute,
   apiPrxyPlsblJsScriptRoute: apiPrxyPlsblJsScriptRoute,
 }
