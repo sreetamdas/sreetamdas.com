@@ -340,5 +340,13 @@ pre.shiki-code-block code > .line[data-highlight="true"]::before {
 @media (max-width: 639px) {
 	pre.shiki-code-block code > .line {
 		white-space: pre-wrap;
+		overflow-wrap: anywhere;
+	}
+
+	pre.shiki-code-block code > .line[data-highlight="true"] {
+		margin-left: 0;
+		margin-right: 0;
+		padding-left: 0.5rem;
+		padding-right: 0.5rem;
 	}
 }
