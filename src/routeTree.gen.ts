@@ -16,6 +16,7 @@ import { Route as mainIndexRouteImport } from './routes/(main)/index'
 import { Route as pureVersionRouteImport } from './routes/(pure)/version'
 import { Route as pureResumeRouteImport } from './routes/(pure)/resume'
 import { Route as pureFancyPantsRouteImport } from './routes/(pure)/fancy-pants'
+import { Route as mainStatsRouteImport } from './routes/(main)/stats'
 import { Route as mainKeebsRouteImport } from './routes/(main)/keebs'
 import { Route as mainKarmaRouteImport } from './routes/(main)/karma'
 import { Route as mainAboutRouteImport } from './routes/(main)/about'
@@ -67,6 +68,11 @@ const pureFancyPantsRoute = pureFancyPantsRouteImport.update({
   id: '/fancy-pants',
   path: '/fancy-pants',
   getParentRoute: () => pureRouteRoute,
+} as any)
+const mainStatsRoute = mainStatsRouteImport.update({
+  id: '/stats',
+  path: '/stats',
+  getParentRoute: () => mainRouteRoute,
 } as any)
 const mainKeebsRoute = mainKeebsRouteImport.update({
   id: '/keebs',
@@ -169,6 +175,7 @@ export interface FileRoutesByFullPath {
   '/about': typeof mainAboutRoute
   '/karma': typeof mainKarmaRoute
   '/keebs': typeof mainKeebsRoute
+  '/stats': typeof mainStatsRoute
   '/fancy-pants': typeof pureFancyPantsRoute
   '/resume': typeof pureResumeRoute
   '/version': typeof pureVersionRoute
@@ -194,6 +201,7 @@ export interface FileRoutesByTo {
   '/about': typeof mainAboutRoute
   '/karma': typeof mainKarmaRoute
   '/keebs': typeof mainKeebsRoute
+  '/stats': typeof mainStatsRoute
   '/fancy-pants': typeof pureFancyPantsRoute
   '/resume': typeof pureResumeRoute
   '/version': typeof pureVersionRoute
@@ -222,6 +230,7 @@ export interface FileRoutesById {
   '/(main)/about': typeof mainAboutRoute
   '/(main)/karma': typeof mainKarmaRoute
   '/(main)/keebs': typeof mainKeebsRoute
+  '/(main)/stats': typeof mainStatsRoute
   '/(pure)/fancy-pants': typeof pureFancyPantsRoute
   '/(pure)/resume': typeof pureResumeRoute
   '/(pure)/version': typeof pureVersionRoute
@@ -249,6 +258,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/karma'
     | '/keebs'
+    | '/stats'
     | '/fancy-pants'
     | '/resume'
     | '/version'
@@ -274,6 +284,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/karma'
     | '/keebs'
+    | '/stats'
     | '/fancy-pants'
     | '/resume'
     | '/version'
@@ -301,6 +312,7 @@ export interface FileRouteTypes {
     | '/(main)/about'
     | '/(main)/karma'
     | '/(main)/keebs'
+    | '/(main)/stats'
     | '/(pure)/fancy-pants'
     | '/(pure)/resume'
     | '/(pure)/version'
@@ -380,6 +392,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/fancy-pants'
       preLoaderRoute: typeof pureFancyPantsRouteImport
       parentRoute: typeof pureRouteRoute
+    }
+    '/(main)/stats': {
+      id: '/(main)/stats'
+      path: '/stats'
+      fullPath: '/stats'
+      preLoaderRoute: typeof mainStatsRouteImport
+      parentRoute: typeof mainRouteRoute
     }
     '/(main)/keebs': {
       id: '/(main)/keebs'
@@ -516,6 +535,7 @@ interface mainRouteRouteChildren {
   mainAboutRoute: typeof mainAboutRoute
   mainKarmaRoute: typeof mainKarmaRoute
   mainKeebsRoute: typeof mainKeebsRoute
+  mainStatsRoute: typeof mainStatsRoute
   mainIndexRoute: typeof mainIndexRoute
   mainBlogSlugRoute: typeof mainBlogSlugRoute
   mainNewsletterSlugRoute: typeof mainNewsletterSlugRoute
@@ -531,6 +551,7 @@ const mainRouteRouteChildren: mainRouteRouteChildren = {
   mainAboutRoute: mainAboutRoute,
   mainKarmaRoute: mainKarmaRoute,
   mainKeebsRoute: mainKeebsRoute,
+  mainStatsRoute: mainStatsRoute,
   mainIndexRoute: mainIndexRoute,
   mainBlogSlugRoute: mainBlogSlugRoute,
   mainNewsletterSlugRoute: mainNewsletterSlugRoute,

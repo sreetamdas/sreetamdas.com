@@ -12,6 +12,7 @@ import { useEffect } from "react";
 import { useShallow } from "zustand/react/shallow";
 
 import { IS_DEV } from "@/config";
+import { LinkTo } from "@/lib/components/Anchor";
 import { NotFound404 } from "@/lib/components/Error";
 import { Code } from "@/lib/components/Typography";
 import { ShowCompletedBadges } from "@/lib/domains/foobar/badges";
@@ -65,6 +66,13 @@ export const FoobarDashboard = ({ completed_page }: FoobarSchrodingerProps) => {
 				completed={foobar_data.completed}
 				all_achievements={foobar_data.all_achievements}
 			/>
+			<LinkTo
+				href="/stats"
+				replaceClasses
+				className="rounded-global border-secondary bg-background text-foreground hover:bg-secondary hover:text-background my-6 inline-flex border-2 border-solid px-6 py-2 text-sm transition-[color,background-color]"
+			>
+				View public site stats
+			</LinkTo>
 			<ResetFoobar handleClearFoobarData={handleClearFoobarData} />
 			{/* <Center>
 				<SupportSreetamDas />
