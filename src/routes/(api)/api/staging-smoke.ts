@@ -1,11 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
 
+import buildInfo from "@/build-info.json";
+
 /**
- * Staging-only deploy marker used by agents/humans to prove a pushed commit
- * has reached the Cloudflare Workers staging hostname without exposing the
+ * Staging-only deploy marker used by agents/humans to prove the exact build
+ * that reached the Cloudflare Workers staging hostname without exposing the
  * diagnostic endpoint on production.
  */
-const STAGING_SMOKE_MARKER = "staging-smoke-2026-05-28-foobar-docs";
 const STAGING_SMOKE_HOSTS = new Set([
 	"staging.sreetamdas.com",
 	"dev.sreetamdas.com",
@@ -27,7 +28,7 @@ export function handleStagingSmokeGet(request: Request) {
 
 	return Response.json(
 		{
-			marker: STAGING_SMOKE_MARKER,
+			build: buildInfo,
 			ok: true,
 			purpose: "staging-deploy-verification",
 		},

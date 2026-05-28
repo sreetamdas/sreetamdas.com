@@ -1,6 +1,8 @@
 import assert from "node:assert/strict";
 import { describe, test } from "node:test";
 
+import buildInfo from "@/build-info.json";
+
 import { handleStagingSmokeGet, isStagingSmokeHost } from "./api/staging-smoke";
 
 describe("isStagingSmokeHost", () => {
@@ -27,7 +29,7 @@ describe("handleStagingSmokeGet", () => {
 		assert.equal(response.headers.get("cache-control"), "no-store");
 		assert.match(response.headers.get("content-type") ?? "", /^application\/json/);
 		assert.deepEqual(await response.json(), {
-			marker: "staging-smoke-2026-05-28-foobar-docs",
+			build: buildInfo,
 			ok: true,
 			purpose: "staging-deploy-verification",
 		});
