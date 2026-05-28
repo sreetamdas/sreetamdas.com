@@ -113,7 +113,7 @@ function RouteComponent() {
 		<>
 			<ReadingProgress />
 			<h1 className="pt-10 font-serif text-8xl font-bold">
-				<Gradient className="block w-full [overflow-wrap:anywhere]">{post.title}</Gradient>
+				<Gradient className="[overflow-wrap:anywhere]">{post.title}</Gradient>
 			</h1>
 			<p className="text-foreground/60 pb-20 text-sm">
 				{new Date(post.published_at).toLocaleDateString("en-US", {
