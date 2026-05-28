@@ -1,6 +1,7 @@
 /**
- * Used for:
- * - Loading keebs' info usin Notion API
+ * Notion API boundary for keeb data. It supports both legacy database endpoints
+ * and newer data-source endpoints so the site can survive Notion API migrations
+ * without changing callers.
  */
 
 import { type PageObjectResponse } from "@notionhq/client/build/src/api-endpoints";

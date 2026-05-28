@@ -1,3 +1,8 @@
+/**
+ * Slim Shiki highlighter shared by MDX, slides, and RWC. Languages are
+ * precompiled explicitly so build/runtime bundles only include the syntaxes the
+ * site actually renders.
+ */
 import type { BundledLanguage, ThemeRegistration } from "shiki";
 
 import { defaultTheme } from "@sreetamdas/karma";

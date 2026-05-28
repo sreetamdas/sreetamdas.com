@@ -1,6 +1,7 @@
 /**
- * Used for:
- * - Loading keebs' images info from Imgur API
+ * Imgur API boundary for enriching Notion-sourced keeb entries with image
+ * dimensions. Notion stores the image URL; Imgur is the source of truth for
+ * width/height metadata needed by image rendering.
  */
 
 import { isEmpty, isUndefined } from "lodash-es";

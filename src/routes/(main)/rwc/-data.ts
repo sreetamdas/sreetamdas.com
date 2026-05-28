@@ -1,3 +1,8 @@
+/**
+ * Remote Widget Catalogue data loader. RWC source files live in a GitHub gist
+ * and are highlighted at build/prerender time when env is available, with a
+ * small fallback payload for previews that do not have the gist configured.
+ */
 import { readPublicEnvString, readServerEnvString } from "@/lib/helpers/utils";
 
 export const FALLBACK_RWC_BACKGROUND = "#17181c";

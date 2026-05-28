@@ -1,3 +1,8 @@
+/**
+ * D1-backed page view counters. Reads are strict so missing seed data is visible,
+ * while writes use an upsert/increment to keep concurrent page views atomic at
+ * the database layer.
+ */
 import type { BaseSQLiteDatabase } from "drizzle-orm/sqlite-core";
 
 import { eq, sql } from "drizzle-orm";

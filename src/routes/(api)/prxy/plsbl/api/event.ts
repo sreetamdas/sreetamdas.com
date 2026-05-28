@@ -1,3 +1,8 @@
+/**
+ * First-party Plausible event proxy. Browsers post analytics to this route so
+ * the public site can keep one same-origin analytics endpoint while the Worker
+ * forwards the minimal headers Plausible needs upstream.
+ */
 import { createFileRoute } from "@tanstack/react-router";
 
 export function handlePlausibleEventGet(): Response {

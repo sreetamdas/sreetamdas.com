@@ -1,3 +1,8 @@
+/**
+ * Browser-only Sentry runtime helpers. Server/Worker entrypoints avoid importing
+ * TanStack Sentry runtime modules because they can pull Node-only dependencies
+ * into Cloudflare/prerender builds.
+ */
 import { readPublicEnvString } from "@/lib/helpers/utils";
 
 export function isBrowserSentryRuntime() {
