@@ -1,3 +1,8 @@
+/**
+ * Canonical achievement catalogue for /foobar. Slugged entries become routable
+ * challenge pages, while non-slugged entries such as restart/completed are
+ * dashboard-only achievements that still render as badges.
+ */
 import { type IconBaseProps } from "react-icons";
 import { BsEgg } from "react-icons/bs";
 import {

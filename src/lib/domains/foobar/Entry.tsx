@@ -1,5 +1,9 @@
 "use client";
 
+/**
+ * Hidden entry point for /foobar. The invisible Roman numeral X is placed in
+ * regular site UI and unlocks the game the first time a curious visitor finds it.
+ */
 import { useShallow } from "zustand/react/shallow";
 
 import { LinkTo } from "@/lib/components/Anchor";
