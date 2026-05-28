@@ -1,9 +1,9 @@
-import { readEnvString } from "@/lib/helpers/utils";
+import { readServerEnvString } from "@/lib/helpers/utils";
 
 export const GITHUB_API_BASE_URL = "https://api.github.com";
 
 export function getGitHubToken(env: CloudflareEnv): string | undefined {
-	return readEnvString(env, ["GITHUB_TOKEN"]);
+	return readServerEnvString(env, ["GITHUB_TOKEN"]);
 }
 
 export function getGitHubHeaders(token?: string) {

@@ -4,10 +4,11 @@ import { renderServerComponent } from "@tanstack/react-start/rsc";
 import { allRootPages } from "content-collections";
 import { isNil } from "lodash-es";
 
-import { SITE_DESCRIPTION, SITE_TITLE_APPEND } from "@/config";
+import { IS_DEV, SITE_DESCRIPTION, SITE_TITLE_APPEND } from "@/config";
 import { RepoContributors } from "@/lib/components/GitHub/RepoContributors";
 import { MDXContent } from "@/lib/components/MDX";
 import { ViewsCounter } from "@/lib/components/ViewsCounter";
+import { shouldServeRootPage } from "@/lib/content/visibility";
 import { fetchRepoContributors } from "@/lib/domains/GitHub/serverFns";
 import { type RepoContributor } from "@/lib/domains/GitHub/types";
 import { canonicalUrl, defaultOgImageUrl } from "@/lib/seo";
@@ -66,7 +67,7 @@ const getRootPageRenderable = createServerFn({ method: "GET" })
 	.handler(async ({ data }) => {
 		const post = rootPages.find((page) => page.page_slug === data.slug);
 
-		if (isNil(post)) {
+		if (isNil(post) || !shouldServeRootPage(post, { includeDrafts: IS_DEV })) {
 			throw notFound();
 		}
 

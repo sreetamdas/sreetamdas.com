@@ -68,7 +68,7 @@ const blogPosts = defineCollection({
 		const updatedAt = normalizeOptionalIsoDate(doc.updated_at);
 		const raw = doc.content;
 		const rawPath = `blog/${doc._meta.path}`;
-		const pagePath = `/${rawPath}` as `/blog/${string}`;
+		const pagePath = `/${rawPath}`;
 		const pageSlug = rawPath.split("/").at(-1) ?? doc._meta.path;
 		const { mdast, shikiHighlights } = await mdxParseWithShiki(raw);
 		const wordCount = raw.split(/\s+/g).filter(Boolean).length;
@@ -116,7 +116,7 @@ const rootPages = defineCollection({
 		const raw = doc.content;
 		const rawPath = `rootPage/${doc._meta.path}`;
 		const pageSlug = rawPath.split("/").at(-1) ?? doc._meta.path;
-		const pagePath = `/${pageSlug}` as `/${string}`;
+		const pagePath = `/${pageSlug}`;
 		const { mdast, shikiHighlights } = await mdxParseWithShiki(raw);
 
 		return {
@@ -130,56 +130,10 @@ const rootPages = defineCollection({
 			shikiHighlights,
 			page_path: pagePath,
 			page_slug: pageSlug,
-		};
-	},
-});
-
-const aocSolutions = defineCollection({
-	name: "aocSolutions",
-	directory: "content/aoc",
-	include: "**/*.mdx",
-	schema: z.object({
-		title: z.string(),
-		seo_title: z.string().optional(),
-		subheading: z.string().optional(),
-		description: z.string().optional(),
-		published_at: z.string(),
-		updated_at: z.string().optional(),
-		published: z.boolean(),
-		url: z.string().optional(),
-		image: z.string().optional(),
-		content: z.string(),
-	}),
-	transform: async (doc) => {
-		const publishedAt = normalizeIsoDate(doc.published_at);
-		const updatedAt = normalizeOptionalIsoDate(doc.updated_at);
-		const raw = doc.content;
-		const rawPath = `aoc/${doc._meta.path}`;
-		const pagePath = `/${rawPath}` as `/${string}`;
-		const pageSlug = rawPath.split("/").slice(-2).join("/");
-		const { mdast, shikiHighlights } = await mdxParseWithShiki(raw);
-
-		return {
-			...doc,
-			published_at: publishedAt,
-			updated_at: updatedAt,
-			code: raw,
-			raw,
-			raw_path: rawPath,
-			mdast,
-			shikiHighlights,
-			page_path: pagePath,
-			page_slug: pageSlug,
-			structured_data: toStructuredData({
-				...doc,
-				published_at: publishedAt,
-				updated_at: updatedAt,
-				fallbackPath: pagePath,
-			}),
 		};
 	},
 });
 
 export default defineConfig({
-	content: [blogPosts, rootPages, aocSolutions],
+	content: [blogPosts, rootPages],
 });

@@ -1,4 +1,4 @@
-import { readEnvString } from "@/lib/helpers/utils";
+import { readPublicEnvString, readServerEnvString } from "@/lib/helpers/utils";
 
 export const FALLBACK_RWC_BACKGROUND = "#17181c";
 
@@ -48,13 +48,12 @@ export function resolveRwcEnv(
 ) {
 	return {
 		githubGistId:
-			readEnvString(runtimeEnv, ["GITHUB_RWC_GIST_ID"]) ??
-			readEnvString(buildEnv, ["GITHUB_RWC_GIST_ID"]) ??
-			readEnvString(viteEnv, ["GITHUB_RWC_GIST_ID"]),
+			readServerEnvString(runtimeEnv, ["GITHUB_RWC_GIST_ID"]) ??
+			readServerEnvString(buildEnv, ["GITHUB_RWC_GIST_ID"]) ??
+			readPublicEnvString(viteEnv, ["GITHUB_RWC_GIST_ID"]),
 		githubToken:
-			readEnvString(runtimeEnv, ["GITHUB_TOKEN"]) ??
-			readEnvString(buildEnv, ["GITHUB_TOKEN"]) ??
-			readEnvString(viteEnv, ["GITHUB_TOKEN"]),
+			readServerEnvString(runtimeEnv, ["GITHUB_TOKEN"]) ??
+			readServerEnvString(buildEnv, ["GITHUB_TOKEN"]),
 	};
 }
 

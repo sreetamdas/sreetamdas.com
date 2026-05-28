@@ -1,9 +1,9 @@
 import assert from "node:assert/strict";
 import { describe, test } from "node:test";
 
-import { readEnvString } from "./utils";
+import { readPublicEnvString, readServerEnvString } from "./utils";
 
-describe("readEnvString", () => {
+describe("readServerEnvString", () => {
 	test("reads a non-enumerable Cloudflare binding", () => {
 		const env: Record<string, unknown> = Object.create(null);
 		Object.defineProperty(env, "GITHUB_RWC_GIST_ID", {
@@ -11,15 +11,15 @@ describe("readEnvString", () => {
 			enumerable: false,
 		});
 
-		assert.equal(readEnvString(env, ["GITHUB_RWC_GIST_ID"]), "gist_123");
+		assert.equal(readServerEnvString(env, ["GITHUB_RWC_GIST_ID"]), "gist_123");
 	});
 
-	test("falls back to VITE-prefixed keys", () => {
+	test("does not fall back to VITE-prefixed keys", () => {
 		const env: Record<string, unknown> = {
 			VITE_BUTTONDOWN_API_KEY: "buttondown_123",
 		};
 
-		assert.equal(readEnvString(env, ["BUTTONDOWN_API_KEY"]), "buttondown_123");
+		assert.equal(readServerEnvString(env, ["BUTTONDOWN_API_KEY"]), undefined);
 	});
 
 	test("ignores empty strings", () => {
@@ -27,16 +27,7 @@ describe("readEnvString", () => {
 			NOTION_TOKEN: "",
 		};
 
-		assert.equal(readEnvString(env, ["NOTION_TOKEN"]), undefined);
-	});
-
-	test("prefers non-VITE key when both exist", () => {
-		const env: Record<string, unknown> = {
-			BUTTONDOWN_API_KEY: "direct_key",
-			VITE_BUTTONDOWN_API_KEY: "vite_key",
-		};
-
-		assert.equal(readEnvString(env, ["BUTTONDOWN_API_KEY"]), "direct_key");
+		assert.equal(readServerEnvString(env, ["NOTION_TOKEN"]), undefined);
 	});
 
 	test("returns first matching key in priority order", () => {
@@ -45,11 +36,11 @@ describe("readEnvString", () => {
 			PRIMARY_KEY: "primary",
 		};
 
-		assert.equal(readEnvString(env, ["PRIMARY_KEY", "SECONDARY_KEY"]), "primary");
+		assert.equal(readServerEnvString(env, ["PRIMARY_KEY", "SECONDARY_KEY"]), "primary");
 	});
 
 	test("returns undefined when env object is unavailable", () => {
-		assert.equal(readEnvString(undefined, ["NOTION_TOKEN"]), undefined);
+		assert.equal(readServerEnvString(undefined, ["NOTION_TOKEN"]), undefined);
 	});
 
 	test("ignores non-string values", () => {
@@ -58,6 +49,33 @@ describe("readEnvString", () => {
 			VITE_NOTION_TOKEN: true,
 		};
 
-		assert.equal(readEnvString(env, ["NOTION_TOKEN"]), undefined);
+		assert.equal(readServerEnvString(env, ["NOTION_TOKEN"]), undefined);
+	});
+});
+
+describe("readPublicEnvString", () => {
+	test("falls back to VITE-prefixed keys for intentionally public values", () => {
+		const env: Record<string, unknown> = {
+			VITE_SENTRY_DSN: "https://example@sentry.io/1",
+		};
+
+		assert.equal(readPublicEnvString(env, ["SENTRY_DSN"]), "https://example@sentry.io/1");
+	});
+
+	test("prefers direct key when both direct and VITE-prefixed keys exist", () => {
+		const env: Record<string, unknown> = {
+			SENTRY_DSN: "direct",
+			VITE_SENTRY_DSN: "vite",
+		};
+
+		assert.equal(readPublicEnvString(env, ["SENTRY_DSN"]), "direct");
+	});
+
+	test("does not double-prefix explicit VITE keys", () => {
+		const env: Record<string, unknown> = {
+			VITE_SITE_URL: "https://example.com",
+		};
+
+		assert.equal(readPublicEnvString(env, ["VITE_SITE_URL"]), "https://example.com");
 	});
 });

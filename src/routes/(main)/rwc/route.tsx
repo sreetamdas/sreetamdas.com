@@ -8,6 +8,7 @@ import { ViewsCounter } from "@/lib/components/ViewsCounter";
 import { fetchGist } from "@/lib/domains/GitHub/fetchGist";
 import { getSlimKarmaHighlighter } from "@/lib/domains/shiki/highlighter";
 import { canonicalUrl, defaultOgImageUrl } from "@/lib/seo";
+import { STATIC_SERVER_FUNCTION_STALE_TIME } from "@/lib/static-server-functions";
 
 import { loadRwcCodeSamples, resolveRwcEnv, type RWCSolution } from "./-data";
 
@@ -29,6 +30,7 @@ const getHighlightedCode = createServerFn({ method: "GET" })
 
 export const Route = createFileRoute("/(main)/rwc")({
 	component: RWCPage,
+	staleTime: STATIC_SERVER_FUNCTION_STALE_TIME,
 	loader: async () => getHighlightedCode(),
 	errorComponent: (err) => <ErrorComponent error={err} />,
 	head: () => ({

@@ -5,6 +5,7 @@ import { staticFunctionMiddleware } from "@tanstack/start-static-server-function
 
 import { SITE_DESCRIPTION, SITE_TITLE_APPEND } from "@/config";
 import { canonicalUrl, defaultOgImageUrl } from "@/lib/seo";
+import { STATIC_SERVER_FUNCTION_STALE_TIME } from "@/lib/static-server-functions";
 
 import { NewsletterEmailDetail } from "./-components";
 import { fetchNewsletterEmails, getButtondownApiKey } from "./-helpers";
@@ -18,7 +19,7 @@ type NewsletterLoaderData = {
 
 export const Route = createFileRoute("/(main)/newsletter/$slug")({
 	component: NewsletterEmailDetailPage,
-	staleTime: 1000 * 60 * 10,
+	staleTime: STATIC_SERVER_FUNCTION_STALE_TIME,
 	head: ({ loaderData }: { loaderData?: NewsletterLoaderData }) => {
 		const email = loaderData?.newsletter_email_data;
 		const title = `${email?.subject ?? "Newsletter"} ${SITE_TITLE_APPEND}`;

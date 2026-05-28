@@ -52,20 +52,26 @@ Notes:
 
 - `pnpm dev` runs the Vite dev server with Content Collections integration.
 - `pnpm build` runs `pnpm build:content-collections` automatically via `prebuild`.
-- `pnpm deploy` builds and deploys to Cloudflare via Wrangler.
+- `pnpm deploy` runs `pnpm build` and deploys production to Cloudflare via Wrangler.
+- `pnpm deploy:staging` also builds first, then deploys the staging Worker.
 
 ### Environment variables
 
 Commonly used values:
 
 - `VITE_SITE_URL` (e.g. `https://sreetamdas.com`)
-- Buttondown newsletter: `VITE_BUTTONDOWN_API_KEY` (optional; falls back to mocks)
+- Buttondown newsletter: `BUTTONDOWN_API_KEY` (optional; falls back to mocks)
 - Keebs page data (Notion + Imgur):
-  - `NOTION_TOKEN` / `VITE_NOTION_TOKEN`
-  - `NOTION_KEEBS_PAGE_ID` / `VITE_NOTION_KEEBS_PAGE_ID`
-  - `IMGUR_API_CLIENT_ID` / `VITE_IMGUR_API_CLIENT_ID`
-  - `IMGUR_KEEBS_ALBUM_HASH` / `VITE_IMGUR_KEEBS_ALBUM_HASH`
-- RWC page gist: `GITHUB_RWC_GIST_ID` / `VITE_GITHUB_RWC_GIST_ID`
+  - `NOTION_TOKEN`
+  - `NOTION_KEEBS_PAGE_ID`
+  - `IMGUR_API_CLIENT_ID`
+  - `IMGUR_KEEBS_ALBUM_HASH`
+- RWC page gist: `GITHUB_RWC_GIST_ID` (`VITE_GITHUB_RWC_GIST_ID` is also supported
+  if you intentionally want the gist id to be public build-time config)
+- RWC private GitHub API token: `GITHUB_TOKEN` (optional; server-only)
+
+Only client-safe values should use the `VITE_` prefix. API keys and tokens should stay
+server-only and be provided as Cloudflare secrets or server env vars.
 
 #### Prerendering in Cloudflare CI/Workers Builds
 

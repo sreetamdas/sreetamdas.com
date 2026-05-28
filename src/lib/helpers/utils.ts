@@ -47,12 +47,28 @@ function readStringValue(env: object | undefined, key: string): string | undefin
 	return undefined;
 }
 
-export function readEnvString(
+export function readServerEnvString(
 	env: object | undefined,
 	keys: ReadonlyArray<string>,
 ): string | undefined {
 	for (const key of keys) {
-		const value = readStringValue(env, key) ?? readStringValue(env, `VITE_${key}`);
+		const value = readStringValue(env, key);
+		if (typeof value === "string") {
+			return value;
+		}
+	}
+
+	return undefined;
+}
+
+export function readPublicEnvString(
+	env: object | undefined,
+	keys: ReadonlyArray<string>,
+): string | undefined {
+	for (const key of keys) {
+		const value =
+			readStringValue(env, key) ??
+			(key.startsWith("VITE_") ? undefined : readStringValue(env, `VITE_${key}`));
 		if (typeof value === "string") {
 			return value;
 		}

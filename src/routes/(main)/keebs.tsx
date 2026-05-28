@@ -10,11 +10,13 @@ import { Image } from "@/lib/components/Image";
 import { ViewsCounter } from "@/lib/components/ViewsCounter";
 import { ImgurClient, type KeebDetails } from "@/lib/domains/Imgur";
 import { NotionClient } from "@/lib/domains/Notion";
+import { readServerEnvString } from "@/lib/helpers/utils";
 import { canonicalUrl, defaultOgImageUrl } from "@/lib/seo";
+import { STATIC_SERVER_FUNCTION_STALE_TIME } from "@/lib/static-server-functions";
 
 export const Route = createFileRoute("/(main)/keebs")({
 	component: KeebsPage,
-	staleTime: 1000 * 60 * 15,
+	staleTime: STATIC_SERVER_FUNCTION_STALE_TIME,
 	loader: () => getKeebsRenderable(),
 	head: () => ({
 		links: [{ rel: "canonical", href: canonicalUrl("/keebs") }],
@@ -102,17 +104,15 @@ function KeebsList({ keebs }: { keebs: Array<KeebDetails | KeebDetailsFromNotion
 	);
 }
 
-import { readEnvString } from "@/lib/helpers/utils";
-
 const propertiesToRetrieve = ["Name", "Type", "Image"];
 
 async function getKeebsFromNotion(
 	env: CloudflareEnv,
 ): Promise<Array<KeebDetails | KeebDetailsFromNotion>> {
-	const keebsDatabaseId = readEnvString(env, ["NOTION_KEEBS_PAGE_ID"]);
-	const notionToken = readEnvString(env, ["NOTION_TOKEN"]);
-	const imgurApiClientId = readEnvString(env, ["IMGUR_API_CLIENT_ID"]);
-	const imgurKeebsAlbumHash = readEnvString(env, ["IMGUR_KEEBS_ALBUM_HASH"]);
+	const keebsDatabaseId = readServerEnvString(env, ["NOTION_KEEBS_PAGE_ID"]);
+	const notionToken = readServerEnvString(env, ["NOTION_TOKEN"]);
+	const imgurApiClientId = readServerEnvString(env, ["IMGUR_API_CLIENT_ID"]);
+	const imgurKeebsAlbumHash = readServerEnvString(env, ["IMGUR_KEEBS_ALBUM_HASH"]);
 
 	if (isUndefined(keebsDatabaseId) || isEmpty(keebsDatabaseId)) {
 		return [];

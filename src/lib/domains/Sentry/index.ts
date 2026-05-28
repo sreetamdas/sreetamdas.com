@@ -1,11 +1,11 @@
-import { readEnvString } from "@/lib/helpers/utils";
+import { readPublicEnvString } from "@/lib/helpers/utils";
 
 export function isBrowserSentryRuntime() {
 	return typeof window !== "undefined";
 }
 
 export function getSentryRuntimeOptions(env: object | undefined) {
-	const dsn = readEnvString(env, ["SENTRY_DSN"]);
+	const dsn = readPublicEnvString(env, ["SENTRY_DSN"]);
 	if (!dsn) return undefined;
 
 	return {
