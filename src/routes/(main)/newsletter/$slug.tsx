@@ -83,7 +83,7 @@ const getNewsletterEmailRenderable = createServerFn({
 
 		/**
 		 * Buttondown now includes a `<!-- buttondown-editor-mode: plaintext -->` at the start of the
-		 * email body, that is cannot be processed by micromark
+		 * email body, which cannot be processed by micromark
 		 */
 		const trimmed_email_body = newsletter_email_by_slug.body.replace(
 			"<!-- buttondown-editor-mode: plaintext -->",

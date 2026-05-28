@@ -84,13 +84,15 @@ function isButtondownEmailsResponse(value: unknown): value is ButtondownAPIEmail
 }
 
 export async function fetchNewsletterEmails(apiKey?: string): Promise<ButtondownAPIEmailsResponse> {
+	if (!apiKey) {
+		return BUTTONDOWN_EMAIL_MOCKS;
+	}
+
 	try {
 		const response = await fetch(`${BUTTONDOWN_BASE_URL}/emails`, {
 			headers: {
-				...(apiKey && {
-					"X-API-Version": "2024-08-15",
-					Authorization: `Token ${apiKey}`,
-				}),
+				"X-API-Version": "2024-08-15",
+				Authorization: `Token ${apiKey}`,
 			},
 		});
 		if (!response.ok) {

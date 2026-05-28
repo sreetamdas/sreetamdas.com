@@ -77,7 +77,7 @@ function getEmailPreviewContent(content: string) {
 		content
 			/**
 			 * Buttondown now includes a `<!-- buttondown-editor-mode: plaintext -->` at the start of the
-			 * email body, that is cannot be processed by micromark
+			 * email body, which cannot be processed by micromark
 			 */
 			.replace("<!-- buttondown-editor-mode: plaintext -->", "")
 			/**
@@ -93,7 +93,7 @@ async function getNewsletterEmailsPreviewsData(apiKey?: string) {
 	const buttondown_api_emails_response = await fetchNewsletterEmails(apiKey);
 
 	return await Promise.all(
-		buttondown_api_emails_response.results
+		[...buttondown_api_emails_response.results]
 			.reverse()
 			.map(async ({ body, subject, publish_date, id, secondary_id, slug }) => ({
 				slug,
