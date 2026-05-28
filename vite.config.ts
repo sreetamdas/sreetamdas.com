@@ -8,6 +8,7 @@ import rsc from "@vitejs/plugin-rsc";
 import { defineConfig } from "vite-plus";
 
 import { slideDeckPlugin } from "./src/lib/domains/slides/vite-plugin.ts";
+import { shouldPrerenderPath } from "./src/lib/prerender.ts";
 
 function getPlugins(): Array<unknown> {
 	const hasSentryBuildEnv = Boolean(
@@ -27,6 +28,7 @@ function getPlugins(): Array<unknown> {
 			prerender: {
 				enabled: true,
 				autoSubfolderIndex: false,
+				filter: ({ path }) => shouldPrerenderPath(path),
 			},
 			sitemap: {
 				enabled: true,
