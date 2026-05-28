@@ -54,6 +54,9 @@ function getPlugins(): Array<unknown> {
 }
 
 export default defineConfig({
+	build: {
+		chunkSizeWarningLimit: 2_000,
+	},
 	fmt: {
 		useTabs: true,
 		tabWidth: 2,
