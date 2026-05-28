@@ -8,6 +8,7 @@ This file documents project conventions for humans and coding agents.
 - Prefer file header comments over inline comments: if documentation is needed, add a short multi-line comment at the start of the file explaining intent/constraints/flow. Use inline comments only when they are clearly the best fit for a very local, non-obvious detail.
 - When committing, prefer Conventional Commits and small granular commits. Stage/commit one logical unit at a time so changes are easy to review and revert; avoid bundling setup, source, tests, docs, and generated updates into one large commit unless the diff is truly trivial. If the split is unclear, ask before committing.
 - Bugs: add a regression test when it fits (especially for non-trivial or previously broken behavior).
+- Tests: prefer Vitest-native APIs (`describe`/`test`/`expect`/`vi`) for app tests; avoid mixing in `node:test` or `node:assert` unless there is a specific, documented reason.
 - Don't run typecheck/build/other scripts until told so.
 - **Avoid type assertions** (`as`, `as unknown`, `as any`) as a default rule. Prefer narrowing, better function signatures (for example `Pick<T, "field">` at boundaries), proper typing, or runtime validation. Treat `as unknown as` as disallowed unless there is no alternative. If any cast is truly unavoidable, keep it local and add a short comment explaining why.
 
@@ -31,7 +32,7 @@ This file documents project conventions for humans and coding agents.
 ## Tooling + Style
 
 - Package manager: `pnpm`.
-- Node: see `.nvmrc` (currently `24`).
+- Node: see `.node-version` (currently `24.15.0`).
 - Formatting: `oxfmt`.
   - Default indentation uses tabs; print width 100.
   - `src/**/routeTree.gen.ts` is excluded from formatting.
