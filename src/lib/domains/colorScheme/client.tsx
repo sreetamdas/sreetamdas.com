@@ -22,19 +22,6 @@ function getDocumentColorScheme() {
 	return parseColorScheme(raw);
 }
 
-function getSystemColorSchemePreference(): Extract<
-	ColorSchemeSliceType["colorScheme"],
-	"light" | "dark"
-> {
-	const mql = window.matchMedia("(prefers-color-scheme: dark)");
-	const hasSystemColorSchemePreference = typeof mql.matches === "boolean";
-
-	if (hasSystemColorSchemePreference) {
-		return mql.matches ? "dark" : "light";
-	}
-	return "light";
-}
-
 export function getNextColorScheme(current: ColorScheme | undefined): ColorScheme {
 	const currentIndex = COLOR_SCHEME_ORDER.findIndex((scheme) => scheme === current);
 	if (currentIndex === -1) {
@@ -44,19 +31,7 @@ export function getNextColorScheme(current: ColorScheme | undefined): ColorSchem
 	return COLOR_SCHEME_ORDER[(currentIndex + 1) % COLOR_SCHEME_ORDER.length];
 }
 
-export function applyDocumentColorScheme(preference: Extract<ColorScheme, "light" | "dark">) {
-	switch (preference) {
-		case "dark":
-			document.documentElement.setAttribute("data-color-scheme", "dark");
-			break;
-
-		default: // "light"
-			document.documentElement.removeAttribute("data-color-scheme");
-			break;
-	}
-}
-
-export const ColorSchemeSync = () => {
+export const ColorSchemeToggle = () => {
 	const { colorScheme, setColorScheme } = useGlobalStore(
 		useShallow((state) => ({
 			colorScheme: state.colorScheme,
@@ -64,15 +39,21 @@ export const ColorSchemeSync = () => {
 		})),
 	);
 
-	function handleSystemColorSchemePreference(isColorSchemeDark?: boolean) {
-		const preference =
-			isColorSchemeDark === undefined
-				? getSystemColorSchemePreference()
-				: isColorSchemeDark === true
-					? "dark"
-					: "light";
+	function applyColorScheme(colorSchemePreference: ColorScheme) {
+		window.localStorage.setItem("color-scheme", colorSchemePreference);
 
-		applyDocumentColorScheme(preference);
+		if (colorSchemePreference === "system") {
+			document.documentElement.removeAttribute("data-color-scheme");
+		} else {
+			document.documentElement.setAttribute("data-color-scheme", colorSchemePreference);
+		}
+	}
+
+	function handleColorSchemeToggle() {
+		const nextColorScheme = getNextColorScheme(colorScheme);
+
+		setColorScheme(nextColorScheme);
+		applyColorScheme(nextColorScheme);
 	}
 
 	useEffect(() => {
@@ -84,53 +65,6 @@ export const ColorSchemeSync = () => {
 			setColorScheme(documentColorScheme);
 		}
 	}, []);
-
-	useEffect(() => {
-		if (colorScheme === undefined) {
-			return undefined;
-		}
-
-		window.localStorage.setItem("color-scheme", colorScheme);
-
-		switch (colorScheme) {
-			case "system": {
-				handleSystemColorSchemePreference();
-				const colorSchemeDarkMediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
-				function colorSchemeChangeListener() {
-					handleSystemColorSchemePreference(colorSchemeDarkMediaQuery.matches);
-				}
-
-				colorSchemeDarkMediaQuery.addEventListener("change", colorSchemeChangeListener);
-
-				return () =>
-					colorSchemeDarkMediaQuery.removeEventListener("change", colorSchemeChangeListener);
-			}
-			case "dark":
-				applyDocumentColorScheme("dark");
-				break;
-
-			default: // "light"
-				applyDocumentColorScheme("light");
-				break;
-		}
-
-		return undefined;
-	}, [colorScheme]);
-
-	return null;
-};
-
-export const ColorSchemeToggle = () => {
-	const { colorScheme, setColorScheme } = useGlobalStore(
-		useShallow((state) => ({
-			colorScheme: state.colorScheme,
-			setColorScheme: state.setColorScheme,
-		})),
-	);
-
-	function handleColorSchemeToggle() {
-		setColorScheme(getNextColorScheme(colorScheme));
-	}
 
 	return (
 		<button
