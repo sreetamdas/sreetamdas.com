@@ -1,5 +1,4 @@
-import assert from "node:assert/strict";
-import { describe, test } from "node:test";
+import { describe, expect, test } from "vitest";
 
 import { handlePresenceGetForNamespace } from "./presence";
 
@@ -13,9 +12,9 @@ describe("handlePresenceGetForNamespace", () => {
 
 		const response = await handlePresenceGetForNamespace(request, undefined);
 
-		assert.equal(response.status, 500);
-		assert.match(response.headers.get("content-type") ?? "", /^application\/json/);
-		assert.deepEqual(await response.json(), {
+		expect(response.status).toBe(500);
+		expect(response.headers.get("content-type") ?? "").toMatch(/^application\/json/);
+		expect(await response.json()).toEqual({
 			error: "SITE_PRESENCE binding is not available",
 		});
 	});
@@ -41,10 +40,10 @@ describe("handlePresenceGetForNamespace", () => {
 
 		const response = await handlePresenceGetForNamespace(request, presence);
 
-		assert.equal(calledWithName, "global");
-		assert.equal(calledWithRequest, request);
-		assert.equal(response.status, 200);
-		assert.equal(await response.text(), "ok");
+		expect(calledWithName).toBe("global");
+		expect(calledWithRequest).toBe(request);
+		expect(response.status).toBe(200);
+		expect(await response.text()).toBe("ok");
 	});
 
 	test("supports async durable object fetch responses", async () => {
@@ -61,8 +60,8 @@ describe("handlePresenceGetForNamespace", () => {
 
 		const response = await handlePresenceGetForNamespace(request, presence);
 
-		assert.equal(response.status, 200);
-		assert.equal(await response.text(), "async-ok");
+		expect(response.status).toBe(200);
+		expect(await response.text()).toBe("async-ok");
 	});
 
 	test("bubbles durable object lookup failures", async () => {
@@ -73,8 +72,6 @@ describe("handlePresenceGetForNamespace", () => {
 			},
 		};
 
-		assert.throws(() => handlePresenceGetForNamespace(request, presence), {
-			message: "lookup failed",
-		});
+		expect(() => handlePresenceGetForNamespace(request, presence)).toThrow("lookup failed");
 	});
 });

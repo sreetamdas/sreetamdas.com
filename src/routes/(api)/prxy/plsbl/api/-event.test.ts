@@ -1,5 +1,4 @@
-import assert from "node:assert/strict";
-import { describe, test } from "node:test";
+import { describe, expect, test } from "vitest";
 
 import { handlePlausibleEventGet, handlePlausibleEventPost } from "./event";
 
@@ -7,9 +6,9 @@ describe("plausible event proxy", () => {
 	test("returns structured 405 for GET", async () => {
 		const response = handlePlausibleEventGet();
 
-		assert.equal(response.status, 405);
-		assert.equal(response.headers.get("Allow"), "POST");
-		assert.deepEqual(await response.json(), {
+		expect(response.status).toBe(405);
+		expect(response.headers.get("Allow")).toBe("POST");
+		expect(await response.json()).toEqual({
 			error: "Method not allowed",
 			allowed: ["POST"],
 		});
@@ -34,8 +33,8 @@ describe("plausible event proxy", () => {
 
 			const response = await handlePlausibleEventPost(request);
 
-			assert.equal(response.status, 502);
-			assert.deepEqual(await response.json(), {
+			expect(response.status).toBe(502);
+			expect(await response.json()).toEqual({
 				error: "Plausible upstream is unavailable",
 			});
 		} finally {
@@ -76,15 +75,15 @@ describe("plausible event proxy", () => {
 
 			const response = await handlePlausibleEventPost(request);
 
-			assert.equal(fetchedUrl, "https://plausible.io/api/event");
-			assert.equal(fetchedMethod, "POST");
-			assert.equal(forwardedContentType, "application/json");
-			assert.equal(forwardedUserAgent, "test-agent");
-			assert.equal(forwardedIp, "1.2.3.4");
-			assert.equal(response.status, 202);
-			assert.equal(response.headers.get("content-type"), "text/plain");
-			assert.equal(response.headers.get("x-test-header"), "ok");
-			assert.equal(await response.text(), "accepted");
+			expect(fetchedUrl).toBe("https://plausible.io/api/event");
+			expect(fetchedMethod).toBe("POST");
+			expect(forwardedContentType).toBe("application/json");
+			expect(forwardedUserAgent).toBe("test-agent");
+			expect(forwardedIp).toBe("1.2.3.4");
+			expect(response.status).toBe(202);
+			expect(response.headers.get("content-type")).toBe("text/plain");
+			expect(response.headers.get("x-test-header")).toBe("ok");
+			expect(await response.text()).toBe("accepted");
 		} finally {
 			globalThis.fetch = originalFetch;
 		}
@@ -112,10 +111,10 @@ describe("plausible event proxy", () => {
 
 			const response = await handlePlausibleEventPost(request);
 
-			assert.equal(response.status, 200);
-			assert.match(forwardedContentType, /^text\/plain/);
-			assert.equal(forwardedUserAgent, "");
-			assert.equal(forwardedIp, "");
+			expect(response.status).toBe(200);
+			expect(forwardedContentType).toMatch(/^text\/plain/);
+			expect(forwardedUserAgent).toBe("");
+			expect(forwardedIp).toBe("");
 		} finally {
 			globalThis.fetch = originalFetch;
 		}
@@ -139,9 +138,9 @@ describe("plausible event proxy", () => {
 
 			const response = await handlePlausibleEventPost(request);
 
-			assert.equal(response.status, 429);
-			assert.equal(response.headers.get("retry-after"), "30");
-			assert.equal(await response.text(), "rate limited");
+			expect(response.status).toBe(429);
+			expect(response.headers.get("retry-after")).toBe("30");
+			expect(await response.text()).toBe("rate limited");
 		} finally {
 			globalThis.fetch = originalFetch;
 		}

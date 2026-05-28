@@ -1,5 +1,4 @@
-import assert from "node:assert/strict";
-import { describe, test } from "node:test";
+import { describe, expect, test } from "vitest";
 
 import { injectTableOfContents } from "./parse";
 
@@ -50,7 +49,7 @@ describe("injectTableOfContents", () => {
 
 		injectTableOfContents(tree);
 
-		assert.equal(tree.children?.[1]?.type, "list");
+		expect(tree.children?.[1]?.type).toBe("list");
 		const list = getChildObject(tree, 1);
 		const firstItem = getChildObject(list, 0);
 		const firstParagraph = getChildObject(firstItem, 0);
@@ -61,10 +60,10 @@ describe("injectTableOfContents", () => {
 		const secondLink = getChildObject(secondParagraph, 0);
 
 		const children = list?.children;
-		assert.equal(Array.isArray(children) ? children.length : 0, 2);
-		assert.equal(firstLink?.url, "#the-problem");
-		assert.equal(firstText?.value, "The Problem");
-		assert.equal(secondLink?.url, "#sub-section");
+		expect(Array.isArray(children) ? children.length : 0).toBe(2);
+		expect(firstLink?.url).toBe("#the-problem");
+		expect(firstText?.value).toBe("The Problem");
+		expect(secondLink?.url).toBe("#sub-section");
 	});
 
 	test("does not duplicate toc when list already exists", () => {
@@ -82,8 +81,8 @@ describe("injectTableOfContents", () => {
 
 		injectTableOfContents(tree);
 
-		assert.equal(tree.children?.length, 2);
-		assert.equal(tree.children?.[1]?.type, "list");
+		expect(tree.children?.length).toBe(2);
+		expect(tree.children?.[1]?.type).toBe("list");
 	});
 
 	test("only includes headings after the toc marker", () => {
@@ -111,9 +110,9 @@ describe("injectTableOfContents", () => {
 		injectTableOfContents(tree);
 
 		const links = readTocLinks(tree);
-		assert.equal(links.length, 1);
-		assert.equal(links[0]?.url, "#included-heading");
-		assert.equal(links[0]?.text, "Included Heading");
+		expect(links.length).toBe(1);
+		expect(links[0]?.url).toBe("#included-heading");
+		expect(links[0]?.text).toBe("Included Heading");
 	});
 
 	test("respects toc heading depth when collecting headings", () => {
@@ -141,10 +140,7 @@ describe("injectTableOfContents", () => {
 		injectTableOfContents(tree);
 
 		const links = readTocLinks(tree);
-		assert.deepEqual(
-			links.map((entry) => entry.url),
-			["#included"],
-		);
+		expect(links.map((entry) => entry.url)).toEqual(["#included"]);
 	});
 
 	test("skips headings that slugify to empty ids", () => {
@@ -172,8 +168,8 @@ describe("injectTableOfContents", () => {
 		injectTableOfContents(tree);
 
 		const links = readTocLinks(tree);
-		assert.equal(links.length, 1);
-		assert.equal(links[0]?.url, "#real-heading");
+		expect(links.length).toBe(1);
+		expect(links[0]?.url).toBe("#real-heading");
 	});
 });
 
