@@ -1,3 +1,8 @@
+/**
+ * Global client store. Foobar progress is persisted, but color-scheme is kept
+ * as live UI state because the canonical preference is the dedicated
+ * `color-scheme` localStorage key read by the blocking root script.
+ */
 import { merge } from "lodash-es";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";

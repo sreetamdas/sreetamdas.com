@@ -1,5 +1,10 @@
 "use client";
 
+/**
+ * Typed Plausible event wrapper for client-only analytics calls. The script is
+ * loaded through the first-party proxy route, so callers only depend on the
+ * global function when it exists.
+ */
 import { useCallback } from "react";
 
 import { type FoobarFlag } from "@/lib/domains/foobar/flags";
