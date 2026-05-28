@@ -1,3 +1,5 @@
+import bricolageGrotesqueFont from "@fontsource-variable/bricolage-grotesque/files/bricolage-grotesque-latin-standard-normal.woff2?url";
+import interFont from "@fontsource-variable/inter/files/inter-latin-ext-wght-normal.woff2?url";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { HeadContent, Outlet, Scripts, createRootRoute } from "@tanstack/react-router";
@@ -59,6 +61,20 @@ export const Route = createRootRoute({
 			},
 		],
 		links: [
+			{
+				rel: "preload",
+				as: "font",
+				type: "font/woff2",
+				href: bricolageGrotesqueFont,
+				crossOrigin: "anonymous",
+			},
+			{
+				rel: "preload",
+				as: "font",
+				type: "font/woff2",
+				href: interFont,
+				crossOrigin: "anonymous",
+			},
 			{ rel: "stylesheet", href: appCss },
 			{
 				rel: "icon",
