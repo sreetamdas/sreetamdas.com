@@ -4,10 +4,13 @@
 
 @custom-variant dark {
 	&:where([data-color-scheme="dark"], [data-color-scheme="dark"] *) {
-		--color-primary: var(--dark-purple);
-		--color-secondary: var(--dark-blue);
-		--color-foreground: var(--not-white);
-		--color-background: var(--black);
+		@slot;
+	}
+
+	@media (prefers-color-scheme: dark) {
+		&:where(:root:not([data-color-scheme="light"]), :root:not([data-color-scheme="light"]) *) {
+			@slot;
+		}
 	}
 }
 
@@ -101,6 +104,15 @@
 	--color-secondary: var(--dark-blue);
 	--color-foreground: var(--not-white);
 	--color-background: var(--black);
+}
+
+@media (prefers-color-scheme: dark) {
+	:root:not([data-color-scheme="light"]) {
+		--color-primary: var(--dark-purple);
+		--color-secondary: var(--dark-blue);
+		--color-foreground: var(--not-white);
+		--color-background: var(--black);
+	}
 }
 
 @media print {
