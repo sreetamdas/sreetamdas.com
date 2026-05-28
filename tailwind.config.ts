@@ -1,14 +1,13 @@
 import { type Config } from "tailwindcss";
-import defaultTheme from "tailwindcss/defaultTheme";
 import plugin from "tailwindcss/plugin";
 
 export default {
 	content: ["./src/**/*.{js,ts,jsx,tsx,mdx}", "./content/**/*.mdx"],
 	theme: {
 		fontFamily: {
-			sans: ["Inter Variable", ...defaultTheme.fontFamily.sans],
-			serif: ["Bricolage Grotesque Variable", ...defaultTheme.fontFamily.serif],
-			mono: ["var(--font-mono)", ...defaultTheme.fontFamily.mono],
+			sans: ["Inter Variable", "sans-serif"],
+			serif: ["Bricolage Grotesque Variable", "serif"],
+			mono: ["var(--font-mono)", "monospace"],
 		},
 		extend: {
 			colors: {
