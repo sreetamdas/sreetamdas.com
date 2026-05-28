@@ -1,5 +1,10 @@
 "use client";
 
+/**
+ * Badge grid for the /foobar achievement dashboard. Locked achievements stay
+ * visually muted, but repeated clicks reveal the hint text so the game remains
+ * discoverable without making every clue visible immediately.
+ */
 import { useState } from "react";
 
 import { LinkTo } from "@/lib/components/Anchor";

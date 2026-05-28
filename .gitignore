@@ -7,6 +7,8 @@ node_modules
 
 # testing
 /coverage
+/playwright-report
+/test-results
 public/mockServiceWorker.js
 
 # next.js (legacy)
@@ -47,6 +49,7 @@ public/sitemap*.xml
 # Cloudflare
 .open-next
 .wrangler
+.pnpm-store/
 
 
 # Local agent planning artifacts

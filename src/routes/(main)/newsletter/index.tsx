@@ -1,17 +1,19 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
 import { renderServerComponent } from "@tanstack/react-start/rsc";
+import { staticFunctionMiddleware } from "@tanstack/start-static-server-functions";
 
 import { SITE_TITLE_APPEND } from "@/config";
 import { ViewsCounter } from "@/lib/components/ViewsCounter";
+import { fetchNewsletterEmails, getButtondownApiKey } from "@/lib/domains/Buttondown";
 import { canonicalUrl, defaultOgImageUrl } from "@/lib/seo";
+import { STATIC_SERVER_FUNCTION_STALE_TIME } from "@/lib/static-server-functions";
 
 import { NewsletterEmailsPreviews } from "./-components";
-import { fetchNewsletterEmails, getButtondownApiKey } from "./-helpers";
 
 export const Route = createFileRoute("/(main)/newsletter/")({
 	component: NewsletterEmailsPage,
-	staleTime: 1000 * 60 * 10,
+	staleTime: STATIC_SERVER_FUNCTION_STALE_TIME,
 	loader: async () => {
 		return getNewsletterEmailsPreviewsRenderable();
 	},
@@ -46,8 +48,9 @@ export const Route = createFileRoute("/(main)/newsletter/")({
 	}),
 });
 
-const getNewsletterEmailsPreviewsRenderable = createServerFn({ method: "GET" }).handler(
-	async ({ context }) => {
+const getNewsletterEmailsPreviewsRenderable = createServerFn({ method: "GET" })
+	.middleware([staticFunctionMiddleware])
+	.handler(async ({ context }) => {
 		const apiKey = getButtondownApiKey(context.env);
 		const newsletter_emails_previews_data = await getNewsletterEmailsPreviewsData(apiKey);
 		const Renderable = await renderServerComponent(
@@ -55,8 +58,7 @@ const getNewsletterEmailsPreviewsRenderable = createServerFn({ method: "GET" }).
 		);
 
 		return { Renderable };
-	},
-);
+	});
 
 function NewsletterEmailsPage() {
 	const { Renderable } = Route.useLoaderData();
@@ -75,7 +77,7 @@ function getEmailPreviewContent(content: string) {
 		content
 			/**
 			 * Buttondown now includes a `<!-- buttondown-editor-mode: plaintext -->` at the start of the
-			 * email body, that is cannot be processed by micromark
+			 * email body, which cannot be processed by micromark
 			 */
 			.replace("<!-- buttondown-editor-mode: plaintext -->", "")
 			/**
@@ -91,7 +93,7 @@ async function getNewsletterEmailsPreviewsData(apiKey?: string) {
 	const buttondown_api_emails_response = await fetchNewsletterEmails(apiKey);
 
 	return await Promise.all(
-		buttondown_api_emails_response.results
+		[...buttondown_api_emails_response.results]
 			.reverse()
 			.map(async ({ body, subject, publish_date, id, secondary_id, slug }) => ({
 				slug,

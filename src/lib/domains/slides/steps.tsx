@@ -49,10 +49,9 @@ function isNativeLi(node: ReactNode): node is LiElement {
 	return isValidElement(node) && typeof node.type === "string" && node.type === "li";
 }
 
-function hasNativeLiGrandchild(child: ReactNode): boolean {
-	if (!isValidElement(child)) return false;
-	const el = child as ReactElement<{ children?: ReactNode }>;
-	return Children.toArray(el.props.children).some(isNativeLi);
+function hasNativeLiGrandchild(child: ReactNode): child is ReactElement<{ children?: ReactNode }> {
+	if (!isValidElement<{ children?: ReactNode }>(child)) return false;
+	return Children.toArray(child.props.children).some(isNativeLi);
 }
 
 function extractLiContent(children: ReactNode): ReactNode[] {
@@ -61,8 +60,7 @@ function extractLiContent(children: ReactNode): ReactNode[] {
 		if (isNativeLi(child)) {
 			items.push(child.props.children);
 		} else if (hasNativeLiGrandchild(child)) {
-			const el = child as ReactElement<{ children?: ReactNode }>;
-			for (const gc of Children.toArray(el.props.children)) {
+			for (const gc of Children.toArray(child.props.children)) {
 				if (isNativeLi(gc)) items.push(gc.props.children);
 			}
 		}

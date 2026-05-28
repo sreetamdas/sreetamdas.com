@@ -1,3 +1,5 @@
+import type { ButtondownAPIEmailsResponse } from "./index";
+
 export const BUTTONDOWN_EMAIL_MOCKS = {
 	results: [
 		{
@@ -60,7 +62,7 @@ export const BUTTONDOWN_EMAIL_MOCKS = {
 	next: null,
 	previous: null,
 	count: 2,
-};
+} satisfies ButtondownAPIEmailsResponse;
 
 export const BUTTONDOWN_SUBSCRIBERS_MOCK = {
 	results: [

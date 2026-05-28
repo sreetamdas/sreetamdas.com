@@ -1,5 +1,4 @@
-import assert from "node:assert/strict";
-import { describe, test } from "node:test";
+import { describe, expect, test } from "vitest";
 
 import { handlePlausibleEventGet, handlePlausibleEventPost } from "./event";
 
@@ -7,9 +6,9 @@ describe("plausible event proxy", () => {
 	test("returns structured 405 for GET", async () => {
 		const response = handlePlausibleEventGet();
 
-		assert.equal(response.status, 405);
-		assert.equal(response.headers.get("Allow"), "POST");
-		assert.deepEqual(await response.json(), {
+		expect(response.status).toBe(405);
+		expect(response.headers.get("Allow")).toBe("POST");
+		expect(await response.json()).toEqual({
 			error: "Method not allowed",
 			allowed: ["POST"],
 		});
@@ -34,8 +33,8 @@ describe("plausible event proxy", () => {
 
 			const response = await handlePlausibleEventPost(request);
 
-			assert.equal(response.status, 502);
-			assert.deepEqual(await response.json(), {
+			expect(response.status).toBe(502);
+			expect(await response.json()).toEqual({
 				error: "Plausible upstream is unavailable",
 			});
 		} finally {
@@ -47,9 +46,16 @@ describe("plausible event proxy", () => {
 		const originalFetch = globalThis.fetch;
 		let fetchedUrl = "";
 		let fetchedMethod = "";
+		let forwardedContentType = "";
+		let forwardedUserAgent = "";
+		let forwardedIp = "";
 		globalThis.fetch = async (url, init) => {
 			fetchedUrl = stringifyFetchInput(url);
 			fetchedMethod = init?.method ?? "GET";
+			const headers = new Headers(init?.headers);
+			forwardedContentType = headers.get("content-type") ?? "";
+			forwardedUserAgent = headers.get("user-agent") ?? "";
+			forwardedIp = headers.get("x-forwarded-for") ?? "";
 			return new Response("accepted", {
 				status: 202,
 				headers: { "content-type": "text/plain", "x-test-header": "ok" },
@@ -69,12 +75,72 @@ describe("plausible event proxy", () => {
 
 			const response = await handlePlausibleEventPost(request);
 
-			assert.equal(fetchedUrl, "https://plausible.io/api/event");
-			assert.equal(fetchedMethod, "POST");
-			assert.equal(response.status, 202);
-			assert.equal(response.headers.get("content-type"), "text/plain");
-			assert.equal(response.headers.get("x-test-header"), "ok");
-			assert.equal(await response.text(), "accepted");
+			expect(fetchedUrl).toBe("https://plausible.io/api/event");
+			expect(fetchedMethod).toBe("POST");
+			expect(forwardedContentType).toBe("application/json");
+			expect(forwardedUserAgent).toBe("test-agent");
+			expect(forwardedIp).toBe("1.2.3.4");
+			expect(response.status).toBe(202);
+			expect(response.headers.get("content-type")).toBe("text/plain");
+			expect(response.headers.get("x-test-header")).toBe("ok");
+			expect(await response.text()).toBe("accepted");
+		} finally {
+			globalThis.fetch = originalFetch;
+		}
+	});
+
+	test("uses safe header defaults when proxy headers are missing", async () => {
+		const originalFetch = globalThis.fetch;
+		let forwardedContentType = "";
+		let forwardedUserAgent = "";
+		let forwardedIp = "";
+
+		globalThis.fetch = async (_url, init) => {
+			const headers = new Headers(init?.headers);
+			forwardedContentType = headers.get("content-type") ?? "";
+			forwardedUserAgent = headers.get("user-agent") ?? "";
+			forwardedIp = headers.get("x-forwarded-for") ?? "";
+			return new Response("ok", { status: 200 });
+		};
+
+		try {
+			const request = new Request("https://example.com/api/event", {
+				method: "POST",
+				body: "hello",
+			});
+
+			const response = await handlePlausibleEventPost(request);
+
+			expect(response.status).toBe(200);
+			expect(forwardedContentType).toMatch(/^text\/plain/);
+			expect(forwardedUserAgent).toBe("");
+			expect(forwardedIp).toBe("");
+		} finally {
+			globalThis.fetch = originalFetch;
+		}
+	});
+
+	test("forwards upstream non-success responses", async () => {
+		const originalFetch = globalThis.fetch;
+		globalThis.fetch = async () => {
+			return new Response("rate limited", {
+				status: 429,
+				headers: { "retry-after": "30" },
+			});
+		};
+
+		try {
+			const request = new Request("https://example.com/api/event", {
+				method: "POST",
+				headers: { "content-type": "application/json" },
+				body: JSON.stringify({ event: "pageview" }),
+			});
+
+			const response = await handlePlausibleEventPost(request);
+
+			expect(response.status).toBe(429);
+			expect(response.headers.get("retry-after")).toBe("30");
+			expect(await response.text()).toBe("rate limited");
 		} finally {
 			globalThis.fetch = originalFetch;
 		}

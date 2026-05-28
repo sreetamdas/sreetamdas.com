@@ -63,11 +63,7 @@ export const Route = createFileRoute("/slides/json-schema-form/")({
 	}),
 });
 
-// @ts-expect-error .re.mdx is transformed by slideDeckPlugin at build time
-const slidesPromise = import("./slides.re.mdx") as Promise<{
-	default: Slide[];
-	_components: MDXComponents;
-}>;
+const slidesPromise = import("./slides.re.mdx");
 
 function SlideDeckLoader({
 	slides,

@@ -1,4 +1,3 @@
-import { Link, type LinkProps } from "@tanstack/react-router";
 import { type AnchorHTMLAttributes, type ReactNode } from "react";
 import { ImArrowUpRight2 } from "react-icons/im";
 
@@ -33,6 +32,31 @@ function isRouterLink(href: string) {
 	return href.startsWith("/") && !isExternal(href) && !href.startsWith("//");
 }
 
+function buildHrefWithParams(href: string, params: Record<string, string>) {
+	const consumedKeys = new Set<string>();
+	const hrefWithPathParams = href.replaceAll(/\$([a-zA-Z0-9_]+)/g, (_full, key: string) => {
+		const value = params[key];
+		if (typeof value !== "string") {
+			return `$${key}`;
+		}
+
+		consumedKeys.add(key);
+		return encodeURIComponent(value);
+	});
+
+	const searchParams = new URLSearchParams();
+	for (const [key, value] of Object.entries(params)) {
+		if (consumedKeys.has(key)) {
+			continue;
+		}
+
+		searchParams.set(key, value);
+	}
+
+	const query = searchParams.toString();
+	return query.length > 0 ? `${hrefWithPathParams}?${query}` : hrefWithPathParams;
+}
+
 export const LinkTo = ({
 	href,
 	params,
@@ -45,17 +69,11 @@ export const LinkTo = ({
 	const external = isExternal(href);
 	const classNames = cn(!replaceClasses && "link-base", className);
 
-	if (isRouterLink(href)) {
+	if (isRouterLink(href) && params !== undefined) {
 		return (
-			<Link
-				{...(restProps as unknown as Omit<LinkProps, "to">)}
-				to={href as LinkProps["to"]}
-				params={params as LinkProps["params"]}
-				preload="intent"
-				className={classNames}
-			>
+			<a {...restProps} href={buildHrefWithParams(href, params)} className={classNames}>
 				{children}
-			</Link>
+			</a>
 		);
 	}
 

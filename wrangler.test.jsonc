@@ -1,0 +1,21 @@
+{
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"name": "sreetamdas-com-tests",
+	"main": "./src/testing/worker-test-entry.ts",
+	"compatibility_date": "2026-05-10",
+	"compatibility_flags": ["nodejs_compat"],
+	"durable_objects": {
+		"bindings": [
+			{
+				"name": "SITE_PRESENCE",
+				"class_name": "PresenceDurableObject"
+			}
+		]
+	},
+	"migrations": [
+		{
+			"tag": "do-v1",
+			"new_sqlite_classes": ["PresenceDurableObject"]
+		}
+	]
+}

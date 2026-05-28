@@ -16,17 +16,18 @@ import { Route as mainIndexRouteImport } from './routes/(main)/index'
 import { Route as pureVersionRouteImport } from './routes/(pure)/version'
 import { Route as pureResumeRouteImport } from './routes/(pure)/resume'
 import { Route as pureFancyPantsRouteImport } from './routes/(pure)/fancy-pants'
-import { Route as mainRwcRouteImport } from './routes/(main)/rwc'
 import { Route as mainKeebsRouteImport } from './routes/(main)/keebs'
 import { Route as mainKarmaRouteImport } from './routes/(main)/karma'
 import { Route as mainAboutRouteImport } from './routes/(main)/about'
 import { Route as mainSlugRouteImport } from './routes/(main)/$slug'
 import { Route as SlidesTanstackStartRouteRouteImport } from './routes/slides/tanstack-start/route'
+import { Route as mainRwcRouteRouteImport } from './routes/(main)/rwc/route'
 import { Route as SlidesJsonSchemaFormIndexRouteImport } from './routes/slides/json-schema-form/index'
 import { Route as mainNewsletterIndexRouteImport } from './routes/(main)/newsletter/index'
 import { Route as mainBlogIndexRouteImport } from './routes/(main)/blog/index'
 import { Route as mainNewsletterSlugRouteImport } from './routes/(main)/newsletter/$slug'
 import { Route as mainBlogSlugRouteImport } from './routes/(main)/blog/$slug'
+import { Route as apiApiStagingSmokeRouteImport } from './routes/(api)/api/staging-smoke'
 import { Route as apiApiPresenceRouteImport } from './routes/(api)/api/presence'
 import { Route as apiApiCoffeeRouteImport } from './routes/(api)/api/coffee'
 import { Route as mainfoobarFoobarIndexRouteImport } from './routes/(main)/(foobar)/foobar/index'
@@ -67,11 +68,6 @@ const pureFancyPantsRoute = pureFancyPantsRouteImport.update({
   path: '/fancy-pants',
   getParentRoute: () => pureRouteRoute,
 } as any)
-const mainRwcRoute = mainRwcRouteImport.update({
-  id: '/rwc',
-  path: '/rwc',
-  getParentRoute: () => mainRouteRoute,
-} as any)
 const mainKeebsRoute = mainKeebsRouteImport.update({
   id: '/keebs',
   path: '/keebs',
@@ -98,6 +94,11 @@ const SlidesTanstackStartRouteRoute =
     path: '/tanstack-start',
     getParentRoute: () => SlidesRouteRoute,
   } as any)
+const mainRwcRouteRoute = mainRwcRouteRouteImport.update({
+  id: '/rwc',
+  path: '/rwc',
+  getParentRoute: () => mainRouteRoute,
+} as any)
 const SlidesJsonSchemaFormIndexRoute =
   SlidesJsonSchemaFormIndexRouteImport.update({
     id: '/json-schema-form/',
@@ -123,6 +124,11 @@ const mainBlogSlugRoute = mainBlogSlugRouteImport.update({
   id: '/blog/$slug',
   path: '/blog/$slug',
   getParentRoute: () => mainRouteRoute,
+} as any)
+const apiApiStagingSmokeRoute = apiApiStagingSmokeRouteImport.update({
+  id: '/(api)/api/staging-smoke',
+  path: '/api/staging-smoke',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const apiApiPresenceRoute = apiApiPresenceRouteImport.update({
   id: '/(api)/api/presence',
@@ -157,18 +163,19 @@ const apiPrxyPlsblApiEventRoute = apiPrxyPlsblApiEventRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/slides': typeof SlidesRouteRouteWithChildren
+  '/rwc': typeof mainRwcRouteRoute
   '/slides/tanstack-start': typeof SlidesTanstackStartRouteRoute
   '/$slug': typeof mainSlugRoute
   '/about': typeof mainAboutRoute
   '/karma': typeof mainKarmaRoute
   '/keebs': typeof mainKeebsRoute
-  '/rwc': typeof mainRwcRoute
   '/fancy-pants': typeof pureFancyPantsRoute
   '/resume': typeof pureResumeRoute
   '/version': typeof pureVersionRoute
   '/': typeof mainIndexRoute
   '/api/coffee': typeof apiApiCoffeeRoute
   '/api/presence': typeof apiApiPresenceRoute
+  '/api/staging-smoke': typeof apiApiStagingSmokeRoute
   '/blog/$slug': typeof mainBlogSlugRoute
   '/newsletter/$slug': typeof mainNewsletterSlugRoute
   '/blog/': typeof mainBlogIndexRoute
@@ -181,18 +188,19 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/slides': typeof SlidesRouteRouteWithChildren
+  '/rwc': typeof mainRwcRouteRoute
   '/slides/tanstack-start': typeof SlidesTanstackStartRouteRoute
   '/$slug': typeof mainSlugRoute
   '/about': typeof mainAboutRoute
   '/karma': typeof mainKarmaRoute
   '/keebs': typeof mainKeebsRoute
-  '/rwc': typeof mainRwcRoute
   '/fancy-pants': typeof pureFancyPantsRoute
   '/resume': typeof pureResumeRoute
   '/version': typeof pureVersionRoute
   '/': typeof mainIndexRoute
   '/api/coffee': typeof apiApiCoffeeRoute
   '/api/presence': typeof apiApiPresenceRoute
+  '/api/staging-smoke': typeof apiApiStagingSmokeRoute
   '/blog/$slug': typeof mainBlogSlugRoute
   '/newsletter/$slug': typeof mainNewsletterSlugRoute
   '/blog': typeof mainBlogIndexRoute
@@ -208,18 +216,19 @@ export interface FileRoutesById {
   '/(main)': typeof mainRouteRouteWithChildren
   '/(pure)': typeof pureRouteRouteWithChildren
   '/slides': typeof SlidesRouteRouteWithChildren
+  '/(main)/rwc': typeof mainRwcRouteRoute
   '/slides/tanstack-start': typeof SlidesTanstackStartRouteRoute
   '/(main)/$slug': typeof mainSlugRoute
   '/(main)/about': typeof mainAboutRoute
   '/(main)/karma': typeof mainKarmaRoute
   '/(main)/keebs': typeof mainKeebsRoute
-  '/(main)/rwc': typeof mainRwcRoute
   '/(pure)/fancy-pants': typeof pureFancyPantsRoute
   '/(pure)/resume': typeof pureResumeRoute
   '/(pure)/version': typeof pureVersionRoute
   '/(main)/': typeof mainIndexRoute
   '/(api)/api/coffee': typeof apiApiCoffeeRoute
   '/(api)/api/presence': typeof apiApiPresenceRoute
+  '/(api)/api/staging-smoke': typeof apiApiStagingSmokeRoute
   '/(main)/blog/$slug': typeof mainBlogSlugRoute
   '/(main)/newsletter/$slug': typeof mainNewsletterSlugRoute
   '/(main)/blog/': typeof mainBlogIndexRoute
@@ -234,18 +243,19 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/slides'
+    | '/rwc'
     | '/slides/tanstack-start'
     | '/$slug'
     | '/about'
     | '/karma'
     | '/keebs'
-    | '/rwc'
     | '/fancy-pants'
     | '/resume'
     | '/version'
     | '/'
     | '/api/coffee'
     | '/api/presence'
+    | '/api/staging-smoke'
     | '/blog/$slug'
     | '/newsletter/$slug'
     | '/blog/'
@@ -258,18 +268,19 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/slides'
+    | '/rwc'
     | '/slides/tanstack-start'
     | '/$slug'
     | '/about'
     | '/karma'
     | '/keebs'
-    | '/rwc'
     | '/fancy-pants'
     | '/resume'
     | '/version'
     | '/'
     | '/api/coffee'
     | '/api/presence'
+    | '/api/staging-smoke'
     | '/blog/$slug'
     | '/newsletter/$slug'
     | '/blog'
@@ -284,18 +295,19 @@ export interface FileRouteTypes {
     | '/(main)'
     | '/(pure)'
     | '/slides'
+    | '/(main)/rwc'
     | '/slides/tanstack-start'
     | '/(main)/$slug'
     | '/(main)/about'
     | '/(main)/karma'
     | '/(main)/keebs'
-    | '/(main)/rwc'
     | '/(pure)/fancy-pants'
     | '/(pure)/resume'
     | '/(pure)/version'
     | '/(main)/'
     | '/(api)/api/coffee'
     | '/(api)/api/presence'
+    | '/(api)/api/staging-smoke'
     | '/(main)/blog/$slug'
     | '/(main)/newsletter/$slug'
     | '/(main)/blog/'
@@ -313,6 +325,7 @@ export interface RootRouteChildren {
   SlidesRouteRoute: typeof SlidesRouteRouteWithChildren
   apiApiCoffeeRoute: typeof apiApiCoffeeRoute
   apiApiPresenceRoute: typeof apiApiPresenceRoute
+  apiApiStagingSmokeRoute: typeof apiApiStagingSmokeRoute
   apiPrxyPlsblApiEventRoute: typeof apiPrxyPlsblApiEventRoute
   apiPrxyPlsblJsScriptRoute: typeof apiPrxyPlsblJsScriptRoute
 }
@@ -368,13 +381,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof pureFancyPantsRouteImport
       parentRoute: typeof pureRouteRoute
     }
-    '/(main)/rwc': {
-      id: '/(main)/rwc'
-      path: '/rwc'
-      fullPath: '/rwc'
-      preLoaderRoute: typeof mainRwcRouteImport
-      parentRoute: typeof mainRouteRoute
-    }
     '/(main)/keebs': {
       id: '/(main)/keebs'
       path: '/keebs'
@@ -410,6 +416,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SlidesTanstackStartRouteRouteImport
       parentRoute: typeof SlidesRouteRoute
     }
+    '/(main)/rwc': {
+      id: '/(main)/rwc'
+      path: '/rwc'
+      fullPath: '/rwc'
+      preLoaderRoute: typeof mainRwcRouteRouteImport
+      parentRoute: typeof mainRouteRoute
+    }
     '/slides/json-schema-form/': {
       id: '/slides/json-schema-form/'
       path: '/json-schema-form'
@@ -444,6 +457,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/blog/$slug'
       preLoaderRoute: typeof mainBlogSlugRouteImport
       parentRoute: typeof mainRouteRoute
+    }
+    '/(api)/api/staging-smoke': {
+      id: '/(api)/api/staging-smoke'
+      path: '/api/staging-smoke'
+      fullPath: '/api/staging-smoke'
+      preLoaderRoute: typeof apiApiStagingSmokeRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/(api)/api/presence': {
       id: '/(api)/api/presence'
@@ -491,11 +511,11 @@ declare module '@tanstack/react-router' {
 }
 
 interface mainRouteRouteChildren {
+  mainRwcRouteRoute: typeof mainRwcRouteRoute
   mainSlugRoute: typeof mainSlugRoute
   mainAboutRoute: typeof mainAboutRoute
   mainKarmaRoute: typeof mainKarmaRoute
   mainKeebsRoute: typeof mainKeebsRoute
-  mainRwcRoute: typeof mainRwcRoute
   mainIndexRoute: typeof mainIndexRoute
   mainBlogSlugRoute: typeof mainBlogSlugRoute
   mainNewsletterSlugRoute: typeof mainNewsletterSlugRoute
@@ -506,11 +526,11 @@ interface mainRouteRouteChildren {
 }
 
 const mainRouteRouteChildren: mainRouteRouteChildren = {
+  mainRwcRouteRoute: mainRwcRouteRoute,
   mainSlugRoute: mainSlugRoute,
   mainAboutRoute: mainAboutRoute,
   mainKarmaRoute: mainKarmaRoute,
   mainKeebsRoute: mainKeebsRoute,
-  mainRwcRoute: mainRwcRoute,
   mainIndexRoute: mainIndexRoute,
   mainBlogSlugRoute: mainBlogSlugRoute,
   mainNewsletterSlugRoute: mainNewsletterSlugRoute,
@@ -560,6 +580,7 @@ const rootRouteChildren: RootRouteChildren = {
   SlidesRouteRoute: SlidesRouteRouteWithChildren,
   apiApiCoffeeRoute: apiApiCoffeeRoute,
   apiApiPresenceRoute: apiApiPresenceRoute,
+  apiApiStagingSmokeRoute: apiApiStagingSmokeRoute,
   apiPrxyPlsblApiEventRoute: apiPrxyPlsblApiEventRoute,
   apiPrxyPlsblJsScriptRoute: apiPrxyPlsblJsScriptRoute,
 }

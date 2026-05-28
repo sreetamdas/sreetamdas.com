@@ -9,12 +9,35 @@ import type { KarmaHighlighter } from "./highlighter";
 
 import { getSlimKarmaHighlighter } from "./highlighter";
 
+const SUPPORTED_BUNDLED_LANGUAGES = [
+	"typescript",
+	"tsx",
+	"json",
+	"markdown",
+	"html",
+	"css",
+	"shell",
+	"elixir",
+] satisfies Array<BundledLanguage>;
+
 type CodeTreeNode = Node & {
 	type: string;
 	lang?: string;
 	meta?: string | null;
 	value: string;
 };
+
+function isBundledLanguage(value: string): value is (typeof SUPPORTED_BUNDLED_LANGUAGES)[number] {
+	return SUPPORTED_BUNDLED_LANGUAGES.some((lang) => lang === value);
+}
+
+function isCodeTreeNode(value: unknown): value is CodeTreeNode {
+	if (typeof value !== "object" || value === null || !("type" in value)) {
+		return false;
+	}
+
+	return value.type === "code" && "value" in value && typeof value.value === "string";
+}
 
 export function renderCodeBlockToHtml(
 	highlighter: KarmaHighlighter,
@@ -23,13 +46,14 @@ export function renderCodeBlockToHtml(
 	meta: string | null,
 ) {
 	const language = lang ?? "plain";
+	const safeLanguage = isBundledLanguage(language) ? language : "markdown";
 
 	try {
 		const lines_to_highlight = calculateLinesToHighlight(meta ?? "");
 		const parsedMeta = parseMeta(meta);
 
 		return highlighter.codeToHtml(code, {
-			lang: language as BundledLanguage,
+			lang: safeLanguage,
 			theme: "karma",
 			transformers: [
 				{
@@ -63,24 +87,18 @@ export function renderCodeBlockToHtml(
 export async function highlightCodeBlocks(tree: Node) {
 	const karma_highlighter = await getSlimKarmaHighlighter();
 
-	visit(tree, "code", (node) => {
-		const currentNode = node as CodeTreeNode;
-		if (typeof currentNode.value !== "string") {
+	visit(tree, (node) => {
+		if (!isCodeTreeNode(node)) {
 			return;
 		}
 
-		const html = renderCodeBlockToHtml(
-			karma_highlighter,
-			currentNode.value,
-			currentNode.lang,
-			currentNode.meta ?? null,
-		);
+		const html = renderCodeBlockToHtml(karma_highlighter, node.value, node.lang, node.meta ?? null);
 		if (html === null) {
 			return;
 		}
 
-		currentNode.type = "html";
-		currentNode.value = html;
+		node.type = "html";
+		node.value = html;
 	});
 }
 
@@ -144,19 +162,16 @@ function parseMeta(meta: string | null) {
 	if (meta === null) {
 		return null;
 	}
-	let matches = meta.split(" ").reduce(
-		(matchesObj, string) => {
-			const match = string.match(META_REGEX);
-			if (match === null) {
-				return matchesObj;
-			}
+	let matches = meta.split(" ").reduce<Record<string, boolean | string>>((matchesObj, string) => {
+		const match = string.match(META_REGEX);
+		if (match === null) {
+			return matchesObj;
+		}
 
-			return Object.assign(matchesObj, {
-				[match[1]]: match[2] ?? "true",
-			});
-		},
-		{} as Record<string, boolean | string>,
-	);
+		return Object.assign(matchesObj, {
+			[match[1]]: match[2] ?? "true",
+		});
+	}, {});
 
 	matches = omit(matches, ["highlight"]);
 

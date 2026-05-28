@@ -1,13 +1,14 @@
 /**
  * Post-content build script.
  *
- * Generates sitemap.xml and rss/feed.xml from generated content
- * collections and writes them into `public/` so they are served as static
- * assets by Cloudflare Workers.
+ * Generates rss/feed.xml from generated content collections and writes
+ * it into `public/` so it is served as a static asset by Cloudflare Workers.
+ *
+ * Sitemap generation is handled by TanStack Start's built-in sitemap support.
  *
  * Run after `build:content-collections`.
  */
-import { allBlogPosts, allRootPages } from "content-collections";
+import { allBlogPosts } from "content-collections";
 import { writeFileSync, mkdirSync, existsSync } from "node:fs";
 import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -16,11 +17,22 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, "..");
 const PUBLIC = resolve(ROOT, "public");
 
-const SITE_URL = "https://sreetamdas.com";
+function resolveSiteUrl(): string {
+	const explicitSiteUrl = process.env.VITE_SITE_URL ?? process.env.SITE_URL;
+	if (explicitSiteUrl) {
+		return explicitSiteUrl.replace(/\/$/, "");
+	}
+
+	return process.env.CLOUDFLARE_ENV === "staging"
+		? "https://staging.sreetamdas.com"
+		: "https://sreetamdas.com";
+}
+
+const SITE_URL = resolveSiteUrl();
 const OWNER_NAME = "Sreetam Das";
 
 // ---------------------------------------------------------------------------
-// Load generated content output
+// Content types
 // ---------------------------------------------------------------------------
 
 type BlogPost = {
@@ -32,73 +44,6 @@ type BlogPost = {
 	published_at: string;
 	updated_at?: string;
 };
-
-type RootPage = {
-	title: string;
-	published: boolean;
-	skip_page?: boolean;
-	page_path: string;
-	published_at: string;
-	updated_at?: string;
-};
-
-// ---------------------------------------------------------------------------
-// Sitemap
-// ---------------------------------------------------------------------------
-
-type SitemapEntry = {
-	loc: string;
-	lastmod?: string;
-	changefreq?: string;
-	priority?: string;
-};
-
-function generateSitemap(blogPosts: Array<BlogPost>, rootPages: Array<RootPage>): string {
-	const staticRoutes = ["/", "/blog", "/karma", "/keebs", "/newsletter", "/fancy-pants", "/resume"];
-
-	const seen = new Set<string>();
-	const entries: Array<SitemapEntry> = [];
-
-	const add = (path: string, lastmod?: string) => {
-		if (seen.has(path)) return;
-		seen.add(path);
-		entries.push({
-			loc: `${SITE_URL}${path}`,
-			...(lastmod ? { lastmod } : {}),
-			changefreq: "weekly",
-			priority: "0.7",
-		});
-	};
-
-	for (const path of staticRoutes) {
-		add(path);
-	}
-
-	for (const page of rootPages) {
-		if (!page.published || page.skip_page) continue;
-		add(page.page_path, page.updated_at ?? page.published_at);
-	}
-
-	for (const post of blogPosts) {
-		if (!post.published) continue;
-		add(post.url ?? post.page_path, post.updated_at ?? post.published_at);
-	}
-
-	const urlEntries = entries
-		.map(({ loc, lastmod, changefreq, priority }) => {
-			const parts = [`<loc>${escapeXml(loc)}</loc>`];
-			if (lastmod) parts.push(`<lastmod>${lastmod}</lastmod>`);
-			if (changefreq) parts.push(`<changefreq>${changefreq}</changefreq>`);
-			if (priority) parts.push(`<priority>${priority}</priority>`);
-			return `  <url>\n    ${parts.join("\n    ")}\n  </url>`;
-		})
-		.join("\n");
-
-	return `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${urlEntries}
-</urlset>`;
-}
 
 // ---------------------------------------------------------------------------
 // RSS Feed
@@ -119,28 +64,11 @@ function generateRssFeed(blogPosts: Array<BlogPost>): string {
 			const link = `${SITE_URL}${post.url ?? post.page_path}`;
 			const pubDate = new Date(post.published_at).toUTCString();
 
-			return `    <item>
-      <title>${escapeXml(post.title)}</title>
-      <link>${escapeXml(link)}</link>
-      <guid isPermaLink="true">${escapeXml(link)}</guid>
-      <description>${escapeXml(post.description)}</description>
-      <pubDate>${pubDate}</pubDate>
-    </item>`;
+			return `    <item>\n      <title>${escapeXml(post.title)}</title>\n      <link>${escapeXml(link)}</link>\n      <guid isPermaLink="true">${escapeXml(link)}</guid>\n      <description>${escapeXml(post.description)}</description>\n      <pubDate>${pubDate}</pubDate>\n    </item>`;
 		})
 		.join("\n");
 
-	return `<?xml version="1.0" encoding="UTF-8"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-  <channel>
-    <title>${OWNER_NAME}&apos;s Blog</title>
-    <link>${SITE_URL}/blog</link>
-    <description>Blog posts by ${OWNER_NAME}</description>
-    <language>en-us</language>
-    <lastBuildDate>${lastUpdated}</lastBuildDate>
-    <atom:link href="${SITE_URL}/rss/feed.xml" rel="self" type="application/rss+xml" />
-${items}
-  </channel>
-</rss>`;
+	return `<?xml version="1.0" encoding="UTF-8"?>\n<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">\n  <channel>\n    <title>${OWNER_NAME}&apos;s Blog</title>\n    <link>${SITE_URL}/blog</link>\n    <description>Blog posts by ${OWNER_NAME}</description>\n    <language>en-us</language>\n    <lastBuildDate>${lastUpdated}</lastBuildDate>\n    <atom:link href="${SITE_URL}/rss/feed.xml" rel="self" type="application/rss+xml" />\n${items}\n  </channel>\n</rss>`;
 }
 
 // ---------------------------------------------------------------------------
@@ -156,20 +84,8 @@ function escapeXml(str: string): string {
 		.replace(/'/g, "&apos;");
 }
 
-// ---------------------------------------------------------------------------
-// Main
-// ---------------------------------------------------------------------------
-
-function main() {
+async function main() {
 	const blogPosts = allBlogPosts as Array<BlogPost>;
-	const rootPages = allRootPages as Array<RootPage>;
-
-	// Sitemap
-	const sitemap = generateSitemap(blogPosts, rootPages);
-	writeFileSync(resolve(PUBLIC, "sitemap.xml"), sitemap, "utf-8");
-	process.stdout.write(
-		`  Generated public/sitemap.xml (${blogPosts.filter((p) => p.published).length} blog posts, ${rootPages.filter((p) => p.published && !p.skip_page).length} pages)\n`,
-	);
 
 	// RSS
 	const rssDir = resolve(PUBLIC, "rss");

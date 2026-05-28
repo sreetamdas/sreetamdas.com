@@ -1,20 +1,35 @@
 /**
- * Thin wrapper around @sentry/tanstackstart-react for use in error boundaries.
- *
- * Client-side: Sentry.init() in src/router.tsx (guarded by !router.isServer).
- * Server-side: Sentry.withSentry() wraps the Workers entry in src/worker.ts
- *              via @sentry/cloudflare (separate SDK, auto-captures unhandled errors).
- *
- * The isInitialized() guard ensures captureException is a no-op when Sentry
- * hasn't been initialised (e.g. during SSR where @sentry/tanstackstart-react
- * is not active — server errors are caught by @sentry/cloudflare instead).
+ * Browser-only Sentry runtime helpers. Server/Worker entrypoints avoid importing
+ * TanStack Sentry runtime modules because they can pull Node-only dependencies
+ * into Cloudflare/prerender builds.
  */
-import {
-	captureException as sentryCaptureException,
-	isInitialized,
-} from "@sentry/tanstackstart-react";
+import { readPublicEnvString } from "@/lib/helpers/utils";
+
+export function isBrowserSentryRuntime() {
+	return typeof window !== "undefined";
+}
+
+export function getSentryRuntimeOptions(env: object | undefined) {
+	const dsn = readPublicEnvString(env, ["SENTRY_DSN"]);
+	if (!dsn) return undefined;
+
+	return {
+		dsn,
+		enableLogs: true,
+		sendDefaultPii: false,
+		tracesSampleRate: 0.1,
+	};
+}
 
 export function captureException(error: unknown) {
-	if (!isInitialized()) return;
-	sentryCaptureException(error);
+	if (!isBrowserSentryRuntime()) return;
+
+	void import("@sentry/tanstackstart-react")
+		.then((Sentry) => {
+			if (!Sentry.isInitialized()) return;
+			Sentry.captureException(error);
+		})
+		.catch((reason: unknown) => {
+			void reason;
+		});
 }

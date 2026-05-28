@@ -18,6 +18,14 @@ type CodeNode = {
 	position?: { start: { line: number; column: number } };
 };
 
+function isCodeNode(value: unknown): value is CodeNode {
+	if (typeof value !== "object" || value === null || !("type" in value)) {
+		return false;
+	}
+
+	return value.type === "code";
+}
+
 type MDXContentCodeType = {
 	source?: string;
 	/**
@@ -54,8 +62,8 @@ export const MDXContent = ({
 			renderNode={
 				shikiHighlights
 					? (node) => {
-							if (node.type !== "code") return undefined;
-							const codeNode = node as CodeNode;
+							if (!isCodeNode(node)) return undefined;
+							const codeNode = node;
 							const pos = codeNode.position?.start;
 							if (!pos) return undefined;
 							const key = `${pos.line}:${pos.column}`;

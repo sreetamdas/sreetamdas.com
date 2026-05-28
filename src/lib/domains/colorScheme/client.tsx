@@ -9,47 +9,28 @@ import { useGlobalStore } from "@/lib/domains/global";
 
 import { type ColorSchemeSliceType } from "./store";
 
+type ColorScheme = NonNullable<ColorSchemeSliceType["colorScheme"]>;
+const COLOR_SCHEME_ORDER = ["system", "light", "dark"] satisfies Array<ColorScheme>;
+
+export function parseColorScheme(value: string): ColorScheme | "" {
+	if (value === "system" || value === "light" || value === "dark") return value;
+	return "";
+}
+
 function getDocumentColorScheme() {
-	const documentColorScheme = window.document.documentElement.style.getPropertyValue(
-		"--initial-color-scheme",
-	) as NonNullable<ColorSchemeSliceType["colorScheme"]> | "";
-
-	return documentColorScheme;
+	const raw = window.document.documentElement.style.getPropertyValue("--initial-color-scheme");
+	return parseColorScheme(raw);
 }
 
-function getSystemColorSchemePreference(): Extract<
-	ColorSchemeSliceType["colorScheme"],
-	"light" | "dark"
-> {
-	const mql = window.matchMedia("(prefers-color-scheme: dark)");
-	const hasSystemColorSchemePreference = typeof mql.matches === "boolean";
-
-	if (hasSystemColorSchemePreference) {
-		return mql.matches ? "dark" : "light";
+export function getNextColorScheme(current: ColorScheme | undefined): ColorScheme {
+	const currentIndex = COLOR_SCHEME_ORDER.findIndex((scheme) => scheme === current);
+	if (currentIndex === -1) {
+		return "system";
 	}
-	return "light";
+
+	return COLOR_SCHEME_ORDER[(currentIndex + 1) % COLOR_SCHEME_ORDER.length];
 }
 
-enum COLOR_SCHEME {
-	system = 0,
-	light = 1,
-	dark = 2,
-}
-type COLOR_SCHEMES = keyof typeof COLOR_SCHEME;
-function* colorSchemeGenerator(): Generator<COLOR_SCHEMES, never, COLOR_SCHEMES | undefined> {
-	let current = COLOR_SCHEME.system;
-
-	while (true) {
-		const override: COLOR_SCHEMES | undefined = yield COLOR_SCHEME[current] as COLOR_SCHEMES;
-
-		current = (current + 1) % 3;
-		if (override) {
-			current = COLOR_SCHEME[override];
-		}
-	}
-}
-
-const colorSchemeIterator = colorSchemeGenerator();
 export const ColorSchemeToggle = () => {
 	const { colorScheme, setColorScheme } = useGlobalStore(
 		useShallow((state) => ({
@@ -58,67 +39,32 @@ export const ColorSchemeToggle = () => {
 		})),
 	);
 
-	function handleColorSchemeToggle(
-		override?: Exclude<ReturnType<typeof getDocumentColorScheme>, "">,
-	) {
-		const { value } = colorSchemeIterator.next(override);
+	function applyColorScheme(colorSchemePreference: ColorScheme) {
+		window.localStorage.setItem("color-scheme", colorSchemePreference);
 
-		setColorScheme(value);
-		window.localStorage.setItem("color-scheme", value);
+		if (colorSchemePreference === "system") {
+			document.documentElement.removeAttribute("data-color-scheme");
+		} else {
+			document.documentElement.setAttribute("data-color-scheme", colorSchemePreference);
+		}
 	}
 
-	function handleSystemColorSchemePreference(isColorSchemeDark?: boolean) {
-		const preference =
-			isColorSchemeDark === undefined
-				? getSystemColorSchemePreference()
-				: isColorSchemeDark === true
-					? "dark"
-					: "light";
+	function handleColorSchemeToggle() {
+		const nextColorScheme = getNextColorScheme(colorScheme);
 
-		switch (preference) {
-			case "dark":
-				document.documentElement.setAttribute("data-color-scheme", "dark");
-				break;
-
-			default: // "light"
-				document.documentElement.removeAttribute("data-color-scheme");
-				break;
-		}
+		setColorScheme(nextColorScheme);
+		applyColorScheme(nextColorScheme);
 	}
 
 	useEffect(() => {
 		const documentColorScheme = getDocumentColorScheme();
 
 		if (documentColorScheme === "") {
-			handleColorSchemeToggle("system");
+			setColorScheme("system");
 		} else {
-			handleColorSchemeToggle(documentColorScheme);
+			setColorScheme(documentColorScheme);
 		}
-
-		const colorSchemeDarkMediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
-		function colorSchemeChangeListener() {
-			handleSystemColorSchemePreference(colorSchemeDarkMediaQuery.matches);
-		}
-
-		colorSchemeDarkMediaQuery.addEventListener("change", colorSchemeChangeListener);
-
-		return () => colorSchemeDarkMediaQuery.removeEventListener("change", colorSchemeChangeListener);
 	}, []);
-
-	useEffect(() => {
-		switch (colorScheme) {
-			case "system":
-				handleSystemColorSchemePreference();
-				break;
-			case "dark":
-				document.documentElement.setAttribute("data-color-scheme", "dark");
-				break;
-
-			default: // "light"
-				document.documentElement.removeAttribute("data-color-scheme");
-				break;
-		}
-	}, [colorScheme]);
 
 	return (
 		<button
@@ -134,11 +80,9 @@ export const ColorSchemeToggle = () => {
 const ToggleIcon = ({ colorScheme }: Pick<ColorSchemeSliceType, "colorScheme">) => {
 	switch (colorScheme) {
 		case "light":
-			return <LuSun aria-label="Currently using dark mode" title="Currently using dark mode" />;
+			return <LuSun aria-label="Currently using light mode" title="Currently using light mode" />;
 		case "dark":
-			return (
-				<IoMdMoon aria-label="Currently using light mode" title="Currently using light mode" />
-			);
+			return <IoMdMoon aria-label="Currently using dark mode" title="Currently using dark mode" />;
 		case "system":
 			return (
 				<LuMonitor

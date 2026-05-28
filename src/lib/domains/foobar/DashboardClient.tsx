@@ -1,5 +1,10 @@
 "use client";
 
+/**
+ * Client-side dashboard and access gate for the /foobar game. The page behaves
+ * like a 404 until the hidden entry point flips persisted state, then records
+ * any visited achievement slug as completed and renders the progress dashboard.
+ */
 import * as AlertDialogPrimitive from "@radix-ui/react-alert-dialog";
 import { useNavigate } from "@tanstack/react-router";
 import { isUndefined } from "lodash-es";
@@ -16,10 +21,6 @@ import { useGlobalStore } from "@/lib/domains/global";
 import { useCustomPlausible } from "@/lib/domains/Plausible";
 import { useHasMounted } from "@/lib/helpers/hooks";
 
-/**
- * Foobar page, that is only shown once foobar is unlocked
- * @param completed_page foobar page that is being currently accessed
- */
 export const FoobarDashboard = ({ completed_page }: FoobarSchrodingerProps) => {
 	// const router = useRouter();
 	const navigate = useNavigate();

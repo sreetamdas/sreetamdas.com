@@ -4,10 +4,11 @@ import { renderServerComponent } from "@tanstack/react-start/rsc";
 import { allRootPages } from "content-collections";
 import { isNil } from "lodash-es";
 
-import { SITE_DESCRIPTION, SITE_TITLE_APPEND } from "@/config";
+import { IS_DEV, SITE_DESCRIPTION, SITE_TITLE_APPEND } from "@/config";
 import { RepoContributors } from "@/lib/components/GitHub/RepoContributors";
 import { MDXContent } from "@/lib/components/MDX";
 import { ViewsCounter } from "@/lib/components/ViewsCounter";
+import { shouldServeRootPage } from "@/lib/content/visibility";
 import { fetchRepoContributors } from "@/lib/domains/GitHub/serverFns";
 import { type RepoContributor } from "@/lib/domains/GitHub/types";
 import { canonicalUrl, defaultOgImageUrl } from "@/lib/seo";
@@ -16,6 +17,18 @@ const rootPages = allRootPages;
 
 type RootPage = (typeof rootPages)[number];
 type RootPageLoaderData = { post: RootPage; contributors: Array<RepoContributor> };
+
+function parseSlugPayload(data: unknown): { slug: string } {
+	if (typeof data !== "object" || data === null || !("slug" in data)) {
+		throw new Error("Invalid root page slug payload");
+	}
+
+	if (typeof data.slug !== "string") {
+		throw new Error("Invalid root page slug payload");
+	}
+
+	return { slug: data.slug };
+}
 
 export const Route = createFileRoute("/(main)/$slug")({
 	component: MDXPageSlugPage,
@@ -50,21 +63,11 @@ export const Route = createFileRoute("/(main)/$slug")({
 });
 
 const getRootPageRenderable = createServerFn({ method: "GET" })
-	.inputValidator((data) => {
-		if (
-			typeof data !== "object" ||
-			data === null ||
-			typeof (data as { slug?: unknown }).slug !== "string"
-		) {
-			throw new Error("Invalid root page slug payload");
-		}
-
-		return { slug: (data as { slug: string }).slug };
-	})
+	.inputValidator((data) => parseSlugPayload(data))
 	.handler(async ({ data }) => {
 		const post = rootPages.find((page) => page.page_slug === data.slug);
 
-		if (isNil(post)) {
+		if (isNil(post) || !shouldServeRootPage(post, { includeDrafts: IS_DEV })) {
 			throw notFound();
 		}
 

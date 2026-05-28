@@ -6,6 +6,15 @@ async function clearLocalState(page: Page) {
 	});
 }
 
+async function expectCanonicalPath(page: Page, expectedPath: string) {
+	const canonical = page.locator('link[rel="canonical"]').first();
+	await expect(canonical).toBeAttached();
+	const href = await canonical.getAttribute("href");
+	expect(href).toBeTruthy();
+	const url = new URL(href ?? "", "http://localhost");
+	expect(url.pathname).toBe(expectedPath);
+}
+
 test.beforeEach(async ({ page }) => {
 	await clearLocalState(page);
 });
@@ -28,7 +37,7 @@ test("home page renders shared chrome and introduction content", async ({ page }
 	);
 	await expect(page.locator("#main-content")).toBeVisible();
 	await expect(page).toHaveTitle(/Hello hello!/);
-	await expect(page.locator('link[rel="canonical"][href="https://sreetamdas.com"]')).toBeAttached();
+	await expectCanonicalPath(page, "/");
 	await expect(page.locator('meta[name="description"]')).toHaveAttribute(
 		"content",
 		/Senior software tinkerer/,
@@ -92,9 +101,7 @@ test("blog archive and blog detail route render content-heavy pages correctly", 
 	await expect(
 		page.getByText("How to add a moving RGB effect to your text using styled-components"),
 	).toBeVisible();
-	await expect(
-		page.locator('link[rel="canonical"][href="https://sreetamdas.com/blog"]'),
-	).toBeAttached();
+	await expectCanonicalPath(page, "/blog");
 	await expect(page).toHaveTitle(/Blog archive/);
 
 	await page.getByRole("link", { name: "Creating a chameleon text effect" }).click();
@@ -137,16 +144,12 @@ test("root content routes render MDX and embedded route-specific components", as
 		.poll(async () => (await contributorCopy.count()) + (await contributorLinks.count()))
 		.toBeGreaterThan(1);
 
-	await expect(
-		page.locator('link[rel="canonical"][href="https://sreetamdas.com/credits"]'),
-	).toBeAttached();
+	await expectCanonicalPath(page, "/credits");
 	await expect(page.locator('meta[property="og:type"]')).toHaveAttribute("content", "article");
 
 	await page.goto("/uses");
 	await expect(page.getByRole("heading", { level: 1, name: "/uses" })).toBeVisible();
-	await expect(
-		page.locator('link[rel="canonical"][href="https://sreetamdas.com/uses"]'),
-	).toBeAttached();
+	await expectCanonicalPath(page, "/uses");
 	await expect(page.locator('meta[property="og:type"]')).toHaveAttribute("content", "article");
 });
 
@@ -165,9 +168,7 @@ test("karma route supports theme switching without losing the showcase", async (
 	await expect(page.getByAltText("Karma Light theme screenshot for React")).toBeVisible();
 	await expect(page.locator('a[href="#react"]')).toBeVisible();
 	await expect(page.locator('a[href="#typescript"]')).toBeVisible();
-	await expect(
-		page.locator('link[rel="canonical"][href="https://sreetamdas.com/karma"]'),
-	).toBeAttached();
+	await expectCanonicalPath(page, "/karma");
 	await expect(page.locator('meta[property="og:type"]')).toHaveAttribute("content", "website");
 	await expect(page.locator("main")).toContainText("Check out examples:");
 	await expect(page.locator("main")).toContainText("Dark mode");

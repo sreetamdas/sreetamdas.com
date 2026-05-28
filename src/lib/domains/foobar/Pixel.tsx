@@ -1,5 +1,10 @@
 "use client";
 
+/**
+ * Site-wide /foobar instrumentation. This component plants clues in browser
+ * APIs, tracks page visits for achievements, and exposes a resume link only
+ * after the persisted foobar state says the game has been unlocked.
+ */
 import { Link, useLocation } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { useShallow } from "zustand/react/shallow";
@@ -27,12 +32,6 @@ type FoobarPixelProps = {
 	path?: `/${Extract<FoobaFlagPageSlug, "404">}`;
 };
 
-/**
- * Entry point into /foobar
- * - Adds link to resume /foobar
- * - Adds required console messages and other helpers
- * - Track navigation for corresponding achievements
- */
 export const FoobarPixel = (props: FoobarPixelProps) => {
 	const { pathname } = useLocation();
 	const has_mounted = useHasMounted();

@@ -15,6 +15,25 @@ const PING_INTERVAL_MS = 60_000;
 const STALE_AFTER_MS = 3 * PING_INTERVAL_MS;
 const PRUNE_MIN_INTERVAL_MS = PING_INTERVAL_MS;
 
+function parseConnectionAttachment(value: unknown): ConnectionAttachment | null {
+	if (typeof value !== "object" || value === null) {
+		return null;
+	}
+
+	if (!("connectedAt" in value) || !("lastSeenAt" in value)) {
+		return null;
+	}
+
+	if (typeof value.connectedAt !== "number" || typeof value.lastSeenAt !== "number") {
+		return null;
+	}
+
+	return {
+		connectedAt: value.connectedAt,
+		lastSeenAt: value.lastSeenAt,
+	};
+}
+
 export class PresenceDurableObject extends DurableObject<CloudflareEnv> {
 	private lastPruneAt = 0;
 
@@ -75,7 +94,7 @@ export class PresenceDurableObject extends DurableObject<CloudflareEnv> {
 
 		let closedAny = false;
 		for (const ws of this.ctx.getWebSockets()) {
-			const attachment = ws.deserializeAttachment() as ConnectionAttachment | null;
+			const attachment = parseConnectionAttachment(ws.deserializeAttachment());
 			if (!attachment) continue;
 			if (now - attachment.lastSeenAt <= STALE_AFTER_MS) continue;
 			try {
@@ -128,7 +147,7 @@ export class PresenceDurableObject extends DurableObject<CloudflareEnv> {
 	webSocketMessage(ws: WebSocket, message: string | ArrayBuffer) {
 		if (typeof message === "string" && message === "ping") {
 			const now = Date.now();
-			const prev = ws.deserializeAttachment() as ConnectionAttachment | null;
+			const prev = parseConnectionAttachment(ws.deserializeAttachment());
 			ws.serializeAttachment({
 				connectedAt: prev?.connectedAt ?? now,
 				lastSeenAt: now,

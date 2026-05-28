@@ -1,7 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 
 import { getDb } from "@/db";
-import { upsertPageViews } from "@/lib/domains/PageViews";
+import { getPageViews, upsertPageViews } from "@/lib/domains/PageViews";
 
 export type PageViewCount = {
 	view_count: number;
@@ -12,6 +12,18 @@ type PagePathname = {
 	disabled: boolean;
 };
 
+type ViewCountDeps<TDb> = {
+	getDb: (env: CloudflareEnv | undefined) => TDb;
+	getPageViews: (db: TDb, slug: string) => Promise<PageViewCount>;
+	upsertPageViews: (db: TDb, slug: string) => Promise<PageViewCount>;
+};
+
+const defaultViewCountDeps = {
+	getDb,
+	getPageViews,
+	upsertPageViews,
+};
+
 export const fetchViewCountServerFn = createServerFn({
 	method: "GET",
 })
@@ -19,33 +31,68 @@ export const fetchViewCountServerFn = createServerFn({
 		return validatePagePathname(data);
 	})
 	.handler(async ({ data, context }) => {
-		const normalizedSlug = normalizePathname(data.slug);
+		return fetchViewCount(data, context.env);
+	});
 
-		if (data.disabled) {
+export async function fetchViewCount(
+	data: PagePathname,
+	env: CloudflareEnv | undefined,
+): Promise<PageViewCount>;
+export async function fetchViewCount<TDb>(
+	data: PagePathname,
+	env: CloudflareEnv | undefined,
+	deps: ViewCountDeps<TDb>,
+): Promise<PageViewCount>;
+export async function fetchViewCount<TDb>(
+	data: PagePathname,
+	env: CloudflareEnv | undefined,
+	deps?: ViewCountDeps<TDb>,
+): Promise<PageViewCount> {
+	const normalizedSlug = normalizePathname(data.slug);
+
+	try {
+		if (deps) {
+			const db = deps.getDb(env);
+			if (data.disabled) {
+				return await deps.getPageViews(db, normalizedSlug);
+			}
+			return await deps.upsertPageViews(db, normalizedSlug);
+		}
+
+		if (!env) {
 			return { view_count: 0 };
 		}
 
-		const env = context.env;
-		if (!env) {
-			throw new Error("Cloudflare env not available in Start request context");
+		const db = defaultViewCountDeps.getDb(env);
+		if (data.disabled) {
+			return await defaultViewCountDeps.getPageViews(db, normalizedSlug);
 		}
-
-		const db = getDb(env);
-
-		return upsertPageViews(db, normalizedSlug);
-	});
+		return await defaultViewCountDeps.upsertPageViews(db, normalizedSlug);
+	} catch {
+		return { view_count: 0 };
+	}
+}
 
 function validatePagePathname(data: unknown): PagePathname {
+	if (!isPagePathnamePayload(data)) {
+		throw new Error("Invalid page views payload");
+	}
+
+	return { slug: data.slug, disabled: data.disabled };
+}
+
+function isPagePathnamePayload(data: unknown): data is PagePathname {
 	if (typeof data !== "object" || data === null) {
-		throw new Error("Invalid page views payload");
+		return false;
 	}
 
-	const { slug, disabled } = data as Record<string, unknown>;
-	if (typeof slug !== "string" || slug.length === 0 || typeof disabled !== "boolean") {
-		throw new Error("Invalid page views payload");
+	if (!("slug" in data) || !("disabled" in data)) {
+		return false;
 	}
 
-	return { slug, disabled };
+	return (
+		typeof data.slug === "string" && data.slug.length > 0 && typeof data.disabled === "boolean"
+	);
 }
 
 function normalizePathname(pathname: string) {

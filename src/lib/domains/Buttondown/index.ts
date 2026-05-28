@@ -1,0 +1,111 @@
+/**
+ * Buttondown API boundary for newsletter routes. It keeps the private API key
+ * server-only and falls back to checked-in mocks so static builds/previews can
+ * still render when Buttondown is unavailable or not configured.
+ */
+import { readServerEnvString } from "@/lib/helpers/utils";
+
+import { BUTTONDOWN_EMAIL_MOCKS } from "./mocks";
+
+const BUTTONDOWN_BASE_URL = "https://api.buttondown.email/v1";
+
+export function getButtondownApiKey(env: CloudflareEnv): string | undefined {
+	return readServerEnvString(env, ["BUTTONDOWN_API_KEY"]);
+}
+
+export type ButtondownAPISubscribersResponse = {
+	count: number;
+	next: string;
+	previous: string;
+	results: Array<{
+		creation_date: string;
+		email: string;
+		id: string;
+		notes: string;
+		referrer_url: string;
+		metadata: Record<string, unknown>;
+		secondary_id: number;
+		subscriber_type: string;
+		source: string;
+		tags: Array<string>;
+		utm_campaign: string;
+		utm_medium: string;
+		utm_source: string;
+	}>;
+};
+
+export type ButtondownAPIEmailsResponse = {
+	count: number;
+	next: string | null;
+	previous: string | null;
+	results: Array<{
+		body: string;
+		email_type: string;
+		excluded_tags: Array<object>;
+		external_url: string;
+		id: string;
+		included_tags: Array<object>;
+		metadata: Record<string, object>;
+		publish_date: string;
+		secondary_id: number;
+		slug: string;
+		status?: string;
+		subject: string;
+	}>;
+};
+
+function isButtondownEmail(
+	value: unknown,
+): value is ButtondownAPIEmailsResponse["results"][number] {
+	if (typeof value !== "object" || value === null) {
+		return false;
+	}
+
+	return (
+		"body" in value &&
+		"slug" in value &&
+		"subject" in value &&
+		typeof value.body === "string" &&
+		typeof value.slug === "string" &&
+		typeof value.subject === "string"
+	);
+}
+
+function isButtondownEmailsResponse(value: unknown): value is ButtondownAPIEmailsResponse {
+	if (typeof value !== "object" || value === null) {
+		return false;
+	}
+
+	if (!("results" in value) || !Array.isArray(value.results)) {
+		return false;
+	}
+
+	return value.results.every((entry) => isButtondownEmail(entry));
+}
+
+export async function fetchNewsletterEmails(apiKey?: string): Promise<ButtondownAPIEmailsResponse> {
+	if (!apiKey) {
+		return BUTTONDOWN_EMAIL_MOCKS;
+	}
+
+	try {
+		const response = await fetch(`${BUTTONDOWN_BASE_URL}/emails`, {
+			headers: {
+				"X-API-Version": "2024-08-15",
+				Authorization: `Token ${apiKey}`,
+			},
+		});
+		if (!response.ok) {
+			return BUTTONDOWN_EMAIL_MOCKS;
+		}
+
+		const data = await response.json();
+		if (!isButtondownEmailsResponse(data)) {
+			return BUTTONDOWN_EMAIL_MOCKS;
+		}
+
+		return data;
+	} catch (_error: unknown) {
+		return BUTTONDOWN_EMAIL_MOCKS;
+	}
+}

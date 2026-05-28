@@ -1,3 +1,8 @@
+/**
+ * Dynamic achievement route for /foobar. Valid slugs are derived from
+ * FOOBAR_FLAGS so the challenge catalogue is the single source of truth for
+ * route availability, dashboard badges, and completion tracking.
+ */
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import z from "zod";
 
@@ -27,7 +32,7 @@ export const Route = createFileRoute("/(main)/(foobar)/foobar/$slug")({
 });
 
 function FoobarCompletedPage() {
-	const { slug } = Route.useLoaderData() as { slug: Exclude<FoobaFlagPageSlug, "/"> };
+	const { slug } = Route.useLoaderData();
 
 	return <FoobarSchrodinger completed_page={slug} />;
 }

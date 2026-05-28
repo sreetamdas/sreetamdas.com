@@ -1,3 +1,8 @@
+/**
+ * First-party Plausible script proxy. Keeping the script URL same-origin lets
+ * the root document reference `/prxy/plsbl/...` while still serving the current
+ * upstream Plausible script and preserving query parameters.
+ */
 import { createFileRoute } from "@tanstack/react-router";
 
 export async function handlePlausibleScriptGet(

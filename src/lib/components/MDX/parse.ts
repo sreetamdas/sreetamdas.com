@@ -29,6 +29,14 @@ type MarkdownNode = Node & {
 	[key: string]: unknown;
 };
 
+function isMarkdownNode(value: unknown): value is MarkdownNode {
+	return typeof value === "object" && value !== null && "type" in value;
+}
+
+function isCodeTreeNode(value: unknown): value is CodeTreeNode {
+	return isMarkdownNode(value) && value.type === "code" && typeof value.value === "string";
+}
+
 export type ShikiHighlightMap = Record<string, string>;
 
 export type MdxParseResult = {
@@ -79,15 +87,15 @@ export function injectTableOfContents(tree: MarkdownNode): void {
 
 	if (headings.length === 0) return;
 
-	const listNode: MarkdownNode = {
-		type: "list",
-		ordered: false,
-		start: null,
-		spread: false,
-		children: headings.map((heading) => {
-			const text = extractText(heading).trim();
-			const id = slugify(text);
-			return {
+	const listItems = headings.flatMap((heading) => {
+		const text = extractText(heading).trim();
+		const id = slugify(text);
+		if (id.length === 0) {
+			return [];
+		}
+
+		return [
+			{
 				type: "listItem",
 				spread: false,
 				checked: null,
@@ -104,8 +112,20 @@ export function injectTableOfContents(tree: MarkdownNode): void {
 						],
 					},
 				],
-			};
-		}),
+			},
+		];
+	});
+
+	if (listItems.length === 0) {
+		return;
+	}
+
+	const listNode: MarkdownNode = {
+		type: "list",
+		ordered: false,
+		start: null,
+		spread: false,
+		children: listItems,
 	};
 
 	tree.children.splice(index + 1, 0, listNode);
@@ -114,23 +134,21 @@ export function injectTableOfContents(tree: MarkdownNode): void {
 export async function mdxParseWithShiki(code: string): Promise<MdxParseResult> {
 	const { renderCodeBlockToHtml } = await import("../../domains/shiki/plugin");
 	const highlighter = await getSlimKarmaHighlighter();
-	const mdast = mdxParse(code) as MarkdownNode;
+	const parsedMdx = mdxParse(code);
+	if (!isMarkdownNode(parsedMdx)) {
+		throw new Error("MDX parser returned unexpected tree");
+	}
+	const mdast = parsedMdx;
 	injectTableOfContents(mdast);
 	const shikiHighlights: ShikiHighlightMap = {};
 
 	visit(mdast, "code", (node) => {
-		const codeNode = node as CodeTreeNode;
-		if (typeof codeNode.value !== "string") return;
+		if (!isCodeTreeNode(node)) return;
 
-		const html = renderCodeBlockToHtml(
-			highlighter,
-			codeNode.value,
-			codeNode.lang,
-			codeNode.meta ?? null,
-		);
+		const html = renderCodeBlockToHtml(highlighter, node.value, node.lang, node.meta ?? null);
 		if (html === null) return;
 
-		const key = `${codeNode.position?.start.line}:${codeNode.position?.start.column}`;
+		const key = `${node.position?.start.line}:${node.position?.start.column}`;
 		shikiHighlights[key] = html;
 	});
 

@@ -26,7 +26,7 @@ By default, you should be able to clone the repo, run `pnpm i`, and start workin
 
 #### Node version
 
-Please check out the specific version of Node.js specified in `.nvmrc`. You can use a node version manager like [nvm](https://github.com/nvm-sh/nvm) or my personal choice [n](https://github.com/tj/n) (In my experience, `n` was _much_ faster than `nvm`).
+Please check out the specific version of Node.js specified in `.node-version`. You can use a node version manager like [nvm](https://github.com/nvm-sh/nvm) or my personal choice [n](https://github.com/tj/n) (In my experience, `n` was _much_ faster than `nvm`).
 
 #### Almost there
 

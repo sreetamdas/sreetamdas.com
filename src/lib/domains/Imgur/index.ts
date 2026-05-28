@@ -1,6 +1,7 @@
 /**
- * Used for:
- * - Loading keebs' images info from Imgur API
+ * Imgur API boundary for enriching Notion-sourced keeb entries with image
+ * dimensions. Notion stores the image URL; Imgur is the source of truth for
+ * width/height metadata needed by image rendering.
  */
 
 import { isEmpty, isUndefined } from "lodash-es";
@@ -50,8 +51,11 @@ export class ImgurClient {
 			},
 		});
 
-		const response = (await request.json()) as ImgurAPIResponse<Array<ImgurImage>>;
-		return response.data;
+		const data = await request.json();
+		if (!isImgurAlbumResponse(data)) {
+			throw new Error("Imgur API returned unexpected data");
+		}
+		return data.data;
 	}
 
 	async addImgurImagesData(
@@ -64,20 +68,45 @@ export class ImgurClient {
 
 			const imgurImage = albumImagesData?.find(({ link }) => link === image.url);
 			if (typeof imgurImage !== "undefined") {
-				return {
+				const enriched: KeebDetails = {
 					...imageData,
 					image: {
 						...imageData.image,
 						height: imgurImage.height,
 						width: imgurImage.width,
 					},
-				} as KeebDetails;
+				};
+				return enriched;
 			}
 
 			return imageData;
 		});
 		return enrichedImagesData;
 	}
+}
+
+function isImgurImage(value: unknown): value is ImgurImage {
+	if (typeof value !== "object" || value === null) {
+		return false;
+	}
+
+	if (!("link" in value) || !("height" in value) || !("width" in value)) {
+		return false;
+	}
+
+	return (
+		typeof value.link === "string" &&
+		typeof value.height === "number" &&
+		typeof value.width === "number"
+	);
+}
+
+function isImgurAlbumResponse(value: unknown): value is ImgurAPIResponse<Array<ImgurImage>> {
+	if (typeof value !== "object" || value === null || !("data" in value)) {
+		return false;
+	}
+
+	return Array.isArray(value.data) && value.data.every((image) => isImgurImage(image));
 }
 
 interface ImgurImage {

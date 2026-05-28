@@ -1,20 +1,24 @@
 import { createFileRoute } from "@tanstack/react-router";
 
-type PresenceBinding = {
-	getByName: (name: string) => {
-		fetch: (request: Request) => Promise<Response> | Response;
-	};
+type PresenceStub = {
+	fetch: (request: Request) => Promise<Response> | Response;
 };
 
-type PresenceEnv = {
-	SITE_PRESENCE?: PresenceBinding;
+type PresenceNamespace = {
+	getByName: (name: string) => PresenceStub;
 };
 
 export function handlePresenceGet(
 	request: Request,
-	env: PresenceEnv,
+	env: CloudflareEnv,
 ): Promise<Response> | Response {
-	const presence = env.SITE_PRESENCE;
+	return handlePresenceGetForNamespace(request, env.SITE_PRESENCE);
+}
+
+export function handlePresenceGetForNamespace(
+	request: Request,
+	presence: PresenceNamespace | undefined,
+): Promise<Response> | Response {
 	if (!presence) {
 		return Response.json({ error: "SITE_PRESENCE binding is not available" }, { status: 500 });
 	}

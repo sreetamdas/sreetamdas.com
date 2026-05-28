@@ -1,20 +1,14 @@
-// @ts-expect-error fix module
-import bricolageGrotesqueFont from "@fontsource-variable/bricolage-grotesque/files/bricolage-grotesque-latin-wght-normal.woff2?url";
-// @ts-expect-error fix module
+import bricolageGrotesqueFont from "@fontsource-variable/bricolage-grotesque/files/bricolage-grotesque-latin-standard-normal.woff2?url";
 import interFont from "@fontsource-variable/inter/files/inter-latin-ext-wght-normal.woff2?url";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { HeadContent, Outlet, Scripts, createRootRoute } from "@tanstack/react-router";
 import { type ReactNode, useEffect, useState } from "react";
-import "@fontsource-variable/bricolage-grotesque/standard.css";
 
 import { IS_DEV, SITE_TITLE_APPEND } from "@/config";
-import "@fontsource-variable/inter/index.css";
-
 import { FOOBAR_SOURCE_CODE } from "@/lib/domains/foobar/helpers";
 import { captureException } from "@/lib/domains/Sentry";
 
-// @ts-expect-error fix module
 import appCss from "./global.css?url";
 
 export const Route = createRootRoute({
@@ -185,42 +179,22 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
 
 const blockingScriptSetInitialColorScheme = `(function() {
 	function setInitialColorScheme() {
-		function getInitialColorScheme() {
-			const persistedColorScheme = window.localStorage.getItem("color-scheme");
-			const hasPersistedColorScheme = typeof persistedColorScheme === "string";
+		const root = window.document.documentElement;
+		const persistedColorScheme = window.localStorage.getItem("color-scheme");
 
-			/**
-			 * If the user has explicitly chosen light or dark, use it
-			 */
-			if (hasPersistedColorScheme) {
-				const root = window.document.documentElement;
-				root.style.setProperty("--initial-color-scheme", persistedColorScheme);
-
-				if (persistedColorScheme !== "system") {
-					return persistedColorScheme;
-				}
-			}
-
-			/**
-			 * If they haven't been explicit, check the media query
-			 */
-			const mql = window.matchMedia("(prefers-color-scheme: dark)");
-			const hasSystemColorSchemePreference = typeof mql.matches === "boolean";
-
-			if (hasSystemColorSchemePreference) {
-				return mql.matches ? "dark" : "light";
-			}
-
-			/**
-			 * If they are using a browser/OS that doesn't support
-			 * color themes, default to 'light'.
-			 */
-			return "light";
+		if (
+			persistedColorScheme !== "system" &&
+			persistedColorScheme !== "light" &&
+			persistedColorScheme !== "dark"
+		) {
+			window.localStorage.removeItem("color-scheme");
+			return;
 		}
 
-		const colorScheme = getInitialColorScheme();
-		if (colorScheme === "dark") {
-			document.documentElement.setAttribute("data-color-scheme", "dark");
+		root.style.setProperty("--initial-color-scheme", persistedColorScheme);
+
+		if (persistedColorScheme === "light" || persistedColorScheme === "dark") {
+			root.setAttribute("data-color-scheme", persistedColorScheme);
 		}
 	}
 	setInitialColorScheme();

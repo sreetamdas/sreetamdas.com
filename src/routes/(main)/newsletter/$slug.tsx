@@ -1,12 +1,14 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
 import { renderServerComponent } from "@tanstack/react-start/rsc";
+import { staticFunctionMiddleware } from "@tanstack/start-static-server-functions";
 
 import { SITE_DESCRIPTION, SITE_TITLE_APPEND } from "@/config";
+import { fetchNewsletterEmails, getButtondownApiKey } from "@/lib/domains/Buttondown";
 import { canonicalUrl, defaultOgImageUrl } from "@/lib/seo";
+import { STATIC_SERVER_FUNCTION_STALE_TIME } from "@/lib/static-server-functions";
 
 import { NewsletterEmailDetail } from "./-components";
-import { fetchNewsletterEmails, getButtondownApiKey } from "./-helpers";
 
 type NewsletterIssue = Awaited<ReturnType<typeof fetchNewsletterEmails>>["results"][number];
 type NewsletterLoaderData = {
@@ -17,7 +19,7 @@ type NewsletterLoaderData = {
 
 export const Route = createFileRoute("/(main)/newsletter/$slug")({
 	component: NewsletterEmailDetailPage,
-	staleTime: 1000 * 60 * 10,
+	staleTime: STATIC_SERVER_FUNCTION_STALE_TIME,
 	head: ({ loaderData }: { loaderData?: NewsletterLoaderData }) => {
 		const email = loaderData?.newsletter_email_data;
 		const title = `${email?.subject ?? "Newsletter"} ${SITE_TITLE_APPEND}`;
@@ -55,15 +57,17 @@ export const Route = createFileRoute("/(main)/newsletter/$slug")({
 const getNewsletterEmailRenderable = createServerFn({
 	method: "GET",
 })
+	.middleware([staticFunctionMiddleware])
 	.inputValidator((data) => {
-		if (
-			typeof data !== "object" ||
-			data === null ||
-			typeof (data as { slug?: unknown }).slug !== "string"
-		) {
+		if (typeof data !== "object" || data === null || !("slug" in data)) {
 			throw new Error("Invalid newsletter slug payload");
 		}
-		return { slug: (data as { slug: string }).slug };
+
+		if (typeof data.slug !== "string") {
+			throw new Error("Invalid newsletter slug payload");
+		}
+
+		return { slug: data.slug };
 	})
 	.handler(async ({ data, context }) => {
 		const { slug } = data;
@@ -79,7 +83,7 @@ const getNewsletterEmailRenderable = createServerFn({
 
 		/**
 		 * Buttondown now includes a `<!-- buttondown-editor-mode: plaintext -->` at the start of the
-		 * email body, that is cannot be processed by micromark
+		 * email body, which cannot be processed by micromark
 		 */
 		const trimmed_email_body = newsletter_email_by_slug.body.replace(
 			"<!-- buttondown-editor-mode: plaintext -->",

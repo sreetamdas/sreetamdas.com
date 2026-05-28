@@ -1,12 +1,21 @@
 import type * as monaco from "modern-monaco/editor-core";
 
-import { createHeadlessForm } from "@remoteoss/json-schema-form";
+import { createHeadlessForm, type CreateHeadlessFormOptions } from "@remoteoss/json-schema-form";
 import karmaTheme from "@sreetamdas/karma/themes/default.json" with { type: "json" };
 import { init } from "modern-monaco";
 import { useState, useCallback, useEffect, useRef } from "react";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type JsfObjectSchema = Record<string, any>;
+type KarmaThemeJson = {
+	tokenColors: Array<{
+		scope: string | string[];
+		settings: { foreground?: string; fontStyle?: string };
+	}>;
+	colors: Record<string, string>;
+};
+
+const themeConfig: KarmaThemeJson = karmaTheme;
+
+type JsfObjectSchema = Parameters<typeof createHeadlessForm>[0];
 
 const PRESETS: { name: string; schema: JsfObjectSchema }[] = [
 	{
@@ -95,6 +104,56 @@ const PRESETS: { name: string; schema: JsfObjectSchema }[] = [
 	},
 ];
 
+function resolveFieldValue(value: unknown, const_: unknown, default_: unknown): string | number {
+	const resolved = value ?? const_ ?? default_;
+	if (typeof resolved === "string" || typeof resolved === "number") return resolved;
+	return "";
+}
+
+type SelectOption = { value: string; label: string };
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+	return typeof value === "object" && value !== null;
+}
+
+function isJsfObjectSchema(value: unknown): value is JsfObjectSchema {
+	if (!isRecord(value)) {
+		return false;
+	}
+
+	return value.type === "object";
+}
+
+function toSelectOption(input: unknown): SelectOption | undefined {
+	if (typeof input === "string") {
+		return { value: input, label: input };
+	}
+
+	if (typeof input !== "object" || input === null) {
+		return undefined;
+	}
+
+	const value = "value" in input ? input.value : undefined;
+	if (typeof value !== "string") {
+		return undefined;
+	}
+
+	const label = "label" in input && typeof input.label === "string" ? input.label : value;
+	return { value, label };
+}
+
+function getFieldOptions(field: { options?: unknown; enum?: unknown }): Array<SelectOption> {
+	const source = Array.isArray(field.options)
+		? field.options
+		: Array.isArray(field.enum)
+			? field.enum
+			: [];
+
+	return source
+		.map((option) => toSelectOption(option))
+		.filter((option): option is SelectOption => option !== undefined);
+}
+
 function FieldRenderer({
 	field,
 	value,
@@ -108,8 +167,8 @@ function FieldRenderer({
 				: never
 			: never
 		: never;
-	value: unknown;
-	onChange: (val: unknown) => void;
+	value: FormValues[string] | undefined;
+	onChange: (val: FormValues[string]) => void;
 	error?: string;
 }) {
 	const inputClasses =
@@ -126,29 +185,24 @@ function FieldRenderer({
 
 	const commonProps = {
 		className: inputClasses,
-		value: ((value ?? field.const ?? field.default) as string | number) ?? "",
+		value: resolveFieldValue(value, field.const, field.default),
 		onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
 			onChange(e.target.type === "number" ? Number(e.target.value) : e.target.value);
 		},
 	};
 
 	let input: React.ReactNode;
+	const options = getFieldOptions(field);
 
 	switch (field.inputType) {
 		case "select":
 			input = (
 				<select {...commonProps}>
 					<option value="">Select…</option>
-					{(
-						(field.options as unknown[] | undefined) ??
-						(field.enum as unknown[] | undefined) ??
-						[]
-					).map((opt: unknown) => {
-						const val = typeof opt === "string" ? opt : ((opt as { value: string }).value ?? "");
-						const label = typeof opt === "string" ? opt : ((opt as { label: string }).label ?? val);
+					{options.map((option) => {
 						return (
-							<option key={val} value={val}>
-								{label}
+							<option key={option.value} value={option.value}>
+								{option.label}
 							</option>
 						);
 					})}
@@ -175,23 +229,18 @@ function FieldRenderer({
 		case "radio":
 			input = (
 				<div className="flex flex-col gap-1">
-					{(
-						(field.options as unknown[] | undefined) ??
-						(field.enum as unknown[] | undefined) ??
-						[]
-					).map((opt: unknown) => {
-						const val = typeof opt === "string" ? opt : ((opt as { value: string }).value ?? "");
+					{options.map((option) => {
 						return (
-							<label key={val} className="flex items-center gap-2 text-sm text-white/80">
+							<label key={option.value} className="flex items-center gap-2 text-sm text-white/80">
 								<input
 									type="radio"
 									name={field.name}
-									value={val}
-									checked={value === val}
-									onChange={() => onChange(val)}
+									value={option.value}
+									checked={value === option.value}
+									onChange={() => onChange(option.value)}
 									className="h-4 w-4 border-white/10 bg-white/5"
 								/>
-								{val}
+								{option.label}
 							</label>
 						);
 					})}
@@ -217,8 +266,9 @@ function FieldRenderer({
 	);
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type FormValues = Record<string, any>;
+type FormValues = {
+	[key: string]: NonNullable<CreateHeadlessFormOptions["initialValues"]>;
+};
 
 function MonacoEditor({ value, onChange }: { value: string; onChange: (v: string) => void }) {
 	const containerRef = useRef<HTMLDivElement>(null);
@@ -243,10 +293,7 @@ function MonacoEditor({ value, onChange }: { value: string; onChange: (v: string
 			if (disposed || !containerRef.current) return;
 
 			// Register Karma theme using Monaco's native defineTheme API
-			const karmaTokenColors = (karmaTheme as Record<string, unknown>).tokenColors as Array<{
-				scope: string | string[];
-				settings: { foreground?: string; fontStyle?: string };
-			}>;
+			const karmaTokenColors = themeConfig.tokenColors;
 			const rules = karmaTokenColors.flatMap((tc) => {
 				const scopes = typeof tc.scope === "string" ? [tc.scope] : (tc.scope ?? []);
 				return scopes.map((scope) => {
@@ -261,7 +308,7 @@ function MonacoEditor({ value, onChange }: { value: string; onChange: (v: string
 				base: "vs-dark",
 				inherit: true,
 				rules,
-				colors: (karmaTheme as Record<string, unknown>).colors as Record<string, string>,
+				colors: themeConfig.colors,
 			});
 
 			const model = monaco.editor.createModel(value, "json");
@@ -332,7 +379,7 @@ export function JsfPlayground() {
 	const parsedSchema: JsfObjectSchema | null = (() => {
 		try {
 			const parsed = JSON.parse(schemaText);
-			if (parsed.type === "object") return parsed as JsfObjectSchema;
+			if (isJsfObjectSchema(parsed)) return parsed;
 			return null;
 		} catch {
 			return null;
@@ -350,8 +397,7 @@ export function JsfPlayground() {
 		const flatten = (obj: Record<string, unknown>, prefix = "") => {
 			for (const [key, val] of Object.entries(obj)) {
 				if (typeof val === "string") flatErrors[prefix + key] = val;
-				else if (val && typeof val === "object")
-					flatten(val as Record<string, unknown>, prefix + key + ".");
+				else if (isRecord(val) && !Array.isArray(val)) flatten(val, prefix + key + ".");
 			}
 		};
 		if (result.formErrors) flatten(result.formErrors);
@@ -399,7 +445,7 @@ export function JsfPlayground() {
 								JSON.parse(v);
 								setParseError(null);
 							} catch (err) {
-								setParseError((err as Error).message);
+								setParseError(err instanceof Error ? err.message : String(err));
 							}
 						}}
 					/>
@@ -431,8 +477,9 @@ export function JsfPlayground() {
 										field={field}
 										value={values[field.name]}
 										onChange={(val) => {
-											setValues((prev) => ({ ...prev, [field.name]: val }));
-											// Clear error for this field on change
+											setValues((prev) => {
+												return { ...prev, [field.name]: val };
+											});
 											setErrors((prev) => {
 												const next = { ...prev };
 												delete next[field.name];
@@ -490,7 +537,9 @@ export function SchemaFormPreview({ schema }: { schema: JsfObjectSchema }) {
 									field={field}
 									value={values[field.name]}
 									onChange={(val) => {
-										setValues((prev) => ({ ...prev, [field.name]: val }));
+										setValues((prev) => {
+											return { ...prev, [field.name]: val };
+										});
 									}}
 								/>
 							))}

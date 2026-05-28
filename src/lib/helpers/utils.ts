@@ -33,13 +33,46 @@ export async function wrapPromise<T>(promise: Promise<T>): PromiseSettled<T> {
 	}));
 }
 
-export function readEnvString(env: CloudflareEnv, keys: ReadonlyArray<string>): string | undefined {
-	const values = env as unknown as Record<string, unknown>;
+function readStringValue(env: object | undefined, key: string): string | undefined {
+	if (env === undefined) {
+		return undefined;
+	}
+
+	const value = Reflect.get(env, key);
+
+	if (typeof value === "string" && value.length > 0) {
+		return value;
+	}
+
+	return undefined;
+}
+
+export function readServerEnvString(
+	env: object | undefined,
+	keys: ReadonlyArray<string>,
+): string | undefined {
 	for (const key of keys) {
-		const value = values[key];
-		if (typeof value === "string" && value.length > 0) {
+		const value = readStringValue(env, key);
+		if (typeof value === "string") {
 			return value;
 		}
 	}
+
+	return undefined;
+}
+
+export function readPublicEnvString(
+	env: object | undefined,
+	keys: ReadonlyArray<string>,
+): string | undefined {
+	for (const key of keys) {
+		const value =
+			readStringValue(env, key) ??
+			(key.startsWith("VITE_") ? undefined : readStringValue(env, `VITE_${key}`));
+		if (typeof value === "string") {
+			return value;
+		}
+	}
+
 	return undefined;
 }

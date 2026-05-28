@@ -8,8 +8,55 @@ import rsc from "@vitejs/plugin-rsc";
 import { defineConfig } from "vite-plus";
 
 import { slideDeckPlugin } from "./src/lib/domains/slides/vite-plugin.ts";
+import { shouldPrerenderPath } from "./src/lib/prerender.ts";
+
+function getPlugins(): Array<unknown> {
+	const hasSentryBuildEnv = Boolean(
+		process.env.SENTRY_AUTH_TOKEN && process.env.SENTRY_ORG && process.env.SENTRY_PROJECT,
+	);
+
+	const sitemapHost = (process.env.VITE_SITE_URL ?? "https://sreetamdas.com").replace(/\/$/, "");
+
+	// @ts-expect-error type depth
+	return [
+		cloudflare({ viteEnvironment: { name: "ssr", childEnvironments: ["rsc"] } }),
+		contentCollections(),
+		tanstackStart({
+			rsc: {
+				enabled: true,
+			},
+			prerender: {
+				enabled: true,
+				autoSubfolderIndex: false,
+				filter: ({ path }) => shouldPrerenderPath(path),
+			},
+			sitemap: {
+				enabled: true,
+				host: sitemapHost,
+			},
+		}),
+		rsc(),
+		slideDeckPlugin(),
+		viteReact(),
+		tailwindcss(),
+		...(hasSentryBuildEnv
+			? [
+					sentryTanstackStart({
+						authToken: process.env.SENTRY_AUTH_TOKEN,
+						autoInstrumentMiddleware: false,
+						org: process.env.SENTRY_ORG,
+						project: process.env.SENTRY_PROJECT,
+						tunnelRoute: true,
+					}),
+				]
+			: []),
+	];
+}
 
 export default defineConfig({
+	build: {
+		chunkSizeWarningLimit: 2_000,
+	},
 	fmt: {
 		useTabs: true,
 		tabWidth: 2,
@@ -146,6 +193,16 @@ export default defineConfig({
 			"@typescript-eslint/no-duplicate-enum-values": "error",
 			"@typescript-eslint/no-empty-object-type": "error",
 			"@typescript-eslint/no-explicit-any": "error",
+			"@typescript-eslint/no-unnecessary-type-assertion": "error",
+			"@typescript-eslint/no-unsafe-type-assertion": "error",
+			"@typescript-eslint/non-nullable-type-assertion-style": "error",
+			"@typescript-eslint/consistent-type-assertions": [
+				"error",
+				{
+					assertionStyle: "as",
+					objectLiteralTypeAssertions: "never",
+				},
+			],
 			"@typescript-eslint/no-extra-non-null-assertion": "error",
 			"@typescript-eslint/no-misused-new": "error",
 			"@typescript-eslint/no-namespace": "error",
@@ -200,37 +257,6 @@ export default defineConfig({
 		exclude: ["e2e/**", "node_modules", "dist", ".content-collections"],
 		passWithNoTests: true,
 	},
-	// @ts-expect-error TS2321 — excessive stack depth from multiple vite Plugin instances in pnpm
-	plugins: [
-		...(process.env.VITEST
-			? []
-			: [
-					cloudflare({
-						viteEnvironment: { name: "ssr", childEnvironments: ["rsc"] },
-					}),
-				]),
-		contentCollections({ environment: "ssr" }),
-		tanstackStart({
-			rsc: {
-				enabled: true,
-			},
-			prerender: {
-				enabled: true,
-				autoSubfolderIndex: false,
-			},
-		}),
-		rsc(),
-		slideDeckPlugin(),
-		viteReact(),
-		tailwindcss(),
-		...(process.env.SENTRY_AUTH_TOKEN
-			? [
-					sentryTanstackStart({
-						org: process.env.SENTRY_ORG,
-						project: process.env.SENTRY_PROJECT,
-						authToken: process.env.SENTRY_AUTH_TOKEN,
-					}),
-				]
-			: []),
-	],
+	// @ts-expect-error type depth
+	plugins: getPlugins(),
 });

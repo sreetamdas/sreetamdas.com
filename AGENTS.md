@@ -6,9 +6,11 @@ This file documents project conventions for humans and coding agents.
 ## Agent Preferences
 
 - Prefer file header comments over inline comments: if documentation is needed, add a short multi-line comment at the start of the file explaining intent/constraints/flow. Use inline comments only when they are clearly the best fit for a very local, non-obvious detail.
-- When committing, prefer Conventional Commits when possible, and stage/commit changes in logical units so they are easy to revert later (avoid bundling unrelated changes in a single commit).
+- When committing, prefer Conventional Commits and small granular commits. Stage/commit one logical unit at a time so changes are easy to review and revert; avoid bundling setup, source, tests, docs, and generated updates into one large commit unless the diff is truly trivial. If the split is unclear, ask before committing.
 - Bugs: add a regression test when it fits (especially for non-trivial or previously broken behavior).
+- Tests: prefer Vitest-native APIs (`describe`/`test`/`expect`/`vi`) for app tests; avoid mixing in `node:test` or `node:assert` unless there is a specific, documented reason.
 - Don't run typecheck/build/other scripts until told so.
+- **Avoid type assertions** (`as`, `as unknown`, `as any`) as a default rule. Prefer narrowing, better function signatures (for example `Pick<T, "field">` at boundaries), proper typing, or runtime validation. Treat `as unknown as` as disallowed unless there is no alternative. If any cast is truly unavoidable, keep it local and add a short comment explaining why.
 
 ## Quick Commands
 
@@ -21,10 +23,16 @@ This file documents project conventions for humans and coding agents.
 - Deploy (production): `pnpm deploy` or `pnpm deploy:production`
 - Deploy (staging): `pnpm deploy:staging`
 
+## Staging Verification Loop
+
+- When the goal is to prove a pushed change reached Cloudflare staging, prefer adding or updating a tiny staging-only smoke/debug signal (for example a no-store test route or harmless cosmetic marker) before pushing.
+- Push the relevant commit(s) to `dev`, wait for the Cloudflare build to publish, then verify `https://staging.sreetamdas.com` directly. Staging usually updates quickly; start checking immediately and keep polling for up to about five minutes before reporting a deploy blocker.
+- Confirm both the smoke signal and at least one relevant user-facing page or route before saying the staging build is good. Include the checked URL/path, status, and marker/result in the handoff.
+
 ## Tooling + Style
 
 - Package manager: `pnpm`.
-- Node: see `.nvmrc` (currently `24`).
+- Node: see `.node-version` (currently `24.15.0`).
 - Formatting: `oxfmt`.
   - Default indentation uses tabs; print width 100.
   - `src/**/routeTree.gen.ts` is excluded from formatting.
