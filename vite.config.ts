@@ -13,18 +13,13 @@ function getPlugins(): Array<unknown> {
 	const hasSentryBuildEnv = Boolean(
 		process.env.SENTRY_AUTH_TOKEN && process.env.SENTRY_ORG && process.env.SENTRY_PROJECT,
 	);
+
 	const sitemapHost = (process.env.VITE_SITE_URL ?? "https://sreetamdas.com").replace(/\/$/, "");
 
-	// Widen to unknown[] so Vite's recursive plugin types don't blow up tsgo here.
+	// @ts-expect-error type depth
 	return [
-		...(process.env.VITEST
-			? []
-			: [
-					cloudflare({
-						viteEnvironment: { name: "ssr", childEnvironments: ["rsc"] },
-					}) as unknown,
-				]),
-		contentCollections({ environment: "ssr" }),
+		cloudflare({ viteEnvironment: { name: "ssr", childEnvironments: ["rsc"] } }),
+		contentCollections(),
 		tanstackStart({
 			rsc: {
 				enabled: true,
@@ -50,10 +45,10 @@ function getPlugins(): Array<unknown> {
 						org: process.env.SENTRY_ORG,
 						project: process.env.SENTRY_PROJECT,
 						tunnelRoute: true,
-					}) as unknown,
+					}),
 				]
 			: []),
-	] as Array<unknown>;
+	];
 }
 
 export default defineConfig({
@@ -257,6 +252,6 @@ export default defineConfig({
 		exclude: ["e2e/**", "node_modules", "dist", ".content-collections"],
 		passWithNoTests: true,
 	},
-	// @ts-expect-error TS2322 — plugin inference is recursive unless widened first
+	// @ts-expect-error type depth
 	plugins: getPlugins(),
 });

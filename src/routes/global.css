@@ -1,5 +1,5 @@
 @import "tailwindcss";
-@import "@fontsource-variable/bricolage-grotesque/index.css";
+@import "@fontsource-variable/bricolage-grotesque/standard.css";
 @import "@fontsource-variable/inter/index.css";
 
 @custom-variant dark {
@@ -27,7 +27,7 @@
 	--color-karma-background: var(--karma-background);
 
 	--font-serif: "Bricolage Grotesque Variable", serif;
-	--font-mono: "Iosevka", serif;
+	--font-mono: "Iosevka", monospace;
 
 	--max-width: 650px;
 	--radius-global: 5px;
