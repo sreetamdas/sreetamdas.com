@@ -1,3 +1,8 @@
+/**
+ * Browser-only helpers for /foobar clues and completion checks. These functions
+ * intentionally touch localStorage and the console, so keep callers inside
+ * client components/effects.
+ */
 import { FOOBAR_FLAGS } from "@/lib/domains/foobar/flags";
 
 import { type FoobarSliceType } from "./store";

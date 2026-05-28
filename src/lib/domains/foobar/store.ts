@@ -1,3 +1,8 @@
+/**
+ * Foobar state slice persisted by the global Zustand store. Updates are partial
+ * and merged into the existing progress object so achievement effects can mark
+ * one field without replacing the rest of the player's local progress.
+ */
 import { merge } from "lodash-es";
 import { type StateCreator } from "zustand";
 
