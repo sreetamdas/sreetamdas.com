@@ -4,11 +4,11 @@ import { renderServerComponent } from "@tanstack/react-start/rsc";
 import { staticFunctionMiddleware } from "@tanstack/start-static-server-functions";
 
 import { SITE_DESCRIPTION, SITE_TITLE_APPEND } from "@/config";
+import { fetchNewsletterEmails, getButtondownApiKey } from "@/lib/domains/Buttondown";
 import { canonicalUrl, defaultOgImageUrl } from "@/lib/seo";
 import { STATIC_SERVER_FUNCTION_STALE_TIME } from "@/lib/static-server-functions";
 
 import { NewsletterEmailDetail } from "./-components";
-import { fetchNewsletterEmails, getButtondownApiKey } from "./-helpers";
 
 type NewsletterIssue = Awaited<ReturnType<typeof fetchNewsletterEmails>>["results"][number];
 type NewsletterLoaderData = {

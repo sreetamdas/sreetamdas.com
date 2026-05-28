@@ -1,6 +1,11 @@
+/**
+ * Buttondown API boundary for newsletter routes. It keeps the private API key
+ * server-only and falls back to checked-in mocks so static builds/previews can
+ * still render when Buttondown is unavailable or not configured.
+ */
 import { readServerEnvString } from "@/lib/helpers/utils";
 
-import { BUTTONDOWN_EMAIL_MOCKS } from "./-mocks";
+import { BUTTONDOWN_EMAIL_MOCKS } from "./mocks";
 
 const BUTTONDOWN_BASE_URL = "https://api.buttondown.email/v1";
 

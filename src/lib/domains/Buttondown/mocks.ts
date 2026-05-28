@@ -1,4 +1,4 @@
-import type { ButtondownAPIEmailsResponse } from "./-helpers";
+import type { ButtondownAPIEmailsResponse } from "./index";
 
 export const BUTTONDOWN_EMAIL_MOCKS = {
 	results: [
