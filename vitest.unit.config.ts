@@ -12,5 +12,6 @@ export default defineConfig({
 		exclude: ["e2e/**", "node_modules/**", "dist/**", ".content-collections/**"],
 		include: ["src/**/*.test.ts"],
 		passWithNoTests: true,
+		setupFiles: ["./src/test-setup-build-info.ts"],
 	},
 });
