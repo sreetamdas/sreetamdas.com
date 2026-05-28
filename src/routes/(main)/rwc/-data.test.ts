@@ -1,5 +1,4 @@
-import assert from "node:assert/strict";
-import { describe, test } from "node:test";
+import { describe, expect, test } from "vitest";
 
 import { FALLBACK_RWC_BACKGROUND, loadRwcCodeSamples, resolveRwcEnv } from "./-data";
 
@@ -14,7 +13,7 @@ describe("resolveRwcEnv", () => {
 			GITHUB_TOKEN: "build_token",
 		};
 
-		assert.deepEqual(resolveRwcEnv(runtimeEnv, buildEnv, undefined), {
+		expect(resolveRwcEnv(runtimeEnv, buildEnv, undefined)).toEqual({
 			githubGistId: "runtime_gist",
 			githubToken: "runtime_token",
 		});
@@ -26,7 +25,7 @@ describe("resolveRwcEnv", () => {
 			GITHUB_TOKEN: "build_token",
 		};
 
-		assert.deepEqual(resolveRwcEnv(undefined, buildEnv, undefined), {
+		expect(resolveRwcEnv(undefined, buildEnv, undefined)).toEqual({
 			githubGistId: "build_gist",
 			githubToken: "build_token",
 		});
@@ -38,7 +37,7 @@ describe("resolveRwcEnv", () => {
 			VITE_GITHUB_TOKEN: "vite_token",
 		};
 
-		assert.deepEqual(resolveRwcEnv(undefined, undefined, viteEnv), {
+		expect(resolveRwcEnv(undefined, undefined, viteEnv)).toEqual({
 			githubGistId: "vite_gist",
 			githubToken: undefined,
 		});
@@ -49,14 +48,14 @@ describe("resolveRwcEnv", () => {
 			VITE_GITHUB_TOKEN: "vite_token",
 		};
 
-		assert.deepEqual(resolveRwcEnv(undefined, undefined, viteEnv), {
+		expect(resolveRwcEnv(undefined, undefined, viteEnv)).toEqual({
 			githubGistId: undefined,
 			githubToken: undefined,
 		});
 	});
 
 	test("returns undefined gist id when env is missing", () => {
-		assert.deepEqual(resolveRwcEnv(undefined, undefined, undefined), {
+		expect(resolveRwcEnv(undefined, undefined, undefined)).toEqual({
 			githubGistId: undefined,
 			githubToken: undefined,
 		});
@@ -77,8 +76,8 @@ describe("loadRwcCodeSamples", () => {
 			getHighlighter: async () => createHighlighter(),
 		});
 
-		assert.equal(fetched, false);
-		assert.deepEqual(result, {
+		expect(fetched).toBe(false);
+		expect(result).toEqual({
 			all_solutions: [],
 			background_color: FALLBACK_RWC_BACKGROUND,
 		});
@@ -94,7 +93,7 @@ describe("loadRwcCodeSamples", () => {
 			getHighlighter: async () => createHighlighter(),
 		});
 
-		assert.deepEqual(result, {
+		expect(result).toEqual({
 			all_solutions: [],
 			background_color: FALLBACK_RWC_BACKGROUND,
 		});
@@ -105,8 +104,8 @@ describe("loadRwcCodeSamples", () => {
 			githubGistId: "gist_123",
 			githubToken: "token_123",
 			fetchGist: async (gistId, token) => {
-				assert.equal(gistId, "gist_123");
-				assert.equal(token, "token_123");
+				expect(gistId).toBe("gist_123");
+				expect(token).toBe("token_123");
 
 				return {
 					files: {
@@ -131,8 +130,8 @@ describe("loadRwcCodeSamples", () => {
 			getHighlighter: async () => createHighlighter(),
 		});
 
-		assert.equal(result.background_color, "#123456");
-		assert.deepEqual(result.all_solutions, [
+		expect(result.background_color).toBe("#123456");
+		expect(result.all_solutions).toEqual([
 			{
 				html: `<code data-lang="typescript">const answer = 42;</code>`,
 				slug: "day_01_ts",

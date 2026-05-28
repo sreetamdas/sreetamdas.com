@@ -13,7 +13,7 @@
 		"prebuild": "vp run build:content-collections && vp run generate-feeds && node scripts/generate-build-info.mjs",
 		"build": "vp build",
 		"preview": "vp preview",
-		"test:unit": "tsx --test \"src/**/*.test.ts\"",
+		"test:unit": "pnpm exec vp test run --config vitest.unit.config.ts",
 		"test:workers": "pnpm exec vp test run --config vitest.config.ts",
 		"test:workers:watch": "pnpm exec vp test --config vitest.config.ts",
 		"test:workers:serial": "pnpm exec vp test run --config vitest.config.ts --max-workers=1 --no-isolate",

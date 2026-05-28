@@ -1,29 +1,27 @@
-import assert from "node:assert/strict";
-import { describe, test } from "node:test";
+import { describe, expect, test } from "vitest";
 
 import { shouldServeBlogPost, shouldServeRootPage } from "./visibility";
 
 describe("content visibility", () => {
 	test("serves published blog posts", () => {
-		assert.equal(shouldServeBlogPost({ published: true }, { includeDrafts: false }), true);
+		expect(shouldServeBlogPost({ published: true }, { includeDrafts: false })).toBe(true);
 	});
 
 	test("hides draft blog posts outside draft-enabled contexts", () => {
-		assert.equal(shouldServeBlogPost({ published: false }, { includeDrafts: false }), false);
+		expect(shouldServeBlogPost({ published: false }, { includeDrafts: false })).toBe(false);
 	});
 
 	test("allows draft blog posts when drafts are explicitly enabled", () => {
-		assert.equal(shouldServeBlogPost({ published: false }, { includeDrafts: true }), true);
+		expect(shouldServeBlogPost({ published: false }, { includeDrafts: true })).toBe(true);
 	});
 
 	test("hides skipped root pages even when drafts are enabled", () => {
-		assert.equal(
-			shouldServeRootPage({ published: true, skip_page: true }, { includeDrafts: true }),
+		expect(shouldServeRootPage({ published: true, skip_page: true }, { includeDrafts: true })).toBe(
 			false,
 		);
 	});
 
 	test("hides draft root pages outside draft-enabled contexts", () => {
-		assert.equal(shouldServeRootPage({ published: false }, { includeDrafts: false }), false);
+		expect(shouldServeRootPage({ published: false }, { includeDrafts: false })).toBe(false);
 	});
 });

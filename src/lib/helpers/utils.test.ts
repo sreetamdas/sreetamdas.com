@@ -1,5 +1,4 @@
-import assert from "node:assert/strict";
-import { describe, test } from "node:test";
+import { describe, expect, test } from "vitest";
 
 import { readPublicEnvString, readServerEnvString } from "./utils";
 
@@ -11,7 +10,7 @@ describe("readServerEnvString", () => {
 			enumerable: false,
 		});
 
-		assert.equal(readServerEnvString(env, ["GITHUB_RWC_GIST_ID"]), "gist_123");
+		expect(readServerEnvString(env, ["GITHUB_RWC_GIST_ID"])).toBe("gist_123");
 	});
 
 	test("does not fall back to VITE-prefixed keys", () => {
@@ -19,7 +18,7 @@ describe("readServerEnvString", () => {
 			VITE_BUTTONDOWN_API_KEY: "buttondown_123",
 		};
 
-		assert.equal(readServerEnvString(env, ["BUTTONDOWN_API_KEY"]), undefined);
+		expect(readServerEnvString(env, ["BUTTONDOWN_API_KEY"])).toBe(undefined);
 	});
 
 	test("ignores empty strings", () => {
@@ -27,7 +26,7 @@ describe("readServerEnvString", () => {
 			NOTION_TOKEN: "",
 		};
 
-		assert.equal(readServerEnvString(env, ["NOTION_TOKEN"]), undefined);
+		expect(readServerEnvString(env, ["NOTION_TOKEN"])).toBe(undefined);
 	});
 
 	test("returns first matching key in priority order", () => {
@@ -36,11 +35,11 @@ describe("readServerEnvString", () => {
 			PRIMARY_KEY: "primary",
 		};
 
-		assert.equal(readServerEnvString(env, ["PRIMARY_KEY", "SECONDARY_KEY"]), "primary");
+		expect(readServerEnvString(env, ["PRIMARY_KEY", "SECONDARY_KEY"])).toBe("primary");
 	});
 
 	test("returns undefined when env object is unavailable", () => {
-		assert.equal(readServerEnvString(undefined, ["NOTION_TOKEN"]), undefined);
+		expect(readServerEnvString(undefined, ["NOTION_TOKEN"])).toBe(undefined);
 	});
 
 	test("ignores non-string values", () => {
@@ -49,7 +48,7 @@ describe("readServerEnvString", () => {
 			VITE_NOTION_TOKEN: true,
 		};
 
-		assert.equal(readServerEnvString(env, ["NOTION_TOKEN"]), undefined);
+		expect(readServerEnvString(env, ["NOTION_TOKEN"])).toBe(undefined);
 	});
 });
 
@@ -59,7 +58,7 @@ describe("readPublicEnvString", () => {
 			VITE_SENTRY_DSN: "https://example@sentry.io/1",
 		};
 
-		assert.equal(readPublicEnvString(env, ["SENTRY_DSN"]), "https://example@sentry.io/1");
+		expect(readPublicEnvString(env, ["SENTRY_DSN"])).toBe("https://example@sentry.io/1");
 	});
 
 	test("prefers direct key when both direct and VITE-prefixed keys exist", () => {
@@ -68,7 +67,7 @@ describe("readPublicEnvString", () => {
 			VITE_SENTRY_DSN: "vite",
 		};
 
-		assert.equal(readPublicEnvString(env, ["SENTRY_DSN"]), "direct");
+		expect(readPublicEnvString(env, ["SENTRY_DSN"])).toBe("direct");
 	});
 
 	test("does not double-prefix explicit VITE keys", () => {
@@ -76,6 +75,6 @@ describe("readPublicEnvString", () => {
 			VITE_SITE_URL: "https://example.com",
 		};
 
-		assert.equal(readPublicEnvString(env, ["VITE_SITE_URL"]), "https://example.com");
+		expect(readPublicEnvString(env, ["VITE_SITE_URL"])).toBe("https://example.com");
 	});
 });

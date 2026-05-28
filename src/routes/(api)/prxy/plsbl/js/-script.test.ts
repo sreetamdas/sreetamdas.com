@@ -1,5 +1,4 @@
-import assert from "node:assert/strict";
-import { describe, test } from "node:test";
+import { describe, expect, test } from "vitest";
 
 import { handlePlausibleScriptGet } from "./$script";
 
@@ -20,8 +19,8 @@ describe("plausible script proxy", () => {
 
 			const response = await handlePlausibleScriptGet("script.js", request);
 
-			assert.equal(response.status, 502);
-			assert.deepEqual(await response.json(), {
+			expect(response.status).toBe(502);
+			expect(await response.json()).toEqual({
 				error: "Plausible script upstream is unavailable",
 			});
 		} finally {
@@ -57,14 +56,14 @@ describe("plausible script proxy", () => {
 
 			const response = await handlePlausibleScriptGet("script.js", request);
 
-			assert.equal(fetchedUrl, "https://plausible.io/js/script.js?foo=bar");
-			assert.equal(fetchedMethod, "GET");
-			assert.equal(forwardedUserAgent, "test-agent");
-			assert.equal(forwardedAccept, "application/javascript");
-			assert.equal(response.status, 200);
-			assert.equal(response.headers.get("content-type"), "application/javascript");
-			assert.equal(response.headers.get("cache-control"), "max-age=10");
-			assert.equal(await response.text(), "console.log('ok')");
+			expect(fetchedUrl).toBe("https://plausible.io/js/script.js?foo=bar");
+			expect(fetchedMethod).toBe("GET");
+			expect(forwardedUserAgent).toBe("test-agent");
+			expect(forwardedAccept).toBe("application/javascript");
+			expect(response.status).toBe(200);
+			expect(response.headers.get("content-type")).toBe("application/javascript");
+			expect(response.headers.get("cache-control")).toBe("max-age=10");
+			expect(await response.text()).toBe("console.log('ok')");
 		} finally {
 			globalThis.fetch = originalFetch;
 		}
@@ -90,9 +89,9 @@ describe("plausible script proxy", () => {
 
 			const response = await handlePlausibleScriptGet("script.js", request);
 
-			assert.equal(response.status, 200);
-			assert.equal(forwardedUserAgent, "");
-			assert.equal(forwardedAccept, "*/*");
+			expect(response.status).toBe(200);
+			expect(forwardedUserAgent).toBe("");
+			expect(forwardedAccept).toBe("*/*");
 		} finally {
 			globalThis.fetch = originalFetch;
 		}
@@ -112,9 +111,9 @@ describe("plausible script proxy", () => {
 
 			const response = await handlePlausibleScriptGet("missing.js", request);
 
-			assert.equal(response.status, 404);
-			assert.equal(response.headers.get("cache-control"), "max-age=0");
-			assert.equal(await response.text(), "missing");
+			expect(response.status).toBe(404);
+			expect(response.headers.get("cache-control")).toBe("max-age=0");
+			expect(await response.text()).toBe("missing");
 		} finally {
 			globalThis.fetch = originalFetch;
 		}

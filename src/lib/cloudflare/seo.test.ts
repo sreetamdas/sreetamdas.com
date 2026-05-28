@@ -1,5 +1,4 @@
-import assert from "node:assert/strict";
-import { describe, test } from "node:test";
+import { describe, expect, test } from "vitest";
 
 import { maybeHideFromSeo } from "./seo";
 
@@ -10,8 +9,8 @@ describe("maybeHideFromSeo", () => {
 
 		const result = maybeHideFromSeo(response, request);
 
-		assert.equal(result, response);
-		assert.equal(result.status, 204);
+		expect(result).toBe(response);
+		expect(result.status).toBe(204);
 	});
 
 	test("adds noindex on non-production html responses", () => {
@@ -23,10 +22,10 @@ describe("maybeHideFromSeo", () => {
 
 		const result = maybeHideFromSeo(response, request);
 
-		assert.notEqual(result, response);
-		assert.equal(result.status, 200);
-		assert.equal(result.headers.get("X-Robots-Tag"), "noindex");
-		assert.equal(result.headers.get("content-type"), "text/html");
+		expect(result).not.toBe(response);
+		expect(result.status).toBe(200);
+		expect(result.headers.get("X-Robots-Tag")).toBe("noindex");
+		expect(result.headers.get("content-type")).toBe("text/html");
 	});
 
 	test("does nothing on production hostnames", () => {
@@ -38,8 +37,8 @@ describe("maybeHideFromSeo", () => {
 
 		const result = maybeHideFromSeo(response, request);
 
-		assert.equal(result, response);
-		assert.equal(result.headers.get("X-Robots-Tag"), null);
+		expect(result).toBe(response);
+		expect(result.headers.get("X-Robots-Tag")).toBe(null);
 	});
 
 	test("does nothing on local development hostnames", () => {
@@ -51,9 +50,9 @@ describe("maybeHideFromSeo", () => {
 			headers: { "content-type": "text/html" },
 		});
 
-		assert.equal(maybeHideFromSeo(response, localRequest), response);
-		assert.equal(maybeHideFromSeo(response, ipv4Request), response);
-		assert.equal(maybeHideFromSeo(response, ipv6Request), response);
+		expect(maybeHideFromSeo(response, localRequest)).toBe(response);
+		expect(maybeHideFromSeo(response, ipv4Request)).toBe(response);
+		expect(maybeHideFromSeo(response, ipv6Request)).toBe(response);
 	});
 
 	test("preserves body and status text when cloning non-production response", async () => {
@@ -66,10 +65,10 @@ describe("maybeHideFromSeo", () => {
 
 		const result = maybeHideFromSeo(response, request);
 
-		assert.notEqual(result, response);
-		assert.equal(result.status, 200);
-		assert.equal(result.statusText, "OK");
-		assert.equal(result.headers.get("X-Robots-Tag"), "noindex");
-		assert.equal(await result.text(), "Preview HTML");
+		expect(result).not.toBe(response);
+		expect(result.status).toBe(200);
+		expect(result.statusText).toBe("OK");
+		expect(result.headers.get("X-Robots-Tag")).toBe("noindex");
+		expect(await result.text()).toBe("Preview HTML");
 	});
 });

@@ -1,17 +1,16 @@
-import assert from "node:assert/strict";
-import { describe, test } from "node:test";
+import { describe, expect, test } from "vitest";
 
 import { fetchViewCount } from "./ViewsCounter.serverFns";
 
 describe("fetchViewCount", () => {
 	test("returns zero when the Cloudflare env is unavailable", async () => {
-		assert.deepEqual(await fetchViewCount({ slug: "/about", disabled: false }, undefined), {
+		expect(await fetchViewCount({ slug: "/about", disabled: false }, undefined)).toEqual({
 			view_count: 0,
 		});
 	});
 
 	test("returns zero for disabled counters when the Cloudflare env is unavailable", async () => {
-		assert.deepEqual(await fetchViewCount({ slug: "/about", disabled: true }, undefined), {
+		expect(await fetchViewCount({ slug: "/about", disabled: true }, undefined)).toEqual({
 			view_count: 0,
 		});
 	});
@@ -33,8 +32,8 @@ describe("fetchViewCount", () => {
 
 		const result = await fetchViewCount({ slug: "/about/", disabled: false }, undefined, deps);
 
-		assert.deepEqual(result, { view_count: 7 });
-		assert.deepEqual(calls, ["getDb", "/about"]);
+		expect(result).toEqual({ view_count: 7 });
+		expect(calls).toEqual(["getDb", "/about"]);
 	});
 
 	test("does not trim the root pathname", async () => {
@@ -53,7 +52,7 @@ describe("fetchViewCount", () => {
 
 		await fetchViewCount({ slug: "/", disabled: false }, undefined, deps);
 
-		assert.equal(receivedSlug, "/");
+		expect(receivedSlug).toBe("/");
 	});
 
 	test("fails open when db dependency throws", async () => {
@@ -65,7 +64,7 @@ describe("fetchViewCount", () => {
 			upsertPageViews: async () => ({ view_count: 99 }),
 		};
 
-		assert.deepEqual(await fetchViewCount({ slug: "/about", disabled: false }, undefined, deps), {
+		expect(await fetchViewCount({ slug: "/about", disabled: false }, undefined, deps)).toEqual({
 			view_count: 0,
 		});
 	});
@@ -82,7 +81,7 @@ describe("fetchViewCount", () => {
 			},
 		};
 
-		assert.deepEqual(await fetchViewCount({ slug: "/about", disabled: false }, undefined, deps), {
+		expect(await fetchViewCount({ slug: "/about", disabled: false }, undefined, deps)).toEqual({
 			view_count: 0,
 		});
 	});
@@ -107,7 +106,7 @@ describe("fetchViewCount", () => {
 
 		const result = await fetchViewCount({ slug: "/about/", disabled: true }, undefined, deps);
 
-		assert.deepEqual(result, { view_count: 42 });
-		assert.deepEqual(calls, ["getDb", "read:/about"]);
+		expect(result).toEqual({ view_count: 42 });
+		expect(calls).toEqual(["getDb", "read:/about"]);
 	});
 });
