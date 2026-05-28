@@ -9,7 +9,10 @@ import { useGlobalStore } from "@/lib/domains/global";
 
 import { type ColorSchemeSliceType } from "./store";
 
-function parseColorScheme(value: string): NonNullable<ColorSchemeSliceType["colorScheme"]> | "" {
+type ColorScheme = NonNullable<ColorSchemeSliceType["colorScheme"]>;
+const COLOR_SCHEME_ORDER = ["system", "light", "dark"] satisfies Array<ColorScheme>;
+
+export function parseColorScheme(value: string): ColorScheme | "" {
 	if (value === "system" || value === "light" || value === "dark") return value;
 	return "";
 }
@@ -32,44 +35,34 @@ function getSystemColorSchemePreference(): Extract<
 	return "light";
 }
 
-enum COLOR_SCHEME {
-	system = 0,
-	light = 1,
-	dark = 2,
+export function getNextColorScheme(current: ColorScheme | undefined): ColorScheme {
+	const currentIndex = COLOR_SCHEME_ORDER.findIndex((scheme) => scheme === current);
+	if (currentIndex === -1) {
+		return "system";
+	}
+
+	return COLOR_SCHEME_ORDER[(currentIndex + 1) % COLOR_SCHEME_ORDER.length];
 }
-type COLOR_SCHEMES = keyof typeof COLOR_SCHEME;
-const COLOR_SCHEME_ORDER: COLOR_SCHEMES[] = ["system", "light", "dark"];
 
-function* colorSchemeGenerator(): Generator<COLOR_SCHEMES, never, COLOR_SCHEMES | undefined> {
-	let current = COLOR_SCHEME.system;
+export function applyDocumentColorScheme(preference: Extract<ColorScheme, "light" | "dark">) {
+	switch (preference) {
+		case "dark":
+			document.documentElement.setAttribute("data-color-scheme", "dark");
+			break;
 
-	while (true) {
-		const override: COLOR_SCHEMES | undefined = yield COLOR_SCHEME_ORDER[current];
-
-		current = (current + 1) % 3;
-		if (override) {
-			current = COLOR_SCHEME[override];
-		}
+		default: // "light"
+			document.documentElement.removeAttribute("data-color-scheme");
+			break;
 	}
 }
 
-const colorSchemeIterator = colorSchemeGenerator();
-export const ColorSchemeToggle = () => {
+export const ColorSchemeSync = () => {
 	const { colorScheme, setColorScheme } = useGlobalStore(
 		useShallow((state) => ({
 			colorScheme: state.colorScheme,
 			setColorScheme: state.setColorScheme,
 		})),
 	);
-
-	function handleColorSchemeToggle(
-		override?: Exclude<ReturnType<typeof getDocumentColorScheme>, "">,
-	) {
-		const { value } = colorSchemeIterator.next(override);
-
-		setColorScheme(value);
-		window.localStorage.setItem("color-scheme", value);
-	}
 
 	function handleSystemColorSchemePreference(isColorSchemeDark?: boolean) {
 		const preference =
@@ -79,50 +72,65 @@ export const ColorSchemeToggle = () => {
 					? "dark"
 					: "light";
 
-		switch (preference) {
-			case "dark":
-				document.documentElement.setAttribute("data-color-scheme", "dark");
-				break;
-
-			default: // "light"
-				document.documentElement.removeAttribute("data-color-scheme");
-				break;
-		}
+		applyDocumentColorScheme(preference);
 	}
 
 	useEffect(() => {
 		const documentColorScheme = getDocumentColorScheme();
 
 		if (documentColorScheme === "") {
-			handleColorSchemeToggle("system");
+			setColorScheme("system");
 		} else {
-			handleColorSchemeToggle(documentColorScheme);
+			setColorScheme(documentColorScheme);
 		}
-
-		const colorSchemeDarkMediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
-		function colorSchemeChangeListener() {
-			handleSystemColorSchemePreference(colorSchemeDarkMediaQuery.matches);
-		}
-
-		colorSchemeDarkMediaQuery.addEventListener("change", colorSchemeChangeListener);
-
-		return () => colorSchemeDarkMediaQuery.removeEventListener("change", colorSchemeChangeListener);
 	}, []);
 
 	useEffect(() => {
+		if (colorScheme === undefined) {
+			return undefined;
+		}
+
+		window.localStorage.setItem("color-scheme", colorScheme);
+
 		switch (colorScheme) {
-			case "system":
+			case "system": {
 				handleSystemColorSchemePreference();
-				break;
+				const colorSchemeDarkMediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+				function colorSchemeChangeListener() {
+					handleSystemColorSchemePreference(colorSchemeDarkMediaQuery.matches);
+				}
+
+				colorSchemeDarkMediaQuery.addEventListener("change", colorSchemeChangeListener);
+
+				return () =>
+					colorSchemeDarkMediaQuery.removeEventListener("change", colorSchemeChangeListener);
+			}
 			case "dark":
-				document.documentElement.setAttribute("data-color-scheme", "dark");
+				applyDocumentColorScheme("dark");
 				break;
 
 			default: // "light"
-				document.documentElement.removeAttribute("data-color-scheme");
+				applyDocumentColorScheme("light");
 				break;
 		}
+
+		return undefined;
 	}, [colorScheme]);
+
+	return null;
+};
+
+export const ColorSchemeToggle = () => {
+	const { colorScheme, setColorScheme } = useGlobalStore(
+		useShallow((state) => ({
+			colorScheme: state.colorScheme,
+			setColorScheme: state.setColorScheme,
+		})),
+	);
+
+	function handleColorSchemeToggle() {
+		setColorScheme(getNextColorScheme(colorScheme));
+	}
 
 	return (
 		<button
