@@ -9,13 +9,23 @@ function safe(cmd) {
 	}
 }
 
+const branch =
+	process.env.WORKERS_CI_BRANCH ||
+	process.env.CF_PAGES_BRANCH ||
+	process.env.GITHUB_HEAD_REF ||
+	process.env.GITHUB_REF_NAME ||
+	safe("git rev-parse --abbrev-ref HEAD");
+
+const commitSha =
+	process.env.WORKERS_CI_COMMIT_SHA ||
+	process.env.CF_PAGES_COMMIT_SHA ||
+	process.env.GITHUB_SHA ||
+	safe("git rev-parse HEAD");
+
 const info = {
-	branch:
-		process.env.WORKERS_CI_BRANCH ||
-		process.env.CF_PAGES_BRANCH ||
-		safe("git rev-parse --abbrev-ref HEAD"),
-	commit: safe("git rev-parse --short HEAD"),
-	commitUrl: safe("git rev-parse HEAD"),
+	branch,
+	commit: commitSha.slice(0, 7),
+	commitUrl: commitSha,
 	time: new Date().toISOString(),
 };
 
