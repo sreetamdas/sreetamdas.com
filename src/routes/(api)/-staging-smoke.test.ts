@@ -27,7 +27,7 @@ describe("handleStagingSmokeGet", () => {
 		assert.equal(response.headers.get("cache-control"), "no-store");
 		assert.match(response.headers.get("content-type") ?? "", /^application\/json/);
 		assert.deepEqual(await response.json(), {
-			marker: "staging-smoke-2026-05-28",
+			marker: "staging-smoke-2026-05-28-foobar-docs",
 			ok: true,
 			purpose: "staging-deploy-verification",
 		});

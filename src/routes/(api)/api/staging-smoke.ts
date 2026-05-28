@@ -5,7 +5,7 @@ import { createFileRoute } from "@tanstack/react-router";
  * has reached the Cloudflare Workers staging hostname without exposing the
  * diagnostic endpoint on production.
  */
-const STAGING_SMOKE_MARKER = "staging-smoke-2026-05-28";
+const STAGING_SMOKE_MARKER = "staging-smoke-2026-05-28-foobar-docs";
 const STAGING_SMOKE_HOSTS = new Set([
 	"staging.sreetamdas.com",
 	"dev.sreetamdas.com",
