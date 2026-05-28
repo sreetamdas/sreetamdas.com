@@ -4,7 +4,7 @@ import { renderServerComponent } from "@tanstack/react-start/rsc";
 import { allBlogPosts } from "content-collections";
 import { isNil } from "lodash-es";
 
-import { SITE_DESCRIPTION, SITE_TITLE_APPEND } from "@/config";
+import { IS_DEV, SITE_DESCRIPTION, SITE_TITLE_APPEND } from "@/config";
 import { NotFound404 } from "@/lib/components/Error";
 import { MDXContent } from "@/lib/components/MDX";
 import { ReadingProgress } from "@/lib/components/ProgressBar";
@@ -12,6 +12,7 @@ import { InfoBlock } from "@/lib/components/sink";
 import { Gradient } from "@/lib/components/Typography";
 import { ChameleonHighlight, Sparkles } from "@/lib/components/TypographyClient";
 import { ViewsCounter } from "@/lib/components/ViewsCounter";
+import { shouldServeBlogPost } from "@/lib/content/visibility";
 import { absoluteUrl, canonicalUrl, defaultOgImageUrl } from "@/lib/seo";
 
 import {
@@ -26,10 +27,10 @@ type BlogLoaderData = {
 	post: BlogPost;
 	Renderable: unknown;
 };
-async function getBlogContent(slug: string): Promise<BlogPost> {
+async function getBlogContent(slug: string, includeDrafts: boolean): Promise<BlogPost> {
 	const post = blogPosts.find((page) => page.page_slug === slug);
 
-	if (isNil(post)) {
+	if (isNil(post) || !shouldServeBlogPost(post, { includeDrafts })) {
 		throw notFound();
 	}
 
@@ -84,7 +85,7 @@ const getBlogRenderable = createServerFn({ method: "GET" })
 		return { slug: data.slug };
 	})
 	.handler(async ({ data }) => {
-		const post = await getBlogContent(data.slug);
+		const post = await getBlogContent(data.slug, IS_DEV);
 		const Renderable = await renderServerComponent(
 			<MDXContent
 				source={post.raw}

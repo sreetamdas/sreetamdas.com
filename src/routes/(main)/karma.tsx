@@ -1,6 +1,4 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { createServerFn } from "@tanstack/react-start";
-import { renderServerComponent } from "@tanstack/react-start/rsc";
 
 import { SITE_TITLE_APPEND, SITE_URL } from "@/config";
 import { KarmaShowcase } from "@/lib/components/KarmaShowcase";
@@ -10,7 +8,6 @@ import { canonicalUrl } from "@/lib/seo";
 export const Route = createFileRoute("/(main)/karma")({
 	component: KarmaPage,
 	staleTime: 1000 * 60 * 60 * 24,
-	loader: () => getKarmaRenderable(),
 	head: () => ({
 		links: [{ rel: "canonical", href: canonicalUrl("/karma") }],
 		meta: [
@@ -53,31 +50,6 @@ export const Route = createFileRoute("/(main)/karma")({
 });
 
 function KarmaPage() {
-	const { Renderable } = Route.useLoaderData();
-
-	return <>{Renderable}</>;
-}
-
-const getKarmaRenderable = createServerFn({ method: "GET" }).handler(async () => {
-	const examples = await getShowcaseImages();
-	const Renderable = await renderServerComponent(<KarmaContent examples={examples} />);
-
-	return { Renderable };
-});
-
-function KarmaContent({
-	examples,
-}: {
-	examples: Array<{
-		name: string;
-		dark: {
-			src: string;
-		};
-		light: {
-			src: string;
-		};
-	}>;
-}) {
 	return (
 		<>
 			<h1 className="pt-10 pb-20 text-center font-serif text-9xl leading-none font-bold">Karma</h1>
@@ -85,74 +57,72 @@ function KarmaContent({
 				A colorful VS Code theme
 			</p>
 
-			<KarmaShowcase examples={examples} />
+			<KarmaShowcase examples={showcaseImages} />
 
 			<ViewsCounter />
 		</>
 	);
 }
 
-async function getShowcaseImages() {
-	return theme_language_map.map(({ name, default_image, light_image }) => ({
-		name,
-		dark: {
-			src: default_image,
-		},
-		light: {
-			src: light_image,
-		},
-	}));
-}
-
-const theme_language_map = [
+const themeLanguageMap = [
 	{
 		name: "React",
-		default_image: "/karma/default/react.webp",
-		light_image: "/karma/light/react.webp",
+		defaultImage: "/karma/default/react.webp",
+		lightImage: "/karma/light/react.webp",
 	},
 	{
 		name: "Elixir",
-		default_image: "/karma/default/elixir.webp",
-		light_image: "/karma/light/elixir.webp",
+		defaultImage: "/karma/default/elixir.webp",
+		lightImage: "/karma/light/elixir.webp",
 	},
 	{
 		name: "CSS",
-		default_image: "/karma/default/css.webp",
-		light_image: "/karma/light/css.webp",
+		defaultImage: "/karma/default/css.webp",
+		lightImage: "/karma/light/css.webp",
 	},
 	{
 		name: "Go",
-		default_image: "/karma/default/go.webp",
-		light_image: "/karma/light/go.webp",
+		defaultImage: "/karma/default/go.webp",
+		lightImage: "/karma/light/go.webp",
 	},
 	{
 		name: "Phoenix",
-		default_image: "/karma/default/phoenix.webp",
-		light_image: "/karma/light/phoenix.webp",
+		defaultImage: "/karma/default/phoenix.webp",
+		lightImage: "/karma/light/phoenix.webp",
 	},
 	{
 		name: "Python",
-		default_image: "/karma/default/python.webp",
-		light_image: "/karma/light/python.webp",
+		defaultImage: "/karma/default/python.webp",
+		lightImage: "/karma/light/python.webp",
 	},
 	{
 		name: "Rust",
-		default_image: "/karma/default/rust.webp",
-		light_image: "/karma/light/rust.webp",
+		defaultImage: "/karma/default/rust.webp",
+		lightImage: "/karma/light/rust.webp",
 	},
 	{
 		name: "Svelte",
-		default_image: "/karma/default/svelte.webp",
-		light_image: "/karma/light/svelte.webp",
+		defaultImage: "/karma/default/svelte.webp",
+		lightImage: "/karma/light/svelte.webp",
 	},
 	{
 		name: "TypeScript",
-		default_image: "/karma/default/typescript.webp",
-		light_image: "/karma/light/typescript.webp",
+		defaultImage: "/karma/default/typescript.webp",
+		lightImage: "/karma/light/typescript.webp",
 	},
 	{
 		name: "Vue",
-		default_image: "/karma/default/vue.webp",
-		light_image: "/karma/light/vue.webp",
+		defaultImage: "/karma/default/vue.webp",
+		lightImage: "/karma/light/vue.webp",
 	},
-];
+] as const;
+
+const showcaseImages = themeLanguageMap.map(({ name, defaultImage, lightImage }) => ({
+	name,
+	dark: {
+		src: defaultImage,
+	},
+	light: {
+		src: lightImage,
+	},
+}));

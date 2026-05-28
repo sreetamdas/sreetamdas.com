@@ -8,25 +8,12 @@ export { PresenceDurableObject } from "./lib/cloudflare/PresenceDurableObject";
 
 type TanStackRequestOptions = Parameters<typeof handler.fetch>[1];
 
-function isTanStackRequestOptions(value: unknown): value is TanStackRequestOptions {
-	if (typeof value !== "object" || value === null || !("context" in value)) {
-		return false;
-	}
-
-	return typeof value.context === "object" && value.context !== null && "env" in value.context;
-}
-
-function toTanStackRequestOptions(
-	env: CloudflareEnv,
-	_context: ExecutionContext,
-): TanStackRequestOptions {
-	const options = {
+function toTanStackRequestOptions(env: CloudflareEnv): TanStackRequestOptions {
+	return {
 		context: {
 			env,
 		},
-	} satisfies TanStackRequestOptions;
-
-	return options;
+	};
 }
 
 function fetchWithSeo(request: Request, opts: TanStackRequestOptions) {
@@ -38,18 +25,11 @@ function fetchWithSeo(request: Request, opts: TanStackRequestOptions) {
 }
 
 const serverEntry = createServerEntry({
-	fetch: (request, opts) => {
-		if (!isTanStackRequestOptions(opts)) {
-			return new Response("Invalid request context", { status: 500 });
-		}
-
-		return fetchWithSeo(request, opts);
-	},
+	fetch: fetchWithSeo,
 });
 
 const exportedHandler: ExportedHandler<CloudflareEnv> = {
-	fetch: (request, env, context) =>
-		serverEntry.fetch(request, toTanStackRequestOptions(env, context)),
+	fetch: (request, env) => serverEntry.fetch(request, toTanStackRequestOptions(env)),
 };
 
 // createServerEntry returns TanStack's narrower server-entry shape; Sentry expects ExportedHandler.

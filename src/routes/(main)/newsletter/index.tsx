@@ -6,13 +6,14 @@ import { staticFunctionMiddleware } from "@tanstack/start-static-server-function
 import { SITE_TITLE_APPEND } from "@/config";
 import { ViewsCounter } from "@/lib/components/ViewsCounter";
 import { canonicalUrl, defaultOgImageUrl } from "@/lib/seo";
+import { STATIC_SERVER_FUNCTION_STALE_TIME } from "@/lib/static-server-functions";
 
 import { NewsletterEmailsPreviews } from "./-components";
 import { fetchNewsletterEmails, getButtondownApiKey } from "./-helpers";
 
 export const Route = createFileRoute("/(main)/newsletter/")({
 	component: NewsletterEmailsPage,
-	staleTime: 1000 * 60 * 10,
+	staleTime: STATIC_SERVER_FUNCTION_STALE_TIME,
 	loader: async () => {
 		return getNewsletterEmailsPreviewsRenderable();
 	},

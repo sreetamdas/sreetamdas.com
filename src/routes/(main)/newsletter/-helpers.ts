@@ -1,11 +1,11 @@
-import { readEnvString } from "@/lib/helpers/utils";
+import { readServerEnvString } from "@/lib/helpers/utils";
 
 import { BUTTONDOWN_EMAIL_MOCKS } from "./-mocks";
 
 const BUTTONDOWN_BASE_URL = "https://api.buttondown.email/v1";
 
 export function getButtondownApiKey(env: CloudflareEnv): string | undefined {
-	return readEnvString(env, ["BUTTONDOWN_API_KEY"]);
+	return readServerEnvString(env, ["BUTTONDOWN_API_KEY"]);
 }
 
 export type ButtondownAPISubscribersResponse = {
