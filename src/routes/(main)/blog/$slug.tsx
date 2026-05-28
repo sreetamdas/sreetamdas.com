@@ -13,6 +13,7 @@ import { Gradient } from "@/lib/components/Typography";
 import { ChameleonHighlight, Sparkles } from "@/lib/components/TypographyClient";
 import { ViewsCounter } from "@/lib/components/ViewsCounter";
 import { shouldServeBlogPost } from "@/lib/content/visibility";
+import { cn } from "@/lib/helpers/utils";
 import { absoluteUrl, canonicalUrl, defaultOgImageUrl } from "@/lib/seo";
 
 import {
@@ -108,11 +109,18 @@ const getBlogRenderable = createServerFn({ method: "GET" })
 
 function RouteComponent() {
 	const { post, Renderable } = Route.useLoaderData();
+	const shouldUseCompactTitle = post.page_slug === "chameleon-text";
 
 	return (
 		<>
 			<ReadingProgress />
-			<h1 className="pt-10 font-serif text-[clamp(3rem,14vw,6rem)] leading-[0.95] font-bold [text-wrap:balance] break-words">
+			<h1
+				className={cn(
+					"pt-10 font-serif text-8xl font-bold",
+					shouldUseCompactTitle &&
+						"max-sm:text-[clamp(3rem,14vw,6rem)] max-sm:leading-[0.95] max-sm:[text-wrap:balance] max-sm:break-words",
+				)}
+			>
 				<Gradient>{post.title}</Gradient>
 			</h1>
 			<p className="text-foreground/60 pb-20 text-sm">
