@@ -4,6 +4,7 @@ import { HeadContent, Outlet, Scripts, createRootRoute } from "@tanstack/react-r
 import { type ReactNode, useEffect, useState } from "react";
 
 import { IS_DEV, SITE_TITLE_APPEND } from "@/config";
+import { ColorSchemeSync } from "@/lib/domains/colorScheme/client";
 import { FOOBAR_SOURCE_CODE } from "@/lib/domains/foobar/helpers";
 import { captureException } from "@/lib/domains/Sentry";
 
@@ -154,6 +155,7 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
 				<HeadContent />
 			</head>
 			<body className="bg-background text-foreground selection:bg-secondary selection:text-background min-h-screen">
+				<ColorSchemeSync />
 				{children}
 				<Scripts />
 			</body>
