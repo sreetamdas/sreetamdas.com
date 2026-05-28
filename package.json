@@ -47,7 +47,7 @@
 		"lint-staged": "vp staged"
 	},
 	"dependencies": {
-		"@cloudflare/vite-plugin": "^1.38.0",
+		"@cloudflare/vite-plugin": "^1.39.0",
 		"@fontsource-variable/bricolage-grotesque": "^5.2.10",
 		"@fontsource-variable/inter": "^5.2.8",
 		"@notionhq/client": "^5.22.0",
@@ -55,18 +55,18 @@
 		"@radix-ui/react-dialog": "^1.1.15",
 		"@radix-ui/react-switch": "^1.2.6",
 		"@radix-ui/react-visually-hidden": "^1.2.4",
-		"@remoteoss/json-schema-form": "^1.2.11",
-		"@sentry/cloudflare": "^10.53.1",
-		"@sentry/tanstackstart-react": "^10.53.1",
+		"@remoteoss/json-schema-form": "^1.2.12",
+		"@sentry/cloudflare": "^10.54.0",
+		"@sentry/tanstackstart-react": "^10.54.0",
 		"@shikijs/colorized-brackets": "^4.1.0",
 		"@shikijs/langs-precompiled": "^4.1.0",
 		"@sreetamdas/karma": "^3.1.1",
 		"@tailwindcss/vite": "^4.3.0",
 		"@tanstack/hotkeys": "^0.8.0",
-		"@tanstack/react-query": "^5.100.13",
-		"@tanstack/react-query-devtools": "^5.100.13",
-		"@tanstack/react-router": "^1.170.7",
-		"@tanstack/react-start": "^1.168.13",
+		"@tanstack/react-query": "^5.100.14",
+		"@tanstack/react-query-devtools": "^5.100.14",
+		"@tanstack/react-router": "^1.170.8",
+		"@tanstack/react-start": "^1.168.14",
 		"@tanstack/start-static-server-functions": "^1.167.9",
 		"clsx": "^2.1.1",
 		"drizzle-orm": "1.0.0-beta.15-859cf75",
@@ -90,9 +90,9 @@
 		"zustand": "^5.0.13"
 	},
 	"devDependencies": {
-		"@cloudflare/vitest-pool-workers": "^0.16.9",
+		"@cloudflare/vitest-pool-workers": "^0.16.10",
 		"@content-collections/cli": "^0.1.9",
-		"@content-collections/core": "^0.15.0",
+		"@content-collections/core": "^0.15.1",
 		"@content-collections/vite": "^0.3.0",
 		"@octokit/types": "^16.0.0",
 		"@playwright/test": "^1.60.0",
@@ -103,7 +103,7 @@
 		"@types/react": "^19.2.15",
 		"@types/react-dom": "^19.2.3",
 		"@types/unist": "~3.0.3",
-		"@typescript/native-preview": "7.0.0-dev.20260523.1",
+		"@typescript/native-preview": "7.0.0-dev.20260527.2",
 		"@vitejs/plugin-react": "^6.0.2",
 		"@vitejs/plugin-rsc": "^0.5.26",
 		"better-sqlite3": "^12.10.0",
@@ -112,8 +112,8 @@
 		"tsx": "^4.22.3",
 		"typescript": "^6.0.3",
 		"vite-plus": "catalog:",
-		"vitest": "^4.1.1",
-		"wrangler": "^4.94.0"
+		"vitest": "npm:@voidzero-dev/vite-plus-test@latest",
+		"wrangler": "^4.95.0"
 	},
 	"engines": {
 		"node": "24"
