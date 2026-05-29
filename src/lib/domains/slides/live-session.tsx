@@ -3,7 +3,8 @@
 /**
  * Client wiring for live slide sessions. A `live` URL param joins a Durable
  * Object room; `master=1` makes the tab the presenter controller, while normal
- * viewers follow the presenter's slide/step and can vote in the active poll.
+ * viewers follow the presenter's slide/step, vote in slide polls, and send
+ * lightweight reactions that briefly appear on the presenter's screen.
  */
 import { useCallback, useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 
@@ -27,11 +28,25 @@ export type SlidePoll = {
 	id: string;
 	question: string;
 	open: boolean;
+	slide: number | null;
 	options: Array<{
 		id: string;
 		label: string;
 		votes: number;
 	}>;
+};
+
+export type SlideSessionPollDefinition = {
+	slide: number;
+	question: string;
+	options: Array<string>;
+};
+
+export type SlideSessionReaction = {
+	id: string;
+	emoji: string;
+	createdAt: number;
+	x: number;
 };
 
 type UseSlideSessionParams = {
@@ -44,13 +59,16 @@ type UseSlideSessionParams = {
 
 type OutgoingMessage =
 	| { type: "set-slide"; slide: number; step: number }
-	| { type: "create-poll"; question: string; options: Array<string> }
+	| { type: "create-poll"; question: string; options: Array<string>; slide?: number | null }
 	| { type: "vote"; pollId: string; optionId: string }
+	| { type: "reaction"; emoji: string }
 	| { type: "close-poll" }
 	| { type: "reset-poll" };
 
 const CLIENT_ID_KEY = "slides-live-client-id";
 const PING_INTERVAL_MS = 30_000;
+const REACTION_EMOJIS = ["👍", "👏", "😂", "🤯", "❤️"];
+const REACTION_TTL_MS = 4_000;
 
 export function useSlideSession({
 	sessionId,
@@ -61,6 +79,7 @@ export function useSlideSession({
 }: UseSlideSessionParams) {
 	const [snapshot, setSnapshot] = useState<SlideSessionSnapshot | null>(null);
 	const [connected, setConnected] = useState(false);
+	const [reactions, setReactions] = useState<Array<SlideSessionReaction>>([]);
 	const wsRef = useRef<WebSocket | null>(null);
 	const pingTimerRef = useRef<ReturnType<typeof setInterval>>(undefined);
 	const lastSentPositionRef = useRef("");
@@ -109,11 +128,20 @@ export function useSlideSession({
 			} catch {
 				return;
 			}
-			if (!isSlideSessionSnapshot(parsed)) return;
 
-			setSnapshot(parsed);
-			if (role === "viewer") {
-				onRemoteNavigateRef.current(parsed.position.slide, parsed.position.step);
+			if (isSlideSessionSnapshot(parsed)) {
+				setSnapshot(parsed);
+				if (role === "viewer") {
+					onRemoteNavigateRef.current(parsed.position.slide, parsed.position.step);
+				}
+				return;
+			}
+
+			if (isLiveReaction(parsed)) {
+				setReactions((current) => [
+					...current,
+					{ ...parsed, x: 20 + Math.round(Math.random() * 60) },
+				]);
 			}
 		};
 
@@ -149,17 +177,30 @@ export function useSlideSession({
 		send({ type: "set-slide", slide: localSlide, step: localStep });
 	}, [connected, localSlide, localStep, role, send, sessionId]);
 
+	useEffect(() => {
+		if (reactions.length === 0) return;
+		const timer = setTimeout(() => {
+			const now = Date.now();
+			setReactions((current) =>
+				current.filter((reaction) => now - reaction.createdAt < REACTION_TTL_MS),
+			);
+		}, REACTION_TTL_MS);
+		return () => clearTimeout(timer);
+	}, [reactions]);
+
 	return useMemo(
 		() => ({
 			connected,
 			snapshot,
-			createPoll: (question: string, options: Array<string>) =>
-				send({ type: "create-poll", question, options }),
+			reactions,
+			createPoll: (question: string, options: Array<string>, slide?: number | null) =>
+				send({ type: "create-poll", question, options, slide }),
 			vote: (pollId: string, optionId: string) => send({ type: "vote", pollId, optionId }),
+			sendReaction: (emoji: string) => send({ type: "reaction", emoji }),
 			closePoll: () => send({ type: "close-poll" }),
 			resetPoll: () => send({ type: "reset-poll" }),
 		}),
-		[connected, send, snapshot],
+		[connected, reactions, send, snapshot],
 	);
 }
 
@@ -168,8 +209,12 @@ export function SlideSessionOverlay({
 	role,
 	connected,
 	snapshot,
+	currentSlide,
+	pollDefinitions = [],
+	reactions,
 	createPoll,
 	vote,
+	sendReaction,
 	closePoll,
 	resetPoll,
 }: {
@@ -177,15 +222,87 @@ export function SlideSessionOverlay({
 	role: SlideSessionRole;
 	connected: boolean;
 	snapshot: SlideSessionSnapshot | null;
-	createPoll: (question: string, options: Array<string>) => void;
+	currentSlide: number;
+	pollDefinitions?: Array<SlideSessionPollDefinition>;
+	reactions: Array<SlideSessionReaction>;
+	createPoll: (question: string, options: Array<string>, slide?: number | null) => void;
 	vote: (pollId: string, optionId: string) => void;
+	sendReaction: (emoji: string) => void;
 	closePoll: () => void;
 	resetPoll: () => void;
+}) {
+	const [open, setOpen] = useState(false);
+	const activeSlide = role === "viewer" ? (snapshot?.position.slide ?? currentSlide) : currentSlide;
+	const visiblePoll = getVisiblePoll(snapshot?.poll ?? null, role, activeSlide);
+	const slidePolls = pollDefinitions.filter((poll) => poll.slide === activeSlide);
+	const totalVotes = visiblePoll?.options.reduce((sum, option) => sum + option.votes, 0) ?? 0;
+
+	return (
+		<>
+			{role === "master" ? <ReactionBursts reactions={reactions} /> : null}
+			<div className="pointer-events-none fixed right-4 bottom-4 z-50 text-sm">
+				{role === "master" ? (
+					<MasterLiveControl
+						connected={connected}
+						createPoll={createPoll}
+						currentSlide={activeSlide}
+						open={open}
+						poll={visiblePoll}
+						resetPoll={resetPoll}
+						closePoll={closePoll}
+						sessionId={sessionId}
+						setOpen={setOpen}
+						slidePolls={slidePolls}
+						snapshot={snapshot}
+						totalVotes={totalVotes}
+					/>
+				) : (
+					<ViewerLiveButton
+						connected={connected}
+						open={open}
+						poll={visiblePoll}
+						sendReaction={sendReaction}
+						setOpen={setOpen}
+						snapshot={snapshot}
+						totalVotes={totalVotes}
+						vote={vote}
+					/>
+				)}
+			</div>
+		</>
+	);
+}
+
+function MasterLiveControl({
+	connected,
+	createPoll,
+	currentSlide,
+	open,
+	poll,
+	resetPoll,
+	closePoll,
+	sessionId,
+	setOpen,
+	slidePolls,
+	snapshot,
+	totalVotes,
+}: {
+	connected: boolean;
+	createPoll: (question: string, options: Array<string>, slide?: number | null) => void;
+	currentSlide: number;
+	open: boolean;
+	poll: SlidePoll | null;
+	resetPoll: () => void;
+	closePoll: () => void;
+	sessionId: string;
+	setOpen: (open: boolean) => void;
+	slidePolls: Array<SlideSessionPollDefinition>;
+	snapshot: SlideSessionSnapshot | null;
+	totalVotes: number;
 }) {
 	const [question, setQuestion] = useState("");
 	const [options, setOptions] = useState("Yes,No");
 	const viewerLink = typeof window === "undefined" ? "" : getViewerLink(sessionId);
-	const totalVotes = snapshot?.poll?.options.reduce((sum, option) => sum + option.votes, 0) ?? 0;
 
 	function handleCreatePoll(event: FormEvent<HTMLFormElement>) {
 		event.preventDefault();
@@ -193,68 +310,175 @@ export function SlideSessionOverlay({
 			.split(",")
 			.map((option) => option.trim())
 			.filter(Boolean);
-		createPoll(question, cleanOptions);
+		createPoll(question, cleanOptions, currentSlide);
 		setQuestion("");
 	}
 
+	if (!open) {
+		return (
+			<button
+				className="pointer-events-auto rounded-full border border-white/15 bg-black/75 px-3 py-2 text-xs text-white shadow-xl backdrop-blur transition hover:bg-black/90"
+				onClick={() => setOpen(true)}
+				type="button"
+			>
+				Live · {connected ? "on" : "…"} · {snapshot?.viewers ?? 0} viewers
+			</button>
+		);
+	}
+
 	return (
-		<div className="pointer-events-none fixed inset-x-4 bottom-4 z-50 flex justify-center text-sm">
-			<div className="pointer-events-auto w-full max-w-xl rounded-2xl border border-white/20 bg-black/80 p-4 text-white shadow-2xl backdrop-blur">
-				<div className="flex flex-wrap items-center justify-between gap-2">
-					<div>
-						<p className="m-0 font-mono text-xs tracking-[0.25em] text-white/50 uppercase">
-							{role === "master" ? "Presenter control" : "Live viewer"}
-						</p>
-						<p className="m-0 mt-1">
-							<code className="rounded bg-white/10 px-1 py-0.5 font-mono text-xs">{sessionId}</code>{" "}
-							· {connected ? "connected" : "connecting"} · {snapshot?.viewers ?? 0} viewers
-						</p>
-					</div>
-					{role === "viewer" ? (
-						<p className="m-0 rounded-full bg-white/10 px-3 py-1 text-xs">
-							Slides are controlled by the presenter
-						</p>
-					) : null}
+		<div className="pointer-events-auto w-80 rounded-2xl border border-white/15 bg-black/80 p-3 text-white shadow-2xl backdrop-blur">
+			<div className="flex items-start justify-between gap-3">
+				<div>
+					<p className="m-0 font-mono text-[0.65rem] tracking-[0.22em] text-white/50 uppercase">
+						Presenter
+					</p>
+					<p className="m-0 mt-1 text-xs text-white/70">
+						Slide {currentSlide + 1} · {connected ? "connected" : "connecting"} ·{" "}
+						{snapshot?.viewers ?? 0} viewers
+					</p>
 				</div>
+				<button
+					className="rounded-full bg-white/10 px-2 py-1 text-xs hover:bg-white/20"
+					onClick={() => setOpen(false)}
+					type="button"
+				>
+					Hide
+				</button>
+			</div>
+			<div className="mt-3 rounded-xl bg-white/10 p-2">
+				<p className="m-0 text-[0.65rem] text-white/60 uppercase">Viewer link</p>
+				<code className="mt-1 block max-h-12 overflow-auto text-[0.65rem] break-all text-white/80">
+					{viewerLink}
+				</code>
+			</div>
 
-				{role === "master" ? (
-					<div className="mt-3 rounded-xl bg-white/10 p-3">
-						<p className="m-0 text-xs text-white/70">Viewer link</p>
-						<code className="mt-1 block overflow-x-auto rounded bg-black/30 p-2 text-xs">
-							{viewerLink}
-						</code>
-					</div>
-				) : null}
-
-				{snapshot?.poll ? (
-					<PollPanel
-						poll={snapshot.poll}
-						role={role}
-						totalVotes={totalVotes}
-						vote={vote}
-						closePoll={closePoll}
-						resetPoll={resetPoll}
-					/>
-				) : role === "master" ? (
-					<form className="mt-3 grid gap-2" onSubmit={handleCreatePoll}>
+			{poll ? (
+				<PollPanel
+					closePoll={closePoll}
+					poll={poll}
+					resetPoll={resetPoll}
+					role="master"
+					totalVotes={totalVotes}
+				/>
+			) : (
+				<div className="mt-3 grid gap-2">
+					{slidePolls.length > 0 ? (
+						<div className="rounded-xl bg-white/10 p-2">
+							<p className="m-0 text-[0.65rem] text-white/60 uppercase">Slide polls</p>
+							<div className="mt-2 grid gap-2">
+								{slidePolls.map((slidePoll) => (
+									<button
+										className="rounded-lg border border-white/15 bg-white/10 px-3 py-2 text-left text-xs hover:bg-white/20"
+										key={`${slidePoll.slide}:${slidePoll.question}`}
+										onClick={() =>
+											createPoll(slidePoll.question, slidePoll.options, slidePoll.slide)
+										}
+										type="button"
+									>
+										{slidePoll.question}
+									</button>
+								))}
+							</div>
+						</div>
+					) : null}
+					<form className="grid gap-2" onSubmit={handleCreatePoll}>
 						<input
-							className="rounded-lg border border-white/20 bg-white/10 px-3 py-2 text-white placeholder:text-white/40"
-							placeholder="Poll question"
+							className="rounded-lg border border-white/15 bg-white/10 px-3 py-2 text-xs text-white placeholder:text-white/40"
+							placeholder="Custom poll question"
 							value={question}
 							onChange={(event) => setQuestion(event.target.value)}
 						/>
 						<input
-							className="rounded-lg border border-white/20 bg-white/10 px-3 py-2 text-white placeholder:text-white/40"
+							className="rounded-lg border border-white/15 bg-white/10 px-3 py-2 text-xs text-white placeholder:text-white/40"
 							placeholder="Comma-separated options"
 							value={options}
 							onChange={(event) => setOptions(event.target.value)}
 						/>
-						<button className="bg-primary text-background rounded-lg px-3 py-2" type="submit">
-							Start poll
+						<button
+							className="bg-primary text-background rounded-lg px-3 py-2 text-xs"
+							type="submit"
+						>
+							Start poll for this slide
 						</button>
 					</form>
-				) : null}
-			</div>
+				</div>
+			)}
+		</div>
+	);
+}
+
+function ViewerLiveButton({
+	connected,
+	open,
+	poll,
+	sendReaction,
+	setOpen,
+	snapshot,
+	totalVotes,
+	vote,
+}: {
+	connected: boolean;
+	open: boolean;
+	poll: SlidePoll | null;
+	sendReaction: (emoji: string) => void;
+	setOpen: (open: boolean) => void;
+	snapshot: SlideSessionSnapshot | null;
+	totalVotes: number;
+	vote: (pollId: string, optionId: string) => void;
+}) {
+	return (
+		<div className="pointer-events-auto flex flex-col items-end gap-2">
+			{open ? (
+				<div className="w-72 rounded-2xl border border-white/15 bg-black/80 p-3 text-white shadow-2xl backdrop-blur">
+					<div className="flex items-start justify-between gap-3">
+						<div>
+							<p className="m-0 font-mono text-[0.65rem] tracking-[0.22em] text-white/50 uppercase">
+								Live
+							</p>
+							<p className="m-0 mt-1 text-xs text-white/70">
+								{connected ? "connected" : "connecting"} · {snapshot?.viewers ?? 0} viewers
+							</p>
+						</div>
+						<button
+							className="rounded-full bg-white/10 px-2 py-1 text-xs hover:bg-white/20"
+							onClick={() => setOpen(false)}
+							type="button"
+						>
+							Hide
+						</button>
+					</div>
+					<div className="mt-3 flex gap-2">
+						{REACTION_EMOJIS.map((emoji) => (
+							<button
+								className="rounded-full bg-white/10 px-2 py-1 text-base hover:bg-white/20"
+								key={emoji}
+								onClick={() => sendReaction(emoji)}
+								type="button"
+							>
+								{emoji}
+							</button>
+						))}
+					</div>
+					{poll ? (
+						<PollPanel poll={poll} role="viewer" totalVotes={totalVotes} vote={vote} />
+					) : (
+						<p className="m-0 mt-3 text-xs text-white/60">
+							Slides are controlled by the presenter.
+						</p>
+					)}
+				</div>
+			) : null}
+			<button
+				className={cn(
+					"rounded-full border border-white/15 bg-black/75 px-3 py-2 text-sm text-white shadow-xl backdrop-blur transition hover:bg-black/90",
+					poll ? "ring-primary ring-2" : "",
+				)}
+				onClick={() => setOpen(!open)}
+				type="button"
+			>
+				{poll ? "Poll" : "React"} · {connected ? "Live" : "…"}
+			</button>
 		</div>
 	);
 }
@@ -270,30 +494,31 @@ function PollPanel({
 	poll: SlidePoll;
 	role: SlideSessionRole;
 	totalVotes: number;
-	vote: (pollId: string, optionId: string) => void;
-	closePoll: () => void;
-	resetPoll: () => void;
+	vote?: (pollId: string, optionId: string) => void;
+	closePoll?: () => void;
+	resetPoll?: () => void;
 }) {
 	return (
 		<div className="mt-3 rounded-xl bg-white/10 p-3">
 			<div className="flex items-start justify-between gap-3">
 				<div>
-					<p className="m-0 font-semibold">{poll.question}</p>
+					<p className="m-0 text-sm font-semibold">{poll.question}</p>
 					<p className="m-0 mt-1 text-xs text-white/60">
-						{poll.open ? "Poll is open" : "Poll is closed"} · {totalVotes} votes
+						{poll.open ? "Open" : "Closed"} · {totalVotes} votes
+						{poll.slide === null ? "" : ` · slide ${poll.slide + 1}`}
 					</p>
 				</div>
 				{role === "master" ? (
 					<div className="flex gap-2">
 						<button
-							className="rounded bg-white/10 px-2 py-1 text-xs"
+							className="rounded bg-white/10 px-2 py-1 text-xs hover:bg-white/20"
 							onClick={closePoll}
 							type="button"
 						>
 							Close
 						</button>
 						<button
-							className="rounded bg-white/10 px-2 py-1 text-xs"
+							className="rounded bg-white/10 px-2 py-1 text-xs hover:bg-white/20"
 							onClick={resetPoll}
 							type="button"
 						>
@@ -308,12 +533,12 @@ function PollPanel({
 					return (
 						<button
 							className={cn(
-								"relative overflow-hidden rounded-lg border border-white/20 px-3 py-2 text-left",
+								"relative overflow-hidden rounded-lg border border-white/15 px-3 py-2 text-left text-xs",
 								poll.open && role === "viewer" ? "hover:border-white/60" : "cursor-default",
 							)}
 							disabled={!poll.open || role === "master"}
 							key={option.id}
-							onClick={() => vote(poll.id, option.id)}
+							onClick={() => vote?.(poll.id, option.id)}
 							type="button"
 						>
 							<span
@@ -330,6 +555,29 @@ function PollPanel({
 			</div>
 		</div>
 	);
+}
+
+function ReactionBursts({ reactions }: { reactions: Array<SlideSessionReaction> }) {
+	return (
+		<div className="pointer-events-none fixed inset-0 z-40 overflow-hidden">
+			{reactions.map((reaction) => (
+				<div
+					className="absolute bottom-16 animate-[slideReaction_4s_ease-out_forwards] text-5xl drop-shadow-2xl"
+					key={reaction.id}
+					style={{ left: `${reaction.x}%` }}
+				>
+					{reaction.emoji}
+				</div>
+			))}
+		</div>
+	);
+}
+
+function getVisiblePoll(poll: SlidePoll | null, role: SlideSessionRole, currentSlide: number) {
+	if (!poll) return null;
+	if (role === "master") return poll;
+	if (poll.slide === null || poll.slide === currentSlide) return poll;
+	return null;
 }
 
 function getSlideSessionWsUrl(sessionId: string, role: SlideSessionRole, clientId: string) {
@@ -389,10 +637,12 @@ function isPoll(value: unknown): value is SlidePoll {
 		"id" in value &&
 		"question" in value &&
 		"open" in value &&
+		"slide" in value &&
 		"options" in value &&
 		typeof value.id === "string" &&
 		typeof value.question === "string" &&
 		typeof value.open === "boolean" &&
+		(value.slide === null || typeof value.slide === "number") &&
 		Array.isArray(value.options) &&
 		value.options.every(isPollOption)
 	);
@@ -408,5 +658,20 @@ function isPollOption(value: unknown): value is SlidePoll["options"][number] {
 		typeof value.id === "string" &&
 		typeof value.label === "string" &&
 		typeof value.votes === "number"
+	);
+}
+
+function isLiveReaction(value: unknown): value is Omit<SlideSessionReaction, "x"> {
+	return (
+		typeof value === "object" &&
+		value !== null &&
+		"type" in value &&
+		value.type === "reaction" &&
+		"id" in value &&
+		"emoji" in value &&
+		"createdAt" in value &&
+		typeof value.id === "string" &&
+		typeof value.emoji === "string" &&
+		typeof value.createdAt === "number"
 	);
 }

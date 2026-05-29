@@ -8,6 +8,7 @@ import { SITE_TITLE_APPEND } from "@/config";
 import { SlideDeck, type Slide } from "@/lib/domains/slides";
 import {
 	SlideSessionOverlay,
+	type SlideSessionPollDefinition,
 	type SlideSessionRole,
 	useSlideSession,
 } from "@/lib/domains/slides/live-session";
@@ -70,6 +71,18 @@ export const Route = createFileRoute("/slides/tanstack-start")({
 });
 
 const slidesPromise = import("./slides.re.mdx");
+const livePolls: Array<SlideSessionPollDefinition> = [
+	{
+		slide: 0,
+		question: "Have you tried TanStack Start yet?",
+		options: ["Yes", "Not yet", "Just here for vibes"],
+	},
+	{
+		slide: 2,
+		question: "What should we dig into after this?",
+		options: ["Routing", "Server functions", "Cloudflare deploys"],
+	},
+];
 
 function SlideDeckLoader({
 	slides,
@@ -176,8 +189,12 @@ function MainLayout() {
 					role={role}
 					connected={liveSession.connected}
 					snapshot={liveSession.snapshot}
+					currentSlide={localPosition.slide}
+					pollDefinitions={livePolls}
+					reactions={liveSession.reactions}
 					createPoll={liveSession.createPoll}
 					vote={liveSession.vote}
+					sendReaction={liveSession.sendReaction}
 					closePoll={liveSession.closePoll}
 					resetPoll={liveSession.resetPoll}
 				/>

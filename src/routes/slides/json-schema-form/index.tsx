@@ -8,6 +8,7 @@ import { SITE_TITLE_APPEND } from "@/config";
 import { SlideDeck, type Slide } from "@/lib/domains/slides";
 import {
 	SlideSessionOverlay,
+	type SlideSessionPollDefinition,
 	type SlideSessionRole,
 	useSlideSession,
 } from "@/lib/domains/slides/live-session";
@@ -82,6 +83,23 @@ export const Route = createFileRoute("/slides/json-schema-form/")({
 });
 
 const slidesPromise = import("./slides.re.mdx");
+const livePolls: Array<SlideSessionPollDefinition> = [
+	{
+		slide: 3,
+		question: "How painful are forms in your app?",
+		options: ["Very", "Manageable", "Not my problem"],
+	},
+	{
+		slide: 8,
+		question: "Where does validation usually drift first?",
+		options: ["Frontend", "Backend", "Product rules"],
+	},
+	{
+		slide: 15,
+		question: "Would schema-driven forms work for your team?",
+		options: ["Yes", "Maybe", "No"],
+	},
+];
 
 function SlideDeckLoader({
 	slides,
@@ -188,8 +206,12 @@ function MainLayout() {
 					role={role}
 					connected={liveSession.connected}
 					snapshot={liveSession.snapshot}
+					currentSlide={localPosition.slide}
+					pollDefinitions={livePolls}
+					reactions={liveSession.reactions}
 					createPoll={liveSession.createPoll}
 					vote={liveSession.vote}
+					sendReaction={liveSession.sendReaction}
 					closePoll={liveSession.closePoll}
 					resetPoll={liveSession.resetPoll}
 				/>

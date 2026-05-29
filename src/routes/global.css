@@ -337,6 +337,21 @@ pre.shiki-code-block code > .line[data-highlight="true"]::before {
 	color: #a86efd;
 }
 
+@keyframes slideReaction {
+	0% {
+		opacity: 0;
+		transform: translate3d(-50%, 0, 0) scale(0.7);
+	}
+	12% {
+		opacity: 1;
+		transform: translate3d(-50%, -2rem, 0) scale(1);
+	}
+	100% {
+		opacity: 0;
+		transform: translate3d(-50%, -65vh, 0) scale(1.35);
+	}
+}
+
 @media (max-width: 639px) {
 	pre.shiki-code-block code > .line {
 		white-space: pre-wrap;

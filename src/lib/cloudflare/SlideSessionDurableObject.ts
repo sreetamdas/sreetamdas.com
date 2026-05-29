@@ -13,6 +13,7 @@ type PollRecord = {
 	question: string;
 	options: Array<{ id: string; label: string }>;
 	open: boolean;
+	slide: number | null;
 	voters: Record<string, string>;
 	createdAt: number;
 };
@@ -21,6 +22,7 @@ type PublicPoll = {
 	id: string;
 	question: string;
 	open: boolean;
+	slide: number | null;
 	options: Array<{ id: string; label: string; votes: number }>;
 };
 
@@ -99,7 +101,7 @@ export class SlideSessionDurableObject extends DurableObject<CloudflareEnv> {
 
 		if (isCreatePollMessage(parsed)) {
 			if (attachment.role !== "master") return;
-			await this.createPoll(parsed.question, parsed.options);
+			await this.createPoll(parsed.question, parsed.options, parsed.slide);
 			await this.broadcastSnapshot();
 			return;
 		}
@@ -121,6 +123,11 @@ export class SlideSessionDurableObject extends DurableObject<CloudflareEnv> {
 			if (attachment.role !== "master") return;
 			await this.ctx.storage.delete(POLL_KEY);
 			await this.broadcastSnapshot();
+			return;
+		}
+
+		if (isReactionMessage(parsed)) {
+			await this.broadcastReaction(parsed.emoji);
 		}
 	}
 
@@ -164,6 +171,22 @@ export class SlideSessionDurableObject extends DurableObject<CloudflareEnv> {
 		}
 	}
 
+	private broadcastReaction(emoji: string) {
+		const payload = JSON.stringify({
+			type: "reaction",
+			id: crypto.randomUUID(),
+			emoji,
+			createdAt: Date.now(),
+		});
+		for (const ws of this.ctx.getWebSockets("master")) {
+			try {
+				ws.send(payload);
+			} catch {
+				// noop
+			}
+		}
+	}
+
 	private async setPosition(slide: number, step: number) {
 		await this.ctx.storage.put(POSITION_KEY, {
 			slide: normalizeIndex(slide),
@@ -172,7 +195,11 @@ export class SlideSessionDurableObject extends DurableObject<CloudflareEnv> {
 		} satisfies SlidePosition);
 	}
 
-	private async createPoll(question: string, options: Array<string>) {
+	private async createPoll(
+		question: string,
+		options: Array<string>,
+		slide: number | null | undefined,
+	) {
 		const cleanQuestion = question.trim();
 		const cleanOptions = options
 			.map((option) => option.trim())
@@ -187,6 +214,7 @@ export class SlideSessionDurableObject extends DurableObject<CloudflareEnv> {
 				label,
 			})),
 			open: true,
+			slide: normalizeSlideScope(slide),
 			voters: {},
 			createdAt: Date.now(),
 		};
@@ -265,11 +293,17 @@ function normalizeIndex(value: number): number {
 	return value;
 }
 
+function normalizeSlideScope(value: number | null | undefined): number | null {
+	if (value === null || value === undefined) return null;
+	return normalizeIndex(value);
+}
+
 function toPublicPoll(poll: PollRecord): PublicPoll {
 	return {
 		id: poll.id,
 		question: poll.question,
 		open: poll.open,
+		slide: poll.slide,
 		options: poll.options.map((option) => ({
 			...option,
 			votes: Object.values(poll.voters).filter((vote) => vote === option.id).length,
@@ -292,9 +326,12 @@ function isSetSlideMessage(
 	);
 }
 
-function isCreatePollMessage(
-	value: unknown,
-): value is { type: "create-poll"; question: string; options: Array<string> } {
+function isCreatePollMessage(value: unknown): value is {
+	type: "create-poll";
+	question: string;
+	options: Array<string>;
+	slide?: number | null;
+} {
 	return (
 		typeof value === "object" &&
 		value !== null &&
@@ -304,7 +341,13 @@ function isCreatePollMessage(
 		"options" in value &&
 		typeof value.question === "string" &&
 		Array.isArray(value.options) &&
-		value.options.every((option) => typeof option === "string")
+		value.options.every((option) => typeof option === "string") &&
+		(!("slide" in value) ||
+			value.slide === null ||
+			(typeof value.slide === "number" &&
+				Number.isFinite(value.slide) &&
+				Number.isInteger(value.slide) &&
+				value.slide >= 0))
 	);
 }
 
@@ -334,3 +377,17 @@ function isResetPollMessage(value: unknown): value is { type: "reset-poll" } {
 		typeof value === "object" && value !== null && "type" in value && value.type === "reset-poll"
 	);
 }
+
+function isReactionMessage(value: unknown): value is { type: "reaction"; emoji: string } {
+	return (
+		typeof value === "object" &&
+		value !== null &&
+		"type" in value &&
+		value.type === "reaction" &&
+		"emoji" in value &&
+		typeof value.emoji === "string" &&
+		REACTION_EMOJIS.includes(value.emoji)
+	);
+}
+
+const REACTION_EMOJIS = ["👍", "👏", "😂", "🤯", "❤️"];

@@ -15,10 +15,13 @@ describe("worker entrypoint", () => {
 		const ok = isObject && "ok" in body ? body.ok : undefined;
 		const hasPresenceBinding =
 			isObject && "hasPresenceBinding" in body ? body.hasPresenceBinding : undefined;
+		const hasSlideSessionsBinding =
+			isObject && "hasSlideSessionsBinding" in body ? body.hasSlideSessionsBinding : undefined;
 
 		expect(response.status).toBe(200);
 		expect(ok).toBe(true);
 		expect(hasPresenceBinding).toBe(true);
+		expect(hasSlideSessionsBinding).toBe(true);
 	});
 
 	it("returns 404 for an unknown route", async () => {
