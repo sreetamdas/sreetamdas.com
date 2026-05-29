@@ -35,6 +35,7 @@ import { Route as mainfoobarFoobarIndexRouteImport } from './routes/(main)/(foob
 import { Route as mainfoobarFoobarSlugRouteImport } from './routes/(main)/(foobar)/foobar/$slug'
 import { Route as apiPrxyPlsblJsScriptRouteImport } from './routes/(api)/prxy/plsbl/js/$script'
 import { Route as apiPrxyPlsblApiEventRouteImport } from './routes/(api)/prxy/plsbl/api/event'
+import { Route as apiApiSlidesSessionSessionIdRouteImport } from './routes/(api)/api/slides/session/$sessionId'
 
 const SlidesRouteRoute = SlidesRouteRouteImport.update({
   id: '/slides',
@@ -166,6 +167,12 @@ const apiPrxyPlsblApiEventRoute = apiPrxyPlsblApiEventRouteImport.update({
   path: '/prxy/plsbl/api/event',
   getParentRoute: () => rootRouteImport,
 } as any)
+const apiApiSlidesSessionSessionIdRoute =
+  apiApiSlidesSessionSessionIdRouteImport.update({
+    id: '/(api)/api/slides/session/$sessionId',
+    path: '/api/slides/session/$sessionId',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/slides': typeof SlidesRouteRouteWithChildren
@@ -190,6 +197,7 @@ export interface FileRoutesByFullPath {
   '/slides/json-schema-form/': typeof SlidesJsonSchemaFormIndexRoute
   '/foobar/$slug': typeof mainfoobarFoobarSlugRoute
   '/foobar/': typeof mainfoobarFoobarIndexRoute
+  '/api/slides/session/$sessionId': typeof apiApiSlidesSessionSessionIdRoute
   '/prxy/plsbl/api/event': typeof apiPrxyPlsblApiEventRoute
   '/prxy/plsbl/js/$script': typeof apiPrxyPlsblJsScriptRoute
 }
@@ -216,6 +224,7 @@ export interface FileRoutesByTo {
   '/slides/json-schema-form': typeof SlidesJsonSchemaFormIndexRoute
   '/foobar/$slug': typeof mainfoobarFoobarSlugRoute
   '/foobar': typeof mainfoobarFoobarIndexRoute
+  '/api/slides/session/$sessionId': typeof apiApiSlidesSessionSessionIdRoute
   '/prxy/plsbl/api/event': typeof apiPrxyPlsblApiEventRoute
   '/prxy/plsbl/js/$script': typeof apiPrxyPlsblJsScriptRoute
 }
@@ -245,6 +254,7 @@ export interface FileRoutesById {
   '/slides/json-schema-form/': typeof SlidesJsonSchemaFormIndexRoute
   '/(main)/(foobar)/foobar/$slug': typeof mainfoobarFoobarSlugRoute
   '/(main)/(foobar)/foobar/': typeof mainfoobarFoobarIndexRoute
+  '/(api)/api/slides/session/$sessionId': typeof apiApiSlidesSessionSessionIdRoute
   '/(api)/prxy/plsbl/api/event': typeof apiPrxyPlsblApiEventRoute
   '/(api)/prxy/plsbl/js/$script': typeof apiPrxyPlsblJsScriptRoute
 }
@@ -273,6 +283,7 @@ export interface FileRouteTypes {
     | '/slides/json-schema-form/'
     | '/foobar/$slug'
     | '/foobar/'
+    | '/api/slides/session/$sessionId'
     | '/prxy/plsbl/api/event'
     | '/prxy/plsbl/js/$script'
   fileRoutesByTo: FileRoutesByTo
@@ -299,6 +310,7 @@ export interface FileRouteTypes {
     | '/slides/json-schema-form'
     | '/foobar/$slug'
     | '/foobar'
+    | '/api/slides/session/$sessionId'
     | '/prxy/plsbl/api/event'
     | '/prxy/plsbl/js/$script'
   id:
@@ -327,6 +339,7 @@ export interface FileRouteTypes {
     | '/slides/json-schema-form/'
     | '/(main)/(foobar)/foobar/$slug'
     | '/(main)/(foobar)/foobar/'
+    | '/(api)/api/slides/session/$sessionId'
     | '/(api)/prxy/plsbl/api/event'
     | '/(api)/prxy/plsbl/js/$script'
   fileRoutesById: FileRoutesById
@@ -338,6 +351,7 @@ export interface RootRouteChildren {
   apiApiCoffeeRoute: typeof apiApiCoffeeRoute
   apiApiPresenceRoute: typeof apiApiPresenceRoute
   apiApiStagingSmokeRoute: typeof apiApiStagingSmokeRoute
+  apiApiSlidesSessionSessionIdRoute: typeof apiApiSlidesSessionSessionIdRoute
   apiPrxyPlsblApiEventRoute: typeof apiPrxyPlsblApiEventRoute
   apiPrxyPlsblJsScriptRoute: typeof apiPrxyPlsblJsScriptRoute
 }
@@ -526,6 +540,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof apiPrxyPlsblApiEventRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/(api)/api/slides/session/$sessionId': {
+      id: '/(api)/api/slides/session/$sessionId'
+      path: '/api/slides/session/$sessionId'
+      fullPath: '/api/slides/session/$sessionId'
+      preLoaderRoute: typeof apiApiSlidesSessionSessionIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -602,6 +623,7 @@ const rootRouteChildren: RootRouteChildren = {
   apiApiCoffeeRoute: apiApiCoffeeRoute,
   apiApiPresenceRoute: apiApiPresenceRoute,
   apiApiStagingSmokeRoute: apiApiStagingSmokeRoute,
+  apiApiSlidesSessionSessionIdRoute: apiApiSlidesSessionSessionIdRoute,
   apiPrxyPlsblApiEventRoute: apiPrxyPlsblApiEventRoute,
   apiPrxyPlsblJsScriptRoute: apiPrxyPlsblJsScriptRoute,
 }

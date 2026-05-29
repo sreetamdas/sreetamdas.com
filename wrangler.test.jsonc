@@ -9,6 +9,10 @@
 			{
 				"name": "SITE_PRESENCE",
 				"class_name": "PresenceDurableObject"
+			},
+			{
+				"name": "SLIDE_SESSIONS",
+				"class_name": "SlideSessionDurableObject"
 			}
 		]
 	},
@@ -16,6 +20,10 @@
 		{
 			"tag": "do-v1",
 			"new_sqlite_classes": ["PresenceDurableObject"]
+		},
+		{
+			"tag": "do-v2-slide-sessions",
+			"new_sqlite_classes": ["SlideSessionDurableObject"]
 		}
 	]
 }

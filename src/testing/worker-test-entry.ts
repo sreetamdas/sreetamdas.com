@@ -4,6 +4,7 @@ Keeps runtime tests independent from TanStack Start virtual module resolution.
 */
 
 export { PresenceDurableObject } from "../lib/cloudflare/PresenceDurableObject";
+export { SlideSessionDurableObject } from "../lib/cloudflare/SlideSessionDurableObject";
 
 const worker: ExportedHandler<CloudflareEnv> = {
 	fetch(request, env) {
@@ -11,7 +12,8 @@ const worker: ExportedHandler<CloudflareEnv> = {
 
 		if (pathname === "/health") {
 			const hasPresenceBinding = typeof env.SITE_PRESENCE?.getByName === "function";
-			return Response.json({ ok: true, hasPresenceBinding });
+			const hasSlideSessionsBinding = typeof env.SLIDE_SESSIONS?.getByName === "function";
+			return Response.json({ ok: true, hasPresenceBinding, hasSlideSessionsBinding });
 		}
 
 		return new Response("Not Found", { status: 404 });

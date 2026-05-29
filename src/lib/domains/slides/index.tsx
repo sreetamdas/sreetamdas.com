@@ -58,6 +58,9 @@ interface SlideDeckProps {
 	aspectRatio?: number;
 	initialSlide?: number;
 	initialStep?: number;
+	controlledSlide?: number;
+	controlledStep?: number;
+	disableUserNavigation?: boolean;
 	onNavigate?: (slide: number, step: number) => void;
 	components?: MDXComponents;
 	hide_slide_index?: boolean;
@@ -83,6 +86,9 @@ export function SlideDeck({
 	aspectRatio = 16 / 9,
 	initialSlide = 0,
 	initialStep = 0,
+	controlledSlide,
+	controlledStep,
+	disableUserNavigation = false,
 	hide_slide_index = false,
 	hide_step_index = false,
 	onNavigate,
@@ -130,15 +136,17 @@ export function SlideDeck({
 
 	const goTo = useCallback(
 		(index: number, step = 0) => {
+			if (disableUserNavigation) return;
 			if (index < 0 || index >= slides.length) return;
 			setCurrentIndex(index);
 			setCurrentStep(step);
 			onNavigate?.(index, step);
 		},
-		[slides, onNavigate],
+		[disableUserNavigation, slides, onNavigate],
 	);
 
 	const stepForward = useCallback(() => {
+		if (disableUserNavigation) return;
 		if (currentStep < maxStep) {
 			setCurrentStep((s) => s + 1);
 			onNavigate?.(currentIndex, currentStep + 1);
@@ -147,9 +155,10 @@ export function SlideDeck({
 			setCurrentStep(0);
 			onNavigate?.(currentIndex + 1, 0);
 		}
-	}, [currentStep, maxStep, currentIndex, slides.length, onNavigate]);
+	}, [disableUserNavigation, currentStep, maxStep, currentIndex, slides.length, onNavigate]);
 
 	const stepBackward = useCallback(() => {
+		if (disableUserNavigation) return;
 		if (currentStep > 0) {
 			setCurrentStep((s) => s - 1);
 			onNavigate?.(currentIndex, currentStep - 1);
@@ -158,7 +167,7 @@ export function SlideDeck({
 			setCurrentStep(0);
 			onNavigate?.(currentIndex - 1, 0);
 		}
-	}, [currentStep, currentIndex, slides.length, onNavigate]);
+	}, [disableUserNavigation, currentStep, currentIndex, slides.length, onNavigate]);
 
 	const togglePresenterMode = useCallback(() => {
 		setPresenterMode((prev) => !prev);
@@ -181,6 +190,17 @@ export function SlideDeck({
 	useEffect(() => {
 		containerRef.current?.focus();
 	}, []);
+
+	useEffect(() => {
+		if (controlledSlide === undefined) return;
+		const nextIndex = Math.max(0, Math.min(controlledSlide, slides.length - 1));
+		const nextStep =
+			controlledStep === undefined || controlledStep < 0 || !Number.isFinite(controlledStep)
+				? 0
+				: controlledStep;
+		setCurrentIndex(nextIndex);
+		setCurrentStep(nextStep);
+	}, [controlledSlide, controlledStep, slides.length]);
 
 	useEffect(() => {
 		const manager = getHotkeyManager();
