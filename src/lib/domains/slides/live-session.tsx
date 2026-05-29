@@ -67,6 +67,8 @@ type OutgoingMessage =
 
 const CLIENT_ID_KEY = "slides-live-client-id";
 const PING_INTERVAL_MS = 30_000;
+const RECONNECT_BASE_MS = 500;
+const RECONNECT_MAX_MS = 5_000;
 const REACTION_EMOJIS = ["👍", "👏", "😂", "🤯", "❤️"];
 const REACTION_TTL_MS = 4_000;
 
@@ -88,17 +90,18 @@ export function useSlideSession({
 
 	const send = useCallback((message: OutgoingMessage) => {
 		const ws = wsRef.current;
-		if (!ws || ws.readyState !== WebSocket.OPEN) return;
+		if (!ws || ws.readyState !== WebSocket.OPEN) return false;
 		ws.send(JSON.stringify(message));
+		return true;
 	}, []);
 
 	useEffect(() => {
 		if (!sessionId) return;
 
+		const liveSessionId = sessionId;
 		let cancelled = false;
-		const wsUrl = getSlideSessionWsUrl(sessionId, role, getClientId());
-		const ws = new WebSocket(wsUrl);
-		wsRef.current = ws;
+		let reconnectAttempt = 0;
+		let reconnectTimer: ReturnType<typeof setTimeout> | undefined;
 
 		function clearPingTimer() {
 			if (pingTimerRef.current) {
@@ -107,65 +110,94 @@ export function useSlideSession({
 			}
 		}
 
-		ws.onopen = () => {
+		function clearReconnectTimer() {
+			if (reconnectTimer) {
+				clearTimeout(reconnectTimer);
+				reconnectTimer = undefined;
+			}
+		}
+
+		function scheduleReconnect() {
 			if (cancelled) return;
-			setConnected(true);
+			clearReconnectTimer();
+			const delay = Math.min(RECONNECT_BASE_MS * 2 ** reconnectAttempt, RECONNECT_MAX_MS);
+			reconnectAttempt += 1;
+			reconnectTimer = setTimeout(connect, delay);
+		}
+
+		function connect() {
+			clearReconnectTimer();
 			clearPingTimer();
-			pingTimerRef.current = setInterval(() => {
+			const wsUrl = getSlideSessionWsUrl(liveSessionId, role, getClientId());
+			const ws = new WebSocket(wsUrl);
+			wsRef.current = ws;
+
+			ws.onopen = () => {
+				if (cancelled || wsRef.current !== ws) return;
+				reconnectAttempt = 0;
+				setConnected(true);
+				clearPingTimer();
+				pingTimerRef.current = setInterval(() => {
+					try {
+						ws.send("ping");
+					} catch {
+						// noop
+					}
+				}, PING_INTERVAL_MS);
+			};
+
+			ws.onmessage = (event) => {
+				if (cancelled || wsRef.current !== ws || typeof event.data !== "string") return;
+				let parsed: unknown;
 				try {
-					ws.send("ping");
+					parsed = JSON.parse(event.data);
 				} catch {
-					// noop
+					return;
 				}
-			}, PING_INTERVAL_MS);
-		};
 
-		ws.onmessage = (event) => {
-			if (cancelled || typeof event.data !== "string") return;
-			let parsed: unknown;
-			try {
-				parsed = JSON.parse(event.data);
-			} catch {
-				return;
-			}
-
-			if (isSlideSessionSnapshot(parsed)) {
-				setSnapshot(parsed);
-				if (role === "viewer") {
-					onRemoteNavigateRef.current(parsed.position.slide, parsed.position.step);
+				if (isSlideSessionSnapshot(parsed)) {
+					setSnapshot(parsed);
+					if (role === "viewer") {
+						onRemoteNavigateRef.current(parsed.position.slide, parsed.position.step);
+					}
+					return;
 				}
-				return;
-			}
 
-			if (isLiveReaction(parsed)) {
-				setReactions((current) => [
-					...current,
-					{ ...parsed, x: 20 + Math.round(Math.random() * 60) },
-				]);
-			}
-		};
+				if (isLiveReaction(parsed)) {
+					setReactions((current) => [
+						...current,
+						{ ...parsed, x: 20 + Math.round(Math.random() * 60) },
+					]);
+				}
+			};
 
-		ws.onclose = () => {
-			if (cancelled) return;
-			setConnected(false);
-			clearPingTimer();
-		};
+			ws.onclose = () => {
+				if (cancelled || wsRef.current !== ws) return;
+				setConnected(false);
+				clearPingTimer();
+				scheduleReconnect();
+			};
 
-		ws.onerror = () => {
-			if (cancelled) return;
-			setConnected(false);
-		};
+			ws.onerror = () => {
+				if (cancelled || wsRef.current !== ws) return;
+				setConnected(false);
+			};
+		}
+
+		connect();
 
 		return () => {
 			cancelled = true;
 			clearPingTimer();
+			clearReconnectTimer();
 			setConnected(false);
-			wsRef.current = null;
+			const ws = wsRef.current;
 			try {
-				ws.close();
+				ws?.close();
 			} catch {
 				// noop
 			}
+			wsRef.current = null;
 		};
 	}, [role, sessionId]);
 
@@ -173,8 +205,9 @@ export function useSlideSession({
 		if (!sessionId || role !== "master" || !connected) return;
 		const key = `${localSlide}:${localStep}`;
 		if (lastSentPositionRef.current === key) return;
-		lastSentPositionRef.current = key;
-		send({ type: "set-slide", slide: localSlide, step: localStep });
+		if (send({ type: "set-slide", slide: localSlide, step: localStep })) {
+			lastSentPositionRef.current = key;
+		}
 	}, [connected, localSlide, localStep, role, send, sessionId]);
 
 	useEffect(() => {
