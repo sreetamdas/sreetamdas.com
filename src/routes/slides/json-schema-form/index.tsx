@@ -2,7 +2,7 @@
 
 import { createFileRoute, useNavigate, useSearch } from "@tanstack/react-router";
 import { type MDXComponents } from "mdx/types";
-import { useCallback, Suspense, use, useState } from "react";
+import { useCallback, useEffect, Suspense, use, useState } from "react";
 
 import { SITE_TITLE_APPEND } from "@/config";
 import { SlideDeck, type Slide } from "@/lib/domains/slides";
@@ -149,6 +149,10 @@ function MainLayout() {
 		slide: search.slide ?? 0,
 		step: search.step ?? 0,
 	}));
+
+	useEffect(() => {
+		setLocalPosition({ slide: search.slide ?? 0, step: search.step ?? 0 });
+	}, [search.slide, search.step]);
 
 	const handleRemoteNavigate = useCallback(
 		(slide: number, step: number) => {

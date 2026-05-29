@@ -402,8 +402,8 @@ function PresenterMode({
 	const progress = ((globalStepIndex + 1) / totalSteps) * 100;
 
 	return (
-		<div className="flex h-screen flex-col bg-gray-900 text-white">
-			<div className="flex items-center justify-between border-b border-gray-700 px-4 py-2">
+		<div className="flex h-dvh flex-col overflow-hidden bg-gray-900 text-white">
+			<div className="flex shrink-0 items-center justify-between border-b border-gray-700 px-4 py-2">
 				<div className="font-mono text-lg">{formatTime(elapsedTime)}</div>
 				<div className="flex-1 px-8">
 					<div className="h-2 rounded-full bg-gray-700">
@@ -418,10 +418,10 @@ function PresenterMode({
 				</div>
 			</div>
 
-			<div className="flex flex-1 gap-4 p-4">
-				<div className="flex flex-2 flex-col">
+			<div className="flex min-h-0 flex-1 gap-4 p-4">
+				<div className="flex min-h-0 flex-2 flex-col">
 					<div className="mb-2 text-xs tracking-wider text-gray-400 uppercase">Current Slide</div>
-					<div className="flex-1 overflow-hidden rounded-lg bg-black">
+					<div className="min-h-0 flex-1 overflow-hidden rounded-lg bg-black">
 						<div className="h-full w-full overflow-auto p-8">
 							{currentSlide.data.title && (
 								<h1 className="pt-10 font-serif text-7xl font-bold text-balance whitespace-pre-line font-stretch-semi-condensed">
@@ -433,10 +433,10 @@ function PresenterMode({
 					</div>
 				</div>
 
-				<div className="flex flex-1 flex-col gap-4">
-					<div className="flex flex-1 flex-col">
+				<div className="flex min-h-0 flex-1 flex-col gap-4">
+					<div className="flex min-h-0 flex-1 flex-col">
 						<div className="mb-2 text-xs tracking-wider text-gray-400 uppercase">Next Slide</div>
-						<div className="flex-1 overflow-hidden rounded-lg bg-black">
+						<div className="min-h-0 flex-1 overflow-hidden rounded-lg bg-black">
 							{nextSlide ? (
 								<div className="h-full w-full overflow-auto p-4 opacity-70">
 									<SlideRenderer slide={nextSlide} components={components} />
@@ -449,9 +449,9 @@ function PresenterMode({
 						</div>
 					</div>
 
-					<div className="flex flex-1 flex-col">
+					<div className="flex min-h-0 flex-1 flex-col">
 						<div className="mb-2 text-xs tracking-wider text-gray-400 uppercase">Speaker Notes</div>
-						<div className="flex-1 overflow-auto rounded-lg bg-gray-800 p-4">
+						<div className="min-h-0 flex-1 overflow-auto rounded-lg bg-gray-800 p-4">
 							{currentSlide.notes ? (
 								<div className="prose prose-invert prose-sm max-w-none whitespace-pre-wrap">
 									{currentSlide.notes}
@@ -464,7 +464,7 @@ function PresenterMode({
 				</div>
 			</div>
 
-			<div className="flex items-center justify-center gap-4 border-t border-gray-700 px-4 py-3">
+			<div className="flex shrink-0 items-center justify-center gap-4 border-t border-gray-700 px-4 py-3">
 				<button
 					onClick={goPrev}
 					disabled={currentIndex === 0 && currentStep === 0}

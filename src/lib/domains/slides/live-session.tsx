@@ -69,6 +69,7 @@ const CLIENT_ID_KEY = "slides-live-client-id";
 const PING_INTERVAL_MS = 30_000;
 const RECONNECT_BASE_MS = 500;
 const RECONNECT_MAX_MS = 5_000;
+const SNAPSHOT_POLL_MS = 1_000;
 const REACTION_EMOJIS = ["👍", "👏", "😂", "🤯", "❤️"];
 const REACTION_TTL_MS = 4_000;
 
@@ -209,6 +210,40 @@ export function useSlideSession({
 			lastSentPositionRef.current = key;
 		}
 	}, [connected, localSlide, localStep, role, send, sessionId]);
+
+	useEffect(() => {
+		if (!sessionId || role !== "viewer") return;
+
+		let cancelled = false;
+		let inFlight = false;
+		const snapshotUrl = getSlideSessionHttpUrl(sessionId);
+
+		async function refreshSnapshot() {
+			if (cancelled || inFlight) return;
+			inFlight = true;
+			try {
+				const response = await fetch(snapshotUrl, { cache: "no-store" });
+				const parsed: unknown = await response.json();
+				if (cancelled || !isSlideSessionSnapshot(parsed)) return;
+				setSnapshot(parsed);
+				onRemoteNavigateRef.current(parsed.position.slide, parsed.position.step);
+			} catch {
+				// The WebSocket remains the primary path; polling is a best-effort safety net.
+			} finally {
+				inFlight = false;
+			}
+		}
+
+		void refreshSnapshot();
+		const timer = setInterval(() => {
+			void refreshSnapshot();
+		}, SNAPSHOT_POLL_MS);
+
+		return () => {
+			cancelled = true;
+			clearInterval(timer);
+		};
+	}, [role, sessionId]);
 
 	useEffect(() => {
 		if (reactions.length === 0) return;
@@ -619,6 +654,13 @@ function getSlideSessionWsUrl(sessionId: string, role: SlideSessionRole, clientI
 	url.searchParams.set("role", role);
 	url.searchParams.set("client", clientId);
 	return url.toString();
+}
+
+function getSlideSessionHttpUrl(sessionId: string) {
+	return new URL(
+		`/api/slides/session/${encodeURIComponent(sessionId)}`,
+		window.location.href,
+	).toString();
 }
 
 function getViewerLink(sessionId: string) {
