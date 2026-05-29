@@ -7,6 +7,7 @@
  * lightweight reactions that briefly appear on the presenter's screen.
  */
 import { useCallback, useEffect, useMemo, useRef, useState, type FormEvent } from "react";
+import { FaRegCircleCheck } from "react-icons/fa6";
 
 import { cn } from "@/lib/helpers/utils";
 
@@ -614,16 +615,12 @@ function PollPanel({
 							<span className="relative flex justify-between gap-3">
 								<span className="flex items-center gap-2">
 									{option.id === poll.selectedOptionId ? (
-										<span aria-hidden="true" className="text-primary">
-											✓
-										</span>
+										<FaRegCircleCheck
+											aria-label="Selected option"
+											className="text-primary text-sm"
+										/>
 									) : null}
 									<span>{option.label}</span>
-									{option.id === poll.selectedOptionId ? (
-										<span className="rounded-full bg-white/15 px-2 py-0.5 text-[0.65rem] text-white/75">
-											Your vote
-										</span>
-									) : null}
 								</span>
 								<span>{percent}%</span>
 							</span>
@@ -647,11 +644,13 @@ function ReactionCluster({ reactions }: { reactions: Array<SlideSessionReaction>
 		<div className="pointer-events-none fixed bottom-4 left-4 z-40 flex flex-wrap gap-2">
 			{counts.map((reaction) => (
 				<div
-					className="rounded-full border border-white/15 bg-black/75 px-3 py-2 text-lg text-white shadow-xl backdrop-blur"
-					key={reaction.emoji}
+					className="animate-[reactionCountPulse_350ms_ease-out] rounded-full border border-white/15 bg-black/75 px-3 py-2 text-lg text-white shadow-xl backdrop-blur"
+					key={`${reaction.emoji}:${reaction.count}`}
 				>
-					<span aria-hidden="true">{reaction.emoji}</span>{" "}
-					<span className="font-mono text-xs text-white/70">x{reaction.count}</span>
+					<span aria-hidden="true">{reaction.emoji}</span>
+					{reaction.count > 1 ? (
+						<span className="ml-1 font-mono text-xs text-white/70">x{reaction.count}</span>
+					) : null}
 				</div>
 			))}
 		</div>

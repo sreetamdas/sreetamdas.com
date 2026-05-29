@@ -352,6 +352,18 @@ pre.shiki-code-block code > .line[data-highlight="true"]::before {
 	}
 }
 
+@keyframes reactionCountPulse {
+	0% {
+		transform: scale(1);
+	}
+	45% {
+		transform: scale(1.14);
+	}
+	100% {
+		transform: scale(1);
+	}
+}
+
 @media (max-width: 639px) {
 	pre.shiki-code-block code > .line {
 		white-space: pre-wrap;
