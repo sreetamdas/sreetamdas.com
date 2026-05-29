@@ -19,6 +19,7 @@ type Snapshot = {
 		question: string;
 		open: boolean;
 		slide: number | null;
+		selectedOptionId: string | null;
 		options: Array<{ id: string; label: string; votes: number }>;
 	} | null;
 	viewers: number;
@@ -105,6 +106,24 @@ describe("SlideSessionDurableObject", () => {
 			{ id: "0", votes: 1 },
 			{ id: "1", votes: 1 },
 		]);
+		expect(voted.poll?.selectedOptionId).toBe(null);
+
+		const viewerAHttpResponse = await slideSession(session).fetch(
+			"https://example.com/?client=viewer-a",
+		);
+		const viewerBHttpResponse = await slideSession(session).fetch(
+			"https://example.com/?client=viewer-b",
+		);
+		const viewerAHttp: unknown = await viewerAHttpResponse.json();
+		const viewerBHttp: unknown = await viewerBHttpResponse.json();
+		expect(isSnapshot(viewerAHttp)).toBe(true);
+		if (isSnapshot(viewerAHttp)) {
+			expect(viewerAHttp.poll?.selectedOptionId).toBe("0");
+		}
+		expect(isSnapshot(viewerBHttp)).toBe(true);
+		if (isSnapshot(viewerBHttp)) {
+			expect(viewerBHttp.poll?.selectedOptionId).toBe("1");
+		}
 
 		master.send(JSON.stringify({ type: "close-poll" }));
 		const closed = await waitForSnapshot(viewerA, (snapshot) => snapshot.poll?.open === false);
@@ -225,11 +244,13 @@ function isPoll(value: unknown): value is NonNullable<Snapshot["poll"]> {
 		"question" in value &&
 		"open" in value &&
 		"slide" in value &&
+		"selectedOptionId" in value &&
 		"options" in value &&
 		typeof value.id === "string" &&
 		typeof value.question === "string" &&
 		typeof value.open === "boolean" &&
 		(value.slide === null || typeof value.slide === "number") &&
+		(value.selectedOptionId === null || typeof value.selectedOptionId === "string") &&
 		Array.isArray(value.options) &&
 		value.options.every(isPollOption)
 	);

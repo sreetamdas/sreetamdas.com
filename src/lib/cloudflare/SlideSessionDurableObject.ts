@@ -23,6 +23,7 @@ type PublicPoll = {
 	question: string;
 	open: boolean;
 	slide: number | null;
+	selectedOptionId: string | null;
 	options: Array<{ id: string; label: string; votes: number }>;
 };
 
@@ -52,9 +53,12 @@ export class SlideSessionDurableObject extends DurableObject<CloudflareEnv> {
 		}
 
 		if (request.method === "GET") {
-			return Response.json(await this.getSnapshot(), {
-				headers: { "Cache-Control": "no-store" },
-			});
+			return Response.json(
+				await this.getSnapshot(parseOptionalClientId(url.searchParams.get("client"))),
+				{
+					headers: { "Cache-Control": "no-store" },
+				},
+			);
 		}
 
 		return new Response("Method Not Allowed", { status: 405 });
@@ -139,14 +143,14 @@ export class SlideSessionDurableObject extends DurableObject<CloudflareEnv> {
 		void this.broadcastSnapshot();
 	}
 
-	private async getSnapshot(): Promise<SessionSnapshot> {
+	private async getSnapshot(clientId?: string): Promise<SessionSnapshot> {
 		const position = (await this.ctx.storage.get<SlidePosition>(POSITION_KEY)) ?? DEFAULT_POSITION;
 		const poll = await this.ctx.storage.get<PollRecord>(POLL_KEY);
 		const { viewers, masters } = this.getConnectionCounts();
 		return {
 			type: "snapshot",
 			position,
-			poll: poll ? toPublicPoll(poll) : null,
+			poll: poll ? toPublicPoll(poll, clientId) : null,
 			viewers,
 			masters,
 		};
@@ -154,16 +158,18 @@ export class SlideSessionDurableObject extends DurableObject<CloudflareEnv> {
 
 	private async sendSnapshot(ws: WebSocket) {
 		try {
-			ws.send(JSON.stringify(await this.getSnapshot()));
+			const attachment = parseAttachment(ws.deserializeAttachment());
+			ws.send(JSON.stringify(await this.getSnapshot(attachment?.clientId)));
 		} catch {
 			// noop
 		}
 	}
 
 	private async broadcastSnapshot() {
-		const payload = JSON.stringify(await this.getSnapshot());
 		for (const ws of this.ctx.getWebSockets()) {
 			try {
+				const attachment = parseAttachment(ws.deserializeAttachment());
+				const payload = JSON.stringify(await this.getSnapshot(attachment?.clientId));
 				ws.send(payload);
 			} catch {
 				// noop
@@ -279,6 +285,13 @@ function parseClientId(value: string | null): string {
 	return crypto.randomUUID();
 }
 
+function parseOptionalClientId(value: string | null): string | undefined {
+	if (value && /^[a-zA-Z0-9_-]{8,80}$/.test(value)) {
+		return value;
+	}
+	return undefined;
+}
+
 function parseAttachment(value: unknown): ConnectionAttachment | null {
 	if (typeof value !== "object" || value === null) return null;
 	if (!("role" in value) || !("clientId" in value)) return null;
@@ -298,12 +311,13 @@ function normalizeSlideScope(value: number | null | undefined): number | null {
 	return normalizeIndex(value);
 }
 
-function toPublicPoll(poll: PollRecord): PublicPoll {
+function toPublicPoll(poll: PollRecord, clientId?: string): PublicPoll {
 	return {
 		id: poll.id,
 		question: poll.question,
 		open: poll.open,
 		slide: poll.slide,
+		selectedOptionId: clientId ? (poll.voters[clientId] ?? null) : null,
 		options: poll.options.map((option) => ({
 			...option,
 			votes: Object.values(poll.voters).filter((vote) => vote === option.id).length,

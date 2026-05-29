@@ -29,6 +29,7 @@ export type SlidePoll = {
 	question: string;
 	open: boolean;
 	slide: number | null;
+	selectedOptionId: string | null;
 	options: Array<{
 		id: string;
 		label: string;
@@ -46,7 +47,6 @@ export type SlideSessionReaction = {
 	id: string;
 	emoji: string;
 	createdAt: number;
-	x: number;
 };
 
 type UseSlideSessionParams = {
@@ -165,10 +165,7 @@ export function useSlideSession({
 				}
 
 				if (isLiveReaction(parsed)) {
-					setReactions((current) => [
-						...current,
-						{ ...parsed, x: 20 + Math.round(Math.random() * 60) },
-					]);
+					setReactions((current) => [...current, parsed]);
 				}
 			};
 
@@ -216,7 +213,7 @@ export function useSlideSession({
 
 		let cancelled = false;
 		let inFlight = false;
-		const snapshotUrl = getSlideSessionHttpUrl(sessionId);
+		const snapshotUrl = getSlideSessionHttpUrl(sessionId, getClientId());
 
 		async function refreshSnapshot() {
 			if (cancelled || inFlight) return;
@@ -307,7 +304,7 @@ export function SlideSessionOverlay({
 
 	return (
 		<>
-			{role === "master" ? <ReactionBursts reactions={reactions} /> : null}
+			{role === "master" ? <ReactionCluster reactions={reactions} /> : null}
 			<div className="pointer-events-none fixed right-4 bottom-4 z-50 text-sm">
 				{role === "master" ? (
 					<MasterLiveControl
@@ -603,6 +600,7 @@ function PollPanel({
 							className={cn(
 								"relative overflow-hidden rounded-lg border border-white/15 px-3 py-2 text-left text-xs",
 								poll.open && role === "viewer" ? "hover:border-white/60" : "cursor-default",
+								option.id === poll.selectedOptionId ? "border-primary ring-primary/50 ring-1" : "",
 							)}
 							disabled={!poll.open || role === "master"}
 							key={option.id}
@@ -614,7 +612,19 @@ function PollPanel({
 								style={{ width: `${percent}%` }}
 							/>
 							<span className="relative flex justify-between gap-3">
-								<span>{option.label}</span>
+								<span className="flex items-center gap-2">
+									{option.id === poll.selectedOptionId ? (
+										<span aria-hidden="true" className="text-primary">
+											✓
+										</span>
+									) : null}
+									<span>{option.label}</span>
+									{option.id === poll.selectedOptionId ? (
+										<span className="rounded-full bg-white/15 px-2 py-0.5 text-[0.65rem] text-white/75">
+											Your vote
+										</span>
+									) : null}
+								</span>
 								<span>{percent}%</span>
 							</span>
 						</button>
@@ -625,16 +635,23 @@ function PollPanel({
 	);
 }
 
-function ReactionBursts({ reactions }: { reactions: Array<SlideSessionReaction> }) {
+function ReactionCluster({ reactions }: { reactions: Array<SlideSessionReaction> }) {
+	const counts = REACTION_EMOJIS.map((emoji) => ({
+		emoji,
+		count: reactions.filter((reaction) => reaction.emoji === emoji).length,
+	})).filter((reaction) => reaction.count > 0);
+
+	if (counts.length === 0) return null;
+
 	return (
-		<div className="pointer-events-none fixed inset-0 z-40 overflow-hidden">
-			{reactions.map((reaction) => (
+		<div className="pointer-events-none fixed bottom-4 left-4 z-40 flex flex-wrap gap-2">
+			{counts.map((reaction) => (
 				<div
-					className="absolute bottom-16 animate-[slideReaction_4s_ease-out_forwards] text-5xl drop-shadow-2xl"
-					key={reaction.id}
-					style={{ left: `${reaction.x}%` }}
+					className="rounded-full border border-white/15 bg-black/75 px-3 py-2 text-lg text-white shadow-xl backdrop-blur"
+					key={reaction.emoji}
 				>
-					{reaction.emoji}
+					<span aria-hidden="true">{reaction.emoji}</span>{" "}
+					<span className="font-mono text-xs text-white/70">x{reaction.count}</span>
 				</div>
 			))}
 		</div>
@@ -656,11 +673,10 @@ function getSlideSessionWsUrl(sessionId: string, role: SlideSessionRole, clientI
 	return url.toString();
 }
 
-function getSlideSessionHttpUrl(sessionId: string) {
-	return new URL(
-		`/api/slides/session/${encodeURIComponent(sessionId)}`,
-		window.location.href,
-	).toString();
+function getSlideSessionHttpUrl(sessionId: string, clientId: string) {
+	const url = new URL(`/api/slides/session/${encodeURIComponent(sessionId)}`, window.location.href);
+	url.searchParams.set("client", clientId);
+	return url.toString();
 }
 
 function getViewerLink(sessionId: string) {
@@ -713,11 +729,13 @@ function isPoll(value: unknown): value is SlidePoll {
 		"question" in value &&
 		"open" in value &&
 		"slide" in value &&
+		"selectedOptionId" in value &&
 		"options" in value &&
 		typeof value.id === "string" &&
 		typeof value.question === "string" &&
 		typeof value.open === "boolean" &&
 		(value.slide === null || typeof value.slide === "number") &&
+		(value.selectedOptionId === null || typeof value.selectedOptionId === "string") &&
 		Array.isArray(value.options) &&
 		value.options.every(isPollOption)
 	);
@@ -736,7 +754,7 @@ function isPollOption(value: unknown): value is SlidePoll["options"][number] {
 	);
 }
 
-function isLiveReaction(value: unknown): value is Omit<SlideSessionReaction, "x"> {
+function isLiveReaction(value: unknown): value is SlideSessionReaction {
 	return (
 		typeof value === "object" &&
 		value !== null &&
