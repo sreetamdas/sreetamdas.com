@@ -58,6 +58,9 @@ interface SlideDeckProps {
 	aspectRatio?: number;
 	initialSlide?: number;
 	initialStep?: number;
+	controlledSlide?: number;
+	controlledStep?: number;
+	disableUserNavigation?: boolean;
 	onNavigate?: (slide: number, step: number) => void;
 	components?: MDXComponents;
 	hide_slide_index?: boolean;
@@ -83,6 +86,9 @@ export function SlideDeck({
 	aspectRatio = 16 / 9,
 	initialSlide = 0,
 	initialStep = 0,
+	controlledSlide,
+	controlledStep,
+	disableUserNavigation = false,
 	hide_slide_index = false,
 	hide_step_index = false,
 	onNavigate,
@@ -130,15 +136,17 @@ export function SlideDeck({
 
 	const goTo = useCallback(
 		(index: number, step = 0) => {
+			if (disableUserNavigation) return;
 			if (index < 0 || index >= slides.length) return;
 			setCurrentIndex(index);
 			setCurrentStep(step);
 			onNavigate?.(index, step);
 		},
-		[slides, onNavigate],
+		[disableUserNavigation, slides, onNavigate],
 	);
 
 	const stepForward = useCallback(() => {
+		if (disableUserNavigation) return;
 		if (currentStep < maxStep) {
 			setCurrentStep((s) => s + 1);
 			onNavigate?.(currentIndex, currentStep + 1);
@@ -147,9 +155,10 @@ export function SlideDeck({
 			setCurrentStep(0);
 			onNavigate?.(currentIndex + 1, 0);
 		}
-	}, [currentStep, maxStep, currentIndex, slides.length, onNavigate]);
+	}, [disableUserNavigation, currentStep, maxStep, currentIndex, slides.length, onNavigate]);
 
 	const stepBackward = useCallback(() => {
+		if (disableUserNavigation) return;
 		if (currentStep > 0) {
 			setCurrentStep((s) => s - 1);
 			onNavigate?.(currentIndex, currentStep - 1);
@@ -158,7 +167,7 @@ export function SlideDeck({
 			setCurrentStep(0);
 			onNavigate?.(currentIndex - 1, 0);
 		}
-	}, [currentStep, currentIndex, slides.length, onNavigate]);
+	}, [disableUserNavigation, currentStep, currentIndex, slides.length, onNavigate]);
 
 	const togglePresenterMode = useCallback(() => {
 		setPresenterMode((prev) => !prev);
@@ -181,6 +190,17 @@ export function SlideDeck({
 	useEffect(() => {
 		containerRef.current?.focus();
 	}, []);
+
+	useEffect(() => {
+		if (controlledSlide === undefined) return;
+		const nextIndex = Math.max(0, Math.min(controlledSlide, slides.length - 1));
+		const nextStep =
+			controlledStep === undefined || controlledStep < 0 || !Number.isFinite(controlledStep)
+				? 0
+				: controlledStep;
+		setCurrentIndex(nextIndex);
+		setCurrentStep(nextStep);
+	}, [controlledSlide, controlledStep, slides.length]);
 
 	useEffect(() => {
 		const manager = getHotkeyManager();
@@ -382,8 +402,8 @@ function PresenterMode({
 	const progress = ((globalStepIndex + 1) / totalSteps) * 100;
 
 	return (
-		<div className="flex h-screen flex-col bg-gray-900 text-white">
-			<div className="flex items-center justify-between border-b border-gray-700 px-4 py-2">
+		<div className="flex h-dvh flex-col overflow-hidden bg-gray-900 text-white">
+			<div className="flex shrink-0 items-center justify-between border-b border-gray-700 px-4 py-2">
 				<div className="font-mono text-lg">{formatTime(elapsedTime)}</div>
 				<div className="flex-1 px-8">
 					<div className="h-2 rounded-full bg-gray-700">
@@ -398,10 +418,10 @@ function PresenterMode({
 				</div>
 			</div>
 
-			<div className="flex flex-1 gap-4 p-4">
-				<div className="flex flex-2 flex-col">
+			<div className="flex min-h-0 flex-1 gap-4 p-4">
+				<div className="flex min-h-0 flex-2 flex-col">
 					<div className="mb-2 text-xs tracking-wider text-gray-400 uppercase">Current Slide</div>
-					<div className="flex-1 overflow-hidden rounded-lg bg-black">
+					<div className="min-h-0 flex-1 overflow-hidden rounded-lg bg-black">
 						<div className="h-full w-full overflow-auto p-8">
 							{currentSlide.data.title && (
 								<h1 className="pt-10 font-serif text-7xl font-bold text-balance whitespace-pre-line font-stretch-semi-condensed">
@@ -413,10 +433,10 @@ function PresenterMode({
 					</div>
 				</div>
 
-				<div className="flex flex-1 flex-col gap-4">
-					<div className="flex flex-1 flex-col">
+				<div className="flex min-h-0 flex-1 flex-col gap-4">
+					<div className="flex min-h-0 flex-1 flex-col">
 						<div className="mb-2 text-xs tracking-wider text-gray-400 uppercase">Next Slide</div>
-						<div className="flex-1 overflow-hidden rounded-lg bg-black">
+						<div className="min-h-0 flex-1 overflow-hidden rounded-lg bg-black">
 							{nextSlide ? (
 								<div className="h-full w-full overflow-auto p-4 opacity-70">
 									<SlideRenderer slide={nextSlide} components={components} />
@@ -429,9 +449,9 @@ function PresenterMode({
 						</div>
 					</div>
 
-					<div className="flex flex-1 flex-col">
+					<div className="flex min-h-0 flex-1 flex-col">
 						<div className="mb-2 text-xs tracking-wider text-gray-400 uppercase">Speaker Notes</div>
-						<div className="flex-1 overflow-auto rounded-lg bg-gray-800 p-4">
+						<div className="min-h-0 flex-1 overflow-auto rounded-lg bg-gray-800 p-4">
 							{currentSlide.notes ? (
 								<div className="prose prose-invert prose-sm max-w-none whitespace-pre-wrap">
 									{currentSlide.notes}
@@ -444,7 +464,7 @@ function PresenterMode({
 				</div>
 			</div>
 
-			<div className="flex items-center justify-center gap-4 border-t border-gray-700 px-4 py-3">
+			<div className="flex shrink-0 items-center justify-center gap-4 border-t border-gray-700 px-4 py-3">
 				<button
 					onClick={goPrev}
 					disabled={currentIndex === 0 && currentStep === 0}

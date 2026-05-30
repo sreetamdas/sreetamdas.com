@@ -4,11 +4,12 @@
 declare namespace Cloudflare {
 	interface GlobalProps {
 		mainModule: typeof import("./worker");
-		durableNamespaces: "PresenceDurableObject";
+		durableNamespaces: "PresenceDurableObject" | "SlideSessionDurableObject";
 	}
 	interface StagingEnv {
 		KV: KVNamespace;
 		D1: D1Database;
+		SLIDE_SESSIONS: DurableObjectNamespace<import("./worker").SlideSessionDurableObject>;
 		VITE_SITE_URL: string;
 		DEBUG_MODE: string;
 		BUTTONDOWN_API_KEY: string;
@@ -42,6 +43,7 @@ declare namespace Cloudflare {
 		KV: KVNamespace;
 		D1: D1Database;
 		SITE_PRESENCE?: DurableObjectNamespace<import("./worker").PresenceDurableObject>;
+		SLIDE_SESSIONS?: DurableObjectNamespace<import("./worker").SlideSessionDurableObject>;
 	}
 }
 interface CloudflareEnv extends Cloudflare.Env {}

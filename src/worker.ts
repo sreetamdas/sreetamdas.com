@@ -5,6 +5,7 @@ import { maybeHideFromSeo } from "@/lib/cloudflare/seo";
 import { getSentryRuntimeOptions } from "@/lib/domains/Sentry";
 
 export { PresenceDurableObject } from "./lib/cloudflare/PresenceDurableObject";
+export { SlideSessionDurableObject } from "./lib/cloudflare/SlideSessionDurableObject";
 
 type TanStackRequestOptions = Parameters<typeof handler.fetch>[1];
 

@@ -16,6 +16,7 @@ import { Route as mainIndexRouteImport } from './routes/(main)/index'
 import { Route as pureVersionRouteImport } from './routes/(pure)/version'
 import { Route as pureResumeRouteImport } from './routes/(pure)/resume'
 import { Route as pureFancyPantsRouteImport } from './routes/(pure)/fancy-pants'
+import { Route as mainStatsRouteImport } from './routes/(main)/stats'
 import { Route as mainKeebsRouteImport } from './routes/(main)/keebs'
 import { Route as mainKarmaRouteImport } from './routes/(main)/karma'
 import { Route as mainAboutRouteImport } from './routes/(main)/about'
@@ -34,6 +35,7 @@ import { Route as mainfoobarFoobarIndexRouteImport } from './routes/(main)/(foob
 import { Route as mainfoobarFoobarSlugRouteImport } from './routes/(main)/(foobar)/foobar/$slug'
 import { Route as apiPrxyPlsblJsScriptRouteImport } from './routes/(api)/prxy/plsbl/js/$script'
 import { Route as apiPrxyPlsblApiEventRouteImport } from './routes/(api)/prxy/plsbl/api/event'
+import { Route as apiApiSlidesSessionSessionIdRouteImport } from './routes/(api)/api/slides/session/$sessionId'
 
 const SlidesRouteRoute = SlidesRouteRouteImport.update({
   id: '/slides',
@@ -67,6 +69,11 @@ const pureFancyPantsRoute = pureFancyPantsRouteImport.update({
   id: '/fancy-pants',
   path: '/fancy-pants',
   getParentRoute: () => pureRouteRoute,
+} as any)
+const mainStatsRoute = mainStatsRouteImport.update({
+  id: '/stats',
+  path: '/stats',
+  getParentRoute: () => mainRouteRoute,
 } as any)
 const mainKeebsRoute = mainKeebsRouteImport.update({
   id: '/keebs',
@@ -160,6 +167,12 @@ const apiPrxyPlsblApiEventRoute = apiPrxyPlsblApiEventRouteImport.update({
   path: '/prxy/plsbl/api/event',
   getParentRoute: () => rootRouteImport,
 } as any)
+const apiApiSlidesSessionSessionIdRoute =
+  apiApiSlidesSessionSessionIdRouteImport.update({
+    id: '/(api)/api/slides/session/$sessionId',
+    path: '/api/slides/session/$sessionId',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/slides': typeof SlidesRouteRouteWithChildren
@@ -169,6 +182,7 @@ export interface FileRoutesByFullPath {
   '/about': typeof mainAboutRoute
   '/karma': typeof mainKarmaRoute
   '/keebs': typeof mainKeebsRoute
+  '/stats': typeof mainStatsRoute
   '/fancy-pants': typeof pureFancyPantsRoute
   '/resume': typeof pureResumeRoute
   '/version': typeof pureVersionRoute
@@ -183,6 +197,7 @@ export interface FileRoutesByFullPath {
   '/slides/json-schema-form/': typeof SlidesJsonSchemaFormIndexRoute
   '/foobar/$slug': typeof mainfoobarFoobarSlugRoute
   '/foobar/': typeof mainfoobarFoobarIndexRoute
+  '/api/slides/session/$sessionId': typeof apiApiSlidesSessionSessionIdRoute
   '/prxy/plsbl/api/event': typeof apiPrxyPlsblApiEventRoute
   '/prxy/plsbl/js/$script': typeof apiPrxyPlsblJsScriptRoute
 }
@@ -194,6 +209,7 @@ export interface FileRoutesByTo {
   '/about': typeof mainAboutRoute
   '/karma': typeof mainKarmaRoute
   '/keebs': typeof mainKeebsRoute
+  '/stats': typeof mainStatsRoute
   '/fancy-pants': typeof pureFancyPantsRoute
   '/resume': typeof pureResumeRoute
   '/version': typeof pureVersionRoute
@@ -208,6 +224,7 @@ export interface FileRoutesByTo {
   '/slides/json-schema-form': typeof SlidesJsonSchemaFormIndexRoute
   '/foobar/$slug': typeof mainfoobarFoobarSlugRoute
   '/foobar': typeof mainfoobarFoobarIndexRoute
+  '/api/slides/session/$sessionId': typeof apiApiSlidesSessionSessionIdRoute
   '/prxy/plsbl/api/event': typeof apiPrxyPlsblApiEventRoute
   '/prxy/plsbl/js/$script': typeof apiPrxyPlsblJsScriptRoute
 }
@@ -222,6 +239,7 @@ export interface FileRoutesById {
   '/(main)/about': typeof mainAboutRoute
   '/(main)/karma': typeof mainKarmaRoute
   '/(main)/keebs': typeof mainKeebsRoute
+  '/(main)/stats': typeof mainStatsRoute
   '/(pure)/fancy-pants': typeof pureFancyPantsRoute
   '/(pure)/resume': typeof pureResumeRoute
   '/(pure)/version': typeof pureVersionRoute
@@ -236,6 +254,7 @@ export interface FileRoutesById {
   '/slides/json-schema-form/': typeof SlidesJsonSchemaFormIndexRoute
   '/(main)/(foobar)/foobar/$slug': typeof mainfoobarFoobarSlugRoute
   '/(main)/(foobar)/foobar/': typeof mainfoobarFoobarIndexRoute
+  '/(api)/api/slides/session/$sessionId': typeof apiApiSlidesSessionSessionIdRoute
   '/(api)/prxy/plsbl/api/event': typeof apiPrxyPlsblApiEventRoute
   '/(api)/prxy/plsbl/js/$script': typeof apiPrxyPlsblJsScriptRoute
 }
@@ -249,6 +268,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/karma'
     | '/keebs'
+    | '/stats'
     | '/fancy-pants'
     | '/resume'
     | '/version'
@@ -263,6 +283,7 @@ export interface FileRouteTypes {
     | '/slides/json-schema-form/'
     | '/foobar/$slug'
     | '/foobar/'
+    | '/api/slides/session/$sessionId'
     | '/prxy/plsbl/api/event'
     | '/prxy/plsbl/js/$script'
   fileRoutesByTo: FileRoutesByTo
@@ -274,6 +295,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/karma'
     | '/keebs'
+    | '/stats'
     | '/fancy-pants'
     | '/resume'
     | '/version'
@@ -288,6 +310,7 @@ export interface FileRouteTypes {
     | '/slides/json-schema-form'
     | '/foobar/$slug'
     | '/foobar'
+    | '/api/slides/session/$sessionId'
     | '/prxy/plsbl/api/event'
     | '/prxy/plsbl/js/$script'
   id:
@@ -301,6 +324,7 @@ export interface FileRouteTypes {
     | '/(main)/about'
     | '/(main)/karma'
     | '/(main)/keebs'
+    | '/(main)/stats'
     | '/(pure)/fancy-pants'
     | '/(pure)/resume'
     | '/(pure)/version'
@@ -315,6 +339,7 @@ export interface FileRouteTypes {
     | '/slides/json-schema-form/'
     | '/(main)/(foobar)/foobar/$slug'
     | '/(main)/(foobar)/foobar/'
+    | '/(api)/api/slides/session/$sessionId'
     | '/(api)/prxy/plsbl/api/event'
     | '/(api)/prxy/plsbl/js/$script'
   fileRoutesById: FileRoutesById
@@ -326,6 +351,7 @@ export interface RootRouteChildren {
   apiApiCoffeeRoute: typeof apiApiCoffeeRoute
   apiApiPresenceRoute: typeof apiApiPresenceRoute
   apiApiStagingSmokeRoute: typeof apiApiStagingSmokeRoute
+  apiApiSlidesSessionSessionIdRoute: typeof apiApiSlidesSessionSessionIdRoute
   apiPrxyPlsblApiEventRoute: typeof apiPrxyPlsblApiEventRoute
   apiPrxyPlsblJsScriptRoute: typeof apiPrxyPlsblJsScriptRoute
 }
@@ -380,6 +406,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/fancy-pants'
       preLoaderRoute: typeof pureFancyPantsRouteImport
       parentRoute: typeof pureRouteRoute
+    }
+    '/(main)/stats': {
+      id: '/(main)/stats'
+      path: '/stats'
+      fullPath: '/stats'
+      preLoaderRoute: typeof mainStatsRouteImport
+      parentRoute: typeof mainRouteRoute
     }
     '/(main)/keebs': {
       id: '/(main)/keebs'
@@ -507,6 +540,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof apiPrxyPlsblApiEventRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/(api)/api/slides/session/$sessionId': {
+      id: '/(api)/api/slides/session/$sessionId'
+      path: '/api/slides/session/$sessionId'
+      fullPath: '/api/slides/session/$sessionId'
+      preLoaderRoute: typeof apiApiSlidesSessionSessionIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -516,6 +556,7 @@ interface mainRouteRouteChildren {
   mainAboutRoute: typeof mainAboutRoute
   mainKarmaRoute: typeof mainKarmaRoute
   mainKeebsRoute: typeof mainKeebsRoute
+  mainStatsRoute: typeof mainStatsRoute
   mainIndexRoute: typeof mainIndexRoute
   mainBlogSlugRoute: typeof mainBlogSlugRoute
   mainNewsletterSlugRoute: typeof mainNewsletterSlugRoute
@@ -531,6 +572,7 @@ const mainRouteRouteChildren: mainRouteRouteChildren = {
   mainAboutRoute: mainAboutRoute,
   mainKarmaRoute: mainKarmaRoute,
   mainKeebsRoute: mainKeebsRoute,
+  mainStatsRoute: mainStatsRoute,
   mainIndexRoute: mainIndexRoute,
   mainBlogSlugRoute: mainBlogSlugRoute,
   mainNewsletterSlugRoute: mainNewsletterSlugRoute,
@@ -581,6 +623,7 @@ const rootRouteChildren: RootRouteChildren = {
   apiApiCoffeeRoute: apiApiCoffeeRoute,
   apiApiPresenceRoute: apiApiPresenceRoute,
   apiApiStagingSmokeRoute: apiApiStagingSmokeRoute,
+  apiApiSlidesSessionSessionIdRoute: apiApiSlidesSessionSessionIdRoute,
   apiPrxyPlsblApiEventRoute: apiPrxyPlsblApiEventRoute,
   apiPrxyPlsblJsScriptRoute: apiPrxyPlsblJsScriptRoute,
 }
