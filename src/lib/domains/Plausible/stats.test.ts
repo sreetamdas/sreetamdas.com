@@ -46,16 +46,70 @@ describe("Plausible stats", () => {
 				});
 			}
 
+			if (hasDimension(body, "visit:entry_page")) {
+				return Response.json({
+					results: [{ dimensions: ["/blog"], metrics: [11, 55] }],
+				});
+			}
+
+			if (hasDimension(body, "visit:exit_page")) {
+				return Response.json({
+					results: [{ dimensions: ["/uses"], metrics: [7, 35] }],
+				});
+			}
+
 			if (hasDimension(body, "visit:source")) {
 				return Response.json({
 					results: [
-						{ dimensions: ["GitHub"], metrics: [9] },
-						{ dimensions: [""], metrics: [4] },
+						{ dimensions: ["GitHub"], metrics: [9, 60] },
+						{ dimensions: [""], metrics: [4, 40] },
 					],
 				});
 			}
 
-			if (hasDimension(body, "time:day")) {
+			if (hasDimension(body, "visit:referrer")) {
+				return Response.json({
+					results: [{ dimensions: ["github.com"], metrics: [8, 50] }],
+				});
+			}
+
+			if (hasDimension(body, "visit:channel")) {
+				return Response.json({
+					results: [{ dimensions: ["Organic Search"], metrics: [6, 30] }],
+				});
+			}
+
+			if (hasDimension(body, "visit:country_name")) {
+				return Response.json({
+					results: [{ dimensions: ["India", "IN"], metrics: [5, 25] }],
+				});
+			}
+
+			if (hasDimension(body, "visit:city_name")) {
+				return Response.json({
+					results: [{ dimensions: ["Bengaluru"], metrics: [4, 20] }],
+				});
+			}
+
+			if (hasDimension(body, "visit:device")) {
+				return Response.json({
+					results: [{ dimensions: ["Desktop"], metrics: [10, 80] }],
+				});
+			}
+
+			if (hasDimension(body, "visit:browser")) {
+				return Response.json({
+					results: [{ dimensions: ["Chrome"], metrics: [9, 72] }],
+				});
+			}
+
+			if (hasDimension(body, "visit:os")) {
+				return Response.json({
+					results: [{ dimensions: ["Mac"], metrics: [8, 64] }],
+				});
+			}
+
+			if (hasDimension(body, "time")) {
 				return Response.json({
 					results: [
 						{ dimensions: ["2026-05-27"], metrics: [3] },
@@ -70,13 +124,17 @@ describe("Plausible stats", () => {
 		};
 
 		try {
-			const stats = await fetchPlausibleStats({
-				PLAUSIBLE_API_KEY: "test_key",
-				PLAUSIBLE_SITE_ID: "example.com",
-			});
+			const stats = await fetchPlausibleStats(
+				{
+					PLAUSIBLE_API_KEY: "test_key",
+					PLAUSIBLE_SITE_ID: "example.com",
+				},
+				"91d",
+			);
 
-			expect(requestedBodies).toHaveLength(4);
+			expect(requestedBodies).toHaveLength(13);
 			expect(stats.status).toBe("ready");
+			expect(stats.period).toBe("91d");
 			expect(stats.overview).toEqual({
 				visitors: 42,
 				visits: 50,
@@ -86,7 +144,21 @@ describe("Plausible stats", () => {
 				visitDuration: 75,
 			});
 			expect(stats.topPages[0]).toEqual({ path: "/", visitors: 12, pageviews: 34 });
-			expect(stats.topSources[1]).toEqual({ source: "Direct / None", visitors: 4 });
+			expect(stats.entryPages[0]).toEqual({ name: "/blog", visitors: 11, percentage: 55 });
+			expect(stats.exitPages[0]).toEqual({ name: "/uses", visitors: 7, percentage: 35 });
+			expect(stats.topSources[1]).toEqual({ name: "Direct / None", visitors: 4, percentage: 40 });
+			expect(stats.referrers[0]).toEqual({ name: "github.com", visitors: 8, percentage: 50 });
+			expect(stats.channels[0]).toEqual({ name: "Organic Search", visitors: 6, percentage: 30 });
+			expect(stats.countries[0]).toEqual({
+				name: "India",
+				code: "IN",
+				visitors: 5,
+				percentage: 25,
+			});
+			expect(stats.cities[0]).toEqual({ name: "Bengaluru", visitors: 4, percentage: 20 });
+			expect(stats.devices[0]).toEqual({ name: "Desktop", visitors: 10, percentage: 80 });
+			expect(stats.browsers[0]).toEqual({ name: "Chrome", visitors: 9, percentage: 72 });
+			expect(stats.operatingSystems[0]).toEqual({ name: "Mac", visitors: 8, percentage: 64 });
 			expect(stats.timeline[1]).toEqual({ date: "2026-05-28", visitors: 6 });
 		} finally {
 			globalThis.fetch = originalFetch;
