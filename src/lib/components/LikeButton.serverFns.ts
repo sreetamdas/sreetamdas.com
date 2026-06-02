@@ -3,12 +3,10 @@ import { getRequest } from "@tanstack/react-start/server";
 import { allBlogPosts } from "content-collections";
 
 import { getDb } from "@/db";
-import { getLikes, incrementLikes } from "@/lib/domains/PageViews";
+import { getLikes, incrementLikes, type LikeCount } from "@/lib/domains/PageViews";
+import { normalizePathname } from "@/lib/helpers/utils";
 
-export type LikeCount = {
-	likes: number;
-	hasLiked: boolean;
-};
+export type { LikeCount } from "@/lib/domains/PageViews";
 
 type PagePathname = {
 	slug: string;
@@ -190,12 +188,4 @@ function isPagePathnamePayload(data: unknown): data is PagePathname {
 	return (
 		typeof data.slug === "string" && data.slug.length > 0 && typeof data.disabled === "boolean"
 	);
-}
-
-function normalizePathname(pathname: string) {
-	if (pathname !== "/" && pathname.endsWith("/")) {
-		return pathname.slice(0, -1);
-	}
-
-	return pathname;
 }

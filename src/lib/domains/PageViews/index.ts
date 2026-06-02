@@ -10,6 +10,7 @@ import { and, eq, sql } from "drizzle-orm";
 
 import * as schema from "@/db/schema";
 import { pageDetails, postLikes } from "@/db/schema";
+import { normalizePathname } from "@/lib/helpers/utils";
 
 export type PageViewCount = {
 	view_count: number;
@@ -125,12 +126,4 @@ async function getVisitorLike(
 		.limit(1);
 
 	return rows.length > 0;
-}
-
-function normalizePathname(pathname: string) {
-	if (pathname !== "/" && pathname.endsWith("/")) {
-		return pathname.slice(0, -1);
-	}
-
-	return pathname;
 }

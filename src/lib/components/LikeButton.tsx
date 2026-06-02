@@ -3,7 +3,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocation } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
-import { useEffect } from "react";
 
 import { IS_CI, IS_DEV } from "@/config";
 import {
@@ -11,7 +10,7 @@ import {
 	incrementLikeServerFn,
 	type LikeCount,
 } from "@/lib/components/LikeButton.serverFns";
-import { cn } from "@/lib/helpers/utils";
+import { cn, normalizePathname } from "@/lib/helpers/utils";
 
 type LikeButtonProps = {
 	slug?: string;
@@ -34,7 +33,6 @@ const Likes = ({ slug, disabled }: LikeButtonProps) => {
 	const queryClient = useQueryClient();
 	const normalizedPathname = normalizePathname(slug ?? pathname);
 	const queryKey = [normalizedPathname, "get-likes"];
-	const likedStorageKey = `liked:${normalizedPathname}`;
 
 	const fetchLikeCount = useServerFn<() => Promise<LikeCount>>(() =>
 		fetchLikeCountServerFn({ data: { slug: normalizedPathname, disabled } }),
@@ -61,7 +59,6 @@ const Likes = ({ slug, disabled }: LikeButtonProps) => {
 				likes: (previousLikeCount?.likes ?? data?.likes ?? 0) + 1,
 				hasLiked: true,
 			});
-			window.localStorage.setItem(likedStorageKey, "true");
 		},
 		onError: () => {
 			queryClient.invalidateQueries({ queryKey });
@@ -70,19 +67,6 @@ const Likes = ({ slug, disabled }: LikeButtonProps) => {
 			queryClient.setQueryData<LikeCount>(queryKey, likeCount);
 		},
 	});
-
-	useEffect(() => {
-		if (!data) {
-			return;
-		}
-
-		if (data.hasLiked) {
-			window.localStorage.setItem(likedStorageKey, "true");
-			return;
-		}
-
-		window.localStorage.removeItem(likedStorageKey);
-	}, [data, likedStorageKey]);
 
 	if (isLoading) {
 		return <p className="m-0 animate-pulse text-xs">Getting like count</p>;
@@ -128,11 +112,3 @@ const LikeCount = ({ children }: { children: string }) => (
 		{children}
 	</span>
 );
-
-function normalizePathname(pathname: string) {
-	if (pathname !== "/" && pathname.endsWith("/")) {
-		return pathname.slice(0, -1);
-	}
-
-	return pathname;
-}

@@ -8,6 +8,7 @@ import { StatsWorldMap } from "@/lib/components/StatsWorldMap.client";
 import { Code } from "@/lib/components/Typography";
 import { ViewsCounter } from "@/lib/components/ViewsCounter";
 import {
+	createEmptyStats,
 	fetchPlausibleStats,
 	getPlausibleSiteId,
 	PLAUSIBLE_DATE_RANGES,
@@ -44,6 +45,54 @@ const dashboardLenses = [
 	{ href: "#audience", label: "Audience" },
 	{ href: "#technology", label: "Tech" },
 ];
+
+const DASHBOARD_SECTIONS = [
+	{
+		id: "pages",
+		title: "Pages",
+		description:
+			"The paths people enter, read, and leave from. No goals or custom properties here.",
+		panelTitles: ["Top pages", "Entry pages", "Exit pages"],
+	},
+	{
+		id: "acquisition",
+		title: "Acquisition",
+		description: "How people find the site, grouped by source, referrer, and channel.",
+		panelTitles: ["Sources", "Referrers", "Channels"],
+	},
+	{
+		id: "audience",
+		title: "Audience",
+		description: "Location data rendered as ranked geography, not a heavy map dependency.",
+		panelTitles: ["Countries", "Cities"],
+		featured: true,
+	},
+	{
+		id: "technology",
+		title: "Tech",
+		description:
+			"Device, browser, and operating system breakdowns from visit-level Plausible dimensions.",
+		panelTitles: ["Devices", "Browsers", "Operating systems"],
+	},
+] as const;
+
+const [pagesSection, acquisitionSection, audienceSection, technologySection] = DASHBOARD_SECTIONS;
+
+const numberFormatter = new Intl.NumberFormat("en-US");
+const decimalFormatter = new Intl.NumberFormat("en-US", { maximumFractionDigits: 1 });
+const dateTimeFormatter = new Intl.DateTimeFormat("en-US", {
+	month: "short",
+	day: "numeric",
+	year: "numeric",
+	hour: "numeric",
+	minute: "2-digit",
+	timeZone: "UTC",
+	timeZoneName: "short",
+});
+const shortDateFormatter = new Intl.DateTimeFormat("en-US", {
+	month: "short",
+	day: "numeric",
+});
 
 export const Route = createFileRoute("/(main)/stats")({
 	component: StatsPage,
@@ -100,32 +149,7 @@ function isPlausibleDateRange(value: string): value is PlausibleDateRange {
 }
 
 function createUnavailableStats(period: PlausibleDateRange): PlausibleStats {
-	return {
-		status: "unavailable",
-		siteId: getPlausibleSiteId(undefined),
-		period,
-		updatedAt: new Date().toISOString(),
-		overview: {
-			visitors: 0,
-			visits: 0,
-			pageviews: 0,
-			viewsPerVisit: 0,
-			bounceRate: 0,
-			visitDuration: 0,
-		},
-		topPages: [],
-		entryPages: [],
-		exitPages: [],
-		topSources: [],
-		referrers: [],
-		channels: [],
-		countries: [],
-		cities: [],
-		devices: [],
-		browsers: [],
-		operatingSystems: [],
-		timeline: [],
-	};
+	return createEmptyStats("unavailable", getPlausibleSiteId(undefined), period);
 }
 
 function StatsPage() {
@@ -179,31 +203,9 @@ function StatsSkeleton() {
 			<StatsStatusSkeleton />
 			<OverviewSkeleton />
 			<TimelineSkeleton />
-			<DashboardSectionSkeleton
-				id="pages"
-				title="Pages"
-				description="The paths people enter, read, and leave from. No goals or custom properties here."
-				panelTitles={["Top pages", "Entry pages", "Exit pages"]}
-			/>
-			<DashboardSectionSkeleton
-				id="acquisition"
-				title="Acquisition"
-				description="How people find the site, grouped by source, referrer, and channel."
-				panelTitles={["Sources", "Referrers", "Channels"]}
-			/>
-			<DashboardSectionSkeleton
-				id="audience"
-				title="Audience"
-				description="Location data rendered as ranked geography, not a heavy map dependency."
-				panelTitles={["Countries", "Cities"]}
-				featured
-			/>
-			<DashboardSectionSkeleton
-				id="technology"
-				title="Tech"
-				description="Device, browser, and operating system breakdowns from visit-level Plausible dimensions."
-				panelTitles={["Devices", "Browsers", "Operating systems"]}
-			/>
+			{DASHBOARD_SECTIONS.map((section) => (
+				<DashboardSectionSkeleton key={section.id} {...section} />
+			))}
 		</>
 	);
 }
@@ -280,7 +282,7 @@ function DashboardSectionSkeleton({
 	id: string;
 	title: string;
 	description: string;
-	panelTitles: Array<string>;
+	panelTitles: ReadonlyArray<string>;
 	featured?: boolean;
 }) {
 	return (
@@ -487,9 +489,9 @@ function TopPages({ stats }: { stats: PlausibleStats }) {
 function PagesSection({ stats }: { stats: PlausibleStats }) {
 	return (
 		<DashboardSection
-			id="pages"
-			title="Pages"
-			description="The paths people enter, read, and leave from. No goals or custom properties here."
+			id={pagesSection.id}
+			title={pagesSection.title}
+			description={pagesSection.description}
 		>
 			<TopPages stats={stats} />
 			<BreakdownPanel
@@ -509,9 +511,9 @@ function PagesSection({ stats }: { stats: PlausibleStats }) {
 function AcquisitionSection({ stats }: { stats: PlausibleStats }) {
 	return (
 		<DashboardSection
-			id="acquisition"
-			title="Acquisition"
-			description="How people find the site, grouped by source, referrer, and channel."
+			id={acquisitionSection.id}
+			title={acquisitionSection.title}
+			description={acquisitionSection.description}
 		>
 			<BreakdownPanel title="Sources" rows={stats.topSources} emptyMessage="No source data yet." />
 			<BreakdownPanel
@@ -527,9 +529,9 @@ function AcquisitionSection({ stats }: { stats: PlausibleStats }) {
 function AudienceSection({ stats }: { stats: PlausibleStats }) {
 	return (
 		<DashboardSection
-			id="audience"
-			title="Audience"
-			description="Location data rendered as ranked geography, not a heavy map dependency."
+			id={audienceSection.id}
+			title={audienceSection.title}
+			description={audienceSection.description}
 		>
 			<GeoPanel countries={stats.countries} />
 			<BreakdownPanel title="Cities" rows={stats.cities} emptyMessage="No city data yet." />
@@ -540,9 +542,9 @@ function AudienceSection({ stats }: { stats: PlausibleStats }) {
 function TechnologySection({ stats }: { stats: PlausibleStats }) {
 	return (
 		<DashboardSection
-			id="technology"
-			title="Tech"
-			description="Device, browser, and operating system breakdowns from visit-level Plausible dimensions."
+			id={technologySection.id}
+			title={technologySection.title}
+			description={technologySection.description}
 		>
 			<BreakdownPanel title="Devices" rows={stats.devices} emptyMessage="No device data yet." />
 			<BreakdownPanel title="Browsers" rows={stats.browsers} emptyMessage="No browser data yet." />
@@ -750,11 +752,11 @@ function Timeline({ stats }: { stats: PlausibleStats }) {
 }
 
 function formatNumber(value: number) {
-	return new Intl.NumberFormat("en-US").format(value);
+	return numberFormatter.format(value);
 }
 
 function formatDecimal(value: number) {
-	return new Intl.NumberFormat("en-US", { maximumFractionDigits: 1 }).format(value);
+	return decimalFormatter.format(value);
 }
 
 function formatPercentage(value: number) {
@@ -775,20 +777,9 @@ function formatDuration(seconds: number) {
 }
 
 function formatDateTime(value: string) {
-	return new Intl.DateTimeFormat("en-US", {
-		month: "short",
-		day: "numeric",
-		year: "numeric",
-		hour: "numeric",
-		minute: "2-digit",
-		timeZone: "UTC",
-		timeZoneName: "short",
-	}).format(new Date(value));
+	return dateTimeFormatter.format(new Date(value));
 }
 
 function formatShortDate(value: string) {
-	return new Intl.DateTimeFormat("en-US", {
-		month: "short",
-		day: "numeric",
-	}).format(new Date(value));
+	return shortDateFormatter.format(new Date(value));
 }
