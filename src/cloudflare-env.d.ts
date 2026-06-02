@@ -24,6 +24,7 @@ declare namespace Cloudflare {
 		SENTRY_AUTH_TOKEN: string;
 		VITE_SENTRY_DSN: string;
 		SENTRY_IGNORE_API_RESOLUTION_ERROR: string;
+		LIKES_IP_SALT: string;
 	}
 	interface Env {
 		VITE_SITE_URL: string;
@@ -40,6 +41,7 @@ declare namespace Cloudflare {
 		SENTRY_AUTH_TOKEN: string;
 		VITE_SENTRY_DSN: string;
 		SENTRY_IGNORE_API_RESOLUTION_ERROR: string;
+		LIKES_IP_SALT: string;
 		KV: KVNamespace;
 		D1: D1Database;
 		SITE_PRESENCE?: DurableObjectNamespace<import("./worker").PresenceDurableObject>;
@@ -68,6 +70,7 @@ declare namespace NodeJS {
 			| "SENTRY_AUTH_TOKEN"
 			| "VITE_SENTRY_DSN"
 			| "SENTRY_IGNORE_API_RESOLUTION_ERROR"
+			| "LIKES_IP_SALT"
 		>
 	> {}
 }
