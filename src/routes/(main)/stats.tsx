@@ -1,7 +1,6 @@
-import type { ReactNode } from "react";
-
-import { ClientOnly, createFileRoute } from "@tanstack/react-router";
+import { Await, ClientOnly, createFileRoute } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
+import { Suspense, type ReactNode } from "react";
 
 import { SITE_DESCRIPTION, SITE_TITLE_APPEND } from "@/config";
 import { LinkTo } from "@/lib/components/Anchor";
@@ -10,6 +9,7 @@ import { Code } from "@/lib/components/Typography";
 import { ViewsCounter } from "@/lib/components/ViewsCounter";
 import {
 	fetchPlausibleStats,
+	getPlausibleSiteId,
 	PLAUSIBLE_DATE_RANGES,
 	type PlausibleDateRange,
 	type PlausibleStats,
@@ -51,7 +51,9 @@ export const Route = createFileRoute("/(main)/stats")({
 		period: parseDateRange(search.period),
 	}),
 	loaderDeps: ({ search }) => ({ period: search.period }),
-	loader: ({ deps }) => getStats({ data: deps }),
+	loader: ({ deps }) => ({
+		stats: getStats({ data: deps }).catch(() => createUnavailableStats(deps.period)),
+	}),
 	head: () => {
 		const title = `Stats ${SITE_TITLE_APPEND}`;
 		const description = `Privacy-friendly public analytics for ${SITE_DESCRIPTION}`;
@@ -97,8 +99,37 @@ function isPlausibleDateRange(value: string): value is PlausibleDateRange {
 	return PLAUSIBLE_DATE_RANGES.some((range) => range === value);
 }
 
+function createUnavailableStats(period: PlausibleDateRange): PlausibleStats {
+	return {
+		status: "unavailable",
+		siteId: getPlausibleSiteId(undefined),
+		period,
+		updatedAt: new Date().toISOString(),
+		overview: {
+			visitors: 0,
+			visits: 0,
+			pageviews: 0,
+			viewsPerVisit: 0,
+			bounceRate: 0,
+			visitDuration: 0,
+		},
+		topPages: [],
+		entryPages: [],
+		exitPages: [],
+		topSources: [],
+		referrers: [],
+		channels: [],
+		countries: [],
+		cities: [],
+		devices: [],
+		browsers: [],
+		operatingSystems: [],
+		timeline: [],
+	};
+}
+
 function StatsPage() {
-	const stats = Route.useLoaderData();
+	const { stats } = Route.useLoaderData();
 	const search = Route.useSearch();
 	const activePeriod = search.period;
 	return (
@@ -113,13 +144,24 @@ function StatsPage() {
 					avoid cookies and personal data.
 				</p>
 				<dl className="mt-8 flex flex-wrap gap-3">
-					<HeroFact label="Window" value={dateRangeDescriptions[stats.period]} />
+					<HeroFact label="Window" value={dateRangeDescriptions[activePeriod]} />
 					<HeroFact label="Provider" value="Plausible" />
 					<HeroFact label="Tracking" value="No cookies" />
 				</dl>
 			</section>
 
 			<DashboardControls activePeriod={activePeriod} />
+			<Suspense fallback={<StatsSkeleton />}>
+				<Await promise={stats}>{(resolvedStats) => <StatsContent stats={resolvedStats} />}</Await>
+			</Suspense>
+			<ViewsCounter />
+		</>
+	);
+}
+
+function StatsContent({ stats }: { stats: PlausibleStats }) {
+	return (
+		<>
 			<StatsStatus stats={stats} />
 			<Overview stats={stats} />
 			<Timeline stats={stats} />
@@ -127,8 +169,174 @@ function StatsPage() {
 			<AcquisitionSection stats={stats} />
 			<AudienceSection stats={stats} />
 			<TechnologySection stats={stats} />
-			<ViewsCounter />
 		</>
+	);
+}
+
+function StatsSkeleton() {
+	return (
+		<>
+			<StatsStatusSkeleton />
+			<OverviewSkeleton />
+			<TimelineSkeleton />
+			<DashboardSectionSkeleton
+				id="pages"
+				title="Pages"
+				description="The paths people enter, read, and leave from. No goals or custom properties here."
+				panelTitles={["Top pages", "Entry pages", "Exit pages"]}
+			/>
+			<DashboardSectionSkeleton
+				id="acquisition"
+				title="Acquisition"
+				description="How people find the site, grouped by source, referrer, and channel."
+				panelTitles={["Sources", "Referrers", "Channels"]}
+			/>
+			<DashboardSectionSkeleton
+				id="audience"
+				title="Audience"
+				description="Location data rendered as ranked geography, not a heavy map dependency."
+				panelTitles={["Countries", "Cities"]}
+				featured
+			/>
+			<DashboardSectionSkeleton
+				id="technology"
+				title="Tech"
+				description="Device, browser, and operating system breakdowns from visit-level Plausible dimensions."
+				panelTitles={["Devices", "Browsers", "Operating systems"]}
+			/>
+		</>
+	);
+}
+
+function StatsStatusSkeleton() {
+	return (
+		<p className="rounded-global border-foreground/15 bg-foreground/5 dark:bg-foreground/10 col-[1/-1] mx-4 max-w-5xl border border-solid px-4 py-3 text-sm sm:mx-auto sm:w-full">
+			<span className="bg-foreground/15 block h-5 w-full max-w-md animate-pulse rounded-full" />
+			<span className="sr-only">Loading analytics status</span>
+		</p>
+	);
+}
+
+function OverviewSkeleton() {
+	return (
+		<section
+			className="col-[1/-1] mx-4 grid max-w-5xl gap-4 py-8 sm:mx-auto sm:w-full sm:grid-cols-2 lg:grid-cols-3"
+			aria-label="Loading overview"
+		>
+			{overviewMetrics.map((metric) => (
+				<MetricCardSkeleton key={metric.label} tone={metric.tone} />
+			))}
+		</section>
+	);
+}
+
+function MetricCardSkeleton({ tone }: { tone?: "primary" }) {
+	return (
+		<div
+			className={
+				tone === "primary"
+					? "rounded-global border-primary/25 bg-primary/10 border border-solid p-5 transition-colors sm:col-span-2 lg:col-span-1"
+					: "rounded-global border-foreground/15 bg-foreground/5 dark:bg-foreground/10 border border-solid p-5 transition-colors"
+			}
+		>
+			<span className="bg-foreground/15 block h-4 w-24 animate-pulse rounded-full" />
+			<span className="bg-foreground/15 mt-3 block h-10 w-32 animate-pulse rounded-full" />
+		</div>
+	);
+}
+
+function TimelineSkeleton() {
+	return (
+		<section className="rounded-global border-foreground/15 bg-background col-[1/-1] mx-4 max-w-5xl border border-solid p-5 sm:mx-auto sm:w-full">
+			<div className="grid gap-1 sm:grid-cols-[1fr_auto] sm:items-end">
+				<h2 className="m-0 font-serif text-3xl font-bold">Daily visitors</h2>
+				<span className="bg-foreground/15 h-5 w-32 animate-pulse rounded-full sm:justify-self-end" />
+			</div>
+			<ol className="mt-6 flex h-44 items-end gap-1 p-0" aria-label="Loading daily visitors chart">
+				{[42, 56, 38, 72, 64, 88, 52, 60, 46, 78, 68, 54].map((height, index) => (
+					<li className="flex h-full min-w-1 flex-1 list-none items-end" key={`${height}-${index}`}>
+						<span
+							className="bg-foreground/15 rounded-t-global w-full animate-pulse"
+							style={{ height: `${height}%` }}
+						/>
+					</li>
+				))}
+			</ol>
+			<div className="text-foreground/65 mt-3 flex justify-between gap-4 font-mono text-xs">
+				<span className="bg-foreground/15 h-4 w-16 animate-pulse rounded-full" />
+				<span className="bg-foreground/15 h-4 w-16 animate-pulse rounded-full" />
+			</div>
+		</section>
+	);
+}
+
+function DashboardSectionSkeleton({
+	id,
+	title,
+	description,
+	panelTitles,
+	featured,
+}: {
+	id: string;
+	title: string;
+	description: string;
+	panelTitles: Array<string>;
+	featured?: boolean;
+}) {
+	return (
+		<DashboardSection id={id} title={title} description={description}>
+			{panelTitles.map((panelTitle, index) =>
+				featured && index === 0 ? (
+					<FeaturedPanelSkeleton key={panelTitle} title={panelTitle} />
+				) : (
+					<StatsPanelSkeleton key={panelTitle} title={panelTitle} />
+				),
+			)}
+		</DashboardSection>
+	);
+}
+
+function FeaturedPanelSkeleton({ title }: { title: string }) {
+	return (
+		<section className="rounded-global border-foreground/15 bg-background border border-solid p-5 lg:col-span-2">
+			<div className="grid gap-1 sm:grid-cols-[1fr_auto] sm:items-start">
+				<div>
+					<h3 className="m-0 font-serif text-3xl font-bold">{title}</h3>
+					<span className="bg-foreground/15 mt-2 block h-4 w-56 animate-pulse rounded-full" />
+				</div>
+				<span className="bg-foreground/15 h-5 w-16 animate-pulse rounded-full sm:justify-self-end" />
+			</div>
+			<div className="rounded-global bg-foreground/5 dark:bg-foreground/10 mt-4 p-2">
+				<span className="bg-foreground/15 rounded-global block h-40 w-full animate-pulse" />
+			</div>
+			<ol className="mt-4 grid gap-2 p-0">
+				{[0, 1, 2].map((row) => (
+					<li
+						key={row}
+						className="rounded-global bg-foreground/5 dark:bg-foreground/10 grid gap-2 p-3"
+					>
+						<span className="bg-foreground/15 h-5 w-full animate-pulse rounded-full" />
+						<span className="bg-foreground/15 h-2 w-full animate-pulse rounded-full" />
+					</li>
+				))}
+			</ol>
+		</section>
+	);
+}
+
+function StatsPanelSkeleton({ title }: { title: string }) {
+	return (
+		<section className="rounded-global border-foreground/15 bg-background border border-solid p-5">
+			<h3 className="m-0 font-serif text-3xl font-bold">{title}</h3>
+			<ol className="divide-foreground/10 m-0 mt-4 divide-y p-0">
+				{[0, 1, 2].map((row) => (
+					<li className="grid gap-2 py-3" key={row}>
+						<span className="bg-foreground/15 h-5 w-full animate-pulse rounded-full" />
+						<span className="bg-foreground/15 h-2 w-full animate-pulse rounded-full" />
+					</li>
+				))}
+			</ol>
+		</section>
 	);
 }
 
