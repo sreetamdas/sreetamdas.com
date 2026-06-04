@@ -130,6 +130,9 @@ jobs:
       - name: Install
         run: pnpm install --frozen-lockfile
 
+      - name: Build content
+        run: pnpm run build:content-collections
+
       - name: Run unit/api tests
         run: pnpm test:unit
 
