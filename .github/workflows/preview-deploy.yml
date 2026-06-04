@@ -54,11 +54,21 @@ jobs:
       - name: Deploy preview
         id: deploy
         run: |
+          set +e
           OUTPUT=$(pnpm deploy:preview 2>&1)
+          DEPLOY_EXIT_CODE=$?
+          set -e
+
           echo "$OUTPUT"
+
           # Extract preview URL from wrangler output
-          URL=$(echo "$OUTPUT" | grep -oE 'https://[a-zA-Z0-9_-]+\.[a-zA-Z0-9_-]+\.workers\.dev' | head -1)
+          URL=$(echo "$OUTPUT" | grep -oE 'https://[a-zA-Z0-9_-]+\.[a-zA-Z0-9_-]+\.workers\.dev' | head -1 || true)
           echo "preview_url=$URL" >> "$GITHUB_OUTPUT"
+          echo "deploy_exit_code=$DEPLOY_EXIT_CODE" >> "$GITHUB_OUTPUT"
+
+          if [ "$DEPLOY_EXIT_CODE" -ne 0 ]; then
+            echo "::warning::Preview deploy failed; see deploy output above. Core CI and Workers Builds remain authoritative for merge readiness."
+          fi
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
@@ -78,10 +88,13 @@ jobs:
             const botPrefix = "<!-- preview-deploy-bot -->";
             const existing = comments.find(c => c.body?.startsWith(botPrefix));
 
-            const outcome = '${{ job.status }}' === 'success' ? "✅" : "❌";
+            const deploySucceeded = '${{ steps.deploy.outputs.deploy_exit_code }}' === '0';
+            const outcome = deploySucceeded ? "✅" : "⚠️";
             const sha = context.sha.substring(0, 7);
             const previewUrl = '${{ steps.deploy.outputs.preview_url }}';
-            const urlLine = previewUrl ? `🔗 [Preview URL](${previewUrl})` : '❌ No preview URL found in deploy output';
+            const urlLine = previewUrl
+              ? `🔗 [Preview URL](${previewUrl})`
+              : '⚠️ No preview URL found in deploy output';
             const body = `${botPrefix}\n${outcome} Preview deploy for \`${sha}\`\n\n${urlLine}`;
 
             if (existing) {
