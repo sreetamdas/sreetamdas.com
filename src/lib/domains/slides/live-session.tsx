@@ -369,6 +369,7 @@ function MasterLiveControl({
 	const [question, setQuestion] = useState("");
 	const [options, setOptions] = useState("Yes,No");
 	const viewerLink = typeof window === "undefined" ? "" : getViewerLink(sessionId);
+	const loginLink = typeof window === "undefined" ? "" : getCloudflareLoginLink();
 
 	function handleCreatePoll(event: FormEvent<HTMLFormElement>) {
 		event.preventDefault();
@@ -412,6 +413,20 @@ function MasterLiveControl({
 					Hide
 				</button>
 			</div>
+			{connected ? null : (
+				<div className="mt-3 rounded-xl border border-amber-300/30 bg-amber-300/10 p-2">
+					<p className="m-0 text-xs text-amber-50/85">
+						Presenter control requires an allowlisted Cloudflare login.
+					</p>
+					<a
+						className="mt-2 inline-flex rounded-lg bg-white/15 px-2 py-1 text-xs text-white no-underline hover:bg-white/25"
+						href={loginLink}
+					>
+						Sign in with Cloudflare
+					</a>
+				</div>
+			)}
+
 			<div className="mt-3 rounded-xl bg-white/10 p-2">
 				<p className="m-0 text-[0.65rem] text-white/60 uppercase">Viewer link</p>
 				<code className="mt-1 block max-h-12 overflow-auto text-[0.65rem] break-all text-white/80">
@@ -675,6 +690,12 @@ function getSlideSessionWsUrl(sessionId: string, role: SlideSessionRole, clientI
 function getSlideSessionHttpUrl(sessionId: string, clientId: string) {
 	const url = new URL(`/api/slides/session/${encodeURIComponent(sessionId)}`, window.location.href);
 	url.searchParams.set("client", clientId);
+	return url.toString();
+}
+
+function getCloudflareLoginLink() {
+	const url = new URL("/api/login/cloudflare", window.location.href);
+	url.searchParams.set("returnTo", window.location.href);
 	return url.toString();
 }
 

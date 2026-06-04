@@ -11,6 +11,7 @@ catalog:
   vitest: npm:@voidzero-dev/vite-plus-test@latest
   vite-plus: ^0.1.22
 overrides:
+  kysely: 0.28.8
   vite: "catalog:"
   vitest: "catalog:"
 peerDependencyRules:
