@@ -35,13 +35,13 @@ describe("handleSlideSessionRequest", () => {
 		expect(await response.json()).toEqual({ error: "Invalid slide session id" });
 	});
 
-	test("delegates valid requests to the named slide session durable object", async () => {
+	test("delegates valid viewer requests to the named slide session durable object", async () => {
 		const request = new Request("https://example.com/api/slides/session/keynote");
 		let calledWithName = "";
-		let calledWithRequest: Request | null = null;
+		const calledWithRequests: Array<Request> = [];
 		const stub: SlideSessionStub = {
 			fetch: (incomingRequest) => {
-				calledWithRequest = incomingRequest;
+				calledWithRequests.push(incomingRequest);
 				return new Response("ok");
 			},
 		};
@@ -58,8 +58,46 @@ describe("handleSlideSessionRequest", () => {
 		);
 
 		expect(calledWithName).toBe("keynote");
-		expect(calledWithRequest).toBe(request);
+		const calledWithRequest = calledWithRequests.at(0);
+		if (!calledWithRequest) throw new Error("expected forwarded request");
+		expect(calledWithRequest.headers.get("x-sreetamdas-slide-role")).toBe("viewer");
 		expect(await response.text()).toBe("ok");
+	});
+
+	test("rejects master requests without an allowed presenter", async () => {
+		const response = await handleSlideSessionRequest(
+			new Request("https://example.com/api/slides/session/keynote?role=master"),
+			{
+				getByName: () => {
+					throw new Error("should not lookup");
+				},
+			},
+			"keynote",
+			() => undefined,
+		);
+
+		expect(response.status).toBe(401);
+		expect(await response.json()).toEqual({ error: "Presenter authentication required" });
+	});
+
+	test("forwards a trusted master role for allowed presenters", async () => {
+		let trustedRole = "";
+		const response = await handleSlideSessionRequest(
+			new Request("https://example.com/api/slides/session/keynote?role=master"),
+			{
+				getByName: () => ({
+					fetch: (incomingRequest) => {
+						trustedRole = incomingRequest.headers.get("x-sreetamdas-slide-role") ?? "";
+						return new Response("ok");
+					},
+				}),
+			},
+			"keynote",
+			() => "sreetam@example.com",
+		);
+
+		expect(response.status).toBe(200);
+		expect(trustedRole).toBe("master");
 	});
 
 	test("allows URL-safe session ids", () => {

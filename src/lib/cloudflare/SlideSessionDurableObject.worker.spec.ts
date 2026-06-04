@@ -75,6 +75,26 @@ describe("SlideSessionDurableObject", () => {
 		viewer.close();
 	});
 
+	it("does not trust a client role query without the server role header", async () => {
+		const session = uniqueSession("forged-master");
+		const forgedMaster = await openSocketWithoutTrustedRole(session, "master", "forged-master");
+		const viewer = await openSocket(session, "viewer", "viewer-forged-master");
+
+		forgedMaster.send(JSON.stringify({ type: "set-slide", slide: 7, step: 0 }));
+		await sleep(50);
+		const response = await slideSession(session).fetch("https://example.com/");
+		const body: unknown = await response.json();
+
+		expect(isSnapshot(body)).toBe(true);
+		if (isSnapshot(body)) {
+			expect(body.position.slide).toBe(0);
+			expect(body.position.step).toBe(0);
+		}
+
+		forgedMaster.close();
+		viewer.close();
+	});
+
 	it("supports slide-scoped polls, deduped votes, close, and reset", async () => {
 		const session = uniqueSession("poll");
 		const master = await openSocket(session, "master", "master-poll");
@@ -163,6 +183,27 @@ function slideSession(name: string) {
 }
 
 async function openSocket(session: string, role: "master" | "viewer", client: string) {
+	const url = new URL("https://example.com/");
+	url.searchParams.set("role", role);
+	url.searchParams.set("client", client);
+	const headers = new Headers({ Upgrade: "websocket", Origin: "https://example.com" });
+	if (role === "master") {
+		headers.set("x-sreetamdas-slide-role", "master");
+	}
+	const response = await slideSession(session).fetch(url.toString(), { headers });
+	const socket = response.webSocket;
+	if (!socket) {
+		throw new Error(`Expected websocket upgrade, got ${response.status}`);
+	}
+	socket.accept();
+	return socket;
+}
+
+async function openSocketWithoutTrustedRole(
+	session: string,
+	role: "master" | "viewer",
+	client: string,
+) {
 	const url = new URL("https://example.com/");
 	url.searchParams.set("role", role);
 	url.searchParams.set("client", client);

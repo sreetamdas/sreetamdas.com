@@ -2,6 +2,8 @@ import { DurableObject } from "cloudflare:workers";
 
 type SlideRole = "master" | "viewer";
 
+const SLIDE_SESSION_ROLE_HEADER = "x-sreetamdas-slide-role";
+
 type SlidePosition = {
 	slide: number;
 	step: number;
@@ -71,7 +73,7 @@ export class SlideSessionDurableObject extends DurableObject<CloudflareEnv> {
 
 		const pair = new WebSocketPair();
 		const { 0: client, 1: server } = pair;
-		const role = parseRole(url.searchParams.get("role"));
+		const role = parseTrustedRole(request.headers.get(SLIDE_SESSION_ROLE_HEADER));
 		const clientId = parseClientId(url.searchParams.get("client"));
 
 		this.ctx.acceptWebSocket(server, [role]);
@@ -274,7 +276,7 @@ export class SlideSessionDurableObject extends DurableObject<CloudflareEnv> {
 	}
 }
 
-function parseRole(value: string | null): SlideRole {
+function parseTrustedRole(value: string | null): SlideRole {
 	return value === "master" ? "master" : "viewer";
 }
 

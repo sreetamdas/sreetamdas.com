@@ -33,6 +33,8 @@ import { Route as apiApiPresenceRouteImport } from './routes/(api)/api/presence'
 import { Route as apiApiCoffeeRouteImport } from './routes/(api)/api/coffee'
 import { Route as mainfoobarFoobarIndexRouteImport } from './routes/(main)/(foobar)/foobar/index'
 import { Route as mainfoobarFoobarSlugRouteImport } from './routes/(main)/(foobar)/foobar/$slug'
+import { Route as apiApiLoginCloudflareRouteImport } from './routes/(api)/api/login/cloudflare'
+import { Route as apiApiAuthSplatRouteImport } from './routes/(api)/api/auth/$'
 import { Route as apiPrxyPlsblJsScriptRouteImport } from './routes/(api)/prxy/plsbl/js/$script'
 import { Route as apiPrxyPlsblApiEventRouteImport } from './routes/(api)/prxy/plsbl/api/event'
 import { Route as apiApiSlidesSessionSessionIdRouteImport } from './routes/(api)/api/slides/session/$sessionId'
@@ -157,6 +159,16 @@ const mainfoobarFoobarSlugRoute = mainfoobarFoobarSlugRouteImport.update({
   path: '/foobar/$slug',
   getParentRoute: () => mainRouteRoute,
 } as any)
+const apiApiLoginCloudflareRoute = apiApiLoginCloudflareRouteImport.update({
+  id: '/(api)/api/login/cloudflare',
+  path: '/api/login/cloudflare',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const apiApiAuthSplatRoute = apiApiAuthSplatRouteImport.update({
+  id: '/(api)/api/auth/$',
+  path: '/api/auth/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const apiPrxyPlsblJsScriptRoute = apiPrxyPlsblJsScriptRouteImport.update({
   id: '/(api)/prxy/plsbl/js/$script',
   path: '/prxy/plsbl/js/$script',
@@ -195,6 +207,8 @@ export interface FileRoutesByFullPath {
   '/blog/': typeof mainBlogIndexRoute
   '/newsletter/': typeof mainNewsletterIndexRoute
   '/slides/json-schema-form/': typeof SlidesJsonSchemaFormIndexRoute
+  '/api/auth/$': typeof apiApiAuthSplatRoute
+  '/api/login/cloudflare': typeof apiApiLoginCloudflareRoute
   '/foobar/$slug': typeof mainfoobarFoobarSlugRoute
   '/foobar/': typeof mainfoobarFoobarIndexRoute
   '/api/slides/session/$sessionId': typeof apiApiSlidesSessionSessionIdRoute
@@ -222,6 +236,8 @@ export interface FileRoutesByTo {
   '/blog': typeof mainBlogIndexRoute
   '/newsletter': typeof mainNewsletterIndexRoute
   '/slides/json-schema-form': typeof SlidesJsonSchemaFormIndexRoute
+  '/api/auth/$': typeof apiApiAuthSplatRoute
+  '/api/login/cloudflare': typeof apiApiLoginCloudflareRoute
   '/foobar/$slug': typeof mainfoobarFoobarSlugRoute
   '/foobar': typeof mainfoobarFoobarIndexRoute
   '/api/slides/session/$sessionId': typeof apiApiSlidesSessionSessionIdRoute
@@ -252,6 +268,8 @@ export interface FileRoutesById {
   '/(main)/blog/': typeof mainBlogIndexRoute
   '/(main)/newsletter/': typeof mainNewsletterIndexRoute
   '/slides/json-schema-form/': typeof SlidesJsonSchemaFormIndexRoute
+  '/(api)/api/auth/$': typeof apiApiAuthSplatRoute
+  '/(api)/api/login/cloudflare': typeof apiApiLoginCloudflareRoute
   '/(main)/(foobar)/foobar/$slug': typeof mainfoobarFoobarSlugRoute
   '/(main)/(foobar)/foobar/': typeof mainfoobarFoobarIndexRoute
   '/(api)/api/slides/session/$sessionId': typeof apiApiSlidesSessionSessionIdRoute
@@ -281,6 +299,8 @@ export interface FileRouteTypes {
     | '/blog/'
     | '/newsletter/'
     | '/slides/json-schema-form/'
+    | '/api/auth/$'
+    | '/api/login/cloudflare'
     | '/foobar/$slug'
     | '/foobar/'
     | '/api/slides/session/$sessionId'
@@ -308,6 +328,8 @@ export interface FileRouteTypes {
     | '/blog'
     | '/newsletter'
     | '/slides/json-schema-form'
+    | '/api/auth/$'
+    | '/api/login/cloudflare'
     | '/foobar/$slug'
     | '/foobar'
     | '/api/slides/session/$sessionId'
@@ -337,6 +359,8 @@ export interface FileRouteTypes {
     | '/(main)/blog/'
     | '/(main)/newsletter/'
     | '/slides/json-schema-form/'
+    | '/(api)/api/auth/$'
+    | '/(api)/api/login/cloudflare'
     | '/(main)/(foobar)/foobar/$slug'
     | '/(main)/(foobar)/foobar/'
     | '/(api)/api/slides/session/$sessionId'
@@ -351,6 +375,8 @@ export interface RootRouteChildren {
   apiApiCoffeeRoute: typeof apiApiCoffeeRoute
   apiApiPresenceRoute: typeof apiApiPresenceRoute
   apiApiStagingSmokeRoute: typeof apiApiStagingSmokeRoute
+  apiApiAuthSplatRoute: typeof apiApiAuthSplatRoute
+  apiApiLoginCloudflareRoute: typeof apiApiLoginCloudflareRoute
   apiApiSlidesSessionSessionIdRoute: typeof apiApiSlidesSessionSessionIdRoute
   apiPrxyPlsblApiEventRoute: typeof apiPrxyPlsblApiEventRoute
   apiPrxyPlsblJsScriptRoute: typeof apiPrxyPlsblJsScriptRoute
@@ -526,6 +552,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof mainfoobarFoobarSlugRouteImport
       parentRoute: typeof mainRouteRoute
     }
+    '/(api)/api/login/cloudflare': {
+      id: '/(api)/api/login/cloudflare'
+      path: '/api/login/cloudflare'
+      fullPath: '/api/login/cloudflare'
+      preLoaderRoute: typeof apiApiLoginCloudflareRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/(api)/api/auth/$': {
+      id: '/(api)/api/auth/$'
+      path: '/api/auth/$'
+      fullPath: '/api/auth/$'
+      preLoaderRoute: typeof apiApiAuthSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/(api)/prxy/plsbl/js/$script': {
       id: '/(api)/prxy/plsbl/js/$script'
       path: '/prxy/plsbl/js/$script'
@@ -623,6 +663,8 @@ const rootRouteChildren: RootRouteChildren = {
   apiApiCoffeeRoute: apiApiCoffeeRoute,
   apiApiPresenceRoute: apiApiPresenceRoute,
   apiApiStagingSmokeRoute: apiApiStagingSmokeRoute,
+  apiApiAuthSplatRoute: apiApiAuthSplatRoute,
+  apiApiLoginCloudflareRoute: apiApiLoginCloudflareRoute,
   apiApiSlidesSessionSessionIdRoute: apiApiSlidesSessionSessionIdRoute,
   apiPrxyPlsblApiEventRoute: apiPrxyPlsblApiEventRoute,
   apiPrxyPlsblJsScriptRoute: apiPrxyPlsblJsScriptRoute,
