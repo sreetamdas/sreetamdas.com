@@ -1,9 +1,10 @@
-import { LinkTo } from "@/lib/components/Anchor";
 /**
  * Displays avatars of non-bot contributors to the site's GitHub repo.
  * Data is fetched server-side in the route loader and passed as a prop —
  * no client-side fetch needed.
  */
+
+import { LinkTo } from "@/lib/components/Anchor";
 import { type RepoContributor } from "@/lib/domains/GitHub/types";
 
 type RepoContributorsProps = {

@@ -4,30 +4,24 @@
  * route availability, dashboard badges, and completion tracking.
  */
 import { createFileRoute, notFound } from "@tanstack/react-router";
-import z from "zod";
 
 import { FoobarSchrodinger } from "@/lib/domains/foobar/DashboardClient";
 import { type FoobaFlagPageSlug, FOOBAR_FLAGS } from "@/lib/domains/foobar/flags";
 
-const foobar_routes_schema = z.object({
-	slug: z.enum(getAllFoobarPagesSlugs()),
-});
-
 export const Route = createFileRoute("/(main)/(foobar)/foobar/$slug")({
 	component: FoobarCompletedPage,
 	staleTime: 1000 * 60 * 60 * 24,
-	loader: ({ params: { slug } }: { params: { slug: Exclude<FoobaFlagPageSlug, "/"> } }) => {
-		const all_foobar_pages_slugs = getAllFoobarPagesSlugs();
-		if (!all_foobar_pages_slugs.includes(slug)) {
-			throw notFound();
-		}
-
-		return { slug };
-	},
 	params: {
 		parse: (params) => {
-			return foobar_routes_schema.parse(params);
+			if (!isFoobarPageSlug(params.slug)) {
+				throw notFound();
+			}
+
+			return { slug: params.slug };
 		},
+	},
+	loader: ({ params: { slug } }) => {
+		return { slug };
 	},
 });
 
@@ -37,7 +31,12 @@ function FoobarCompletedPage() {
 	return <FoobarSchrodinger completed_page={slug} />;
 }
 
-function getAllFoobarPagesSlugs() {
+function isFoobarPageSlug(slug: string): slug is Exclude<FoobaFlagPageSlug, "/"> {
+	const all_foobar_pages_slugs: readonly string[] = getAllFoobarPagesSlugs();
+	return all_foobar_pages_slugs.includes(slug);
+}
+
+function getAllFoobarPagesSlugs(): Array<Exclude<FoobaFlagPageSlug, "/">> {
 	return Object.values(FOOBAR_FLAGS).flatMap((challenge_obj) => {
 		if ("slug" in challenge_obj) {
 			if (challenge_obj.slug === "/") {
