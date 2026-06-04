@@ -47,6 +47,16 @@ describe("SlideSessionDurableObject", () => {
 		}
 	});
 
+	it("rejects websocket connections from disallowed origins", async () => {
+		const session = uniqueSession("origin");
+		const response = await slideSession(session).fetch("https://example.com/", {
+			headers: { Upgrade: "websocket", Origin: "https://evil.example" },
+		});
+
+		expect(response.status).toBe(403);
+		expect(response.webSocket).toBe(null);
+	});
+
 	it("lets masters move slides but ignores viewer navigation attempts", async () => {
 		const session = uniqueSession("nav");
 		const master = await openSocket(session, "master", "master-nav");
@@ -93,6 +103,31 @@ describe("SlideSessionDurableObject", () => {
 
 		forgedMaster.close();
 		viewer.close();
+	});
+
+	it("treats invalid trusted role headers as viewers", async () => {
+		const session = uniqueSession("invalid-role-header");
+		const forgedMaster = await openSocketWithTrustedRoleHeader(
+			session,
+			"master",
+			"forged-invalid-header",
+			"admin",
+		);
+
+		forgedMaster.send(JSON.stringify({ type: "set-slide", slide: 5, step: 2 }));
+		await sleep(50);
+		const response = await slideSession(session).fetch("https://example.com/");
+		const body: unknown = await response.json();
+
+		expect(isSnapshot(body)).toBe(true);
+		if (isSnapshot(body)) {
+			expect(body.position.slide).toBe(0);
+			expect(body.position.step).toBe(0);
+			expect(body.viewers).toBe(1);
+			expect(body.masters).toBe(0);
+		}
+
+		forgedMaster.close();
 	});
 
 	it("supports slide-scoped polls, deduped votes, close, and reset", async () => {
@@ -209,6 +244,30 @@ async function openSocketWithoutTrustedRole(
 	url.searchParams.set("client", client);
 	const response = await slideSession(session).fetch(url.toString(), {
 		headers: { Upgrade: "websocket", Origin: "https://example.com" },
+	});
+	const socket = response.webSocket;
+	if (!socket) {
+		throw new Error(`Expected websocket upgrade, got ${response.status}`);
+	}
+	socket.accept();
+	return socket;
+}
+
+async function openSocketWithTrustedRoleHeader(
+	session: string,
+	role: "master" | "viewer",
+	client: string,
+	trustedRoleHeader: string,
+) {
+	const url = new URL("https://example.com/");
+	url.searchParams.set("role", role);
+	url.searchParams.set("client", client);
+	const response = await slideSession(session).fetch(url.toString(), {
+		headers: {
+			Upgrade: "websocket",
+			Origin: "https://example.com",
+			"x-sreetamdas-slide-role": trustedRoleHeader,
+		},
 	});
 	const socket = response.webSocket;
 	if (!socket) {
