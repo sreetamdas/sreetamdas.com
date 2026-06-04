@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vitest";
 
-import { readPublicEnvString, readServerEnvString } from "./utils";
+import { normalizePathname, readPublicEnvString, readServerEnvString } from "./utils";
 
 describe("readServerEnvString", () => {
 	test("reads a non-enumerable Cloudflare binding", () => {
@@ -76,5 +76,23 @@ describe("readPublicEnvString", () => {
 		};
 
 		expect(readPublicEnvString(env, ["VITE_SITE_URL"])).toBe("https://example.com");
+	});
+});
+
+describe("normalizePathname", () => {
+	test("strips a trailing slash from nested paths", () => {
+		expect(normalizePathname("/blog/x/")).toBe("/blog/x");
+	});
+
+	test("does not trim the root pathname", () => {
+		expect(normalizePathname("/")).toBe("/");
+	});
+
+	test("keeps paths without trailing slashes unchanged", () => {
+		expect(normalizePathname("/blog/x")).toBe("/blog/x");
+	});
+
+	test("only strips one trailing slash", () => {
+		expect(normalizePathname("/blog/x//")).toBe("/blog/x/");
 	});
 });

@@ -12,6 +12,14 @@ declare namespace Cloudflare {
 		SLIDE_SESSIONS: DurableObjectNamespace<import("./worker").SlideSessionDurableObject>;
 		VITE_SITE_URL: string;
 		DEBUG_MODE: string;
+		BETTER_AUTH_SECRET: string;
+		SLIDE_PRESENTER_EMAILS: string;
+		CLOUDFLARE_OAUTH_CLIENT_ID: string;
+		CLOUDFLARE_OAUTH_CLIENT_SECRET: string;
+		CLOUDFLARE_OAUTH_SCOPES: string;
+		CLOUDFLARE_OAUTH_AUTHORIZATION_URL: string;
+		CLOUDFLARE_OAUTH_TOKEN_URL: string;
+		CLOUDFLARE_OAUTH_USER_INFO_URL: string;
 		BUTTONDOWN_API_KEY: string;
 		IMGUR_API_CLIENT_ID: string;
 		IMGUR_KEEBS_ALBUM_HASH: string;
@@ -24,10 +32,19 @@ declare namespace Cloudflare {
 		SENTRY_AUTH_TOKEN: string;
 		VITE_SENTRY_DSN: string;
 		SENTRY_IGNORE_API_RESOLUTION_ERROR: string;
+		LIKES_IP_SALT: string;
 	}
 	interface Env {
 		VITE_SITE_URL: string;
 		DEBUG_MODE: string;
+		BETTER_AUTH_SECRET: string;
+		SLIDE_PRESENTER_EMAILS: string;
+		CLOUDFLARE_OAUTH_CLIENT_ID: string;
+		CLOUDFLARE_OAUTH_CLIENT_SECRET: string;
+		CLOUDFLARE_OAUTH_SCOPES: string;
+		CLOUDFLARE_OAUTH_AUTHORIZATION_URL: string;
+		CLOUDFLARE_OAUTH_TOKEN_URL: string;
+		CLOUDFLARE_OAUTH_USER_INFO_URL: string;
 		BUTTONDOWN_API_KEY: string;
 		IMGUR_API_CLIENT_ID: string;
 		IMGUR_KEEBS_ALBUM_HASH: string;
@@ -40,6 +57,7 @@ declare namespace Cloudflare {
 		SENTRY_AUTH_TOKEN: string;
 		VITE_SENTRY_DSN: string;
 		SENTRY_IGNORE_API_RESOLUTION_ERROR: string;
+		LIKES_IP_SALT: string;
 		KV: KVNamespace;
 		D1: D1Database;
 		SITE_PRESENCE?: DurableObjectNamespace<import("./worker").PresenceDurableObject>;
@@ -56,6 +74,14 @@ declare namespace NodeJS {
 			Cloudflare.Env,
 			| "VITE_SITE_URL"
 			| "DEBUG_MODE"
+			| "BETTER_AUTH_SECRET"
+			| "SLIDE_PRESENTER_EMAILS"
+			| "CLOUDFLARE_OAUTH_CLIENT_ID"
+			| "CLOUDFLARE_OAUTH_CLIENT_SECRET"
+			| "CLOUDFLARE_OAUTH_SCOPES"
+			| "CLOUDFLARE_OAUTH_AUTHORIZATION_URL"
+			| "CLOUDFLARE_OAUTH_TOKEN_URL"
+			| "CLOUDFLARE_OAUTH_USER_INFO_URL"
 			| "BUTTONDOWN_API_KEY"
 			| "IMGUR_API_CLIENT_ID"
 			| "IMGUR_KEEBS_ALBUM_HASH"
@@ -68,6 +94,7 @@ declare namespace NodeJS {
 			| "SENTRY_AUTH_TOKEN"
 			| "VITE_SENTRY_DSN"
 			| "SENTRY_IGNORE_API_RESOLUTION_ERROR"
+			| "LIKES_IP_SALT"
 		>
 	> {}
 }

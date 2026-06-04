@@ -1,0 +1,139 @@
+{
+	"version": "7",
+	"dialect": "sqlite",
+	"id": "3bc06cd7-383e-4634-b714-659ea0ec15f7",
+	"prevIds": ["f368cc56-dbce-4c4d-8c30-b239a2fef5a1"],
+	"ddl": [
+		{
+			"name": "page_details",
+			"entityType": "tables"
+		},
+		{
+			"name": "post_likes",
+			"entityType": "tables"
+		},
+		{
+			"type": "integer",
+			"notNull": false,
+			"autoincrement": true,
+			"default": null,
+			"generated": null,
+			"name": "id",
+			"entityType": "columns",
+			"table": "page_details"
+		},
+		{
+			"type": "text",
+			"notNull": true,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "slug",
+			"entityType": "columns",
+			"table": "page_details"
+		},
+		{
+			"type": "integer",
+			"notNull": true,
+			"autoincrement": false,
+			"default": "0",
+			"generated": null,
+			"name": "view_count",
+			"entityType": "columns",
+			"table": "page_details"
+		},
+		{
+			"type": "integer",
+			"notNull": true,
+			"autoincrement": false,
+			"default": "0",
+			"generated": null,
+			"name": "likes",
+			"entityType": "columns",
+			"table": "page_details"
+		},
+		{
+			"type": "text",
+			"notNull": true,
+			"autoincrement": false,
+			"default": "CURRENT_TIMESTAMP",
+			"generated": null,
+			"name": "created_at",
+			"entityType": "columns",
+			"table": "page_details"
+		},
+		{
+			"type": "text",
+			"notNull": true,
+			"autoincrement": false,
+			"default": "CURRENT_TIMESTAMP",
+			"generated": null,
+			"name": "updated_at",
+			"entityType": "columns",
+			"table": "page_details"
+		},
+		{
+			"type": "text",
+			"notNull": true,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "slug",
+			"entityType": "columns",
+			"table": "post_likes"
+		},
+		{
+			"type": "text",
+			"notNull": true,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "visitor_hash",
+			"entityType": "columns",
+			"table": "post_likes"
+		},
+		{
+			"type": "text",
+			"notNull": true,
+			"autoincrement": false,
+			"default": "CURRENT_TIMESTAMP",
+			"generated": null,
+			"name": "created_at",
+			"entityType": "columns",
+			"table": "post_likes"
+		},
+		{
+			"columns": ["id"],
+			"nameExplicit": false,
+			"name": "page_details_pk",
+			"table": "page_details",
+			"entityType": "pks"
+		},
+		{
+			"columns": [
+				{
+					"value": "slug",
+					"isExpression": false
+				},
+				{
+					"value": "visitor_hash",
+					"isExpression": false
+				}
+			],
+			"isUnique": true,
+			"where": null,
+			"origin": "manual",
+			"name": "post_likes_slug_visitor_hash_unique",
+			"entityType": "indexes",
+			"table": "post_likes"
+		},
+		{
+			"columns": ["slug"],
+			"nameExplicit": false,
+			"name": "page_details_slug_unique",
+			"entityType": "uniques",
+			"table": "page_details"
+		}
+	],
+	"renames": []
+}
