@@ -6,6 +6,7 @@ import { isNil } from "lodash-es";
 
 import { IS_DEV, SITE_DESCRIPTION, SITE_TITLE_APPEND } from "@/config";
 import { NotFound404 } from "@/lib/components/Error";
+import { LikeButton } from "@/lib/components/LikeButton";
 import { MDXContent } from "@/lib/components/MDX";
 import { ReadingProgress } from "@/lib/components/ProgressBar";
 import { InfoBlock } from "@/lib/components/sink";
@@ -135,6 +136,7 @@ function RouteComponent() {
 			{Renderable}
 
 			<ViewsCounter />
+			<LikeButton />
 		</>
 	);
 }

@@ -260,7 +260,7 @@ async function queryPlausible(
 	return payload;
 }
 
-function createEmptyStats(
+export function createEmptyStats(
 	status: PlausibleStatsStatus,
 	siteId: string,
 	period: PlausibleDateRange,

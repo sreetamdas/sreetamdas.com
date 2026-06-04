@@ -5,6 +5,14 @@ export function cn(...inputs: Array<ClassValue>) {
 	return twMerge(clsx(inputs));
 }
 
+export function normalizePathname(pathname: string): string {
+	if (pathname !== "/" && pathname.endsWith("/")) {
+		return pathname.slice(0, -1);
+	}
+
+	return pathname;
+}
+
 export async function handleFetch<T>(input: RequestInfo | URL, init?: RequestInit): Promise<T> {
 	const response = await fetch(input, init);
 
