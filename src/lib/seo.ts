@@ -1,4 +1,5 @@
 import { SITE_OG_IMAGE, SITE_URL } from "@/config";
+import { normalizePathname } from "@/lib/helpers/utils";
 
 export function absoluteUrl(urlOrPath: string) {
 	if (urlOrPath.startsWith("http://") || urlOrPath.startsWith("https://")) {
@@ -17,8 +18,7 @@ export function absoluteUrl(urlOrPath: string) {
 }
 
 export function canonicalUrl(pathname: string) {
-	const normalizedPathname =
-		pathname !== "/" && pathname.endsWith("/") ? pathname.slice(0, -1) : pathname;
+	const normalizedPathname = normalizePathname(pathname);
 
 	if (normalizedPathname === "/") return SITE_URL;
 	return absoluteUrl(normalizedPathname);

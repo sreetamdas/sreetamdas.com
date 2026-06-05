@@ -1,14 +1,19 @@
 import { DurableObject } from "cloudflare:workers";
 
-type SlideRole = "master" | "viewer";
+import {
+	isClosePollMessage,
+	isCreatePollMessage,
+	isReactionMessage,
+	isResetPollMessage,
+	isSetSlideMessage,
+	isVoteMessage,
+	type SlidePoll,
+	type SlideSessionPosition,
+	type SlideSessionRole,
+	type SlideSessionSnapshot,
+} from "@/lib/domains/slides/live-session-protocol";
 
 const SLIDE_SESSION_ROLE_HEADER = "x-sreetamdas-slide-role";
-
-type SlidePosition = {
-	slide: number;
-	step: number;
-	updatedAt: number;
-};
 
 type PollRecord = {
 	id: string;
@@ -19,32 +24,14 @@ type PollRecord = {
 	voters: Record<string, string>;
 	createdAt: number;
 };
-
-type PublicPoll = {
-	id: string;
-	question: string;
-	open: boolean;
-	slide: number | null;
-	selectedOptionId: string | null;
-	options: Array<{ id: string; label: string; votes: number }>;
-};
-
-type SessionSnapshot = {
-	type: "snapshot";
-	position: SlidePosition;
-	poll: PublicPoll | null;
-	viewers: number;
-	masters: number;
-};
-
 type ConnectionAttachment = {
-	role: SlideRole;
+	role: SlideSessionRole;
 	clientId: string;
 };
 
 const POSITION_KEY = "position";
 const POLL_KEY = "poll";
-const DEFAULT_POSITION: SlidePosition = { slide: 0, step: 0, updatedAt: 0 };
+const DEFAULT_POSITION: SlideSessionPosition = { slide: 0, step: 0, updatedAt: 0 };
 const MAX_POLL_OPTIONS = 6;
 
 export class SlideSessionDurableObject extends DurableObject<CloudflareEnv> {
@@ -145,8 +132,9 @@ export class SlideSessionDurableObject extends DurableObject<CloudflareEnv> {
 		void this.broadcastSnapshot();
 	}
 
-	private async getSnapshot(clientId?: string): Promise<SessionSnapshot> {
-		const position = (await this.ctx.storage.get<SlidePosition>(POSITION_KEY)) ?? DEFAULT_POSITION;
+	private async getSnapshot(clientId?: string): Promise<SlideSessionSnapshot> {
+		const position =
+			(await this.ctx.storage.get<SlideSessionPosition>(POSITION_KEY)) ?? DEFAULT_POSITION;
 		const poll = await this.ctx.storage.get<PollRecord>(POLL_KEY);
 		const { viewers, masters } = this.getConnectionCounts();
 		return {
@@ -200,7 +188,7 @@ export class SlideSessionDurableObject extends DurableObject<CloudflareEnv> {
 			slide: normalizeIndex(slide),
 			step: normalizeIndex(step),
 			updatedAt: Date.now(),
-		} satisfies SlidePosition);
+		} satisfies SlideSessionPosition);
 	}
 
 	private async createPoll(
@@ -276,7 +264,7 @@ export class SlideSessionDurableObject extends DurableObject<CloudflareEnv> {
 	}
 }
 
-function parseTrustedRole(value: string | null): SlideRole {
+function parseTrustedRole(value: string | null): SlideSessionRole {
 	return value === "master" ? "master" : "viewer";
 }
 
@@ -313,7 +301,7 @@ function normalizeSlideScope(value: number | null | undefined): number | null {
 	return normalizeIndex(value);
 }
 
-function toPublicPoll(poll: PollRecord, clientId?: string): PublicPoll {
+function toPublicPoll(poll: PollRecord, clientId?: string): SlidePoll {
 	return {
 		id: poll.id,
 		question: poll.question,
@@ -326,84 +314,3 @@ function toPublicPoll(poll: PollRecord, clientId?: string): PublicPoll {
 		})),
 	};
 }
-
-function isSetSlideMessage(
-	value: unknown,
-): value is { type: "set-slide"; slide: number; step: number } {
-	return (
-		typeof value === "object" &&
-		value !== null &&
-		"type" in value &&
-		value.type === "set-slide" &&
-		"slide" in value &&
-		"step" in value &&
-		typeof value.slide === "number" &&
-		typeof value.step === "number"
-	);
-}
-
-function isCreatePollMessage(value: unknown): value is {
-	type: "create-poll";
-	question: string;
-	options: Array<string>;
-	slide?: number | null;
-} {
-	return (
-		typeof value === "object" &&
-		value !== null &&
-		"type" in value &&
-		value.type === "create-poll" &&
-		"question" in value &&
-		"options" in value &&
-		typeof value.question === "string" &&
-		Array.isArray(value.options) &&
-		value.options.every((option) => typeof option === "string") &&
-		(!("slide" in value) ||
-			value.slide === null ||
-			(typeof value.slide === "number" &&
-				Number.isFinite(value.slide) &&
-				Number.isInteger(value.slide) &&
-				value.slide >= 0))
-	);
-}
-
-function isVoteMessage(
-	value: unknown,
-): value is { type: "vote"; pollId: string; optionId: string } {
-	return (
-		typeof value === "object" &&
-		value !== null &&
-		"type" in value &&
-		value.type === "vote" &&
-		"pollId" in value &&
-		"optionId" in value &&
-		typeof value.pollId === "string" &&
-		typeof value.optionId === "string"
-	);
-}
-
-function isClosePollMessage(value: unknown): value is { type: "close-poll" } {
-	return (
-		typeof value === "object" && value !== null && "type" in value && value.type === "close-poll"
-	);
-}
-
-function isResetPollMessage(value: unknown): value is { type: "reset-poll" } {
-	return (
-		typeof value === "object" && value !== null && "type" in value && value.type === "reset-poll"
-	);
-}
-
-function isReactionMessage(value: unknown): value is { type: "reaction"; emoji: string } {
-	return (
-		typeof value === "object" &&
-		value !== null &&
-		"type" in value &&
-		value.type === "reaction" &&
-		"emoji" in value &&
-		typeof value.emoji === "string" &&
-		REACTION_EMOJIS.includes(value.emoji)
-	);
-}
-
-const REACTION_EMOJIS = ["👍", "👏", "😂", "🤯", "❤️"];

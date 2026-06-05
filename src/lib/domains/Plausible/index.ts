@@ -7,20 +7,16 @@
  */
 import { useCallback } from "react";
 
-import { type FoobarFlag } from "@/lib/domains/foobar/flags";
-
 declare global {
 	interface Window {
-		plausible?: (event: string, options?: Record<string, unknown>) => void;
+		plausible?: (event: string, options?: PlausibleEventOptions) => void;
 	}
 }
 
-export type PlausibleEventsType = {
-	foobar: { achievement: FoobarFlag };
-};
+type PlausibleEventProps = Record<string, string | number | boolean>;
 
-type PlausibleEventOptions<EventName extends keyof PlausibleEventsType> = {
-	props?: PlausibleEventsType[EventName];
+type PlausibleEventOptions = {
+	props?: PlausibleEventProps;
 	revenue?: {
 		currency: string;
 		amount: number;
@@ -28,10 +24,7 @@ type PlausibleEventOptions<EventName extends keyof PlausibleEventsType> = {
 	u?: string;
 };
 
-type PlausibleFn = <EventName extends keyof PlausibleEventsType>(
-	eventName: EventName,
-	options?: PlausibleEventOptions<EventName>,
-) => void;
+type PlausibleFn = (eventName: string, options?: PlausibleEventOptions) => void;
 
 export function useCustomPlausible() {
 	return useCallback<PlausibleFn>((eventName, options) => {
@@ -44,6 +37,6 @@ export function useCustomPlausible() {
 			return;
 		}
 
-		plausible(eventName as string, options);
+		plausible(eventName, options);
 	}, []);
 }

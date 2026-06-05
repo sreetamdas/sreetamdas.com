@@ -7,31 +7,11 @@ and viewer reactions inside workerd.
 import { env } from "cloudflare:test";
 import { describe, expect, it } from "vitest";
 
-type Snapshot = {
-	type: "snapshot";
-	position: {
-		slide: number;
-		step: number;
-		updatedAt: number;
-	};
-	poll: {
-		id: string;
-		question: string;
-		open: boolean;
-		slide: number | null;
-		selectedOptionId: string | null;
-		options: Array<{ id: string; label: string; votes: number }>;
-	} | null;
-	viewers: number;
-	masters: number;
-};
-
-type Reaction = {
-	type: "reaction";
-	id: string;
-	emoji: string;
-	createdAt: number;
-};
+import {
+	isSlideSessionReaction,
+	isSlideSessionSnapshot,
+	type SlideSessionSnapshot,
+} from "@/lib/domains/slides/live-session-protocol";
 
 describe("SlideSessionDurableObject", () => {
 	it("returns a no-store default snapshot over HTTP", async () => {
@@ -40,8 +20,8 @@ describe("SlideSessionDurableObject", () => {
 
 		expect(response.status).toBe(200);
 		expect(response.headers.get("Cache-Control")).toBe("no-store");
-		expect(isSnapshot(body)).toBe(true);
-		if (isSnapshot(body)) {
+		expect(isSlideSessionSnapshot(body)).toBe(true);
+		if (isSlideSessionSnapshot(body)) {
 			expect(body.position).toMatchObject({ slide: 0, step: 0 });
 			expect(body.poll).toBe(null);
 		}
@@ -75,8 +55,8 @@ describe("SlideSessionDurableObject", () => {
 		const response = await slideSession(session).fetch("https://example.com/");
 		const body: unknown = await response.json();
 
-		expect(isSnapshot(body)).toBe(true);
-		if (isSnapshot(body)) {
+		expect(isSlideSessionSnapshot(body)).toBe(true);
+		if (isSlideSessionSnapshot(body)) {
 			expect(body.position.slide).toBe(3);
 			expect(body.position.step).toBe(1);
 		}
@@ -95,8 +75,8 @@ describe("SlideSessionDurableObject", () => {
 		const response = await slideSession(session).fetch("https://example.com/");
 		const body: unknown = await response.json();
 
-		expect(isSnapshot(body)).toBe(true);
-		if (isSnapshot(body)) {
+		expect(isSlideSessionSnapshot(body)).toBe(true);
+		if (isSlideSessionSnapshot(body)) {
 			expect(body.position.slide).toBe(0);
 			expect(body.position.step).toBe(0);
 		}
@@ -119,8 +99,8 @@ describe("SlideSessionDurableObject", () => {
 		const response = await slideSession(session).fetch("https://example.com/");
 		const body: unknown = await response.json();
 
-		expect(isSnapshot(body)).toBe(true);
-		if (isSnapshot(body)) {
+		expect(isSlideSessionSnapshot(body)).toBe(true);
+		if (isSlideSessionSnapshot(body)) {
 			expect(body.position.slide).toBe(0);
 			expect(body.position.step).toBe(0);
 			expect(body.viewers).toBe(1);
@@ -171,12 +151,12 @@ describe("SlideSessionDurableObject", () => {
 		);
 		const viewerAHttp: unknown = await viewerAHttpResponse.json();
 		const viewerBHttp: unknown = await viewerBHttpResponse.json();
-		expect(isSnapshot(viewerAHttp)).toBe(true);
-		if (isSnapshot(viewerAHttp)) {
+		expect(isSlideSessionSnapshot(viewerAHttp)).toBe(true);
+		if (isSlideSessionSnapshot(viewerAHttp)) {
 			expect(viewerAHttp.poll?.selectedOptionId).toBe("0");
 		}
-		expect(isSnapshot(viewerBHttp)).toBe(true);
-		if (isSnapshot(viewerBHttp)) {
+		expect(isSlideSessionSnapshot(viewerBHttp)).toBe(true);
+		if (isSlideSessionSnapshot(viewerBHttp)) {
 			expect(viewerBHttp.poll?.selectedOptionId).toBe("1");
 		}
 
@@ -277,12 +257,15 @@ async function openSocketWithTrustedRoleHeader(
 	return socket;
 }
 
-function waitForSnapshot(socket: WebSocket, matches: (snapshot: Snapshot) => boolean) {
-	return waitForMessage(socket, (value): value is Snapshot => isSnapshot(value) && matches(value));
+function waitForSnapshot(socket: WebSocket, matches: (snapshot: SlideSessionSnapshot) => boolean) {
+	return waitForMessage(
+		socket,
+		(value): value is SlideSessionSnapshot => isSlideSessionSnapshot(value) && matches(value),
+	);
 }
 
 function waitForReaction(socket: WebSocket) {
-	return waitForMessage(socket, isReaction);
+	return waitForMessage(socket, isSlideSessionReaction);
 }
 
 function waitForMessage<T>(socket: WebSocket, matches: (value: unknown) => value is T) {
@@ -308,80 +291,6 @@ function waitForMessage<T>(socket: WebSocket, matches: (value: unknown) => value
 
 		socket.addEventListener("message", handleMessage);
 	});
-}
-
-function isSnapshot(value: unknown): value is Snapshot {
-	if (typeof value !== "object" || value === null) return false;
-	if (!("type" in value) || value.type !== "snapshot") return false;
-	if (!("position" in value) || !isPosition(value.position)) return false;
-	if (!("poll" in value) || (value.poll !== null && !isPoll(value.poll))) return false;
-	return (
-		"viewers" in value &&
-		"masters" in value &&
-		typeof value.viewers === "number" &&
-		typeof value.masters === "number"
-	);
-}
-
-function isPosition(value: unknown): value is Snapshot["position"] {
-	return (
-		typeof value === "object" &&
-		value !== null &&
-		"slide" in value &&
-		"step" in value &&
-		"updatedAt" in value &&
-		typeof value.slide === "number" &&
-		typeof value.step === "number" &&
-		typeof value.updatedAt === "number"
-	);
-}
-
-function isPoll(value: unknown): value is NonNullable<Snapshot["poll"]> {
-	return (
-		typeof value === "object" &&
-		value !== null &&
-		"id" in value &&
-		"question" in value &&
-		"open" in value &&
-		"slide" in value &&
-		"selectedOptionId" in value &&
-		"options" in value &&
-		typeof value.id === "string" &&
-		typeof value.question === "string" &&
-		typeof value.open === "boolean" &&
-		(value.slide === null || typeof value.slide === "number") &&
-		(value.selectedOptionId === null || typeof value.selectedOptionId === "string") &&
-		Array.isArray(value.options) &&
-		value.options.every(isPollOption)
-	);
-}
-
-function isPollOption(value: unknown): value is NonNullable<Snapshot["poll"]>["options"][number] {
-	return (
-		typeof value === "object" &&
-		value !== null &&
-		"id" in value &&
-		"label" in value &&
-		"votes" in value &&
-		typeof value.id === "string" &&
-		typeof value.label === "string" &&
-		typeof value.votes === "number"
-	);
-}
-
-function isReaction(value: unknown): value is Reaction {
-	return (
-		typeof value === "object" &&
-		value !== null &&
-		"type" in value &&
-		value.type === "reaction" &&
-		"id" in value &&
-		"emoji" in value &&
-		"createdAt" in value &&
-		typeof value.id === "string" &&
-		typeof value.emoji === "string" &&
-		typeof value.createdAt === "number"
-	);
 }
 
 function uniqueSession(prefix: string) {

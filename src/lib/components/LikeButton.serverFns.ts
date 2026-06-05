@@ -5,12 +5,9 @@ import { getDb } from "@/db";
 import { getLikes, incrementLikes, type LikeCount } from "@/lib/domains/PageViews";
 import { normalizePathname } from "@/lib/helpers/utils";
 
-export type { LikeCount } from "@/lib/domains/PageViews";
+import { type PagePathnamePayload, validatePagePathnamePayload } from "./pageInteraction.serverFns";
 
-type PagePathname = {
-	slug: string;
-	disabled: boolean;
-};
+export type { LikeCount } from "@/lib/domains/PageViews";
 
 type LikeCountDeps<TDb> = {
 	getDb: (env: CloudflareEnv | undefined) => TDb;
@@ -44,7 +41,7 @@ export const fetchLikeCountServerFn = createServerFn({
 	method: "GET",
 })
 	.inputValidator((data) => {
-		return validatePagePathname(data);
+		return validatePagePathnamePayload(data, "Invalid likes payload");
 	})
 	.handler(async (ctx) => {
 		return fetchLikeCount(
@@ -59,7 +56,7 @@ export const incrementLikeServerFn = createServerFn({
 	method: "POST",
 })
 	.inputValidator((data) => {
-		return validatePagePathname(data);
+		return validatePagePathnamePayload(data, "Invalid likes payload");
 	})
 	.handler(async (ctx) => {
 		return incrementLikeCount(
@@ -71,22 +68,22 @@ export const incrementLikeServerFn = createServerFn({
 	});
 
 export async function fetchLikeCount(
-	data: PagePathname,
+	data: PagePathnamePayload,
 	env: CloudflareEnv | undefined,
 ): Promise<LikeCount>;
 export async function fetchLikeCount(
-	data: PagePathname,
+	data: PagePathnamePayload,
 	env: CloudflareEnv | undefined,
 	deps: undefined,
 	clientIp?: string,
 ): Promise<LikeCount>;
 export async function fetchLikeCount<TDb>(
-	data: PagePathname,
+	data: PagePathnamePayload,
 	env: CloudflareEnv | undefined,
 	deps: LikeCountDeps<TDb>,
 ): Promise<LikeCount>;
 export async function fetchLikeCount<TDb>(
-	data: PagePathname,
+	data: PagePathnamePayload,
 	env: CloudflareEnv | undefined,
 	deps?: LikeCountDeps<TDb>,
 	clientIp?: string,
@@ -117,22 +114,22 @@ export async function fetchLikeCount<TDb>(
 }
 
 export async function incrementLikeCount(
-	data: PagePathname,
+	data: PagePathnamePayload,
 	env: CloudflareEnv | undefined,
 ): Promise<LikeCount>;
 export async function incrementLikeCount(
-	data: PagePathname,
+	data: PagePathnamePayload,
 	env: CloudflareEnv | undefined,
 	deps: undefined,
 	clientIp?: string,
 ): Promise<LikeCount>;
 export async function incrementLikeCount<TDb>(
-	data: PagePathname,
+	data: PagePathnamePayload,
 	env: CloudflareEnv | undefined,
 	deps: LikeCountDeps<TDb>,
 ): Promise<LikeCount>;
 export async function incrementLikeCount<TDb>(
-	data: PagePathname,
+	data: PagePathnamePayload,
 	env: CloudflareEnv | undefined,
 	deps?: LikeCountDeps<TDb>,
 	clientIp?: string,
@@ -196,26 +193,4 @@ function getClientIpFromServerFnContext(ctx: unknown): string | undefined {
 
 function isKnownBlogLikeSlug(slug: string) {
 	return validBlogLikeSlugs.has(slug);
-}
-
-function validatePagePathname(data: unknown): PagePathname {
-	if (!isPagePathnamePayload(data)) {
-		throw new Error("Invalid likes payload");
-	}
-
-	return { slug: data.slug, disabled: data.disabled };
-}
-
-function isPagePathnamePayload(data: unknown): data is PagePathname {
-	if (typeof data !== "object" || data === null) {
-		return false;
-	}
-
-	if (!("slug" in data) || !("disabled" in data)) {
-		return false;
-	}
-
-	return (
-		typeof data.slug === "string" && data.slug.length > 0 && typeof data.disabled === "boolean"
-	);
 }

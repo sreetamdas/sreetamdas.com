@@ -11,43 +11,28 @@ import { FaRegCircleCheck } from "react-icons/fa6";
 
 import { cn } from "@/lib/helpers/utils";
 
-export type SlideSessionRole = "master" | "viewer";
+import {
+	isSlideSessionReaction,
+	isSlideSessionSnapshot,
+	REACTION_EMOJIS,
+	type SlidePoll,
+	type SlideSessionOutgoingMessage,
+	type SlideSessionReaction,
+	type SlideSessionRole,
+	type SlideSessionSnapshot,
+} from "./live-session-protocol";
 
-export type SlideSessionSnapshot = {
-	type: "snapshot";
-	position: {
-		slide: number;
-		step: number;
-		updatedAt: number;
-	};
-	poll: SlidePoll | null;
-	viewers: number;
-	masters: number;
-};
-
-export type SlidePoll = {
-	id: string;
-	question: string;
-	open: boolean;
-	slide: number | null;
-	selectedOptionId: string | null;
-	options: Array<{
-		id: string;
-		label: string;
-		votes: number;
-	}>;
-};
+export type {
+	SlidePoll,
+	SlideSessionReaction,
+	SlideSessionRole,
+	SlideSessionSnapshot,
+} from "./live-session-protocol";
 
 export type SlideSessionPollDefinition = {
 	slide: number;
 	question: string;
 	options: Array<string>;
-};
-
-export type SlideSessionReaction = {
-	id: string;
-	emoji: string;
-	createdAt: number;
 };
 
 type UseSlideSessionParams = {
@@ -58,20 +43,11 @@ type UseSlideSessionParams = {
 	onRemoteNavigate: (slide: number, step: number) => void;
 };
 
-type OutgoingMessage =
-	| { type: "set-slide"; slide: number; step: number }
-	| { type: "create-poll"; question: string; options: Array<string>; slide?: number | null }
-	| { type: "vote"; pollId: string; optionId: string }
-	| { type: "reaction"; emoji: string }
-	| { type: "close-poll" }
-	| { type: "reset-poll" };
-
 const CLIENT_ID_KEY = "slides-live-client-id";
 const PING_INTERVAL_MS = 30_000;
 const RECONNECT_BASE_MS = 500;
 const RECONNECT_MAX_MS = 5_000;
 const SNAPSHOT_POLL_MS = 1_000;
-const REACTION_EMOJIS = ["👍", "👏", "😂", "🤯", "❤️"];
 const REACTION_TTL_MS = 4_000;
 
 export function useSlideSession({
@@ -90,7 +66,7 @@ export function useSlideSession({
 	const onRemoteNavigateRef = useRef(onRemoteNavigate);
 	onRemoteNavigateRef.current = onRemoteNavigate;
 
-	const send = useCallback((message: OutgoingMessage) => {
+	const send = useCallback((message: SlideSessionOutgoingMessage) => {
 		const ws = wsRef.current;
 		if (!ws || ws.readyState !== WebSocket.OPEN) return false;
 		ws.send(JSON.stringify(message));
@@ -165,7 +141,7 @@ export function useSlideSession({
 					return;
 				}
 
-				if (isLiveReaction(parsed)) {
+				if (isSlideSessionReaction(parsed)) {
 					setReactions((current) => [...current, parsed]);
 				}
 			};
@@ -713,78 +689,4 @@ function getClientId() {
 	const id = crypto.randomUUID();
 	window.localStorage.setItem(CLIENT_ID_KEY, id);
 	return id;
-}
-
-function isSlideSessionSnapshot(value: unknown): value is SlideSessionSnapshot {
-	if (typeof value !== "object" || value === null) return false;
-	if (!("type" in value) || value.type !== "snapshot") return false;
-	if (!("position" in value) || !isPosition(value.position)) return false;
-	if (!("poll" in value) || (value.poll !== null && !isPoll(value.poll))) return false;
-	return (
-		"viewers" in value &&
-		"masters" in value &&
-		typeof value.viewers === "number" &&
-		typeof value.masters === "number"
-	);
-}
-
-function isPosition(value: unknown): value is SlideSessionSnapshot["position"] {
-	return (
-		typeof value === "object" &&
-		value !== null &&
-		"slide" in value &&
-		"step" in value &&
-		"updatedAt" in value &&
-		typeof value.slide === "number" &&
-		typeof value.step === "number" &&
-		typeof value.updatedAt === "number"
-	);
-}
-
-function isPoll(value: unknown): value is SlidePoll {
-	return (
-		typeof value === "object" &&
-		value !== null &&
-		"id" in value &&
-		"question" in value &&
-		"open" in value &&
-		"slide" in value &&
-		"selectedOptionId" in value &&
-		"options" in value &&
-		typeof value.id === "string" &&
-		typeof value.question === "string" &&
-		typeof value.open === "boolean" &&
-		(value.slide === null || typeof value.slide === "number") &&
-		(value.selectedOptionId === null || typeof value.selectedOptionId === "string") &&
-		Array.isArray(value.options) &&
-		value.options.every(isPollOption)
-	);
-}
-
-function isPollOption(value: unknown): value is SlidePoll["options"][number] {
-	return (
-		typeof value === "object" &&
-		value !== null &&
-		"id" in value &&
-		"label" in value &&
-		"votes" in value &&
-		typeof value.id === "string" &&
-		typeof value.label === "string" &&
-		typeof value.votes === "number"
-	);
-}
-
-function isLiveReaction(value: unknown): value is SlideSessionReaction {
-	return (
-		typeof value === "object" &&
-		value !== null &&
-		"type" in value &&
-		value.type === "reaction" &&
-		"id" in value &&
-		"emoji" in value &&
-		"createdAt" in value &&
-		typeof value.id === "string" &&
-		typeof value.emoji === "string" &&
-		typeof value.createdAt === "number"
-	);
 }

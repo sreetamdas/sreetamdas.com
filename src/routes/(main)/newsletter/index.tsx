@@ -5,7 +5,11 @@ import { staticFunctionMiddleware } from "@tanstack/start-static-server-function
 
 import { SITE_TITLE_APPEND } from "@/config";
 import { ViewsCounter } from "@/lib/components/ViewsCounter";
-import { fetchNewsletterEmails, getButtondownApiKey } from "@/lib/domains/Buttondown";
+import {
+	fetchNewsletterEmails,
+	getButtondownApiKey,
+	stripButtondownPlaintextMarker,
+} from "@/lib/domains/Buttondown";
 import { canonicalUrl, defaultOgImageUrl } from "@/lib/seo";
 import { STATIC_SERVER_FUNCTION_STALE_TIME } from "@/lib/static-server-functions";
 
@@ -74,12 +78,7 @@ function NewsletterEmailsPage() {
 
 function getEmailPreviewContent(content: string) {
 	return (
-		content
-			/**
-			 * Buttondown now includes a `<!-- buttondown-editor-mode: plaintext -->` at the start of the
-			 * email body, which cannot be processed by micromark
-			 */
-			.replace("<!-- buttondown-editor-mode: plaintext -->", "")
+		stripButtondownPlaintextMarker(content)
 			/**
 			 * remove salutation, get two paragraphs
 			 */

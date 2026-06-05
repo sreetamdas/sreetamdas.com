@@ -4,7 +4,11 @@ import { renderServerComponent } from "@tanstack/react-start/rsc";
 import { staticFunctionMiddleware } from "@tanstack/start-static-server-functions";
 
 import { SITE_DESCRIPTION, SITE_TITLE_APPEND } from "@/config";
-import { fetchNewsletterEmails, getButtondownApiKey } from "@/lib/domains/Buttondown";
+import {
+	fetchNewsletterEmails,
+	getButtondownApiKey,
+	stripButtondownPlaintextMarker,
+} from "@/lib/domains/Buttondown";
 import { canonicalUrl, defaultOgImageUrl } from "@/lib/seo";
 import { STATIC_SERVER_FUNCTION_STALE_TIME } from "@/lib/static-server-functions";
 
@@ -81,14 +85,7 @@ const getNewsletterEmailRenderable = createServerFn({
 			throw notFound();
 		}
 
-		/**
-		 * Buttondown now includes a `<!-- buttondown-editor-mode: plaintext -->` at the start of the
-		 * email body, which cannot be processed by micromark
-		 */
-		const trimmed_email_body = newsletter_email_by_slug.body.replace(
-			"<!-- buttondown-editor-mode: plaintext -->",
-			"",
-		);
+		const trimmed_email_body = stripButtondownPlaintextMarker(newsletter_email_by_slug.body);
 
 		const newsletter_email_data: typeof newsletter_email_by_slug & {
 			body: string;

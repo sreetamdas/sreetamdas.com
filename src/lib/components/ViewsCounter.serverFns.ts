@@ -2,14 +2,12 @@ import { createServerFn } from "@tanstack/react-start";
 
 import { getDb } from "@/db";
 import { getPageViews, upsertPageViews } from "@/lib/domains/PageViews";
+import { normalizePathname } from "@/lib/helpers/utils";
+
+import { type PagePathnamePayload, validatePagePathnamePayload } from "./pageInteraction.serverFns";
 
 export type PageViewCount = {
 	view_count: number;
-};
-
-type PagePathname = {
-	slug: string;
-	disabled: boolean;
 };
 
 type ViewCountDeps<TDb> = {
@@ -28,23 +26,23 @@ export const fetchViewCountServerFn = createServerFn({
 	method: "GET",
 })
 	.inputValidator((data) => {
-		return validatePagePathname(data);
+		return validatePagePathnamePayload(data, "Invalid page views payload");
 	})
 	.handler(async ({ data, context }) => {
 		return fetchViewCount(data, context.env);
 	});
 
 export async function fetchViewCount(
-	data: PagePathname,
+	data: PagePathnamePayload,
 	env: CloudflareEnv | undefined,
 ): Promise<PageViewCount>;
 export async function fetchViewCount<TDb>(
-	data: PagePathname,
+	data: PagePathnamePayload,
 	env: CloudflareEnv | undefined,
 	deps: ViewCountDeps<TDb>,
 ): Promise<PageViewCount>;
 export async function fetchViewCount<TDb>(
-	data: PagePathname,
+	data: PagePathnamePayload,
 	env: CloudflareEnv | undefined,
 	deps?: ViewCountDeps<TDb>,
 ): Promise<PageViewCount> {
@@ -71,34 +69,4 @@ export async function fetchViewCount<TDb>(
 	} catch {
 		return { view_count: 0 };
 	}
-}
-
-function validatePagePathname(data: unknown): PagePathname {
-	if (!isPagePathnamePayload(data)) {
-		throw new Error("Invalid page views payload");
-	}
-
-	return { slug: data.slug, disabled: data.disabled };
-}
-
-function isPagePathnamePayload(data: unknown): data is PagePathname {
-	if (typeof data !== "object" || data === null) {
-		return false;
-	}
-
-	if (!("slug" in data) || !("disabled" in data)) {
-		return false;
-	}
-
-	return (
-		typeof data.slug === "string" && data.slug.length > 0 && typeof data.disabled === "boolean"
-	);
-}
-
-function normalizePathname(pathname: string) {
-	if (pathname !== "/" && pathname.endsWith("/")) {
-		return pathname.slice(0, -1);
-	}
-
-	return pathname;
 }

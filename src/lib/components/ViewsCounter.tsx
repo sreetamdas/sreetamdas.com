@@ -9,7 +9,7 @@ import {
 	fetchViewCountServerFn,
 	type PageViewCount,
 } from "@/lib/components/ViewsCounter.serverFns";
-import { cn } from "@/lib/helpers/utils";
+import { cn, normalizePathname } from "@/lib/helpers/utils";
 
 type ViewsCounterProps = {
 	slug?: string;
@@ -124,11 +124,3 @@ const ViewCount = ({ children }: { children: string }) => (
 		{children}
 	</span>
 );
-
-function normalizePathname(pathname: string) {
-	if (pathname !== "/" && pathname.endsWith("/")) {
-		return pathname.slice(0, -1);
-	}
-
-	return pathname;
-}
