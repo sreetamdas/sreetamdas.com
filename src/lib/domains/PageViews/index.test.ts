@@ -6,11 +6,9 @@ import { describe, expect, test } from "vitest";
 import * as schema from "@/db/schema";
 import { pageDetails, postLikes } from "@/db/schema";
 
-import type { PageViewsDb } from "./index";
+import type { PageLikesDb, PageViewsDb } from "./index";
 
 import { getLikes, getPageViews, incrementLikes, upsertPageViews } from "./index";
-
-type InMemoryLikesDb = PageViewsDb & Parameters<typeof incrementLikes>[0];
 
 describe("PageViews domain", () => {
 	test("upsertPageViews inserts then increments the same slug", async () => {
@@ -87,6 +85,27 @@ describe("incrementLikes", () => {
 		expect(await getPageLikes(db, "/blog/x")).toBe(1);
 	});
 
+	test("keeps a pre-existing visitor like from incrementing again", async () => {
+		const db = createLikesDb();
+		await db.insert(pageDetails).values({ slug: "/blog/x", viewCount: 0, likes: 1 });
+		await db.insert(postLikes).values({ slug: "/blog/x", visitorHash: "h1" });
+
+		expect(await incrementLikes(db, "/blog/x", "h1")).toEqual({ likes: 1, hasLiked: true });
+		expect(await getPostLikesCount(db, "/blog/x")).toBe(1);
+		expect(await getPageLikes(db, "/blog/x")).toBe(1);
+	});
+
+	test("repairs stale page likes from recorded visitor likes", async () => {
+		const db = createLikesDb();
+		await db.insert(pageDetails).values({ slug: "/blog/x", viewCount: 0, likes: 0 });
+		await db.insert(postLikes).values({ slug: "/blog/x", visitorHash: "h1" });
+		await db.insert(postLikes).values({ slug: "/blog/x", visitorHash: "h2" });
+
+		expect(await incrementLikes(db, "/blog/x", "h1")).toEqual({ likes: 2, hasLiked: true });
+		expect(await getPostLikesCount(db, "/blog/x")).toBe(2);
+		expect(await getPageLikes(db, "/blog/x")).toBe(2);
+	});
+
 	test("increments for a second visitor", async () => {
 		const db = createLikesDb();
 
@@ -131,11 +150,10 @@ function createPageViewsDb(): PageViewsDb {
 		);
 	`);
 
-	const db = drizzle({ client: sqlite, schema });
-	return db;
+	return createBatchablePageViewsDb(sqlite);
 }
 
-function createLikesDb(): InMemoryLikesDb {
+function createLikesDb(): PageLikesDb {
 	const sqlite = new Database(":memory:");
 	sqlite.exec(`
 		CREATE TABLE page_details (
@@ -157,19 +175,7 @@ function createLikesDb(): InMemoryLikesDb {
 		ON post_likes (slug, visitor_hash);
 	`);
 
-	const db = drizzle({ client: sqlite, schema });
-	const client = Object.assign(db, {
-		batch: (queries: ReadonlyArray<unknown>) => Promise.all(queries),
-	});
-	if (!isInMemoryLikesDb(client)) {
-		throw new Error("Failed to add batch shim to in-memory likes database");
-	}
-
-	return client;
-}
-
-function isInMemoryLikesDb(db: PageViewsDb): db is InMemoryLikesDb {
-	return "batch" in db;
+	return createBatchablePageViewsDb(sqlite);
 }
 
 async function getPostLikesCount(db: PageViewsDb, slug: string): Promise<number> {
@@ -188,4 +194,14 @@ async function getPageLikes(db: PageViewsDb, slug: string): Promise<number> {
 		.limit(1);
 
 	return rows[0]?.likes ?? 0;
+}
+
+function createBatchablePageViewsDb(sqlite: Database.Database): PageLikesDb {
+	const db = Object.assign(drizzle({ client: sqlite, schema }), {
+		batch: (queries: readonly unknown[]) => Promise.all(queries),
+	});
+
+	// The unit shim is a better-sqlite3 db plus the D1-only batch method under test.
+	// oxlint-disable-next-line typescript/no-unsafe-type-assertion
+	return db as unknown as PageLikesDb;
 }

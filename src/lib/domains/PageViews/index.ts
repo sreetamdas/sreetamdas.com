@@ -23,7 +23,7 @@ export type LikeCount = {
 
 export type PageViewsDb = BaseSQLiteDatabase<"sync" | "async", unknown, typeof schema>;
 
-type PageLikesDb = DrizzleD1Database<typeof schema>;
+export type PageLikesDb = DrizzleD1Database<typeof schema>;
 
 export async function getPageViews(db: PageViewsDb, slug: string): Promise<PageViewCount> {
 	const normalizedSlug = normalizePathname(slug);
@@ -86,20 +86,24 @@ export async function incrementLikes(
 ): Promise<LikeCount> {
 	const normalizedSlug = normalizePathname(slug);
 
-	await db.batch([
-		db.run(sql`
-			INSERT OR IGNORE INTO post_likes (slug, visitor_hash)
-			VALUES (${normalizedSlug}, ${visitorHash})
-		`),
-		db.run(sql`
-			INSERT INTO page_details (slug, view_count, likes)
-			SELECT ${normalizedSlug}, 0, 1
-			WHERE changes() > 0
-			ON CONFLICT(slug) DO UPDATE SET
-				likes = likes + 1,
-				updated_at = CURRENT_TIMESTAMP
-		`),
-	]);
+	const likesFromVisitors = sql<number>`(SELECT COUNT(*) FROM ${postLikes} WHERE ${postLikes.slug} = ${normalizedSlug})`;
+
+	const insertLike = db
+		.insert(postLikes)
+		.values({ slug: normalizedSlug, visitorHash })
+		.onConflictDoNothing();
+	const syncLikeCount = db
+		.insert(pageDetails)
+		.values({ slug: normalizedSlug, viewCount: 0, likes: likesFromVisitors })
+		.onConflictDoUpdate({
+			target: pageDetails.slug,
+			set: { likes: likesFromVisitors, updatedAt: sql`CURRENT_TIMESTAMP` },
+		});
+
+	// Keep the insert and derived-count repair atomic so partial failure cannot stale the public counter.
+	// These must be query-builder statements, not db.run(sql): D1's db.batch prepares each item and
+	// binds its params, but a raw SQLiteRaw exposes no prepared statement to bind, so it throws there.
+	await db.batch([insertLike, syncLikeCount]);
 
 	return getLikes(db, normalizedSlug, visitorHash);
 }
