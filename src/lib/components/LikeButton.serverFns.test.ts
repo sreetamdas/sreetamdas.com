@@ -250,4 +250,28 @@ describe("incrementLikeCount", () => {
 			"incrementLikes:db:/blog/chameleon-text:visitor-hash",
 		]);
 	});
+
+	test("preserves idempotent results for repeated likes from the same visitor", async () => {
+		const seenLikes = new Set<string>();
+		let likes = 0;
+		const fakeDb = {};
+		const deps = {
+			getDb: () => fakeDb,
+			getLikes: async () => ({ likes, hasLiked: true }),
+			incrementLikes: async (_db: object, slug: string, visitorHash: string) => {
+				const likeKey = `${slug}:${visitorHash}`;
+				if (!seenLikes.has(likeKey)) {
+					seenLikes.add(likeKey);
+					likes += 1;
+				}
+				return { likes, hasLiked: true };
+			},
+			getVisitorHash: async () => "visitor-hash",
+		};
+		const data = { slug: "/blog/chameleon-text", disabled: false };
+
+		expect(await incrementLikeCount(data, undefined, deps)).toEqual({ likes: 1, hasLiked: true });
+		expect(await incrementLikeCount(data, undefined, deps)).toEqual({ likes: 1, hasLiked: true });
+		expect(seenLikes.size).toBe(1);
+	});
 });

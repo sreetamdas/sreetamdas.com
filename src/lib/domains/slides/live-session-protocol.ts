@@ -3,6 +3,8 @@
  * Durable Object validate these messages, so the shared contract lives outside
  * either adapter.
  */
+import { SLIDE_REACTION_EMOJIS } from "./reactions";
+
 export type SlideSessionRole = "master" | "viewer";
 
 export type SlideSessionPosition = {
@@ -58,8 +60,6 @@ export type SlideSessionOutgoingMessage =
 	| ClosePollMessage
 	| ResetPollMessage
 	| ReactionMessage;
-
-export const REACTION_EMOJIS = ["👍", "👏", "😂", "🤯", "❤️"];
 
 export function isSlideSessionSnapshot(value: unknown): value is SlideSessionSnapshot {
 	if (typeof value !== "object" || value === null) return false;
@@ -150,7 +150,7 @@ export function isReactionMessage(value: unknown): value is ReactionMessage {
 		value.type === "reaction" &&
 		"emoji" in value &&
 		typeof value.emoji === "string" &&
-		REACTION_EMOJIS.some((emoji) => emoji === value.emoji)
+		SLIDE_REACTION_EMOJIS.some((emoji) => emoji === value.emoji)
 	);
 }
 

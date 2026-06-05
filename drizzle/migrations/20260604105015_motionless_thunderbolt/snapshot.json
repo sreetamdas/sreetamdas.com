@@ -2,7 +2,7 @@
 	"version": "7",
 	"dialect": "sqlite",
 	"id": "2239b71c-7de1-484d-8cb9-768a506facf1",
-	"prevIds": ["f368cc56-dbce-4c4d-8c30-b239a2fef5a1"],
+	"prevIds": ["3bc06cd7-383e-4634-b714-659ea0ec15f7"],
 	"ddl": [
 		{
 			"name": "account",
@@ -25,8 +25,12 @@
 			"entityType": "tables"
 		},
 		{
+			"name": "post_likes",
+			"entityType": "tables"
+		},
+		{
 			"type": "text",
-			"notNull": false,
+			"notNull": true,
 			"autoincrement": false,
 			"default": null,
 			"generated": null,
@@ -156,7 +160,7 @@
 		},
 		{
 			"type": "text",
-			"notNull": false,
+			"notNull": true,
 			"autoincrement": false,
 			"default": null,
 			"generated": null,
@@ -236,7 +240,7 @@
 		},
 		{
 			"type": "text",
-			"notNull": false,
+			"notNull": true,
 			"autoincrement": false,
 			"default": null,
 			"generated": null,
@@ -306,7 +310,7 @@
 		},
 		{
 			"type": "text",
-			"notNull": false,
+			"notNull": true,
 			"autoincrement": false,
 			"default": null,
 			"generated": null,
@@ -425,6 +429,36 @@
 			"table": "page_details"
 		},
 		{
+			"type": "text",
+			"notNull": true,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "slug",
+			"entityType": "columns",
+			"table": "post_likes"
+		},
+		{
+			"type": "text",
+			"notNull": true,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "visitor_hash",
+			"entityType": "columns",
+			"table": "post_likes"
+		},
+		{
+			"type": "text",
+			"notNull": true,
+			"autoincrement": false,
+			"default": "CURRENT_TIMESTAMP",
+			"generated": null,
+			"name": "created_at",
+			"entityType": "columns",
+			"table": "post_likes"
+		},
+		{
 			"columns": ["user_id"],
 			"tableTo": "user",
 			"columnsTo": ["id"],
@@ -501,6 +535,24 @@
 			"name": "page_details_slug_unique",
 			"entityType": "uniques",
 			"table": "page_details"
+		},
+		{
+			"columns": [
+				{
+					"value": "slug",
+					"isExpression": false
+				},
+				{
+					"value": "visitor_hash",
+					"isExpression": false
+				}
+			],
+			"isUnique": true,
+			"where": null,
+			"origin": "manual",
+			"name": "post_likes_slug_visitor_hash_unique",
+			"entityType": "indexes",
+			"table": "post_likes"
 		}
 	],
 	"renames": []

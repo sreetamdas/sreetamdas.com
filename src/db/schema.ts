@@ -29,7 +29,7 @@ export const postLikes = sqliteTable(
 export type PageDetailsRow = typeof pageDetails.$inferSelect;
 
 export const authUser = sqliteTable("user", {
-	id: text("id").primaryKey(),
+	id: text("id").notNull().primaryKey(),
 	name: text("name").notNull(),
 	email: text("email").notNull().unique(),
 	emailVerified: integer("email_verified", { mode: "boolean" }).notNull(),
@@ -39,7 +39,7 @@ export const authUser = sqliteTable("user", {
 });
 
 export const authSession = sqliteTable("session", {
-	id: text("id").primaryKey(),
+	id: text("id").notNull().primaryKey(),
 	expiresAt: integer("expires_at", { mode: "timestamp" }).notNull(),
 	token: text("token").notNull().unique(),
 	createdAt: integer("created_at", { mode: "timestamp" }).notNull(),
@@ -52,7 +52,7 @@ export const authSession = sqliteTable("session", {
 });
 
 export const authAccount = sqliteTable("account", {
-	id: text("id").primaryKey(),
+	id: text("id").notNull().primaryKey(),
 	accountId: text("account_id").notNull(),
 	providerId: text("provider_id").notNull(),
 	userId: text("user_id")
@@ -70,7 +70,7 @@ export const authAccount = sqliteTable("account", {
 });
 
 export const authVerification = sqliteTable("verification", {
-	id: text("id").primaryKey(),
+	id: text("id").notNull().primaryKey(),
 	identifier: text("identifier").notNull(),
 	value: text("value").notNull(),
 	expiresAt: integer("expires_at", { mode: "timestamp" }).notNull(),

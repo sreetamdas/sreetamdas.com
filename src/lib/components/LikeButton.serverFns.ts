@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { allBlogPosts } from "content-collections";
 
+import { IS_DEV } from "@/config";
 import { getDb } from "@/db";
 import { getLikes, incrementLikes, type LikeCount } from "@/lib/domains/PageViews";
 import { normalizePathname } from "@/lib/helpers/utils";
@@ -36,6 +37,7 @@ const validBlogLikeSlugs = new Set(
 		return [normalizePathname(post.url ?? post.page_path)];
 	}),
 );
+let warnedAboutMissingLikesSalt = false;
 
 export const fetchLikeCountServerFn = createServerFn({
 	method: "GET",
@@ -169,6 +171,11 @@ async function getVisitorHash(
 	const salt = env?.LIKES_IP_SALT;
 	const ip = clientIp;
 	if (!salt || !ip) {
+		if (!salt && !IS_DEV && !warnedAboutMissingLikesSalt) {
+			warnedAboutMissingLikesSalt = true;
+			// oxlint-disable-next-line no-console
+			console.warn("LIKES_IP_SALT is not configured; blog likes are read-only.");
+		}
 		return undefined;
 	}
 
