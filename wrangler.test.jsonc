@@ -4,6 +4,13 @@
 	"main": "./src/testing/worker-test-entry.ts",
 	"compatibility_date": "2026-05-10",
 	"compatibility_flags": ["nodejs_compat"],
+	"d1_databases": [
+		{
+			"binding": "D1",
+			"database_name": "sreetamdas_com_tests",
+			"database_id": "00000000-0000-0000-0000-000000000000"
+		}
+	],
 	"durable_objects": {
 		"bindings": [
 			{
