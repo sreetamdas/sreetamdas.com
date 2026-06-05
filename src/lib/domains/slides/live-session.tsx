@@ -9,6 +9,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import { FaRegCircleCheck } from "react-icons/fa6";
 
+import { SLIDE_REACTION_EMOJIS } from "@/lib/domains/slides/reactions";
 import { cn } from "@/lib/helpers/utils";
 
 export type SlideSessionRole = "master" | "viewer";
@@ -71,7 +72,6 @@ const PING_INTERVAL_MS = 30_000;
 const RECONNECT_BASE_MS = 500;
 const RECONNECT_MAX_MS = 5_000;
 const SNAPSHOT_POLL_MS = 1_000;
-const REACTION_EMOJIS = ["👍", "👏", "😂", "🤯", "❤️"];
 const REACTION_TTL_MS = 4_000;
 
 export function useSlideSession({
@@ -530,7 +530,7 @@ function ViewerLiveButton({
 						</button>
 					</div>
 					<div className="mt-3 flex gap-2">
-						{REACTION_EMOJIS.map((emoji) => (
+						{SLIDE_REACTION_EMOJIS.map((emoji) => (
 							<button
 								className="rounded-full bg-white/10 px-2 py-1 text-base hover:bg-white/20"
 								key={emoji}
@@ -648,7 +648,7 @@ function PollPanel({
 }
 
 function ReactionCluster({ reactions }: { reactions: Array<SlideSessionReaction> }) {
-	const counts = REACTION_EMOJIS.map((emoji) => ({
+	const counts = SLIDE_REACTION_EMOJIS.map((emoji) => ({
 		emoji,
 		count: reactions.filter((reaction) => reaction.emoji === emoji).length,
 	})).filter((reaction) => reaction.count > 0);

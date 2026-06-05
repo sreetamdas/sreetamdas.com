@@ -1,5 +1,7 @@
 import { DurableObject } from "cloudflare:workers";
 
+import { SLIDE_REACTION_EMOJIS } from "../domains/slides/reactions";
+
 type SlideRole = "master" | "viewer";
 
 const SLIDE_SESSION_ROLE_HEADER = "x-sreetamdas-slide-role";
@@ -402,8 +404,6 @@ function isReactionMessage(value: unknown): value is { type: "reaction"; emoji: 
 		value.type === "reaction" &&
 		"emoji" in value &&
 		typeof value.emoji === "string" &&
-		REACTION_EMOJIS.includes(value.emoji)
+		SLIDE_REACTION_EMOJIS.some((emoji) => emoji === value.emoji)
 	);
 }
-
-const REACTION_EMOJIS = ["👍", "👏", "😂", "🤯", "❤️"];
