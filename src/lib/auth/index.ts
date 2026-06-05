@@ -2,6 +2,7 @@ import { drizzleAdapter } from "@better-auth/drizzle-adapter";
 import { betterAuth } from "better-auth";
 import { genericOAuth } from "better-auth/plugins";
 
+import { IS_DEV } from "@/config";
 import { getDb } from "@/db";
 import * as schema from "@/db/schema";
 import { readServerEnvString } from "@/lib/helpers/utils";
@@ -87,10 +88,11 @@ export function getSiteUrl(env: object | undefined): string {
 	return readServerEnvString(env, ["SITE_URL", "VITE_SITE_URL"]) ?? DEFAULT_SITE_URL;
 }
 
-export function getAuthSecret(env: object | undefined): string {
-	return (
-		readServerEnvString(env, ["BETTER_AUTH_SECRET"]) ?? "dev-only-better-auth-secret-change-me"
-	);
+export function getAuthSecret(env: object | undefined, isDev = IS_DEV): string {
+	const secret = readServerEnvString(env, ["BETTER_AUTH_SECRET"]);
+	if (secret) return secret;
+	if (isDev) return "dev-only-better-auth-secret-change-me";
+	throw new Error("BETTER_AUTH_SECRET must be set in production");
 }
 
 function getCloudflareOAuthConfig(env: object | undefined) {
@@ -158,6 +160,7 @@ function parseOAuthScopes(value: string | undefined): Array<string> {
 function isCloudflareUserResponse(value: unknown): value is CloudflareUserResponse {
 	if (typeof value !== "object" || value === null) return false;
 	if (!("success" in value) || typeof value.success !== "boolean") return false;
+	// Cloudflare error responses can omit `result`; callers still require result.id/email.
 	if (!("result" in value) || value.result === undefined) return true;
 	if (typeof value.result !== "object" || value.result === null) return false;
 	const result = value.result;

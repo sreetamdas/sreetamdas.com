@@ -44,8 +44,12 @@ describe("auth environment helpers", () => {
 		expect(getSiteUrl({})).toBe("https://sreetamdas.com");
 	});
 
-	test("uses BETTER_AUTH_SECRET when present and a dev fallback otherwise", () => {
-		expect(getAuthSecret({ BETTER_AUTH_SECRET: "secret" })).toBe("secret");
-		expect(getAuthSecret({})).toBe("dev-only-better-auth-secret-change-me");
+	test("uses BETTER_AUTH_SECRET when present and a dev fallback in development", () => {
+		expect(getAuthSecret({ BETTER_AUTH_SECRET: "secret" }, false)).toBe("secret");
+		expect(getAuthSecret({}, true)).toBe("dev-only-better-auth-secret-change-me");
+	});
+
+	test("throws when BETTER_AUTH_SECRET is missing in production", () => {
+		expect(() => getAuthSecret({}, false)).toThrow("BETTER_AUTH_SECRET must be set in production");
 	});
 });

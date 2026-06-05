@@ -1,5 +1,5 @@
 CREATE TABLE `account` (
-	`id` text PRIMARY KEY,
+	`id` text PRIMARY KEY NOT NULL,
 	`account_id` text NOT NULL,
 	`provider_id` text NOT NULL,
 	`user_id` text NOT NULL,
@@ -16,7 +16,7 @@ CREATE TABLE `account` (
 );
 --> statement-breakpoint
 CREATE TABLE `session` (
-	`id` text PRIMARY KEY,
+	`id` text PRIMARY KEY NOT NULL,
 	`expires_at` integer NOT NULL,
 	`token` text NOT NULL UNIQUE,
 	`created_at` integer NOT NULL,
@@ -28,7 +28,7 @@ CREATE TABLE `session` (
 );
 --> statement-breakpoint
 CREATE TABLE `user` (
-	`id` text PRIMARY KEY,
+	`id` text PRIMARY KEY NOT NULL,
 	`name` text NOT NULL,
 	`email` text NOT NULL UNIQUE,
 	`email_verified` integer NOT NULL,
@@ -38,7 +38,7 @@ CREATE TABLE `user` (
 );
 --> statement-breakpoint
 CREATE TABLE `verification` (
-	`id` text PRIMARY KEY,
+	`id` text PRIMARY KEY NOT NULL,
 	`identifier` text NOT NULL,
 	`value` text NOT NULL,
 	`expires_at` integer NOT NULL,
