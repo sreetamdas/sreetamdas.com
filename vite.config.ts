@@ -19,7 +19,13 @@ function getPlugins(): Array<unknown> {
 
 	// @ts-expect-error type depth
 	return [
-		cloudflare({ viteEnvironment: { name: "ssr", childEnvironments: ["rsc"] } }),
+		cloudflare({
+			viteEnvironment: { name: "ssr", childEnvironments: ["rsc"] },
+			tunnel: {
+				name: "local-srtm.fyi",
+				autoStart: false,
+			},
+		}),
 		contentCollections(),
 		tanstackStart({
 			rsc: {
