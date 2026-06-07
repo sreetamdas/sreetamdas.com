@@ -57,6 +57,7 @@ export function useSlideSession({
 	localStep,
 	onRemoteNavigate,
 }: UseSlideSessionParams) {
+	const browserHref = useBrowserHref();
 	const [snapshot, setSnapshot] = useState<SlideSessionSnapshot | null>(null);
 	const [connected, setConnected] = useState(false);
 	const [reactions, setReactions] = useState<Array<SlideSessionReaction>>([]);
@@ -74,9 +75,10 @@ export function useSlideSession({
 	}, []);
 
 	useEffect(() => {
-		if (!sessionId) return;
+		if (!sessionId || !browserHref) return;
 
 		const liveSessionId = sessionId;
+		const liveSessionHref = browserHref;
 		let cancelled = false;
 		let reconnectAttempt = 0;
 		let reconnectTimer: ReturnType<typeof setTimeout> | undefined;
@@ -106,7 +108,7 @@ export function useSlideSession({
 		function connect() {
 			clearReconnectTimer();
 			clearPingTimer();
-			const wsUrl = getSlideSessionWsUrl(liveSessionId, role, getClientId());
+			const wsUrl = getSlideSessionWsUrl(liveSessionId, role, getClientId(), liveSessionHref);
 			const ws = new WebSocket(wsUrl);
 			wsRef.current = ws;
 
@@ -174,7 +176,7 @@ export function useSlideSession({
 			}
 			wsRef.current = null;
 		};
-	}, [role, sessionId]);
+	}, [browserHref, role, sessionId]);
 
 	useEffect(() => {
 		if (!sessionId || role !== "master" || !connected) return;
@@ -186,11 +188,12 @@ export function useSlideSession({
 	}, [connected, localSlide, localStep, role, send, sessionId]);
 
 	useEffect(() => {
-		if (!sessionId || role !== "viewer") return;
+		if (!sessionId || role !== "viewer" || !browserHref) return;
 
 		let cancelled = false;
 		let inFlight = false;
-		const snapshotUrl = getSlideSessionHttpUrl(sessionId, getClientId());
+		const snapshotHref = browserHref;
+		const snapshotUrl = getSlideSessionHttpUrl(sessionId, getClientId(), snapshotHref);
 
 		async function refreshSnapshot() {
 			if (cancelled || inFlight) return;
@@ -217,7 +220,7 @@ export function useSlideSession({
 			cancelled = true;
 			clearInterval(timer);
 		};
-	}, [role, sessionId]);
+	}, [browserHref, role, sessionId]);
 
 	useEffect(() => {
 		if (reactions.length === 0) return;
@@ -344,8 +347,9 @@ function MasterLiveControl({
 }) {
 	const [question, setQuestion] = useState("");
 	const [options, setOptions] = useState("Yes,No");
-	const viewerLink = typeof window === "undefined" ? "" : getViewerLink(sessionId);
-	const loginLink = typeof window === "undefined" ? "" : getCloudflareLoginLink();
+	const browserHref = useBrowserHref();
+	const viewerLink = browserHref ? getViewerLink(sessionId, browserHref) : "";
+	const loginLink = browserHref ? getCloudflareLoginLink(browserHref) : "";
 
 	function handleCreatePoll(event: FormEvent<HTMLFormElement>) {
 		event.preventDefault();
@@ -655,28 +659,33 @@ function getVisiblePoll(poll: SlidePoll | null, role: SlideSessionRole, currentS
 	return null;
 }
 
-function getSlideSessionWsUrl(sessionId: string, role: SlideSessionRole, clientId: string) {
-	const url = new URL(`/api/slides/session/${encodeURIComponent(sessionId)}`, window.location.href);
+function getSlideSessionWsUrl(
+	sessionId: string,
+	role: SlideSessionRole,
+	clientId: string,
+	baseHref: string,
+) {
+	const url = new URL(`/api/slides/session/${encodeURIComponent(sessionId)}`, baseHref);
 	url.protocol = url.protocol === "https:" ? "wss:" : "ws:";
 	url.searchParams.set("role", role);
 	url.searchParams.set("client", clientId);
 	return url.toString();
 }
 
-function getSlideSessionHttpUrl(sessionId: string, clientId: string) {
-	const url = new URL(`/api/slides/session/${encodeURIComponent(sessionId)}`, window.location.href);
+function getSlideSessionHttpUrl(sessionId: string, clientId: string, baseHref: string) {
+	const url = new URL(`/api/slides/session/${encodeURIComponent(sessionId)}`, baseHref);
 	url.searchParams.set("client", clientId);
 	return url.toString();
 }
 
-function getCloudflareLoginLink() {
-	const url = new URL("/api/login/cloudflare", window.location.href);
-	url.searchParams.set("returnTo", window.location.href);
+function getCloudflareLoginLink(baseHref: string) {
+	const url = new URL("/api/login/cloudflare", baseHref);
+	url.searchParams.set("returnTo", baseHref);
 	return url.toString();
 }
 
-function getViewerLink(sessionId: string) {
-	const url = new URL(window.location.href);
+function getViewerLink(sessionId: string, baseHref: string) {
+	const url = new URL(baseHref);
 	url.searchParams.set("live", sessionId);
 	url.searchParams.delete("master");
 	url.searchParams.delete("presenter");
@@ -684,9 +693,23 @@ function getViewerLink(sessionId: string) {
 }
 
 function getClientId() {
-	const existing = window.localStorage.getItem(CLIENT_ID_KEY);
-	if (existing) return existing;
-	const id = crypto.randomUUID();
-	window.localStorage.setItem(CLIENT_ID_KEY, id);
-	return id;
+	try {
+		const existing = globalThis.localStorage.getItem(CLIENT_ID_KEY);
+		if (existing) return existing;
+		const id = crypto.randomUUID();
+		globalThis.localStorage.setItem(CLIENT_ID_KEY, id);
+		return id;
+	} catch {
+		return crypto.randomUUID();
+	}
+}
+
+function useBrowserHref() {
+	const [browserHref, setBrowserHref] = useState<string>();
+
+	useEffect(() => {
+		setBrowserHref(globalThis.location.href);
+	}, []);
+
+	return browserHref;
 }
