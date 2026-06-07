@@ -119,7 +119,7 @@ function RouteComponent() {
 				className={cn(
 					"pt-10 font-serif text-8xl font-bold",
 					shouldUseCompactTitle &&
-						"max-sm:text-[clamp(3rem,14vw,6rem)] max-sm:leading-[0.95] max-sm:[text-wrap:balance] max-sm:break-words",
+						"max-sm:text-[clamp(3rem,14vw,6rem)] max-sm:leading-[0.95] max-sm:text-balance max-sm:wrap-break-word",
 				)}
 			>
 				<Gradient>{post.title}</Gradient>

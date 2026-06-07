@@ -119,11 +119,6 @@ describe("loadRwcCodeSamples", () => {
 							filename: "README.md",
 							language: "Markdown",
 						},
-						".formatter.exs": {
-							content: "[line_length: 90]",
-							filename: ".formatter.exs",
-							language: "Elixir",
-						},
 						script: {
 							content: "console.log('ok')",
 							filename: "script",
