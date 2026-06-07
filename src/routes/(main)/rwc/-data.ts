@@ -90,7 +90,7 @@ export async function loadRwcCodeSamples({
 	const all_solutions = files.flatMap((file) => {
 		const code = file?.content;
 		const filename = file?.filename ?? undefined;
-		if (code == null || filename == null) {
+		if (code == null || filename == null || filename.startsWith(".")) {
 			return [];
 		}
 
