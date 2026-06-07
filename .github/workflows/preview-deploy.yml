@@ -67,7 +67,8 @@ jobs:
           echo "deploy_exit_code=$DEPLOY_EXIT_CODE" >> "$GITHUB_OUTPUT"
 
           if [ "$DEPLOY_EXIT_CODE" -ne 0 ]; then
-            echo "::warning::Preview deploy failed; see deploy output above. Core CI and Workers Builds remain authoritative for merge readiness."
+            echo "::error::Preview deploy failed; see deploy output above."
+            exit "$DEPLOY_EXIT_CODE"
           fi
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
