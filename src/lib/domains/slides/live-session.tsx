@@ -1,15 +1,19 @@
 "use client";
 
-import { useLocation } from "@tanstack/react-router";
 /**
  * Client wiring for live slide sessions. A `live` URL param joins a Durable
  * Object room; `master=1` makes the tab the presenter controller, while normal
  * viewers follow the presenter's slide/step, vote in slide polls, and send
  * lightweight reactions that briefly appear on the presenter's screen.
  */
+import { useServerFn } from "@tanstack/react-start";
 import { useCallback, useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import { FaRegCircleCheck, FaCloudflare, FaGoogle } from "react-icons/fa6";
 
+import {
+	startSocialSignInServerFn,
+	type SocialSignInProvider,
+} from "@/lib/domains/auth/server-fns";
 import { SLIDE_REACTION_EMOJIS } from "@/lib/domains/slides/reactions";
 import { cn } from "@/lib/helpers/utils";
 
@@ -348,7 +352,19 @@ function MasterLiveControl({
 }) {
 	const [question, setQuestion] = useState("");
 	const [options, setOptions] = useState("Yes,No");
-	const location = useLocation();
+	const browserHref = useBrowserHref();
+	const startSocialSignIn = useServerFn(startSocialSignInServerFn);
+	const viewerLink = browserHref ? getViewerLink(sessionId, browserHref) : "";
+	const handleSocialSignIn = useCallback(
+		async (provider: SocialSignInProvider) => {
+			if (!browserHref) return;
+			const { url } = await startSocialSignIn({
+				data: { provider, return_url: browserHref },
+			});
+			globalThis.location.assign(url);
+		},
+		[browserHref, startSocialSignIn],
+	);
 
 	function handleCreatePoll(event: FormEvent<HTMLFormElement>) {
 		event.preventDefault();
@@ -399,15 +415,24 @@ function MasterLiveControl({
 					</p>
 					<p className="m-0 flex items-center gap-2 pt-5 text-xs text-amber-50/85">
 						Sign in with:
-						<a
-							className="text-2xl text-orange-400 no-underline"
-							href={getCloudflareLoginLink(location.href)}
+						<button
+							aria-label="Sign in with Cloudflare"
+							className="cursor-pointer border-0 bg-transparent p-0 text-2xl text-orange-400"
+							disabled={!browserHref}
+							onClick={() => void handleSocialSignIn("cloudflare")}
+							type="button"
 						>
 							<FaCloudflare />
-						</a>
-						<a className="text-lg text-white no-underline" href={getGoogleLoginLink(location.href)}>
+						</button>
+						<button
+							aria-label="Sign in with Google"
+							className="cursor-pointer border-0 bg-transparent p-0 text-lg text-white"
+							disabled={!browserHref}
+							onClick={() => void handleSocialSignIn("google")}
+							type="button"
+						>
 							<FaGoogle />
-						</a>
+						</button>
 					</p>
 				</div>
 			)}
@@ -415,7 +440,7 @@ function MasterLiveControl({
 			<div className="mt-3 rounded-xl bg-white/10 p-2">
 				<p className="m-0 text-[0.65rem] text-white/60 uppercase">Viewer link</p>
 				<code className="mt-1 block max-h-12 overflow-auto text-[0.65rem] break-all text-white/80">
-					{getViewerLink(sessionId, location.href)}
+					{viewerLink}
 				</code>
 			</div>
 
@@ -680,17 +705,6 @@ function getSlideSessionWsUrl(
 function getSlideSessionHttpUrl(sessionId: string, clientId: string, baseHref: string) {
 	const url = new URL(`/api/slides/session/${encodeURIComponent(sessionId)}`, baseHref);
 	url.searchParams.set("client", clientId);
-	return url.toString();
-}
-
-function getCloudflareLoginLink(return_url: string) {
-	const url = new URL("/api/login/cloudflare", return_url);
-	url.searchParams.set("returnTo", return_url);
-	return url.toString();
-}
-function getGoogleLoginLink(return_url: string) {
-	const url = new URL("/api/login/google", return_url);
-	url.searchParams.set("returnTo", return_url);
 	return url.toString();
 }
 

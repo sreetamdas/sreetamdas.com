@@ -29,7 +29,8 @@ type CloudflareUserResponse = {
 
 export function getAuth(env: CloudflareEnv) {
 	const siteUrl = getSiteUrl(env);
-	const oauthConfig = getCloudflareOAuthConfig(env);
+	const cloudflare_oauth_config = getCloudflareOAuthConfig(env);
+	const google_oauth_config = getGoogleOAuthConfig(env);
 
 	return betterAuth({
 		baseURL: `${siteUrl}/api/auth`,
@@ -44,10 +45,11 @@ export function getAuth(env: CloudflareEnv) {
 				verification: schema.authVerification,
 			},
 		}),
-		plugins: oauthConfig
+		socialProviders: google_oauth_config ? { google: google_oauth_config } : {},
+		plugins: cloudflare_oauth_config
 			? [
 					genericOAuth({
-						config: [oauthConfig],
+						config: [cloudflare_oauth_config],
 					}),
 				]
 			: [],
@@ -146,6 +148,23 @@ function getCloudflareOAuthConfig(env: object | undefined) {
 				image: payload.result.avatar_url,
 			};
 		},
+	};
+}
+
+function getGoogleOAuthConfig(env: object | undefined) {
+	const client_id = readServerEnvString(env, ["GOOGLE_CLIENT_ID", "GOOGLE_OAUTH_CLIENT_ID"]);
+	const client_secret = readServerEnvString(env, [
+		"GOOGLE_CLIENT_SECRET",
+		"GOOGLE_OAUTH_CLIENT_SECRET",
+	]);
+
+	if (!client_id || !client_secret) {
+		return undefined;
+	}
+
+	return {
+		clientId: client_id,
+		clientSecret: client_secret,
 	};
 }
 
