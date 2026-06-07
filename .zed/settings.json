@@ -1,0 +1,112 @@
+// Project-specific Zed settings for sreetamdas.com.
+// Mirrors the workspace conventions in .vscode/settings.json where Zed has
+// equivalent settings: tsgo for JS/TS, Oxc for format/lint, and Tailwind CSS
+// class detection in React helpers.
+{
+	"tab_size": 2,
+	"hard_tabs": true,
+	"lsp": {
+		"oxfmt": {
+			"initialization_options": {
+				"settings": {
+					"fmt.configPath": "./vite.config.ts",
+					"run": "onSave"
+				}
+			}
+		},
+		"oxlint": {
+			"initialization_options": {
+				"settings": {
+					"configPath": "./vite.config.ts",
+					"disableNestedConfig": false,
+					"fixKind": "safe_fix",
+					"run": "onType",
+					"unusedDisableDirectives": "deny"
+				}
+			}
+		},
+		"tailwindcss-language-server": {
+			"settings": {
+				"tailwindCSS": {
+					"classAttributes": ["class", "className", "ngClass", "tw"],
+					"classFunctions": ["tw", "clsx", "cva", "cx", "cn"],
+					"includeLanguages": {
+						"plaintext": "html"
+					}
+				}
+			}
+		}
+	},
+	"languages": {
+		"CSS": {
+			"language_servers": ["tailwindcss-intellisense-css", "!vscode-css-language-server", "..."],
+			"format_on_save": "on",
+			"prettier": { "allowed": false },
+			"formatter": [{ "language_server": { "name": "oxfmt" } }]
+		},
+		"JavaScript": {
+			"language_servers": [
+				"tsgo",
+				"tailwindcss-language-server",
+				"oxfmt",
+				"oxlint",
+				"!vtsls",
+				"..."
+			],
+			"format_on_save": "on",
+			"prettier": { "allowed": false },
+			"formatter": [
+				{ "language_server": { "name": "oxfmt" } },
+				{ "code_action": "source.fixAll.oxc" }
+			]
+		},
+		"TypeScript": {
+			"language_servers": [
+				"tsgo",
+				"tailwindcss-language-server",
+				"oxfmt",
+				"oxlint",
+				"!vtsls",
+				"..."
+			],
+			"format_on_save": "on",
+			"prettier": { "allowed": false },
+			"formatter": [
+				{ "language_server": { "name": "oxfmt" } },
+				{ "code_action": "source.fixAll.oxc" }
+			]
+		},
+		"TSX": {
+			"language_servers": [
+				"tsgo",
+				"tailwindcss-language-server",
+				"oxfmt",
+				"oxlint",
+				"!vtsls",
+				"..."
+			],
+			"format_on_save": "on",
+			"prettier": { "allowed": false },
+			"formatter": [
+				{ "language_server": { "name": "oxfmt" } },
+				{ "code_action": "source.fixAll.oxc" }
+			]
+		},
+		"JSON": {
+			"format_on_save": "on",
+			"prettier": { "allowed": false },
+			"formatter": [{ "language_server": { "name": "oxfmt" } }]
+		},
+		"JSONC": {
+			"format_on_save": "on",
+			"prettier": { "allowed": false },
+			"formatter": [{ "language_server": { "name": "oxfmt" } }]
+		},
+		"MDX": {
+			"language_servers": ["mdx-analyzer", "tailwindcss-language-server", "oxfmt", "..."],
+			"format_on_save": "on",
+			"prettier": { "allowed": false },
+			"formatter": [{ "language_server": { "name": "oxfmt" } }]
+		}
+	}
+}
