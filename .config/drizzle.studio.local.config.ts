@@ -1,10 +1,11 @@
+import { defineConfig } from "drizzle-kit";
 import { readdir, stat } from "node:fs/promises";
 import path from "node:path";
 
-import { defineConfig } from "drizzle-kit";
+const projectRoot = process.cwd();
 
 async function findLocalD1SqliteFile(): Promise<string> {
-	const baseDir = path.resolve(process.cwd(), ".wrangler/state/v3/d1");
+	const baseDir = path.resolve(projectRoot, ".wrangler/state/v3/d1");
 	let entries: string[] = [];
 
 	try {
@@ -41,14 +42,18 @@ async function findLocalD1SqliteFile(): Promise<string> {
 	}
 
 	sqliteCandidates.sort((a, b) => b.mtimeMs - a.mtimeMs);
-	return sqliteCandidates[0]!.file;
+	const latest = sqliteCandidates[0];
+	if (!latest) {
+		throw new Error(`No local D1 sqlite files found under ${baseDir}.`);
+	}
+	return latest.file;
 }
 
 const sqliteFile = await findLocalD1SqliteFile();
 
 export default defineConfig({
-	schema: "./src/db/schema.ts",
-	out: "./drizzle/migrations",
+	schema: path.join(projectRoot, "src/db/schema.ts"),
+	out: path.join(projectRoot, "drizzle/migrations"),
 	dialect: "sqlite",
 	dbCredentials: {
 		url: `file:${sqliteFile}`,

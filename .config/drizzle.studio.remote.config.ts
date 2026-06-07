@@ -1,5 +1,7 @@
 import { defineConfig } from "drizzle-kit";
+import path from "node:path";
 
+const projectRoot = process.cwd();
 const accountId = process.env.CF_ACCOUNT_ID;
 const databaseId = process.env.CF_D1_DB_ID;
 const token = process.env.CF_D1_TOKEN;
@@ -12,8 +14,8 @@ if (!accountId || !databaseId || !token) {
 }
 
 export default defineConfig({
-	schema: "./src/db/schema.ts",
-	out: "./drizzle/migrations",
+	schema: path.join(projectRoot, "src/db/schema.ts"),
+	out: path.join(projectRoot, "drizzle/migrations"),
 	dialect: "sqlite",
 	driver: "d1-http",
 	dbCredentials: {
