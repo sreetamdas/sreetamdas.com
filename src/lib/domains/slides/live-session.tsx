@@ -1,5 +1,6 @@
 "use client";
 
+import { useLocation } from "@tanstack/react-router";
 /**
  * Client wiring for live slide sessions. A `live` URL param joins a Durable
  * Object room; `master=1` makes the tab the presenter controller, while normal
@@ -7,7 +8,7 @@
  * lightweight reactions that briefly appear on the presenter's screen.
  */
 import { useCallback, useEffect, useMemo, useRef, useState, type FormEvent } from "react";
-import { FaRegCircleCheck } from "react-icons/fa6";
+import { FaRegCircleCheck, FaCloudflare, FaGoogle } from "react-icons/fa6";
 
 import { SLIDE_REACTION_EMOJIS } from "@/lib/domains/slides/reactions";
 import { cn } from "@/lib/helpers/utils";
@@ -344,8 +345,7 @@ function MasterLiveControl({
 }) {
 	const [question, setQuestion] = useState("");
 	const [options, setOptions] = useState("Yes,No");
-	const viewerLink = typeof window === "undefined" ? "" : getViewerLink(sessionId);
-	const loginLink = typeof window === "undefined" ? "" : getCloudflareLoginLink();
+	const location = useLocation();
 
 	function handleCreatePoll(event: FormEvent<HTMLFormElement>) {
 		event.preventDefault();
@@ -392,21 +392,27 @@ function MasterLiveControl({
 			{connected ? null : (
 				<div className="mt-3 rounded-xl border border-amber-300/30 bg-amber-300/10 p-2">
 					<p className="m-0 text-xs text-amber-50/85">
-						Presenter control requires an allowlisted Cloudflare login.
+						Presenter control requires an allowlisted login.
 					</p>
-					<a
-						className="mt-2 inline-flex rounded-lg bg-white/15 px-2 py-1 text-xs text-white no-underline hover:bg-white/25"
-						href={loginLink}
-					>
-						Sign in with Cloudflare
-					</a>
+					<p className="m-0 flex items-center gap-2 pt-5 text-xs text-amber-50/85">
+						Sign in with:
+						<a
+							className="text-2xl text-orange-400 no-underline"
+							href={getCloudflareLoginLink(location.href)}
+						>
+							<FaCloudflare />
+						</a>
+						<a className="text-lg text-white no-underline" href={getGoogleLoginLink(location.href)}>
+							<FaGoogle />
+						</a>
+					</p>
 				</div>
 			)}
 
 			<div className="mt-3 rounded-xl bg-white/10 p-2">
 				<p className="m-0 text-[0.65rem] text-white/60 uppercase">Viewer link</p>
 				<code className="mt-1 block max-h-12 overflow-auto text-[0.65rem] break-all text-white/80">
-					{viewerLink}
+					{getViewerLink(sessionId, location.href)}
 				</code>
 			</div>
 
@@ -669,18 +675,24 @@ function getSlideSessionHttpUrl(sessionId: string, clientId: string) {
 	return url.toString();
 }
 
-function getCloudflareLoginLink() {
-	const url = new URL("/api/login/cloudflare", window.location.href);
-	url.searchParams.set("returnTo", window.location.href);
+function getCloudflareLoginLink(return_url: string) {
+	const url = new URL("/api/login/cloudflare", return_url);
+	url.searchParams.set("returnTo", return_url);
+	return url.toString();
+}
+function getGoogleLoginLink(return_url: string) {
+	const url = new URL("/api/login/google", return_url);
+	url.searchParams.set("returnTo", return_url);
 	return url.toString();
 }
 
-function getViewerLink(sessionId: string) {
-	const url = new URL(window.location.href);
-	url.searchParams.set("live", sessionId);
-	url.searchParams.delete("master");
-	url.searchParams.delete("presenter");
-	return url.toString();
+function getViewerLink(sessionId: string, url: string) {
+	const updated_url = new URL(url);
+
+	updated_url.searchParams.set("live", sessionId);
+	updated_url.searchParams.delete("master");
+	updated_url.searchParams.delete("presenter");
+	return updated_url.toString();
 }
 
 function getClientId() {

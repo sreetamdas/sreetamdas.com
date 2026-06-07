@@ -29,6 +29,11 @@
 			"url": "https://observability.mcp.cloudflare.com/mcp",
 			"enabled": true,
 			"oauth": {}
+		},
+		"better-auth": {
+			"type": "remote",
+			"url": "https://mcp.better-auth.com/mcp",
+			"enabled": true
 		}
 	}
 }
