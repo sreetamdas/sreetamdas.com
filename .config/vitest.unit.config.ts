@@ -7,6 +7,9 @@ export default defineConfig({
 	root: projectRoot,
 	resolve: {
 		alias: {
+			"cloudflare:workers": fileURLToPath(
+				new URL("../src/testing/cloudflare-workers-unit.ts", import.meta.url),
+			),
 			"@": fileURLToPath(new URL("../src", import.meta.url)),
 			"content-collections": fileURLToPath(
 				new URL("../.content-collections/generated", import.meta.url),

@@ -109,8 +109,12 @@ export async function incrementLikeCount<TDb>(
 		return await deps.incrementLikes(db, normalizedSlug, visitorHash);
 	}
 
-	const { incrementLikeCountInDb } = await import("./LikeButton.data.server");
-	return await incrementLikeCountInDb(normalizedSlug, data.disabled, clientIp);
+	try {
+		const { incrementLikeCountInDb } = await import("./LikeButton.data.server");
+		return await incrementLikeCountInDb(normalizedSlug, data.disabled, clientIp);
+	} catch {
+		return { likes: 0, hasLiked: false };
+	}
 }
 
 function getClientIpFromServerFnContext(ctx: unknown): string | undefined {
