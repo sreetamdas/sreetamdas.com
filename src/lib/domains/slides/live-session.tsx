@@ -10,6 +10,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { useCallback, useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import { FaRegCircleCheck, FaCloudflare, FaGoogle } from "react-icons/fa6";
 
+import { handleGoogleLogin } from "@/lib/domains/auth/google";
 import {
 	startSocialSignInServerFn,
 	type SocialSignInProvider,
@@ -354,6 +355,7 @@ function MasterLiveControl({
 	const [options, setOptions] = useState("Yes,No");
 	const browserHref = useBrowserHref();
 	const startSocialSignIn = useServerFn(startSocialSignInServerFn);
+	const handleClickGoogleLogin = useServerFn(handleGoogleLogin);
 	const viewerLink = browserHref ? getViewerLink(sessionId, browserHref) : "";
 	const handleSocialSignIn = useCallback(
 		async (provider: SocialSignInProvider) => {
@@ -419,7 +421,7 @@ function MasterLiveControl({
 							aria-label="Sign in with Cloudflare"
 							className="cursor-pointer border-0 bg-transparent p-0 text-2xl text-orange-400"
 							disabled={!browserHref}
-							onClick={() => void handleSocialSignIn("cloudflare")}
+							onClick={() => handleClickGoogleLogin()}
 							type="button"
 						>
 							<FaCloudflare />

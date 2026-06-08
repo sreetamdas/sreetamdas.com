@@ -25,7 +25,7 @@ const defaultViewCountDeps = {
 export const fetchViewCountServerFn = createServerFn({
 	method: "GET",
 })
-	.inputValidator((data) => {
+	.validator((data) => {
 		return validatePagePathnamePayload(data, "Invalid page views payload");
 	})
 	.handler(async ({ data, context }) => {

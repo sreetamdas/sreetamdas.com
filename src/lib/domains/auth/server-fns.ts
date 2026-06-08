@@ -59,7 +59,7 @@ const SOCIAL_SIGN_IN_PROVIDER_CONFIGS = {
 } satisfies Record<SocialSignInProvider, SocialSignInProviderConfig>;
 
 export const startSocialSignInServerFn = createServerFn({ method: "POST" })
-	.inputValidator(validateSocialSignInRequest)
+	.validator(validateSocialSignInRequest)
 	.handler(async ({ data, context }) => {
 		const sign_in_result = await startSocialSignIn(data, {
 			auth_handler: getAuth(context.env).handler,

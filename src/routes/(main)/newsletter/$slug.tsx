@@ -62,7 +62,7 @@ const getNewsletterEmailRenderable = createServerFn({
 	method: "GET",
 })
 	.middleware([staticFunctionMiddleware])
-	.inputValidator((data) => {
+	.validator((data) => {
 		if (typeof data !== "object" || data === null || !("slug" in data)) {
 			throw new Error("Invalid newsletter slug payload");
 		}

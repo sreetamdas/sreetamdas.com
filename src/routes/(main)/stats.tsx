@@ -61,7 +61,7 @@ export const Route = createFileRoute("/(main)/stats")({
 });
 
 const getStats = createServerFn({ method: "GET" })
-	.inputValidator((data): StatsSearch => {
+	.validator((data): StatsSearch => {
 		if (typeof data !== "object" || data === null || !("period" in data)) {
 			return { period: "30d" satisfies PlausibleDateRange };
 		}
@@ -92,7 +92,7 @@ function StatsPage() {
 		<>
 			<section className="py-14 sm:py-16">
 				<p className="mb-5 font-mono text-sm text-primary">/stats</p>
-				<h1 className="font-serif text-6xl leading-none font-bold tracking-[-0.025em] text-balance md:text-8xl">
+				<h1 className="font-serif text-6xl leading-none font-bold tracking-tight text-balance md:text-8xl">
 					Public analytics
 				</h1>
 				<p className="mt-6 max-w-[62ch] text-lg text-pretty text-foreground/80">
