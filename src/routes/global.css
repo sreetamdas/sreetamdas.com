@@ -2,6 +2,8 @@
 @import "@fontsource-variable/bricolage-grotesque/standard.css";
 @import "@fontsource-variable/inter/index.css";
 
+@source "../../content";
+
 @custom-variant dark {
 	&:where([data-color-scheme="dark"], [data-color-scheme="dark"] *) {
 		@slot;
@@ -29,12 +31,74 @@
 	--color-background: var(--not-white);
 	--color-karma-background: var(--karma-background);
 
+	--font-sans: "Inter Variable", sans-serif;
 	--font-serif: "Bricolage Grotesque Variable", serif;
 	--font-mono: "Iosevka", monospace;
 
 	--max-width: 650px;
 	--radius-global: 5px;
 	--transition-duration: 250ms;
+
+	--animate-overlayShow: overlayShow 150ms cubic-bezier(0.16, 1, 0.3, 1);
+	--animate-contentShow: contentShow 150ms cubic-bezier(0.16, 1, 0.3, 1);
+
+	@keyframes overlayShow {
+		from {
+			opacity: 0;
+		}
+		to {
+			opacity: 1;
+		}
+	}
+
+	@keyframes contentShow {
+		from {
+			opacity: 0;
+			transform: translate(-50%, -48%) scale(0.96);
+		}
+		to {
+			opacity: 1;
+			transform: translate(-50%, -50%) scale(1);
+		}
+	}
+}
+
+@utility animate-in {
+	animation-name: enter;
+	--tw-enter-opacity: initial;
+	--tw-enter-scale: initial;
+	--tw-enter-rotate: initial;
+	--tw-enter-translate-x: initial;
+	--tw-enter-translate-y: initial;
+}
+
+@utility animate-out {
+	animation-name: exit;
+	--tw-exit-opacity: initial;
+	--tw-exit-scale: initial;
+	--tw-exit-rotate: initial;
+	--tw-exit-translate-x: initial;
+	--tw-exit-translate-y: initial;
+}
+
+@utility fade-in-0 {
+	--tw-enter-opacity: 0;
+}
+
+@utility fade-out-0 {
+	--tw-exit-opacity: 0;
+}
+
+@utility slide-in-from-left {
+	--tw-enter-translate-x: -100%;
+}
+
+@utility slide-out-to-left {
+	--tw-exit-translate-x: -100%;
+}
+
+@utility animate-duration-* {
+	animation-duration: --value(--duration-*, [duration], [*]);
 }
 
 @utility gradient {
@@ -97,6 +161,42 @@
 	font-weight: 700;
 	font-style: italic;
 	font-display: swap;
+}
+
+@keyframes enter {
+	from {
+		opacity: var(--tw-enter-opacity, 1);
+		transform: translate3d(
+				var(--tw-enter-translate-x, 0),
+				var(--tw-enter-translate-y, 0),
+				0
+			)
+			scale3d(
+				var(--tw-enter-scale, 1),
+				var(--tw-enter-scale, 1),
+				var(--tw-enter-scale, 1)
+			)
+			rotate(var(--tw-enter-rotate, 0));
+	}
+}
+
+@keyframes exit {
+	to {
+		opacity: var(--tw-exit-opacity, 1);
+		transform: translate3d(var(--tw-exit-translate-x, 0), var(--tw-exit-translate-y, 0), 0)
+			scale3d(var(--tw-exit-scale, 1), var(--tw-exit-scale, 1), var(--tw-exit-scale, 1))
+			rotate(var(--tw-exit-rotate, 0));
+	}
+}
+
+@keyframes grow-shrink {
+	0%,
+	100% {
+		transform: scale(0);
+	}
+	50% {
+		transform: scale(1);
+	}
 }
 
 [data-color-scheme="dark"] {
