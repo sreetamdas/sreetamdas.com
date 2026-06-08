@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
 import { renderServerComponent } from "@tanstack/react-start/rsc";
 import { staticFunctionMiddleware } from "@tanstack/start-static-server-functions";
+import { env } from "cloudflare:workers";
 
 import { SITE_TITLE_APPEND } from "@/config";
 import { Image } from "@/lib/components/Image";
@@ -41,8 +42,8 @@ export const Route = createFileRoute("/(main)/keebs")({
 
 const getKeebsRenderable = createServerFn({ method: "GET" })
 	.middleware([staticFunctionMiddleware])
-	.handler(async ({ context }) => {
-		const keebs = await getKeebsFromNotion(context.env);
+	.handler(async () => {
+		const keebs = await getKeebsFromNotion(env);
 		const Renderable = await renderServerComponent(<KeebsList keebs={keebs} />);
 
 		return { Renderable };

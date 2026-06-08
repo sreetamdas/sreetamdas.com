@@ -1,4 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
+import { env } from "cloudflare:workers";
 
 import { getDb } from "@/db";
 import { getPageViews, upsertPageViews } from "@/lib/domains/PageViews";
@@ -28,8 +29,8 @@ export const fetchViewCountServerFn = createServerFn({
 	.validator((data) => {
 		return validatePagePathnamePayload(data, "Invalid page views payload");
 	})
-	.handler(async ({ data, context }) => {
-		return fetchViewCount(data, context.env);
+	.handler(async ({ data }) => {
+		return fetchViewCount(data, env);
 	});
 
 export async function fetchViewCount(

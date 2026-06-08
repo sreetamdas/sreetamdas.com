@@ -7,7 +7,7 @@
 const PLAUSIBLE_QUERY_URL = "https://plausible.io/api/v2/query";
 const DEFAULT_PLAUSIBLE_SITE_ID = "sreetamdas.com";
 
-type PlausibleEnv = {
+type PlausibleEnv = Partial<CloudflareEnv> & {
 	PLAUSIBLE_API_KEY?: string;
 	PLAUSIBLE_SITE_ID?: string;
 	PLAUSIBLE_STATS_API_KEY?: string;

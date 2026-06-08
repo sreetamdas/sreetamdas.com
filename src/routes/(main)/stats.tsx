@@ -1,5 +1,6 @@
 import { Await, createFileRoute } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
+import { env } from "cloudflare:workers";
 import { Suspense } from "react";
 
 import { SITE_DESCRIPTION, SITE_TITLE_APPEND } from "@/config";
@@ -68,8 +69,8 @@ const getStats = createServerFn({ method: "GET" })
 
 		return { period: parseDateRange(data.period) };
 	})
-	.handler(async ({ data, context }) => {
-		return fetchPlausibleStats(context.env, data.period);
+	.handler(async ({ data }) => {
+		return fetchPlausibleStats(env, data.period);
 	});
 
 function parseDateRange(value: unknown): PlausibleDateRange {

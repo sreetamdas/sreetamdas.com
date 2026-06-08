@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { env } from "cloudflare:workers";
 
 type PresenceStub = {
 	fetch: (request: Request) => Promise<Response> | Response;
@@ -8,10 +9,7 @@ type PresenceNamespace = {
 	getByName: (name: string) => PresenceStub;
 };
 
-export function handlePresenceGet(
-	request: Request,
-	env: CloudflareEnv,
-): Promise<Response> | Response {
+export function handlePresenceGet(request: Request): Promise<Response> | Response {
 	return handlePresenceGetForNamespace(request, env.SITE_PRESENCE);
 }
 
@@ -30,8 +28,8 @@ export function handlePresenceGetForNamespace(
 export const Route = createFileRoute("/(api)/api/presence")({
 	server: {
 		handlers: {
-			GET: async ({ request, context }) => {
-				return handlePresenceGet(request, context.env);
+			GET: async ({ request }) => {
+				return handlePresenceGet(request);
 			},
 		},
 	},

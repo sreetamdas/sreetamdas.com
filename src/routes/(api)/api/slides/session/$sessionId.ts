@@ -3,6 +3,7 @@
  * instance that owns presenter-controlled navigation and poll state.
  */
 import { createFileRoute } from "@tanstack/react-router";
+import { env } from "cloudflare:workers";
 
 import { getAllowedPresenterEmail } from "@/lib/auth";
 
@@ -72,12 +73,9 @@ export function isValidSessionId(sessionId: string) {
 export const Route = createFileRoute("/(api)/api/slides/session/$sessionId")({
 	server: {
 		handlers: {
-			GET: ({ request, context, params }) => {
-				return handleSlideSessionRequest(
-					request,
-					context.env.SLIDE_SESSIONS,
-					params.sessionId,
-					() => getAllowedPresenterEmail(request, context.env),
+			GET: ({ request, params }) => {
+				return handleSlideSessionRequest(request, env.SLIDE_SESSIONS, params.sessionId, () =>
+					getAllowedPresenterEmail(request, env),
 				);
 			},
 		},
