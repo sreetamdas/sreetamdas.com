@@ -47,7 +47,7 @@
 		"lint-staged": "vp staged"
 	},
 	"dependencies": {
-		"@better-auth/drizzle-adapter": "^1.6.14",
+		"@better-auth/drizzle-adapter": "^1.6.15",
 		"@better-fetch/fetch": "1.1.21",
 		"@fontsource-variable/bricolage-grotesque": "^5.2.10",
 		"@fontsource-variable/inter": "^5.2.8",
@@ -68,7 +68,7 @@
 		"@tanstack/react-router": "^1.170.15",
 		"@tanstack/react-start": "^1.168.25",
 		"@tanstack/start-static-server-functions": "^1.167.17",
-		"better-auth": "^1.6.14",
+		"better-auth": "^1.6.15",
 		"clsx": "^2.1.1",
 		"drizzle-orm": "1.0.0-rc.3",
 		"image-size": "^2.0.2",
@@ -107,7 +107,7 @@
 		"@types/react": "^19.2.17",
 		"@types/react-dom": "^19.2.3",
 		"@types/unist": "~3.0.3",
-		"@typescript/native-preview": "7.0.0-dev.20260607.1",
+		"@typescript/native-preview": "7.0.0-dev.20260608.1",
 		"@vitejs/plugin-react": "^6.0.2",
 		"@vitejs/plugin-rsc": "^0.5.27",
 		"better-sqlite3": "^12.10.0",
