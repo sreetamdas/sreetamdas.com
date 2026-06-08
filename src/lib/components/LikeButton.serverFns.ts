@@ -12,14 +12,10 @@ import { type PagePathnamePayload, validatePagePathnamePayload } from "./pageInt
 export type { LikeCount } from "@/lib/domains/PageViews";
 
 type LikeCountDeps<TDb> = {
-	getDb: (env: CloudflareEnv | undefined) => TDb;
+	getDb: () => TDb;
 	getLikes: (db: TDb, slug: string, visitorHash?: string) => Promise<LikeCount>;
 	incrementLikes: (db: TDb, slug: string, visitorHash: string) => Promise<LikeCount>;
-	getVisitorHash: (
-		env: CloudflareEnv | undefined,
-		normalizedSlug: string,
-		clientIp?: string,
-	) => Promise<string | undefined>;
+	getVisitorHash: (normalizedSlug: string, clientIp?: string) => Promise<string | undefined>;
 };
 
 const defaultLikeCountDeps = {
@@ -47,7 +43,7 @@ export const fetchLikeCountServerFn = createServerFn({
 		return validatePagePathnamePayload(data, "Invalid likes payload");
 	})
 	.handler(async (ctx) => {
-		return fetchLikeCount(ctx.data, env, undefined, getClientIpFromServerFnContext(ctx));
+		return fetchLikeCount(ctx.data, undefined, getClientIpFromServerFnContext(ctx));
 	});
 
 export const incrementLikeServerFn = createServerFn({
@@ -57,27 +53,21 @@ export const incrementLikeServerFn = createServerFn({
 		return validatePagePathnamePayload(data, "Invalid likes payload");
 	})
 	.handler(async (ctx) => {
-		return incrementLikeCount(ctx.data, env, undefined, getClientIpFromServerFnContext(ctx));
+		return incrementLikeCount(ctx.data, undefined, getClientIpFromServerFnContext(ctx));
 	});
 
+export async function fetchLikeCount(data: PagePathnamePayload): Promise<LikeCount>;
 export async function fetchLikeCount(
 	data: PagePathnamePayload,
-	env: CloudflareEnv | undefined,
-): Promise<LikeCount>;
-export async function fetchLikeCount(
-	data: PagePathnamePayload,
-	env: CloudflareEnv | undefined,
 	deps: undefined,
 	clientIp?: string,
 ): Promise<LikeCount>;
 export async function fetchLikeCount<TDb>(
 	data: PagePathnamePayload,
-	env: CloudflareEnv | undefined,
 	deps: LikeCountDeps<TDb>,
 ): Promise<LikeCount>;
 export async function fetchLikeCount<TDb>(
 	data: PagePathnamePayload,
-	env: CloudflareEnv | undefined,
 	deps?: LikeCountDeps<TDb>,
 	clientIp?: string,
 ): Promise<LikeCount> {
@@ -89,41 +79,31 @@ export async function fetchLikeCount<TDb>(
 
 	try {
 		if (deps) {
-			const db = deps.getDb(env);
-			const visitorHash = await deps.getVisitorHash(env, normalizedSlug, clientIp);
+			const db = deps.getDb();
+			const visitorHash = await deps.getVisitorHash(normalizedSlug, clientIp);
 			return await deps.getLikes(db, normalizedSlug, visitorHash);
 		}
 
-		if (!env) {
-			return { likes: 0, hasLiked: false };
-		}
-
-		const db = defaultLikeCountDeps.getDb(env);
-		const visitorHash = await defaultLikeCountDeps.getVisitorHash(env, normalizedSlug, clientIp);
+		const db = defaultLikeCountDeps.getDb();
+		const visitorHash = await defaultLikeCountDeps.getVisitorHash(normalizedSlug, clientIp);
 		return await defaultLikeCountDeps.getLikes(db, normalizedSlug, visitorHash);
 	} catch {
 		return { likes: 0, hasLiked: false };
 	}
 }
 
+export async function incrementLikeCount(data: PagePathnamePayload): Promise<LikeCount>;
 export async function incrementLikeCount(
 	data: PagePathnamePayload,
-	env: CloudflareEnv | undefined,
-): Promise<LikeCount>;
-export async function incrementLikeCount(
-	data: PagePathnamePayload,
-	env: CloudflareEnv | undefined,
 	deps: undefined,
 	clientIp?: string,
 ): Promise<LikeCount>;
 export async function incrementLikeCount<TDb>(
 	data: PagePathnamePayload,
-	env: CloudflareEnv | undefined,
 	deps: LikeCountDeps<TDb>,
 ): Promise<LikeCount>;
 export async function incrementLikeCount<TDb>(
 	data: PagePathnamePayload,
-	env: CloudflareEnv | undefined,
 	deps?: LikeCountDeps<TDb>,
 	clientIp?: string,
 ): Promise<LikeCount> {
@@ -134,20 +114,16 @@ export async function incrementLikeCount<TDb>(
 	}
 
 	if (deps) {
-		const db = deps.getDb(env);
-		const visitorHash = await deps.getVisitorHash(env, normalizedSlug, clientIp);
+		const db = deps.getDb();
+		const visitorHash = await deps.getVisitorHash(normalizedSlug, clientIp);
 		if (data.disabled || !visitorHash) {
 			return await deps.getLikes(db, normalizedSlug, visitorHash);
 		}
 		return await deps.incrementLikes(db, normalizedSlug, visitorHash);
 	}
 
-	if (!env) {
-		return { likes: 0, hasLiked: false };
-	}
-
-	const db = defaultLikeCountDeps.getDb(env);
-	const visitorHash = await defaultLikeCountDeps.getVisitorHash(env, normalizedSlug, clientIp);
+	const db = defaultLikeCountDeps.getDb();
+	const visitorHash = await defaultLikeCountDeps.getVisitorHash(normalizedSlug, clientIp);
 	if (data.disabled || !visitorHash) {
 		return await defaultLikeCountDeps.getLikes(db, normalizedSlug, visitorHash);
 	}
@@ -155,7 +131,6 @@ export async function incrementLikeCount<TDb>(
 }
 
 async function getVisitorHash(
-	env: CloudflareEnv | undefined,
 	normalizedSlug: string,
 	clientIp?: string,
 ): Promise<string | undefined> {

@@ -37,8 +37,8 @@ function parseConnectionAttachment(value: unknown): ConnectionAttachment | null 
 export class PresenceDurableObject extends DurableObject<CloudflareEnv> {
 	private lastPruneAt = 0;
 
-	constructor(ctx: DurableObjectState, env: CloudflareEnv) {
-		super(ctx, env);
+	constructor(ctx: DurableObjectState, platformEnv: CloudflareEnv) {
+		super(ctx, platformEnv);
 		// Give hibernatable websockets a reasonable event timeout.
 		this.ctx.setHibernatableWebSocketEventTimeout(60_000);
 	}

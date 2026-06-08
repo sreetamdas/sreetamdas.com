@@ -2,12 +2,13 @@
 Test-only Worker entrypoint used by @cloudflare/vitest-pool-workers.
 Keeps runtime tests independent from TanStack Start virtual module resolution.
 */
+import { env } from "cloudflare:workers";
 
 export { PresenceDurableObject } from "../lib/cloudflare/PresenceDurableObject";
 export { SlideSessionDurableObject } from "../lib/cloudflare/SlideSessionDurableObject";
 
 const worker: ExportedHandler<CloudflareEnv> = {
-	fetch(request, env) {
+	fetch(request) {
 		const { pathname } = new URL(request.url);
 
 		if (pathname === "/health") {

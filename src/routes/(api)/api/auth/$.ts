@@ -1,10 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { env } from "cloudflare:workers";
 
 import { getAuth } from "@/lib/auth";
 
 export function handleAuthRequest(request: Request): Promise<Response> {
-	return getAuth(env).handler(request);
+	return getAuth().handler(request);
 }
 
 export const Route = createFileRoute("/(api)/api/auth/$")({

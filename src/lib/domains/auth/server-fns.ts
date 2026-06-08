@@ -6,7 +6,6 @@
  */
 import { createServerFn } from "@tanstack/react-start";
 import { setResponseHeaders } from "@tanstack/react-start/server";
-import { env } from "cloudflare:workers";
 
 import { getAuth, getSiteUrl } from "@/lib/auth";
 
@@ -63,8 +62,8 @@ export const startSocialSignInServerFn = createServerFn({ method: "POST" })
 	.validator(validateSocialSignInRequest)
 	.handler(async ({ data }) => {
 		const sign_in_result = await startSocialSignIn(data, {
-			auth_handler: getAuth(env).handler,
-			site_url: getSiteUrl(env),
+			auth_handler: getAuth().handler,
+			site_url: getSiteUrl(),
 		});
 
 		if (sign_in_result.cookies.length > 0) {
@@ -79,8 +78,8 @@ export function handleSocialLoginRequest(
 	provider: SocialSignInProvider,
 ): Promise<Response> {
 	return handleSocialLoginRequestWithAuth(request, provider, {
-		auth_handler: getAuth(env).handler,
-		site_url: getSiteUrl(env),
+		auth_handler: getAuth().handler,
+		site_url: getSiteUrl(),
 	});
 }
 

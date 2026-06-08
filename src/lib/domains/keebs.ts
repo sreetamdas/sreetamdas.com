@@ -3,6 +3,7 @@
  * enriches Notion image URLs with dimensions for better rendering.
  */
 import { type PageObjectResponse } from "@notionhq/client/build/src/api-endpoints";
+import { env } from "cloudflare:workers";
 import { isEmpty, isUndefined } from "lodash-es";
 
 import { ImgurClient, type KeebDetails } from "@/lib/domains/Imgur";
@@ -14,9 +15,7 @@ export type KeebDetailsFromNotion = Omit<KeebDetails, "image"> & {
 
 const propertiesToRetrieve = ["Name", "Type", "Image"];
 
-export async function getKeebsFromNotion(
-	env: CloudflareEnv,
-): Promise<Array<KeebDetails | KeebDetailsFromNotion>> {
+export async function getKeebsFromNotion(): Promise<Array<KeebDetails | KeebDetailsFromNotion>> {
 	const keebsDatabaseId = env.NOTION_KEEBS_PAGE_ID;
 	const notionToken = env.NOTION_TOKEN;
 	const imgurApiClientId = env.IMGUR_API_CLIENT_ID;

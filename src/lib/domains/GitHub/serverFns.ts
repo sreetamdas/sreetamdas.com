@@ -1,13 +1,12 @@
 import { type Endpoints } from "@octokit/types";
 import { createServerFn } from "@tanstack/react-start";
-import { env } from "cloudflare:workers";
 
 import { DEFAULT_REPO } from "@/config";
 import { GITHUB_API_BASE_URL, getGitHubHeaders, getGitHubToken } from "@/lib/domains/GitHub/shared";
 import { type RepoContributor } from "@/lib/domains/GitHub/types";
 
 export const fetchGitHubStats = createServerFn({ method: "GET" }).handler(async () => {
-	const token = getGitHubToken(env);
+	const token = getGitHubToken();
 	const request = await fetch(
 		`${GITHUB_API_BASE_URL}/repos/${DEFAULT_REPO.owner}/${DEFAULT_REPO.repo}`,
 		{
@@ -27,7 +26,7 @@ export const fetchGitHubStats = createServerFn({ method: "GET" }).handler(async 
 });
 
 export const fetchRepoContributors = createServerFn({ method: "GET" }).handler(async () => {
-	const token = getGitHubToken(env);
+	const token = getGitHubToken();
 	const request = await fetch(
 		`${GITHUB_API_BASE_URL}/repos/${DEFAULT_REPO.owner}/${DEFAULT_REPO.repo}/contributors`,
 		{

@@ -25,24 +25,26 @@ describe("fetchLikeCount", () => {
 			},
 		};
 
-		expect(
-			await fetchLikeCount({ slug: "/blog/forged-post", disabled: false }, undefined, deps),
-		).toEqual({ likes: 0, hasLiked: false });
+		expect(await fetchLikeCount({ slug: "/blog/forged-post", disabled: false }, deps)).toEqual({
+			likes: 0,
+			hasLiked: false,
+		});
 		expect(calls).toEqual([]);
 	});
 
 	test("returns zeros when the Cloudflare env is unavailable", async () => {
-		expect(
-			await fetchLikeCount({ slug: "/blog/chameleon-text", disabled: false }, undefined),
-		).toEqual({ likes: 0, hasLiked: false });
+		expect(await fetchLikeCount({ slug: "/blog/chameleon-text", disabled: false })).toEqual({
+			likes: 0,
+			hasLiked: false,
+		});
 	});
 
 	test("returns the dependency result for known slugs", async () => {
 		const calls: string[] = [];
 		const fakeDb = {};
 		const deps = {
-			getDb: (env: CloudflareEnv | undefined) => {
-				calls.push(`getDb:${env === undefined ? "undefined" : "env"}`);
+			getDb: () => {
+				calls.push("getDb");
 				return fakeDb;
 			},
 			getLikes: async (db: object, slug: string, visitorHash?: string) => {
@@ -53,18 +55,19 @@ describe("fetchLikeCount", () => {
 				calls.push("incrementLikes");
 				return { likes: 5, hasLiked: true };
 			},
-			getVisitorHash: async (env: CloudflareEnv | undefined, normalizedSlug: string) => {
-				calls.push(`getVisitorHash:${env === undefined ? "undefined" : "env"}:${normalizedSlug}`);
+			getVisitorHash: async (normalizedSlug: string) => {
+				calls.push(`getVisitorHash:${normalizedSlug}`);
 				return "visitor-hash";
 			},
 		};
 
-		expect(
-			await fetchLikeCount({ slug: "/blog/chameleon-text", disabled: false }, undefined, deps),
-		).toEqual({ likes: 4, hasLiked: true });
+		expect(await fetchLikeCount({ slug: "/blog/chameleon-text", disabled: false }, deps)).toEqual({
+			likes: 4,
+			hasLiked: true,
+		});
 		expect(calls).toEqual([
-			"getDb:undefined",
-			"getVisitorHash:undefined:/blog/chameleon-text",
+			"getDb",
+			"getVisitorHash:/blog/chameleon-text",
 			"getLikes:db:/blog/chameleon-text:visitor-hash",
 		]);
 	});
@@ -82,9 +85,10 @@ describe("fetchLikeCount", () => {
 			getVisitorHash: async () => "visitor-hash",
 		};
 
-		expect(
-			await fetchLikeCount({ slug: "/blog/chameleon-text", disabled: false }, undefined, deps),
-		).toEqual({ likes: 0, hasLiked: false });
+		expect(await fetchLikeCount({ slug: "/blog/chameleon-text", disabled: false }, deps)).toEqual({
+			likes: 0,
+			hasLiked: false,
+		});
 	});
 
 	test("normalizes trailing slashes before reading likes", async () => {
@@ -103,15 +107,16 @@ describe("fetchLikeCount", () => {
 				calls.push("incrementLikes");
 				return { likes: 7, hasLiked: true };
 			},
-			getVisitorHash: async (_env: CloudflareEnv | undefined, normalizedSlug: string) => {
+			getVisitorHash: async (normalizedSlug: string) => {
 				calls.push(`getVisitorHash:${normalizedSlug}`);
 				return "visitor-hash";
 			},
 		};
 
-		expect(
-			await fetchLikeCount({ slug: "/blog/chameleon-text/", disabled: false }, undefined, deps),
-		).toEqual({ likes: 6, hasLiked: false });
+		expect(await fetchLikeCount({ slug: "/blog/chameleon-text/", disabled: false }, deps)).toEqual({
+			likes: 6,
+			hasLiked: false,
+		});
 		expect(calls).toEqual([
 			"getDb",
 			"getVisitorHash:/blog/chameleon-text",
@@ -143,16 +148,18 @@ describe("incrementLikeCount", () => {
 			},
 		};
 
-		expect(
-			await incrementLikeCount({ slug: "/blog/forged-post", disabled: false }, undefined, deps),
-		).toEqual({ likes: 0, hasLiked: false });
+		expect(await incrementLikeCount({ slug: "/blog/forged-post", disabled: false }, deps)).toEqual({
+			likes: 0,
+			hasLiked: false,
+		});
 		expect(calls).toEqual([]);
 	});
 
 	test("returns zeros when the Cloudflare env is unavailable", async () => {
-		expect(
-			await incrementLikeCount({ slug: "/blog/chameleon-text", disabled: false }, undefined),
-		).toEqual({ likes: 0, hasLiked: false });
+		expect(await incrementLikeCount({ slug: "/blog/chameleon-text", disabled: false })).toEqual({
+			likes: 0,
+			hasLiked: false,
+		});
 	});
 
 	test("reads existing likes when disabled", async () => {
@@ -171,14 +178,14 @@ describe("incrementLikeCount", () => {
 				calls.push("incrementLikes");
 				return { likes: 5, hasLiked: true };
 			},
-			getVisitorHash: async (_env: CloudflareEnv | undefined, normalizedSlug: string) => {
+			getVisitorHash: async (normalizedSlug: string) => {
 				calls.push(`getVisitorHash:${normalizedSlug}`);
 				return "visitor-hash";
 			},
 		};
 
 		expect(
-			await incrementLikeCount({ slug: "/blog/chameleon-text", disabled: true }, undefined, deps),
+			await incrementLikeCount({ slug: "/blog/chameleon-text", disabled: true }, deps),
 		).toEqual({ likes: 4, hasLiked: true });
 		expect(calls).toEqual([
 			"getDb",
@@ -203,14 +210,14 @@ describe("incrementLikeCount", () => {
 				calls.push("incrementLikes");
 				return { likes: 5, hasLiked: true };
 			},
-			getVisitorHash: async (_env: CloudflareEnv | undefined, normalizedSlug: string) => {
+			getVisitorHash: async (normalizedSlug: string) => {
 				calls.push(`getVisitorHash:${normalizedSlug}`);
 				return undefined;
 			},
 		};
 
 		expect(
-			await incrementLikeCount({ slug: "/blog/chameleon-text", disabled: false }, undefined, deps),
+			await incrementLikeCount({ slug: "/blog/chameleon-text", disabled: false }, deps),
 		).toEqual({ likes: 4, hasLiked: false });
 		expect(calls).toEqual([
 			"getDb",
@@ -235,14 +242,14 @@ describe("incrementLikeCount", () => {
 				calls.push(`incrementLikes:${db === fakeDb ? "db" : "other"}:${slug}:${visitorHash}`);
 				return { likes: 5, hasLiked: true };
 			},
-			getVisitorHash: async (_env: CloudflareEnv | undefined, normalizedSlug: string) => {
+			getVisitorHash: async (normalizedSlug: string) => {
 				calls.push(`getVisitorHash:${normalizedSlug}`);
 				return "visitor-hash";
 			},
 		};
 
 		expect(
-			await incrementLikeCount({ slug: "/blog/chameleon-text", disabled: false }, undefined, deps),
+			await incrementLikeCount({ slug: "/blog/chameleon-text", disabled: false }, deps),
 		).toEqual({ likes: 5, hasLiked: true });
 		expect(calls).toEqual([
 			"getDb",
@@ -270,8 +277,8 @@ describe("incrementLikeCount", () => {
 		};
 		const data = { slug: "/blog/chameleon-text", disabled: false };
 
-		expect(await incrementLikeCount(data, undefined, deps)).toEqual({ likes: 1, hasLiked: true });
-		expect(await incrementLikeCount(data, undefined, deps)).toEqual({ likes: 1, hasLiked: true });
+		expect(await incrementLikeCount(data, deps)).toEqual({ likes: 1, hasLiked: true });
+		expect(await incrementLikeCount(data, deps)).toEqual({ likes: 1, hasLiked: true });
 		expect(seenLikes.size).toBe(1);
 	});
 });

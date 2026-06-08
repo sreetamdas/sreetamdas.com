@@ -75,7 +75,7 @@ export const Route = createFileRoute("/(api)/api/slides/session/$sessionId")({
 		handlers: {
 			GET: ({ request, params }) => {
 				return handleSlideSessionRequest(request, env.SLIDE_SESSIONS, params.sessionId, () =>
-					getAllowedPresenterEmail(request, env),
+					getAllowedPresenterEmail(request),
 				);
 			},
 		},

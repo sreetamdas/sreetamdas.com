@@ -3,9 +3,11 @@
  * public builds can use unauthenticated requests while private limits stay
  * available to Cloudflare Workers and static server functions.
  */
+import { env } from "cloudflare:workers";
+
 export const GITHUB_API_BASE_URL = "https://api.github.com";
 
-export function getGitHubToken(env: CloudflareEnv): string | undefined {
+export function getGitHubToken(): string | undefined {
 	return env.GITHUB_TOKEN || undefined;
 }
 

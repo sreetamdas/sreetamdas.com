@@ -1,5 +1,4 @@
 import { createServerFn } from "@tanstack/react-start";
-import { env } from "cloudflare:workers";
 
 import { getDb } from "@/db";
 import { getPageViews, upsertPageViews } from "@/lib/domains/PageViews";
@@ -12,7 +11,7 @@ export type PageViewCount = {
 };
 
 type ViewCountDeps<TDb> = {
-	getDb: (env: CloudflareEnv | undefined) => TDb;
+	getDb: () => TDb;
 	getPageViews: (db: TDb, slug: string) => Promise<PageViewCount>;
 	upsertPageViews: (db: TDb, slug: string) => Promise<PageViewCount>;
 };
@@ -30,39 +29,30 @@ export const fetchViewCountServerFn = createServerFn({
 		return validatePagePathnamePayload(data, "Invalid page views payload");
 	})
 	.handler(async ({ data }) => {
-		return fetchViewCount(data, env);
+		return fetchViewCount(data);
 	});
 
-export async function fetchViewCount(
-	data: PagePathnamePayload,
-	env: CloudflareEnv | undefined,
-): Promise<PageViewCount>;
+export async function fetchViewCount(data: PagePathnamePayload): Promise<PageViewCount>;
 export async function fetchViewCount<TDb>(
 	data: PagePathnamePayload,
-	env: CloudflareEnv | undefined,
 	deps: ViewCountDeps<TDb>,
 ): Promise<PageViewCount>;
 export async function fetchViewCount<TDb>(
 	data: PagePathnamePayload,
-	env: CloudflareEnv | undefined,
 	deps?: ViewCountDeps<TDb>,
 ): Promise<PageViewCount> {
 	const normalizedSlug = normalizePathname(data.slug);
 
 	try {
 		if (deps) {
-			const db = deps.getDb(env);
+			const db = deps.getDb();
 			if (data.disabled) {
 				return await deps.getPageViews(db, normalizedSlug);
 			}
 			return await deps.upsertPageViews(db, normalizedSlug);
 		}
 
-		if (!env) {
-			return { view_count: 0 };
-		}
-
-		const db = defaultViewCountDeps.getDb(env);
+		const db = defaultViewCountDeps.getDb();
 		if (data.disabled) {
 			return await defaultViewCountDeps.getPageViews(db, normalizedSlug);
 		}

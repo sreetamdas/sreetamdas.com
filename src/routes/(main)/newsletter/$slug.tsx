@@ -2,7 +2,6 @@ import { createFileRoute, notFound } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
 import { renderServerComponent } from "@tanstack/react-start/rsc";
 import { staticFunctionMiddleware } from "@tanstack/start-static-server-functions";
-import { env } from "cloudflare:workers";
 
 import { SITE_DESCRIPTION, SITE_TITLE_APPEND } from "@/config";
 import {
@@ -76,7 +75,7 @@ const getNewsletterEmailRenderable = createServerFn({
 	})
 	.handler(async ({ data }) => {
 		const { slug } = data;
-		const apiKey = getButtondownApiKey(env);
+		const apiKey = getButtondownApiKey();
 		const buttondown_api_emails_response = await fetchNewsletterEmails(apiKey);
 		const newsletter_email_by_slug = buttondown_api_emails_response.results.find(
 			(issue) => issue.slug === slug,

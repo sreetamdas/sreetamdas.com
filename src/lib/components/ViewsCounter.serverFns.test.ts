@@ -4,13 +4,13 @@ import { fetchViewCount } from "./ViewsCounter.serverFns";
 
 describe("fetchViewCount", () => {
 	test("returns zero when the Cloudflare env is unavailable", async () => {
-		expect(await fetchViewCount({ slug: "/about", disabled: false }, undefined)).toEqual({
+		expect(await fetchViewCount({ slug: "/about", disabled: false })).toEqual({
 			view_count: 0,
 		});
 	});
 
 	test("returns zero for disabled counters when the Cloudflare env is unavailable", async () => {
-		expect(await fetchViewCount({ slug: "/about", disabled: true }, undefined)).toEqual({
+		expect(await fetchViewCount({ slug: "/about", disabled: true })).toEqual({
 			view_count: 0,
 		});
 	});
@@ -30,7 +30,7 @@ describe("fetchViewCount", () => {
 			},
 		};
 
-		const result = await fetchViewCount({ slug: "/about/", disabled: false }, undefined, deps);
+		const result = await fetchViewCount({ slug: "/about/", disabled: false }, deps);
 
 		expect(result).toEqual({ view_count: 7 });
 		expect(calls).toEqual(["getDb", "/about"]);
@@ -50,7 +50,7 @@ describe("fetchViewCount", () => {
 			},
 		};
 
-		await fetchViewCount({ slug: "/", disabled: false }, undefined, deps);
+		await fetchViewCount({ slug: "/", disabled: false }, deps);
 
 		expect(receivedSlug).toBe("/");
 	});
@@ -64,7 +64,7 @@ describe("fetchViewCount", () => {
 			upsertPageViews: async () => ({ view_count: 99 }),
 		};
 
-		expect(await fetchViewCount({ slug: "/about", disabled: false }, undefined, deps)).toEqual({
+		expect(await fetchViewCount({ slug: "/about", disabled: false }, deps)).toEqual({
 			view_count: 0,
 		});
 	});
@@ -81,7 +81,7 @@ describe("fetchViewCount", () => {
 			},
 		};
 
-		expect(await fetchViewCount({ slug: "/about", disabled: false }, undefined, deps)).toEqual({
+		expect(await fetchViewCount({ slug: "/about", disabled: false }, deps)).toEqual({
 			view_count: 0,
 		});
 	});
@@ -104,7 +104,7 @@ describe("fetchViewCount", () => {
 			},
 		};
 
-		const result = await fetchViewCount({ slug: "/about/", disabled: true }, undefined, deps);
+		const result = await fetchViewCount({ slug: "/about/", disabled: true }, deps);
 
 		expect(result).toEqual({ view_count: 42 });
 		expect(calls).toEqual(["getDb", "read:/about"]);

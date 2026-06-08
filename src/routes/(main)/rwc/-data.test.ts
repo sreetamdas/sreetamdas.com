@@ -4,12 +4,12 @@ import { FALLBACK_RWC_BACKGROUND, loadRwcCodeSamples, resolveRwcEnv } from "./-d
 
 describe("resolveRwcEnv", () => {
 	test("reads GitHub settings from Cloudflare env", () => {
-		const env = {
+		const runtimeEnv = {
 			GITHUB_RWC_GIST_ID: "runtime_gist",
 			GITHUB_TOKEN: "runtime_token",
 		};
 
-		expect(resolveRwcEnv(env)).toEqual({
+		expect(resolveRwcEnv(runtimeEnv)).toEqual({
 			githubGistId: "runtime_gist",
 			githubToken: "runtime_token",
 		});

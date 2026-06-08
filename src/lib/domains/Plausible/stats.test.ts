@@ -1,13 +1,27 @@
-import { describe, expect, test } from "vitest";
+import { beforeEach, describe, expect, test, vi } from "vitest";
+
+type TestPlausibleEnv = Pick<Partial<CloudflareEnv>, "PLAUSIBLE_API_KEY" | "PLAUSIBLE_SITE_ID">;
+
+const cloudflare = vi.hoisted<{ env: TestPlausibleEnv }>(() => ({ env: {} }));
+
+vi.mock("cloudflare:workers", () => cloudflare);
 
 import { fetchPlausibleStats, getPlausibleApiKey, getPlausibleSiteId } from "./stats";
 
 describe("Plausible stats", () => {
+	beforeEach(() => {
+		setPlausibleEnv({});
+	});
+
 	test("reads supported runtime env names", () => {
-		expect(getPlausibleApiKey({ PLAUSIBLE_STATS_API_KEY: "stats_key" })).toBe("stats_key");
-		expect(getPlausibleApiKey({ PLAUSIBLE_API_KEY: "api_key" })).toBe("api_key");
-		expect(getPlausibleSiteId({ PLAUSIBLE_SITE_ID: "example.com" })).toBe("example.com");
-		expect(getPlausibleSiteId({})).toBe("sreetamdas.com");
+		setPlausibleEnv({ PLAUSIBLE_API_KEY: "api_key" });
+		expect(getPlausibleApiKey()).toBe("api_key");
+
+		setPlausibleEnv({ PLAUSIBLE_SITE_ID: "example.com" });
+		expect(getPlausibleSiteId()).toBe("example.com");
+
+		setPlausibleEnv({});
+		expect(getPlausibleSiteId()).toBe("sreetamdas.com");
 	});
 
 	test("returns a missing-config state without calling Plausible", async () => {
@@ -19,7 +33,8 @@ describe("Plausible stats", () => {
 		};
 
 		try {
-			const stats = await fetchPlausibleStats({ PLAUSIBLE_SITE_ID: "example.com" });
+			setPlausibleEnv({ PLAUSIBLE_SITE_ID: "example.com" });
+			const stats = await fetchPlausibleStats();
 
 			expect(fetchCalled).toBe(false);
 			expect(stats.status).toBe("missing-config");
@@ -124,13 +139,8 @@ describe("Plausible stats", () => {
 		};
 
 		try {
-			const stats = await fetchPlausibleStats(
-				{
-					PLAUSIBLE_API_KEY: "test_key",
-					PLAUSIBLE_SITE_ID: "example.com",
-				},
-				"91d",
-			);
+			setPlausibleEnv({ PLAUSIBLE_API_KEY: "test_key", PLAUSIBLE_SITE_ID: "example.com" });
+			const stats = await fetchPlausibleStats("91d");
 
 			expect(requestedBodies).toHaveLength(13);
 			expect(stats.status).toBe("ready");
@@ -170,7 +180,8 @@ describe("Plausible stats", () => {
 		globalThis.fetch = async () => new Response("nope", { status: 401 });
 
 		try {
-			const stats = await fetchPlausibleStats({ PLAUSIBLE_API_KEY: "bad_key" });
+			setPlausibleEnv({ PLAUSIBLE_API_KEY: "bad_key" });
+			const stats = await fetchPlausibleStats();
 
 			expect(stats.status).toBe("unavailable");
 			expect(stats.topPages).toEqual([]);
@@ -179,6 +190,11 @@ describe("Plausible stats", () => {
 		}
 	});
 });
+
+function setPlausibleEnv(value: TestPlausibleEnv) {
+	cloudflare.env.PLAUSIBLE_API_KEY = value.PLAUSIBLE_API_KEY;
+	cloudflare.env.PLAUSIBLE_SITE_ID = value.PLAUSIBLE_SITE_ID;
+}
 
 function parseJsonBody(body: BodyInit | null | undefined): unknown {
 	if (typeof body !== "string") {
