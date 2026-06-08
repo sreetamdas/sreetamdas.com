@@ -3,59 +3,20 @@ import { describe, expect, test } from "vitest";
 import { FALLBACK_RWC_BACKGROUND, loadRwcCodeSamples, resolveRwcEnv } from "./-data";
 
 describe("resolveRwcEnv", () => {
-	test("prefers runtime Cloudflare env over build env", () => {
-		const runtimeEnv = {
+	test("reads GitHub settings from Cloudflare env", () => {
+		const env = {
 			GITHUB_RWC_GIST_ID: "runtime_gist",
 			GITHUB_TOKEN: "runtime_token",
 		};
-		const buildEnv = {
-			GITHUB_RWC_GIST_ID: "build_gist",
-			GITHUB_TOKEN: "build_token",
-		};
 
-		expect(resolveRwcEnv(runtimeEnv, buildEnv, undefined)).toEqual({
+		expect(resolveRwcEnv(env)).toEqual({
 			githubGistId: "runtime_gist",
 			githubToken: "runtime_token",
 		});
 	});
 
-	test("falls back to build env during static generation", () => {
-		const buildEnv = {
-			GITHUB_RWC_GIST_ID: "build_gist",
-			GITHUB_TOKEN: "build_token",
-		};
-
-		expect(resolveRwcEnv(undefined, buildEnv, undefined)).toEqual({
-			githubGistId: "build_gist",
-			githubToken: "build_token",
-		});
-	});
-
-	test("falls back to public Vite env for gist id when runtime and build env are missing", () => {
-		const viteEnv = {
-			VITE_GITHUB_RWC_GIST_ID: "vite_gist",
-			VITE_GITHUB_TOKEN: "vite_token",
-		};
-
-		expect(resolveRwcEnv(undefined, undefined, viteEnv)).toEqual({
-			githubGistId: "vite_gist",
-			githubToken: undefined,
-		});
-	});
-
-	test("does not read token values from public Vite env", () => {
-		const viteEnv = {
-			VITE_GITHUB_TOKEN: "vite_token",
-		};
-
-		expect(resolveRwcEnv(undefined, undefined, viteEnv)).toEqual({
-			githubGistId: undefined,
-			githubToken: undefined,
-		});
-	});
-
 	test("returns undefined gist id when env is missing", () => {
-		expect(resolveRwcEnv(undefined, undefined, undefined)).toEqual({
+		expect(resolveRwcEnv(undefined)).toEqual({
 			githubGistId: undefined,
 			githubToken: undefined,
 		});

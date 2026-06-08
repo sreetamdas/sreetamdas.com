@@ -1,6 +1,7 @@
 import { createFileRoute, ErrorComponent } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
 import { staticFunctionMiddleware } from "@tanstack/start-static-server-functions";
+import { env } from "cloudflare:workers";
 import { FiLink } from "react-icons/fi";
 
 import { SITE_DESCRIPTION, SITE_TITLE_APPEND } from "@/config";
@@ -14,9 +15,8 @@ import { loadRwcCodeSamples, resolveRwcEnv, type RWCSolution } from "./-data";
 
 const getHighlightedCode = createServerFn({ method: "GET" })
 	.middleware([staticFunctionMiddleware])
-	.handler(async ({ context }) => {
-		const buildEnv = typeof process === "undefined" ? undefined : process.env;
-		const { githubGistId, githubToken } = resolveRwcEnv(context.env, buildEnv, import.meta.env);
+	.handler(async () => {
+		const { githubGistId, githubToken } = resolveRwcEnv(env);
 
 		const result = await loadRwcCodeSamples({
 			githubGistId,
