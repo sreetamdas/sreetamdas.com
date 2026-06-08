@@ -6,12 +6,11 @@ import { SITE_DESCRIPTION, SITE_TITLE_APPEND } from "@/config";
 import { ViewsCounter } from "@/lib/components/ViewsCounter";
 import {
 	createEmptyStats,
-	fetchPlausibleStats,
-	getPlausibleSiteId,
+	DEFAULT_PLAUSIBLE_SITE_ID,
 	PLAUSIBLE_DATE_RANGES,
 	type PlausibleDateRange,
 	type PlausibleStats,
-} from "@/lib/domains/Plausible/stats";
+} from "@/lib/domains/Plausible/shared";
 import { canonicalUrl, defaultOgImageUrl } from "@/lib/seo";
 
 import {
@@ -69,6 +68,7 @@ const getStats = createServerFn({ method: "GET" })
 		return { period: parseDateRange(data.period) };
 	})
 	.handler(async ({ data }) => {
+		const { fetchPlausibleStats } = await import("@/lib/domains/Plausible/stats");
 		return fetchPlausibleStats(data.period);
 	});
 
@@ -81,7 +81,7 @@ function isPlausibleDateRange(value: string): value is PlausibleDateRange {
 }
 
 function createUnavailableStats(period: PlausibleDateRange): PlausibleStats {
-	return createEmptyStats("unavailable", getPlausibleSiteId(), period);
+	return createEmptyStats("unavailable", DEFAULT_PLAUSIBLE_SITE_ID, period);
 }
 
 function StatsPage() {

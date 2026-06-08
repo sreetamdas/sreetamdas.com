@@ -10,7 +10,7 @@ import {
 	type PlausibleStats,
 	type StatsBreakdownRow,
 	type StatsCountryRow,
-} from "@/lib/domains/Plausible/stats";
+} from "@/lib/domains/Plausible/shared";
 
 const dateRangeLabels: Record<PlausibleDateRange, string> = {
 	"7d": "7D",

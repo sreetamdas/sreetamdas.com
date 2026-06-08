@@ -2,7 +2,7 @@
 
 import WorldMap, { regions, type Data, type ISOCode } from "react-svg-worldmap";
 
-import type { StatsCountryRow } from "@/lib/domains/Plausible/stats";
+import type { StatsCountryRow } from "@/lib/domains/Plausible/shared";
 
 type StatsWorldMapProps = {
 	countries: Array<StatsCountryRow>;
