@@ -75,7 +75,7 @@ export const Route = createFileRoute("/(main)/blog/$slug")({
 });
 
 const getBlogRenderable = createServerFn({ method: "GET" })
-	.inputValidator((data) => {
+	.validator((data) => {
 		if (typeof data !== "object" || data === null || !("slug" in data)) {
 			throw new Error("Invalid blog slug payload");
 		}
