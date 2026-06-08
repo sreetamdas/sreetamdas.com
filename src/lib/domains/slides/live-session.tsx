@@ -6,15 +6,10 @@
  * viewers follow the presenter's slide/step, vote in slide polls, and send
  * lightweight reactions that briefly appear on the presenter's screen.
  */
-import { useServerFn } from "@tanstack/react-start";
 import { useCallback, useEffect, useMemo, useRef, useState, type FormEvent } from "react";
-import { FaRegCircleCheck, FaCloudflare, FaGoogle } from "react-icons/fa6";
+import { FaRegCircleCheck, FaGoogle } from "react-icons/fa6";
 
-import { handleGoogleLogin } from "@/lib/domains/auth/google";
-import {
-	startSocialSignInServerFn,
-	type SocialSignInProvider,
-} from "@/lib/domains/auth/server-fns";
+import { auth_client } from "@/lib/auth/client";
 import { SLIDE_REACTION_EMOJIS } from "@/lib/domains/slides/reactions";
 import { cn } from "@/lib/helpers/utils";
 
@@ -354,19 +349,11 @@ function MasterLiveControl({
 	const [question, setQuestion] = useState("");
 	const [options, setOptions] = useState("Yes,No");
 	const browserHref = useBrowserHref();
-	const startSocialSignIn = useServerFn(startSocialSignInServerFn);
-	const handleClickGoogleLogin = useServerFn(handleGoogleLogin);
 	const viewerLink = browserHref ? getViewerLink(sessionId, browserHref) : "";
-	const handleSocialSignIn = useCallback(
-		async (provider: SocialSignInProvider) => {
-			if (!browserHref) return;
-			const { url } = await startSocialSignIn({
-				data: { provider, return_url: browserHref },
-			});
-			globalThis.location.assign(url);
-		},
-		[browserHref, startSocialSignIn],
-	);
+
+	function handleGoogleSignin() {
+		auth_client.signIn.social({ provider: "google" });
+	}
 
 	function handleCreatePoll(event: FormEvent<HTMLFormElement>) {
 		event.preventDefault();
@@ -417,7 +404,7 @@ function MasterLiveControl({
 					</p>
 					<p className="m-0 flex items-center gap-2 pt-5 text-xs text-amber-50/85">
 						Sign in with:
-						<button
+						{/*<button
 							aria-label="Sign in with Cloudflare"
 							className="cursor-pointer border-0 bg-transparent p-0 text-2xl text-orange-400"
 							disabled={!browserHref}
@@ -425,12 +412,12 @@ function MasterLiveControl({
 							type="button"
 						>
 							<FaCloudflare />
-						</button>
+						</button>*/}
 						<button
 							aria-label="Sign in with Google"
 							className="cursor-pointer border-0 bg-transparent p-0 text-lg text-white"
 							disabled={!browserHref}
-							onClick={() => void handleSocialSignIn("google")}
+							onClick={handleGoogleSignin}
 							type="button"
 						>
 							<FaGoogle />

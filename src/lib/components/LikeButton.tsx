@@ -9,7 +9,7 @@ import {
 	fetchLikeCountServerFn,
 	incrementLikeServerFn,
 	type LikeCount,
-} from "@/lib/components/LikeButton.serverFns";
+} from "@/lib/components/LikeButton.server";
 import { cn, normalizePathname } from "@/lib/helpers/utils";
 
 type LikeButtonProps = {

@@ -1,13 +1,10 @@
 import { createServerFn } from "@tanstack/react-start";
-import { env } from "cloudflare:workers";
 import { allBlogPosts } from "content-collections";
 
-import { IS_DEV } from "@/config";
-import { getDb } from "@/db";
-import { getLikes, incrementLikes, type LikeCount } from "@/lib/domains/PageViews";
+import { type LikeCount } from "@/lib/domains/PageViews";
 import { normalizePathname } from "@/lib/helpers/utils";
 
-import { type PagePathnamePayload, validatePagePathnamePayload } from "./pageInteraction.serverFns";
+import { type PagePathnamePayload, validatePagePathnamePayload } from "./pageInteraction.server";
 
 export type { LikeCount } from "@/lib/domains/PageViews";
 
@@ -16,13 +13,6 @@ type LikeCountDeps<TDb> = {
 	getLikes: (db: TDb, slug: string, visitorHash?: string) => Promise<LikeCount>;
 	incrementLikes: (db: TDb, slug: string, visitorHash: string) => Promise<LikeCount>;
 	getVisitorHash: (normalizedSlug: string, clientIp?: string) => Promise<string | undefined>;
-};
-
-const defaultLikeCountDeps = {
-	getDb,
-	getLikes,
-	incrementLikes,
-	getVisitorHash,
 };
 
 const validBlogLikeSlugs = new Set(
@@ -34,8 +24,6 @@ const validBlogLikeSlugs = new Set(
 		return [normalizePathname(post.url ?? post.page_path)];
 	}),
 );
-let warnedAboutMissingLikesSalt = false;
-
 export const fetchLikeCountServerFn = createServerFn({
 	method: "GET",
 })
@@ -84,9 +72,8 @@ export async function fetchLikeCount<TDb>(
 			return await deps.getLikes(db, normalizedSlug, visitorHash);
 		}
 
-		const db = defaultLikeCountDeps.getDb();
-		const visitorHash = await defaultLikeCountDeps.getVisitorHash(normalizedSlug, clientIp);
-		return await defaultLikeCountDeps.getLikes(db, normalizedSlug, visitorHash);
+		const { fetchLikeCountFromDb } = await import("./LikeButton.data.server");
+		return await fetchLikeCountFromDb(normalizedSlug, clientIp);
 	} catch {
 		return { likes: 0, hasLiked: false };
 	}
@@ -122,33 +109,8 @@ export async function incrementLikeCount<TDb>(
 		return await deps.incrementLikes(db, normalizedSlug, visitorHash);
 	}
 
-	const db = defaultLikeCountDeps.getDb();
-	const visitorHash = await defaultLikeCountDeps.getVisitorHash(normalizedSlug, clientIp);
-	if (data.disabled || !visitorHash) {
-		return await defaultLikeCountDeps.getLikes(db, normalizedSlug, visitorHash);
-	}
-	return await defaultLikeCountDeps.incrementLikes(db, normalizedSlug, visitorHash);
-}
-
-async function getVisitorHash(
-	normalizedSlug: string,
-	clientIp?: string,
-): Promise<string | undefined> {
-	const salt = env?.LIKES_IP_SALT;
-	const ip = clientIp;
-	if (!salt || !ip) {
-		if (!salt && !IS_DEV && !warnedAboutMissingLikesSalt) {
-			warnedAboutMissingLikesSalt = true;
-			// oxlint-disable-next-line no-console
-			console.warn("LIKES_IP_SALT is not configured; blog likes are read-only.");
-		}
-		return undefined;
-	}
-
-	const bytes = new TextEncoder().encode(`${salt}:${normalizedSlug}:${ip}`);
-	const hash = await crypto.subtle.digest("SHA-256", bytes);
-
-	return [...new Uint8Array(hash)].map((byte) => byte.toString(16).padStart(2, "0")).join("");
+	const { incrementLikeCountInDb } = await import("./LikeButton.data.server");
+	return await incrementLikeCountInDb(normalizedSlug, data.disabled, clientIp);
 }
 
 function getClientIpFromServerFnContext(ctx: unknown): string | undefined {

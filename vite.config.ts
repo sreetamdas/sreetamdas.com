@@ -28,6 +28,16 @@ function getPlugins(): Array<unknown> {
 		}),
 		contentCollections(),
 		tanstackStart({
+			importProtection: {
+				client: {
+					files: [
+						"**/src/db/index.ts",
+						"**/src/lib/auth/index.ts",
+						"**/src/lib/domains/Plausible/stats.ts",
+					],
+					specifiers: ["cloudflare:workers"],
+				},
+			},
 			rsc: {
 				enabled: true,
 			},

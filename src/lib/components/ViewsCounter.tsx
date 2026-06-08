@@ -5,10 +5,7 @@ import { useLocation } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 
 import { IS_CI, IS_DEV } from "@/config";
-import {
-	fetchViewCountServerFn,
-	type PageViewCount,
-} from "@/lib/components/ViewsCounter.serverFns";
+import { fetchViewCountServerFn, type PageViewCount } from "@/lib/components/ViewsCounter.server";
 import { cn, normalizePathname } from "@/lib/helpers/utils";
 
 type ViewsCounterProps = {

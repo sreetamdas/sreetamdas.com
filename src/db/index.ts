@@ -1,3 +1,4 @@
+import "@tanstack/react-start/server-only";
 import type { DrizzleD1Database } from "drizzle-orm/d1";
 
 import { env } from "cloudflare:workers";

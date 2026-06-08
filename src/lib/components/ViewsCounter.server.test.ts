@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vitest";
 
-import { fetchViewCount } from "./ViewsCounter.serverFns";
+import { fetchViewCount } from "./ViewsCounter.server";
 
 describe("fetchViewCount", () => {
 	test("returns zero when the Cloudflare env is unavailable", async () => {

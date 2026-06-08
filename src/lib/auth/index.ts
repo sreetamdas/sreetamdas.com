@@ -1,6 +1,8 @@
+import "@tanstack/react-start/server-only";
 import { drizzleAdapter } from "@better-auth/drizzle-adapter";
 import { betterAuth } from "better-auth";
 import { genericOAuth } from "better-auth/plugins";
+import { tanstackStartCookies } from "better-auth/tanstack-start";
 import { env } from "cloudflare:workers";
 
 import { IS_DEV } from "@/config";
@@ -33,7 +35,7 @@ export function getAuth() {
 	const google_oauth_config = getGoogleOAuthConfig();
 
 	return betterAuth({
-		baseURL: `${siteUrl}/api/auth`,
+		// baseURL: `${siteUrl}/api/auth`,
 		secret: env.BETTER_AUTH_SECRET,
 		database: drizzleAdapter(getDb(), {
 			provider: "sqlite",
@@ -51,8 +53,9 @@ export function getAuth() {
 					genericOAuth({
 						config: [cloudflare_oauth_config],
 					}),
+					tanstackStartCookies(),
 				]
-			: [],
+			: [tanstackStartCookies()],
 		trustedOrigins: [siteUrl],
 	});
 }

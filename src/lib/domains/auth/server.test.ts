@@ -6,7 +6,7 @@ import {
 	resolveCallbackURL,
 	startSocialSignIn,
 	validateSocialSignInRequest,
-} from "./server-fns";
+} from "./server";
 
 describe("resolveCallbackURL", () => {
 	const site_url = "https://sreetamdas.com";

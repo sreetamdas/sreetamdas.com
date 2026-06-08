@@ -1,3 +1,4 @@
+import "@tanstack/react-start/server-only";
 /**
  * Server-only Plausible Stats API integration for the public /stats page. It
  * keeps the API key in runtime env, validates the small subset of v2 query

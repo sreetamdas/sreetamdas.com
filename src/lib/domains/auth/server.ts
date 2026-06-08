@@ -73,7 +73,7 @@ export const startSocialSignInServerFn = createServerFn({ method: "POST" })
 		return { url: sign_in_result.url };
 	});
 
-export function handleSocialLoginRequest(
+export async function handleSocialLoginRequest(
 	request: Request,
 	provider: SocialSignInProvider,
 ): Promise<Response> {

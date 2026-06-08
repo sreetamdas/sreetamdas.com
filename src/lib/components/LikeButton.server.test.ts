@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vitest";
 
-import { fetchLikeCount, incrementLikeCount } from "./LikeButton.serverFns";
+import { fetchLikeCount, incrementLikeCount } from "./LikeButton.server";
 
 describe("fetchLikeCount", () => {
 	test("returns zeros for unknown blog slugs without calling deps", async () => {

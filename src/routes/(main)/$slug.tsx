@@ -9,7 +9,7 @@ import { RepoContributors } from "@/lib/components/GitHub/RepoContributors";
 import { MDXContent } from "@/lib/components/MDX";
 import { ViewsCounter } from "@/lib/components/ViewsCounter";
 import { shouldServeRootPage } from "@/lib/content/visibility";
-import { fetchRepoContributors } from "@/lib/domains/GitHub/serverFns";
+import { fetchRepoContributors } from "@/lib/domains/GitHub/server";
 import { type RepoContributor } from "@/lib/domains/GitHub/types";
 import { canonicalUrl, defaultOgImageUrl } from "@/lib/seo";
 
@@ -63,7 +63,7 @@ export const Route = createFileRoute("/(main)/$slug")({
 });
 
 const getRootPageRenderable = createServerFn({ method: "GET" })
-	.inputValidator((data) => parseSlugPayload(data))
+	.validator((data) => parseSlugPayload(data))
 	.handler(async ({ data }) => {
 		const post = rootPages.find((page) => page.page_slug === data.slug);
 

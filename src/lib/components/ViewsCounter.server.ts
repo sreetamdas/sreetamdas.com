@@ -1,10 +1,8 @@
 import { createServerFn } from "@tanstack/react-start";
 
-import { getDb } from "@/db";
-import { getPageViews, upsertPageViews } from "@/lib/domains/PageViews";
 import { normalizePathname } from "@/lib/helpers/utils";
 
-import { type PagePathnamePayload, validatePagePathnamePayload } from "./pageInteraction.serverFns";
+import { type PagePathnamePayload, validatePagePathnamePayload } from "./pageInteraction.server";
 
 export type PageViewCount = {
 	view_count: number;
@@ -14,12 +12,6 @@ type ViewCountDeps<TDb> = {
 	getDb: () => TDb;
 	getPageViews: (db: TDb, slug: string) => Promise<PageViewCount>;
 	upsertPageViews: (db: TDb, slug: string) => Promise<PageViewCount>;
-};
-
-const defaultViewCountDeps = {
-	getDb,
-	getPageViews,
-	upsertPageViews,
 };
 
 export const fetchViewCountServerFn = createServerFn({
@@ -52,11 +44,8 @@ export async function fetchViewCount<TDb>(
 			return await deps.upsertPageViews(db, normalizedSlug);
 		}
 
-		const db = defaultViewCountDeps.getDb();
-		if (data.disabled) {
-			return await defaultViewCountDeps.getPageViews(db, normalizedSlug);
-		}
-		return await defaultViewCountDeps.upsertPageViews(db, normalizedSlug);
+		const { fetchViewCountFromDb } = await import("./ViewsCounter.data.server");
+		return await fetchViewCountFromDb(normalizedSlug, data.disabled);
 	} catch {
 		return { view_count: 0 };
 	}

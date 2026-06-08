@@ -7,7 +7,7 @@ import { FaRegStar } from "react-icons/fa";
 import { VscRepoForked } from "react-icons/vsc";
 
 import { LiveViewersBadge } from "@/lib/components/LiveViewersBadge";
-import { fetchGitHubStats } from "@/lib/domains/GitHub/serverFns";
+import { fetchGitHubStats } from "@/lib/domains/GitHub/server";
 import { cn } from "@/lib/helpers/utils";
 
 /**
