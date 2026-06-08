@@ -7,7 +7,6 @@ import { isEmpty, isUndefined } from "lodash-es";
 
 import { ImgurClient, type KeebDetails } from "@/lib/domains/Imgur";
 import { NotionClient } from "@/lib/domains/Notion";
-import { readServerEnvString } from "@/lib/helpers/utils";
 
 export type KeebDetailsFromNotion = Omit<KeebDetails, "image"> & {
 	image: Omit<KeebDetails["image"], "height" | "width">;
@@ -18,10 +17,10 @@ const propertiesToRetrieve = ["Name", "Type", "Image"];
 export async function getKeebsFromNotion(
 	env: CloudflareEnv,
 ): Promise<Array<KeebDetails | KeebDetailsFromNotion>> {
-	const keebsDatabaseId = readServerEnvString(env, ["NOTION_KEEBS_PAGE_ID"]);
-	const notionToken = readServerEnvString(env, ["NOTION_TOKEN"]);
-	const imgurApiClientId = readServerEnvString(env, ["IMGUR_API_CLIENT_ID"]);
-	const imgurKeebsAlbumHash = readServerEnvString(env, ["IMGUR_KEEBS_ALBUM_HASH"]);
+	const keebsDatabaseId = env.NOTION_KEEBS_PAGE_ID;
+	const notionToken = env.NOTION_TOKEN;
+	const imgurApiClientId = env.IMGUR_API_CLIENT_ID;
+	const imgurKeebsAlbumHash = env.IMGUR_KEEBS_ALBUM_HASH;
 
 	if (isUndefined(keebsDatabaseId) || isEmpty(keebsDatabaseId)) {
 		return [];

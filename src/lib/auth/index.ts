@@ -6,7 +6,6 @@ import { env } from "cloudflare:workers";
 import { IS_DEV } from "@/config";
 import { getDb } from "@/db";
 import * as schema from "@/db/schema";
-import { readServerEnvString } from "@/lib/helpers/utils";
 
 const DEFAULT_SITE_URL = "https://sreetamdas.com";
 const DEFAULT_CLOUDFLARE_AUTHORIZATION_URL = "https://dash.cloudflare.com/oauth2/auth";
@@ -29,9 +28,9 @@ type CloudflareUserResponse = {
 };
 
 export function getAuth() {
-	const siteUrl = getSiteUrl(env);
-	const cloudflare_oauth_config = getCloudflareOAuthConfig(env);
-	const google_oauth_config = getGoogleOAuthConfig(env);
+	const siteUrl = getSiteUrl();
+	const cloudflare_oauth_config = getCloudflareOAuthConfig();
+	const google_oauth_config = getGoogleOAuthConfig();
 
 	return betterAuth({
 		baseURL: `${siteUrl}/api/auth`,
@@ -69,7 +68,7 @@ export async function getAllowedPresenterEmail(request: Request): Promise<string
 }
 
 export function isAllowedPresenterEmail(email: string): boolean {
-	const allowedEmails = parseAllowedPresenterEmails(env.SLIDE_PRESENTER_EMAILS);
+	const allowedEmails = parseAllowedPresenterEmails(env?.SLIDE_PRESENTER_EMAILS);
 	return allowedEmails.has(email.trim().toLowerCase());
 }
 
@@ -82,20 +81,20 @@ export function parseAllowedPresenterEmails(value: string | undefined): Set<stri
 	);
 }
 
-export function getSiteUrl(env: object | undefined): string {
-	return readServerEnvString(env, ["SITE_URL", "VITE_SITE_URL"]) ?? DEFAULT_SITE_URL;
+export function getSiteUrl(): string {
+	return env.VITE_SITE_URL || DEFAULT_SITE_URL;
 }
 
-export function getAuthSecret(env: object | undefined, isDev = IS_DEV): string {
-	const secret = readServerEnvString(env, ["BETTER_AUTH_SECRET"]);
+export function getAuthSecret(isDev = IS_DEV): string {
+	const secret = env.BETTER_AUTH_SECRET;
 	if (secret) return secret;
 	if (isDev) return "dev-only-better-auth-secret-change-me";
 	throw new Error("BETTER_AUTH_SECRET must be set in production");
 }
 
-function getCloudflareOAuthConfig(env: object | undefined) {
-	const clientId = readServerEnvString(env, ["CLOUDFLARE_OAUTH_CLIENT_ID"]);
-	const clientSecret = readServerEnvString(env, ["CLOUDFLARE_OAUTH_CLIENT_SECRET"]);
+function getCloudflareOAuthConfig() {
+	const clientId = env.CLOUDFLARE_OAUTH_CLIENT_ID;
+	const clientSecret = env.CLOUDFLARE_OAUTH_CLIENT_SECRET;
 
 	if (!clientId || !clientSecret) {
 		return undefined;
@@ -105,25 +104,18 @@ function getCloudflareOAuthConfig(env: object | undefined) {
 		providerId: "cloudflare",
 		clientId,
 		clientSecret,
-		authorizationUrl:
-			readServerEnvString(env, ["CLOUDFLARE_OAUTH_AUTHORIZATION_URL"]) ??
-			DEFAULT_CLOUDFLARE_AUTHORIZATION_URL,
-		tokenUrl:
-			readServerEnvString(env, ["CLOUDFLARE_OAUTH_TOKEN_URL"]) ?? DEFAULT_CLOUDFLARE_TOKEN_URL,
-		scopes: parseOAuthScopes(readServerEnvString(env, ["CLOUDFLARE_OAUTH_SCOPES"])),
+		authorizationUrl: DEFAULT_CLOUDFLARE_AUTHORIZATION_URL,
+		tokenUrl: DEFAULT_CLOUDFLARE_TOKEN_URL,
+		scopes: DEFAULT_CLOUDFLARE_SCOPES,
 		authentication: "post" as const,
 		getUserInfo: async (tokens: { accessToken?: string }) => {
 			if (!tokens.accessToken) return null;
 
-			const response = await fetch(
-				readServerEnvString(env, ["CLOUDFLARE_OAUTH_USER_INFO_URL"]) ??
-					DEFAULT_CLOUDFLARE_USER_INFO_URL,
-				{
-					headers: {
-						Authorization: `Bearer ${tokens.accessToken}`,
-					},
+			const response = await fetch(DEFAULT_CLOUDFLARE_USER_INFO_URL, {
+				headers: {
+					Authorization: `Bearer ${tokens.accessToken}`,
 				},
-			);
+			});
 
 			if (!response.ok) return null;
 
@@ -147,12 +139,9 @@ function getCloudflareOAuthConfig(env: object | undefined) {
 	};
 }
 
-function getGoogleOAuthConfig(env: object | undefined) {
-	const client_id = readServerEnvString(env, ["GOOGLE_CLIENT_ID", "GOOGLE_OAUTH_CLIENT_ID"]);
-	const client_secret = readServerEnvString(env, [
-		"GOOGLE_CLIENT_SECRET",
-		"GOOGLE_OAUTH_CLIENT_SECRET",
-	]);
+function getGoogleOAuthConfig() {
+	const client_id = env.GOOGLE_OAUTH_CLIENT_ID;
+	const client_secret = env.GOOGLE_OAUTH_CLIENT_SECRET;
 
 	if (!client_id || !client_secret) {
 		return undefined;
@@ -162,14 +151,6 @@ function getGoogleOAuthConfig(env: object | undefined) {
 		clientId: client_id,
 		clientSecret: client_secret,
 	};
-}
-
-function parseOAuthScopes(value: string | undefined): Array<string> {
-	const scopes = (value ?? "")
-		.split(/[\s,]+/)
-		.map((scope) => scope.trim())
-		.filter((scope) => scope.length > 0);
-	return scopes.length > 0 ? scopes : DEFAULT_CLOUDFLARE_SCOPES;
 }
 
 function isCloudflareUserResponse(value: unknown): value is CloudflareUserResponse {

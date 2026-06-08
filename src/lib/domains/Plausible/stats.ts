@@ -4,10 +4,14 @@
  * responses this site renders, and returns a safe unavailable state when
  * analytics credentials are missing or Plausible is unreachable.
  */
-import { readServerEnvString } from "@/lib/helpers/utils";
-
 const PLAUSIBLE_QUERY_URL = "https://plausible.io/api/v2/query";
 const DEFAULT_PLAUSIBLE_SITE_ID = "sreetamdas.com";
+
+type PlausibleEnv = {
+	PLAUSIBLE_API_KEY?: string;
+	PLAUSIBLE_SITE_ID?: string;
+	PLAUSIBLE_STATS_API_KEY?: string;
+};
 
 type PlausibleQueryMetric =
 	| "visitors"
@@ -103,16 +107,16 @@ export type StatsCountryRow = StatsBreakdownRow & {
 	code: string;
 };
 
-export function getPlausibleApiKey(env: object | undefined): string | undefined {
-	return readServerEnvString(env, ["PLAUSIBLE_API_KEY", "PLAUSIBLE_STATS_API_KEY"]);
+export function getPlausibleApiKey(env: PlausibleEnv | undefined): string | undefined {
+	return env?.PLAUSIBLE_API_KEY || env?.PLAUSIBLE_STATS_API_KEY;
 }
 
-export function getPlausibleSiteId(env: object | undefined): string {
-	return readServerEnvString(env, ["PLAUSIBLE_SITE_ID"]) ?? DEFAULT_PLAUSIBLE_SITE_ID;
+export function getPlausibleSiteId(env: PlausibleEnv | undefined): string {
+	return env?.PLAUSIBLE_SITE_ID || DEFAULT_PLAUSIBLE_SITE_ID;
 }
 
 export async function fetchPlausibleStats(
-	env: object | undefined,
+	env: PlausibleEnv | undefined,
 	dateRange: PlausibleDateRange = "30d",
 ): Promise<PlausibleStats> {
 	const apiKey = getPlausibleApiKey(env);

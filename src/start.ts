@@ -7,6 +7,7 @@
  * to satisfy Start's request handler contract.
  */
 import { createCsrfMiddleware, createMiddleware, createStart } from "@tanstack/react-start";
+import { env } from "cloudflare:workers";
 
 declare module "@tanstack/react-router" {
 	interface Register {
@@ -18,9 +19,6 @@ declare module "@tanstack/react-router" {
 	}
 }
 const cloudflareContextMiddleware = createMiddleware().server(async ({ next }) => {
-	const workersModule = "cloudflare:workers";
-	const { env } = await import(/* @vite-ignore */ workersModule);
-
 	return next({
 		context: { env },
 	});
