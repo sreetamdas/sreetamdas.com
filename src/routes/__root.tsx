@@ -144,7 +144,7 @@ function RootErrorComponent({ error, reset }: { error: Error; reset: () => void 
 			<main className="mx-auto grid min-h-[60vh] max-w-3xl place-items-center px-6 py-16">
 				<section className="grid gap-4 text-center">
 					<h1 className="font-serif text-4xl font-bold tracking-tight">Something went wrong</h1>
-					<p className="text-foreground/70 text-sm">This error has been reported.</p>
+					<p className="text-sm text-foreground/70">This error has been reported.</p>
 					<div className="flex items-center justify-center gap-4">
 						<button
 							type="button"
@@ -169,7 +169,7 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
 			<head>
 				<HeadContent />
 			</head>
-			<body className="bg-background text-foreground selection:bg-secondary selection:text-background min-h-screen">
+			<body className="min-h-screen bg-background text-foreground selection:bg-secondary selection:text-background">
 				{children}
 				<Scripts />
 			</body>

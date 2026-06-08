@@ -47,7 +47,7 @@ export const LinkAnchor = ({ id }: LinkAnchorProp) => (
 	<LinkTo
 		href={`#${id}`}
 		replaceClasses
-		className="text-primary focus-visible:outline-secondary absolute translate-x-[-125%] translate-y-2 opacity-0 transition-opacity group-hover:opacity-75 focus-visible:opacity-75 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-dashed max-md:hidden"
+		className="absolute translate-x-[-125%] translate-y-2 text-primary opacity-0 transition-opacity group-hover:opacity-75 focus-visible:opacity-75 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-secondary focus-visible:outline-dashed max-md:hidden"
 	>
 		<FiLink aria-label={id} />
 	</LinkTo>
@@ -111,7 +111,7 @@ export const UnorderedList = ({
 					>
 						<FaLongArrowAltRight
 							aria-label="marker"
-							className={cn("text-primary mt-1 mr-2.5", markClasses)}
+							className={cn("mt-1 mr-2.5 text-primary", markClasses)}
 						/>
 						<span className="shrink grow basis-0 [&>ul]:my-0 [&>ul>li]:m-0">
 							{/* @ts-expect-error child props is not unknown */}
@@ -140,7 +140,7 @@ export const Code = ({ children, className, ...props }: HTMLAttributes<HTMLSpanE
 export const Gradient = ({ children, className }: HTMLAttributes<HTMLSpanElement>) => (
 	<span
 		className={cn(
-			"from-primary to-secondary w-fit bg-linear-to-r box-decoration-slice bg-clip-text text-transparent",
+			"w-fit bg-linear-to-r from-primary to-secondary box-decoration-slice bg-clip-text text-transparent",
 			className,
 		)}
 	>

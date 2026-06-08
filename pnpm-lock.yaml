@@ -209,6 +209,9 @@ importers:
       drizzle-kit:
         specifier: 1.0.0-rc.3
         version: 1.0.0-rc.3
+      oxlint-tailwindcss:
+        specifier: ^1.2.0
+        version: 1.2.0(@oxlint/plugins@1.61.0)
       tailwindcss:
         specifier: ^4.3.0
         version: 4.3.0
@@ -3970,6 +3973,12 @@ packages:
         optional: true
       vite-plus:
         optional: true
+
+  oxlint-tailwindcss@1.2.0:
+    resolution: {integrity: sha512-qUAguxH9aPmzQI3GyDwqqKqxXv6U/QrxohKnF9s1dKvv2x/3mSwOQajT1+ZvCw9DFBVeMbXGagMBoe5v5nhl0Q==}
+    engines: {node: '>=20'}
+    peerDependencies:
+      '@oxlint/plugins': '>=1.43.0'
 
   oxlint-tsgolint@0.23.0:
     resolution: {integrity: sha512-3mBv3CoPbh8dFbzfDGIWa2ytZjn2v+3EX4aKRXjIhsoGFzG8GCjfRirz3rwZf1wYbZzsNLTSgpw8VjQuWdp/jA==}
@@ -8220,6 +8229,12 @@ snapshots:
       '@oxfmt/binding-win32-ia32-msvc': 0.52.0
       '@oxfmt/binding-win32-x64-msvc': 0.52.0
       vite-plus: 0.1.24(@opentelemetry/api@1.9.1)(@types/node@25.9.2)(esbuild@0.28.0)(jiti@2.7.0)(tsx@4.22.4)(typescript@6.0.3)(vite@8.0.11(@types/node@25.9.2)(esbuild@0.28.0)(jiti@2.7.0)(tsx@4.22.4)(yaml@2.9.0))(yaml@2.9.0)
+
+  oxlint-tailwindcss@1.2.0(@oxlint/plugins@1.61.0):
+    dependencies:
+      '@oxlint/plugins': 1.61.0
+      '@tailwindcss/node': 4.3.0
+      tailwindcss: 4.3.0
 
   oxlint-tsgolint@0.23.0:
     optionalDependencies:

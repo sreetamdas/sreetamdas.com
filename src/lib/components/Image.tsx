@@ -18,7 +18,7 @@ export const Image = (props: ImageProps) => {
 	return (
 		<span
 			className={cn(
-				"[&_img]:rounded-global flex justify-center [&_img]:h-auto [&_img]:w-full",
+				"flex justify-center [&_img]:h-auto [&_img]:w-full [&_img]:rounded-global",
 				className,
 			)}
 		>

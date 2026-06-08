@@ -76,7 +76,7 @@ function KeebsList({ keebs }: { keebs: Array<KeebDetails | KeebDetailsFromNotion
 								{tags.map((tag) => (
 									<span
 										key={tag.name}
-										className="rounded-global bg-primary text-background px-2 py-0 font-mono text-sm"
+										className="rounded-global bg-primary px-2 py-0 font-mono text-sm text-background"
 									>
 										{tag.name}
 									</span>

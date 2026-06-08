@@ -16,7 +16,7 @@ export default function PureRouteGroupError({ error, reset }: { error: Error; re
 				You&apos;re in the <code>/foobar</code> route
 			</p>
 			<button
-				className="link-base text-foreground hover:text-primary text-2xl"
+				className="link-base text-2xl text-foreground hover:text-primary"
 				onClick={() => reset()}
 				type="button"
 			>

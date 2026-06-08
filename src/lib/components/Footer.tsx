@@ -65,7 +65,7 @@ export const GitHubStats = () => {
 		<div className="grid grid-cols-[max-content_max-content] justify-center gap-4 py-2.5">
 			<a
 				href="https://github.com/sreetamdas/sreetamdas.com/stargazers"
-				className="link-base text-foreground hover:text-primary flex w-max items-center gap-1 transition-[color] hover:no-underline"
+				className="flex w-max items-center gap-1 link-base text-foreground transition-[color] hover:text-primary hover:no-underline"
 			>
 				<span className="leading-4">
 					<FaRegStar title="star" aria-label="star" className="h-[18px] w-[18px] text-current" />
@@ -74,7 +74,7 @@ export const GitHubStats = () => {
 			</a>
 			<a
 				href="https://github.com/sreetamdas/sreetamdas.com/network/members"
-				className="link-base text-foreground hover:text-primary flex w-max items-center gap-1 transition-[color] hover:no-underline"
+				className="flex w-max items-center gap-1 link-base text-foreground transition-[color] hover:text-primary hover:no-underline"
 			>
 				<VscRepoForked title="fork" aria-label="fork" className="h-[18px] w-[18px] text-current" />
 				<span className={isLoading ? "animate-pulse" : ""}>{data?.forks ?? "…"}</span>

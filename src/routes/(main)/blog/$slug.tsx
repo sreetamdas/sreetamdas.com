@@ -124,7 +124,7 @@ function RouteComponent() {
 			>
 				<Gradient>{post.title}</Gradient>
 			</h1>
-			<p className="text-foreground/60 pb-20 text-sm">
+			<p className="pb-20 text-sm text-foreground/60">
 				{new Date(post.published_at).toLocaleDateString("en-US", {
 					year: "numeric",
 					month: "long",

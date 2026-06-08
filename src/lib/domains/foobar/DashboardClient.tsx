@@ -57,7 +57,7 @@ export const FoobarDashboard = ({ completed_page }: FoobarSchrodingerProps) => {
 		<>
 			<UnlockedAchievementBanner completed_page={completed_page} />
 			{IS_DEV && (
-				<pre className="rounded-global bg-foreground/10 dark:bg-foreground/20 my-5 p-6 font-mono text-sm transition-colors">
+				<pre className="my-5 rounded-global bg-foreground/10 p-6 font-mono text-sm transition-colors dark:bg-foreground/20">
 					<h2 className="text-4xl font-bold">DEV</h2>
 					{JSON.stringify(foobar_data, null, 2)}
 				</pre>
@@ -69,7 +69,7 @@ export const FoobarDashboard = ({ completed_page }: FoobarSchrodingerProps) => {
 			<LinkTo
 				href="/stats"
 				replaceClasses
-				className="rounded-global border-secondary bg-background text-foreground hover:bg-secondary hover:text-background my-6 inline-flex border-2 border-solid px-6 py-2 text-sm transition-[color,background-color]"
+				className="my-6 inline-flex rounded-global border-2 border-solid border-secondary bg-background px-6 py-2 text-sm text-foreground transition-[color,background-color] hover:bg-secondary hover:text-background"
 			>
 				View public site stats
 			</LinkTo>
@@ -105,15 +105,15 @@ const ResetFoobar = ({ handleClearFoobarData }: { handleClearFoobarData: () => v
 	<AlertDialogPrimitive.Root>
 		<AlertDialogPrimitive.Trigger asChild>
 			<button
-				className="rounded-global border-primary bg-background text-foreground hover:bg-primary hover:text-background border-2 border-solid px-6 py-1 text-sm transition-[color,background-color]"
+				className="rounded-global border-2 border-solid border-primary bg-background px-6 py-1 text-sm text-foreground transition-[color,background-color] hover:bg-primary hover:text-background"
 				type="button"
 			>
 				Clear everything and Restart
 			</button>
 		</AlertDialogPrimitive.Trigger>
 		<AlertDialogPrimitive.Portal>
-			<AlertDialogPrimitive.Overlay className="data-[state=open]:animate-overlayShow fixed inset-0 bg-slate-950/40" />
-			<AlertDialogPrimitive.Content className="rounded-global data-[state=open]:animate-contentShow fixed top-[50%] left-[50%] max-h-[85vh] w-[90vw] max-w-[500px] translate-x-[-50%] translate-y-[-50%] bg-white p-[25px] shadow-[hsl(206_22%_7%/35%)_0px_10px_38px_-10px,hsl(206_22%_7%/20%)_0px_10px_20px_-15px] focus:outline-none">
+			<AlertDialogPrimitive.Overlay className="fixed inset-0 bg-slate-950/40 data-[state=open]:animate-overlayShow" />
+			<AlertDialogPrimitive.Content className="fixed top-[50%] left-[50%] max-h-[85vh] w-[90vw] max-w-[500px] translate-x-[-50%] translate-y-[-50%] rounded-global bg-white p-[25px] shadow-[hsl(206_22%_7%/35%)_0px_10px_38px_-10px,hsl(206_22%_7%/20%)_0px_10px_20px_-15px] focus:outline-none data-[state=open]:animate-contentShow">
 				<AlertDialogPrimitive.Title className="m-0 text-[17px] font-medium text-slate-950">
 					Are you absolutely sure?
 				</AlertDialogPrimitive.Title>
@@ -125,7 +125,7 @@ const ResetFoobar = ({ handleClearFoobarData }: { handleClearFoobarData: () => v
 				<div className="flex justify-end gap-[25px]">
 					<AlertDialogPrimitive.Cancel asChild>
 						<button
-							className="rounded-global inline-flex h-[35px] items-center justify-center bg-zinc-100 px-[15px] leading-none font-medium text-zinc-500 outline-none hover:bg-zinc-200 focus:shadow-[0_0_0_2px] focus:shadow-zinc-300"
+							className="inline-flex h-[35px] items-center justify-center rounded-global bg-zinc-100 px-[15px] leading-none font-medium text-zinc-500 outline-none hover:bg-zinc-200 focus:shadow-[0_0_0_2px] focus:shadow-zinc-300"
 							type="button"
 						>
 							Cancel
@@ -133,7 +133,7 @@ const ResetFoobar = ({ handleClearFoobarData }: { handleClearFoobarData: () => v
 					</AlertDialogPrimitive.Cancel>
 					<AlertDialogPrimitive.Action asChild>
 						<button
-							className="rounded-global inline-flex h-[35px] items-center justify-center bg-red-100 px-[15px] leading-none font-medium text-red-700 outline-none hover:bg-red-200 focus:shadow-[0_0_0_2px] focus:shadow-red-300"
+							className="inline-flex h-[35px] items-center justify-center rounded-global bg-red-100 px-[15px] leading-none font-medium text-red-700 outline-none hover:bg-red-200 focus:shadow-[0_0_0_2px] focus:shadow-red-300"
 							onClick={handleClearFoobarData}
 							type="button"
 						>

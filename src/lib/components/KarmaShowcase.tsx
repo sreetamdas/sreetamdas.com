@@ -47,7 +47,7 @@ export const KarmaShowcase = ({ examples }: Props) => {
 					<div
 						key={color}
 						data-dark-theme={isDefaultTheme ? isDefaultTheme : undefined}
-						className="rounded-global text-foreground data-[dark-theme=true]:text-background grid h-28 w-20 place-content-center font-mono"
+						className="grid h-28 w-20 place-content-center rounded-global font-mono text-foreground data-[dark-theme=true]:text-background"
 						style={{ backgroundColor: color }}
 					>
 						{color}
@@ -79,18 +79,18 @@ export const KarmaShowcase = ({ examples }: Props) => {
 				</ul>
 			</div>
 			<div className="flex items-center justify-center">
-				<label htmlFor="theme-switch" className="text-foreground text-[15px] leading-none">
+				<label htmlFor="theme-switch" className="text-[15px] leading-none text-foreground">
 					Light mode
 				</label>
 				<SwitchPrimitive.Root
 					id="theme-switch"
 					checked={isDefaultTheme}
 					onCheckedChange={handleThemeToggle}
-					className="bg-primary relative mx-4 h-[25px] w-[42px] cursor-default rounded-full outline-none"
+					className="relative mx-4 h-[25px] w-[42px] cursor-default rounded-full bg-primary outline-none"
 				>
 					<SwitchPrimitive.Thumb className="block h-[21px] w-[21px] translate-x-0.5 rounded-full bg-white transition-transform duration-(--transition-duration) will-change-transform data-[state=checked]:translate-x-[19px]" />
 				</SwitchPrimitive.Root>
-				<label htmlFor="theme-switch" className="text-foreground text-[15px] leading-none">
+				<label htmlFor="theme-switch" className="text-[15px] leading-none text-foreground">
 					Dark mode
 				</label>
 			</div>
@@ -103,7 +103,7 @@ export const KarmaShowcase = ({ examples }: Props) => {
 							<h2 id={name.toLowerCase()} className="font-serif text-5xl font-bold tracking-tight">
 								{name}
 							</h2>
-							<span className="rounded-global h-auto w-full max-w-[95vw] sm:max-w-[75vw]">
+							<span className="h-auto w-full max-w-[95vw] rounded-global sm:max-w-[75vw]">
 								<Image
 									src={image.src}
 									alt={`Karma ${isDefaultTheme ? "" : "Light "}theme screenshot for ${name}`}

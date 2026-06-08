@@ -487,7 +487,7 @@ function MasterLiveControl({
 							onChange={(event) => setOptions(event.target.value)}
 						/>
 						<button
-							className="bg-primary text-background rounded-lg px-3 py-2 text-xs"
+							className="rounded-lg bg-primary px-3 py-2 text-xs text-background"
 							type="submit"
 						>
 							Start poll for this slide
@@ -563,7 +563,7 @@ function ViewerLiveButton({
 			<button
 				className={cn(
 					"rounded-full border border-white/15 bg-black/75 px-3 py-2 text-sm text-white shadow-xl backdrop-blur transition hover:bg-black/90",
-					poll ? "ring-primary ring-2" : "",
+					poll ? "ring-2 ring-primary" : "",
 				)}
 				onClick={() => setOpen(!open)}
 				type="button"
@@ -626,7 +626,7 @@ function PollPanel({
 							className={cn(
 								"relative overflow-hidden rounded-lg border border-white/15 px-3 py-2 text-left text-xs",
 								poll.open && role === "viewer" ? "hover:border-white/60" : "cursor-default",
-								option.id === poll.selectedOptionId ? "border-primary ring-primary/50 ring-1" : "",
+								option.id === poll.selectedOptionId ? "border-primary ring-1 ring-primary/50" : "",
 							)}
 							disabled={!poll.open || role === "master"}
 							key={option.id}
@@ -634,7 +634,7 @@ function PollPanel({
 							type="button"
 						>
 							<span
-								className="bg-primary/30 absolute inset-y-0 left-0"
+								className="absolute inset-y-0 left-0 bg-primary/30"
 								style={{ width: `${percent}%` }}
 							/>
 							<span className="relative flex justify-between gap-3">
@@ -642,7 +642,7 @@ function PollPanel({
 									{option.id === poll.selectedOptionId ? (
 										<FaRegCircleCheck
 											aria-label="Selected option"
-											className="text-primary text-sm"
+											className="text-sm text-primary"
 										/>
 									) : null}
 									<span>{option.label}</span>

@@ -102,7 +102,7 @@
 }
 
 @utility gradient {
-	@apply from-primary to-secondary bg-linear-to-r box-decoration-slice bg-clip-text text-transparent;
+	@apply bg-linear-to-r from-primary to-secondary box-decoration-slice bg-clip-text text-transparent;
 }
 
 @utility link-base {
@@ -166,16 +166,8 @@
 @keyframes enter {
 	from {
 		opacity: var(--tw-enter-opacity, 1);
-		transform: translate3d(
-				var(--tw-enter-translate-x, 0),
-				var(--tw-enter-translate-y, 0),
-				0
-			)
-			scale3d(
-				var(--tw-enter-scale, 1),
-				var(--tw-enter-scale, 1),
-				var(--tw-enter-scale, 1)
-			)
+		transform: translate3d(var(--tw-enter-translate-x, 0), var(--tw-enter-translate-y, 0), 0)
+			scale3d(var(--tw-enter-scale, 1), var(--tw-enter-scale, 1), var(--tw-enter-scale, 1))
 			rotate(var(--tw-enter-rotate, 0));
 	}
 }

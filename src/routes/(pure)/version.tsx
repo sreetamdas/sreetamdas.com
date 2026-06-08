@@ -27,12 +27,12 @@ function VersionPage() {
 
 	return (
 		<div className="px-2">
-			<div className="rounded-global border-primary mx-auto my-5 w-fit max-w-sm border-2 px-5 py-5 font-mono text-sm sm:max-w-lg">
+			<div className="mx-auto my-5 w-fit max-w-sm rounded-global border-2 border-primary px-5 py-5 font-mono text-sm sm:max-w-lg">
 				<h1 className="mb-4 text-2xl font-bold tracking-tight">Build Version</h1>
 
 				<dl className="space-y-3">
 					<div className="flex flex-col gap-1 sm:flex-row sm:items-baseline sm:gap-4">
-						<dt className="text-muted-foreground min-w-[100px] text-sm uppercase">Branch</dt>
+						<dt className="min-w-25 text-sm uppercase">Branch</dt>
 						<dd>
 							<a
 								href={branchLink}
@@ -46,7 +46,7 @@ function VersionPage() {
 					</div>
 
 					<div className="flex flex-col gap-1 sm:flex-row sm:items-baseline sm:gap-4">
-						<dt className="text-muted-foreground min-w-[100px] text-sm uppercase">Commit</dt>
+						<dt className="min-w-25 text-sm uppercase">Commit</dt>
 						<dd>
 							<a
 								href={commitLink}
@@ -60,7 +60,7 @@ function VersionPage() {
 					</div>
 
 					<div className="flex flex-col gap-1 sm:flex-row sm:items-baseline sm:gap-4">
-						<dt className="text-muted-foreground min-w-[100px] text-sm uppercase">Built</dt>
+						<dt className="min-w-25 text-sm uppercase">Built</dt>
 						<dd className="font-medium">{buildTime}</dd>
 					</div>
 				</dl>

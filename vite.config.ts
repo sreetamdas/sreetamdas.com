@@ -66,7 +66,10 @@ const oxfmt_config: UserConfig["fmt"] = {
 	singleQuote: false,
 	printWidth: 100,
 	trailingComma: "all",
-	experimentalTailwindcss: {},
+	sortTailwindcss: {
+		functions: ["clsx", "cn"],
+		stylesheet: "./src/routes/global.css",
+	},
 	sortImports: {
 		groups: [
 			"type-import",
@@ -114,6 +117,7 @@ const oxfmt_config: UserConfig["fmt"] = {
 
 const oxlint_config: UserConfig["lint"] = {
 	plugins: ["typescript", "oxc", "unicorn", "import", "react", "jsx-a11y"],
+	jsPlugins: ["oxlint-tailwindcss"],
 	categories: {
 		correctness: "off",
 	},
@@ -127,6 +131,11 @@ const oxlint_config: UserConfig["lint"] = {
 	options: {
 		typeAware: true,
 		typeCheck: true,
+	},
+	settings: {
+		tailwindcss: {
+			entryPoint: "src/routes/global.css",
+		},
 	},
 	rules: {
 		"for-direction": "error",
@@ -221,6 +230,12 @@ const oxlint_config: UserConfig["lint"] = {
 		"@typescript-eslint/prefer-namespace-keyword": "error",
 		"@typescript-eslint/triple-slash-reference": "error",
 		"no-console": "error",
+		"tailwindcss/no-unknown-classes": "warn",
+		"tailwindcss/no-duplicate-classes": "error",
+		"tailwindcss/no-conflicting-classes": "warn",
+		"tailwindcss/no-deprecated-classes": "warn",
+		"tailwindcss/no-unnecessary-whitespace": "error",
+		"tailwindcss/enforce-sort-order": "warn",
 	},
 	overrides: [
 		{

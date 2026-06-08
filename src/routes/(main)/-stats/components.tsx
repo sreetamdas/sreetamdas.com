@@ -112,8 +112,8 @@ export function StatsSkeleton() {
 
 function StatsStatusSkeleton() {
 	return (
-		<p className="rounded-global border-foreground/15 bg-foreground/5 dark:bg-foreground/10 col-[1/-1] mx-4 max-w-5xl border border-solid px-4 py-3 text-sm sm:mx-auto sm:w-full">
-			<span className="bg-foreground/15 block h-5 w-full max-w-md animate-pulse rounded-full" />
+		<p className="col-[1/-1] mx-4 max-w-5xl rounded-global border border-solid border-foreground/15 bg-foreground/5 px-4 py-3 text-sm sm:mx-auto sm:w-full dark:bg-foreground/10">
+			<span className="block h-5 w-full max-w-md animate-pulse rounded-full bg-foreground/15" />
 			<span className="sr-only">Loading analytics status</span>
 		</p>
 	);
@@ -137,36 +137,36 @@ function MetricCardSkeleton({ tone }: { tone?: "primary" }) {
 		<div
 			className={
 				tone === "primary"
-					? "rounded-global border-primary/25 bg-primary/10 border border-solid p-5 transition-colors sm:col-span-2 lg:col-span-1"
-					: "rounded-global border-foreground/15 bg-foreground/5 dark:bg-foreground/10 border border-solid p-5 transition-colors"
+					? "rounded-global border border-solid border-primary/25 bg-primary/10 p-5 transition-colors sm:col-span-2 lg:col-span-1"
+					: "rounded-global border border-solid border-foreground/15 bg-foreground/5 p-5 transition-colors dark:bg-foreground/10"
 			}
 		>
-			<span className="bg-foreground/15 block h-4 w-24 animate-pulse rounded-full" />
-			<span className="bg-foreground/15 mt-3 block h-10 w-32 animate-pulse rounded-full" />
+			<span className="block h-4 w-24 animate-pulse rounded-full bg-foreground/15" />
+			<span className="mt-3 block h-10 w-32 animate-pulse rounded-full bg-foreground/15" />
 		</div>
 	);
 }
 
 function TimelineSkeleton() {
 	return (
-		<section className="rounded-global border-foreground/15 bg-background col-[1/-1] mx-4 max-w-5xl border border-solid p-5 sm:mx-auto sm:w-full">
+		<section className="col-[1/-1] mx-4 max-w-5xl rounded-global border border-solid border-foreground/15 bg-background p-5 sm:mx-auto sm:w-full">
 			<div className="grid gap-1 sm:grid-cols-[1fr_auto] sm:items-end">
 				<h2 className="m-0 font-serif text-3xl font-bold">Daily visitors</h2>
-				<span className="bg-foreground/15 h-5 w-32 animate-pulse rounded-full sm:justify-self-end" />
+				<span className="h-5 w-32 animate-pulse rounded-full bg-foreground/15 sm:justify-self-end" />
 			</div>
 			<ol className="mt-6 flex h-44 items-end gap-1 p-0" aria-label="Loading daily visitors chart">
 				{[42, 56, 38, 72, 64, 88, 52, 60, 46, 78, 68, 54].map((height, index) => (
 					<li className="flex h-full min-w-1 flex-1 list-none items-end" key={`${height}-${index}`}>
 						<span
-							className="bg-foreground/15 rounded-t-global w-full animate-pulse"
+							className="w-full animate-pulse rounded-t-global bg-foreground/15"
 							style={{ height: `${height}%` }}
 						/>
 					</li>
 				))}
 			</ol>
-			<div className="text-foreground/65 mt-3 flex justify-between gap-4 font-mono text-xs">
-				<span className="bg-foreground/15 h-4 w-16 animate-pulse rounded-full" />
-				<span className="bg-foreground/15 h-4 w-16 animate-pulse rounded-full" />
+			<div className="mt-3 flex justify-between gap-4 font-mono text-xs text-foreground/65">
+				<span className="h-4 w-16 animate-pulse rounded-full bg-foreground/15" />
+				<span className="h-4 w-16 animate-pulse rounded-full bg-foreground/15" />
 			</div>
 		</section>
 	);
@@ -200,25 +200,25 @@ function DashboardSectionSkeleton({
 
 function FeaturedPanelSkeleton({ title }: { title: string }) {
 	return (
-		<section className="rounded-global border-foreground/15 bg-background border border-solid p-5 lg:col-span-2">
+		<section className="rounded-global border border-solid border-foreground/15 bg-background p-5 lg:col-span-2">
 			<div className="grid gap-1 sm:grid-cols-[1fr_auto] sm:items-start">
 				<div>
 					<h3 className="m-0 font-serif text-3xl font-bold">{title}</h3>
-					<span className="bg-foreground/15 mt-2 block h-4 w-56 animate-pulse rounded-full" />
+					<span className="mt-2 block h-4 w-56 animate-pulse rounded-full bg-foreground/15" />
 				</div>
-				<span className="bg-foreground/15 h-5 w-16 animate-pulse rounded-full sm:justify-self-end" />
+				<span className="h-5 w-16 animate-pulse rounded-full bg-foreground/15 sm:justify-self-end" />
 			</div>
-			<div className="rounded-global bg-foreground/5 dark:bg-foreground/10 mt-4 p-2">
-				<span className="bg-foreground/15 rounded-global block h-40 w-full animate-pulse" />
+			<div className="mt-4 rounded-global bg-foreground/5 p-2 dark:bg-foreground/10">
+				<span className="block h-40 w-full animate-pulse rounded-global bg-foreground/15" />
 			</div>
 			<ol className="mt-4 grid gap-2 p-0">
 				{[0, 1, 2].map((row) => (
 					<li
 						key={row}
-						className="rounded-global bg-foreground/5 dark:bg-foreground/10 grid gap-2 p-3"
+						className="grid gap-2 rounded-global bg-foreground/5 p-3 dark:bg-foreground/10"
 					>
-						<span className="bg-foreground/15 h-5 w-full animate-pulse rounded-full" />
-						<span className="bg-foreground/15 h-2 w-full animate-pulse rounded-full" />
+						<span className="h-5 w-full animate-pulse rounded-full bg-foreground/15" />
+						<span className="h-2 w-full animate-pulse rounded-full bg-foreground/15" />
 					</li>
 				))}
 			</ol>
@@ -228,13 +228,13 @@ function FeaturedPanelSkeleton({ title }: { title: string }) {
 
 function StatsPanelSkeleton({ title }: { title: string }) {
 	return (
-		<section className="rounded-global border-foreground/15 bg-background border border-solid p-5">
+		<section className="rounded-global border border-solid border-foreground/15 bg-background p-5">
 			<h3 className="m-0 font-serif text-3xl font-bold">{title}</h3>
-			<ol className="divide-foreground/10 m-0 mt-4 divide-y p-0">
+			<ol className="m-0 mt-4 divide-y divide-foreground/10 p-0">
 				{[0, 1, 2].map((row) => (
 					<li className="grid gap-2 py-3" key={row}>
-						<span className="bg-foreground/15 h-5 w-full animate-pulse rounded-full" />
-						<span className="bg-foreground/15 h-2 w-full animate-pulse rounded-full" />
+						<span className="h-5 w-full animate-pulse rounded-full bg-foreground/15" />
+						<span className="h-2 w-full animate-pulse rounded-full bg-foreground/15" />
 					</li>
 				))}
 			</ol>
@@ -244,10 +244,10 @@ function StatsPanelSkeleton({ title }: { title: string }) {
 
 export function DashboardControls({ activePeriod }: { activePeriod: PlausibleDateRange }) {
 	return (
-		<section className="rounded-global border-foreground/15 bg-foreground/5 dark:bg-foreground/10 col-[1/-1] mx-4 mb-6 max-w-5xl border border-solid p-3 sm:mx-auto sm:w-full">
+		<section className="col-[1/-1] mx-4 mb-6 max-w-5xl rounded-global border border-solid border-foreground/15 bg-foreground/5 p-3 sm:mx-auto sm:w-full dark:bg-foreground/10">
 			<div className="grid gap-4 sm:grid-cols-[1fr_auto] sm:items-center">
 				<div>
-					<p className="text-foreground/65 m-0 font-mono text-sm">Window</p>
+					<p className="m-0 font-mono text-sm text-foreground/65">Window</p>
 					<nav className="mt-2 flex flex-wrap gap-2" aria-label="Stats time range">
 						{PLAUSIBLE_DATE_RANGES.map((range) => (
 							<LinkTo
@@ -257,8 +257,8 @@ export function DashboardControls({ activePeriod }: { activePeriod: PlausibleDat
 								aria-current={activePeriod === range ? "page" : undefined}
 								className={
 									activePeriod === range
-										? "rounded-global bg-primary text-background focus-visible:outline-secondary dark:text-foreground px-3 py-2 font-mono text-sm no-underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-dashed"
-										: "rounded-global text-foreground hover:bg-foreground/10 focus-visible:outline-secondary px-3 py-2 font-mono text-sm no-underline transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-dashed"
+										? "rounded-global bg-primary px-3 py-2 font-mono text-sm text-background no-underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-secondary focus-visible:outline-dashed dark:text-foreground"
+										: "rounded-global px-3 py-2 font-mono text-sm text-foreground no-underline transition-colors hover:bg-foreground/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-secondary focus-visible:outline-dashed"
 								}
 							>
 								{dateRangeLabels[range]}
@@ -272,7 +272,7 @@ export function DashboardControls({ activePeriod }: { activePeriod: PlausibleDat
 							key={lens.href}
 							href={lens.href}
 							replaceClasses
-							className="rounded-global text-foreground/80 hover:text-primary focus-visible:outline-secondary px-2 py-2 font-mono text-sm no-underline transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-dashed"
+							className="rounded-global px-2 py-2 font-mono text-sm text-foreground/80 no-underline transition-colors hover:text-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-secondary focus-visible:outline-dashed"
 						>
 							{lens.label}
 						</LinkTo>
@@ -285,7 +285,7 @@ export function DashboardControls({ activePeriod }: { activePeriod: PlausibleDat
 
 export function HeroFact({ label, value }: { label: string; value: string }) {
 	return (
-		<div className="rounded-global bg-foreground/5 dark:bg-foreground/10 px-3 py-2">
+		<div className="rounded-global bg-foreground/5 px-3 py-2 dark:bg-foreground/10">
 			<dt className="sr-only">{label}</dt>
 			<dd className="m-0 font-mono text-sm">{value}</dd>
 		</div>
@@ -295,7 +295,7 @@ export function HeroFact({ label, value }: { label: string; value: string }) {
 function StatsStatus({ stats }: { stats: PlausibleStats }) {
 	if (stats.status === "ready") {
 		return (
-			<p className="rounded-global border-primary/25 bg-primary/10 text-foreground/80 col-[1/-1] mx-4 max-w-5xl border border-solid px-4 py-3 text-sm sm:mx-auto sm:w-full">
+			<p className="col-[1/-1] mx-4 max-w-5xl rounded-global border border-solid border-primary/25 bg-primary/10 px-4 py-3 text-sm text-foreground/80 sm:mx-auto sm:w-full">
 				Showing <Code>{stats.siteId}</Code> for <Code>{stats.period}</Code>. Updated{" "}
 				<time dateTime={stats.updatedAt}>{formatDateTime(stats.updatedAt)}</time>.
 			</p>
@@ -308,7 +308,7 @@ function StatsStatus({ stats }: { stats: PlausibleStats }) {
 			: "Plausible is not reachable right now.";
 
 	return (
-		<p className="rounded-global border-secondary/25 bg-secondary/10 text-foreground/80 col-[1/-1] mx-4 max-w-5xl border border-solid px-4 py-3 text-sm sm:mx-auto sm:w-full">
+		<p className="col-[1/-1] mx-4 max-w-5xl rounded-global border border-solid border-secondary/25 bg-secondary/10 px-4 py-3 text-sm text-foreground/80 sm:mx-auto sm:w-full">
 			{message} The page is wired up and will render live data once the API is available.
 		</p>
 	);
@@ -350,11 +350,11 @@ function MetricCard({ label, value, tone }: { label: string; value: string; tone
 		<div
 			className={
 				tone === "primary"
-					? "rounded-global border-primary/25 bg-primary/10 border border-solid p-5 transition-colors sm:col-span-2 lg:col-span-1"
-					: "rounded-global border-foreground/15 bg-foreground/5 dark:bg-foreground/10 border border-solid p-5 transition-colors"
+					? "rounded-global border border-solid border-primary/25 bg-primary/10 p-5 transition-colors sm:col-span-2 lg:col-span-1"
+					: "rounded-global border border-solid border-foreground/15 bg-foreground/5 p-5 transition-colors dark:bg-foreground/10"
 			}
 		>
-			<p className="text-foreground/65 m-0 font-mono text-sm">{label}</p>
+			<p className="m-0 font-mono text-sm text-foreground/65">{label}</p>
 			<p className="m-0 mt-3 font-serif text-4xl leading-none font-bold tracking-[-0.02em]">
 				{value}
 			</p>
@@ -377,7 +377,7 @@ function TopPages({ stats }: { stats: PlausibleStats }) {
 					<LinkTo href={page.path} className="min-w-0 truncate font-mono text-sm">
 						{page.path}
 					</LinkTo>
-					<span className="text-foreground/75 text-sm sm:text-right">
+					<span className="text-sm text-foreground/75 sm:text-right">
 						{formatNumber(page.visitors)} visitors · {formatNumber(page.pageviews)} views
 					</span>
 				</li>
@@ -474,7 +474,7 @@ function DashboardSection({
 				<h2 className="m-0 font-serif text-4xl leading-tight font-bold tracking-[-0.02em]">
 					{title}
 				</h2>
-				<p className="text-foreground/75 m-0 mt-2 max-w-[58ch] text-pretty">{description}</p>
+				<p className="m-0 mt-2 max-w-[58ch] text-pretty text-foreground/75">{description}</p>
 			</div>
 			<div className="grid gap-4 lg:grid-cols-3">{children}</div>
 		</section>
@@ -504,13 +504,13 @@ function BreakdownRow({ row }: { row: StatsBreakdownRow }) {
 		<li className="grid gap-2 py-3">
 			<div className="grid min-w-0 gap-1 sm:grid-cols-[minmax(0,1fr)_auto] sm:gap-4">
 				<span className="min-w-0 truncate font-mono text-sm">{row.name}</span>
-				<span className="text-foreground/75 text-sm sm:text-right">
+				<span className="text-sm text-foreground/75 sm:text-right">
 					{formatNumber(row.visitors)} visitors · {formatPercentage(row.percentage)}
 				</span>
 			</div>
-			<div className="bg-foreground/10 h-1.5 overflow-hidden rounded-full">
+			<div className="h-1.5 overflow-hidden rounded-full bg-foreground/10">
 				<div
-					className="bg-primary h-full rounded-full"
+					className="h-full rounded-full bg-primary"
 					style={{ width: barWidth(row.percentage) }}
 				/>
 			</div>
@@ -521,19 +521,19 @@ function BreakdownRow({ row }: { row: StatsBreakdownRow }) {
 function GeoPanel({ countries }: { countries: Array<StatsCountryRow> }) {
 	const topCountries = countries.slice(0, 5);
 	return (
-		<section className="rounded-global border-foreground/15 bg-background border border-solid p-5 lg:col-span-2">
+		<section className="rounded-global border border-solid border-foreground/15 bg-background p-5 lg:col-span-2">
 			<div className="grid gap-1 sm:grid-cols-[1fr_auto] sm:items-start">
 				<div>
 					<h3 className="m-0 font-serif text-3xl font-bold">Countries</h3>
-					<p className="text-foreground/70 m-0 mt-1 text-sm">
+					<p className="m-0 mt-1 text-sm text-foreground/70">
 						A compact atlas of where visits originate.
 					</p>
 				</div>
-				<p className="text-primary m-0 font-mono text-sm">{topCountries.length} shown</p>
+				<p className="m-0 font-mono text-sm text-primary">{topCountries.length} shown</p>
 			</div>
 			{countries.length > 0 ? (
 				<>
-					<div className="rounded-global bg-foreground/5 dark:bg-foreground/10 mt-4 overflow-hidden p-2">
+					<div className="mt-4 overflow-hidden rounded-global bg-foreground/5 p-2 dark:bg-foreground/10">
 						<ClientOnly fallback={<WorldMapFallback />}>
 							<StatsWorldMap countries={countries} />
 						</ClientOnly>
@@ -542,23 +542,23 @@ function GeoPanel({ countries }: { countries: Array<StatsCountryRow> }) {
 						{topCountries.map((country, index) => (
 							<li
 								key={`${country.code}-${country.name}`}
-								className="rounded-global bg-foreground/5 dark:bg-foreground/10 grid gap-2 p-3"
+								className="grid gap-2 rounded-global bg-foreground/5 p-3 dark:bg-foreground/10"
 							>
 								<div className="grid grid-cols-[auto_1fr_auto] items-center gap-3">
-									<span className="text-foreground/55 font-mono text-xs">
+									<span className="font-mono text-xs text-foreground/55">
 										{String(index + 1).padStart(2, "0")}
 									</span>
 									<div className="min-w-0">
 										<p className="m-0 truncate font-mono text-sm">{country.name}</p>
-										<p className="text-foreground/60 m-0 font-mono text-xs">{country.code}</p>
+										<p className="m-0 font-mono text-xs text-foreground/60">{country.code}</p>
 									</div>
 									<p className="m-0 text-right font-serif text-2xl leading-none font-bold">
 										{formatPercentage(country.percentage)}
 									</p>
 								</div>
-								<div className="bg-foreground/10 h-2 overflow-hidden rounded-full">
+								<div className="h-2 overflow-hidden rounded-full bg-foreground/10">
 									<div
-										className="bg-secondary h-full rounded-full"
+										className="h-full rounded-full bg-secondary"
 										style={{ width: barWidth(country.percentage) }}
 									/>
 								</div>
@@ -567,14 +567,14 @@ function GeoPanel({ countries }: { countries: Array<StatsCountryRow> }) {
 					</ol>
 				</>
 			) : (
-				<p className="text-foreground/60 mt-4 text-sm">No country data yet.</p>
+				<p className="mt-4 text-sm text-foreground/60">No country data yet.</p>
 			)}
 		</section>
 	);
 }
 
 function WorldMapFallback() {
-	return <div className="rounded-global bg-foreground/10 h-40 w-full animate-pulse" />;
+	return <div className="h-40 w-full animate-pulse rounded-global bg-foreground/10" />;
 }
 
 function StatsPanel({
@@ -589,13 +589,13 @@ function StatsPanel({
 	children: Array<ReactNode>;
 }) {
 	return (
-		<section className="rounded-global border-foreground/15 bg-background border border-solid p-5">
+		<section className="rounded-global border border-solid border-foreground/15 bg-background p-5">
 			<h3 className="m-0 font-serif text-3xl font-bold">{title}</h3>
-			{description ? <p className="text-foreground/70 m-0 mt-1 text-sm">{description}</p> : null}
+			{description ? <p className="m-0 mt-1 text-sm text-foreground/70">{description}</p> : null}
 			{children.length > 0 ? (
-				<ol className="divide-foreground/10 m-0 mt-4 divide-y p-0">{children}</ol>
+				<ol className="m-0 mt-4 divide-y divide-foreground/10 p-0">{children}</ol>
 			) : (
-				<p className="text-foreground/60 mt-4 text-sm">{emptyMessage}</p>
+				<p className="mt-4 text-sm text-foreground/60">{emptyMessage}</p>
 			)}
 		</section>
 	);
@@ -607,11 +607,11 @@ function Timeline({ stats }: { stats: PlausibleStats }) {
 	const lastDay = stats.timeline.at(-1)?.date;
 
 	return (
-		<section className="rounded-global border-foreground/15 bg-background col-[1/-1] mx-4 max-w-5xl border border-solid p-5 sm:mx-auto sm:w-full">
+		<section className="col-[1/-1] mx-4 max-w-5xl rounded-global border border-solid border-foreground/15 bg-background p-5 sm:mx-auto sm:w-full">
 			<div className="grid gap-1 sm:grid-cols-[1fr_auto] sm:items-end">
 				<h2 className="m-0 font-serif text-3xl font-bold">Daily visitors</h2>
 				{stats.timeline.length > 0 ? (
-					<p className="text-foreground/70 m-0 text-sm sm:text-right">
+					<p className="m-0 text-sm text-foreground/70 sm:text-right">
 						Peak day: {formatNumber(maxVisitors)} visitors
 					</p>
 				) : null}
@@ -625,10 +625,10 @@ function Timeline({ stats }: { stats: PlausibleStats }) {
 								key={point.date}
 							>
 								<div
-									className="bg-primary/70 group-hover:bg-secondary rounded-t-global w-full transition-colors"
+									className="w-full rounded-t-global bg-primary/70 transition-colors group-hover:bg-secondary"
 									style={{ height: `${Math.max(6, (point.visitors / maxVisitors) * 100)}%` }}
 								/>
-								<span className="bg-foreground text-background rounded-global pointer-events-none absolute bottom-full left-1/2 z-10 mb-2 hidden -translate-x-1/2 px-2 py-1 font-mono text-xs text-nowrap group-hover:block">
+								<span className="pointer-events-none absolute bottom-full left-1/2 z-10 mb-2 hidden -translate-x-1/2 rounded-global bg-foreground px-2 py-1 font-mono text-xs text-nowrap text-background group-hover:block">
 									{formatShortDate(point.date)} · {formatNumber(point.visitors)}
 								</span>
 								<span className="sr-only">
@@ -638,14 +638,14 @@ function Timeline({ stats }: { stats: PlausibleStats }) {
 						))}
 					</ol>
 					{firstDay && lastDay ? (
-						<div className="text-foreground/65 mt-3 flex justify-between gap-4 font-mono text-xs">
+						<div className="mt-3 flex justify-between gap-4 font-mono text-xs text-foreground/65">
 							<time dateTime={firstDay}>{formatShortDate(firstDay)}</time>
 							<time dateTime={lastDay}>{formatShortDate(lastDay)}</time>
 						</div>
 					) : null}
 				</>
 			) : (
-				<p className="text-foreground/60 mt-4 text-sm">No daily visitor data yet.</p>
+				<p className="mt-4 text-sm text-foreground/60">No daily visitor data yet.</p>
 			)}
 		</section>
 	);

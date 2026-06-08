@@ -91,11 +91,11 @@ function StatsPage() {
 	return (
 		<>
 			<section className="py-14 sm:py-16">
-				<p className="text-primary mb-5 font-mono text-sm">/stats</p>
+				<p className="mb-5 font-mono text-sm text-primary">/stats</p>
 				<h1 className="font-serif text-6xl leading-none font-bold tracking-[-0.025em] text-balance md:text-8xl">
 					Public analytics
 				</h1>
-				<p className="text-foreground/80 mt-6 max-w-[62ch] text-lg text-pretty">
+				<p className="mt-6 max-w-[62ch] text-lg text-pretty text-foreground/80">
 					A Plausible-powered readout for this site: public enough to inspect, private enough to
 					avoid cookies and personal data.
 				</p>

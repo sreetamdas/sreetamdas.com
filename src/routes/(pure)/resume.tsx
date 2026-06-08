@@ -33,7 +33,7 @@ function ResumePage() {
 function ResumeContent() {
 	return (
 		<div className="min-h-full px-2">
-			<div className="rounded-global border-primary mx-auto my-5 w-fit max-w-sm border-2 px-5 py-5 font-mono text-sm sm:max-w-none print:my-0 print:border-none">
+			<div className="mx-auto my-5 w-fit max-w-sm rounded-global border-2 border-primary px-5 py-5 font-mono text-sm sm:max-w-none print:my-0 print:border-none">
 				<div className="sm:max-w-3xl">
 					<section className="grid gap-5 pb-5 sm:grid-cols-[minmax(350px,500px)_minmax(200px,1fr)]">
 						<header>
@@ -53,15 +53,15 @@ function ResumeContent() {
 								<a href="https://sreetamdas.com" className="link-base">
 									Web
 								</a>
-								<span className="text-primary/50 text-xs">|</span>
+								<span className="text-xs text-primary/50">|</span>
 								<a href="https://github.com/sreetamdas" className="link-base">
 									GitHub
 								</a>
-								<span className="text-primary/50 text-xs">|</span>
+								<span className="text-xs text-primary/50">|</span>
 								<a href="https://twitter.com/_SreetamDas" className="link-base">
 									Twitter
 								</a>
-								<span className="text-primary/50 text-xs">|</span>
+								<span className="text-xs text-primary/50">|</span>
 								<a href="https://linkedin.com/in/sreetamdas" className="link-base">
 									LinkedIn
 								</a>
@@ -69,10 +69,10 @@ function ResumeContent() {
 						</div>
 					</section>
 
-					<section className="border-primary/20 grid gap-5 border-t-2 pt-5 sm:grid-cols-[minmax(350px,500px)_minmax(200px,1fr)]">
+					<section className="grid gap-5 border-t-2 border-primary/20 pt-5 sm:grid-cols-[minmax(350px,500px)_minmax(200px,1fr)]">
 						<div id="main">
 							<div id="experience">
-								<h2 className="text-secondary mb-4 font-bold uppercase">Experience</h2>
+								<h2 className="mb-4 font-bold text-secondary uppercase">Experience</h2>
 
 								<p className="mt-4 mb-2">
 									<a href="https://remote.com" className="link-base font-bold">
@@ -160,7 +160,7 @@ function ResumeContent() {
 							</div>
 
 							<div id="projects">
-								<h2 className="text-secondary mt-6 font-bold uppercase">Projects</h2>
+								<h2 className="mt-6 font-bold text-secondary uppercase">Projects</h2>
 
 								<ul className="mt-4 list-outside list-disc pl-4">
 									<li>
@@ -200,15 +200,15 @@ function ResumeContent() {
 						</div>
 
 						<div id="extra">
-							<h2 className="text-secondary mb-4 font-bold uppercase">Skills</h2>
+							<h2 className="mb-4 font-bold text-secondary uppercase">Skills</h2>
 							<p className="mt-4 mb-2">React, Elixir, TypeScript, Next.js and Python</p>
-							<h2 className="text-secondary mt-6 font-bold uppercase">Interests</h2>
+							<h2 className="mt-6 font-bold text-secondary uppercase">Interests</h2>
 							<p className="mt-4 mb-2">
 								Developer experience, local-first offline apps, performance
 								<br />
 								Mechanical keyboards, quizzing & CS
 							</p>
-							<h2 className="text-secondary mt-6 font-bold uppercase">Achievements</h2>
+							<h2 className="mt-6 font-bold text-secondary uppercase">Achievements</h2>
 
 							<h3 className="mt-4 font-bold">
 								<a href="https://www.awwwards.com" className="link-base">
@@ -269,7 +269,7 @@ function ResumeContent() {
 							</h3>
 							<p>Bronze and Silver in Week of Code</p>
 
-							<h2 className="text-secondary mt-6 font-bold uppercase">Languages</h2>
+							<h2 className="mt-6 font-bold text-secondary uppercase">Languages</h2>
 							<p className="mt-4 mb-2">Fluent in English, Hindi and Odia</p>
 						</div>
 					</section>

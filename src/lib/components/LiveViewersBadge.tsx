@@ -177,7 +177,7 @@ export const LiveViewersBadge = ({ className }: { className?: string }) => {
 	return (
 		<div
 			className={cn(
-				"text-foreground flex items-center gap-2 rounded-global border border-solid border-foreground/15 bg-background px-2 mx-4 py-1 font-mono text-xs",
+				"mx-4 flex items-center gap-2 rounded-global border border-solid border-foreground/15 bg-background px-2 py-1 font-mono text-xs text-foreground",
 				className,
 			)}
 			title={connected ? "Live viewers (real-time)" : "Live viewers (connecting...)"}
@@ -185,12 +185,12 @@ export const LiveViewersBadge = ({ className }: { className?: string }) => {
 		>
 			{connected ? (
 				<span className="relative flex h-2 w-2">
-					<span className="bg-primary absolute inline-flex h-full w-full animate-ping rounded-full opacity-75" />
-					<span className="bg-primary relative inline-flex h-2 w-2 rounded-full" />
+					<span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-75" />
+					<span className="relative inline-flex h-2 w-2 rounded-full bg-primary" />
 				</span>
 			) : (
 				<span className="relative flex h-2 w-2">
-					<span className="bg-foreground/30 relative inline-flex h-2 w-2 rounded-full" />
+					<span className="relative inline-flex h-2 w-2 rounded-full bg-foreground/30" />
 				</span>
 			)}
 			<span className="whitespace-nowrap">

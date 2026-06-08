@@ -112,6 +112,7 @@
 		"@vitejs/plugin-rsc": "^0.5.27",
 		"better-sqlite3": "^12.10.0",
 		"drizzle-kit": "1.0.0-rc.3",
+		"oxlint-tailwindcss": "^1.2.0",
 		"tailwindcss": "^4.3.0",
 		"tsx": "^4.22.4",
 		"typescript": "^6.0.3",

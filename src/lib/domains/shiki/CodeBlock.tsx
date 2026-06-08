@@ -39,11 +39,11 @@ function CodeBlockFrame({
 	return (
 		<figure className={cn("my-5 flex flex-col", className)}>
 			<div
-				className="rounded-tl-global rounded-tr-global -mx-4 grid grid-flow-col overflow-x-scroll pr-2 pl-2 sm:-mr-5 sm:-ml-12 sm:pr-5 sm:pl-12"
+				className="-mx-4 grid grid-flow-col overflow-x-scroll rounded-tl-global rounded-tr-global pr-2 pl-2 sm:-mr-5 sm:-ml-12 sm:pr-5 sm:pl-12"
 				style={preStyle}
 			>
 				{filename !== null ? (
-					<span className="rounded-t-global justify-self-start py-1 font-mono text-zinc-400 max-sm:text-xs">
+					<span className="justify-self-start rounded-t-global py-1 font-mono text-zinc-400 max-sm:text-xs">
 						{filename}
 					</span>
 				) : null}
@@ -51,14 +51,14 @@ function CodeBlockFrame({
 					<span className="grid grid-flow-col items-center gap-8 justify-self-end">
 						{allowBlockExpand ? (
 							<button
-								className="rounded-global text-background h-fit justify-self-end bg-zinc-700 px-1 font-mono text-xs transition-colors hover:bg-zinc-600 sm:text-sm"
+								className="h-fit justify-self-end rounded-global bg-zinc-700 px-1 font-mono text-xs text-background transition-colors hover:bg-zinc-600 sm:text-sm"
 								onClick={onToggleExpand}
 							>
 								toggle expand
 							</button>
 						) : null}
 						{language !== "plain" ? (
-							<span className="rounded-t-global justify-self-end py-1 font-mono text-zinc-400 max-sm:text-xs">
+							<span className="justify-self-end rounded-t-global py-1 font-mono text-zinc-400 max-sm:text-xs">
 								{language}
 							</span>
 						) : null}
@@ -71,7 +71,7 @@ function CodeBlockFrame({
 			</pre>
 
 			{allowBlockExpand && !isBlockExpanded ? (
-				<div className="rounded-bl-global rounded-br-global sm:-mr-5 sm:-ml-12" style={preStyle}>
+				<div className="rounded-br-global rounded-bl-global sm:-mr-5 sm:-ml-12" style={preStyle}>
 					<button
 						className="flex w-full justify-center px-5 py-2 text-xs text-zinc-400 transition-[color] hover:text-zinc-200 max-sm:px-2"
 						onClick={onToggleExpand}
@@ -162,7 +162,7 @@ export const ShikiCodeBlock = ({
 		"shiki-code-block",
 		!hideLineNumbers && "shiki-line-numbers",
 		filename === null && language === "plain" && "rounded-global",
-		"rounded-bl-global rounded-br-global",
+		"rounded-br-global rounded-bl-global",
 	);
 
 	return (
@@ -223,7 +223,7 @@ export const CodeBlock = (props: CodeBlockProps) => {
 		"-mx-4 overflow-x-scroll p-5 text-xs max-sm:px-2 sm:-mr-5 sm:-ml-12 sm:text-sm max-sm:[&>code>.block>.line]:whitespace-pre-wrap",
 		passedPreClassName,
 		filename === null && code_lang === "plain" && "rounded-global",
-		is_block_expanded ? "rounded-bl-global rounded-br-global" : "max-h-[calc(100svh-120px-40px)]",
+		is_block_expanded ? "rounded-br-global rounded-bl-global" : "max-h-[calc(100svh-120px-40px)]",
 	);
 
 	return (

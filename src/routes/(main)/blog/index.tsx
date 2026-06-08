@@ -76,7 +76,7 @@ const getBlogArchiveRenderable = createServerFn({ method: "GET" }).handler(async
 							href={url ?? page_path}
 							className="w-fit bg-size-[0_4px] bg-position-[100%_85%] hover:bg-size-[100%_4px] hover:bg-position-[0_85%] hover:no-underline"
 						>
-							<h3 className="group-hover:gradient w-fit font-serif text-[40px] leading-normal font-semibold tracking-tight">
+							<h3 className="w-fit font-serif text-[40px] leading-normal font-semibold tracking-tight group-hover:gradient">
 								{title}
 							</h3>
 						</LinkTo>
@@ -91,7 +91,7 @@ const getBlogArchiveRenderable = createServerFn({ method: "GET" }).handler(async
 								})}
 							</p>
 							{reading_time ? (
-								<p className="text-foreground/60 text-sm">{reading_time} min read</p>
+								<p className="text-sm text-foreground/60">{reading_time} min read</p>
 							) : null}
 						</div>
 					</article>

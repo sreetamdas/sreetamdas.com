@@ -108,7 +108,7 @@ function getLikeCountCopy(likes: number | undefined, hasLiked: boolean) {
 }
 
 const LikeCount = ({ children }: { children: string }) => (
-	<span className="rounded-global border-primary bg-background text-primary border-2 border-solid p-1 font-mono text-base transition-colors">
+	<span className="rounded-global border-2 border-solid border-primary bg-background p-1 font-mono text-base text-primary transition-colors">
 		{children}
 	</span>
 );

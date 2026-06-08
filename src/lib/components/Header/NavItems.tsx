@@ -36,7 +36,7 @@ export const NavigationItems = () => (
 				<a
 					href="https://github.com/sreetamdas"
 					target="_blank"
-					className="link-base text-foreground hover:text-primary flex items-center text-3xl md:text-2xl"
+					className="flex items-center link-base text-3xl text-foreground hover:text-primary md:text-2xl"
 				>
 					<FaGithub aria-label="Sreetam's GitHub" title="Sreetam Das' GitHub" />
 				</a>
@@ -45,7 +45,7 @@ export const NavigationItems = () => (
 				<a
 					href="https://twitter.com/_SreetamDas"
 					target="_blank"
-					className="link-base text-foreground hover:text-primary flex items-center text-3xl md:text-2xl"
+					className="flex items-center link-base text-3xl text-foreground hover:text-primary md:text-2xl"
 				>
 					<FaTwitter aria-label="Sreetam Das' Twitter" title="Sreetam Das' Twitter" />
 				</a>
@@ -53,7 +53,7 @@ export const NavigationItems = () => (
 			<li>
 				<a
 					href="https://sreetamdas.com/rss/feed.xml"
-					className="link-base text-foreground hover:text-primary flex items-center text-3xl md:text-2xl"
+					className="flex items-center link-base text-3xl text-foreground hover:text-primary md:text-2xl"
 				>
 					<FiRss aria-label="Blog RSS feed" title="Blog RSS feed" />
 				</a>

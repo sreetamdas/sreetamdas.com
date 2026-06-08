@@ -61,7 +61,7 @@ function FancyPantsPage() {
 						href="https://remote.com"
 						target="_blank"
 						rel="noreferrer"
-						className="focus-visible:outline-secondary visited:no-underline hover:underline hover:decoration-current hover:decoration-solid focus-visible:outline-8 focus-visible:outline-dashed"
+						className="visited:no-underline hover:underline hover:decoration-current hover:decoration-solid focus-visible:outline-8 focus-visible:outline-secondary focus-visible:outline-dashed"
 					>
 						@Remote<span className="sr-only">(opens in a new tab)</span>
 						<ImArrowUpRight2 className="inline-block text-3xl" aria-label="opens in a new tab" />

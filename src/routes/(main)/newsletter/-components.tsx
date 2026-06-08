@@ -21,7 +21,7 @@ type NewsletterEmailPreviewProps = {
 };
 const NewsletterEmailPreview = ({ email, isAdminUser = false }: NewsletterEmailPreviewProps) => (
 	<article>
-		<h2 className="text-primary p-0 font-sans text-2xl font-bold">
+		<h2 className="p-0 font-sans text-2xl font-bold text-primary">
 			<LinkTo href={`/newsletter/$slug`} params={{ slug: email.slug }}>
 				{email.subject}
 			</LinkTo>
