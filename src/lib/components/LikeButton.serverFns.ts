@@ -1,4 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
+import { env } from "cloudflare:workers";
 import { allBlogPosts } from "content-collections";
 
 import { IS_DEV } from "@/config";
@@ -46,12 +47,7 @@ export const fetchLikeCountServerFn = createServerFn({
 		return validatePagePathnamePayload(data, "Invalid likes payload");
 	})
 	.handler(async (ctx) => {
-		return fetchLikeCount(
-			ctx.data,
-			ctx.context.env,
-			undefined,
-			getClientIpFromServerFnContext(ctx),
-		);
+		return fetchLikeCount(ctx.data, env, undefined, getClientIpFromServerFnContext(ctx));
 	});
 
 export const incrementLikeServerFn = createServerFn({
@@ -61,12 +57,7 @@ export const incrementLikeServerFn = createServerFn({
 		return validatePagePathnamePayload(data, "Invalid likes payload");
 	})
 	.handler(async (ctx) => {
-		return incrementLikeCount(
-			ctx.data,
-			ctx.context.env,
-			undefined,
-			getClientIpFromServerFnContext(ctx),
-		);
+		return incrementLikeCount(ctx.data, env, undefined, getClientIpFromServerFnContext(ctx));
 	});
 
 export async function fetchLikeCount(
