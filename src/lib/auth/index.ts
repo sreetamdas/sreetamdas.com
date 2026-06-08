@@ -15,6 +15,12 @@ const DEFAULT_CLOUDFLARE_TOKEN_URL = "https://dash.cloudflare.com/oauth2/token";
 const DEFAULT_CLOUDFLARE_USER_INFO_URL = "https://api.cloudflare.com/client/v4/user";
 const DEFAULT_CLOUDFLARE_SCOPES = ["user.read"];
 
+type AuthHelperEnv = Partial<
+	Pick<CloudflareEnv, "BETTER_AUTH_SECRET" | "SLIDE_PRESENTER_EMAILS" | "VITE_SITE_URL">
+> & {
+	SITE_URL?: string;
+};
+
 export type AuthSession = Awaited<ReturnType<ReturnType<typeof getAuth>["api"]["getSession"]>>;
 
 type CloudflareUserResponse = {
@@ -70,8 +76,8 @@ export async function getAllowedPresenterEmail(request: Request): Promise<string
 	return email && isAllowedPresenterEmail(email) ? email : undefined;
 }
 
-export function isAllowedPresenterEmail(email: string): boolean {
-	const allowedEmails = parseAllowedPresenterEmails(env?.SLIDE_PRESENTER_EMAILS);
+export function isAllowedPresenterEmail(email: string, authEnv: AuthHelperEnv = env): boolean {
+	const allowedEmails = parseAllowedPresenterEmails(authEnv.SLIDE_PRESENTER_EMAILS);
 	return allowedEmails.has(email.trim().toLowerCase());
 }
 
@@ -84,12 +90,12 @@ export function parseAllowedPresenterEmails(value: string | undefined): Set<stri
 	);
 }
 
-export function getSiteUrl(): string {
-	return env.VITE_SITE_URL || DEFAULT_SITE_URL;
+export function getSiteUrl(authEnv: AuthHelperEnv = env): string {
+	return authEnv.SITE_URL || authEnv.VITE_SITE_URL || DEFAULT_SITE_URL;
 }
 
-export function getAuthSecret(isDev = IS_DEV): string {
-	const secret = env.BETTER_AUTH_SECRET;
+export function getAuthSecret(authEnv: AuthHelperEnv = env, isDev = IS_DEV): string {
+	const secret = authEnv.BETTER_AUTH_SECRET;
 	if (secret) return secret;
 	if (isDev) return "dev-only-better-auth-secret-change-me";
 	throw new Error("BETTER_AUTH_SECRET must be set in production");

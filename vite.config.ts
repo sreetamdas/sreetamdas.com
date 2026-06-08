@@ -17,8 +17,9 @@ function getPlugins(): Array<unknown> {
 
 	const sitemapHost = (process.env.VITE_SITE_URL ?? "https://sreetamdas.com").replace(/\/$/, "");
 
-	// @ts-expect-error type depth
-	return [
+	const plugins: Array<unknown> = [];
+
+	plugins.push(
 		cloudflare({
 			viteEnvironment: { name: "ssr", childEnvironments: ["rsc"] },
 			tunnel: {
@@ -55,18 +56,21 @@ function getPlugins(): Array<unknown> {
 		slideDeckPlugin(),
 		viteReact(),
 		tailwindcss(),
-		...(hasSentryBuildEnv
-			? [
-					sentryTanstackStart({
-						authToken: process.env.SENTRY_AUTH_TOKEN,
-						autoInstrumentMiddleware: false,
-						org: process.env.SENTRY_ORG,
-						project: process.env.SENTRY_PROJECT,
-						tunnelRoute: true,
-					}),
-				]
-			: []),
-	];
+	);
+
+	if (hasSentryBuildEnv) {
+		plugins.push(
+			sentryTanstackStart({
+				authToken: process.env.SENTRY_AUTH_TOKEN,
+				autoInstrumentMiddleware: false,
+				org: process.env.SENTRY_ORG,
+				project: process.env.SENTRY_PROJECT,
+				tunnelRoute: true,
+			}),
+		);
+	}
+
+	return plugins;
 }
 
 const oxfmt_config: UserConfig["fmt"] = {
