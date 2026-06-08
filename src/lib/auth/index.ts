@@ -1,6 +1,7 @@
 import { drizzleAdapter } from "@better-auth/drizzle-adapter";
 import { betterAuth } from "better-auth";
 import { genericOAuth } from "better-auth/plugins";
+import { env } from "cloudflare:workers";
 
 import { IS_DEV } from "@/config";
 import { getDb } from "@/db";
@@ -27,15 +28,15 @@ type CloudflareUserResponse = {
 	};
 };
 
-export function getAuth(env: CloudflareEnv) {
+export function getAuth() {
 	const siteUrl = getSiteUrl(env);
 	const cloudflare_oauth_config = getCloudflareOAuthConfig(env);
 	const google_oauth_config = getGoogleOAuthConfig(env);
 
 	return betterAuth({
 		baseURL: `${siteUrl}/api/auth`,
-		secret: getAuthSecret(env),
-		database: drizzleAdapter(getDb(env), {
+		secret: env.BETTER_AUTH_SECRET,
+		database: drizzleAdapter(getDb(), {
 			provider: "sqlite",
 			schema: {
 				...schema,
@@ -57,23 +58,18 @@ export function getAuth(env: CloudflareEnv) {
 	});
 }
 
-export async function getAuthSession(request: Request, env: CloudflareEnv): Promise<AuthSession> {
-	return getAuth(env).api.getSession({ headers: request.headers });
+export async function getAuthSession(request: Request): Promise<AuthSession> {
+	return getAuth().api.getSession({ headers: request.headers });
 }
 
-export async function getAllowedPresenterEmail(
-	request: Request,
-	env: CloudflareEnv,
-): Promise<string | undefined> {
-	const session = await getAuthSession(request, env);
+export async function getAllowedPresenterEmail(request: Request): Promise<string | undefined> {
+	const session = await getAuthSession(request);
 	const email = session?.user.email;
-	return email && isAllowedPresenterEmail(email, env) ? email : undefined;
+	return email && isAllowedPresenterEmail(email) ? email : undefined;
 }
 
-export function isAllowedPresenterEmail(email: string, env: object | undefined): boolean {
-	const allowedEmails = parseAllowedPresenterEmails(
-		readServerEnvString(env, ["SLIDE_PRESENTER_EMAILS"]),
-	);
+export function isAllowedPresenterEmail(email: string): boolean {
+	const allowedEmails = parseAllowedPresenterEmails(env.SLIDE_PRESENTER_EMAILS);
 	return allowedEmails.has(email.trim().toLowerCase());
 }
 
