@@ -189,7 +189,56 @@ describe("Plausible stats", () => {
 			globalThis.fetch = originalFetch;
 		}
 	});
+
+	test("coalesces null metrics to zero instead of collapsing the dashboard", async () => {
+		const originalFetch = globalThis.fetch;
+		globalThis.fetch = async (_input, init) => {
+			const body = parseJsonBody(init?.body);
+			if (hasNoDimensions(body)) {
+				return Response.json({
+					results: [{ dimensions: [], metrics: [10, 20, 30, null, null, null] }],
+				});
+			}
+			return Response.json({ results: [{ dimensions: ["x"], metrics: [1, null] }] });
+		};
+
+		try {
+			setPlausibleEnv({ PLAUSIBLE_API_KEY: "test_key", PLAUSIBLE_SITE_ID: "example.com" });
+			const stats = await fetchPlausibleStats();
+
+			expect(stats.status).toBe("ready");
+			expect(stats.overview.visitors).toBe(10);
+			expect(stats.overview.viewsPerVisit).toBe(0);
+			expect(stats.overview.bounceRate).toBe(0);
+			expect(stats.overview.visitDuration).toBe(0);
+			expect(stats.topPages[0]?.pageviews).toBe(0);
+		} finally {
+			globalThis.fetch = originalFetch;
+		}
+	});
+
+	test("returns an unavailable state when Plausible returns an unexpected shape", async () => {
+		const originalFetch = globalThis.fetch;
+		globalThis.fetch = async () => Response.json({ unexpected: true });
+
+		try {
+			setPlausibleEnv({ PLAUSIBLE_API_KEY: "test_key" });
+			const stats = await fetchPlausibleStats();
+
+			expect(stats.status).toBe("unavailable");
+		} finally {
+			globalThis.fetch = originalFetch;
+		}
+	});
 });
+
+function hasNoDimensions(value: unknown): boolean {
+	return (
+		typeof value === "object" &&
+		value !== null &&
+		(!("dimensions" in value) || value.dimensions === undefined)
+	);
+}
 
 function setPlausibleEnv(value: TestPlausibleEnv) {
 	cloudflare.env.PLAUSIBLE_API_KEY = value.PLAUSIBLE_API_KEY;
