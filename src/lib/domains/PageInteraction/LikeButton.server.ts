@@ -1,4 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
+import { getRequestHeader } from "@tanstack/react-start/server";
 import { allBlogPosts } from "content-collections";
 
 import { type LikeCount } from "@/lib/domains/PageViews";
@@ -27,8 +28,8 @@ export const fetchLikeCountServerFn = createServerFn({
 	.validator((data) => {
 		return validatePagePathnamePayload(data, "Invalid likes payload");
 	})
-	.handler(async (ctx) => {
-		return fetchLikeCount(ctx.data, getClientIpFromServerFnContext(ctx));
+	.handler(async ({ data }) => {
+		return fetchLikeCount(data, getRequestHeader("cf-connecting-ip"));
 	});
 
 export const incrementLikeServerFn = createServerFn({
@@ -37,8 +38,8 @@ export const incrementLikeServerFn = createServerFn({
 	.validator((data) => {
 		return validatePagePathnamePayload(data, "Invalid likes payload");
 	})
-	.handler(async (ctx) => {
-		return incrementLikeCount(ctx.data, getClientIpFromServerFnContext(ctx));
+	.handler(async ({ data }) => {
+		return incrementLikeCount(data, getRequestHeader("cf-connecting-ip"));
 	});
 
 export async function fetchLikeCount(
@@ -77,19 +78,6 @@ export async function incrementLikeCount(
 		warnCounterFailureOnce("increment likes", error);
 		return { likes: 0, hasLiked: false };
 	}
-}
-
-function getClientIpFromServerFnContext(ctx: unknown): string | undefined {
-	if (typeof ctx !== "object" || ctx === null) {
-		return undefined;
-	}
-
-	const request = Reflect.get(ctx, "request");
-	if (!(request instanceof Request)) {
-		return undefined;
-	}
-
-	return request.headers.get("cf-connecting-ip") ?? undefined;
 }
 
 function isKnownBlogLikeSlug(slug: string) {
