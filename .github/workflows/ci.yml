@@ -230,6 +230,8 @@ jobs:
 
       - name: Build
         run: pnpm build
+        env:
+          VITE_CI: "1"
 
       - name: Install Playwright
         run: pnpm exec playwright install --with-deps chromium

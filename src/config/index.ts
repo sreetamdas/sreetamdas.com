@@ -15,10 +15,10 @@ export const SITE_DESCRIPTION =
 export const SITE_OG_IMAGE = "/og-image.png";
 
 export const IS_DEV = import.meta.env?.DEV ?? false;
-export const IS_DEBUG = false;
+export const IS_DEBUG = import.meta.env?.VITE_DEBUG_MODE === "true";
 
 /**
- * Check if the site is currently being built, to affect build-time behaviour.
- * @see https://vercel.com/docs/concepts/projects/environment-variables/system-environment-variables#system-environment-variables
+ * Whether the build is running in CI. Set `VITE_CI=1` in the CI build step so
+ * Vite statically inlines it — `process.env` isn't available in the Worker runtime.
  */
-export const IS_CI = false;
+export const IS_CI = import.meta.env?.VITE_CI === "1";
