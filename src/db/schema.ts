@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { integer, sqliteTable, text, uniqueIndex } from "drizzle-orm/sqlite-core";
+import { integer, primaryKey, sqliteTable, text } from "drizzle-orm/sqlite-core";
 
 export const pageDetails = sqliteTable("page_details", {
 	id: integer("id").primaryKey({ autoIncrement: true }),
@@ -23,7 +23,7 @@ export const postLikes = sqliteTable(
 			.notNull()
 			.default(sql`CURRENT_TIMESTAMP`),
 	},
-	(t) => [uniqueIndex("post_likes_slug_visitor_hash_unique").on(t.slug, t.visitorHash)],
+	(t) => [primaryKey({ columns: [t.slug, t.visitorHash] })],
 );
 
 export type PageDetailsRow = typeof pageDetails.$inferSelect;

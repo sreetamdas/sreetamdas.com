@@ -110,21 +110,10 @@
 			"entityType": "pks"
 		},
 		{
-			"columns": [
-				{
-					"value": "slug",
-					"isExpression": false
-				},
-				{
-					"value": "visitor_hash",
-					"isExpression": false
-				}
-			],
-			"isUnique": true,
-			"where": null,
-			"origin": "manual",
-			"name": "post_likes_slug_visitor_hash_unique",
-			"entityType": "indexes",
+			"columns": ["slug", "visitor_hash"],
+			"nameExplicit": false,
+			"name": "post_likes_pk",
+			"entityType": "pks",
 			"table": "post_likes"
 		},
 		{
