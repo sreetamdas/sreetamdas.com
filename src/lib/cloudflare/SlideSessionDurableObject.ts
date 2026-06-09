@@ -14,6 +14,8 @@ import {
 	type SlideSessionSnapshot,
 } from "@/lib/domains/slides/live-session-protocol";
 
+import { isAllowedWebSocketOrigin } from "./origin";
+
 type PollRecord = {
 	id: string;
 	question: string;
@@ -34,6 +36,12 @@ const DEFAULT_POSITION: SlideSessionPosition = { slide: 0, step: 0, updatedAt: 0
 const MAX_POLL_OPTIONS = 6;
 
 export class SlideSessionDurableObject extends DurableObject<CloudflareEnv> {
+	constructor(ctx: DurableObjectState, platformEnv: CloudflareEnv) {
+		super(ctx, platformEnv);
+		// Give hibernatable websockets a reasonable event timeout.
+		this.ctx.setHibernatableWebSocketEventTimeout(60_000);
+	}
+
 	async fetch(request: Request): Promise<Response> {
 		const url = new URL(request.url);
 		if (request.method === "GET" && request.headers.get("Upgrade")?.toLowerCase() === "websocket") {
@@ -53,7 +61,7 @@ export class SlideSessionDurableObject extends DurableObject<CloudflareEnv> {
 	}
 
 	private handleWebSocket(request: Request, url: URL): Response {
-		if (!this.isAllowedOrigin(request)) {
+		if (!isAllowedWebSocketOrigin(request)) {
 			return new Response("Forbidden", { status: 403 });
 		}
 
@@ -242,24 +250,6 @@ export class SlideSessionDurableObject extends DurableObject<CloudflareEnv> {
 			if (attachment?.role === "viewer") viewers += 1;
 		}
 		return { viewers, masters };
-	}
-
-	private isAllowedOrigin(request: Request) {
-		const origin = request.headers.get("Origin");
-		if (!origin) return true;
-		let originUrl: URL;
-		try {
-			originUrl = new URL(origin);
-		} catch {
-			return false;
-		}
-
-		const reqUrl = new URL(request.url);
-		if (originUrl.hostname === reqUrl.hostname) return true;
-		if (originUrl.hostname === "sreetamdas.com" || originUrl.hostname === "www.sreetamdas.com") {
-			return true;
-		}
-		return originUrl.hostname.endsWith(".workers.dev") && reqUrl.hostname.endsWith(".workers.dev");
 	}
 }
 

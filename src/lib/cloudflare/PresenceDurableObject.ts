@@ -1,5 +1,7 @@
 import { DurableObject } from "cloudflare:workers";
 
+import { isAllowedWebSocketOrigin } from "./origin";
+
 type PresenceMessage = {
 	type: "count";
 	count: number;
@@ -41,32 +43,6 @@ export class PresenceDurableObject extends DurableObject<CloudflareEnv> {
 		super(ctx, platformEnv);
 		// Give hibernatable websockets a reasonable event timeout.
 		this.ctx.setHibernatableWebSocketEventTimeout(60_000);
-	}
-
-	private isAllowedOrigin(request: Request) {
-		const origin = request.headers.get("Origin");
-		if (!origin) return true;
-		let originUrl: URL;
-		try {
-			originUrl = new URL(origin);
-		} catch {
-			return false;
-		}
-
-		const reqUrl = new URL(request.url);
-		const originHost = originUrl.hostname;
-		const requestHost = reqUrl.hostname;
-
-		// Most browsers set Origin to the page origin, which should match the request host.
-		if (originHost === requestHost) return true;
-
-		// Allow common production hosts.
-		if (originHost === "sreetamdas.com" || originHost === "www.sreetamdas.com") return true;
-
-		// Allow Workers dev subdomain during development.
-		if (originHost.endsWith(".workers.dev") && requestHost.endsWith(".workers.dev")) return true;
-
-		return false;
 	}
 
 	private getViewerCount() {
@@ -118,7 +94,7 @@ export class PresenceDurableObject extends DurableObject<CloudflareEnv> {
 
 		const upgradeHeader = request.headers.get("Upgrade");
 		if (upgradeHeader?.toLowerCase() === "websocket") {
-			if (!this.isAllowedOrigin(request)) {
+			if (!isAllowedWebSocketOrigin(request)) {
 				return new Response("Forbidden", { status: 403 });
 			}
 
