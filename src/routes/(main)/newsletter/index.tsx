@@ -4,12 +4,12 @@ import { renderServerComponent } from "@tanstack/react-start/rsc";
 import { staticFunctionMiddleware } from "@tanstack/start-static-server-functions";
 
 import { SITE_TITLE_APPEND } from "@/config";
-import { ViewsCounter } from "@/lib/components/ViewsCounter";
 import {
 	fetchNewsletterEmails,
 	getButtondownApiKey,
 	stripButtondownPlaintextMarker,
 } from "@/lib/domains/Buttondown";
+import { ViewsCounter } from "@/lib/domains/PageInteraction/ViewsCounter";
 import { canonicalUrl, defaultOgImageUrl } from "@/lib/seo";
 import { STATIC_SERVER_FUNCTION_STALE_TIME } from "@/lib/static-server-functions";
 

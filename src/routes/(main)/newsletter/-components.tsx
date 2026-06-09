@@ -2,8 +2,8 @@ import { HiOutlineCalendar, HiOutlineNewspaper } from "react-icons/hi";
 
 import { LinkTo } from "@/lib/components/Anchor";
 import { MDXContent } from "@/lib/components/MDX";
-import { ViewsCounter } from "@/lib/components/ViewsCounter";
 import { type ButtondownAPIEmailsResponse } from "@/lib/domains/Buttondown";
+import { ViewsCounter } from "@/lib/domains/PageInteraction/ViewsCounter";
 
 export const BUTTONDOWN_EMAIL_STATS_URL_PREFIX = "https://buttondown.email/emails/analytics";
 

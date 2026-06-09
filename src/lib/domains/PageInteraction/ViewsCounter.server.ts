@@ -2,7 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 
 import { normalizePathname } from "@/lib/helpers/utils";
 
-import { type PagePathnamePayload, validatePagePathnamePayload } from "./pageInteraction.server";
+import { type PagePathnamePayload, validatePagePathnamePayload } from "./shared";
 
 export type PageViewCount = {
 	view_count: number;

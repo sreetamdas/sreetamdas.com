@@ -7,10 +7,10 @@ import { isNil } from "lodash-es";
 import { IS_DEV, SITE_DESCRIPTION, SITE_TITLE_APPEND } from "@/config";
 import { RepoContributors } from "@/lib/components/GitHub/RepoContributors";
 import { MDXContent } from "@/lib/components/MDX";
-import { ViewsCounter } from "@/lib/components/ViewsCounter";
 import { shouldServeRootPage } from "@/lib/content/visibility";
 import { fetchRepoContributors } from "@/lib/domains/GitHub/server";
 import { type RepoContributor } from "@/lib/domains/GitHub/types";
+import { ViewsCounter } from "@/lib/domains/PageInteraction/ViewsCounter";
 import { canonicalUrl, defaultOgImageUrl } from "@/lib/seo";
 
 const rootPages = allRootPages;

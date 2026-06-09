@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 
 import { SITE_TITLE_APPEND, SITE_URL } from "@/config";
 import { KarmaShowcase } from "@/lib/components/KarmaShowcase";
-import { ViewsCounter } from "@/lib/components/ViewsCounter";
+import { ViewsCounter } from "@/lib/domains/PageInteraction/ViewsCounter";
 import { canonicalUrl } from "@/lib/seo";
 
 export const Route = createFileRoute("/(main)/karma")({

@@ -4,8 +4,8 @@ import { staticFunctionMiddleware } from "@tanstack/start-static-server-function
 import { FiLink } from "react-icons/fi";
 
 import { SITE_DESCRIPTION, SITE_TITLE_APPEND } from "@/config";
-import { ViewsCounter } from "@/lib/components/ViewsCounter";
 import { fetchGist } from "@/lib/domains/GitHub/fetchGist";
+import { ViewsCounter } from "@/lib/domains/PageInteraction/ViewsCounter";
 import { getSlimKarmaHighlighter } from "@/lib/domains/shiki/highlighter";
 import { canonicalUrl, defaultOgImageUrl } from "@/lib/seo";
 import { STATIC_SERVER_FUNCTION_STALE_TIME } from "@/lib/static-server-functions";

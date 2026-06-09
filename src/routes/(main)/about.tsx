@@ -6,8 +6,8 @@ import { allRootPages } from "content-collections";
 import { SITE_DESCRIPTION, SITE_TITLE_APPEND } from "@/config";
 import { MDXContent } from "@/lib/components/MDX";
 import { SocialLinks } from "@/lib/components/SocialLinks";
-import { ViewsCounter } from "@/lib/components/ViewsCounter";
 import { FoobarEntry } from "@/lib/domains/foobar/Entry";
+import { ViewsCounter } from "@/lib/domains/PageInteraction/ViewsCounter";
 import { canonicalUrl, defaultOgImageUrl } from "@/lib/seo";
 
 const rootPages = allRootPages;

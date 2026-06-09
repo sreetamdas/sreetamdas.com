@@ -5,12 +5,9 @@ import { useLocation } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 
 import { IS_CI, IS_DEV } from "@/config";
-import {
-	fetchLikeCountServerFn,
-	incrementLikeServerFn,
-	type LikeCount,
-} from "@/lib/components/LikeButton.server";
 import { cn, normalizePathname } from "@/lib/helpers/utils";
+
+import { fetchLikeCountServerFn, incrementLikeServerFn, type LikeCount } from "./LikeButton.server";
 
 type LikeButtonProps = {
 	slug?: string;

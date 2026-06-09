@@ -3,7 +3,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { Suspense } from "react";
 
 import { SITE_DESCRIPTION, SITE_TITLE_APPEND } from "@/config";
-import { ViewsCounter } from "@/lib/components/ViewsCounter";
+import { ViewsCounter } from "@/lib/domains/PageInteraction/ViewsCounter";
 import {
 	createEmptyStats,
 	DEFAULT_PLAUSIBLE_SITE_ID,

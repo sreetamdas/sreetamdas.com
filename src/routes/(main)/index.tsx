@@ -6,7 +6,7 @@ import { isUndefined } from "lodash-es";
 
 import { SITE_DESCRIPTION, SITE_TITLE_APPEND } from "@/config";
 import { MDXContent } from "@/lib/components/MDX";
-import { ViewsCounter } from "@/lib/components/ViewsCounter";
+import { ViewsCounter } from "@/lib/domains/PageInteraction/ViewsCounter";
 import { canonicalUrl, defaultOgImageUrl } from "@/lib/seo";
 
 const rootPages = allRootPages;

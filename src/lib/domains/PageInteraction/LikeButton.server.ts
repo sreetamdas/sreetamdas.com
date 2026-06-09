@@ -4,7 +4,7 @@ import { allBlogPosts } from "content-collections";
 import { type LikeCount } from "@/lib/domains/PageViews";
 import { normalizePathname } from "@/lib/helpers/utils";
 
-import { type PagePathnamePayload, validatePagePathnamePayload } from "./pageInteraction.server";
+import { type PagePathnamePayload, validatePagePathnamePayload } from "./shared";
 
 export type { LikeCount } from "@/lib/domains/PageViews";
 
