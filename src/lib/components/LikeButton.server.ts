@@ -8,13 +8,6 @@ import { type PagePathnamePayload, validatePagePathnamePayload } from "./pageInt
 
 export type { LikeCount } from "@/lib/domains/PageViews";
 
-type LikeCountDeps<TDb> = {
-	getDb: () => TDb;
-	getLikes: (db: TDb, slug: string, visitorHash?: string) => Promise<LikeCount>;
-	incrementLikes: (db: TDb, slug: string, visitorHash: string) => Promise<LikeCount>;
-	getVisitorHash: (normalizedSlug: string, clientIp?: string) => Promise<string | undefined>;
-};
-
 const validBlogLikeSlugs = new Set(
 	allBlogPosts.flatMap((post) => {
 		if (!post.published) {
@@ -31,7 +24,7 @@ export const fetchLikeCountServerFn = createServerFn({
 		return validatePagePathnamePayload(data, "Invalid likes payload");
 	})
 	.handler(async (ctx) => {
-		return fetchLikeCount(ctx.data, undefined, getClientIpFromServerFnContext(ctx));
+		return fetchLikeCount(ctx.data, getClientIpFromServerFnContext(ctx));
 	});
 
 export const incrementLikeServerFn = createServerFn({
@@ -41,22 +34,11 @@ export const incrementLikeServerFn = createServerFn({
 		return validatePagePathnamePayload(data, "Invalid likes payload");
 	})
 	.handler(async (ctx) => {
-		return incrementLikeCount(ctx.data, undefined, getClientIpFromServerFnContext(ctx));
+		return incrementLikeCount(ctx.data, getClientIpFromServerFnContext(ctx));
 	});
 
-export async function fetchLikeCount(data: PagePathnamePayload): Promise<LikeCount>;
 export async function fetchLikeCount(
 	data: PagePathnamePayload,
-	deps: undefined,
-	clientIp?: string,
-): Promise<LikeCount>;
-export async function fetchLikeCount<TDb>(
-	data: PagePathnamePayload,
-	deps: LikeCountDeps<TDb>,
-): Promise<LikeCount>;
-export async function fetchLikeCount<TDb>(
-	data: PagePathnamePayload,
-	deps?: LikeCountDeps<TDb>,
 	clientIp?: string,
 ): Promise<LikeCount> {
 	const normalizedSlug = normalizePathname(data.slug);
@@ -66,12 +48,6 @@ export async function fetchLikeCount<TDb>(
 	}
 
 	try {
-		if (deps) {
-			const db = deps.getDb();
-			const visitorHash = await deps.getVisitorHash(normalizedSlug, clientIp);
-			return await deps.getLikes(db, normalizedSlug, visitorHash);
-		}
-
 		const { fetchLikeCountFromDb } = await import("./LikeButton.data.server");
 		return await fetchLikeCountFromDb(normalizedSlug, clientIp);
 	} catch {
@@ -79,34 +55,14 @@ export async function fetchLikeCount<TDb>(
 	}
 }
 
-export async function incrementLikeCount(data: PagePathnamePayload): Promise<LikeCount>;
 export async function incrementLikeCount(
 	data: PagePathnamePayload,
-	deps: undefined,
-	clientIp?: string,
-): Promise<LikeCount>;
-export async function incrementLikeCount<TDb>(
-	data: PagePathnamePayload,
-	deps: LikeCountDeps<TDb>,
-): Promise<LikeCount>;
-export async function incrementLikeCount<TDb>(
-	data: PagePathnamePayload,
-	deps?: LikeCountDeps<TDb>,
 	clientIp?: string,
 ): Promise<LikeCount> {
 	const normalizedSlug = normalizePathname(data.slug);
 
 	if (!isKnownBlogLikeSlug(normalizedSlug)) {
 		return { likes: 0, hasLiked: false };
-	}
-
-	if (deps) {
-		const db = deps.getDb();
-		const visitorHash = await deps.getVisitorHash(normalizedSlug, clientIp);
-		if (data.disabled || !visitorHash) {
-			return await deps.getLikes(db, normalizedSlug, visitorHash);
-		}
-		return await deps.incrementLikes(db, normalizedSlug, visitorHash);
 	}
 
 	try {

@@ -1,112 +1,42 @@
-import { describe, expect, test } from "vitest";
+import { beforeEach, describe, expect, test, vi } from "vitest";
+
+const dataServer = vi.hoisted(() => ({ fetchViewCountFromDb: vi.fn() }));
+
+vi.mock("./ViewsCounter.data.server", () => dataServer);
 
 import { fetchViewCount } from "./ViewsCounter.server";
 
+beforeEach(() => {
+	dataServer.fetchViewCountFromDb.mockReset();
+});
+
 describe("fetchViewCount", () => {
-	test("returns zero when the Cloudflare env is unavailable", async () => {
-		expect(await fetchViewCount({ slug: "/about", disabled: false })).toEqual({
-			view_count: 0,
-		});
-	});
+	test("delegates to the data layer with a normalized slug and the disabled flag", async () => {
+		dataServer.fetchViewCountFromDb.mockResolvedValue({ view_count: 7 });
 
-	test("returns zero for disabled counters when the Cloudflare env is unavailable", async () => {
-		expect(await fetchViewCount({ slug: "/about", disabled: true })).toEqual({
-			view_count: 0,
-		});
-	});
-
-	test("normalizes a trailing slash before writing views", async () => {
-		const calls: string[] = [];
-		const fakeDb = {};
-		const deps = {
-			getDb: () => {
-				calls.push("getDb");
-				return fakeDb;
-			},
-			getPageViews: async () => ({ view_count: 0 }),
-			upsertPageViews: async (_db: object, slug: string) => {
-				calls.push(slug);
-				return { view_count: 7 };
-			},
-		};
-
-		const result = await fetchViewCount({ slug: "/about/", disabled: false }, deps);
-
-		expect(result).toEqual({ view_count: 7 });
-		expect(calls).toEqual(["getDb", "/about"]);
+		expect(await fetchViewCount({ slug: "/about/", disabled: false })).toEqual({ view_count: 7 });
+		expect(dataServer.fetchViewCountFromDb).toHaveBeenCalledWith("/about", false);
 	});
 
 	test("does not trim the root pathname", async () => {
-		let receivedSlug = "";
-		const fakeDb = {};
-		const deps = {
-			getDb: () => {
-				return fakeDb;
-			},
-			getPageViews: async () => ({ view_count: 0 }),
-			upsertPageViews: async (_db: object, slug: string) => {
-				receivedSlug = slug;
-				return { view_count: 3 };
-			},
-		};
+		dataServer.fetchViewCountFromDb.mockResolvedValue({ view_count: 3 });
 
-		await fetchViewCount({ slug: "/", disabled: false }, deps);
+		await fetchViewCount({ slug: "/", disabled: false });
 
-		expect(receivedSlug).toBe("/");
+		expect(dataServer.fetchViewCountFromDb).toHaveBeenCalledWith("/", false);
 	});
 
-	test("fails open when db dependency throws", async () => {
-		const deps = {
-			getDb: () => {
-				throw new Error("db init failed");
-			},
-			getPageViews: async () => ({ view_count: 0 }),
-			upsertPageViews: async () => ({ view_count: 99 }),
-		};
+	test("passes the disabled flag through to the data layer", async () => {
+		dataServer.fetchViewCountFromDb.mockResolvedValue({ view_count: 42 });
 
-		expect(await fetchViewCount({ slug: "/about", disabled: false }, deps)).toEqual({
-			view_count: 0,
-		});
+		await fetchViewCount({ slug: "/about", disabled: true });
+
+		expect(dataServer.fetchViewCountFromDb).toHaveBeenCalledWith("/about", true);
 	});
 
-	test("fails open when upsert throws", async () => {
-		const fakeDb = {};
-		const deps = {
-			getDb: () => {
-				return fakeDb;
-			},
-			getPageViews: async () => ({ view_count: 0 }),
-			upsertPageViews: async () => {
-				throw new Error("write failed");
-			},
-		};
+	test("fails open when the data layer throws", async () => {
+		dataServer.fetchViewCountFromDb.mockRejectedValue(new Error("write failed"));
 
-		expect(await fetchViewCount({ slug: "/about", disabled: false }, deps)).toEqual({
-			view_count: 0,
-		});
-	});
-
-	test("reads existing counts when counter is disabled", async () => {
-		const calls: string[] = [];
-		const fakeDb = {};
-		const deps = {
-			getDb: () => {
-				calls.push("getDb");
-				return fakeDb;
-			},
-			getPageViews: async (_db: object, slug: string) => {
-				calls.push(`read:${slug}`);
-				return { view_count: 42 };
-			},
-			upsertPageViews: async () => {
-				calls.push("upsert");
-				return { view_count: 1 };
-			},
-		};
-
-		const result = await fetchViewCount({ slug: "/about/", disabled: true }, deps);
-
-		expect(result).toEqual({ view_count: 42 });
-		expect(calls).toEqual(["getDb", "read:/about"]);
+		expect(await fetchViewCount({ slug: "/about", disabled: false })).toEqual({ view_count: 0 });
 	});
 });
