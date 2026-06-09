@@ -32,3 +32,13 @@ function isPagePathnamePayload(data: unknown): data is PagePathnamePayload {
 		typeof data.slug === "string" && data.slug.length > 0 && typeof data.disabled === "boolean"
 	);
 }
+
+const warnedContexts = new Set<string>();
+
+/** Counters fail open so the page still renders; log the first failure per context for visibility. */
+export function warnCounterFailureOnce(context: string, error: unknown) {
+	if (warnedContexts.has(context)) return;
+	warnedContexts.add(context);
+	// oxlint-disable-next-line no-console
+	console.warn(`page interaction counter failed: ${context}`, error);
+}

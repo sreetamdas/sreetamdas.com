@@ -2,7 +2,11 @@ import { createServerFn } from "@tanstack/react-start";
 
 import { normalizePathname } from "@/lib/helpers/utils";
 
-import { type PagePathnamePayload, validatePagePathnamePayload } from "./shared";
+import {
+	type PagePathnamePayload,
+	validatePagePathnamePayload,
+	warnCounterFailureOnce,
+} from "./shared";
 
 export type PageViewCount = {
 	view_count: number;
@@ -24,7 +28,8 @@ export async function fetchViewCount(data: PagePathnamePayload): Promise<PageVie
 	try {
 		const { fetchViewCountFromDb } = await import("./ViewsCounter.data.server");
 		return await fetchViewCountFromDb(normalizedSlug, data.disabled);
-	} catch {
+	} catch (error) {
+		warnCounterFailureOnce("fetch views", error);
 		return { view_count: 0 };
 	}
 }

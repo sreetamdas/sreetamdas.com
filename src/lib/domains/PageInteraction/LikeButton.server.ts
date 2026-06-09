@@ -4,7 +4,11 @@ import { allBlogPosts } from "content-collections";
 import { type LikeCount } from "@/lib/domains/PageViews";
 import { normalizePathname } from "@/lib/helpers/utils";
 
-import { type PagePathnamePayload, validatePagePathnamePayload } from "./shared";
+import {
+	type PagePathnamePayload,
+	validatePagePathnamePayload,
+	warnCounterFailureOnce,
+} from "./shared";
 
 export type { LikeCount } from "@/lib/domains/PageViews";
 
@@ -50,7 +54,8 @@ export async function fetchLikeCount(
 	try {
 		const { fetchLikeCountFromDb } = await import("./LikeButton.data.server");
 		return await fetchLikeCountFromDb(normalizedSlug, clientIp);
-	} catch {
+	} catch (error) {
+		warnCounterFailureOnce("fetch likes", error);
 		return { likes: 0, hasLiked: false };
 	}
 }
@@ -68,7 +73,8 @@ export async function incrementLikeCount(
 	try {
 		const { incrementLikeCountInDb } = await import("./LikeButton.data.server");
 		return await incrementLikeCountInDb(normalizedSlug, data.disabled, clientIp);
-	} catch {
+	} catch (error) {
+		warnCounterFailureOnce("increment likes", error);
 		return { likes: 0, hasLiked: false };
 	}
 }
