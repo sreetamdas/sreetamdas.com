@@ -88,7 +88,8 @@ export function isSlideSessionReaction(value: unknown): value is SlideSessionRea
 		"createdAt" in value &&
 		typeof value.id === "string" &&
 		typeof value.emoji === "string" &&
-		typeof value.createdAt === "number"
+		typeof value.createdAt === "number" &&
+		SLIDE_REACTION_EMOJIS.some((emoji) => emoji === value.emoji)
 	);
 }
 
@@ -100,8 +101,8 @@ export function isSetSlideMessage(value: unknown): value is SetSlideMessage {
 		value.type === "set-slide" &&
 		"slide" in value &&
 		"step" in value &&
-		typeof value.slide === "number" &&
-		typeof value.step === "number"
+		isSlideIndex(value.slide) &&
+		isSlideIndex(value.step)
 	);
 }
 
@@ -204,8 +205,9 @@ function isPollOption(value: unknown): value is SlidePoll["options"][number] {
 }
 
 function isPollSlideScope(value: unknown): value is number | null {
-	return (
-		value === null ||
-		(typeof value === "number" && Number.isFinite(value) && Number.isInteger(value) && value >= 0)
-	);
+	return value === null || isSlideIndex(value);
+}
+
+function isSlideIndex(value: unknown): value is number {
+	return typeof value === "number" && Number.isInteger(value) && value >= 0;
 }
