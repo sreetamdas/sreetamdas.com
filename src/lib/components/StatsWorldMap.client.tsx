@@ -4,6 +4,8 @@ import WorldMap, { regions, type Data, type ISOCode } from "react-svg-worldmap";
 
 import type { StatsCountryRow } from "@/lib/domains/Plausible/shared";
 
+const numberFormatter = new Intl.NumberFormat("en-US");
+
 type StatsWorldMapProps = {
 	countries: Array<StatsCountryRow>;
 };
@@ -50,7 +52,7 @@ export function StatsWorldMap({ countries }: StatsWorldMapProps) {
 				}}
 				tooltipTextFunction={({ countryName, countryValue }) => {
 					const visitors = typeof countryValue === "number" ? countryValue : 0;
-					return `${countryName}: ${new Intl.NumberFormat("en-US").format(visitors)} visitors`;
+					return `${countryName}: ${numberFormatter.format(visitors)} visitors`;
 				}}
 			/>
 		</div>
