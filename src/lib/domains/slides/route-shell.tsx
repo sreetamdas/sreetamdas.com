@@ -13,8 +13,8 @@ import {
 	SlideSessionOverlay,
 	type SlideSessionPollDefinition,
 	type SlideSessionRole,
-	useSlideSession,
 } from "@/lib/domains/slides/live-session";
+import { useSlideSession } from "@/lib/domains/slides/use-slide-session";
 
 export type SlideSearch = {
 	live?: string;
