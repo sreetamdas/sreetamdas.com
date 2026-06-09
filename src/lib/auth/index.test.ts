@@ -1,6 +1,12 @@
 import { describe, expect, test } from "vitest";
 
-import { getAuthSecret, getSiteUrl, isAllowedPresenterEmail, parseAllowedPresenterEmails } from ".";
+import {
+	getAuthSecret,
+	getSiteUrl,
+	isAllowedPresenterEmail,
+	isCloudflareUserResponse,
+	parseAllowedPresenterEmails,
+} from ".";
 
 describe("presenter allowlist", () => {
 	test("normalizes comma-separated emails", () => {
@@ -32,6 +38,41 @@ describe("presenter allowlist", () => {
 				SLIDE_PRESENTER_EMAILS: "sreetam@example.com",
 			}),
 		).toBe(true);
+	});
+
+	test("fails closed when no allowlist is configured", () => {
+		expect(isAllowedPresenterEmail("sreetam@example.com", {})).toBe(false);
+		expect(isAllowedPresenterEmail("sreetam@example.com", { SLIDE_PRESENTER_EMAILS: "" })).toBe(
+			false,
+		);
+		expect(isAllowedPresenterEmail("sreetam@example.com", { SLIDE_PRESENTER_EMAILS: " , " })).toBe(
+			false,
+		);
+	});
+});
+
+describe("cloudflare user response validation", () => {
+	test("accepts a well-formed user payload", () => {
+		expect(
+			isCloudflareUserResponse({ success: true, result: { id: "abc", email: "a@b.com" } }),
+		).toBe(true);
+	});
+
+	test("accepts an error payload that omits result", () => {
+		expect(isCloudflareUserResponse({ success: false })).toBe(true);
+	});
+
+	test("rejects non-objects and a missing or non-boolean success", () => {
+		expect(isCloudflareUserResponse(null)).toBe(false);
+		expect(isCloudflareUserResponse("nope")).toBe(false);
+		expect(isCloudflareUserResponse({})).toBe(false);
+		expect(isCloudflareUserResponse({ success: "yes" })).toBe(false);
+	});
+
+	test("rejects non-string id or email fields", () => {
+		expect(isCloudflareUserResponse({ success: true, result: { id: 1 } })).toBe(false);
+		expect(isCloudflareUserResponse({ success: true, result: { email: 2 } })).toBe(false);
+		expect(isCloudflareUserResponse({ success: true, result: null })).toBe(false);
 	});
 });
 
