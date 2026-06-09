@@ -170,7 +170,8 @@ export function useSlideSession({
 	}, [connected, localSlide, localStep, role, send, sessionId]);
 
 	useEffect(() => {
-		if (!sessionId || role !== "viewer" || !browserHref) return;
+		// Only poll while the socket is down; a connected socket pushes snapshots itself.
+		if (!sessionId || role !== "viewer" || !browserHref || connected) return;
 
 		let cancelled = false;
 		let inFlight = false;
@@ -202,7 +203,7 @@ export function useSlideSession({
 			cancelled = true;
 			clearInterval(timer);
 		};
-	}, [browserHref, role, sessionId]);
+	}, [browserHref, connected, role, sessionId]);
 
 	useEffect(() => {
 		if (reactions.length === 0) return;
