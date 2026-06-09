@@ -45,7 +45,7 @@ type PlausibleQueryBody = {
 
 type PlausibleQueryRow = {
 	dimensions: Array<string>;
-	metrics: Array<number>;
+	metrics: Array<number | null>;
 };
 
 type PlausibleQueryResponse = {
@@ -278,9 +278,9 @@ function parseTimeline(response: PlausibleQueryResponse): PlausibleStats["timeli
 	}));
 }
 
-function getMetric(metrics: Array<number>, index: number): number {
+function getMetric(metrics: Array<number | null>, index: number): number {
 	const metric = metrics[index];
-	return Number.isFinite(metric) ? metric : 0;
+	return typeof metric === "number" && Number.isFinite(metric) ? metric : 0;
 }
 
 function isPlausibleQueryResponse(value: unknown): value is PlausibleQueryResponse {
@@ -308,6 +308,6 @@ function isPlausibleQueryRow(value: unknown): value is PlausibleQueryRow {
 		Array.isArray(value.dimensions) &&
 		value.dimensions.every((dimension) => typeof dimension === "string") &&
 		Array.isArray(value.metrics) &&
-		value.metrics.every((metric) => typeof metric === "number" && Number.isFinite(metric))
+		value.metrics.every((metric) => metric === null || typeof metric === "number")
 	);
 }
