@@ -140,7 +140,7 @@ describe("handleSocialLoginRequestWithAuth", () => {
 		);
 
 		expect(response.status).toBe(500);
-		expect(await response.json()).toEqual({ error: "Cloudflare OAuth is not configured" });
+		expect(await response.json()).toEqual({ error: "Sign-in failed" });
 	});
 });
 

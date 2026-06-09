@@ -97,7 +97,9 @@ export async function handleSocialLoginRequestWithAuth(
 		);
 	} catch (error) {
 		if (error instanceof SocialSignInError) {
-			return Response.json({ error: error.message }, { status: 500 });
+			// oxlint-disable-next-line no-console
+			console.error(error.message);
+			return Response.json({ error: "Sign-in failed" }, { status: 500 });
 		}
 
 		throw error;

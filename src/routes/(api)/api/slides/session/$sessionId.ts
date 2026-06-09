@@ -29,7 +29,9 @@ export async function handleSlideSessionRequest(
 	presenterEmailResolver?: PresenterEmailResolver,
 ): Promise<Response> {
 	if (!sessions) {
-		return Response.json({ error: "SLIDE_SESSIONS binding is not available" }, { status: 500 });
+		// oxlint-disable-next-line no-console
+		console.error("SLIDE_SESSIONS binding is not available");
+		return Response.json({ error: "Live sessions are unavailable" }, { status: 500 });
 	}
 
 	if (!isValidSessionId(sessionId)) {

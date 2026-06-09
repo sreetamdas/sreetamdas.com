@@ -21,7 +21,7 @@ describe("handleSlideSessionRequest", () => {
 
 		expect(response.status).toBe(500);
 		expect(await response.json()).toEqual({
-			error: "SLIDE_SESSIONS binding is not available",
+			error: "Live sessions are unavailable",
 		});
 	});
 
