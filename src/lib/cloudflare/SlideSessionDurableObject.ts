@@ -7,13 +7,12 @@ import {
 	isResetPollMessage,
 	isSetSlideMessage,
 	isVoteMessage,
+	SLIDE_SESSION_ROLE_HEADER,
 	type SlidePoll,
 	type SlideSessionPosition,
 	type SlideSessionRole,
 	type SlideSessionSnapshot,
 } from "@/lib/domains/slides/live-session-protocol";
-
-const SLIDE_SESSION_ROLE_HEADER = "x-sreetamdas-slide-role";
 
 type PollRecord = {
 	id: string;
@@ -269,10 +268,7 @@ function parseTrustedRole(value: string | null): SlideSessionRole {
 }
 
 function parseClientId(value: string | null): string {
-	if (value && /^[a-zA-Z0-9_-]{8,80}$/.test(value)) {
-		return value;
-	}
-	return crypto.randomUUID();
+	return parseOptionalClientId(value) ?? crypto.randomUUID();
 }
 
 function parseOptionalClientId(value: string | null): string | undefined {

@@ -7,6 +7,9 @@ import { SLIDE_REACTION_EMOJIS } from "./reactions";
 
 export type SlideSessionRole = "master" | "viewer";
 
+/** Trusted role header set by the session API route and read by the Durable Object. */
+export const SLIDE_SESSION_ROLE_HEADER = "x-sreetamdas-slide-role";
+
 export type SlideSessionPosition = {
 	slide: number;
 	step: number;

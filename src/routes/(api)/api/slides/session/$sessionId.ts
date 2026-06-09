@@ -6,6 +6,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { env } from "cloudflare:workers";
 
 import { getAllowedPresenterEmail } from "@/lib/auth";
+import { SLIDE_SESSION_ROLE_HEADER } from "@/lib/domains/slides/live-session-protocol";
 
 type SlideSessionStub = {
 	fetch: (request: Request) => Promise<Response> | Response;
@@ -20,8 +21,6 @@ type SlideRole = "master" | "viewer";
 type PresenterEmailResolver = (
 	request: Request,
 ) => Promise<string | undefined> | string | undefined;
-
-export const SLIDE_SESSION_ROLE_HEADER = "x-sreetamdas-slide-role";
 
 export async function handleSlideSessionRequest(
 	request: Request,
