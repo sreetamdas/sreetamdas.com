@@ -41,8 +41,8 @@ export function getAuth() {
 	const google_oauth_config = getGoogleOAuthConfig();
 
 	return betterAuth({
-		// baseURL: `${siteUrl}/api/auth`,
-		secret: env.BETTER_AUTH_SECRET,
+		baseURL: `${siteUrl}/api/auth`,
+		secret: getAuthSecret(),
 		database: drizzleAdapter(getDb(), {
 			provider: "sqlite",
 			schema: {
@@ -72,7 +72,7 @@ export async function getAuthSession(request: Request): Promise<AuthSession> {
 
 export async function getAllowedPresenterEmail(request: Request): Promise<string | undefined> {
 	const session = await getAuthSession(request);
-	const email = session?.user.email;
+	const email = session?.user?.email;
 	return email && isAllowedPresenterEmail(email) ? email : undefined;
 }
 
@@ -162,7 +162,7 @@ function getGoogleOAuthConfig() {
 	};
 }
 
-function isCloudflareUserResponse(value: unknown): value is CloudflareUserResponse {
+export function isCloudflareUserResponse(value: unknown): value is CloudflareUserResponse {
 	if (typeof value !== "object" || value === null) return false;
 	if (!("success" in value) || typeof value.success !== "boolean") return false;
 	// Cloudflare error responses can omit `result`; callers still require result.id/email.
