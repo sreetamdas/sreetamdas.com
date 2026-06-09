@@ -98,14 +98,16 @@ export async function incrementLikes(
 		.onConflictDoUpdate({
 			target: pageDetails.slug,
 			set: { likes: likesFromVisitors, updatedAt: sql`CURRENT_TIMESTAMP` },
-		});
+		})
+		.returning({ likes: pageDetails.likes });
 
 	// Keep the insert and derived-count repair atomic so partial failure cannot stale the public counter.
 	// These must be query-builder statements, not db.run(sql): D1's db.batch prepares each item and
 	// binds its params, but a raw SQLiteRaw exposes no prepared statement to bind, so it throws there.
-	await db.batch([insertLike, syncLikeCount]);
+	const [, syncedRows] = await db.batch([insertLike, syncLikeCount]);
 
-	return getLikes(db, normalizedSlug, visitorHash);
+	// The visitor's like row exists once the insert/conflict resolves, so this visitor has liked.
+	return { likes: syncedRows[0]?.likes ?? 0, hasLiked: true };
 }
 
 async function getLikeCount(db: PageViewsDb, slug: string): Promise<number> {
