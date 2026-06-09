@@ -27,7 +27,7 @@ const validBlogLikeSlugs = new Set(
 export const fetchLikeCountServerFn = createServerFn({
 	method: "GET",
 })
-	.inputValidator((data) => {
+	.validator((data) => {
 		return validatePagePathnamePayload(data, "Invalid likes payload");
 	})
 	.handler(async (ctx) => {
@@ -37,7 +37,7 @@ export const fetchLikeCountServerFn = createServerFn({
 export const incrementLikeServerFn = createServerFn({
 	method: "POST",
 })
-	.inputValidator((data) => {
+	.validator((data) => {
 		return validatePagePathnamePayload(data, "Invalid likes payload");
 	})
 	.handler(async (ctx) => {
