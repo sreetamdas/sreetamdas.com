@@ -130,6 +130,21 @@ describe("handleSlideSessionRequest", () => {
 		expect(await response.json()).toEqual({ error: "Presenter authentication required" });
 	});
 
+	test("fails closed for master requests when no presenter resolver is wired", async () => {
+		const response = await handleSlideSessionRequest(
+			new Request("https://example.com/api/slides/session/keynote?role=master"),
+			{
+				getByName: () => {
+					throw new Error("should not lookup");
+				},
+			},
+			"keynote",
+		);
+
+		expect(response.status).toBe(401);
+		expect(await response.json()).toEqual({ error: "Presenter authentication required" });
+	});
+
 	test("forwards a trusted master role for allowed presenters", async () => {
 		let trustedRole = "";
 		const response = await handleSlideSessionRequest(

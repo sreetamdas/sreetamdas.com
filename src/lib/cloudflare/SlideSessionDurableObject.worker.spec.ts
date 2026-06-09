@@ -173,6 +173,42 @@ describe("SlideSessionDurableObject", () => {
 		viewerB.close();
 	});
 
+	it("ignores viewer attempts to create or close polls", async () => {
+		const session = uniqueSession("viewer-poll");
+		const master = await openSocket(session, "master", "master-viewer-poll");
+		const viewer = await openSocket(session, "viewer", "viewer-viewer-poll");
+
+		viewer.send(JSON.stringify({ type: "create-poll", question: "hijack?", options: ["a", "b"] }));
+		await sleep(50);
+		const afterCreate = await slideSession(session).fetch("https://example.com/");
+		const afterCreateBody: unknown = await afterCreate.json();
+		expect(isSlideSessionSnapshot(afterCreateBody)).toBe(true);
+		if (isSlideSessionSnapshot(afterCreateBody)) {
+			expect(afterCreateBody.poll).toBe(null);
+		}
+
+		master.send(
+			JSON.stringify({
+				type: "create-poll",
+				question: "Which runtime wins?",
+				options: ["Cloudflare", "Node"],
+			}),
+		);
+		await waitForSnapshot(master, (snapshot) => snapshot.poll?.open === true);
+
+		viewer.send(JSON.stringify({ type: "close-poll" }));
+		await sleep(50);
+		const afterClose = await slideSession(session).fetch("https://example.com/");
+		const afterCloseBody: unknown = await afterClose.json();
+		expect(isSlideSessionSnapshot(afterCloseBody)).toBe(true);
+		if (isSlideSessionSnapshot(afterCloseBody)) {
+			expect(afterCloseBody.poll?.open).toBe(true);
+		}
+
+		master.close();
+		viewer.close();
+	});
+
 	it("broadcasts viewer reactions to presenter sockets", async () => {
 		const session = uniqueSession("reaction");
 		const master = await openSocket(session, "master", "master-reaction");
