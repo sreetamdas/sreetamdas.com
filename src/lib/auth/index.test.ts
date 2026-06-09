@@ -1,12 +1,25 @@
-import { describe, expect, test } from "vitest";
+import { afterEach, describe, expect, test, vi } from "vitest";
 
 import {
 	getAuthSecret,
+	getCloudflareUserInfo,
 	getSiteUrl,
 	isAllowedPresenterEmail,
 	isCloudflareUserResponse,
 	parseAllowedPresenterEmails,
 } from ".";
+
+function mockFetchOnce(response: { ok: boolean; json?: () => unknown }) {
+	vi.stubGlobal(
+		"fetch",
+		vi.fn(() =>
+			Promise.resolve({
+				ok: response.ok,
+				json: () => Promise.resolve(response.json?.()),
+			}),
+		),
+	);
+}
 
 describe("presenter allowlist", () => {
 	test("normalizes comma-separated emails", () => {
@@ -92,5 +105,68 @@ describe("auth environment helpers", () => {
 
 	test("throws when BETTER_AUTH_SECRET is missing in production", () => {
 		expect(() => getAuthSecret({}, false)).toThrow("BETTER_AUTH_SECRET must be set in production");
+	});
+});
+
+describe("getCloudflareUserInfo", () => {
+	afterEach(() => {
+		vi.unstubAllGlobals();
+	});
+
+	test("returns null without an access token and does not call fetch", async () => {
+		const fetchSpy = vi.fn();
+		vi.stubGlobal("fetch", fetchSpy);
+
+		expect(await getCloudflareUserInfo({})).toBeNull();
+		expect(fetchSpy).not.toHaveBeenCalled();
+	});
+
+	test("returns null when the user endpoint responds with a non-ok status", async () => {
+		mockFetchOnce({ ok: false });
+
+		expect(await getCloudflareUserInfo({ accessToken: "token" })).toBeNull();
+	});
+
+	test("returns null when the payload is malformed or missing id/email", async () => {
+		mockFetchOnce({ ok: true, json: () => ({ success: true, result: { id: "abc" } }) });
+		expect(await getCloudflareUserInfo({ accessToken: "token" })).toBeNull();
+
+		mockFetchOnce({ ok: true, json: () => "not-an-object" });
+		expect(await getCloudflareUserInfo({ accessToken: "token" })).toBeNull();
+	});
+
+	test("maps a well-formed payload, composing the display name", async () => {
+		mockFetchOnce({
+			ok: true,
+			json: () => ({
+				success: true,
+				result: {
+					id: "cf-1",
+					email: "presenter@example.com",
+					first_name: "Sreetam",
+					last_name: "Das",
+					avatar_url: "https://img.example/a.png",
+				},
+			}),
+		});
+
+		expect(await getCloudflareUserInfo({ accessToken: "token" })).toEqual({
+			id: "cf-1",
+			email: "presenter@example.com",
+			emailVerified: true,
+			name: "Sreetam Das",
+			image: "https://img.example/a.png",
+		});
+	});
+
+	test("falls back to the email when no name parts are present", async () => {
+		mockFetchOnce({
+			ok: true,
+			json: () => ({ success: true, result: { id: "cf-2", email: "noname@example.com" } }),
+		});
+
+		const user = await getCloudflareUserInfo({ accessToken: "token" });
+		expect(user?.name).toBe("noname@example.com");
+		expect(user?.image).toBeUndefined();
 	});
 });

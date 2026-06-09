@@ -117,34 +117,46 @@ function getCloudflareOAuthConfig() {
 		tokenUrl: DEFAULT_CLOUDFLARE_TOKEN_URL,
 		scopes: DEFAULT_CLOUDFLARE_SCOPES,
 		authentication: "post" as const,
-		getUserInfo: async (tokens: { accessToken?: string }) => {
-			if (!tokens.accessToken) return null;
+		getUserInfo: getCloudflareUserInfo,
+	};
+}
 
-			const response = await fetch(DEFAULT_CLOUDFLARE_USER_INFO_URL, {
-				headers: {
-					Authorization: `Bearer ${tokens.accessToken}`,
-				},
-			});
+type CloudflareOAuthUser = {
+	id: string;
+	email: string;
+	emailVerified: boolean;
+	name: string;
+	image: string | undefined;
+};
 
-			if (!response.ok) return null;
+export async function getCloudflareUserInfo(tokens: {
+	accessToken?: string;
+}): Promise<CloudflareOAuthUser | null> {
+	if (!tokens.accessToken) return null;
 
-			const payload: unknown = await response.json();
-			if (!isCloudflareUserResponse(payload) || !payload.result?.id || !payload.result.email) {
-				return null;
-			}
-
-			const firstName = payload.result.first_name?.trim() ?? "";
-			const lastName = payload.result.last_name?.trim() ?? "";
-			const displayName = `${firstName} ${lastName}`.trim() || payload.result.email;
-
-			return {
-				id: payload.result.id,
-				email: payload.result.email,
-				emailVerified: true,
-				name: displayName,
-				image: payload.result.avatar_url,
-			};
+	const response = await fetch(DEFAULT_CLOUDFLARE_USER_INFO_URL, {
+		headers: {
+			Authorization: `Bearer ${tokens.accessToken}`,
 		},
+	});
+
+	if (!response.ok) return null;
+
+	const payload: unknown = await response.json();
+	if (!isCloudflareUserResponse(payload) || !payload.result?.id || !payload.result.email) {
+		return null;
+	}
+
+	const firstName = payload.result.first_name?.trim() ?? "";
+	const lastName = payload.result.last_name?.trim() ?? "";
+	const displayName = `${firstName} ${lastName}`.trim() || payload.result.email;
+
+	return {
+		id: payload.result.id,
+		email: payload.result.email,
+		emailVerified: true,
+		name: displayName,
+		image: payload.result.avatar_url,
 	};
 }
 
