@@ -18,7 +18,9 @@ export function handlePresenceGetForNamespace(
 	presence: PresenceNamespace | undefined,
 ): Promise<Response> | Response {
 	if (!presence) {
-		return Response.json({ error: "SITE_PRESENCE binding is not available" }, { status: 500 });
+		// oxlint-disable-next-line no-console
+		console.error("SITE_PRESENCE binding is not available");
+		return Response.json({ error: "Live presence is unavailable" }, { status: 500 });
 	}
 
 	const stub = presence.getByName("global");
