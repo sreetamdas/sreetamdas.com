@@ -37,10 +37,11 @@ describe("incrementLikeCountInDb", () => {
 	});
 
 	test("reads existing likes when no visitor hash can be derived (no salt)", async () => {
-		await incrementLikeCountInDb("/blog/x", false, "1.2.3.4");
+		const result = await incrementLikeCountInDb("/blog/x", false, "1.2.3.4");
 
 		expect(pageViews.getLikes).toHaveBeenCalledWith(expect.anything(), "/blog/x", undefined);
 		expect(pageViews.incrementLikes).not.toHaveBeenCalled();
+		expect(result.readOnly).toBe(true);
 	});
 
 	test("increments when enabled and a visitor hash is derived", async () => {
@@ -61,18 +62,20 @@ describe("fetchLikeCountFromDb", () => {
 	test("reads likes with a derived visitor hash when salt and ip are present", async () => {
 		cloudflare.env = { LIKES_IP_SALT: "salt" };
 
-		await fetchLikeCountFromDb("/blog/x", "1.2.3.4");
+		const result = await fetchLikeCountFromDb("/blog/x", "1.2.3.4");
 
 		expect(pageViews.getLikes).toHaveBeenCalledWith(
 			expect.anything(),
 			"/blog/x",
 			expect.stringMatching(SHA256_HEX),
 		);
+		expect(result.readOnly).toBe(false);
 	});
 
 	test("reads likes without a hash when the salt is missing", async () => {
-		await fetchLikeCountFromDb("/blog/x", "1.2.3.4");
+		const result = await fetchLikeCountFromDb("/blog/x", "1.2.3.4");
 
 		expect(pageViews.getLikes).toHaveBeenCalledWith(expect.anything(), "/blog/x", undefined);
+		expect(result.readOnly).toBe(true);
 	});
 });

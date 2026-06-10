@@ -49,16 +49,20 @@ const Likes = ({ slug, disabled }: LikeButtonProps) => {
 
 			const previousLikeCount = queryClient.getQueryData<LikeCount>(queryKey);
 			if (previousLikeCount?.hasLiked) {
-				return;
+				return { previousLikeCount };
 			}
 
 			queryClient.setQueryData<LikeCount>(queryKey, {
 				likes: (previousLikeCount?.likes ?? data?.likes ?? 0) + 1,
 				hasLiked: true,
 			});
+
+			return { previousLikeCount };
 		},
-		onError: () => {
-			queryClient.invalidateQueries({ queryKey });
+		onError: (_error, _variables, context) => {
+			if (context?.previousLikeCount) {
+				queryClient.setQueryData<LikeCount>(queryKey, context.previousLikeCount);
+			}
 		},
 		onSuccess: (likeCount) => {
 			queryClient.setQueryData<LikeCount>(queryKey, likeCount);
@@ -70,16 +74,18 @@ const Likes = ({ slug, disabled }: LikeButtonProps) => {
 	}
 
 	const hasLiked = data?.hasLiked ?? false;
+	const readOnly = data?.readOnly ?? false;
 
 	return (
 		<button
+			aria-pressed={hasLiked}
 			className={cn(
 				"m-0 cursor-pointer border-0 bg-transparent p-0 text-xs text-current",
-				(disabled || hasLiked || isPending) && "cursor-not-allowed opacity-70",
+				(disabled || hasLiked || isPending || readOnly) && "cursor-not-allowed opacity-70",
 			)}
-			disabled={disabled || hasLiked || isPending}
+			disabled={disabled || hasLiked || isPending || readOnly}
 			onClick={() => {
-				if (hasLiked) {
+				if (hasLiked || readOnly) {
 					return;
 				}
 
@@ -87,24 +93,33 @@ const Likes = ({ slug, disabled }: LikeButtonProps) => {
 			}}
 			type="button"
 		>
-			{getLikeCountCopy(data?.likes, hasLiked)}
+			{getLikeCountCopy(data?.likes, hasLiked, readOnly)}
 		</button>
 	);
 };
 
-function getLikeCountCopy(likes: number | undefined, hasLiked: boolean) {
+function getLikeCountCopy(likes: number | undefined, hasLiked: boolean, readOnly: boolean) {
 	const likeCount = likes ?? 0;
 	const likeCopy = likeCount === 1 ? "like" : "likes";
+
+	if (readOnly) {
+		return (
+			<>
+				<LikeCountBadge>{likeCount.toLocaleString()}</LikeCountBadge> {likeCopy}
+			</>
+		);
+	}
+
 	const actionCopy = hasLiked ? "Thanks for liking this post." : "Like this post.";
 
 	return (
 		<>
-			{actionCopy} <LikeCount>{likeCount.toLocaleString()}</LikeCount> {likeCopy}
+			{actionCopy} <LikeCountBadge>{likeCount.toLocaleString()}</LikeCountBadge> {likeCopy}
 		</>
 	);
 }
 
-const LikeCount = ({ children }: { children: string }) => (
+const LikeCountBadge = ({ children }: { children: string }) => (
 	<span className="rounded-global border-2 border-solid border-primary bg-background p-1 font-mono text-base text-primary transition-colors">
 		{children}
 	</span>

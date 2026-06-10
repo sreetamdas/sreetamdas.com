@@ -33,12 +33,19 @@ function isPagePathnamePayload(data: unknown): data is PagePathnamePayload {
 	);
 }
 
-const warnedContexts = new Set<string>();
+const WARN_WINDOW_MS = 5 * 60 * 1000;
+const lastWarnedAt = new Map<string, number>();
 
-/** Counters fail open so the page still renders; log the first failure per context for visibility. */
+/**
+ * Counters fail open so the page still renders; log at most once per context per
+ * window so a sustained outage keeps surfacing instead of going silent after the
+ * first line.
+ */
 export function warnCounterFailureOnce(context: string, error: unknown) {
-	if (warnedContexts.has(context)) return;
-	warnedContexts.add(context);
+	const now = Date.now();
+	const warnedAt = lastWarnedAt.get(context);
+	if (warnedAt !== undefined && now - warnedAt < WARN_WINDOW_MS) return;
+	lastWarnedAt.set(context, now);
 	// oxlint-disable-next-line no-console
 	console.warn(`page interaction counter failed: ${context}`, error);
 }

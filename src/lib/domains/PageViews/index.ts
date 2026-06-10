@@ -19,6 +19,7 @@ export type PageViewCount = {
 export type LikeCount = {
 	likes: number;
 	hasLiked: boolean;
+	readOnly?: boolean;
 };
 
 export type PageViewsDb = BaseSQLiteDatabase<"sync" | "async", unknown, typeof schema>;

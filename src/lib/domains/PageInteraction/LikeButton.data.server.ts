@@ -13,7 +13,8 @@ export async function fetchLikeCountFromDb(
 ): Promise<LikeCount> {
 	const db = getDb();
 	const visitorHash = await getVisitorHash(normalizedSlug, clientIp);
-	return await getLikes(db, normalizedSlug, visitorHash);
+	const likeCount = await getLikes(db, normalizedSlug, visitorHash);
+	return { ...likeCount, readOnly: !visitorHash };
 }
 
 export async function incrementLikeCountInDb(
@@ -24,7 +25,8 @@ export async function incrementLikeCountInDb(
 	const db = getDb();
 	const visitorHash = await getVisitorHash(normalizedSlug, clientIp);
 	if (disabled || !visitorHash) {
-		return await getLikes(db, normalizedSlug, visitorHash);
+		const likeCount = await getLikes(db, normalizedSlug, visitorHash);
+		return { ...likeCount, readOnly: !visitorHash };
 	}
 	return await incrementLikes(db, normalizedSlug, visitorHash);
 }
