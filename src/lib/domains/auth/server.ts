@@ -190,16 +190,7 @@ function createCookieHeaders(cookies: Array<string>) {
 }
 
 function getSetCookieHeaders(headers: Headers): Array<string> {
-	const get_set_cookie = Reflect.get(headers, "getSetCookie");
-	if (typeof get_set_cookie === "function") {
-		const cookies: unknown = Reflect.apply(get_set_cookie, headers, []);
-		if (Array.isArray(cookies) && cookies.every((cookie) => typeof cookie === "string")) {
-			return cookies;
-		}
-	}
-
-	const cookie = headers.get("Set-Cookie");
-	return cookie ? [cookie] : [];
+	return headers.getSetCookie();
 }
 
 function isSocialSignInProvider(value: unknown): value is SocialSignInProvider {

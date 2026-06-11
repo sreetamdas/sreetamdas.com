@@ -6,7 +6,7 @@ import { describe, expect, test } from "vitest";
 import * as schema from "@/db/schema";
 import { pageDetails, postLikes } from "@/db/schema";
 
-import type { PageLikesDb, PageViewsDb } from "./index";
+import type { PageLikesDb, PageLikesTestDb, PageViewsDb } from "./index";
 
 import { getLikes, getPageViews, incrementLikes, upsertPageViews } from "./index";
 
@@ -196,12 +196,9 @@ async function getPageLikes(db: PageViewsDb, slug: string): Promise<number> {
 	return rows[0]?.likes ?? 0;
 }
 
-function createBatchablePageViewsDb(sqlite: Database.Database): PageLikesDb {
-	const db = Object.assign(drizzle({ client: sqlite, schema }), {
-		batch: (queries: readonly unknown[]) => Promise.all(queries),
+function createBatchablePageViewsDb(sqlite: Database.Database): PageLikesTestDb {
+	return Object.assign(drizzle({ client: sqlite, schema }), {
+		batch: ([first, second]: Parameters<PageLikesTestDb["batch"]>[0]) =>
+			Promise.all([first, second]),
 	});
-
-	// The unit shim is a better-sqlite3 db plus the D1-only batch method under test.
-	// oxlint-disable-next-line typescript/no-unsafe-type-assertion
-	return db as unknown as PageLikesDb;
 }

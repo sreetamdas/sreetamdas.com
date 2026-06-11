@@ -3,6 +3,7 @@
  * while writes use an upsert/increment to keep concurrent page views atomic at
  * the database layer.
  */
+import type { BatchItem } from "drizzle-orm/batch";
 import type { DrizzleD1Database } from "drizzle-orm/d1";
 import type { BaseSQLiteDatabase } from "drizzle-orm/sqlite-core";
 
@@ -24,7 +25,17 @@ export type LikeCount = {
 
 export type PageViewsDb = BaseSQLiteDatabase<"sync" | "async", unknown, typeof schema>;
 
-export type PageLikesDb = DrizzleD1Database<typeof schema>;
+type PageLikesRow = { likes: number };
+type PageLikesBatch = readonly [
+	BatchItem<"sqlite"> & PromiseLike<unknown>,
+	BatchItem<"sqlite"> & PromiseLike<Array<PageLikesRow>>,
+];
+
+export type PageLikesTestDb = PageViewsDb & {
+	batch(batch: PageLikesBatch): Promise<[unknown, Array<PageLikesRow>]>;
+};
+
+export type PageLikesDb = DrizzleD1Database<typeof schema> | PageLikesTestDb;
 
 export async function getPageViews(db: PageViewsDb, slug: string): Promise<PageViewCount> {
 	const normalizedSlug = normalizePathname(slug);

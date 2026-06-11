@@ -1,31 +1,23 @@
-import { describe, expect, test } from "vitest";
+import { describe, expect, test, vi } from "vitest";
 
 import { fetchNewsletterEmails } from "./index";
 import { BUTTONDOWN_EMAIL_MOCKS } from "./mocks";
 
 describe("fetchNewsletterEmails", () => {
 	test("uses checked-in mocks without fetching when the API key is missing", async () => {
-		const originalFetch = globalThis.fetch;
-		let fetched = false;
-		globalThis.fetch = async () => {
-			fetched = true;
+		const fetchMock = stubFetch(async () => {
 			return new Response(null, { status: 500 });
-		};
+		});
 
-		try {
-			const result = await fetchNewsletterEmails();
+		const result = await fetchNewsletterEmails();
 
-			expect(fetched).toBe(false);
-			expect(result).toBe(BUTTONDOWN_EMAIL_MOCKS);
-		} finally {
-			globalThis.fetch = originalFetch;
-		}
+		expect(fetchMock).not.toHaveBeenCalled();
+		expect(result).toBe(BUTTONDOWN_EMAIL_MOCKS);
 	});
 
 	test("sends the Buttondown token when fetching remote emails", async () => {
-		const originalFetch = globalThis.fetch;
 		let authorization = "";
-		globalThis.fetch = async (_url, init) => {
+		stubFetch(async (_url, init) => {
 			const headers = new Headers(init?.headers);
 			authorization = headers.get("Authorization") ?? "";
 
@@ -49,28 +41,25 @@ describe("fetchNewsletterEmails", () => {
 					},
 				],
 			});
-		};
+		});
 
-		try {
-			const result = await fetchNewsletterEmails("buttondown_token");
+		const result = await fetchNewsletterEmails("buttondown_token");
 
-			expect(authorization).toBe("Token buttondown_token");
-			expect(result.results[0]?.slug).toBe("hello");
-		} finally {
-			globalThis.fetch = originalFetch;
-		}
+		expect(authorization).toBe("Token buttondown_token");
+		expect(result.results[0]?.slug).toBe("hello");
 	});
 
 	test("falls back to mocks when Buttondown returns an unexpected payload", async () => {
-		const originalFetch = globalThis.fetch;
-		globalThis.fetch = async () => Response.json({ results: [{ slug: 123 }] });
+		stubFetch(async () => Response.json({ results: [{ slug: 123 }] }));
 
-		try {
-			const result = await fetchNewsletterEmails("buttondown_token");
+		const result = await fetchNewsletterEmails("buttondown_token");
 
-			expect(result).toBe(BUTTONDOWN_EMAIL_MOCKS);
-		} finally {
-			globalThis.fetch = originalFetch;
-		}
+		expect(result).toBe(BUTTONDOWN_EMAIL_MOCKS);
 	});
 });
+
+function stubFetch(implementation: typeof fetch) {
+	const fetchMock = vi.fn(implementation);
+	vi.stubGlobal("fetch", fetchMock);
+	return fetchMock;
+}

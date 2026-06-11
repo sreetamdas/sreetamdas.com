@@ -25,30 +25,22 @@ describe("Plausible stats", () => {
 	});
 
 	test("returns a missing-config state without calling Plausible", async () => {
-		const originalFetch = globalThis.fetch;
-		let fetchCalled = false;
-		globalThis.fetch = async () => {
-			fetchCalled = true;
+		const fetchMock = stubFetch(async () => {
 			return new Response("unexpected", { status: 500 });
-		};
+		});
 
-		try {
-			setPlausibleEnv({ PLAUSIBLE_SITE_ID: "example.com" });
-			const stats = await fetchPlausibleStats();
+		setPlausibleEnv({ PLAUSIBLE_SITE_ID: "example.com" });
+		const stats = await fetchPlausibleStats();
 
-			expect(fetchCalled).toBe(false);
-			expect(stats.status).toBe("missing-config");
-			expect(stats.siteId).toBe("example.com");
-			expect(stats.overview.visitors).toBe(0);
-		} finally {
-			globalThis.fetch = originalFetch;
-		}
+		expect(fetchMock).not.toHaveBeenCalled();
+		expect(stats.status).toBe("missing-config");
+		expect(stats.siteId).toBe("example.com");
+		expect(stats.overview.visitors).toBe(0);
 	});
 
 	test("queries and maps Plausible v2 stats", async () => {
-		const originalFetch = globalThis.fetch;
 		const requestedBodies: Array<unknown> = [];
-		globalThis.fetch = async (_input, init) => {
+		stubFetch(async (_input, init) => {
 			const body = parseJsonBody(init?.body);
 			requestedBodies.push(body);
 
@@ -136,63 +128,53 @@ describe("Plausible stats", () => {
 			return Response.json({
 				results: [{ dimensions: [], metrics: [42, 50, 100, 2, 45.5, 75] }],
 			});
-		};
+		});
 
-		try {
-			setPlausibleEnv({ PLAUSIBLE_API_KEY: "test_key", PLAUSIBLE_SITE_ID: "example.com" });
-			const stats = await fetchPlausibleStats("91d");
+		setPlausibleEnv({ PLAUSIBLE_API_KEY: "test_key", PLAUSIBLE_SITE_ID: "example.com" });
+		const stats = await fetchPlausibleStats("91d");
 
-			expect(requestedBodies).toHaveLength(13);
-			expect(stats.status).toBe("ready");
-			expect(stats.period).toBe("91d");
-			expect(stats.overview).toEqual({
-				visitors: 42,
-				visits: 50,
-				pageviews: 100,
-				viewsPerVisit: 2,
-				bounceRate: 45.5,
-				visitDuration: 75,
-			});
-			expect(stats.topPages[0]).toEqual({ path: "/", visitors: 12, pageviews: 34 });
-			expect(stats.entryPages[0]).toEqual({ name: "/blog", visitors: 11, percentage: 55 });
-			expect(stats.exitPages[0]).toEqual({ name: "/uses", visitors: 7, percentage: 35 });
-			expect(stats.topSources[1]).toEqual({ name: "Direct / None", visitors: 4, percentage: 40 });
-			expect(stats.referrers[0]).toEqual({ name: "github.com", visitors: 8, percentage: 50 });
-			expect(stats.channels[0]).toEqual({ name: "Organic Search", visitors: 6, percentage: 30 });
-			expect(stats.countries[0]).toEqual({
-				name: "India",
-				code: "IN",
-				visitors: 5,
-				percentage: 25,
-			});
-			expect(stats.cities[0]).toEqual({ name: "Bengaluru", visitors: 4, percentage: 20 });
-			expect(stats.devices[0]).toEqual({ name: "Desktop", visitors: 10, percentage: 80 });
-			expect(stats.browsers[0]).toEqual({ name: "Chrome", visitors: 9, percentage: 72 });
-			expect(stats.operatingSystems[0]).toEqual({ name: "Mac", visitors: 8, percentage: 64 });
-			expect(stats.timeline[1]).toEqual({ date: "2026-05-28", visitors: 6 });
-		} finally {
-			globalThis.fetch = originalFetch;
-		}
+		expect(requestedBodies).toHaveLength(13);
+		expect(stats.status).toBe("ready");
+		expect(stats.period).toBe("91d");
+		expect(stats.overview).toEqual({
+			visitors: 42,
+			visits: 50,
+			pageviews: 100,
+			viewsPerVisit: 2,
+			bounceRate: 45.5,
+			visitDuration: 75,
+		});
+		expect(stats.topPages[0]).toEqual({ path: "/", visitors: 12, pageviews: 34 });
+		expect(stats.entryPages[0]).toEqual({ name: "/blog", visitors: 11, percentage: 55 });
+		expect(stats.exitPages[0]).toEqual({ name: "/uses", visitors: 7, percentage: 35 });
+		expect(stats.topSources[1]).toEqual({ name: "Direct / None", visitors: 4, percentage: 40 });
+		expect(stats.referrers[0]).toEqual({ name: "github.com", visitors: 8, percentage: 50 });
+		expect(stats.channels[0]).toEqual({ name: "Organic Search", visitors: 6, percentage: 30 });
+		expect(stats.countries[0]).toEqual({
+			name: "India",
+			code: "IN",
+			visitors: 5,
+			percentage: 25,
+		});
+		expect(stats.cities[0]).toEqual({ name: "Bengaluru", visitors: 4, percentage: 20 });
+		expect(stats.devices[0]).toEqual({ name: "Desktop", visitors: 10, percentage: 80 });
+		expect(stats.browsers[0]).toEqual({ name: "Chrome", visitors: 9, percentage: 72 });
+		expect(stats.operatingSystems[0]).toEqual({ name: "Mac", visitors: 8, percentage: 64 });
+		expect(stats.timeline[1]).toEqual({ date: "2026-05-28", visitors: 6 });
 	});
 
 	test("returns an unavailable state when Plausible returns an error", async () => {
-		const originalFetch = globalThis.fetch;
-		globalThis.fetch = async () => new Response("nope", { status: 401 });
+		stubFetch(async () => new Response("nope", { status: 401 }));
 
-		try {
-			setPlausibleEnv({ PLAUSIBLE_API_KEY: "bad_key" });
-			const stats = await fetchPlausibleStats();
+		setPlausibleEnv({ PLAUSIBLE_API_KEY: "bad_key" });
+		const stats = await fetchPlausibleStats();
 
-			expect(stats.status).toBe("unavailable");
-			expect(stats.topPages).toEqual([]);
-		} finally {
-			globalThis.fetch = originalFetch;
-		}
+		expect(stats.status).toBe("unavailable");
+		expect(stats.topPages).toEqual([]);
 	});
 
 	test("coalesces null metrics to zero instead of collapsing the dashboard", async () => {
-		const originalFetch = globalThis.fetch;
-		globalThis.fetch = async (_input, init) => {
+		stubFetch(async (_input, init) => {
 			const body = parseJsonBody(init?.body);
 			if (hasNoDimensions(body)) {
 				return Response.json({
@@ -200,37 +182,34 @@ describe("Plausible stats", () => {
 				});
 			}
 			return Response.json({ results: [{ dimensions: ["x"], metrics: [1, null] }] });
-		};
+		});
 
-		try {
-			setPlausibleEnv({ PLAUSIBLE_API_KEY: "test_key", PLAUSIBLE_SITE_ID: "example.com" });
-			const stats = await fetchPlausibleStats();
+		setPlausibleEnv({ PLAUSIBLE_API_KEY: "test_key", PLAUSIBLE_SITE_ID: "example.com" });
+		const stats = await fetchPlausibleStats();
 
-			expect(stats.status).toBe("ready");
-			expect(stats.overview.visitors).toBe(10);
-			expect(stats.overview.viewsPerVisit).toBe(0);
-			expect(stats.overview.bounceRate).toBe(0);
-			expect(stats.overview.visitDuration).toBe(0);
-			expect(stats.topPages[0]?.pageviews).toBe(0);
-		} finally {
-			globalThis.fetch = originalFetch;
-		}
+		expect(stats.status).toBe("ready");
+		expect(stats.overview.visitors).toBe(10);
+		expect(stats.overview.viewsPerVisit).toBe(0);
+		expect(stats.overview.bounceRate).toBe(0);
+		expect(stats.overview.visitDuration).toBe(0);
+		expect(stats.topPages[0]?.pageviews).toBe(0);
 	});
 
 	test("returns an unavailable state when Plausible returns an unexpected shape", async () => {
-		const originalFetch = globalThis.fetch;
-		globalThis.fetch = async () => Response.json({ unexpected: true });
+		stubFetch(async () => Response.json({ unexpected: true }));
 
-		try {
-			setPlausibleEnv({ PLAUSIBLE_API_KEY: "test_key" });
-			const stats = await fetchPlausibleStats();
+		setPlausibleEnv({ PLAUSIBLE_API_KEY: "test_key" });
+		const stats = await fetchPlausibleStats();
 
-			expect(stats.status).toBe("unavailable");
-		} finally {
-			globalThis.fetch = originalFetch;
-		}
+		expect(stats.status).toBe("unavailable");
 	});
 });
+
+function stubFetch(implementation: typeof fetch) {
+	const fetchMock = vi.fn(implementation);
+	vi.stubGlobal("fetch", fetchMock);
+	return fetchMock;
+}
 
 function hasNoDimensions(value: unknown): boolean {
 	return (

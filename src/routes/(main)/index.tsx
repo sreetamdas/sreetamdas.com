@@ -1,15 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { createServerFn } from "@tanstack/react-start";
-import { renderServerComponent } from "@tanstack/react-start/rsc";
-import { allRootPages } from "content-collections";
-import { isUndefined } from "lodash-es";
 
 import { SITE_DESCRIPTION, SITE_TITLE_APPEND } from "@/config";
-import { MDXContent } from "@/lib/components/MDX";
 import { ViewsCounter } from "@/lib/domains/PageInteraction/ViewsCounter";
 import { canonicalUrl, defaultOgImageUrl } from "@/lib/seo";
 
-const rootPages = allRootPages;
+import { getHomeRenderable } from "./-index.server";
 
 export const Route = createFileRoute("/(main)/")({
 	component: Home,
@@ -39,20 +34,6 @@ export const Route = createFileRoute("/(main)/")({
 	loader: () => {
 		return getHomeRenderable();
 	},
-});
-
-const getHomeRenderable = createServerFn({ method: "GET" }).handler(async () => {
-	const post = rootPages.find((page) => page.page_slug === "introduction");
-
-	if (isUndefined(post)) {
-		throw new Error("introduction.mdx is missing");
-	}
-
-	const Renderable = await renderServerComponent(
-		<MDXContent source={post.raw} mdast={post.mdast} shikiHighlights={post.shikiHighlights} />,
-	);
-
-	return { Renderable };
 });
 
 function Home() {
