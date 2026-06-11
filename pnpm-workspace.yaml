@@ -4,11 +4,11 @@ allowBuilds:
   esbuild: true
   sharp: true
   workerd: true
-  '@parcel/watcher': true
-  '@tailwindcss/oxide': true
+  "@parcel/watcher": true
+  "@tailwindcss/oxide": true
 catalog:
   vite: npm:@voidzero-dev/vite-plus-core@latest
-  vitest: npm:@voidzero-dev/vite-plus-test@^0.1.24
+  vitest: npm:@voidzero-dev/vite-plus-test@latest
   vite-plus: ^0.1.24
 overrides:
   kysely: 0.28.8
