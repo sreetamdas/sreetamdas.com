@@ -1,43 +1,15 @@
-import { createFileRoute, notFound } from "@tanstack/react-router";
-import { createServerFn } from "@tanstack/react-start";
-import { renderServerComponent } from "@tanstack/react-start/rsc";
-import { allBlogPosts } from "content-collections";
-import { isNil } from "lodash-es";
+import { createFileRoute } from "@tanstack/react-router";
 
-import { IS_DEV, SITE_DESCRIPTION, SITE_TITLE_APPEND } from "@/config";
+import { SITE_DESCRIPTION, SITE_TITLE_APPEND } from "@/config";
 import { NotFound404 } from "@/lib/components/Error";
-import { MDXContent } from "@/lib/components/MDX";
 import { ReadingProgress } from "@/lib/components/ProgressBar";
-import { InfoBlock } from "@/lib/components/sink";
 import { Gradient } from "@/lib/components/Typography";
-import { ChameleonHighlight, Sparkles } from "@/lib/components/TypographyClient";
-import { shouldServeBlogPost } from "@/lib/content/visibility";
 import { LikeButton } from "@/lib/domains/PageInteraction/LikeButton";
 import { ViewsCounter } from "@/lib/domains/PageInteraction/ViewsCounter";
 import { cn } from "@/lib/helpers/utils";
 import { absoluteUrl, canonicalUrl, defaultOgImageUrl } from "@/lib/seo";
 
-import {
-	HighlightWithUseEffect,
-	HighlightWithUseInterval,
-} from "./-chameleon-text/componentsClient";
-
-const blogPosts = allBlogPosts;
-
-type BlogPost = (typeof blogPosts)[number];
-type BlogLoaderData = {
-	post: BlogPost;
-	Renderable: unknown;
-};
-async function getBlogContent(slug: string, includeDrafts: boolean): Promise<BlogPost> {
-	const post = blogPosts.find((page) => page.page_slug === slug);
-
-	if (isNil(post) || !shouldServeBlogPost(post, { includeDrafts })) {
-		throw notFound();
-	}
-
-	return post;
-}
+import { getBlogRenderable, type BlogLoaderData } from "./-$slug.server";
 
 export const Route = createFileRoute("/(main)/blog/$slug")({
 	component: RouteComponent,
@@ -73,40 +45,6 @@ export const Route = createFileRoute("/(main)/blog/$slug")({
 		<NotFound404 message="The blog post you're looking for doesn't exist :/" />
 	),
 });
-
-const getBlogRenderable = createServerFn({ method: "GET" })
-	.validator((data) => {
-		if (typeof data !== "object" || data === null || !("slug" in data)) {
-			throw new Error("Invalid blog slug payload");
-		}
-
-		if (typeof data.slug !== "string") {
-			throw new Error("Invalid blog slug payload");
-		}
-
-		return { slug: data.slug };
-	})
-	.handler(async ({ data }) => {
-		const post = await getBlogContent(data.slug, IS_DEV);
-		const Renderable = await renderServerComponent(
-			<MDXContent
-				source={post.raw}
-				mdast={post.mdast}
-				shikiHighlights={post.shikiHighlights}
-				components={{
-					ChameleonHighlight,
-					Gradient,
-					InfoBlock,
-					Sparkles,
-
-					HighlightWithUseEffect,
-					HighlightWithUseInterval,
-				}}
-			/>,
-		);
-
-		return { post, Renderable };
-	});
 
 function RouteComponent() {
 	const { post, Renderable } = Route.useLoaderData();
