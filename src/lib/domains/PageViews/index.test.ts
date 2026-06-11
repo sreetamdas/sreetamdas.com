@@ -197,11 +197,7 @@ async function getPageLikes(db: PageViewsDb, slug: string): Promise<number> {
 }
 
 function createBatchablePageViewsDb(sqlite: Database.Database): PageLikesDb {
-	const db = Object.assign(drizzle({ client: sqlite, schema }), {
-		batch: (queries: readonly unknown[]) => Promise.all(queries),
+	return Object.assign(drizzle({ client: sqlite, schema }), {
+		batch: ([first, second]: Parameters<PageLikesDb["batch"]>[0]) => Promise.all([first, second]),
 	});
-
-	// The unit shim is a better-sqlite3 db plus the D1-only batch method under test.
-	// oxlint-disable-next-line typescript/no-unsafe-type-assertion
-	return db as unknown as PageLikesDb;
 }
