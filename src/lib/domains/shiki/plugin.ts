@@ -140,7 +140,7 @@ const RE_LINE_HIGHLIGHT = /([\d,-]+)/;
 function calculateLinesToHighlight(meta = "") {
 	const reg_exp_exec_array = RE_LINE_HIGHLIGHT.exec(meta);
 
-	if (!RE_LINE_HIGHLIGHT.test(meta) || reg_exp_exec_array === null) {
+	if (reg_exp_exec_array === null) {
 		return false;
 	}
 	const lineNumbers = reg_exp_exec_array[1]

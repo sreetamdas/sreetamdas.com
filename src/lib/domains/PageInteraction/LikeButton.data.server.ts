@@ -35,8 +35,7 @@ async function getVisitorHash(
 	normalizedSlug: string,
 	clientIp?: string,
 ): Promise<string | undefined> {
-	const salt_value = Reflect.get(env, "LIKES_IP_SALT");
-	const salt = typeof salt_value === "string" ? salt_value : undefined;
+	const salt = env.LIKES_IP_SALT || undefined;
 	const ip = clientIp;
 	if (!salt || !ip) {
 		if (!salt && !IS_DEV && !warnedAboutMissingLikesSalt) {

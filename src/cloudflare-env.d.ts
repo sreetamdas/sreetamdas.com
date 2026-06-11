@@ -13,6 +13,7 @@ interface __BaseEnv_CloudflareEnv {
 	NOTION_KEEBS_PAGE_ID: string;
 	GITHUB_TOKEN: string;
 	GITHUB_RWC_GIST_ID: string;
+	LIKES_IP_SALT?: string;
 	BETTER_AUTH_SECRET: string;
 	SLIDE_PRESENTER_EMAILS: string;
 	CLOUDFLARE_OAUTH_CLIENT_ID: string;
@@ -47,6 +48,7 @@ declare namespace Cloudflare {
 		NOTION_KEEBS_PAGE_ID: string;
 		GITHUB_TOKEN: string;
 		GITHUB_RWC_GIST_ID: string;
+		LIKES_IP_SALT?: string;
 		BETTER_AUTH_SECRET: string;
 		SLIDE_PRESENTER_EMAILS: string;
 		CLOUDFLARE_OAUTH_CLIENT_ID: string;
@@ -75,6 +77,7 @@ declare namespace Cloudflare {
 		NOTION_KEEBS_PAGE_ID: string;
 		GITHUB_TOKEN: string;
 		GITHUB_RWC_GIST_ID: string;
+		LIKES_IP_SALT?: string;
 		BETTER_AUTH_SECRET: string;
 		SLIDE_PRESENTER_EMAILS: string;
 		CLOUDFLARE_OAUTH_CLIENT_ID: string;
@@ -110,6 +113,7 @@ declare namespace NodeJS {
 			| "NOTION_KEEBS_PAGE_ID"
 			| "GITHUB_TOKEN"
 			| "GITHUB_RWC_GIST_ID"
+			| "LIKES_IP_SALT"
 			| "BETTER_AUTH_SECRET"
 			| "SLIDE_PRESENTER_EMAILS"
 			| "CLOUDFLARE_OAUTH_CLIENT_ID"
