@@ -1,34 +1,10 @@
-import { createFileRoute, notFound } from "@tanstack/react-router";
-import { createServerFn } from "@tanstack/react-start";
-import { renderServerComponent } from "@tanstack/react-start/rsc";
-import { allRootPages } from "content-collections";
-import { isNil } from "lodash-es";
+import { createFileRoute } from "@tanstack/react-router";
 
-import { IS_DEV, SITE_DESCRIPTION, SITE_TITLE_APPEND } from "@/config";
-import { RepoContributors } from "@/lib/components/GitHub/RepoContributors";
-import { MDXContent } from "@/lib/components/MDX";
-import { shouldServeRootPage } from "@/lib/content/visibility";
-import { fetchRepoContributors } from "@/lib/domains/GitHub/server";
-import { type RepoContributor } from "@/lib/domains/GitHub/types";
+import { SITE_DESCRIPTION, SITE_TITLE_APPEND } from "@/config";
 import { ViewsCounter } from "@/lib/domains/PageInteraction/ViewsCounter";
 import { canonicalUrl, defaultOgImageUrl } from "@/lib/seo";
 
-const rootPages = allRootPages;
-
-type RootPage = (typeof rootPages)[number];
-type RootPageLoaderData = { post: RootPage; contributors: Array<RepoContributor> };
-
-function parseSlugPayload(data: unknown): { slug: string } {
-	if (typeof data !== "object" || data === null || !("slug" in data)) {
-		throw new Error("Invalid root page slug payload");
-	}
-
-	if (typeof data.slug !== "string") {
-		throw new Error("Invalid root page slug payload");
-	}
-
-	return { slug: data.slug };
-}
+import { getRootPageRenderable, type RootPageLoaderData } from "./-$slug.server";
 
 export const Route = createFileRoute("/(main)/$slug")({
 	component: MDXPageSlugPage,
@@ -61,30 +37,6 @@ export const Route = createFileRoute("/(main)/$slug")({
 		return getRootPageRenderable({ data: { slug: params.slug } });
 	},
 });
-
-const getRootPageRenderable = createServerFn({ method: "GET" })
-	.validator((data) => parseSlugPayload(data))
-	.handler(async ({ data }) => {
-		const post = rootPages.find((page) => page.page_slug === data.slug);
-
-		if (isNil(post) || !shouldServeRootPage(post, { includeDrafts: IS_DEV })) {
-			throw notFound();
-		}
-
-		const contributors = data.slug === "credits" ? await fetchRepoContributors() : [];
-		const Renderable = await renderServerComponent(
-			<MDXContent
-				source={post.raw}
-				mdast={post.mdast}
-				shikiHighlights={post.shikiHighlights}
-				components={{
-					RepoContributors: () => <RepoContributors contributors={contributors} />,
-				}}
-			/>,
-		);
-
-		return { post, contributors, Renderable };
-	});
 
 function MDXPageSlugPage() {
 	const { post, Renderable } = Route.useLoaderData();
