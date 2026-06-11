@@ -22,5 +22,6 @@ export default defineConfig({
 		include: ["src/**/*.test.ts"],
 		passWithNoTests: true,
 		setupFiles: ["./src/test-setup-build-info.ts"],
+		unstubGlobals: true,
 	},
 });

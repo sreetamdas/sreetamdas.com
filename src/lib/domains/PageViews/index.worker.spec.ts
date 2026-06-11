@@ -7,7 +7,7 @@ binding, where the batch executes lazily in array order — reversing the
 statements would surface here as a stale (zero) counter.
 */
 
-import { env } from "cloudflare:test";
+import { env } from "cloudflare:workers";
 import { eq } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/d1";
 import { beforeEach, describe, expect, it } from "vitest";

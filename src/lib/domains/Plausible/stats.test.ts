@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
+import { beforeEach, describe, expect, test, vi } from "vitest";
 
 type TestPlausibleEnv = Pick<Partial<CloudflareEnv>, "PLAUSIBLE_API_KEY" | "PLAUSIBLE_SITE_ID">;
 
@@ -11,10 +11,6 @@ import { fetchPlausibleStats, getPlausibleApiKey, getPlausibleSiteId } from "./s
 describe("Plausible stats", () => {
 	beforeEach(() => {
 		setPlausibleEnv({});
-	});
-
-	afterEach(() => {
-		vi.unstubAllGlobals();
 	});
 
 	test("reads supported runtime env names", () => {

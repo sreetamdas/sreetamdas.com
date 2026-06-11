@@ -4,6 +4,7 @@
  * the database layer.
  */
 import type { BatchItem } from "drizzle-orm/batch";
+import type { DrizzleD1Database } from "drizzle-orm/d1";
 import type { BaseSQLiteDatabase } from "drizzle-orm/sqlite-core";
 
 import { and, eq, sql } from "drizzle-orm";
@@ -30,9 +31,11 @@ type PageLikesBatch = readonly [
 	BatchItem<"sqlite"> & PromiseLike<Array<PageLikesRow>>,
 ];
 
-export type PageLikesDb = PageViewsDb & {
+export type PageLikesTestDb = PageViewsDb & {
 	batch(batch: PageLikesBatch): Promise<[unknown, Array<PageLikesRow>]>;
 };
+
+export type PageLikesDb = DrizzleD1Database<typeof schema> | PageLikesTestDb;
 
 export async function getPageViews(db: PageViewsDb, slug: string): Promise<PageViewCount> {
 	const normalizedSlug = normalizePathname(slug);

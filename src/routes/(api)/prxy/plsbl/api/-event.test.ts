@@ -1,12 +1,8 @@
-import { afterEach, describe, expect, test, vi } from "vitest";
+import { describe, expect, test, vi } from "vitest";
 
 import { handlePlausibleEventGet, handlePlausibleEventPost } from "./event";
 
 describe("plausible event proxy", () => {
-	afterEach(() => {
-		vi.unstubAllGlobals();
-	});
-
 	test("returns structured 405 for GET", async () => {
 		const response = handlePlausibleEventGet();
 

@@ -4,7 +4,7 @@ real WebSocket upgrades, role authorization, slide-scoped polls, vote de-duping,
 and viewer reactions inside workerd.
 */
 
-import { env } from "cloudflare:test";
+import { env } from "cloudflare:workers";
 import { describe, expect, it } from "vitest";
 
 import {

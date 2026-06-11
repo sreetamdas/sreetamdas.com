@@ -1,13 +1,9 @@
-import { afterEach, describe, expect, test, vi } from "vitest";
+import { describe, expect, test, vi } from "vitest";
 
 import { fetchNewsletterEmails } from "./index";
 import { BUTTONDOWN_EMAIL_MOCKS } from "./mocks";
 
 describe("fetchNewsletterEmails", () => {
-	afterEach(() => {
-		vi.unstubAllGlobals();
-	});
-
 	test("uses checked-in mocks without fetching when the API key is missing", async () => {
 		const fetchMock = stubFetch(async () => {
 			return new Response(null, { status: 500 });

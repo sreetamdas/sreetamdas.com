@@ -3,8 +3,7 @@ Integration smoke tests for the Worker runtime + bindings contract.
 These run inside workerd via @cloudflare/vitest-pool-workers using wrangler.test.jsonc.
 */
 
-import { env } from "cloudflare:test";
-import { exports } from "cloudflare:workers";
+import { env, exports } from "cloudflare:workers";
 import { describe, expect, it } from "vitest";
 
 describe("worker entrypoint", () => {

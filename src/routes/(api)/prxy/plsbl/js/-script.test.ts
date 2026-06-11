@@ -1,12 +1,8 @@
-import { afterEach, describe, expect, test, vi } from "vitest";
+import { describe, expect, test, vi } from "vitest";
 
 import { handlePlausibleScriptGet } from "./$script";
 
 describe("plausible script proxy", () => {
-	afterEach(() => {
-		vi.unstubAllGlobals();
-	});
-
 	test("returns 502 when upstream script fetch throws", async () => {
 		stubFetch(async () => {
 			throw new Error("network down");

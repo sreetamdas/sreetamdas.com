@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, test, vi } from "vitest";
+import { describe, expect, test, vi } from "vitest";
 
 import {
 	getAuthSecret,
@@ -109,10 +109,6 @@ describe("auth environment helpers", () => {
 });
 
 describe("getCloudflareUserInfo", () => {
-	afterEach(() => {
-		vi.unstubAllGlobals();
-	});
-
 	test("returns null without an access token and does not call fetch", async () => {
 		const fetchSpy = vi.fn();
 		vi.stubGlobal("fetch", fetchSpy);
