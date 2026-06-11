@@ -3,6 +3,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocation } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
+import { FaHeart, FaRegHeart } from "react-icons/fa6";
 
 import { IS_CI, IS_DEV } from "@/config";
 import { cn, normalizePathname } from "@/lib/helpers/utils";
@@ -14,15 +15,16 @@ type LikeButtonProps = {
 	disabled?: boolean;
 };
 
+// Floats in the right gutter next to the content column on desktop, and as a
+// bottom-right pill on smaller screens where that gutter collapses.
+const POSITION_CLASSES =
+	"fixed right-4 bottom-4 z-40 lg:top-1/2 lg:right-auto lg:bottom-auto lg:left-[calc(50%_+_var(--max-width)/2_+_1rem)] lg:-translate-y-1/2";
+
+const PILL_CLASSES =
+	"flex items-center gap-2 rounded-full border-2 border-solid border-primary bg-background px-4 py-2 font-mono text-sm text-primary shadow-lg transition-transform motion-safe:hover:scale-105 motion-safe:active:scale-95";
+
 export const LikeButton = ({ slug, disabled = IS_DEV || IS_CI }: LikeButtonProps) => {
-	return (
-		<div className="mx-auto mb-5 flex w-full flex-row items-center justify-center gap-2">
-			<span role="img" aria-label="heart">
-				💜
-			</span>
-			<Likes slug={slug} disabled={disabled} />
-		</div>
-	);
+	return <Likes slug={slug} disabled={disabled} />;
 };
 
 const Likes = ({ slug, disabled }: LikeButtonProps) => {
@@ -70,20 +72,32 @@ const Likes = ({ slug, disabled }: LikeButtonProps) => {
 	});
 
 	if (isLoading) {
-		return <p className="m-0 animate-pulse text-xs">Getting like count</p>;
+		return (
+			<div aria-busy role="status" className={cn(POSITION_CLASSES, PILL_CLASSES, "opacity-70")}>
+				<FaRegHeart aria-hidden className="size-4" />
+				<span aria-hidden className="animate-pulse">
+					·
+				</span>
+				<span className="sr-only">Loading like count</span>
+			</div>
+		);
 	}
 
+	const likeCount = data?.likes ?? 0;
 	const hasLiked = data?.hasLiked ?? false;
 	const readOnly = data?.readOnly ?? false;
+	const isDisabled = disabled || hasLiked || isPending || readOnly;
 
 	return (
 		<button
+			aria-label={getLikeAriaLabel(likeCount, hasLiked, readOnly)}
 			aria-pressed={hasLiked}
 			className={cn(
-				"m-0 cursor-pointer border-0 bg-transparent p-0 text-xs text-current",
-				(disabled || hasLiked || isPending || readOnly) && "cursor-not-allowed opacity-70",
+				POSITION_CLASSES,
+				PILL_CLASSES,
+				isDisabled && "cursor-not-allowed opacity-70 motion-safe:hover:scale-100",
 			)}
-			disabled={disabled || hasLiked || isPending || readOnly}
+			disabled={isDisabled}
 			onClick={() => {
 				if (hasLiked || readOnly) {
 					return;
@@ -91,36 +105,29 @@ const Likes = ({ slug, disabled }: LikeButtonProps) => {
 
 				mutate();
 			}}
+			title={getLikeAriaLabel(likeCount, hasLiked, readOnly)}
 			type="button"
 		>
-			{getLikeCountCopy(data?.likes, hasLiked, readOnly)}
+			{hasLiked ? (
+				<FaHeart
+					aria-hidden
+					className="size-4 motion-safe:animate-[reactionCountPulse_450ms_ease-out]"
+				/>
+			) : (
+				<FaRegHeart aria-hidden className="size-4" />
+			)}
+			<span>{likeCount.toLocaleString()}</span>
 		</button>
 	);
 };
 
-function getLikeCountCopy(likes: number | undefined, hasLiked: boolean, readOnly: boolean) {
-	const likeCount = likes ?? 0;
-	const likeCopy = likeCount === 1 ? "like" : "likes";
+function getLikeAriaLabel(likes: number, hasLiked: boolean, readOnly: boolean) {
+	const likeCopy = likes === 1 ? "like" : "likes";
+	const count = `${likes.toLocaleString()} ${likeCopy}`;
 
 	if (readOnly) {
-		return (
-			<>
-				<LikeCountBadge>{likeCount.toLocaleString()}</LikeCountBadge> {likeCopy}
-			</>
-		);
+		return count;
 	}
 
-	const actionCopy = hasLiked ? "Thanks for liking this post." : "Like this post.";
-
-	return (
-		<>
-			{actionCopy} <LikeCountBadge>{likeCount.toLocaleString()}</LikeCountBadge> {likeCopy}
-		</>
-	);
+	return hasLiked ? `You liked this post — ${count}` : `Like this post — ${count}`;
 }
-
-const LikeCountBadge = ({ children }: { children: string }) => (
-	<span className="rounded-global border-2 border-solid border-primary bg-background p-1 font-mono text-base text-primary transition-colors">
-		{children}
-	</span>
-);
