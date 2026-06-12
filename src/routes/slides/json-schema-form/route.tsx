@@ -66,8 +66,8 @@ const livePolls: Array<SlideSessionPollDefinition> = [
 ];
 
 function MainLayout() {
-	const search = useSearch({ from: "/slides/json-schema-form/" });
-	const navigate = useNavigate({ from: "/slides/json-schema-form/" });
+	const search = useSearch({ from: "/slides/json-schema-form" });
+	const navigate = useNavigate({ from: "/slides/json-schema-form" });
 	const handlePositionChange = useCallback(
 		(slide: number, step: number) => {
 			void navigate({
