@@ -1,0 +1,15 @@
+diff --git a/dist/plugin-BK29Va7z.js b/dist/plugin-BK29Va7z.js
+index 548c631355a9b58ae928ed2b0991a21d94b0e3a0..b32ea27715b8a4b30d81937578837ba95a9297f2 100644
+--- a/dist/plugin-BK29Va7z.js
++++ b/dist/plugin-BK29Va7z.js
+@@ -885,8 +885,10 @@ function vitePluginRsc(rscPluginOptions = {}) {
+ 					}
+ 					if (this.environment.name === "client") {
+ 						if (ctx.server.environments.rsc.moduleGraph.getModuleById(ctx.file)) {
++							if (!ctx.modules.some((clientMod) => [...clientMod.importers].some((importer) => importer.id && !isCSSRequest(importer.id)))) {
+ 							for (const clientMod of ctx.modules) for (const importer of clientMod.importers) if (importer.id && isCSSRequest(importer.id)) await this.environment.reloadModule(importer);
+ 							return [];
++							}
+ 						}
+ 					}
+ 				}
