@@ -159,7 +159,9 @@ export const ShikiCodeBlock = ({
 	const preClassName = cn(
 		"-mx-4 overflow-x-scroll p-5 text-xs max-sm:px-2 sm:-mr-5 sm:-ml-12 sm:text-sm",
 		passedPreClassName,
+		// oxlint-disable-next-line better-tailwindcss/no-unknown-classes
 		"shiki-code-block",
+		// oxlint-disable-next-line better-tailwindcss/no-unknown-classes
 		!hideLineNumbers && "shiki-line-numbers",
 		filename === null && language === "plain" && "rounded-global",
 		"rounded-br-global rounded-bl-global",
