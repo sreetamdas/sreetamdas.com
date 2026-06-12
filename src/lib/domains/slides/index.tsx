@@ -468,7 +468,7 @@ function PresenterMode({
 				<button
 					onClick={goPrev}
 					disabled={currentIndex === 0 && currentStep === 0}
-					className="rounded bg-gray-700 px-4 py-2 text-sm transition-colors hover:bg-gray-600 disabled:opacity-30 disabled:hover:bg-gray-700"
+					className="rounded-global bg-gray-700 px-4 py-2 text-sm transition-colors hover:bg-gray-600 disabled:opacity-30 disabled:hover:bg-gray-700"
 				>
 					Previous
 				</button>
@@ -478,7 +478,7 @@ function PresenterMode({
 						<button
 							key={index}
 							onClick={() => goTo(index, 0)}
-							className={`h-8 w-8 rounded text-xs transition-colors ${
+							className={`h-8 w-8 rounded-global text-xs transition-colors ${
 								index === currentIndex
 									? "bg-blue-500 text-white"
 									: "bg-gray-700 text-gray-300 hover:bg-gray-600"
@@ -492,7 +492,7 @@ function PresenterMode({
 				<button
 					onClick={goNext}
 					disabled={currentIndex === slides.length - 1}
-					className="rounded bg-gray-700 px-4 py-2 text-sm transition-colors hover:bg-gray-600 disabled:opacity-30 disabled:hover:bg-gray-700"
+					className="rounded-global bg-gray-700 px-4 py-2 text-sm transition-colors hover:bg-gray-600 disabled:opacity-30 disabled:hover:bg-gray-700"
 				>
 					Next
 				</button>

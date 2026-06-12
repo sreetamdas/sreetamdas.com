@@ -152,7 +152,7 @@ function MasterLiveControl({
 	if (!open) {
 		return (
 			<button
-				className="pointer-events-auto rounded-full border border-white/15 bg-black/75 px-3 py-2 text-xs text-white shadow-xl backdrop-blur transition hover:bg-black/90"
+				className="pointer-events-auto rounded-full border border-white/15 bg-black/75 px-3 py-2 text-xs text-white shadow-xl backdrop-blur-sm transition hover:bg-black/90"
 				onClick={() => setOpen(true)}
 				type="button"
 			>
@@ -162,7 +162,7 @@ function MasterLiveControl({
 	}
 
 	return (
-		<div className="pointer-events-auto w-80 rounded-2xl border border-white/15 bg-black/80 p-3 text-white shadow-2xl backdrop-blur">
+		<div className="pointer-events-auto w-80 rounded-2xl border border-white/15 bg-black/80 p-3 text-white shadow-2xl backdrop-blur-sm">
 			<div className="flex items-start justify-between gap-3">
 				<div>
 					<p className="m-0 font-mono text-[0.65rem] tracking-[0.22em] text-white/50 uppercase">
@@ -294,7 +294,7 @@ function ViewerLiveButton({
 	return (
 		<div className="pointer-events-auto flex flex-col items-end gap-2">
 			{open ? (
-				<div className="w-72 rounded-2xl border border-white/15 bg-black/80 p-3 text-white shadow-2xl backdrop-blur">
+				<div className="w-72 rounded-2xl border border-white/15 bg-black/80 p-3 text-white shadow-2xl backdrop-blur-sm">
 					<div className="flex items-start justify-between gap-3">
 						<div>
 							<p className="m-0 font-mono text-[0.65rem] tracking-[0.22em] text-white/50 uppercase">
@@ -335,7 +335,7 @@ function ViewerLiveButton({
 			) : null}
 			<button
 				className={cn(
-					"rounded-full border border-white/15 bg-black/75 px-3 py-2 text-sm text-white shadow-xl backdrop-blur transition hover:bg-black/90",
+					"rounded-full border border-white/15 bg-black/75 px-3 py-2 text-sm text-white shadow-xl backdrop-blur-sm transition hover:bg-black/90",
 					poll ? "ring-2 ring-primary" : "",
 				)}
 				onClick={() => setOpen(!open)}
@@ -375,14 +375,14 @@ function PollPanel({
 				{role === "master" ? (
 					<div className="flex gap-2">
 						<button
-							className="rounded bg-white/10 px-2 py-1 text-xs hover:bg-white/20"
+							className="rounded-sm bg-white/10 px-2 py-1 text-xs hover:bg-white/20"
 							onClick={closePoll}
 							type="button"
 						>
 							Close
 						</button>
 						<button
-							className="rounded bg-white/10 px-2 py-1 text-xs hover:bg-white/20"
+							className="rounded-sm bg-white/10 px-2 py-1 text-xs hover:bg-white/20"
 							onClick={resetPoll}
 							type="button"
 						>
@@ -442,7 +442,7 @@ function ReactionCluster({ reactions }: { reactions: Array<SlideSessionReaction>
 		<div className="pointer-events-none fixed bottom-4 left-4 z-40 flex flex-wrap gap-2">
 			{counts.map((reaction) => (
 				<div
-					className="animate-[reactionCountPulse_350ms_ease-out] rounded-full border border-white/15 bg-black/75 px-3 py-2 text-lg text-white shadow-xl backdrop-blur"
+					className="animate-[reactionCountPulse_350ms_ease-out] rounded-full border border-white/15 bg-black/75 px-3 py-2 text-lg text-white shadow-xl backdrop-blur-sm"
 					key={`${reaction.emoji}:${reaction.count}`}
 				>
 					<span aria-hidden="true">{reaction.emoji}</span>

@@ -8,7 +8,7 @@ import { type SlideSessionPollDefinition } from "@/lib/domains/slides/live-sessi
 import { SlideDeckRouteShell, validateSlideSearch } from "@/lib/domains/slides/route-shell";
 import { canonicalUrl, defaultOgImageUrl } from "@/lib/seo";
 
-export const Route = createFileRoute("/slides/json-schema-form/")({
+export const Route = createFileRoute("/slides/json-schema-form")({
 	validateSearch: validateSlideSearch,
 	component: MainLayout,
 	head: () => ({

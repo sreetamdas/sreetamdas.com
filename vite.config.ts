@@ -131,7 +131,7 @@ const oxfmt_config: UserConfig["fmt"] = {
 
 const oxlint_config: UserConfig["lint"] = {
 	plugins: ["typescript", "oxc", "unicorn", "import", "react", "jsx-a11y"],
-	jsPlugins: ["oxlint-tailwindcss"],
+	jsPlugins: ["eslint-plugin-better-tailwindcss"],
 	categories: {
 		correctness: "off",
 	},
@@ -143,11 +143,11 @@ const oxlint_config: UserConfig["lint"] = {
 		"shared-node-browser": true,
 	},
 	options: {
-		typeAware: true,
-		typeCheck: true,
+		typeAware: false,
+		typeCheck: false,
 	},
 	settings: {
-		tailwindcss: {
+		"better-tailwindcss": {
 			entryPoint: "src/routes/global.css",
 		},
 	},
@@ -244,12 +244,12 @@ const oxlint_config: UserConfig["lint"] = {
 		"@typescript-eslint/prefer-namespace-keyword": "error",
 		"@typescript-eslint/triple-slash-reference": "error",
 		"no-console": "error",
-		"tailwindcss/no-unknown-classes": "warn",
-		"tailwindcss/no-duplicate-classes": "error",
-		"tailwindcss/no-conflicting-classes": "warn",
-		"tailwindcss/no-deprecated-classes": "warn",
-		"tailwindcss/no-unnecessary-whitespace": "error",
-		"tailwindcss/enforce-sort-order": "warn",
+		"better-tailwindcss/no-unknown-classes": "warn",
+		"better-tailwindcss/no-duplicate-classes": "error",
+		"better-tailwindcss/no-conflicting-classes": "warn",
+		"better-tailwindcss/no-deprecated-classes": "warn",
+		"better-tailwindcss/no-unnecessary-whitespace": "error",
+		"better-tailwindcss/enforce-consistent-class-order": "warn",
 	},
 	overrides: [
 		{
