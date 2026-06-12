@@ -1,5 +1,4 @@
 import { Await, createFileRoute } from "@tanstack/react-router";
-import { createServerFn } from "@tanstack/react-start";
 import { Suspense } from "react";
 
 import { SITE_DESCRIPTION, SITE_TITLE_APPEND } from "@/config";
@@ -7,7 +6,6 @@ import { ViewsCounter } from "@/lib/domains/PageInteraction/ViewsCounter";
 import {
 	createEmptyStats,
 	DEFAULT_PLAUSIBLE_SITE_ID,
-	PLAUSIBLE_DATE_RANGES,
 	type PlausibleDateRange,
 	type PlausibleStats,
 } from "@/lib/domains/Plausible/shared";
@@ -20,10 +18,7 @@ import {
 	StatsSkeleton,
 	dateRangeDescriptions,
 } from "../-stats/components";
-
-type StatsSearch = {
-	period: PlausibleDateRange;
-};
+import { getStats, parseDateRange, type StatsSearch } from "./-stats.server";
 
 export const Route = createFileRoute("/(main)/stats")({
 	component: StatsPage,
@@ -58,27 +53,6 @@ export const Route = createFileRoute("/(main)/stats")({
 	},
 	staleTime: 1000 * 60 * 5,
 });
-
-const getStats = createServerFn({ method: "GET" })
-	.validator((data): StatsSearch => {
-		if (typeof data !== "object" || data === null || !("period" in data)) {
-			return { period: "30d" satisfies PlausibleDateRange };
-		}
-
-		return { period: parseDateRange(data.period) };
-	})
-	.handler(async ({ data }) => {
-		const { fetchPlausibleStats } = await import("@/lib/domains/Plausible/stats");
-		return fetchPlausibleStats(data.period);
-	});
-
-function parseDateRange(value: unknown): PlausibleDateRange {
-	return typeof value === "string" && isPlausibleDateRange(value) ? value : "30d";
-}
-
-function isPlausibleDateRange(value: string): value is PlausibleDateRange {
-	return PLAUSIBLE_DATE_RANGES.some((range) => range === value);
-}
 
 function createUnavailableStats(period: PlausibleDateRange): PlausibleStats {
 	return createEmptyStats("unavailable", DEFAULT_PLAUSIBLE_SITE_ID, period);
