@@ -1,6 +1,7 @@
 import { notFound } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
 import { renderServerComponent } from "@tanstack/react-start/rsc";
+import { setResponseHeader } from "@tanstack/react-start/server";
 import { allBlogPosts } from "content-collections";
 import { isNil } from "lodash-es";
 
@@ -47,7 +48,13 @@ export const getBlogRenderable = createServerFn({ method: "GET" })
 		return { slug: data.slug };
 	})
 	.handler(async ({ data }) => {
+		// Baseline timing for the blog loader so we can measure what server-rendering
+		// the like count later adds. Note: the Workers runtime clamps timers between
+		// I/O, so CPU-only segments (MDX render) can read coarse in production —
+		// treat client-side TTFB/Web Vitals as the primary signal.
+		const startedAt = performance.now();
 		const post = await getBlogContent(data.slug, IS_DEV);
+		const renderStartedAt = performance.now();
 		const Renderable = await renderServerComponent(
 			<MDXContent
 				source={post.raw}
@@ -63,6 +70,16 @@ export const getBlogRenderable = createServerFn({ method: "GET" })
 					HighlightWithUseInterval,
 				}}
 			/>,
+		);
+		const finishedAt = performance.now();
+
+		setResponseHeader(
+			"Server-Timing",
+			[
+				`content;desc="blog lookup";dur=${(renderStartedAt - startedAt).toFixed(1)}`,
+				`mdx;desc="MDX render";dur=${(finishedAt - renderStartedAt).toFixed(1)}`,
+				`blogloader;desc="blog loader total";dur=${(finishedAt - startedAt).toFixed(1)}`,
+			].join(", "),
 		);
 
 		return { post, Renderable };
