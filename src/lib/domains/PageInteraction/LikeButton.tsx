@@ -1,6 +1,6 @@
 "use client";
 
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useLocation } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { FaHeart, FaRegHeart } from "react-icons/fa6";
@@ -8,7 +8,9 @@ import { FaHeart, FaRegHeart } from "react-icons/fa6";
 import { IS_CI, IS_DEV } from "@/config";
 import { cn, normalizePathname } from "@/lib/helpers/utils";
 
-import { fetchLikeCountServerFn, incrementLikeServerFn, type LikeCount } from "./LikeButton.server";
+import { incrementLikeServerFn, type LikeCount } from "./LikeButton.server";
+import { type PageMetrics } from "./Metrics.server";
+import { pageMetricsQueryKey, usePageMetrics } from "./usePageMetrics";
 
 type LikeButtonProps = {
 	slug?: string;
@@ -27,47 +29,41 @@ export const LikeButton = ({ slug, disabled = IS_DEV || IS_CI }: LikeButtonProps
 	return <Likes slug={slug} disabled={disabled} />;
 };
 
-const Likes = ({ slug, disabled }: LikeButtonProps) => {
+const Likes = ({ slug, disabled = false }: LikeButtonProps) => {
 	const { pathname } = useLocation();
 	const queryClient = useQueryClient();
 	const normalizedPathname = normalizePathname(slug ?? pathname);
-	const queryKey = [normalizedPathname, "get-likes"];
+	const queryKey = pageMetricsQueryKey(normalizedPathname);
 
-	const fetchLikeCount = useServerFn<() => Promise<LikeCount>>(() =>
-		fetchLikeCountServerFn({ data: { slug: normalizedPathname, disabled } }),
-	);
 	const incrementLikeCount = useServerFn<() => Promise<LikeCount>>(() =>
 		incrementLikeServerFn({ data: { slug: normalizedPathname, disabled } }),
 	);
-	const { data, isLoading } = useQuery({
-		queryFn: fetchLikeCount,
-		queryKey,
-		staleTime: 1000 * 30,
-	});
+	const { data, isLoading } = usePageMetrics(normalizedPathname, disabled);
 	const { mutate, isPending } = useMutation({
 		mutationFn: incrementLikeCount,
 		onMutate: async () => {
 			await queryClient.cancelQueries({ queryKey });
 
-			const previousLikeCount = queryClient.getQueryData<LikeCount>(queryKey);
-			if (previousLikeCount?.hasLiked) {
-				return { previousLikeCount };
+			const previous = queryClient.getQueryData<PageMetrics>(queryKey);
+			if (previous?.hasLiked) {
+				return { previous };
 			}
 
-			queryClient.setQueryData<LikeCount>(queryKey, {
-				likes: (previousLikeCount?.likes ?? data?.likes ?? 0) + 1,
-				hasLiked: true,
-			});
+			queryClient.setQueryData<PageMetrics>(queryKey, (old) =>
+				old ? { ...old, likes: old.likes + 1, hasLiked: true } : old,
+			);
 
-			return { previousLikeCount };
+			return { previous };
 		},
 		onError: (_error, _variables, context) => {
-			if (context?.previousLikeCount) {
-				queryClient.setQueryData<LikeCount>(queryKey, context.previousLikeCount);
+			if (context?.previous) {
+				queryClient.setQueryData<PageMetrics>(queryKey, context.previous);
 			}
 		},
 		onSuccess: (likeCount) => {
-			queryClient.setQueryData<LikeCount>(queryKey, likeCount);
+			queryClient.setQueryData<PageMetrics>(queryKey, (old) =>
+				old ? { ...old, ...likeCount } : old,
+			);
 		},
 	});
 

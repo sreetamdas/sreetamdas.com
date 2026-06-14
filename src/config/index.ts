@@ -14,6 +14,14 @@ export const SITE_DESCRIPTION =
 	"Senior software tinkerer from India. 💜 React, Elixir and TypeScript, CS and mechanical keyboards!";
 export const SITE_OG_IMAGE = "/og-image.png";
 
+/**
+ * Salt era for blog like visitor hashes. Bump this in the same change that
+ * rotates `LIKES_IP_SALT`: likes recorded under an older salt keep their rows
+ * for audit but stop counting, so a rotation can't silently inflate the counter
+ * or let prior visitors like again under the same era.
+ */
+export const LIKES_SALT_VERSION = 1;
+
 export const IS_DEV = import.meta.env?.DEV ?? false;
 export const IS_DEBUG = import.meta.env?.VITE_DEBUG_MODE === "true";
 

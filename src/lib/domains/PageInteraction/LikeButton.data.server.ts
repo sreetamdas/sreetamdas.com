@@ -1,9 +1,11 @@
 import "@tanstack/react-start/server-only";
 import { env } from "cloudflare:workers";
 
-import { IS_DEV } from "@/config";
+import { IS_DEV, LIKES_SALT_VERSION } from "@/config";
 import { getDb } from "@/db";
 import { getLikes, incrementLikes, type LikeCount } from "@/lib/domains/PageViews";
+
+type Visitor = { hash: string; saltVersion: number };
 
 let warnedAboutMissingLikesSalt = false;
 
@@ -12,9 +14,9 @@ export async function fetchLikeCountFromDb(
 	clientIp?: string,
 ): Promise<LikeCount> {
 	const db = getDb();
-	const visitorHash = await getVisitorHash(normalizedSlug, clientIp);
-	const likeCount = await getLikes(db, normalizedSlug, visitorHash);
-	return { ...likeCount, readOnly: !visitorHash };
+	const visitor = await getVisitorHash(normalizedSlug, clientIp);
+	const likeCount = await getLikes(db, normalizedSlug, visitor?.hash);
+	return { ...likeCount, readOnly: !visitor };
 }
 
 export async function incrementLikeCountInDb(
@@ -23,18 +25,18 @@ export async function incrementLikeCountInDb(
 	clientIp?: string,
 ): Promise<LikeCount> {
 	const db = getDb();
-	const visitorHash = await getVisitorHash(normalizedSlug, clientIp);
-	if (disabled || !visitorHash) {
-		const likeCount = await getLikes(db, normalizedSlug, visitorHash);
-		return { ...likeCount, readOnly: !visitorHash };
+	const visitor = await getVisitorHash(normalizedSlug, clientIp);
+	if (disabled || !visitor) {
+		const likeCount = await getLikes(db, normalizedSlug, visitor?.hash);
+		return { ...likeCount, readOnly: !visitor };
 	}
-	return await incrementLikes(db, normalizedSlug, visitorHash);
+	return await incrementLikes(db, normalizedSlug, visitor.hash, visitor.saltVersion);
 }
 
 async function getVisitorHash(
 	normalizedSlug: string,
 	clientIp?: string,
-): Promise<string | undefined> {
+): Promise<Visitor | undefined> {
 	const salt = env.LIKES_IP_SALT || undefined;
 	const ip = clientIp;
 	if (!salt || !ip) {
@@ -46,8 +48,12 @@ async function getVisitorHash(
 		return undefined;
 	}
 
-	const bytes = new TextEncoder().encode(`${salt}:${normalizedSlug}:${ip}`);
+	// Bind the salt era into the hash so bumping LIKES_SALT_VERSION yields fresh
+	// visitor identities even if the salt itself is reused — a version bump alone
+	// can't collide with a prior-era row under onConflictDoNothing.
+	const bytes = new TextEncoder().encode(`${salt}:${LIKES_SALT_VERSION}:${normalizedSlug}:${ip}`);
 	const hash = await crypto.subtle.digest("SHA-256", bytes);
+	const hex = [...new Uint8Array(hash)].map((byte) => byte.toString(16).padStart(2, "0")).join("");
 
-	return [...new Uint8Array(hash)].map((byte) => byte.toString(16).padStart(2, "0")).join("");
+	return { hash: hex, saltVersion: LIKES_SALT_VERSION };
 }

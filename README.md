@@ -9,6 +9,7 @@ Thanks for checking out my personal website and blog! Here's the source code for
 - [TypeScript](https://www.typescriptlang.org)
 - [Tailwind CSS](https://tailwindcss.com)
 - Content: MDX processed via [Content Collections](https://github.com/sdorra/content-collections)
+- Hosting + data: [Cloudflare Workers](https://workers.cloudflare.com) and [D1](https://developers.cloudflare.com/d1/) (SQLite at the edge) via [Drizzle](https://orm.drizzle.team)
 - [Plausible](https://plausible.io)
 - [React Icons](https://react-icons.github.io/react-icons)
 
@@ -36,6 +37,10 @@ Pretty much wherever the mini-game is present in the repo, it's placed under a <
 </details>
 
 ---
+
+### Page views & likes
+
+Every blog post has a view counter and a little heart you can tap — both live in [Cloudflare D1](https://developers.cloudflare.com/d1/). Likes don't need an account: you're identified by a salted hash of your IP, so no raw IP is ever stored, and the salt can be rotated later without the numbers going haywire. The public count is recomputed from the real likes each time, so it can't quietly drift out of sync. A bit more on how it's wired up (plus a recount script) lives in the [Contributing guide](CONTRIBUTING.md).
 
 ## Development/Contributing
 

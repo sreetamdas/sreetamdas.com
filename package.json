@@ -29,6 +29,7 @@
 		"db:bootstrap:local": "wrangler d1 execute sreetamdas_com --local --command \"SELECT 1\"",
 		"db:migrate:local": "vp run db:bootstrap:local && drizzle-kit migrate --config .config/drizzle.studio.local.config.ts",
 		"db:migrate:remote": "drizzle-kit migrate --config .config/drizzle.studio.remote.config.ts",
+		"db:likes:recount": "node scripts/likes-recount.mjs",
 		"db:studio": "drizzle-kit studio --config .config/drizzle.studio.local.config.ts",
 		"db:studio:local": "vp db:bootstrap:local && drizzle-kit studio --config .config/drizzle.studio.local.config.ts",
 		"db:studio:remote": "drizzle-kit studio --config .config/drizzle.studio.remote.config.ts",

@@ -20,9 +20,9 @@ import { incrementLikes } from "./index";
 const SCHEMA_STATEMENTS = [
 	"DROP TABLE IF EXISTS post_likes",
 	"DROP TABLE IF EXISTS page_details",
-	"CREATE TABLE page_details (id integer PRIMARY KEY AUTOINCREMENT, slug text NOT NULL, view_count integer DEFAULT 0 NOT NULL, likes integer DEFAULT 0 NOT NULL, created_at text DEFAULT CURRENT_TIMESTAMP NOT NULL, updated_at text DEFAULT CURRENT_TIMESTAMP NOT NULL)",
+	"CREATE TABLE page_details (id integer PRIMARY KEY AUTOINCREMENT, slug text NOT NULL, view_count integer DEFAULT 0 NOT NULL, likes integer DEFAULT 0 NOT NULL, created_at text DEFAULT CURRENT_TIMESTAMP NOT NULL, updated_at text DEFAULT CURRENT_TIMESTAMP NOT NULL, CHECK (view_count >= 0), CHECK (likes >= 0))",
 	"CREATE UNIQUE INDEX page_details_slug_unique ON page_details (slug)",
-	"CREATE TABLE post_likes (slug text NOT NULL, visitor_hash text NOT NULL, created_at text DEFAULT CURRENT_TIMESTAMP NOT NULL)",
+	"CREATE TABLE post_likes (slug text NOT NULL, visitor_hash text NOT NULL, salt_version integer DEFAULT 1 NOT NULL, created_at text DEFAULT CURRENT_TIMESTAMP NOT NULL)",
 	"CREATE UNIQUE INDEX post_likes_slug_visitor_hash_unique ON post_likes (slug, visitor_hash)",
 ];
 
@@ -46,7 +46,7 @@ describe("incrementLikes (real D1 batch)", () => {
 	});
 
 	it("records the visitor like and derives the public counter in one ordered batch", async () => {
-		const result = await incrementLikes(db, "/blog/post-a", "visitor-1");
+		const result = await incrementLikes(db, "/blog/post-a", "visitor-1", 1);
 
 		expect(result).toEqual({ likes: 1, hasLiked: true });
 		// If the batch ran the count-sync before the insert, this would be 0.
@@ -54,16 +54,16 @@ describe("incrementLikes (real D1 batch)", () => {
 	});
 
 	it("is idempotent for a repeated visitor", async () => {
-		await incrementLikes(db, "/blog/post-a", "visitor-1");
-		const result = await incrementLikes(db, "/blog/post-a", "visitor-1");
+		await incrementLikes(db, "/blog/post-a", "visitor-1", 1);
+		const result = await incrementLikes(db, "/blog/post-a", "visitor-1", 1);
 
 		expect(result).toEqual({ likes: 1, hasLiked: true });
 		expect(await storedLikes("/blog/post-a")).toBe(1);
 	});
 
 	it("counts a second distinct visitor", async () => {
-		await incrementLikes(db, "/blog/post-a", "visitor-1");
-		const result = await incrementLikes(db, "/blog/post-a", "visitor-2");
+		await incrementLikes(db, "/blog/post-a", "visitor-1", 1);
+		const result = await incrementLikes(db, "/blog/post-a", "visitor-2", 1);
 
 		expect(result.likes).toBe(2);
 		expect(await storedLikes("/blog/post-a")).toBe(2);
@@ -84,18 +84,33 @@ describe("incrementLikes (real D1 batch)", () => {
 			),
 		]);
 
-		const result = await incrementLikes(db, "/blog/post-a", "visitor-3");
+		const result = await incrementLikes(db, "/blog/post-a", "visitor-3", 1);
 
 		expect(result.likes).toBe(3);
 		expect(await storedLikes("/blog/post-a")).toBe(3);
 	});
 
 	it("keeps likes scoped to their slug", async () => {
-		await incrementLikes(db, "/blog/post-a", "visitor-1");
-		await incrementLikes(db, "/blog/post-b", "visitor-1");
-		await incrementLikes(db, "/blog/post-b", "visitor-2");
+		await incrementLikes(db, "/blog/post-a", "visitor-1", 1);
+		await incrementLikes(db, "/blog/post-b", "visitor-1", 1);
+		await incrementLikes(db, "/blog/post-b", "visitor-2", 1);
 
 		expect(await storedLikes("/blog/post-a")).toBe(1);
 		expect(await storedLikes("/blog/post-b")).toBe(2);
+	});
+
+	it("excludes prior salt-version rows from the recomputed counter", async () => {
+		await env.D1.prepare(
+			"INSERT INTO post_likes (slug, visitor_hash, salt_version) VALUES (?, ?, 1)",
+		)
+			.bind("/blog/post-a", "old-era")
+			.run();
+
+		// A like under salt version 2 recomputes from version-2 rows only; the
+		// version-1 row stays on disk but no longer counts.
+		const result = await incrementLikes(db, "/blog/post-a", "new-era", 2);
+
+		expect(result.likes).toBe(1);
+		expect(await storedLikes("/blog/post-a")).toBe(1);
 	});
 });

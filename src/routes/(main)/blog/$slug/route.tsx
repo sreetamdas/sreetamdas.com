@@ -73,7 +73,7 @@ function RouteComponent() {
 
 			{Renderable}
 
-			<ViewsCounter />
+			<ViewsCounter useMetrics />
 			<LikeButton />
 		</>
 	);
