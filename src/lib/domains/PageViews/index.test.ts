@@ -70,7 +70,7 @@ describe("incrementLikes", () => {
 	test("inserts the first like", async () => {
 		const db = createLikesDb();
 
-		expect(await incrementLikes(db, "/blog/x", "h1")).toEqual({ likes: 1, hasLiked: true });
+		expect(await incrementLikes(db, "/blog/x", "h1", 1)).toEqual({ likes: 1, hasLiked: true });
 		expect(await getPostLikesCount(db, "/blog/x")).toBe(1);
 		expect(await getPageLikes(db, "/blog/x")).toBe(1);
 	});
@@ -78,9 +78,9 @@ describe("incrementLikes", () => {
 	test("does not increment twice for the same visitor", async () => {
 		const db = createLikesDb();
 
-		await incrementLikes(db, "/blog/x", "h1");
+		await incrementLikes(db, "/blog/x", "h1", 1);
 
-		expect(await incrementLikes(db, "/blog/x", "h1")).toEqual({ likes: 1, hasLiked: true });
+		expect(await incrementLikes(db, "/blog/x", "h1", 1)).toEqual({ likes: 1, hasLiked: true });
 		expect(await getPostLikesCount(db, "/blog/x")).toBe(1);
 		expect(await getPageLikes(db, "/blog/x")).toBe(1);
 	});
@@ -90,7 +90,7 @@ describe("incrementLikes", () => {
 		await db.insert(pageDetails).values({ slug: "/blog/x", viewCount: 0, likes: 1 });
 		await db.insert(postLikes).values({ slug: "/blog/x", visitorHash: "h1" });
 
-		expect(await incrementLikes(db, "/blog/x", "h1")).toEqual({ likes: 1, hasLiked: true });
+		expect(await incrementLikes(db, "/blog/x", "h1", 1)).toEqual({ likes: 1, hasLiked: true });
 		expect(await getPostLikesCount(db, "/blog/x")).toBe(1);
 		expect(await getPageLikes(db, "/blog/x")).toBe(1);
 	});
@@ -101,7 +101,7 @@ describe("incrementLikes", () => {
 		await db.insert(postLikes).values({ slug: "/blog/x", visitorHash: "h1" });
 		await db.insert(postLikes).values({ slug: "/blog/x", visitorHash: "h2" });
 
-		expect(await incrementLikes(db, "/blog/x", "h1")).toEqual({ likes: 2, hasLiked: true });
+		expect(await incrementLikes(db, "/blog/x", "h1", 1)).toEqual({ likes: 2, hasLiked: true });
 		expect(await getPostLikesCount(db, "/blog/x")).toBe(2);
 		expect(await getPageLikes(db, "/blog/x")).toBe(2);
 	});
@@ -109,9 +109,9 @@ describe("incrementLikes", () => {
 	test("increments for a second visitor", async () => {
 		const db = createLikesDb();
 
-		await incrementLikes(db, "/blog/x", "h1");
+		await incrementLikes(db, "/blog/x", "h1", 1);
 
-		expect(await incrementLikes(db, "/blog/x", "h2")).toEqual({ likes: 2, hasLiked: true });
+		expect(await incrementLikes(db, "/blog/x", "h2", 1)).toEqual({ likes: 2, hasLiked: true });
 		expect(await getPostLikesCount(db, "/blog/x")).toBe(2);
 		expect(await getPageLikes(db, "/blog/x")).toBe(2);
 	});
@@ -119,8 +119,8 @@ describe("incrementLikes", () => {
 	test("keeps likes isolated by slug", async () => {
 		const db = createLikesDb();
 
-		await incrementLikes(db, "/blog/x", "h1");
-		expect(await incrementLikes(db, "/blog/y", "h1")).toEqual({ likes: 1, hasLiked: true });
+		await incrementLikes(db, "/blog/x", "h1", 1);
+		expect(await incrementLikes(db, "/blog/y", "h1", 1)).toEqual({ likes: 1, hasLiked: true });
 
 		expect(await getLikes(db, "/blog/x", "h1")).toEqual({ likes: 1, hasLiked: true });
 		expect(await getLikes(db, "/blog/y", "h1")).toEqual({ likes: 1, hasLiked: true });
@@ -129,11 +129,24 @@ describe("incrementLikes", () => {
 	test("normalizes trailing slashes", async () => {
 		const db = createLikesDb();
 
-		expect(await incrementLikes(db, "/blog/x/", "h1")).toEqual({ likes: 1, hasLiked: true });
+		expect(await incrementLikes(db, "/blog/x/", "h1", 1)).toEqual({ likes: 1, hasLiked: true });
 
 		expect(await getLikes(db, "/blog/x", "h1")).toEqual({ likes: 1, hasLiked: true });
 		expect(await getPostLikesCount(db, "/blog/x")).toBe(1);
 		expect(await getPostLikesCount(db, "/blog/x/")).toBe(0);
+	});
+
+	test("excludes likes from older salt versions when recomputing the counter", async () => {
+		const db = createLikesDb();
+		await db.insert(pageDetails).values({ slug: "/blog/x", viewCount: 0, likes: 1 });
+		await db.insert(postLikes).values({ slug: "/blog/x", visitorHash: "old", saltVersion: 1 });
+
+		// A like under salt version 2 recomputes the counter from version-2 rows only,
+		// so the orphaned version-1 row is ignored instead of inflating the count.
+		expect(await incrementLikes(db, "/blog/x", "new", 2)).toEqual({ likes: 1, hasLiked: true });
+		expect(await getPageLikes(db, "/blog/x")).toBe(1);
+		// Both rows remain on disk for audit; only the counter excludes the old era.
+		expect(await getPostLikesCount(db, "/blog/x")).toBe(2);
 	});
 });
 
@@ -146,7 +159,9 @@ function createPageViewsDb(): PageViewsDb {
 			view_count integer DEFAULT 0 NOT NULL,
 			likes integer DEFAULT 0 NOT NULL,
 			created_at text DEFAULT CURRENT_TIMESTAMP NOT NULL,
-			updated_at text DEFAULT CURRENT_TIMESTAMP NOT NULL
+			updated_at text DEFAULT CURRENT_TIMESTAMP NOT NULL,
+			CHECK (view_count >= 0),
+			CHECK (likes >= 0)
 		);
 	`);
 
@@ -162,12 +177,15 @@ function createLikesDb(): PageLikesDb {
 			view_count integer DEFAULT 0 NOT NULL,
 			likes integer DEFAULT 0 NOT NULL,
 			created_at text DEFAULT CURRENT_TIMESTAMP NOT NULL,
-			updated_at text DEFAULT CURRENT_TIMESTAMP NOT NULL
+			updated_at text DEFAULT CURRENT_TIMESTAMP NOT NULL,
+			CHECK (view_count >= 0),
+			CHECK (likes >= 0)
 		);
 
 		CREATE TABLE post_likes (
 			slug text NOT NULL,
 			visitor_hash text NOT NULL,
+			salt_version integer DEFAULT 1 NOT NULL,
 			created_at text DEFAULT CURRENT_TIMESTAMP NOT NULL
 		);
 

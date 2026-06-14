@@ -95,14 +95,15 @@ export async function incrementLikes(
 	db: PageLikesDb,
 	slug: string,
 	visitorHash: string,
+	saltVersion: number,
 ): Promise<LikeCount> {
 	const normalizedSlug = normalizePathname(slug);
 
-	const likesFromVisitors = sql<number>`(SELECT COUNT(*) FROM ${postLikes} WHERE ${postLikes.slug} = ${normalizedSlug})`;
+	const likesFromVisitors = sql<number>`(SELECT COUNT(*) FROM ${postLikes} WHERE ${postLikes.slug} = ${normalizedSlug} AND ${postLikes.saltVersion} = ${saltVersion})`;
 
 	const insertLike = db
 		.insert(postLikes)
-		.values({ slug: normalizedSlug, visitorHash })
+		.values({ slug: normalizedSlug, visitorHash, saltVersion })
 		.onConflictDoNothing();
 	const syncLikeCount = db
 		.insert(pageDetails)

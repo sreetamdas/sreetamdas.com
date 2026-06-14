@@ -10,7 +10,7 @@ const cloudflare = vi.hoisted<{ env: Record<string, unknown> }>(() => ({ env: {}
 vi.mock("@/lib/domains/PageViews", () => pageViews);
 vi.mock("@/db", () => database);
 vi.mock("cloudflare:workers", () => cloudflare);
-vi.mock("@/config", () => ({ IS_DEV: true }));
+vi.mock("@/config", () => ({ IS_DEV: true, LIKES_SALT_VERSION: 1 }));
 
 import { fetchLikeCountFromDb, incrementLikeCountInDb } from "./LikeButton.data.server";
 
@@ -53,6 +53,7 @@ describe("incrementLikeCountInDb", () => {
 			expect.anything(),
 			"/blog/x",
 			expect.stringMatching(SHA256_HEX),
+			1,
 		);
 		expect(pageViews.getLikes).not.toHaveBeenCalled();
 	});
