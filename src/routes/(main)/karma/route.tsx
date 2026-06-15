@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 
 import { SITE_TITLE_APPEND, SITE_URL } from "@/config";
 import { KarmaShowcase } from "@/lib/components/KarmaShowcase";
-import { ViewsCounter } from "@/lib/domains/PageInteraction/ViewsCounter";
+import { StatsCounter } from "@/lib/domains/PageInteraction/StatsCounter";
 import { canonicalUrl } from "@/lib/seo";
 
 export const Route = createFileRoute("/(main)/karma")({
@@ -59,7 +59,7 @@ function KarmaPage() {
 
 			<KarmaShowcase examples={showcaseImages} />
 
-			<ViewsCounter />
+			<StatsCounter />
 		</>
 	);
 }

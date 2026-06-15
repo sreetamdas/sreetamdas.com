@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 
 import { SITE_DESCRIPTION, SITE_TITLE_APPEND } from "@/config";
-import { ViewsCounter } from "@/lib/domains/PageInteraction/ViewsCounter";
+import { StatsCounter } from "@/lib/domains/PageInteraction/StatsCounter";
 import { canonicalUrl, defaultOgImageUrl } from "@/lib/seo";
 
 export const Route = createFileRoute("/(pure)/resume")({
@@ -277,7 +277,7 @@ function ResumeContent() {
 			</div>
 
 			<div className="print:hidden">
-				<ViewsCounter />
+				<StatsCounter />
 			</div>
 		</div>
 	);
