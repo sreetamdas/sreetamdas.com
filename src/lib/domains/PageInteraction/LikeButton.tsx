@@ -17,13 +17,10 @@ type LikeButtonProps = {
 	disabled?: boolean;
 };
 
-// Floats in the right gutter next to the content column on desktop, and as a
-// bottom-right pill on smaller screens where that gutter collapses.
-const POSITION_CLASSES =
-	"fixed right-4 bottom-4 z-40 lg:top-1/2 lg:right-auto lg:bottom-auto lg:left-[calc(50%_+_var(--max-width)/2_+_1rem)] lg:-translate-y-1/2";
-
+// Rendered inline in the blog post outro, next to the view count and live
+// viewers. An inline pill (not fixed/floating) that reads as a clear CTA.
 const PILL_CLASSES =
-	"flex items-center gap-2 rounded-full border-2 border-solid border-primary bg-background px-4 py-2 font-mono text-sm text-primary shadow-lg transition-transform motion-safe:hover:scale-105 motion-safe:active:scale-95";
+	"flex items-center gap-2 rounded-full border-2 border-solid border-primary bg-background px-4 py-1.5 font-mono text-sm text-primary transition-transform motion-safe:hover:scale-105 motion-safe:active:scale-95";
 
 export const LikeButton = ({ slug, disabled = IS_DEV || IS_CI }: LikeButtonProps) => {
 	return <Likes slug={slug} disabled={disabled} />;
@@ -69,7 +66,7 @@ const Likes = ({ slug, disabled = false }: LikeButtonProps) => {
 
 	if (isLoading) {
 		return (
-			<div aria-busy role="status" className={cn(POSITION_CLASSES, PILL_CLASSES, "opacity-70")}>
+			<div aria-busy role="status" className={cn(PILL_CLASSES, "opacity-70")}>
 				<FaRegHeart aria-hidden className="size-4" />
 				<span aria-hidden className="animate-pulse">
 					·
@@ -89,7 +86,6 @@ const Likes = ({ slug, disabled = false }: LikeButtonProps) => {
 			aria-label={getLikeAriaLabel(likeCount, hasLiked, readOnly)}
 			aria-pressed={hasLiked}
 			className={cn(
-				POSITION_CLASSES,
 				PILL_CLASSES,
 				isDisabled && "cursor-not-allowed opacity-70 motion-safe:hover:scale-100",
 			)}

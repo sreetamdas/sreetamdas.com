@@ -30,7 +30,13 @@ function getWsUrl() {
 	return url.toString();
 }
 
-export const LiveViewersBadge = ({ className }: { className?: string }) => {
+export const LiveViewersBadge = ({
+	className,
+	bare = false,
+}: {
+	className?: string;
+	bare?: boolean;
+}) => {
 	const [count, setCount] = useState<number | null>(null);
 	const [connected, setConnected] = useState(false);
 	const wsRef = useRef<WebSocket | null>(null);
@@ -177,7 +183,10 @@ export const LiveViewersBadge = ({ className }: { className?: string }) => {
 	return (
 		<div
 			className={cn(
-				"mx-4 flex items-center gap-2 rounded-global border border-solid border-foreground/15 bg-background px-2 py-1 font-mono text-xs text-foreground",
+				"flex items-center gap-2 font-mono text-xs text-foreground",
+				bare
+					? null
+					: "mx-4 rounded-global border border-solid border-foreground/15 bg-background px-2 py-1",
 				className,
 			)}
 			title={connected ? "Live viewers (real-time)" : "Live viewers (connecting...)"}
