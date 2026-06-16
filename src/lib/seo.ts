@@ -43,7 +43,10 @@ export function excerptFromMarkdown(markdown: string, maxLength = 160): string {
 		.replace(/[*_~]+/g, "")
 		.replace(/<[^>]+>/g, " ")
 		.replace(/\s+/g, " ")
-		.trim();
+		.trim()
+		// Newsletter issues all open with the same "Hello there!" greeting; drop a
+		// leading salutation so the description starts with issue-specific content.
+		.replace(/^(?:hello|hi|hey)(?:\s+there)?\s*[!.,…]+\s*/i, "");
 
 	if (text.length <= maxLength) return text;
 

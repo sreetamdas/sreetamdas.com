@@ -4,9 +4,8 @@ import { excerptFromMarkdown } from "./seo";
 
 describe("excerptFromMarkdown", () => {
 	test("strips headings, links and emphasis to plain text", () => {
-		const markdown =
-			"## Hello there!\n\nI posted a [new article](https://example.com) on **React**.";
-		expect(excerptFromMarkdown(markdown)).toBe("Hello there! I posted a new article on React.");
+		const markdown = "## Heading\n\nI posted a [new article](https://example.com) on **React**.";
+		expect(excerptFromMarkdown(markdown)).toBe("Heading I posted a new article on React.");
 	});
 
 	test("collapses whitespace and newlines", () => {
@@ -32,5 +31,16 @@ describe("excerptFromMarkdown", () => {
 
 	test("returns an empty string for empty input", () => {
 		expect(excerptFromMarkdown("")).toBe("");
+	});
+
+	test("strips a leading greeting", () => {
+		expect(excerptFromMarkdown("Hello there! This week I moved to Zustand.")).toBe(
+			"This week I moved to Zustand.",
+		);
+		expect(excerptFromMarkdown("Hey,\n\nHappy New Year!")).toBe("Happy New Year!");
+	});
+
+	test("does not strip a real word that merely starts like a greeting", () => {
+		expect(excerptFromMarkdown("Hidden gems of the week.")).toBe("Hidden gems of the week.");
 	});
 });
