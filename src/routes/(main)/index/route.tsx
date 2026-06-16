@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 
 import { SITE_DESCRIPTION, SITE_TITLE_APPEND } from "@/config";
-import { ViewsCounter } from "@/lib/domains/PageInteraction/ViewsCounter";
+import { StatsCounter } from "@/lib/domains/PageInteraction/StatsCounter";
 import { canonicalUrl, defaultOgImageUrl } from "@/lib/seo";
 
 import { getHomeRenderable } from "./-index.server";
@@ -48,7 +48,7 @@ function Home() {
 			</h1>
 			{Renderable}
 
-			<ViewsCounter hidden />
+			<StatsCounter hidden />
 		</>
 	);
 }

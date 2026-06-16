@@ -2,7 +2,7 @@ import { Await, createFileRoute } from "@tanstack/react-router";
 import { Suspense } from "react";
 
 import { SITE_DESCRIPTION, SITE_TITLE_APPEND } from "@/config";
-import { ViewsCounter } from "@/lib/domains/PageInteraction/ViewsCounter";
+import { StatsCounter } from "@/lib/domains/PageInteraction/StatsCounter";
 import {
 	createEmptyStats,
 	DEFAULT_PLAUSIBLE_SITE_ID,
@@ -84,7 +84,7 @@ function StatsPage() {
 			<Suspense fallback={<StatsSkeleton />}>
 				<Await promise={stats}>{(resolvedStats) => <StatsContent stats={resolvedStats} />}</Await>
 			</Suspense>
-			<ViewsCounter />
+			<StatsCounter />
 		</>
 	);
 }

@@ -2,7 +2,7 @@ import { createFileRoute, ErrorComponent } from "@tanstack/react-router";
 import { FiLink } from "react-icons/fi";
 
 import { SITE_DESCRIPTION, SITE_TITLE_APPEND } from "@/config";
-import { ViewsCounter } from "@/lib/domains/PageInteraction/ViewsCounter";
+import { StatsCounter } from "@/lib/domains/PageInteraction/StatsCounter";
 import { canonicalUrl, defaultOgImageUrl } from "@/lib/seo";
 import { STATIC_SERVER_FUNCTION_STALE_TIME } from "@/lib/static-server-functions";
 
@@ -40,7 +40,7 @@ function RWCPage() {
 		<>
 			<h1 className="pt-10 pb-20 font-serif text-8xl font-bold">/rwc</h1>
 			<RWCCodeSamples all_solutions={all_solutions} backgroundColor={background_color} />
-			<ViewsCounter />
+			<StatsCounter />
 		</>
 	);
 }

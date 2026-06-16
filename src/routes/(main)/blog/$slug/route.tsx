@@ -2,11 +2,9 @@ import { createFileRoute } from "@tanstack/react-router";
 
 import { SITE_DESCRIPTION, SITE_TITLE_APPEND } from "@/config";
 import { NotFound404 } from "@/lib/components/Error";
-import { LiveViewersBadge } from "@/lib/components/LiveViewersBadge";
 import { ReadingProgress } from "@/lib/components/ProgressBar";
 import { Gradient } from "@/lib/components/Typography";
-import { LikeButton } from "@/lib/domains/PageInteraction/LikeButton";
-import { ViewsCounter } from "@/lib/domains/PageInteraction/ViewsCounter";
+import { StatsCounter } from "@/lib/domains/PageInteraction/StatsCounter";
 import { cn } from "@/lib/helpers/utils";
 import { absoluteUrl, canonicalUrl, defaultOgImageUrl } from "@/lib/seo";
 
@@ -74,11 +72,7 @@ function RouteComponent() {
 
 			{Renderable}
 
-			<ViewsCounter useMetrics />
-			<div className="mx-auto mb-10 flex w-full flex-wrap items-center justify-center gap-x-5 gap-y-3">
-				<LikeButton />
-				<LiveViewersBadge bare className="text-sm text-foreground/60" />
-			</div>
+			<StatsCounter useMetrics withLive withLikes page_type="post" />
 		</>
 	);
 }

@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 
 import { SITE_DESCRIPTION, SITE_TITLE_APPEND } from "@/config";
-import { ViewsCounter } from "@/lib/domains/PageInteraction/ViewsCounter";
+import { StatsCounter } from "@/lib/domains/PageInteraction/StatsCounter";
 import { canonicalUrl, defaultOgImageUrl } from "@/lib/seo";
 
 import { getRootPageRenderable, type RootPageLoaderData } from "./-$slug.server";
@@ -45,7 +45,7 @@ function MDXPageSlugPage() {
 		<>
 			<h1 className="pt-10 pb-20 font-serif text-8xl font-bold">/{post.page_slug}</h1>
 			{Renderable}
-			<ViewsCounter />
+			<StatsCounter />
 		</>
 	);
 }
