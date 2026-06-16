@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 
 import { SITE_DESCRIPTION, SITE_TITLE_APPEND } from "@/config";
-import { canonicalUrl, defaultOgImageUrl } from "@/lib/seo";
+import { canonicalUrl, defaultOgImageUrl, excerptFromMarkdown } from "@/lib/seo";
 import { STATIC_SERVER_FUNCTION_STALE_TIME } from "@/lib/static-server-functions";
 
 import { getNewsletterEmailRenderable, type NewsletterLoaderData } from "./-$slug.server";
@@ -12,7 +12,7 @@ export const Route = createFileRoute("/(main)/newsletter/$slug")({
 	head: ({ loaderData }: { loaderData?: NewsletterLoaderData }) => {
 		const email = loaderData?.newsletter_email_data;
 		const title = `${email?.subject ?? "Newsletter"} ${SITE_TITLE_APPEND}`;
-		const description = SITE_DESCRIPTION;
+		const description = excerptFromMarkdown(email?.body ?? "") || SITE_DESCRIPTION;
 		const canonical = canonicalUrl(`/newsletter/${email?.slug ?? ""}`);
 		const ogImage = defaultOgImageUrl();
 
@@ -26,6 +26,9 @@ export const Route = createFileRoute("/(main)/newsletter/$slug")({
 				{ property: "og:type", content: "article" },
 				{ property: "og:url", content: canonical },
 				{ property: "og:image", content: ogImage },
+				...(email?.publish_date
+					? [{ property: "article:published_time", content: email.publish_date }]
+					: []),
 				{ name: "twitter:title", content: title },
 				{ name: "twitter:description", content: description },
 				{ name: "twitter:image", content: ogImage },

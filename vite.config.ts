@@ -8,7 +8,6 @@ import rsc from "@vitejs/plugin-rsc";
 import { defineConfig, type UserConfig } from "vite-plus";
 
 import { slideDeckPlugin } from "./src/lib/domains/slides/vite-plugin.ts";
-import { shouldPrerenderPath } from "./src/lib/prerender.ts";
 
 function getPlugins(): Array<unknown> {
 	const hasSentryBuildEnv = Boolean(
@@ -45,7 +44,13 @@ function getPlugins(): Array<unknown> {
 			prerender: {
 				enabled: true,
 				autoSubfolderIndex: false,
-				filter: ({ path }) => shouldPrerenderPath(path),
+				// Newsletter detail pages are now prerendered (for SEO) by crawling the
+				// newsletter index. Buttondown content is fetched at build time, so retry
+				// transient fetch failures — but keep the build fail-fast (the default) so
+				// a genuinely broken page or stale internal link surfaces instead of
+				// silently shipping a 404 into the sitemap.
+				retryCount: 2,
+				retryDelay: 1000,
 			},
 			sitemap: {
 				enabled: true,

@@ -9,9 +9,10 @@
 	"scripts": {
 		"build:content-collections": "content-collections build",
 		"generate-feeds": "tsx scripts/generate-feeds.ts",
+		"normalize-sitemap": "tsx scripts/normalize-sitemap.ts",
 		"dev": "vp dev",
 		"prebuild": "vp run build:content-collections && vp run generate-feeds && node scripts/generate-build-info.mjs",
-		"build": "vp build",
+		"build": "vp build && vp run normalize-sitemap",
 		"preview": "vp preview",
 		"test:unit": "pnpm exec vp test run --config .config/vitest.unit.config.ts",
 		"test:workers": "pnpm exec vp test run --config .config/vitest.config.ts --max-workers=1 --no-isolate",
