@@ -2,13 +2,13 @@ import { defineConfig } from "drizzle-kit";
 import path from "node:path";
 
 const projectRoot = process.cwd();
-const accountId = process.env.CF_ACCOUNT_ID;
-const databaseId = process.env.CF_D1_DB_ID;
-const token = process.env.CF_D1_TOKEN;
+const accountId = process.env.CLOUDFLARE_ACCOUNT_ID;
+const databaseId = process.env.CLOUDFLARE_D1_DB_ID;
+const token = process.env.CLOUDFLARE_D1_TOKEN;
 
 if (!accountId || !databaseId || !token) {
 	throw new Error(
-		"Missing CF_ACCOUNT_ID/CF_D1_DB_ID/CF_D1_TOKEN for remote D1 Studio. " +
+		"Missing CF_ACCOUNT_ID/CF_D1_DB_ID/CLOUDFLARE_D1_TOKEN for remote D1 Studio. " +
 			"Set them in your env (do not commit).",
 	);
 }
