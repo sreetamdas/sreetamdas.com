@@ -67,6 +67,7 @@
 				"oxfmt",
 				"oxlint",
 				"!vtsls",
+				"!typescript-language-server",
 				"..."
 			],
 			"format_on_save": "on",
@@ -83,6 +84,7 @@
 				"oxfmt",
 				"oxlint",
 				"!vtsls",
+				"!typescript-language-server",
 				"..."
 			],
 			"format_on_save": "on",
