@@ -8,19 +8,15 @@ allowBuilds:
   "@tailwindcss/oxide": true
 catalog:
   vite: npm:@voidzero-dev/vite-plus-core@latest
-  vitest: npm:@voidzero-dev/vite-plus-test@latest
-  vite-plus: ^0.1.24
+  vite-plus: ^0.2.1
 overrides:
   kysely: 0.28.8
   vite: "catalog:"
-  vitest: "catalog:"
 peerDependencyRules:
   allowAny:
     - vite
-    - vitest
   allowedVersions:
     vite: "*"
-    vitest: "*"
 autoInstallPeers: true
 enablePrePostScripts: true
 minimumReleaseAge: 0
