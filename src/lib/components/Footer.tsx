@@ -16,7 +16,7 @@ import { cn } from "@/lib/helpers/utils";
  */
 
 export const Footer = ({ children, className }: HTMLAttributes<HTMLDivElement>) => {
-	// Blog posts render <BlogActivityDock />, which already shows live presence;
+	// Blog posts render their own engagement StatsCounter with live presence;
 	// hide the footer badge there so a visitor opens only one presence socket.
 	const { pathname } = useLocation();
 	const isBlogPost = pathname.startsWith("/blog/");

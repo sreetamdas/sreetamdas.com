@@ -18,16 +18,7 @@ type StatsCounterProps = {
 	page_type?: "post" | "page";
 	hidden?: boolean;
 	disabled?: boolean;
-	/**
-	 * Read the view count from the shared page-metrics query instead of fetching
-	 * views on its own. Set on routes that also like/track metrics so the
-	 * requests dedupe into a single combined call.
-	 */
-	useMetrics?: boolean;
-	/** Show the live viewer count as part of the stats sentence. */
-	withLive?: boolean;
-	/** Show the (clickable) like count as part of the stats sentence. */
-	withLikes?: boolean;
+	variant?: "views" | "engagement";
 };
 
 export const StatsCounter = ({
@@ -35,9 +26,7 @@ export const StatsCounter = ({
 	page_type = "page",
 	hidden = false,
 	disabled = IS_DEV || IS_CI,
-	useMetrics = false,
-	withLive = false,
-	withLikes = false,
+	variant = "views",
 }: StatsCounterProps) => {
 	return (
 		<div
@@ -49,14 +38,7 @@ export const StatsCounter = ({
 			<span role="img" aria-label="eyes">
 				👀
 			</span>
-			<Stats
-				slug={slug}
-				page_type={page_type}
-				disabled={disabled}
-				useMetrics={useMetrics}
-				withLive={withLive}
-				withLikes={withLikes}
-			/>
+			<Stats slug={slug} page_type={page_type} disabled={disabled} variant={variant} />
 		</div>
 	);
 };
@@ -65,34 +47,22 @@ const Stats = ({
 	slug,
 	page_type,
 	disabled = false,
-	useMetrics,
-	withLive,
-	withLikes,
+	variant = "views",
 }: Omit<StatsCounterProps, "hidden">) => {
 	const { pathname } = useLocation();
 	const normalizedPathname = normalizePathname(slug ?? pathname);
 
-	// Conditional render (not a conditional hook): each mode is fixed per route,
-	// so each inner component keeps a stable hook order.
-	if (withLive || withLikes) {
+	if (variant === "engagement") {
 		return (
 			<StatsSentence
 				normalizedPathname={normalizedPathname}
 				disabled={disabled}
 				page_type={page_type}
-				withLive={withLive}
-				withLikes={withLikes}
 			/>
 		);
 	}
 
-	return useMetrics ? (
-		<MetricsViews
-			normalizedPathname={normalizedPathname}
-			disabled={disabled}
-			page_type={page_type}
-		/>
-	) : (
+	return (
 		<StandaloneViews
 			normalizedPathname={normalizedPathname}
 			disabled={disabled}
@@ -105,42 +75,25 @@ type StatsSentenceProps = {
 	normalizedPathname: string;
 	disabled: boolean;
 	page_type: StatsCounterProps["page_type"];
-	withLive?: boolean;
-	withLikes?: boolean;
 };
 
-const StatsSentence = ({
-	normalizedPathname,
-	disabled,
-	page_type,
-	withLive,
-	withLikes,
-}: StatsSentenceProps) => {
-	const { data, isLoading } = usePageMetrics(normalizedPathname, disabled);
+const StatsSentence = ({ normalizedPathname, disabled, page_type }: StatsSentenceProps) => {
+	const { data, isError, isLoading } = usePageMetrics(normalizedPathname, disabled);
 	const noun = page_type === "post" ? "post" : "page";
 
-	if (isLoading || data?.view_count === undefined) {
+	if (isLoading) {
 		return <p className="m-0 text-xs">Getting stats for this {noun}</p>;
+	}
+
+	if (isError || data?.view_count === undefined) {
+		return <p className="m-0 text-xs">Stats unavailable right now</p>;
 	}
 
 	return (
 		<p className="m-0 text-xs">
-			This {noun} has <Stat value={data.view_count} unit="view" />
-			{withLive ? (
-				<>
-					, <LiveStat />
-				</>
-			) : null}
-			{withLikes ? (
-				<>
-					,{" "}
-					<LikeStat
-						normalizedPathname={normalizedPathname}
-						disabled={disabled}
-						likes={data.likes}
-					/>
-				</>
-			) : null}
+			<Stat value={data.view_count} unit="view" /> ·{" "}
+			<LikeStat normalizedPathname={normalizedPathname} disabled={disabled} metrics={data} /> ·{" "}
+			<LiveStat />
 		</p>
 	);
 };
@@ -159,7 +112,7 @@ const LiveStat = () => {
 			<span className="font-mono text-primary">
 				{count === null ? "…" : count.toLocaleString()}
 			</span>{" "}
-			live
+			live across the site
 		</span>
 	);
 };
@@ -167,11 +120,11 @@ const LiveStat = () => {
 const LikeStat = ({
 	normalizedPathname,
 	disabled,
-	likes,
+	metrics,
 }: {
 	normalizedPathname: string;
 	disabled: boolean;
-	likes: number;
+	metrics: PageMetrics;
 }) => {
 	const queryClient = useQueryClient();
 	const queryKey = pageMetricsQueryKey(normalizedPathname);
@@ -179,7 +132,6 @@ const LikeStat = ({
 	const incrementLikeCount = useServerFn<() => Promise<LikeCount>>(() =>
 		incrementLikeServerFn({ data: { slug: normalizedPathname, disabled } }),
 	);
-	const { data } = usePageMetrics(normalizedPathname, disabled);
 	const { mutate, isPending } = useMutation({
 		mutationFn: incrementLikeCount,
 		onMutate: async () => {
@@ -208,9 +160,9 @@ const LikeStat = ({
 		},
 	});
 
-	const likeCount = data?.likes ?? likes;
-	const hasLiked = data?.hasLiked ?? false;
-	const readOnly = data?.readOnly ?? false;
+	const likeCount = metrics.likes;
+	const hasLiked = metrics.hasLiked;
+	const readOnly = metrics.readOnly ?? false;
 	const isDisabled = disabled || hasLiked || isPending || readOnly;
 	const label = `${likeCount.toLocaleString()} ${likeCount === 1 ? "like" : "likes"}`;
 
@@ -238,21 +190,27 @@ const LikeStat = ({
 	);
 };
 
-const MetricsViews = ({ normalizedPathname, disabled, page_type }: InnerViewsProps) => {
-	const { data, isLoading } = usePageMetrics(normalizedPathname, disabled);
-	return <ViewsCopy isLoading={isLoading} view_count={data?.view_count} page_type={page_type} />;
-};
-
 const StandaloneViews = ({ normalizedPathname, disabled, page_type }: InnerViewsProps) => {
 	const fetchViewCount = useServerFn<() => Promise<PageViewCount>>(() =>
 		fetchViewCountServerFn({ data: { slug: normalizedPathname, disabled } }),
 	);
-	const { data, isLoading } = useQuery({
+	const { data, isError, isLoading } = useQuery({
 		queryFn: fetchViewCount,
 		queryKey: [normalizedPathname, "get-views"],
 		staleTime: 1000 * 30,
+		// Reading the count also records a view; avoid automatic background replays.
+		refetchOnWindowFocus: false,
+		refetchOnReconnect: false,
+		retry: false,
 	});
-	return <ViewsCopy isLoading={isLoading} view_count={data?.view_count} page_type={page_type} />;
+	return (
+		<ViewsCopy
+			isError={isError}
+			isLoading={isLoading}
+			view_count={data?.view_count}
+			page_type={page_type}
+		/>
+	);
 };
 
 type InnerViewsProps = {
@@ -262,10 +220,12 @@ type InnerViewsProps = {
 };
 
 const ViewsCopy = ({
+	isError,
 	isLoading,
 	view_count,
 	page_type,
 }: {
+	isError: boolean;
 	isLoading: boolean;
 	view_count: number | undefined;
 	page_type: StatsCounterProps["page_type"];
@@ -274,17 +234,15 @@ const ViewsCopy = ({
 		return <p className="m-0 animate-pulse text-xs">Getting view count</p>;
 	}
 
+	if (isError || view_count === undefined) {
+		return <p className="m-0 text-xs">View count unavailable right now</p>;
+	}
+
 	return <p className="m-0 text-xs">{getViewCountCopy(view_count, page_type)}</p>;
 };
 
-function getViewCountCopy(
-	view_count: number | undefined,
-	page_type: StatsCounterProps["page_type"],
-) {
+function getViewCountCopy(view_count: number, page_type: StatsCounterProps["page_type"]) {
 	switch (view_count) {
-		case undefined:
-		case null:
-			return "Getting page views";
 		case 0:
 			return "No views yet. Wait what, HOW? 🤔";
 		case 1:

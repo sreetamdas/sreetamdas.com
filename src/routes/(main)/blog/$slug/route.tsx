@@ -72,7 +72,7 @@ function RouteComponent() {
 
 			{Renderable}
 
-			<StatsCounter useMetrics withLive withLikes page_type="post" />
+			<StatsCounter variant="engagement" page_type="post" />
 		</>
 	);
 }
