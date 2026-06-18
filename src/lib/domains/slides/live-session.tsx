@@ -6,10 +6,11 @@
  * the presenter's slide, vote in slide polls, and send lightweight reactions.
  * The underlying WebSocket transport lives in `./use-slide-session`.
  */
+import { useServerFn } from "@tanstack/react-start";
 import { type FormEvent, useState } from "react";
-import { FaRegCircleCheck, FaGoogle } from "react-icons/fa6";
+import { FaCloudflare, FaGoogle, FaRegCircleCheck } from "react-icons/fa6";
 
-import { auth_client } from "@/lib/auth/client";
+import { startSocialSignInServerFn, type SocialSignInProvider } from "@/lib/domains/auth/server";
 import { SLIDE_REACTION_EMOJIS } from "@/lib/domains/slides/reactions";
 import { cn } from "@/lib/helpers/utils";
 
@@ -132,11 +133,27 @@ function MasterLiveControl({
 }) {
 	const [question, setQuestion] = useState("");
 	const [options, setOptions] = useState("Yes,No");
+	const [signInProvider, setSignInProvider] = useState<SocialSignInProvider | null>(null);
+	const [signInFailed, setSignInFailed] = useState(false);
+	const startSocialSignIn = useServerFn(startSocialSignInServerFn);
 	const browserHref = useBrowserHref();
 	const viewerLink = browserHref ? getViewerLink(sessionId, browserHref) : "";
+	const signInDisabled = !browserHref || signInProvider !== null;
 
-	function handleGoogleSignin() {
-		auth_client.signIn.social({ provider: "google" });
+	async function handleSocialSignin(provider: SocialSignInProvider) {
+		if (!browserHref || signInProvider) return;
+
+		setSignInProvider(provider);
+		setSignInFailed(false);
+		try {
+			const result = await startSocialSignIn({
+				data: { provider, return_url: browserHref },
+			});
+			globalThis.location.assign(result.url);
+		} catch {
+			setSignInFailed(true);
+			setSignInProvider(null);
+		}
 	}
 
 	function handleCreatePoll(event: FormEvent<HTMLFormElement>) {
@@ -188,25 +205,30 @@ function MasterLiveControl({
 					</p>
 					<p className="m-0 flex items-center gap-2 pt-5 text-xs text-amber-50/85">
 						Sign in with:
-						{/*<button
+						<button
 							aria-label="Sign in with Cloudflare"
-							className="cursor-pointer border-0 bg-transparent p-0 text-2xl text-orange-400"
-							disabled={!browserHref}
-							onClick={() => handleClickGoogleLogin()}
+							className="cursor-pointer border-0 bg-transparent p-0 text-2xl text-orange-400 disabled:cursor-not-allowed disabled:opacity-50"
+							disabled={signInDisabled}
+							onClick={() => void handleSocialSignin("cloudflare")}
 							type="button"
 						>
 							<FaCloudflare />
-						</button>*/}
+						</button>
 						<button
 							aria-label="Sign in with Google"
-							className="cursor-pointer border-0 bg-transparent p-0 text-lg text-white"
-							disabled={!browserHref}
-							onClick={handleGoogleSignin}
+							className="cursor-pointer border-0 bg-transparent p-0 text-lg text-white disabled:cursor-not-allowed disabled:opacity-50"
+							disabled={signInDisabled}
+							onClick={() => void handleSocialSignin("google")}
 							type="button"
 						>
 							<FaGoogle />
 						</button>
 					</p>
+					{signInFailed ? (
+						<p className="m-0 mt-2 text-xs text-amber-50/85">
+							Sign-in failed. Try again in a moment.
+						</p>
+					) : null}
 				</div>
 			)}
 
