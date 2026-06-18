@@ -75,8 +75,11 @@ export async function incrementLikeCount(
 		const { incrementLikeCountInDb } = await import("./LikeButton.data.server");
 		return await incrementLikeCountInDb(normalizedSlug, data.disabled, clientIp);
 	} catch (error) {
+		// Unlike the read path, a failed write must not fail open: returning a
+		// success-shaped zero would silently drop the like (and reset the UI to
+		// 0). Throw so the client mutation rolls back and re-enables retry.
 		warnCounterFailureOnce("increment likes", error);
-		return { likes: 0, hasLiked: false };
+		throw error;
 	}
 }
 

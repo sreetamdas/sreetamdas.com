@@ -64,12 +64,11 @@ describe("incrementLikeCount", () => {
 		);
 	});
 
-	test("fails open when the data layer throws", async () => {
+	test("throws when the data layer write fails instead of failing open", async () => {
 		dataServer.incrementLikeCountInDb.mockRejectedValue(new Error("write failed"));
 
-		expect(await incrementLikeCount({ slug: "/blog/chameleon-text", disabled: false })).toEqual({
-			likes: 0,
-			hasLiked: false,
-		});
+		await expect(
+			incrementLikeCount({ slug: "/blog/chameleon-text", disabled: false }),
+		).rejects.toThrow("write failed");
 	});
 });
