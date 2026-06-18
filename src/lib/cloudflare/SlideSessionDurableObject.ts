@@ -29,6 +29,13 @@ type ConnectionAttachment = {
 	role: SlideSessionRole;
 	clientId: string;
 };
+type SnapshotBase = {
+	position: SlideSessionPosition;
+	poll: PollRecord | undefined;
+	voteCounts: Record<string, number>;
+	viewers: number;
+	masters: number;
+};
 
 const POSITION_KEY = "position";
 const POLL_KEY = "poll";
@@ -140,16 +147,30 @@ export class SlideSessionDurableObject extends DurableObject<CloudflareEnv> {
 	}
 
 	private async getSnapshot(clientId?: string): Promise<SlideSessionSnapshot> {
+		return this.createSnapshot(await this.getSnapshotBase(), clientId);
+	}
+
+	private async getSnapshotBase(): Promise<SnapshotBase> {
 		const position =
 			(await this.ctx.storage.get<SlideSessionPosition>(POSITION_KEY)) ?? DEFAULT_POSITION;
 		const poll = await this.ctx.storage.get<PollRecord>(POLL_KEY);
 		const { viewers, masters } = this.getConnectionCounts();
 		return {
-			type: "snapshot",
 			position,
-			poll: poll ? toPublicPoll(poll, clientId) : null,
+			poll,
+			voteCounts: poll ? countPollVotes(poll) : {},
 			viewers,
 			masters,
+		};
+	}
+
+	private createSnapshot(base: SnapshotBase, clientId?: string): SlideSessionSnapshot {
+		return {
+			type: "snapshot",
+			position: base.position,
+			poll: base.poll ? toPublicPoll(base.poll, clientId, base.voteCounts) : null,
+			viewers: base.viewers,
+			masters: base.masters,
 		};
 	}
 
@@ -163,10 +184,17 @@ export class SlideSessionDurableObject extends DurableObject<CloudflareEnv> {
 	}
 
 	private async broadcastSnapshot() {
+		let base: SnapshotBase;
+		try {
+			base = await this.getSnapshotBase();
+		} catch {
+			return;
+		}
+
 		for (const ws of this.ctx.getWebSockets()) {
 			try {
 				const attachment = parseAttachment(ws.deserializeAttachment());
-				const payload = JSON.stringify(await this.getSnapshot(attachment?.clientId));
+				const payload = JSON.stringify(this.createSnapshot(base, attachment?.clientId));
 				ws.send(payload);
 			} catch {
 				// noop
@@ -287,7 +315,11 @@ function normalizeSlideScope(value: number | null | undefined): number | null {
 	return normalizeIndex(value);
 }
 
-function toPublicPoll(poll: PollRecord, clientId?: string): SlidePoll {
+function toPublicPoll(
+	poll: PollRecord,
+	clientId?: string,
+	voteCounts = countPollVotes(poll),
+): SlidePoll {
 	return {
 		id: poll.id,
 		question: poll.question,
@@ -296,7 +328,18 @@ function toPublicPoll(poll: PollRecord, clientId?: string): SlidePoll {
 		selectedOptionId: clientId ? (poll.voters[clientId] ?? null) : null,
 		options: poll.options.map((option) => ({
 			...option,
-			votes: Object.values(poll.voters).filter((vote) => vote === option.id).length,
+			votes: voteCounts[option.id] ?? 0,
 		})),
 	};
+}
+
+function countPollVotes(poll: PollRecord): Record<string, number> {
+	const voteCounts: Record<string, number> = {};
+	for (const option of poll.options) {
+		voteCounts[option.id] = 0;
+	}
+	for (const vote of Object.values(poll.voters)) {
+		voteCounts[vote] = (voteCounts[vote] ?? 0) + 1;
+	}
+	return voteCounts;
 }
