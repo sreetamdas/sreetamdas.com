@@ -87,8 +87,16 @@ const StatsSentence = ({ normalizedPathname, disabled, page_type }: StatsSentenc
 	if (isLoading) {
 		return (
 			<StatsList noun={noun} isBusy statusLabel={`Getting stats for this ${noun}`}>
-				<MetricSkeleton label="Views" valueWidthClassName="w-[5ch]" />
-				<MetricSkeleton label="Likes" valueWidthClassName="w-[2ch]" />
+				<MetricSkeleton
+					icon={<FaEye aria-hidden="true" focusable={false} className="size-5 text-primary" />}
+					label="Views"
+					valueWidthClassName="w-[5ch]"
+				/>
+				<MetricSkeleton
+					icon={<FaRegHeart aria-hidden="true" focusable={false} className="size-5 text-primary" />}
+					label="Likes"
+					valueWidthClassName="w-[2ch]"
+				/>
 				<LiveStat />
 			</StatsList>
 		);
@@ -144,16 +152,18 @@ const StatsList = ({
 );
 
 const MetricSkeleton = ({
+	icon,
 	label,
 	valueWidthClassName,
 }: {
+	icon: ReactNode;
 	label: string;
 	valueWidthClassName: string;
 }) => (
 	<div className={statItemClassName}>
 		<dt className="sr-only">{label}</dt>
 		<dd className="m-0 inline-flex min-h-5 items-center gap-1.5">
-			<span aria-hidden="true" className="size-5 animate-pulse rounded-sm bg-foreground/15" />
+			{icon}
 			<span
 				aria-hidden="true"
 				className={cn("h-4 animate-pulse rounded-full bg-foreground/15", valueWidthClassName)}
@@ -199,7 +209,19 @@ const LiveStat = () => {
 	const { count, connected } = useLiveViewerCount();
 
 	if (count === null) {
-		return <MetricSkeleton label="Live viewers across the site" valueWidthClassName="w-[2ch]" />;
+		return (
+			<MetricSkeleton
+				icon={
+					<FaRegCircleUser
+						aria-hidden="true"
+						focusable={false}
+						className="size-5 rounded-full text-primary"
+					/>
+				}
+				label="Live viewers across the site"
+				valueWidthClassName="w-[2ch]"
+			/>
+		);
 	}
 
 	const formattedCount = count.toLocaleString();
