@@ -82,17 +82,19 @@ const StatsSentence = ({ normalizedPathname, disabled, page_type }: StatsSentenc
 	const noun = page_type === "post" ? "post" : "page";
 
 	if (isLoading) {
-		return <p className="m-0 text-xs">Getting stats for this {noun}</p>;
+		return <p className="m-0 text-sm">Getting stats for this {noun}</p>;
 	}
 
 	if (isError || data?.view_count === undefined) {
-		return <p className="m-0 text-xs">Stats unavailable right now</p>;
+		return <p className="m-0 text-sm">Stats unavailable right now</p>;
 	}
 
 	return (
-		<p className="m-0 text-xs">
-			<Stat value={data.view_count} unit="view" /> ·{" "}
-			<LikeStat normalizedPathname={normalizedPathname} disabled={disabled} metrics={data} /> ·{" "}
+		<p className="m-0 flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-sm">
+			<Stat value={data.view_count} unit="view" />
+			<span aria-hidden="true">·</span>
+			<LikeStat normalizedPathname={normalizedPathname} disabled={disabled} metrics={data} />
+			<span aria-hidden="true">·</span>
 			<LiveStat />
 		</p>
 	);
@@ -100,22 +102,34 @@ const StatsSentence = ({ normalizedPathname, disabled, page_type }: StatsSentenc
 
 const Stat = ({ value, unit }: { value: number; unit: string }) => (
 	<>
-		<span className="font-mono text-primary">{value.toLocaleString()}</span>{" "}
-		{value === 1 ? unit : `${unit}s`}
+		<MetricValue>{value.toLocaleString()}</MetricValue> {value === 1 ? unit : `${unit}s`}
 	</>
 );
 
 const LiveStat = () => {
-	const { count } = useLiveViewerCount();
+	const { count, connected } = useLiveViewerCount();
 	return (
-		<span title="Live viewers (real-time)">
-			<span className="font-mono text-primary">
-				{count === null ? "…" : count.toLocaleString()}
-			</span>{" "}
-			live across the site
+		<span className="inline-flex items-center gap-1.5" title="Live viewers (real-time)">
+			<LivePulse connected={connected} />
+			<MetricValue>{count === null ? "…" : count.toLocaleString()}</MetricValue> live across the
+			site
 		</span>
 	);
 };
+
+const LivePulse = ({ connected }: { connected: boolean }) => (
+	<span aria-hidden="true" className="relative inline-flex h-2 w-2">
+		{connected ? (
+			<span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-75" />
+		) : null}
+		<span
+			className={cn(
+				"relative inline-flex h-2 w-2 rounded-full",
+				connected ? "bg-primary" : "bg-primary/40",
+			)}
+		/>
+	</span>
+);
 
 const LikeStat = ({
 	normalizedPathname,
@@ -164,15 +178,20 @@ const LikeStat = ({
 	const hasLiked = metrics.hasLiked;
 	const readOnly = metrics.readOnly ?? false;
 	const isDisabled = disabled || hasLiked || isPending || readOnly;
-	const label = `${likeCount.toLocaleString()} ${likeCount === 1 ? "like" : "likes"}`;
+	const formattedLikeCount = likeCount.toLocaleString();
+	const likeUnit = likeCount === 1 ? "like" : "likes";
+	const label = `${formattedLikeCount} ${likeUnit}`;
 
 	if (isDisabled) {
 		return (
 			<span
-				className={cn("font-mono", hasLiked ? "font-semibold text-primary" : "text-primary/70")}
+				className={hasLiked ? "font-semibold text-primary" : "text-primary/80"}
 				title={hasLiked ? "You liked this post" : label}
 			>
-				{label}
+				<MetricValue className={hasLiked ? "font-semibold" : undefined}>
+					{formattedLikeCount}
+				</MetricValue>{" "}
+				{likeUnit}
 			</span>
 		);
 	}
@@ -183,9 +202,9 @@ const LikeStat = ({
 			onClick={() => mutate()}
 			aria-label={`Like this post — ${label}`}
 			title={`Like this post — ${label}`}
-			className="cursor-pointer font-mono text-primary underline-offset-4 transition-colors hover:underline"
+			className="cursor-pointer text-primary underline-offset-4 transition-colors hover:underline"
 		>
-			{label}
+			<MetricValue>{formattedLikeCount}</MetricValue> {likeUnit}
 		</button>
 	);
 };
@@ -231,14 +250,14 @@ const ViewsCopy = ({
 	page_type: StatsCounterProps["page_type"];
 }) => {
 	if (isLoading) {
-		return <p className="m-0 animate-pulse text-xs">Getting view count</p>;
+		return <p className="m-0 animate-pulse text-sm">Getting view count</p>;
 	}
 
 	if (isError || view_count === undefined) {
-		return <p className="m-0 text-xs">View count unavailable right now</p>;
+		return <p className="m-0 text-sm">View count unavailable right now</p>;
 	}
 
-	return <p className="m-0 text-xs">{getViewCountCopy(view_count, page_type)}</p>;
+	return <p className="m-0 text-sm">{getViewCountCopy(view_count, page_type)}</p>;
 };
 
 function getViewCountCopy(view_count: number, page_type: StatsCounterProps["page_type"]) {
@@ -250,14 +269,14 @@ function getViewCountCopy(view_count: number, page_type: StatsCounterProps["page
 		case 69:
 			return (
 				<>
-					This {page_type} has been viewed <ViewCount>{view_count.toLocaleString()}</ViewCount>{" "}
+					This {page_type} has been viewed <MetricValue>{view_count.toLocaleString()}</MetricValue>{" "}
 					times. Nice.
 				</>
 			);
 		case 420:
 			return (
 				<>
-					This {page_type} has been viewed <ViewCount>{view_count.toLocaleString()}</ViewCount>{" "}
+					This {page_type} has been viewed <MetricValue>{view_count.toLocaleString()}</MetricValue>{" "}
 					times. Hehe.
 				</>
 			);
@@ -266,38 +285,43 @@ function getViewCountCopy(view_count: number, page_type: StatsCounterProps["page
 			if (view_count > 10000) {
 				return (
 					<>
-						This {page_type} has been viewed <ViewCount>{view_count.toLocaleString()}</ViewCount>{" "}
-						times. Holy crap.
+						This {page_type} has been viewed{" "}
+						<MetricValue>{view_count.toLocaleString()}</MetricValue> times. Holy crap.
 					</>
 				);
 			}
 			if (view_count > 1000) {
 				return (
 					<>
-						This {page_type} has been viewed <ViewCount>{view_count.toLocaleString()}</ViewCount>{" "}
-						times. Holy crap. 🤯
+						This {page_type} has been viewed{" "}
+						<MetricValue>{view_count.toLocaleString()}</MetricValue> times. Holy crap. 🤯
 					</>
 				);
 			}
 			if (view_count > 100) {
 				return (
 					<>
-						This {page_type} has been viewed <ViewCount>{view_count.toLocaleString()}</ViewCount>{" "}
-						times. Wow.
+						This {page_type} has been viewed{" "}
+						<MetricValue>{view_count.toLocaleString()}</MetricValue> times. Wow.
 					</>
 				);
 			}
 			return (
 				<>
-					This {page_type} has been viewed <ViewCount>{view_count.toLocaleString()}</ViewCount>{" "}
+					This {page_type} has been viewed <MetricValue>{view_count.toLocaleString()}</MetricValue>{" "}
 					times
 				</>
 			);
 		}
 	}
 }
-const ViewCount = ({ children }: { children: string }) => (
-	<span className="rounded-global border-2 border-solid border-primary bg-background p-1 font-mono text-base text-primary transition-colors">
+const MetricValue = ({ children, className }: { children: string; className?: string }) => (
+	<span
+		className={cn(
+			"rounded-global border-2 border-solid border-primary bg-background p-1 font-mono text-base text-primary transition-colors",
+			className,
+		)}
+	>
 		{children}
 	</span>
 );
