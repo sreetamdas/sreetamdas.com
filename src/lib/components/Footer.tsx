@@ -1,13 +1,11 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { useLocation } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { type HTMLAttributes } from "react";
 import { FaRegStar } from "react-icons/fa";
 import { VscRepoForked } from "react-icons/vsc";
 
-import { LiveViewersBadge } from "@/lib/components/LiveViewersBadge";
 import { fetchGitHubStats } from "@/lib/domains/GitHub/server";
 import { cn } from "@/lib/helpers/utils";
 
@@ -16,11 +14,6 @@ import { cn } from "@/lib/helpers/utils";
  */
 
 export const Footer = ({ children, className }: HTMLAttributes<HTMLDivElement>) => {
-	// Blog posts render their own engagement StatsCounter with live presence;
-	// hide the footer badge there so a visitor opens only one presence socket.
-	const { pathname } = useLocation();
-	const isBlogPost = pathname.startsWith("/blog/");
-
 	return (
 		<footer
 			className={cn(
@@ -50,9 +43,7 @@ export const Footer = ({ children, className }: HTMLAttributes<HTMLDivElement>) 
 				</a>
 			</p>
 			<div className="grid w-full place-items-center gap-3 pt-8 md:grid-cols-[1fr_auto_1fr] md:items-center md:gap-4">
-				<div className="md:order-3 md:justify-self-end">
-					{isBlogPost ? null : <LiveViewersBadge />}
-				</div>
+				<div className="md:order-3 md:justify-self-end" />
 				<p className="text-center md:order-2">I hope you have a very nice day :)</p>
 				<div className="hidden md:order-1 md:block" />
 			</div>

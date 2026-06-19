@@ -9,8 +9,8 @@ export function pageMetricsQueryKey(normalizedPathname: string) {
 	return [normalizedPathname, "metrics"] as const;
 }
 
-// Shared by the engagement StatsCounter so blog-post views and likes come from
-// one combined request while live presence stays on its WebSocket.
+// Shared by the engagement StatsCounter so page views and likes come from one
+// combined request while live presence stays on its WebSocket.
 export function usePageMetrics(normalizedPathname: string, disabled: boolean) {
 	const fetchMetrics = useServerFn<() => Promise<PageMetrics>>(() =>
 		fetchPageMetricsServerFn({ data: { slug: normalizedPathname, disabled } }),

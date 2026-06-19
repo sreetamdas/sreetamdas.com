@@ -26,7 +26,7 @@ export const StatsCounter = ({
 	page_type = "page",
 	hidden = false,
 	disabled = IS_DEV || IS_CI,
-	variant = "views",
+	variant = "engagement",
 }: StatsCounterProps) => {
 	return (
 		<div
@@ -47,7 +47,7 @@ const Stats = ({
 	slug,
 	page_type,
 	disabled = false,
-	variant = "views",
+	variant = "engagement",
 }: Omit<StatsCounterProps, "hidden">) => {
 	const { pathname } = useLocation();
 	const normalizedPathname = normalizePathname(slug ?? pathname);

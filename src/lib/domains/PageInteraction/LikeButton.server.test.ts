@@ -15,21 +15,14 @@ beforeEach(() => {
 });
 
 describe("fetchLikeCount", () => {
-	test("returns zeros for unknown blog slugs without touching the data layer", async () => {
-		expect(await fetchLikeCount({ slug: "/blog/forged-post", disabled: false })).toEqual({
-			likes: 0,
-			hasLiked: false,
-		});
-		expect(dataServer.fetchLikeCountFromDb).not.toHaveBeenCalled();
-	});
-
-	test("delegates known slugs to the data layer with a normalized slug and client ip", async () => {
+	test("delegates slugs to the data layer with a normalized slug and client ip", async () => {
 		dataServer.fetchLikeCountFromDb.mockResolvedValue({ likes: 4, hasLiked: true });
 
-		expect(
-			await fetchLikeCount({ slug: "/blog/chameleon-text/", disabled: false }, "1.2.3.4"),
-		).toEqual({ likes: 4, hasLiked: true });
-		expect(dataServer.fetchLikeCountFromDb).toHaveBeenCalledWith("/blog/chameleon-text", "1.2.3.4");
+		expect(await fetchLikeCount({ slug: "/about/", disabled: false }, "1.2.3.4")).toEqual({
+			likes: 4,
+			hasLiked: true,
+		});
+		expect(dataServer.fetchLikeCountFromDb).toHaveBeenCalledWith("/about", "1.2.3.4");
 	});
 
 	test("fails open when the data layer throws", async () => {
@@ -43,25 +36,14 @@ describe("fetchLikeCount", () => {
 });
 
 describe("incrementLikeCount", () => {
-	test("returns zeros for unknown blog slugs without touching the data layer", async () => {
-		expect(await incrementLikeCount({ slug: "/blog/forged-post", disabled: false })).toEqual({
-			likes: 0,
-			hasLiked: false,
-		});
-		expect(dataServer.incrementLikeCountInDb).not.toHaveBeenCalled();
-	});
-
-	test("delegates known slugs with the disabled flag and client ip", async () => {
+	test("delegates slugs with the disabled flag and client ip", async () => {
 		dataServer.incrementLikeCountInDb.mockResolvedValue({ likes: 5, hasLiked: true });
 
-		expect(
-			await incrementLikeCount({ slug: "/blog/chameleon-text", disabled: false }, "1.2.3.4"),
-		).toEqual({ likes: 5, hasLiked: true });
-		expect(dataServer.incrementLikeCountInDb).toHaveBeenCalledWith(
-			"/blog/chameleon-text",
-			false,
-			"1.2.3.4",
-		);
+		expect(await incrementLikeCount({ slug: "/about", disabled: false }, "1.2.3.4")).toEqual({
+			likes: 5,
+			hasLiked: true,
+		});
+		expect(dataServer.incrementLikeCountInDb).toHaveBeenCalledWith("/about", false, "1.2.3.4");
 	});
 
 	test("throws when the data layer write fails instead of failing open", async () => {

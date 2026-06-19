@@ -1,6 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
 import { getRequestHeader } from "@tanstack/react-start/server";
-import { allBlogPosts } from "content-collections";
 
 import { type LikeCount } from "@/lib/domains/PageViews";
 import { normalizePathname } from "@/lib/helpers/utils";
@@ -12,16 +11,6 @@ import {
 } from "./shared";
 
 export type { LikeCount } from "@/lib/domains/PageViews";
-
-const validBlogLikeSlugs = new Set(
-	allBlogPosts.flatMap((post) => {
-		if (!post.published) {
-			return [];
-		}
-
-		return [normalizePathname(post.url ?? post.page_path)];
-	}),
-);
 export const fetchLikeCountServerFn = createServerFn({
 	method: "GET",
 })
@@ -48,10 +37,6 @@ export async function fetchLikeCount(
 ): Promise<LikeCount> {
 	const normalizedSlug = normalizePathname(data.slug);
 
-	if (!isKnownBlogLikeSlug(normalizedSlug)) {
-		return { likes: 0, hasLiked: false };
-	}
-
 	try {
 		const { fetchLikeCountFromDb } = await import("./LikeButton.data.server");
 		return await fetchLikeCountFromDb(normalizedSlug, clientIp);
@@ -67,10 +52,6 @@ export async function incrementLikeCount(
 ): Promise<LikeCount> {
 	const normalizedSlug = normalizePathname(data.slug);
 
-	if (!isKnownBlogLikeSlug(normalizedSlug)) {
-		return { likes: 0, hasLiked: false };
-	}
-
 	try {
 		const { incrementLikeCountInDb } = await import("./LikeButton.data.server");
 		return await incrementLikeCountInDb(normalizedSlug, data.disabled, clientIp);
@@ -81,8 +62,4 @@ export async function incrementLikeCount(
 		warnCounterFailureOnce("increment likes", error);
 		throw error;
 	}
-}
-
-function isKnownBlogLikeSlug(slug: string) {
-	return validBlogLikeSlugs.has(slug);
 }
