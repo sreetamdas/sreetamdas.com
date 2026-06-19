@@ -1,11 +1,8 @@
 /**
- * Social sign-in server functions. The slide presenter UI calls one explicit
- * server-function endpoint for every supported provider, while the helpers here
- * keep Better Auth's provider-specific sign-in endpoints and OAuth state cookies
- * in one auth-domain boundary.
+ * Social sign-in server helpers. Presenter UI links to the API login endpoints
+ * instead of importing this module, keeping Better Auth and OAuth state-cookie
+ * handling out of the client bundle.
  */
-import { createServerFn } from "@tanstack/react-start";
-import { setResponseHeaders } from "@tanstack/react-start/server";
 
 import { getAuth, getSiteUrl } from "@/lib/auth";
 
@@ -57,21 +54,6 @@ const SOCIAL_SIGN_IN_PROVIDER_CONFIGS = {
 		}),
 	},
 } satisfies Record<SocialSignInProvider, SocialSignInProviderConfig>;
-
-export const startSocialSignInServerFn = createServerFn({ method: "POST" })
-	.validator(validateSocialSignInRequest)
-	.handler(async ({ data }) => {
-		const sign_in_result = await startSocialSignIn(data, {
-			auth_handler: getAuth().handler,
-			site_url: getSiteUrl(),
-		});
-
-		if (sign_in_result.cookies.length > 0) {
-			setResponseHeaders(createCookieHeaders(sign_in_result.cookies));
-		}
-
-		return { url: sign_in_result.url };
-	});
 
 export async function handleSocialLoginRequest(
 	request: Request,
