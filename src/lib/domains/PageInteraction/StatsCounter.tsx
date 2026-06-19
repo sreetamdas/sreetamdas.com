@@ -3,8 +3,9 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocation } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
+import { FaEye, FaHeart, FaRegCircleUser, FaRegHeart } from "react-icons/fa6";
 
-import { IS_CI, IS_DEV } from "@/config";
+import { IS_CI } from "@/config";
 import { useLiveViewerCount } from "@/lib/components/useLiveViewerCount";
 import { cn, normalizePathname } from "@/lib/helpers/utils";
 
@@ -25,9 +26,29 @@ export const StatsCounter = ({
 	slug,
 	page_type = "page",
 	hidden = false,
-	disabled = IS_DEV || IS_CI,
+	disabled = IS_CI,
 	variant = "engagement",
 }: StatsCounterProps) => {
+	const normalized_slug = slug ?? useLocation().pathname;
+	const normalizedPathname = normalizePathname(normalized_slug);
+
+	if (variant === "engagement") {
+		return (
+			<div
+				className={cn(
+					"mx-auto mt-auto mb-5 w-full flex-row flex-wrap items-center justify-center gap-2 pt-40",
+					hidden ? "hidden" : "flex",
+				)}
+			>
+				<StatsSentence
+					normalizedPathname={normalizedPathname}
+					disabled={disabled}
+					page_type={page_type}
+				/>
+			</div>
+		);
+	}
+
 	return (
 		<div
 			className={cn(
@@ -35,39 +56,12 @@ export const StatsCounter = ({
 				hidden ? "hidden" : "flex",
 			)}
 		>
-			<span role="img" aria-label="eyes">
-				👀
-			</span>
-			<Stats slug={slug} page_type={page_type} disabled={disabled} variant={variant} />
-		</div>
-	);
-};
-
-const Stats = ({
-	slug,
-	page_type,
-	disabled = false,
-	variant = "engagement",
-}: Omit<StatsCounterProps, "hidden">) => {
-	const { pathname } = useLocation();
-	const normalizedPathname = normalizePathname(slug ?? pathname);
-
-	if (variant === "engagement") {
-		return (
-			<StatsSentence
+			<StandaloneViews
 				normalizedPathname={normalizedPathname}
 				disabled={disabled}
 				page_type={page_type}
 			/>
-		);
-	}
-
-	return (
-		<StandaloneViews
-			normalizedPathname={normalizedPathname}
-			disabled={disabled}
-			page_type={page_type}
-		/>
+		</div>
 	);
 };
 
@@ -90,46 +84,39 @@ const StatsSentence = ({ normalizedPathname, disabled, page_type }: StatsSentenc
 	}
 
 	return (
-		<p className="m-0 flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-sm">
-			<Stat value={data.view_count} unit="view" />
-			<span aria-hidden="true">·</span>
+		<div className="m-0 flex flex-wrap items-center justify-center gap-4 text-sm">
+			<ViewsStat value={data.view_count} />
 			<LikeStat normalizedPathname={normalizedPathname} disabled={disabled} metrics={data} />
-			<span aria-hidden="true">·</span>
 			<LiveStat />
-		</p>
+		</div>
 	);
 };
 
-const Stat = ({ value, unit }: { value: number; unit: string }) => (
-	<>
-		<MetricValue>{value.toLocaleString()}</MetricValue> {value === 1 ? unit : `${unit}s`}
-	</>
+const ViewsStat = ({ value }: { value: number }) => (
+	<span className="flex gap-1.5" aria-label={`${value} views`}>
+		<FaEye className="size-5 text-primary" />
+		{value.toLocaleString()}
+	</span>
 );
 
 const LiveStat = () => {
 	const { count, connected } = useLiveViewerCount();
-	return (
-		<span className="inline-flex items-center gap-1.5" title="Live viewers (real-time)">
-			<LivePulse connected={connected} />
-			<MetricValue>{count === null ? "…" : count.toLocaleString()}</MetricValue> live across the
-			site
+	return count === null ? null : (
+		<span
+			className="inline-flex items-center gap-1.5"
+			title="Live viewers (real-time)"
+			aria-label={`${count} live users`}
+		>
+			<span aria-hidden="true" className="relative inline-flex size-5 items-center justify-center">
+				{connected ? (
+					<span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-75 animate-duration-[1000ms]" />
+				) : null}
+				<FaRegCircleUser className="relative inline-flex size-5 rounded-full text-primary" />
+			</span>
+			{count.toLocaleString()}
 		</span>
 	);
 };
-
-const LivePulse = ({ connected }: { connected: boolean }) => (
-	<span aria-hidden="true" className="relative inline-flex h-2 w-2">
-		{connected ? (
-			<span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-75" />
-		) : null}
-		<span
-			className={cn(
-				"relative inline-flex h-2 w-2 rounded-full",
-				connected ? "bg-primary" : "bg-primary/40",
-			)}
-		/>
-	</span>
-);
 
 const LikeStat = ({
 	normalizedPathname,
@@ -174,38 +161,29 @@ const LikeStat = ({
 		},
 	});
 
-	const likeCount = metrics.likes;
+	const like_count = metrics.likes;
 	const hasLiked = metrics.hasLiked;
 	const readOnly = metrics.readOnly ?? false;
-	const isDisabled = disabled || hasLiked || isPending || readOnly;
-	const formattedLikeCount = likeCount.toLocaleString();
-	const likeUnit = likeCount === 1 ? "like" : "likes";
-	const label = `${formattedLikeCount} ${likeUnit}`;
-
-	if (isDisabled) {
-		return (
-			<span
-				className={hasLiked ? "font-semibold text-primary" : "text-primary/80"}
-				title={hasLiked ? "You liked this post" : label}
-			>
-				<MetricValue className={hasLiked ? "font-semibold" : undefined}>
-					{formattedLikeCount}
-				</MetricValue>{" "}
-				{likeUnit}
-			</span>
-		);
-	}
+	const is_disabled = disabled || hasLiked || isPending || readOnly;
+	const formatted_like_count = like_count.toLocaleString();
 
 	return (
-		<button
-			type="button"
-			onClick={() => mutate()}
-			aria-label={`Like this post — ${label}`}
-			title={`Like this post — ${label}`}
-			className="cursor-pointer text-primary underline-offset-4 transition-colors hover:underline"
-		>
-			<MetricValue>{formattedLikeCount}</MetricValue> {likeUnit}
-		</button>
+		<span className="flex gap-1.5">
+			<button
+				type="button"
+				onClick={() => mutate()}
+				aria-label={`Like this post, current likes: ${formatted_like_count}`}
+				title={`Like this post, current likes: ${formatted_like_count}`}
+				className={cn(
+					"cursor-pointer text-primary underline-offset-4 transition-colors hover:underline",
+					hasLiked && "text-primary/80",
+				)}
+				disabled={is_disabled}
+			>
+				{hasLiked ? <FaHeart className="size-5" /> : <FaRegHeart className="size-5" />}
+			</button>
+			{formatted_like_count}
+		</span>
 	);
 };
 
