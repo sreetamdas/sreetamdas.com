@@ -87,7 +87,7 @@ const StatsSentence = ({ normalizedPathname, disabled, page_type }: StatsSentenc
 			<StatsList noun={noun} isBusy statusLabel={`Getting stats for this ${noun}`}>
 				<MetricSkeleton label="Views" valueWidthClassName="w-[5ch]" />
 				<MetricSkeleton label="Likes" valueWidthClassName="w-[2ch]" />
-				<MetricSkeleton label="Live viewers across the site" valueWidthClassName="w-[2ch]" />
+				<LiveStat />
 			</StatsList>
 		);
 	}
@@ -151,7 +151,7 @@ const MetricSkeleton = ({
 	<div className={statItemClassName}>
 		<dt className="sr-only">{label}</dt>
 		<dd className="m-0 inline-flex min-h-5 items-center gap-1.5">
-			<span aria-hidden="true" className="size-5 animate-pulse rounded-full bg-foreground/15" />
+			<span aria-hidden="true" className="size-5 animate-pulse rounded-sm bg-foreground/15" />
 			<span
 				aria-hidden="true"
 				className={cn("h-4 animate-pulse rounded-full bg-foreground/15", valueWidthClassName)}
