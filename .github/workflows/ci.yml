@@ -58,7 +58,7 @@ jobs:
         run: pnpm run generate-feeds
 
       - name: Upload generated assets
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: generated-assets
           path: |
@@ -85,7 +85,7 @@ jobs:
         uses: ./.github/actions/setup-pnpm
 
       - name: Download generated assets
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: generated-assets
           path: .
@@ -121,7 +121,7 @@ jobs:
         uses: ./.github/actions/setup-pnpm
 
       - name: Download generated assets
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: generated-assets
           path: .
@@ -132,15 +132,18 @@ jobs:
           VITE_CI: "1"
 
       - name: Upload build output
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: build-output
-          path: dist/
+          path: |
+            dist/
+            .wrangler/deploy/
           if-no-files-found: error
+          include-hidden-files: true
           retention-days: 1
 
       - name: Upload build artifacts on failure
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: failure()
         with:
           name: build-output-failed
@@ -159,10 +162,10 @@ jobs:
         uses: ./.github/actions/setup-pnpm
 
       - name: Download build output
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: build-output
-          path: dist
+          path: .
 
       - name: Install Playwright
         run: pnpm exec playwright install --with-deps chromium
@@ -171,7 +174,7 @@ jobs:
         run: pnpm test:e2e
 
       - name: Upload test results
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: failure()
         with:
           name: playwright-results
