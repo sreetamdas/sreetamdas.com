@@ -1,8 +1,10 @@
 "use client";
 
+import * as TooltipPrimitive from "@radix-ui/react-tooltip";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocation } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
+import { type ReactElement, type ReactNode } from "react";
 import { FaEye, FaHeart, FaRegCircleUser, FaRegHeart } from "react-icons/fa6";
 
 import { IS_CI } from "@/config";
@@ -21,6 +23,10 @@ type StatsCounterProps = {
 	disabled?: boolean;
 	variant?: "views" | "engagement";
 };
+
+const statsListClassName = "m-0 flex min-h-5 flex-wrap items-center justify-center gap-4 text-sm";
+const statItemClassName = "flex min-w-[4rem] items-center justify-center gap-1.5";
+const statValueClassName = "inline-block min-w-[2ch] text-left tabular-nums";
 
 export const StatsCounter = ({
 	slug,
@@ -77,18 +83,25 @@ const StatsSentence = ({ normalizedPathname, disabled, page_type }: StatsSentenc
 	const noun = page_type === "post" ? "post" : "page";
 
 	if (isLoading) {
-		return <p className="m-0 text-sm">Getting stats for this {noun}</p>;
+		return (
+			<StatsList noun={noun} isBusy statusLabel={`Getting stats for this ${noun}`}>
+				<MetricSkeleton label="Views" valueWidthClassName="w-[5ch]" />
+				<MetricSkeleton label="Likes" valueWidthClassName="w-[2ch]" />
+				<MetricSkeleton label="Live viewers across the site" valueWidthClassName="w-[2ch]" />
+			</StatsList>
+		);
 	}
 
 	if (isError || data?.view_count === undefined) {
-		return <p className="m-0 text-sm">Stats unavailable right now</p>;
+		return (
+			<p className="m-0 min-h-5 text-sm" role="status">
+				Stats unavailable right now
+			</p>
+		);
 	}
 
 	return (
-		<dl
-			className="m-0 flex flex-wrap items-center justify-center gap-4 text-sm"
-			aria-label={`${noun} engagement stats`}
-		>
+		<StatsList noun={noun}>
 			<ViewsStat value={data.view_count} />
 			<LikeStat
 				normalizedPathname={normalizedPathname}
@@ -97,49 +110,126 @@ const StatsSentence = ({ normalizedPathname, disabled, page_type }: StatsSentenc
 				noun={noun}
 			/>
 			<LiveStat />
-		</dl>
+		</StatsList>
 	);
 };
 
-const ViewsStat = ({ value }: { value: number }) => (
-	<div className="flex items-center gap-1.5">
-		<dt className="sr-only">Views</dt>
-		<dd className="m-0 flex items-center gap-1.5" title={`${value.toLocaleString()} views`}>
-			<FaEye aria-hidden="true" focusable={false} className="size-5 text-primary" />
-			{value.toLocaleString()}
+const StatsList = ({
+	noun,
+	isBusy = false,
+	statusLabel,
+	children,
+}: {
+	noun: "post" | "page";
+	isBusy?: boolean;
+	statusLabel?: string;
+	children: ReactNode;
+}) => (
+	<TooltipPrimitive.Provider delayDuration={100} skipDelayDuration={0}>
+		{statusLabel ? (
+			<span className="sr-only" role="status">
+				{statusLabel}
+			</span>
+		) : null}
+		<dl
+			className={statsListClassName}
+			aria-label={statusLabel ?? `${noun} engagement stats`}
+			aria-busy={isBusy}
+		>
+			{children}
+		</dl>
+	</TooltipPrimitive.Provider>
+);
+
+const MetricSkeleton = ({
+	label,
+	valueWidthClassName,
+}: {
+	label: string;
+	valueWidthClassName: string;
+}) => (
+	<div className={statItemClassName}>
+		<dt className="sr-only">{label}</dt>
+		<dd className="m-0 inline-flex min-h-5 items-center gap-1.5">
+			<span aria-hidden="true" className="size-5 animate-pulse rounded-full bg-foreground/15" />
+			<span
+				aria-hidden="true"
+				className={cn("h-4 animate-pulse rounded-full bg-foreground/15", valueWidthClassName)}
+			/>
+			<span className="sr-only">Loading {label.toLowerCase()}</span>
 		</dd>
 	</div>
 );
 
+const StatTooltip = ({ content, children }: { content: string; children: ReactElement }) => (
+	<TooltipPrimitive.Root>
+		<TooltipPrimitive.Trigger asChild>{children}</TooltipPrimitive.Trigger>
+		<TooltipPrimitive.Portal>
+			<TooltipPrimitive.Content
+				side="top"
+				sideOffset={6}
+				className="z-50 rounded-global border border-solid border-foreground/15 bg-background px-2 py-1 text-xs text-foreground shadow-lg"
+			>
+				{content}
+				<TooltipPrimitive.Arrow className="fill-background" />
+			</TooltipPrimitive.Content>
+		</TooltipPrimitive.Portal>
+	</TooltipPrimitive.Root>
+);
+
+const ViewsStat = ({ value }: { value: number }) => {
+	const formattedValue = value.toLocaleString();
+	const label = `${formattedValue} views`;
+
+	return (
+		<div className={statItemClassName}>
+			<dt className="sr-only">Views</dt>
+			<StatTooltip content={label}>
+				<dd className="m-0 inline-flex items-center gap-1.5" aria-label={label}>
+					<FaEye aria-hidden="true" focusable={false} className="size-5 text-primary" />
+					<span aria-hidden="true" className={statValueClassName}>
+						{formattedValue}
+					</span>
+				</dd>
+			</StatTooltip>
+		</div>
+	);
+};
+
 const LiveStat = () => {
 	const { count, connected } = useLiveViewerCount();
 
-	if (count === null) return null;
+	if (count === null) {
+		return <MetricSkeleton label="Live viewers across the site" valueWidthClassName="w-[2ch]" />;
+	}
 
 	const formattedCount = count.toLocaleString();
+	const liveViewerUnit = count === 1 ? "live viewer" : "live viewers";
+	const label = `${formattedCount} ${liveViewerUnit} across the site`;
 
 	return (
-		<div className="flex items-center gap-1.5">
+		<div className={statItemClassName}>
 			<dt className="sr-only">Live viewers across the site</dt>
-			<dd
-				className="m-0 inline-flex items-center gap-1.5"
-				title={`${formattedCount} live viewers across the site`}
-			>
-				<span
-					aria-hidden="true"
-					className="relative inline-flex size-5 items-center justify-center"
-				>
-					{connected ? (
-						<span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-75 animate-duration-[1000ms] motion-reduce:animate-none" />
-					) : null}
-					<FaRegCircleUser
+			<StatTooltip content={label}>
+				<dd className="m-0 inline-flex items-center gap-1.5" aria-label={label}>
+					<span
 						aria-hidden="true"
-						focusable={false}
-						className="relative inline-flex size-5 rounded-full text-primary"
-					/>
-				</span>
-				{formattedCount}
-			</dd>
+						className="relative inline-flex size-5 items-center justify-center"
+					>
+						{connected ? (
+							<span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-75 animate-duration-[1000ms] motion-reduce:animate-none" />
+						) : null}
+						<FaRegCircleUser
+							aria-hidden="true"
+							focusable={false}
+							className="relative inline-flex size-5 rounded-full text-primary"
+						/>
+					</span>
+					<span aria-hidden="true" className={statValueClassName}>
+						{formattedCount}
+					</span>
+				</dd>
+			</StatTooltip>
 		</div>
 	);
 };
@@ -205,29 +295,32 @@ const LikeStat = ({
 		: `${likeActionLabel} — ${likeSummary}`;
 
 	return (
-		<div className="flex items-center gap-1.5">
+		<div className={statItemClassName}>
 			<dt className="sr-only">Likes</dt>
-			<dd className="m-0 flex items-center gap-1.5" title={likeSummary}>
-				<button
-					type="button"
-					onClick={() => mutate()}
-					aria-label={likeButtonLabel}
-					aria-pressed={hasLiked}
-					title={likeButtonTitle}
-					className={cn(
-						"cursor-pointer text-primary underline-offset-4 transition-colors hover:underline disabled:cursor-default disabled:hover:no-underline",
-						hasLiked && "text-primary/80",
-					)}
-					disabled={is_disabled}
-				>
-					{hasLiked ? (
-						<FaHeart aria-hidden="true" focusable={false} className="size-5" />
-					) : (
-						<FaRegHeart aria-hidden="true" focusable={false} className="size-5" />
-					)}
-				</button>
-				<span aria-hidden="true">{formatted_like_count}</span>
-			</dd>
+			<StatTooltip content={likeButtonTitle}>
+				<dd className="m-0 inline-flex items-center gap-1.5">
+					<button
+						type="button"
+						onClick={() => mutate()}
+						aria-label={likeButtonLabel}
+						aria-pressed={hasLiked}
+						className={cn(
+							"cursor-pointer text-primary underline-offset-4 transition-colors hover:underline disabled:cursor-default disabled:hover:no-underline",
+							hasLiked && "text-primary/80",
+						)}
+						disabled={is_disabled}
+					>
+						{hasLiked ? (
+							<FaHeart aria-hidden="true" focusable={false} className="size-5" />
+						) : (
+							<FaRegHeart aria-hidden="true" focusable={false} className="size-5" />
+						)}
+					</button>
+					<span aria-hidden="true" className={statValueClassName}>
+						{formatted_like_count}
+					</span>
+				</dd>
+			</StatTooltip>
 		</div>
 	);
 };
@@ -273,7 +366,15 @@ const ViewsCopy = ({
 	page_type: StatsCounterProps["page_type"];
 }) => {
 	if (isLoading) {
-		return <p className="m-0 animate-pulse text-sm">Getting view count</p>;
+		return (
+			<p
+				className="m-0 inline-flex min-h-7 items-center gap-2 text-sm"
+				aria-label={`Getting view count for this ${page_type}`}
+				role="status"
+			>
+				<span aria-hidden="true" className="h-5 w-48 animate-pulse rounded-full bg-foreground/15" />
+			</p>
+		);
 	}
 
 	if (isError || view_count === undefined) {
@@ -341,7 +442,7 @@ function getViewCountCopy(view_count: number, page_type: StatsCounterProps["page
 const MetricValue = ({ children, className }: { children: string; className?: string }) => (
 	<span
 		className={cn(
-			"rounded-global border-2 border-solid border-primary bg-background p-1 font-mono text-base text-primary transition-colors",
+			"rounded-global border-2 border-solid border-primary bg-background p-1 font-mono text-base text-primary tabular-nums transition-colors",
 			className,
 		)}
 	>
