@@ -453,7 +453,7 @@ function PresenterMode({
 						<div className="mb-2 text-xs tracking-wider text-gray-400 uppercase">Speaker Notes</div>
 						<div className="min-h-0 flex-1 overflow-auto rounded-lg bg-gray-800 p-4">
 							{currentSlide.notes ? (
-								<div className="prose prose-invert prose-sm max-w-none whitespace-pre-wrap">
+								<div className="max-w-none text-sm leading-relaxed whitespace-pre-wrap text-gray-200">
 									{currentSlide.notes}
 								</div>
 							) : (

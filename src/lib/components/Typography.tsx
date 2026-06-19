@@ -151,7 +151,7 @@ export const Gradient = ({ children, className }: HTMLAttributes<HTMLSpanElement
 export const Blockquote = ({ children, className, ...props }: HTMLAttributes<HTMLQuoteElement>) => (
 	<blockquote
 		className={cn(
-			"text-md -mx-4 rounded-global bg-foreground/10 p-1 px-4 py-8 font-serif transition-[color,background-color] dark:bg-foreground/20",
+			"-mx-4 rounded-global bg-foreground/10 p-1 px-4 py-8 font-serif text-base transition-[color,background-color] dark:bg-foreground/20",
 			className,
 		)}
 		{...props}

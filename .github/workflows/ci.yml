@@ -4,12 +4,14 @@ on:
   push:
     branches:
       - main
-      - dev
   pull_request:
 
 concurrency:
   group: ci-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
+
+permissions:
+  contents: read
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
@@ -23,34 +25,17 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
-      - name: Setup Node
-        uses: actions/setup-node@v6
-        with:
-          node-version-file: .node-version
-
       - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-
-      - name: Get pnpm store path
-        id: pnpm-store
-        run: echo "path=$(pnpm store path --silent)" >> "$GITHUB_OUTPUT"
-
-      - name: Cache pnpm store
-        uses: actions/cache@v5
-        with:
-          path: ${{ steps.pnpm-store.outputs.path }}
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-store-
-
-      - name: Install
-        run: pnpm install --frozen-lockfile
+        uses: ./.github/actions/setup-pnpm
 
       - name: Generate build info
         run: node scripts/generate-build-info.mjs
 
+      - name: Build content
+        run: pnpm run build:content-collections
+
       - name: Typecheck
-        run: pnpm typecheck
+        run: pnpm run typecheck:ci
 
   lint:
     name: Lint
@@ -60,40 +45,29 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
-      - name: Setup Node
-        uses: actions/setup-node@v6
-        with:
-          node-version-file: .node-version
-
       - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-
-      - name: Get pnpm store path
-        id: pnpm-store
-        run: echo "path=$(pnpm store path --silent)" >> "$GITHUB_OUTPUT"
-
-      - name: Cache pnpm store
-        uses: actions/cache@v5
-        with:
-          path: ${{ steps.pnpm-store.outputs.path }}
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-store-
-
-      - name: Cache Content Collections output
-        uses: actions/cache@v5
-        with:
-          path: .content-collections
-          key: content-collections-${{ hashFiles('content/**/*', 'content-collections.ts') }}
-
-      - name: Install
-        run: pnpm install --frozen-lockfile
+        uses: ./.github/actions/setup-pnpm
 
       - name: Generate build info
         run: node scripts/generate-build-info.mjs
 
       - name: Build content
         run: pnpm run build:content-collections
+
+      - name: Generate feeds
+        run: pnpm run generate-feeds
+
+      - name: Upload generated assets
+        uses: actions/upload-artifact@v4
+        with:
+          name: generated-assets
+          path: |
+            .content-collections/
+            public/rss/
+            src/build-info.json
+          if-no-files-found: error
+          include-hidden-files: true
+          retention-days: 1
 
       - name: Lint
         run: pnpm lint
@@ -107,31 +81,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
-      - name: Setup Node
-        uses: actions/setup-node@v6
-        with:
-          node-version-file: .node-version
-
       - name: Setup pnpm
-        uses: pnpm/action-setup@v4
+        uses: ./.github/actions/setup-pnpm
 
-      - name: Get pnpm store path
-        id: pnpm-store
-        run: echo "path=$(pnpm store path --silent)" >> "$GITHUB_OUTPUT"
-
-      - name: Cache pnpm store
-        uses: actions/cache@v5
+      - name: Download generated assets
+        uses: actions/download-artifact@v4
         with:
-          path: ${{ steps.pnpm-store.outputs.path }}
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-store-
-
-      - name: Install
-        run: pnpm install --frozen-lockfile
-
-      - name: Build content
-        run: pnpm run build:content-collections
+          name: generated-assets
+          path: .
 
       - name: Run unit/api tests
         run: pnpm test:unit
@@ -145,28 +102,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
-      - name: Setup Node
-        uses: actions/setup-node@v6
-        with:
-          node-version-file: .node-version
-
       - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-
-      - name: Get pnpm store path
-        id: pnpm-store
-        run: echo "path=$(pnpm store path --silent)" >> "$GITHUB_OUTPUT"
-
-      - name: Cache pnpm store
-        uses: actions/cache@v5
-        with:
-          path: ${{ steps.pnpm-store.outputs.path }}
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-store-
-
-      - name: Install
-        run: pnpm install --frozen-lockfile
+        uses: ./.github/actions/setup-pnpm
 
       - name: Run worker runtime tests
         run: pnpm test:workers
@@ -175,42 +112,32 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
     timeout-minutes: 15
-    needs: [typecheck, lint, unit-tests, worker-tests]
+    needs: [typecheck, lint]
     steps:
       - name: Checkout
         uses: actions/checkout@v6
 
-      - name: Setup Node
-        uses: actions/setup-node@v6
-        with:
-          node-version-file: .node-version
-
       - name: Setup pnpm
-        uses: pnpm/action-setup@v4
+        uses: ./.github/actions/setup-pnpm
 
-      - name: Get pnpm store path
-        id: pnpm-store
-        run: echo "path=$(pnpm store path --silent)" >> "$GITHUB_OUTPUT"
-
-      - name: Cache pnpm store
-        uses: actions/cache@v5
+      - name: Download generated assets
+        uses: actions/download-artifact@v4
         with:
-          path: ${{ steps.pnpm-store.outputs.path }}
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-store-
-
-      - name: Cache Content Collections output
-        uses: actions/cache@v5
-        with:
-          path: .content-collections
-          key: content-collections-${{ hashFiles('content/**/*', 'content-collections.ts') }}
-
-      - name: Install
-        run: pnpm install --frozen-lockfile
+          name: generated-assets
+          path: .
 
       - name: Build
-        run: pnpm build
+        run: pnpm run build:ci
+        env:
+          VITE_CI: "1"
+
+      - name: Upload build output
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-output
+          path: dist/
+          if-no-files-found: error
+          retention-days: 1
 
       - name: Upload build artifacts on failure
         uses: actions/upload-artifact@v4
@@ -223,44 +150,19 @@ jobs:
     name: E2E Tests
     runs-on: ubuntu-latest
     timeout-minutes: 20
-    needs: [typecheck, lint, unit-tests, worker-tests]
+    needs: [build, unit-tests, worker-tests]
     steps:
       - name: Checkout
         uses: actions/checkout@v6
 
-      - name: Setup Node
-        uses: actions/setup-node@v6
-        with:
-          node-version-file: .node-version
-
       - name: Setup pnpm
-        uses: pnpm/action-setup@v4
+        uses: ./.github/actions/setup-pnpm
 
-      - name: Get pnpm store path
-        id: pnpm-store
-        run: echo "path=$(pnpm store path --silent)" >> "$GITHUB_OUTPUT"
-
-      - name: Cache pnpm store
-        uses: actions/cache@v5
+      - name: Download build output
+        uses: actions/download-artifact@v4
         with:
-          path: ${{ steps.pnpm-store.outputs.path }}
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-store-
-
-      - name: Cache Content Collections output
-        uses: actions/cache@v5
-        with:
-          path: .content-collections
-          key: content-collections-${{ hashFiles('content/**/*', 'content-collections.ts') }}
-
-      - name: Install
-        run: pnpm install --frozen-lockfile
-
-      - name: Build
-        run: pnpm build
-        env:
-          VITE_CI: "1"
+          name: build-output
+          path: dist
 
       - name: Install Playwright
         run: pnpm exec playwright install --with-deps chromium

@@ -172,7 +172,7 @@ function FieldRenderer({
 	error?: string;
 }) {
 	const inputClasses =
-		"w-full rounded border border-white/10 bg-white/5 px-3 py-2 text-sm text-white placeholder-white/30 focus:border-white/30 focus:outline-none";
+		"w-full rounded-sm border border-white/10 bg-white/5 px-3 py-2 text-sm text-white placeholder-white/30 focus:border-white/30 focus:outline-none";
 
 	if (!field.isVisible) return null;
 
@@ -220,7 +220,7 @@ function FieldRenderer({
 			input = (
 				<input
 					type="checkbox"
-					className="h-4 w-4 rounded border-white/10 bg-white/5"
+					className="h-4 w-4 rounded-sm border-white/10 bg-white/5"
 					checked={Boolean(value)}
 					onChange={(e) => onChange(e.target.checked)}
 				/>
@@ -420,7 +420,7 @@ export function JsfPlayground() {
 					<button
 						key={p.name}
 						onClick={() => loadPreset(i)}
-						className={`rounded px-3 py-1 text-xs font-medium transition-colors ${
+						className={`rounded-sm px-3 py-1 text-xs font-medium transition-colors ${
 							i === activePreset
 								? "bg-white text-black"
 								: "bg-white/10 text-white/70 hover:bg-white/20"
@@ -433,7 +433,7 @@ export function JsfPlayground() {
 
 			<div className="grid flex-1 grid-cols-2 gap-4 overflow-hidden">
 				{/* Schema editor */}
-				<div className="flex flex-col overflow-hidden rounded border border-white/10 bg-black/30">
+				<div className="flex flex-col overflow-hidden rounded-sm border border-white/10 bg-black/30">
 					<div className="border-b border-white/10 px-3 py-1.5 text-xs font-medium text-white/50">
 						JSON Schema
 					</div>
@@ -457,7 +457,7 @@ export function JsfPlayground() {
 				</div>
 
 				{/* Form preview */}
-				<div className="flex flex-col overflow-hidden rounded border border-white/10 bg-black/30">
+				<div className="flex flex-col overflow-hidden rounded-sm border border-white/10 bg-black/30">
 					<div className="border-b border-white/10 px-3 py-1.5 text-xs font-medium text-white/50">
 						Live Form
 					</div>
@@ -491,7 +491,7 @@ export function JsfPlayground() {
 								))}
 								<button
 									type="submit"
-									className="mt-2 rounded bg-white px-4 py-2 text-sm font-medium text-black transition-opacity hover:opacity-80"
+									className="mt-2 rounded-sm bg-white px-4 py-2 text-sm font-medium text-black transition-opacity hover:opacity-80"
 								>
 									Validate
 								</button>
@@ -512,7 +512,7 @@ export function SchemaFormPreview({ schema }: { schema: JsfObjectSchema }) {
 	const formResult = createHeadlessForm(schema, { initialValues: values });
 
 	return (
-		<div className="grid grid-cols-2 gap-4 overflow-hidden rounded border border-white/10 bg-black/30">
+		<div className="grid grid-cols-2 gap-4 overflow-hidden rounded-sm border border-white/10 bg-black/30">
 			<div className="flex flex-col overflow-hidden">
 				<div className="border-b border-white/10 px-3 py-1.5 text-xs font-medium text-white/50">
 					JSON Schema
