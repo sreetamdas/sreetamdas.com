@@ -29,7 +29,8 @@ export const StatsCounter = ({
 	disabled = IS_CI,
 	variant = "engagement",
 }: StatsCounterProps) => {
-	const normalized_slug = slug ?? useLocation().pathname;
+	const { pathname } = useLocation();
+	const normalized_slug = slug ?? pathname;
 	const normalizedPathname = normalizePathname(normalized_slug);
 
 	if (variant === "engagement") {
@@ -84,37 +85,62 @@ const StatsSentence = ({ normalizedPathname, disabled, page_type }: StatsSentenc
 	}
 
 	return (
-		<div className="m-0 flex flex-wrap items-center justify-center gap-4 text-sm">
+		<dl
+			className="m-0 flex flex-wrap items-center justify-center gap-4 text-sm"
+			aria-label={`${noun} engagement stats`}
+		>
 			<ViewsStat value={data.view_count} />
-			<LikeStat normalizedPathname={normalizedPathname} disabled={disabled} metrics={data} />
+			<LikeStat
+				normalizedPathname={normalizedPathname}
+				disabled={disabled}
+				metrics={data}
+				noun={noun}
+			/>
 			<LiveStat />
-		</div>
+		</dl>
 	);
 };
 
 const ViewsStat = ({ value }: { value: number }) => (
-	<span className="flex gap-1.5" aria-label={`${value} views`}>
-		<FaEye className="size-5 text-primary" />
-		{value.toLocaleString()}
-	</span>
+	<div className="flex items-center gap-1.5">
+		<dt className="sr-only">Views</dt>
+		<dd className="m-0 flex items-center gap-1.5" title={`${value.toLocaleString()} views`}>
+			<FaEye aria-hidden="true" focusable={false} className="size-5 text-primary" />
+			{value.toLocaleString()}
+		</dd>
+	</div>
 );
 
 const LiveStat = () => {
 	const { count, connected } = useLiveViewerCount();
-	return count === null ? null : (
-		<span
-			className="inline-flex items-center gap-1.5"
-			title="Live viewers (real-time)"
-			aria-label={`${count} live users`}
-		>
-			<span aria-hidden="true" className="relative inline-flex size-5 items-center justify-center">
-				{connected ? (
-					<span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-75 animate-duration-[1000ms]" />
-				) : null}
-				<FaRegCircleUser className="relative inline-flex size-5 rounded-full text-primary" />
-			</span>
-			{count.toLocaleString()}
-		</span>
+
+	if (count === null) return null;
+
+	const formattedCount = count.toLocaleString();
+
+	return (
+		<div className="flex items-center gap-1.5">
+			<dt className="sr-only">Live viewers across the site</dt>
+			<dd
+				className="m-0 inline-flex items-center gap-1.5"
+				title={`${formattedCount} live viewers across the site`}
+			>
+				<span
+					aria-hidden="true"
+					className="relative inline-flex size-5 items-center justify-center"
+				>
+					{connected ? (
+						<span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-75 animate-duration-[1000ms] motion-reduce:animate-none" />
+					) : null}
+					<FaRegCircleUser
+						aria-hidden="true"
+						focusable={false}
+						className="relative inline-flex size-5 rounded-full text-primary"
+					/>
+				</span>
+				{formattedCount}
+			</dd>
+		</div>
 	);
 };
 
@@ -122,10 +148,12 @@ const LikeStat = ({
 	normalizedPathname,
 	disabled,
 	metrics,
+	noun,
 }: {
 	normalizedPathname: string;
 	disabled: boolean;
 	metrics: PageMetrics;
+	noun: "post" | "page";
 }) => {
 	const queryClient = useQueryClient();
 	const queryKey = pageMetricsQueryKey(normalizedPathname);
@@ -166,24 +194,41 @@ const LikeStat = ({
 	const readOnly = metrics.readOnly ?? false;
 	const is_disabled = disabled || hasLiked || isPending || readOnly;
 	const formatted_like_count = like_count.toLocaleString();
+	const likeUnit = like_count === 1 ? "like" : "likes";
+	const likeSummary = `${formatted_like_count} ${likeUnit}`;
+	const likeActionLabel = hasLiked ? `You liked this ${noun}` : `Like this ${noun}`;
+	const likeButtonLabel = isPending
+		? `Saving like for this ${noun}. ${likeSummary}`
+		: `${likeActionLabel}. ${likeSummary}`;
+	const likeButtonTitle = isPending
+		? `Saving like for this ${noun} — ${likeSummary}`
+		: `${likeActionLabel} — ${likeSummary}`;
 
 	return (
-		<span className="flex gap-1.5">
-			<button
-				type="button"
-				onClick={() => mutate()}
-				aria-label={`Like this post, current likes: ${formatted_like_count}`}
-				title={`Like this post, current likes: ${formatted_like_count}`}
-				className={cn(
-					"cursor-pointer text-primary underline-offset-4 transition-colors hover:underline",
-					hasLiked && "text-primary/80",
-				)}
-				disabled={is_disabled}
-			>
-				{hasLiked ? <FaHeart className="size-5" /> : <FaRegHeart className="size-5" />}
-			</button>
-			{formatted_like_count}
-		</span>
+		<div className="flex items-center gap-1.5">
+			<dt className="sr-only">Likes</dt>
+			<dd className="m-0 flex items-center gap-1.5" title={likeSummary}>
+				<button
+					type="button"
+					onClick={() => mutate()}
+					aria-label={likeButtonLabel}
+					aria-pressed={hasLiked}
+					title={likeButtonTitle}
+					className={cn(
+						"cursor-pointer text-primary underline-offset-4 transition-colors hover:underline disabled:cursor-default disabled:hover:no-underline",
+						hasLiked && "text-primary/80",
+					)}
+					disabled={is_disabled}
+				>
+					{hasLiked ? (
+						<FaHeart aria-hidden="true" focusable={false} className="size-5" />
+					) : (
+						<FaRegHeart aria-hidden="true" focusable={false} className="size-5" />
+					)}
+				</button>
+				<span aria-hidden="true">{formatted_like_count}</span>
+			</dd>
+		</div>
 	);
 };
 
