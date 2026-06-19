@@ -25,7 +25,7 @@ type StatsCounterProps = {
 };
 
 const statsListClassName = "m-0 flex min-h-5 flex-wrap items-center justify-center gap-4 text-sm";
-const statItemClassName = "flex min-w-[4rem] items-center justify-center gap-1.5";
+const statItemClassName = "flex items-center justify-center gap-1.5";
 const statValueClassName = "inline-block min-w-[2ch] text-left tabular-nums";
 
 export const StatsCounter = ({
