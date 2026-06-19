@@ -102,7 +102,7 @@ const StatsSentence = ({ normalizedPathname, disabled, page_type }: StatsSentenc
 
 	return (
 		<StatsList noun={noun}>
-			<ViewsStat value={data.view_count} />
+			<ViewsStat value={data.view_count} noun={noun} />
 			<LikeStat
 				normalizedPathname={normalizedPathname}
 				disabled={disabled}
@@ -168,23 +168,24 @@ const StatTooltip = ({ content, children }: { content: string; children: ReactEl
 			<TooltipPrimitive.Content
 				side="top"
 				sideOffset={6}
-				className="z-50 rounded-global border border-solid border-foreground/15 bg-background px-2 py-1 text-xs text-foreground shadow-lg"
+				className="z-50 max-w-64 rounded-global border border-solid border-foreground/15 bg-background px-2.5 py-1.5 text-center text-xs leading-snug text-foreground shadow-lg"
 			>
 				{content}
-				<TooltipPrimitive.Arrow className="fill-background" />
+				<TooltipPrimitive.Arrow className="fill-background stroke-foreground/15" />
 			</TooltipPrimitive.Content>
 		</TooltipPrimitive.Portal>
 	</TooltipPrimitive.Root>
 );
 
-const ViewsStat = ({ value }: { value: number }) => {
+const ViewsStat = ({ value, noun }: { value: number; noun: "post" | "page" }) => {
 	const formattedValue = value.toLocaleString();
 	const label = `${formattedValue} views`;
+	const tooltipContent = `This ${noun} has ${label}.`;
 
 	return (
 		<div className={statItemClassName}>
 			<dt className="sr-only">Views</dt>
-			<StatTooltip content={label}>
+			<StatTooltip content={tooltipContent}>
 				<dd className="m-0 inline-flex items-center gap-1.5" aria-label={label}>
 					<FaEye aria-hidden="true" focusable={false} className="size-5 text-primary" />
 					<span aria-hidden="true" className={statValueClassName}>
@@ -206,11 +207,12 @@ const LiveStat = () => {
 	const formattedCount = count.toLocaleString();
 	const liveViewerUnit = count === 1 ? "live viewer" : "live viewers";
 	const label = `${formattedCount} ${liveViewerUnit} across the site`;
+	const tooltipContent = `There ${count === 1 ? "is" : "are"} ${label} right now.`;
 
 	return (
 		<div className={statItemClassName}>
 			<dt className="sr-only">Live viewers across the site</dt>
-			<StatTooltip content={label}>
+			<StatTooltip content={tooltipContent}>
 				<dd className="m-0 inline-flex items-center gap-1.5" aria-label={label}>
 					<span
 						aria-hidden="true"
@@ -287,6 +289,11 @@ const LikeStat = ({
 	const likeUnit = like_count === 1 ? "like" : "likes";
 	const likeSummary = `${formatted_like_count} ${likeUnit}`;
 	const likeActionLabel = hasLiked ? `You liked this ${noun}` : `Like this ${noun}`;
+	const likeTooltipText = readOnly
+		? `This ${noun} has ${likeSummary}. Likes are read-only here.`
+		: hasLiked
+			? `This ${noun} has ${likeSummary}. You have liked it.`
+			: `This ${noun} has ${likeSummary}. Click the heart to like it.`;
 	const likeButtonLabel = isPending
 		? `Saving like for this ${noun}. ${likeSummary}`
 		: `${likeActionLabel}. ${likeSummary}`;
@@ -297,7 +304,7 @@ const LikeStat = ({
 	return (
 		<div className={statItemClassName}>
 			<dt className="sr-only">Likes</dt>
-			<StatTooltip content={likeButtonTitle}>
+			<StatTooltip content={isPending ? likeButtonTitle : likeTooltipText}>
 				<dd className="m-0 inline-flex items-center gap-1.5">
 					<button
 						type="button"
