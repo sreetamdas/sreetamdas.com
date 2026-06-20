@@ -1,6 +1,6 @@
 import { Gradient } from "@/lib/components/Typography";
 
-type Stage = "first" | "second" | "final";
+type Stage = "first" | "second" | "final" | "title";
 type Props = { stage: Stage };
 export function MainTitle({ stage }: Props) {
 	const Inner = () => {
@@ -28,6 +28,7 @@ export function MainTitle({ stage }: Props) {
 					</>
 				);
 			case "final":
+			case "title":
 			default:
 				return (
 					<>
