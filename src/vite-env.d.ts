@@ -14,6 +14,8 @@ interface ImportMetaEnv {
 	readonly SSR: boolean;
 	readonly VITE_SENTRY_DSN: string;
 	readonly VITE_SITE_URL: string;
+	readonly VITE_CI?: string;
+	readonly VITE_DEBUG_MODE?: string;
 }
 
 interface ImportMeta {

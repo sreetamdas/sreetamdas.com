@@ -2,8 +2,8 @@ import { HiOutlineCalendar, HiOutlineNewspaper } from "react-icons/hi";
 
 import { LinkTo } from "@/lib/components/Anchor";
 import { MDXContent } from "@/lib/components/MDX";
-import { ViewsCounter } from "@/lib/components/ViewsCounter";
 import { type ButtondownAPIEmailsResponse } from "@/lib/domains/Buttondown";
+import { StatsCounter } from "@/lib/domains/PageInteraction/StatsCounter";
 
 export const BUTTONDOWN_EMAIL_STATS_URL_PREFIX = "https://buttondown.email/emails/analytics";
 
@@ -21,7 +21,7 @@ type NewsletterEmailPreviewProps = {
 };
 const NewsletterEmailPreview = ({ email, isAdminUser = false }: NewsletterEmailPreviewProps) => (
 	<article>
-		<h2 className="text-primary p-0 font-sans text-2xl font-bold">
+		<h2 className="p-0 font-sans text-2xl font-bold text-primary">
 			<LinkTo href={`/newsletter/$slug`} params={{ slug: email.slug }}>
 				{email.subject}
 			</LinkTo>
@@ -98,7 +98,7 @@ export const NewsletterEmailDetail = ({ email }: NewsletterEmailDetailProps) => 
 
 				<MDXContent source={body} />
 			</article>
-			<ViewsCounter slug={`/newsletter/${email.slug}`} />
+			<StatsCounter slug={`/newsletter/${email.slug}`} />
 		</section>
 	);
 };

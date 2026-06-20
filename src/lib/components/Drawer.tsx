@@ -23,7 +23,7 @@ const DrawerOverlay = forwardRef<
 >(({ className, ...props }, ref) => (
 	<DrawerPrimitive.Overlay
 		className={cn(
-			"data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 fixed inset-0 z-50 bg-black/80",
+			"fixed inset-0 z-50 bg-black/80 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:animate-in data-[state=open]:fade-in-0",
 			className,
 		)}
 		{...props}
@@ -41,13 +41,13 @@ const DrawerContent = forwardRef<ElementRef<typeof DrawerPrimitive.Content>, Dra
 			<DrawerPrimitive.Content
 				ref={ref}
 				className={cn(
-					"bg-background data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:slide-out-to-left data-[state=open]:slide-in-from-left data-[state=closed]:animate-duration-(--transition-duration) data-[state=open]:animate-duration-(--transition-duration) fixed inset-y-0 left-0 z-50 h-full w-3/4 gap-4 border-r p-6 shadow-lg transition ease-in-out sm:max-w-sm",
+					"fixed inset-y-0 left-0 z-50 h-full w-3/4 gap-4 border-r bg-background p-6 shadow-lg transition ease-in-out data-[state=closed]:animate-out data-[state=closed]:animate-duration-(--transition-duration) data-[state=closed]:slide-out-to-left data-[state=open]:animate-in data-[state=open]:animate-duration-(--transition-duration) data-[state=open]:slide-in-from-left sm:max-w-sm",
 					className,
 				)}
 				{...props}
 			>
 				{children}
-				<DrawerPrimitive.Close className="ring-offset-background focus-visible:outline-secondary data-[state=open]:bg-secondary absolute top-4 right-4 rounded-sm text-2xl opacity-70 transition-opacity hover:opacity-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-dashed disabled:pointer-events-none">
+				<DrawerPrimitive.Close className="absolute top-4 right-4 rounded-sm text-2xl opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-secondary focus-visible:outline-dashed disabled:pointer-events-none data-[state=open]:bg-secondary">
 					<LuX className="size-6" />
 					<span className="sr-only">Close</span>
 				</DrawerPrimitive.Close>
@@ -77,7 +77,7 @@ const DrawerTitle = forwardRef<
 	<VisuallyHidden.Root asChild>
 		<DrawerPrimitive.Title
 			ref={ref}
-			className={cn("text-foreground text-lg font-semibold", className)}
+			className={cn("text-lg font-semibold text-foreground", className)}
 			{...props}
 		/>
 	</VisuallyHidden.Root>
@@ -90,7 +90,7 @@ const DrawerDescription = forwardRef<
 >(({ className, ...props }, ref) => (
 	<DrawerPrimitive.Description
 		ref={ref}
-		className={cn("text-muted-foreground text-sm", className)}
+		className={cn("text-sm text-foreground/70", className)}
 		{...props}
 	/>
 ));

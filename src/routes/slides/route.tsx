@@ -1,7 +1,7 @@
 import { createFileRoute, Outlet } from "@tanstack/react-router";
 
 import { SITE_TITLE_APPEND } from "@/config";
-import { ViewsCounter } from "@/lib/components/ViewsCounter";
+import { StatsCounter } from "@/lib/domains/PageInteraction/StatsCounter";
 import { canonicalUrl, defaultOgImageUrl } from "@/lib/seo";
 
 export const Route = createFileRoute("/slides")({
@@ -26,7 +26,7 @@ function MainLayout() {
 			<main id="main-content">
 				<Outlet />
 			</main>
-			<ViewsCounter hidden />
+			<StatsCounter hidden />
 		</>
 	);
 }

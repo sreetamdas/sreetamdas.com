@@ -64,6 +64,15 @@ export const BUTTONDOWN_EMAIL_MOCKS = {
 	count: 2,
 } satisfies ButtondownAPIEmailsResponse;
 
+/**
+ * Slugs of the fallback mock issues. The post-build sitemap normalizer excludes
+ * these so a build without a Buttondown API key (which silently renders mocks)
+ * can never ship fake `/newsletter/<slug>` URLs into the production sitemap.
+ */
+export const MOCK_NEWSLETTER_SLUGS = Array.from(
+	new Set(BUTTONDOWN_EMAIL_MOCKS.results.map((email) => email.slug)),
+);
+
 export const BUTTONDOWN_SUBSCRIBERS_MOCK = {
 	results: [
 		{

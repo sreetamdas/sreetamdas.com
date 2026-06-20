@@ -25,7 +25,7 @@ export const ReadingProgress = () => {
 	return (
 		<span
 			ref={spanRef}
-			className="gradient fixed top-0 left-0 z-20 h-1 duration-(--transition-duration) ease-out"
+			className="fixed top-0 left-0 z-20 h-1 gradient duration-(--transition-duration) ease-out"
 		/>
 	);
 };

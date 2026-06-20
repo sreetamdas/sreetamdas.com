@@ -3,14 +3,19 @@
  * server-only and falls back to checked-in mocks so static builds/previews can
  * still render when Buttondown is unavailable or not configured.
  */
-import { readServerEnvString } from "@/lib/helpers/utils";
+import { env } from "cloudflare:workers";
 
 import { BUTTONDOWN_EMAIL_MOCKS } from "./mocks";
 
 const BUTTONDOWN_BASE_URL = "https://api.buttondown.email/v1";
+const BUTTONDOWN_PLAINTEXT_MARKER = "<!-- buttondown-editor-mode: plaintext -->";
 
-export function getButtondownApiKey(env: CloudflareEnv): string | undefined {
-	return readServerEnvString(env, ["BUTTONDOWN_API_KEY"]);
+export function getButtondownApiKey(): string | undefined {
+	return env.BUTTONDOWN_API_KEY || undefined;
+}
+
+export function stripButtondownPlaintextMarker(body: string) {
+	return body.replace(BUTTONDOWN_PLAINTEXT_MARKER, "");
 }
 
 export type ButtondownAPISubscribersResponse = {

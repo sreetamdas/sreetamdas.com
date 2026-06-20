@@ -3,8 +3,7 @@ Integration smoke tests for the Worker runtime + bindings contract.
 These run inside workerd via @cloudflare/vitest-pool-workers using wrangler.test.jsonc.
 */
 
-import { env } from "cloudflare:test";
-import { exports } from "cloudflare:workers";
+import { env, exports } from "cloudflare:workers";
 import { describe, expect, it } from "vitest";
 
 describe("worker entrypoint", () => {
@@ -15,10 +14,13 @@ describe("worker entrypoint", () => {
 		const ok = isObject && "ok" in body ? body.ok : undefined;
 		const hasPresenceBinding =
 			isObject && "hasPresenceBinding" in body ? body.hasPresenceBinding : undefined;
+		const hasSlideSessionsBinding =
+			isObject && "hasSlideSessionsBinding" in body ? body.hasSlideSessionsBinding : undefined;
 
 		expect(response.status).toBe(200);
 		expect(ok).toBe(true);
 		expect(hasPresenceBinding).toBe(true);
+		expect(hasSlideSessionsBinding).toBe(true);
 	});
 
 	it("returns 404 for an unknown route", async () => {

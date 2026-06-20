@@ -1,9 +1,10 @@
-import { LinkTo } from "@/lib/components/Anchor";
 /**
  * Displays avatars of non-bot contributors to the site's GitHub repo.
  * Data is fetched server-side in the route loader and passed as a prop —
  * no client-side fetch needed.
  */
+
+import { LinkTo } from "@/lib/components/Anchor";
 import { type RepoContributor } from "@/lib/domains/GitHub/types";
 
 type RepoContributorsProps = {
@@ -23,7 +24,7 @@ export const RepoContributors = ({ contributors }: RepoContributorsProps) => {
 						<LinkTo href={html_url} key={login} target="_blank">
 							<div className="flex flex-col items-center gap-1">
 								{avatar_url ? (
-									<span className="rounded-global overflow-hidden">
+									<span className="overflow-hidden rounded-global">
 										<img
 											src={avatar_url}
 											alt={login ?? ""}

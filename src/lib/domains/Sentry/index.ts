@@ -3,14 +3,14 @@
  * TanStack Sentry runtime modules because they can pull Node-only dependencies
  * into Cloudflare/prerender builds.
  */
-import { readPublicEnvString } from "@/lib/helpers/utils";
+type SentryRuntimeConfig = Partial<Pick<CloudflareEnv, "VITE_SENTRY_DSN">>;
 
 export function isBrowserSentryRuntime() {
 	return typeof window !== "undefined";
 }
 
-export function getSentryRuntimeOptions(env: object | undefined) {
-	const dsn = readPublicEnvString(env, ["SENTRY_DSN"]);
+export function getSentryRuntimeOptions(config: SentryRuntimeConfig | undefined) {
+	const dsn = config?.VITE_SENTRY_DSN;
 	if (!dsn) return undefined;
 
 	return {

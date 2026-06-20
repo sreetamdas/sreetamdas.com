@@ -15,7 +15,7 @@ describe("handlePresenceGetForNamespace", () => {
 		expect(response.status).toBe(500);
 		expect(response.headers.get("content-type") ?? "").toMatch(/^application\/json/);
 		expect(await response.json()).toEqual({
-			error: "SITE_PRESENCE binding is not available",
+			error: "Live presence is unavailable",
 		});
 	});
 

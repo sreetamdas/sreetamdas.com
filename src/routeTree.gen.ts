@@ -12,28 +12,36 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as SlidesRouteRouteImport } from './routes/slides/route'
 import { Route as pureRouteRouteImport } from './routes/(pure)/route'
 import { Route as mainRouteRouteImport } from './routes/(main)/route'
-import { Route as mainIndexRouteImport } from './routes/(main)/index'
-import { Route as pureVersionRouteImport } from './routes/(pure)/version'
-import { Route as pureResumeRouteImport } from './routes/(pure)/resume'
-import { Route as pureFancyPantsRouteImport } from './routes/(pure)/fancy-pants'
-import { Route as mainKeebsRouteImport } from './routes/(main)/keebs'
-import { Route as mainKarmaRouteImport } from './routes/(main)/karma'
-import { Route as mainAboutRouteImport } from './routes/(main)/about'
-import { Route as mainSlugRouteImport } from './routes/(main)/$slug'
 import { Route as SlidesTanstackStartRouteRouteImport } from './routes/slides/tanstack-start/route'
+import { Route as SlidesJsonSchemaFormRouteRouteImport } from './routes/slides/json-schema-form/route'
+import { Route as pureVersionRouteRouteImport } from './routes/(pure)/version/route'
+import { Route as pureResumeRouteRouteImport } from './routes/(pure)/resume/route'
+import { Route as pureFancyPantsRouteRouteImport } from './routes/(pure)/fancy-pants/route'
+import { Route as mainStatsRouteRouteImport } from './routes/(main)/stats/route'
 import { Route as mainRwcRouteRouteImport } from './routes/(main)/rwc/route'
-import { Route as SlidesJsonSchemaFormIndexRouteImport } from './routes/slides/json-schema-form/index'
+import { Route as mainNewsletterRouteRouteImport } from './routes/(main)/newsletter/route'
+import { Route as mainKeebsRouteRouteImport } from './routes/(main)/keebs/route'
+import { Route as mainKarmaRouteRouteImport } from './routes/(main)/karma/route'
+import { Route as mainBlogRouteRouteImport } from './routes/(main)/blog/route'
+import { Route as mainAboutRouteRouteImport } from './routes/(main)/about/route'
+import { Route as mainSlugRouteRouteImport } from './routes/(main)/$slug/route'
+import { Route as mainIndexRouteRouteImport } from './routes/(main)/index/route'
 import { Route as mainNewsletterIndexRouteImport } from './routes/(main)/newsletter/index'
 import { Route as mainBlogIndexRouteImport } from './routes/(main)/blog/index'
-import { Route as mainNewsletterSlugRouteImport } from './routes/(main)/newsletter/$slug'
-import { Route as mainBlogSlugRouteImport } from './routes/(main)/blog/$slug'
 import { Route as apiApiStagingSmokeRouteImport } from './routes/(api)/api/staging-smoke'
 import { Route as apiApiPresenceRouteImport } from './routes/(api)/api/presence'
 import { Route as apiApiCoffeeRouteImport } from './routes/(api)/api/coffee'
+import { Route as mainNewsletterSlugRouteRouteImport } from './routes/(main)/newsletter/$slug/route'
+import { Route as mainBlogSlugRouteRouteImport } from './routes/(main)/blog/$slug/route'
+import { Route as mainfoobarFoobarRouteRouteImport } from './routes/(main)/(foobar)/foobar/route'
 import { Route as mainfoobarFoobarIndexRouteImport } from './routes/(main)/(foobar)/foobar/index'
-import { Route as mainfoobarFoobarSlugRouteImport } from './routes/(main)/(foobar)/foobar/$slug'
+import { Route as apiApiLoginGoogleRouteImport } from './routes/(api)/api/login/google'
+import { Route as apiApiLoginCloudflareRouteImport } from './routes/(api)/api/login/cloudflare'
+import { Route as apiApiAuthSplatRouteImport } from './routes/(api)/api/auth/$'
+import { Route as mainfoobarFoobarSlugRouteRouteImport } from './routes/(main)/(foobar)/foobar/$slug/route'
 import { Route as apiPrxyPlsblJsScriptRouteImport } from './routes/(api)/prxy/plsbl/js/$script'
 import { Route as apiPrxyPlsblApiEventRouteImport } from './routes/(api)/prxy/plsbl/api/event'
+import { Route as apiApiSlidesSessionSessionIdRouteImport } from './routes/(api)/api/slides/session/$sessionId'
 
 const SlidesRouteRoute = SlidesRouteRouteImport.update({
   id: '/slides',
@@ -48,82 +56,87 @@ const mainRouteRoute = mainRouteRouteImport.update({
   id: '/(main)',
   getParentRoute: () => rootRouteImport,
 } as any)
-const mainIndexRoute = mainIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => mainRouteRoute,
-} as any)
-const pureVersionRoute = pureVersionRouteImport.update({
-  id: '/version',
-  path: '/version',
-  getParentRoute: () => pureRouteRoute,
-} as any)
-const pureResumeRoute = pureResumeRouteImport.update({
-  id: '/resume',
-  path: '/resume',
-  getParentRoute: () => pureRouteRoute,
-} as any)
-const pureFancyPantsRoute = pureFancyPantsRouteImport.update({
-  id: '/fancy-pants',
-  path: '/fancy-pants',
-  getParentRoute: () => pureRouteRoute,
-} as any)
-const mainKeebsRoute = mainKeebsRouteImport.update({
-  id: '/keebs',
-  path: '/keebs',
-  getParentRoute: () => mainRouteRoute,
-} as any)
-const mainKarmaRoute = mainKarmaRouteImport.update({
-  id: '/karma',
-  path: '/karma',
-  getParentRoute: () => mainRouteRoute,
-} as any)
-const mainAboutRoute = mainAboutRouteImport.update({
-  id: '/about',
-  path: '/about',
-  getParentRoute: () => mainRouteRoute,
-} as any)
-const mainSlugRoute = mainSlugRouteImport.update({
-  id: '/$slug',
-  path: '/$slug',
-  getParentRoute: () => mainRouteRoute,
-} as any)
 const SlidesTanstackStartRouteRoute =
   SlidesTanstackStartRouteRouteImport.update({
     id: '/tanstack-start',
     path: '/tanstack-start',
     getParentRoute: () => SlidesRouteRoute,
   } as any)
+const SlidesJsonSchemaFormRouteRoute =
+  SlidesJsonSchemaFormRouteRouteImport.update({
+    id: '/json-schema-form',
+    path: '/json-schema-form',
+    getParentRoute: () => SlidesRouteRoute,
+  } as any)
+const pureVersionRouteRoute = pureVersionRouteRouteImport.update({
+  id: '/version',
+  path: '/version',
+  getParentRoute: () => pureRouteRoute,
+} as any)
+const pureResumeRouteRoute = pureResumeRouteRouteImport.update({
+  id: '/resume',
+  path: '/resume',
+  getParentRoute: () => pureRouteRoute,
+} as any)
+const pureFancyPantsRouteRoute = pureFancyPantsRouteRouteImport.update({
+  id: '/fancy-pants',
+  path: '/fancy-pants',
+  getParentRoute: () => pureRouteRoute,
+} as any)
+const mainStatsRouteRoute = mainStatsRouteRouteImport.update({
+  id: '/stats',
+  path: '/stats',
+  getParentRoute: () => mainRouteRoute,
+} as any)
 const mainRwcRouteRoute = mainRwcRouteRouteImport.update({
   id: '/rwc',
   path: '/rwc',
   getParentRoute: () => mainRouteRoute,
 } as any)
-const SlidesJsonSchemaFormIndexRoute =
-  SlidesJsonSchemaFormIndexRouteImport.update({
-    id: '/json-schema-form/',
-    path: '/json-schema-form/',
-    getParentRoute: () => SlidesRouteRoute,
-  } as any)
-const mainNewsletterIndexRoute = mainNewsletterIndexRouteImport.update({
-  id: '/newsletter/',
-  path: '/newsletter/',
+const mainNewsletterRouteRoute = mainNewsletterRouteRouteImport.update({
+  id: '/newsletter',
+  path: '/newsletter',
   getParentRoute: () => mainRouteRoute,
+} as any)
+const mainKeebsRouteRoute = mainKeebsRouteRouteImport.update({
+  id: '/keebs',
+  path: '/keebs',
+  getParentRoute: () => mainRouteRoute,
+} as any)
+const mainKarmaRouteRoute = mainKarmaRouteRouteImport.update({
+  id: '/karma',
+  path: '/karma',
+  getParentRoute: () => mainRouteRoute,
+} as any)
+const mainBlogRouteRoute = mainBlogRouteRouteImport.update({
+  id: '/blog',
+  path: '/blog',
+  getParentRoute: () => mainRouteRoute,
+} as any)
+const mainAboutRouteRoute = mainAboutRouteRouteImport.update({
+  id: '/about',
+  path: '/about',
+  getParentRoute: () => mainRouteRoute,
+} as any)
+const mainSlugRouteRoute = mainSlugRouteRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => mainRouteRoute,
+} as any)
+const mainIndexRouteRoute = mainIndexRouteRouteImport.update({
+  id: '/',
+  path: '',
+  getParentRoute: () => mainRouteRoute,
+} as any)
+const mainNewsletterIndexRoute = mainNewsletterIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => mainNewsletterRouteRoute,
 } as any)
 const mainBlogIndexRoute = mainBlogIndexRouteImport.update({
-  id: '/blog/',
-  path: '/blog/',
-  getParentRoute: () => mainRouteRoute,
-} as any)
-const mainNewsletterSlugRoute = mainNewsletterSlugRouteImport.update({
-  id: '/newsletter/$slug',
-  path: '/newsletter/$slug',
-  getParentRoute: () => mainRouteRoute,
-} as any)
-const mainBlogSlugRoute = mainBlogSlugRouteImport.update({
-  id: '/blog/$slug',
-  path: '/blog/$slug',
-  getParentRoute: () => mainRouteRoute,
+  id: '/',
+  path: '/',
+  getParentRoute: () => mainBlogRouteRoute,
 } as any)
 const apiApiStagingSmokeRoute = apiApiStagingSmokeRouteImport.update({
   id: '/(api)/api/staging-smoke',
@@ -140,16 +153,47 @@ const apiApiCoffeeRoute = apiApiCoffeeRouteImport.update({
   path: '/api/coffee',
   getParentRoute: () => rootRouteImport,
 } as any)
+const mainNewsletterSlugRouteRoute = mainNewsletterSlugRouteRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => mainNewsletterRouteRoute,
+} as any)
+const mainBlogSlugRouteRoute = mainBlogSlugRouteRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => mainBlogRouteRoute,
+} as any)
+const mainfoobarFoobarRouteRoute = mainfoobarFoobarRouteRouteImport.update({
+  id: '/(foobar)/foobar',
+  path: '/foobar',
+  getParentRoute: () => mainRouteRoute,
+} as any)
 const mainfoobarFoobarIndexRoute = mainfoobarFoobarIndexRouteImport.update({
-  id: '/(foobar)/foobar/',
-  path: '/foobar/',
-  getParentRoute: () => mainRouteRoute,
+  id: '/',
+  path: '/',
+  getParentRoute: () => mainfoobarFoobarRouteRoute,
 } as any)
-const mainfoobarFoobarSlugRoute = mainfoobarFoobarSlugRouteImport.update({
-  id: '/(foobar)/foobar/$slug',
-  path: '/foobar/$slug',
-  getParentRoute: () => mainRouteRoute,
+const apiApiLoginGoogleRoute = apiApiLoginGoogleRouteImport.update({
+  id: '/(api)/api/login/google',
+  path: '/api/login/google',
+  getParentRoute: () => rootRouteImport,
 } as any)
+const apiApiLoginCloudflareRoute = apiApiLoginCloudflareRouteImport.update({
+  id: '/(api)/api/login/cloudflare',
+  path: '/api/login/cloudflare',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const apiApiAuthSplatRoute = apiApiAuthSplatRouteImport.update({
+  id: '/(api)/api/auth/$',
+  path: '/api/auth/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const mainfoobarFoobarSlugRouteRoute =
+  mainfoobarFoobarSlugRouteRouteImport.update({
+    id: '/$slug',
+    path: '/$slug',
+    getParentRoute: () => mainfoobarFoobarRouteRoute,
+  } as any)
 const apiPrxyPlsblJsScriptRoute = apiPrxyPlsblJsScriptRouteImport.update({
   id: '/(api)/prxy/plsbl/js/$script',
   path: '/prxy/plsbl/js/$script',
@@ -160,54 +204,73 @@ const apiPrxyPlsblApiEventRoute = apiPrxyPlsblApiEventRouteImport.update({
   path: '/prxy/plsbl/api/event',
   getParentRoute: () => rootRouteImport,
 } as any)
+const apiApiSlidesSessionSessionIdRoute =
+  apiApiSlidesSessionSessionIdRouteImport.update({
+    id: '/(api)/api/slides/session/$sessionId',
+    path: '/api/slides/session/$sessionId',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/slides': typeof SlidesRouteRouteWithChildren
+  '/': typeof mainIndexRouteRoute
+  '/$slug': typeof mainSlugRouteRoute
+  '/about': typeof mainAboutRouteRoute
+  '/blog': typeof mainBlogRouteRouteWithChildren
+  '/karma': typeof mainKarmaRouteRoute
+  '/keebs': typeof mainKeebsRouteRoute
+  '/newsletter': typeof mainNewsletterRouteRouteWithChildren
   '/rwc': typeof mainRwcRouteRoute
+  '/stats': typeof mainStatsRouteRoute
+  '/fancy-pants': typeof pureFancyPantsRouteRoute
+  '/resume': typeof pureResumeRouteRoute
+  '/version': typeof pureVersionRouteRoute
+  '/slides/json-schema-form': typeof SlidesJsonSchemaFormRouteRoute
   '/slides/tanstack-start': typeof SlidesTanstackStartRouteRoute
-  '/$slug': typeof mainSlugRoute
-  '/about': typeof mainAboutRoute
-  '/karma': typeof mainKarmaRoute
-  '/keebs': typeof mainKeebsRoute
-  '/fancy-pants': typeof pureFancyPantsRoute
-  '/resume': typeof pureResumeRoute
-  '/version': typeof pureVersionRoute
-  '/': typeof mainIndexRoute
+  '/foobar': typeof mainfoobarFoobarRouteRouteWithChildren
+  '/blog/$slug': typeof mainBlogSlugRouteRoute
+  '/newsletter/$slug': typeof mainNewsletterSlugRouteRoute
   '/api/coffee': typeof apiApiCoffeeRoute
   '/api/presence': typeof apiApiPresenceRoute
   '/api/staging-smoke': typeof apiApiStagingSmokeRoute
-  '/blog/$slug': typeof mainBlogSlugRoute
-  '/newsletter/$slug': typeof mainNewsletterSlugRoute
   '/blog/': typeof mainBlogIndexRoute
   '/newsletter/': typeof mainNewsletterIndexRoute
-  '/slides/json-schema-form/': typeof SlidesJsonSchemaFormIndexRoute
-  '/foobar/$slug': typeof mainfoobarFoobarSlugRoute
+  '/foobar/$slug': typeof mainfoobarFoobarSlugRouteRoute
+  '/api/auth/$': typeof apiApiAuthSplatRoute
+  '/api/login/cloudflare': typeof apiApiLoginCloudflareRoute
+  '/api/login/google': typeof apiApiLoginGoogleRoute
   '/foobar/': typeof mainfoobarFoobarIndexRoute
+  '/api/slides/session/$sessionId': typeof apiApiSlidesSessionSessionIdRoute
   '/prxy/plsbl/api/event': typeof apiPrxyPlsblApiEventRoute
   '/prxy/plsbl/js/$script': typeof apiPrxyPlsblJsScriptRoute
 }
 export interface FileRoutesByTo {
   '/slides': typeof SlidesRouteRouteWithChildren
+  '/': typeof mainIndexRouteRoute
+  '/$slug': typeof mainSlugRouteRoute
+  '/about': typeof mainAboutRouteRoute
+  '/karma': typeof mainKarmaRouteRoute
+  '/keebs': typeof mainKeebsRouteRoute
   '/rwc': typeof mainRwcRouteRoute
+  '/stats': typeof mainStatsRouteRoute
+  '/fancy-pants': typeof pureFancyPantsRouteRoute
+  '/resume': typeof pureResumeRouteRoute
+  '/version': typeof pureVersionRouteRoute
+  '/slides/json-schema-form': typeof SlidesJsonSchemaFormRouteRoute
   '/slides/tanstack-start': typeof SlidesTanstackStartRouteRoute
-  '/$slug': typeof mainSlugRoute
-  '/about': typeof mainAboutRoute
-  '/karma': typeof mainKarmaRoute
-  '/keebs': typeof mainKeebsRoute
-  '/fancy-pants': typeof pureFancyPantsRoute
-  '/resume': typeof pureResumeRoute
-  '/version': typeof pureVersionRoute
-  '/': typeof mainIndexRoute
+  '/blog/$slug': typeof mainBlogSlugRouteRoute
+  '/newsletter/$slug': typeof mainNewsletterSlugRouteRoute
   '/api/coffee': typeof apiApiCoffeeRoute
   '/api/presence': typeof apiApiPresenceRoute
   '/api/staging-smoke': typeof apiApiStagingSmokeRoute
-  '/blog/$slug': typeof mainBlogSlugRoute
-  '/newsletter/$slug': typeof mainNewsletterSlugRoute
   '/blog': typeof mainBlogIndexRoute
   '/newsletter': typeof mainNewsletterIndexRoute
-  '/slides/json-schema-form': typeof SlidesJsonSchemaFormIndexRoute
-  '/foobar/$slug': typeof mainfoobarFoobarSlugRoute
+  '/foobar/$slug': typeof mainfoobarFoobarSlugRouteRoute
+  '/api/auth/$': typeof apiApiAuthSplatRoute
+  '/api/login/cloudflare': typeof apiApiLoginCloudflareRoute
+  '/api/login/google': typeof apiApiLoginGoogleRoute
   '/foobar': typeof mainfoobarFoobarIndexRoute
+  '/api/slides/session/$sessionId': typeof apiApiSlidesSessionSessionIdRoute
   '/prxy/plsbl/api/event': typeof apiPrxyPlsblApiEventRoute
   '/prxy/plsbl/js/$script': typeof apiPrxyPlsblJsScriptRoute
 }
@@ -216,26 +279,34 @@ export interface FileRoutesById {
   '/(main)': typeof mainRouteRouteWithChildren
   '/(pure)': typeof pureRouteRouteWithChildren
   '/slides': typeof SlidesRouteRouteWithChildren
+  '/(main)/': typeof mainIndexRouteRoute
+  '/(main)/$slug': typeof mainSlugRouteRoute
+  '/(main)/about': typeof mainAboutRouteRoute
+  '/(main)/blog': typeof mainBlogRouteRouteWithChildren
+  '/(main)/karma': typeof mainKarmaRouteRoute
+  '/(main)/keebs': typeof mainKeebsRouteRoute
+  '/(main)/newsletter': typeof mainNewsletterRouteRouteWithChildren
   '/(main)/rwc': typeof mainRwcRouteRoute
+  '/(main)/stats': typeof mainStatsRouteRoute
+  '/(pure)/fancy-pants': typeof pureFancyPantsRouteRoute
+  '/(pure)/resume': typeof pureResumeRouteRoute
+  '/(pure)/version': typeof pureVersionRouteRoute
+  '/slides/json-schema-form': typeof SlidesJsonSchemaFormRouteRoute
   '/slides/tanstack-start': typeof SlidesTanstackStartRouteRoute
-  '/(main)/$slug': typeof mainSlugRoute
-  '/(main)/about': typeof mainAboutRoute
-  '/(main)/karma': typeof mainKarmaRoute
-  '/(main)/keebs': typeof mainKeebsRoute
-  '/(pure)/fancy-pants': typeof pureFancyPantsRoute
-  '/(pure)/resume': typeof pureResumeRoute
-  '/(pure)/version': typeof pureVersionRoute
-  '/(main)/': typeof mainIndexRoute
+  '/(main)/(foobar)/foobar': typeof mainfoobarFoobarRouteRouteWithChildren
+  '/(main)/blog/$slug': typeof mainBlogSlugRouteRoute
+  '/(main)/newsletter/$slug': typeof mainNewsletterSlugRouteRoute
   '/(api)/api/coffee': typeof apiApiCoffeeRoute
   '/(api)/api/presence': typeof apiApiPresenceRoute
   '/(api)/api/staging-smoke': typeof apiApiStagingSmokeRoute
-  '/(main)/blog/$slug': typeof mainBlogSlugRoute
-  '/(main)/newsletter/$slug': typeof mainNewsletterSlugRoute
   '/(main)/blog/': typeof mainBlogIndexRoute
   '/(main)/newsletter/': typeof mainNewsletterIndexRoute
-  '/slides/json-schema-form/': typeof SlidesJsonSchemaFormIndexRoute
-  '/(main)/(foobar)/foobar/$slug': typeof mainfoobarFoobarSlugRoute
+  '/(main)/(foobar)/foobar/$slug': typeof mainfoobarFoobarSlugRouteRoute
+  '/(api)/api/auth/$': typeof apiApiAuthSplatRoute
+  '/(api)/api/login/cloudflare': typeof apiApiLoginCloudflareRoute
+  '/(api)/api/login/google': typeof apiApiLoginGoogleRoute
   '/(main)/(foobar)/foobar/': typeof mainfoobarFoobarIndexRoute
+  '/(api)/api/slides/session/$sessionId': typeof apiApiSlidesSessionSessionIdRoute
   '/(api)/prxy/plsbl/api/event': typeof apiPrxyPlsblApiEventRoute
   '/(api)/prxy/plsbl/js/$script': typeof apiPrxyPlsblJsScriptRoute
 }
@@ -243,51 +314,64 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/slides'
-    | '/rwc'
-    | '/slides/tanstack-start'
+    | '/'
     | '/$slug'
     | '/about'
+    | '/blog'
     | '/karma'
     | '/keebs'
+    | '/newsletter'
+    | '/rwc'
+    | '/stats'
     | '/fancy-pants'
     | '/resume'
     | '/version'
-    | '/'
+    | '/slides/json-schema-form'
+    | '/slides/tanstack-start'
+    | '/foobar'
+    | '/blog/$slug'
+    | '/newsletter/$slug'
     | '/api/coffee'
     | '/api/presence'
     | '/api/staging-smoke'
-    | '/blog/$slug'
-    | '/newsletter/$slug'
     | '/blog/'
     | '/newsletter/'
-    | '/slides/json-schema-form/'
     | '/foobar/$slug'
+    | '/api/auth/$'
+    | '/api/login/cloudflare'
+    | '/api/login/google'
     | '/foobar/'
+    | '/api/slides/session/$sessionId'
     | '/prxy/plsbl/api/event'
     | '/prxy/plsbl/js/$script'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/slides'
-    | '/rwc'
-    | '/slides/tanstack-start'
+    | '/'
     | '/$slug'
     | '/about'
     | '/karma'
     | '/keebs'
+    | '/rwc'
+    | '/stats'
     | '/fancy-pants'
     | '/resume'
     | '/version'
-    | '/'
+    | '/slides/json-schema-form'
+    | '/slides/tanstack-start'
+    | '/blog/$slug'
+    | '/newsletter/$slug'
     | '/api/coffee'
     | '/api/presence'
     | '/api/staging-smoke'
-    | '/blog/$slug'
-    | '/newsletter/$slug'
     | '/blog'
     | '/newsletter'
-    | '/slides/json-schema-form'
     | '/foobar/$slug'
+    | '/api/auth/$'
+    | '/api/login/cloudflare'
+    | '/api/login/google'
     | '/foobar'
+    | '/api/slides/session/$sessionId'
     | '/prxy/plsbl/api/event'
     | '/prxy/plsbl/js/$script'
   id:
@@ -295,26 +379,34 @@ export interface FileRouteTypes {
     | '/(main)'
     | '/(pure)'
     | '/slides'
-    | '/(main)/rwc'
-    | '/slides/tanstack-start'
+    | '/(main)/'
     | '/(main)/$slug'
     | '/(main)/about'
+    | '/(main)/blog'
     | '/(main)/karma'
     | '/(main)/keebs'
+    | '/(main)/newsletter'
+    | '/(main)/rwc'
+    | '/(main)/stats'
     | '/(pure)/fancy-pants'
     | '/(pure)/resume'
     | '/(pure)/version'
-    | '/(main)/'
+    | '/slides/json-schema-form'
+    | '/slides/tanstack-start'
+    | '/(main)/(foobar)/foobar'
+    | '/(main)/blog/$slug'
+    | '/(main)/newsletter/$slug'
     | '/(api)/api/coffee'
     | '/(api)/api/presence'
     | '/(api)/api/staging-smoke'
-    | '/(main)/blog/$slug'
-    | '/(main)/newsletter/$slug'
     | '/(main)/blog/'
     | '/(main)/newsletter/'
-    | '/slides/json-schema-form/'
     | '/(main)/(foobar)/foobar/$slug'
+    | '/(api)/api/auth/$'
+    | '/(api)/api/login/cloudflare'
+    | '/(api)/api/login/google'
     | '/(main)/(foobar)/foobar/'
+    | '/(api)/api/slides/session/$sessionId'
     | '/(api)/prxy/plsbl/api/event'
     | '/(api)/prxy/plsbl/js/$script'
   fileRoutesById: FileRoutesById
@@ -326,6 +418,10 @@ export interface RootRouteChildren {
   apiApiCoffeeRoute: typeof apiApiCoffeeRoute
   apiApiPresenceRoute: typeof apiApiPresenceRoute
   apiApiStagingSmokeRoute: typeof apiApiStagingSmokeRoute
+  apiApiAuthSplatRoute: typeof apiApiAuthSplatRoute
+  apiApiLoginCloudflareRoute: typeof apiApiLoginCloudflareRoute
+  apiApiLoginGoogleRoute: typeof apiApiLoginGoogleRoute
+  apiApiSlidesSessionSessionIdRoute: typeof apiApiSlidesSessionSessionIdRoute
   apiPrxyPlsblApiEventRoute: typeof apiPrxyPlsblApiEventRoute
   apiPrxyPlsblJsScriptRoute: typeof apiPrxyPlsblJsScriptRoute
 }
@@ -353,68 +449,47 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof mainRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/(main)/': {
-      id: '/(main)/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof mainIndexRouteImport
-      parentRoute: typeof mainRouteRoute
-    }
-    '/(pure)/version': {
-      id: '/(pure)/version'
-      path: '/version'
-      fullPath: '/version'
-      preLoaderRoute: typeof pureVersionRouteImport
-      parentRoute: typeof pureRouteRoute
-    }
-    '/(pure)/resume': {
-      id: '/(pure)/resume'
-      path: '/resume'
-      fullPath: '/resume'
-      preLoaderRoute: typeof pureResumeRouteImport
-      parentRoute: typeof pureRouteRoute
-    }
-    '/(pure)/fancy-pants': {
-      id: '/(pure)/fancy-pants'
-      path: '/fancy-pants'
-      fullPath: '/fancy-pants'
-      preLoaderRoute: typeof pureFancyPantsRouteImport
-      parentRoute: typeof pureRouteRoute
-    }
-    '/(main)/keebs': {
-      id: '/(main)/keebs'
-      path: '/keebs'
-      fullPath: '/keebs'
-      preLoaderRoute: typeof mainKeebsRouteImport
-      parentRoute: typeof mainRouteRoute
-    }
-    '/(main)/karma': {
-      id: '/(main)/karma'
-      path: '/karma'
-      fullPath: '/karma'
-      preLoaderRoute: typeof mainKarmaRouteImport
-      parentRoute: typeof mainRouteRoute
-    }
-    '/(main)/about': {
-      id: '/(main)/about'
-      path: '/about'
-      fullPath: '/about'
-      preLoaderRoute: typeof mainAboutRouteImport
-      parentRoute: typeof mainRouteRoute
-    }
-    '/(main)/$slug': {
-      id: '/(main)/$slug'
-      path: '/$slug'
-      fullPath: '/$slug'
-      preLoaderRoute: typeof mainSlugRouteImport
-      parentRoute: typeof mainRouteRoute
-    }
     '/slides/tanstack-start': {
       id: '/slides/tanstack-start'
       path: '/tanstack-start'
       fullPath: '/slides/tanstack-start'
       preLoaderRoute: typeof SlidesTanstackStartRouteRouteImport
       parentRoute: typeof SlidesRouteRoute
+    }
+    '/slides/json-schema-form': {
+      id: '/slides/json-schema-form'
+      path: '/json-schema-form'
+      fullPath: '/slides/json-schema-form'
+      preLoaderRoute: typeof SlidesJsonSchemaFormRouteRouteImport
+      parentRoute: typeof SlidesRouteRoute
+    }
+    '/(pure)/version': {
+      id: '/(pure)/version'
+      path: '/version'
+      fullPath: '/version'
+      preLoaderRoute: typeof pureVersionRouteRouteImport
+      parentRoute: typeof pureRouteRoute
+    }
+    '/(pure)/resume': {
+      id: '/(pure)/resume'
+      path: '/resume'
+      fullPath: '/resume'
+      preLoaderRoute: typeof pureResumeRouteRouteImport
+      parentRoute: typeof pureRouteRoute
+    }
+    '/(pure)/fancy-pants': {
+      id: '/(pure)/fancy-pants'
+      path: '/fancy-pants'
+      fullPath: '/fancy-pants'
+      preLoaderRoute: typeof pureFancyPantsRouteRouteImport
+      parentRoute: typeof pureRouteRoute
+    }
+    '/(main)/stats': {
+      id: '/(main)/stats'
+      path: '/stats'
+      fullPath: '/stats'
+      preLoaderRoute: typeof mainStatsRouteRouteImport
+      parentRoute: typeof mainRouteRoute
     }
     '/(main)/rwc': {
       id: '/(main)/rwc'
@@ -423,40 +498,68 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof mainRwcRouteRouteImport
       parentRoute: typeof mainRouteRoute
     }
-    '/slides/json-schema-form/': {
-      id: '/slides/json-schema-form/'
-      path: '/json-schema-form'
-      fullPath: '/slides/json-schema-form/'
-      preLoaderRoute: typeof SlidesJsonSchemaFormIndexRouteImport
-      parentRoute: typeof SlidesRouteRoute
+    '/(main)/newsletter': {
+      id: '/(main)/newsletter'
+      path: '/newsletter'
+      fullPath: '/newsletter'
+      preLoaderRoute: typeof mainNewsletterRouteRouteImport
+      parentRoute: typeof mainRouteRoute
+    }
+    '/(main)/keebs': {
+      id: '/(main)/keebs'
+      path: '/keebs'
+      fullPath: '/keebs'
+      preLoaderRoute: typeof mainKeebsRouteRouteImport
+      parentRoute: typeof mainRouteRoute
+    }
+    '/(main)/karma': {
+      id: '/(main)/karma'
+      path: '/karma'
+      fullPath: '/karma'
+      preLoaderRoute: typeof mainKarmaRouteRouteImport
+      parentRoute: typeof mainRouteRoute
+    }
+    '/(main)/blog': {
+      id: '/(main)/blog'
+      path: '/blog'
+      fullPath: '/blog'
+      preLoaderRoute: typeof mainBlogRouteRouteImport
+      parentRoute: typeof mainRouteRoute
+    }
+    '/(main)/about': {
+      id: '/(main)/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof mainAboutRouteRouteImport
+      parentRoute: typeof mainRouteRoute
+    }
+    '/(main)/$slug': {
+      id: '/(main)/$slug'
+      path: '/$slug'
+      fullPath: '/$slug'
+      preLoaderRoute: typeof mainSlugRouteRouteImport
+      parentRoute: typeof mainRouteRoute
+    }
+    '/(main)/': {
+      id: '/(main)/'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof mainIndexRouteRouteImport
+      parentRoute: typeof mainRouteRoute
     }
     '/(main)/newsletter/': {
       id: '/(main)/newsletter/'
-      path: '/newsletter'
+      path: '/'
       fullPath: '/newsletter/'
       preLoaderRoute: typeof mainNewsletterIndexRouteImport
-      parentRoute: typeof mainRouteRoute
+      parentRoute: typeof mainNewsletterRouteRoute
     }
     '/(main)/blog/': {
       id: '/(main)/blog/'
-      path: '/blog'
+      path: '/'
       fullPath: '/blog/'
       preLoaderRoute: typeof mainBlogIndexRouteImport
-      parentRoute: typeof mainRouteRoute
-    }
-    '/(main)/newsletter/$slug': {
-      id: '/(main)/newsletter/$slug'
-      path: '/newsletter/$slug'
-      fullPath: '/newsletter/$slug'
-      preLoaderRoute: typeof mainNewsletterSlugRouteImport
-      parentRoute: typeof mainRouteRoute
-    }
-    '/(main)/blog/$slug': {
-      id: '/(main)/blog/$slug'
-      path: '/blog/$slug'
-      fullPath: '/blog/$slug'
-      preLoaderRoute: typeof mainBlogSlugRouteImport
-      parentRoute: typeof mainRouteRoute
+      parentRoute: typeof mainBlogRouteRoute
     }
     '/(api)/api/staging-smoke': {
       id: '/(api)/api/staging-smoke'
@@ -479,19 +582,61 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof apiApiCoffeeRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/(main)/newsletter/$slug': {
+      id: '/(main)/newsletter/$slug'
+      path: '/$slug'
+      fullPath: '/newsletter/$slug'
+      preLoaderRoute: typeof mainNewsletterSlugRouteRouteImport
+      parentRoute: typeof mainNewsletterRouteRoute
+    }
+    '/(main)/blog/$slug': {
+      id: '/(main)/blog/$slug'
+      path: '/$slug'
+      fullPath: '/blog/$slug'
+      preLoaderRoute: typeof mainBlogSlugRouteRouteImport
+      parentRoute: typeof mainBlogRouteRoute
+    }
+    '/(main)/(foobar)/foobar': {
+      id: '/(main)/(foobar)/foobar'
+      path: '/foobar'
+      fullPath: '/foobar'
+      preLoaderRoute: typeof mainfoobarFoobarRouteRouteImport
+      parentRoute: typeof mainRouteRoute
+    }
     '/(main)/(foobar)/foobar/': {
       id: '/(main)/(foobar)/foobar/'
-      path: '/foobar'
+      path: '/'
       fullPath: '/foobar/'
       preLoaderRoute: typeof mainfoobarFoobarIndexRouteImport
-      parentRoute: typeof mainRouteRoute
+      parentRoute: typeof mainfoobarFoobarRouteRoute
+    }
+    '/(api)/api/login/google': {
+      id: '/(api)/api/login/google'
+      path: '/api/login/google'
+      fullPath: '/api/login/google'
+      preLoaderRoute: typeof apiApiLoginGoogleRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/(api)/api/login/cloudflare': {
+      id: '/(api)/api/login/cloudflare'
+      path: '/api/login/cloudflare'
+      fullPath: '/api/login/cloudflare'
+      preLoaderRoute: typeof apiApiLoginCloudflareRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/(api)/api/auth/$': {
+      id: '/(api)/api/auth/$'
+      path: '/api/auth/$'
+      fullPath: '/api/auth/$'
+      preLoaderRoute: typeof apiApiAuthSplatRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/(main)/(foobar)/foobar/$slug': {
       id: '/(main)/(foobar)/foobar/$slug'
-      path: '/foobar/$slug'
+      path: '/$slug'
       fullPath: '/foobar/$slug'
-      preLoaderRoute: typeof mainfoobarFoobarSlugRouteImport
-      parentRoute: typeof mainRouteRoute
+      preLoaderRoute: typeof mainfoobarFoobarSlugRouteRouteImport
+      parentRoute: typeof mainfoobarFoobarRouteRoute
     }
     '/(api)/prxy/plsbl/js/$script': {
       id: '/(api)/prxy/plsbl/js/$script'
@@ -507,37 +652,82 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof apiPrxyPlsblApiEventRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/(api)/api/slides/session/$sessionId': {
+      id: '/(api)/api/slides/session/$sessionId'
+      path: '/api/slides/session/$sessionId'
+      fullPath: '/api/slides/session/$sessionId'
+      preLoaderRoute: typeof apiApiSlidesSessionSessionIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
-interface mainRouteRouteChildren {
-  mainRwcRouteRoute: typeof mainRwcRouteRoute
-  mainSlugRoute: typeof mainSlugRoute
-  mainAboutRoute: typeof mainAboutRoute
-  mainKarmaRoute: typeof mainKarmaRoute
-  mainKeebsRoute: typeof mainKeebsRoute
-  mainIndexRoute: typeof mainIndexRoute
-  mainBlogSlugRoute: typeof mainBlogSlugRoute
-  mainNewsletterSlugRoute: typeof mainNewsletterSlugRoute
+interface mainBlogRouteRouteChildren {
+  mainBlogSlugRouteRoute: typeof mainBlogSlugRouteRoute
   mainBlogIndexRoute: typeof mainBlogIndexRoute
+}
+
+const mainBlogRouteRouteChildren: mainBlogRouteRouteChildren = {
+  mainBlogSlugRouteRoute: mainBlogSlugRouteRoute,
+  mainBlogIndexRoute: mainBlogIndexRoute,
+}
+
+const mainBlogRouteRouteWithChildren = mainBlogRouteRoute._addFileChildren(
+  mainBlogRouteRouteChildren,
+)
+
+interface mainNewsletterRouteRouteChildren {
+  mainNewsletterSlugRouteRoute: typeof mainNewsletterSlugRouteRoute
   mainNewsletterIndexRoute: typeof mainNewsletterIndexRoute
-  mainfoobarFoobarSlugRoute: typeof mainfoobarFoobarSlugRoute
+}
+
+const mainNewsletterRouteRouteChildren: mainNewsletterRouteRouteChildren = {
+  mainNewsletterSlugRouteRoute: mainNewsletterSlugRouteRoute,
+  mainNewsletterIndexRoute: mainNewsletterIndexRoute,
+}
+
+const mainNewsletterRouteRouteWithChildren =
+  mainNewsletterRouteRoute._addFileChildren(mainNewsletterRouteRouteChildren)
+
+interface mainfoobarFoobarRouteRouteChildren {
+  mainfoobarFoobarSlugRouteRoute: typeof mainfoobarFoobarSlugRouteRoute
   mainfoobarFoobarIndexRoute: typeof mainfoobarFoobarIndexRoute
 }
 
-const mainRouteRouteChildren: mainRouteRouteChildren = {
-  mainRwcRouteRoute: mainRwcRouteRoute,
-  mainSlugRoute: mainSlugRoute,
-  mainAboutRoute: mainAboutRoute,
-  mainKarmaRoute: mainKarmaRoute,
-  mainKeebsRoute: mainKeebsRoute,
-  mainIndexRoute: mainIndexRoute,
-  mainBlogSlugRoute: mainBlogSlugRoute,
-  mainNewsletterSlugRoute: mainNewsletterSlugRoute,
-  mainBlogIndexRoute: mainBlogIndexRoute,
-  mainNewsletterIndexRoute: mainNewsletterIndexRoute,
-  mainfoobarFoobarSlugRoute: mainfoobarFoobarSlugRoute,
+const mainfoobarFoobarRouteRouteChildren: mainfoobarFoobarRouteRouteChildren = {
+  mainfoobarFoobarSlugRouteRoute: mainfoobarFoobarSlugRouteRoute,
   mainfoobarFoobarIndexRoute: mainfoobarFoobarIndexRoute,
+}
+
+const mainfoobarFoobarRouteRouteWithChildren =
+  mainfoobarFoobarRouteRoute._addFileChildren(
+    mainfoobarFoobarRouteRouteChildren,
+  )
+
+interface mainRouteRouteChildren {
+  mainIndexRouteRoute: typeof mainIndexRouteRoute
+  mainSlugRouteRoute: typeof mainSlugRouteRoute
+  mainAboutRouteRoute: typeof mainAboutRouteRoute
+  mainBlogRouteRoute: typeof mainBlogRouteRouteWithChildren
+  mainKarmaRouteRoute: typeof mainKarmaRouteRoute
+  mainKeebsRouteRoute: typeof mainKeebsRouteRoute
+  mainNewsletterRouteRoute: typeof mainNewsletterRouteRouteWithChildren
+  mainRwcRouteRoute: typeof mainRwcRouteRoute
+  mainStatsRouteRoute: typeof mainStatsRouteRoute
+  mainfoobarFoobarRouteRoute: typeof mainfoobarFoobarRouteRouteWithChildren
+}
+
+const mainRouteRouteChildren: mainRouteRouteChildren = {
+  mainIndexRouteRoute: mainIndexRouteRoute,
+  mainSlugRouteRoute: mainSlugRouteRoute,
+  mainAboutRouteRoute: mainAboutRouteRoute,
+  mainBlogRouteRoute: mainBlogRouteRouteWithChildren,
+  mainKarmaRouteRoute: mainKarmaRouteRoute,
+  mainKeebsRouteRoute: mainKeebsRouteRoute,
+  mainNewsletterRouteRoute: mainNewsletterRouteRouteWithChildren,
+  mainRwcRouteRoute: mainRwcRouteRoute,
+  mainStatsRouteRoute: mainStatsRouteRoute,
+  mainfoobarFoobarRouteRoute: mainfoobarFoobarRouteRouteWithChildren,
 }
 
 const mainRouteRouteWithChildren = mainRouteRoute._addFileChildren(
@@ -545,15 +735,15 @@ const mainRouteRouteWithChildren = mainRouteRoute._addFileChildren(
 )
 
 interface pureRouteRouteChildren {
-  pureFancyPantsRoute: typeof pureFancyPantsRoute
-  pureResumeRoute: typeof pureResumeRoute
-  pureVersionRoute: typeof pureVersionRoute
+  pureFancyPantsRouteRoute: typeof pureFancyPantsRouteRoute
+  pureResumeRouteRoute: typeof pureResumeRouteRoute
+  pureVersionRouteRoute: typeof pureVersionRouteRoute
 }
 
 const pureRouteRouteChildren: pureRouteRouteChildren = {
-  pureFancyPantsRoute: pureFancyPantsRoute,
-  pureResumeRoute: pureResumeRoute,
-  pureVersionRoute: pureVersionRoute,
+  pureFancyPantsRouteRoute: pureFancyPantsRouteRoute,
+  pureResumeRouteRoute: pureResumeRouteRoute,
+  pureVersionRouteRoute: pureVersionRouteRoute,
 }
 
 const pureRouteRouteWithChildren = pureRouteRoute._addFileChildren(
@@ -561,13 +751,13 @@ const pureRouteRouteWithChildren = pureRouteRoute._addFileChildren(
 )
 
 interface SlidesRouteRouteChildren {
+  SlidesJsonSchemaFormRouteRoute: typeof SlidesJsonSchemaFormRouteRoute
   SlidesTanstackStartRouteRoute: typeof SlidesTanstackStartRouteRoute
-  SlidesJsonSchemaFormIndexRoute: typeof SlidesJsonSchemaFormIndexRoute
 }
 
 const SlidesRouteRouteChildren: SlidesRouteRouteChildren = {
+  SlidesJsonSchemaFormRouteRoute: SlidesJsonSchemaFormRouteRoute,
   SlidesTanstackStartRouteRoute: SlidesTanstackStartRouteRoute,
-  SlidesJsonSchemaFormIndexRoute: SlidesJsonSchemaFormIndexRoute,
 }
 
 const SlidesRouteRouteWithChildren = SlidesRouteRoute._addFileChildren(
@@ -581,6 +771,10 @@ const rootRouteChildren: RootRouteChildren = {
   apiApiCoffeeRoute: apiApiCoffeeRoute,
   apiApiPresenceRoute: apiApiPresenceRoute,
   apiApiStagingSmokeRoute: apiApiStagingSmokeRoute,
+  apiApiAuthSplatRoute: apiApiAuthSplatRoute,
+  apiApiLoginCloudflareRoute: apiApiLoginCloudflareRoute,
+  apiApiLoginGoogleRoute: apiApiLoginGoogleRoute,
+  apiApiSlidesSessionSessionIdRoute: apiApiSlidesSessionSessionIdRoute,
   apiPrxyPlsblApiEventRoute: apiPrxyPlsblApiEventRoute,
   apiPrxyPlsblJsScriptRoute: apiPrxyPlsblJsScriptRoute,
 }

@@ -4,35 +4,29 @@ export const DEFAULT_REPO = {
 	repo: "sreetamdas.com",
 };
 
-function getProcessEnv(name: string): string | undefined {
-	if (typeof process === "undefined") return undefined;
-	return process.env?.[name];
-}
-
-function getViteEnvString(name: "VITE_SITE_URL"): string | undefined {
-	return (import.meta as { env?: Partial<ImportMetaEnv> }).env?.[name];
-}
-
-function getViteEnvBoolean(name: "DEV"): boolean | undefined {
-	return (import.meta as { env?: Partial<ImportMetaEnv> }).env?.[name];
-}
-
 // Prefer Vite-exposed env, but fall back to runtime origin (client)
 // or the production domain.
 export const SITE_URL =
-	getViteEnvString("VITE_SITE_URL") ??
-	getProcessEnv("VITE_SITE_URL") ??
+	import.meta.env?.VITE_SITE_URL ??
 	(typeof window !== "undefined" ? window.location.origin : "https://sreetamdas.com");
 export const SITE_TITLE_APPEND = `| ${OWNER_NAME}`;
 export const SITE_DESCRIPTION =
 	"Senior software tinkerer from India. 💜 React, Elixir and TypeScript, CS and mechanical keyboards!";
 export const SITE_OG_IMAGE = "/og-image.png";
 
-export const IS_DEV = getViteEnvBoolean("DEV") ?? getProcessEnv("NODE_ENV") === "development";
-export const IS_DEBUG = getProcessEnv("DEBUG_MODE") === "true";
+/**
+ * Salt era for blog like visitor hashes. Bump this in the same change that
+ * rotates `LIKES_IP_SALT`: likes recorded under an older salt keep their rows
+ * for audit but stop counting, so a rotation can't silently inflate the counter
+ * or let prior visitors like again under the same era.
+ */
+export const LIKES_SALT_VERSION = 1;
+
+export const IS_DEV = import.meta.env?.DEV ?? false;
+export const IS_DEBUG = import.meta.env?.VITE_DEBUG_MODE === "true";
 
 /**
- * Check if the site is currently being built, to affect build-time behaviour.
- * @see https://vercel.com/docs/concepts/projects/environment-variables/system-environment-variables#system-environment-variables
+ * Whether the build is running in CI. Set `VITE_CI=1` in the CI build step so
+ * Vite statically inlines it — `process.env` isn't available in the Worker runtime.
  */
-export const IS_CI = getProcessEnv("CI") === "1";
+export const IS_CI = import.meta.env?.VITE_CI === "1";

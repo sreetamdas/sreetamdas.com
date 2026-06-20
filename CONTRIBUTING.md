@@ -62,3 +62,35 @@ pnpm db:migrate:local
 ```
 
 This uses Wrangler's local D1 database under `.wrangler/`.
+
+##### Blog likes and salt rotation
+
+Blog likes identify a visitor by a salted hash of their IP (`LIKES_IP_SALT`). Each
+`post_likes` row records the `salt_version` (`LIKES_SALT_VERSION` in `src/config`)
+it was hashed under, and the public `page_details.likes` counter only ever counts
+rows from the current era.
+
+The counter is denormalized — it's recomputed from `post_likes` whenever a post is
+liked, so it self-heals on write but can drift if rows are changed out of band.
+`scripts/likes-recount.mjs` recomputes it on demand (dry run by default, local
+unless `--remote`):
+
+```sh
+pnpm db:likes:recount                 # local, preview only
+pnpm db:likes:recount -- --apply      # local, write
+pnpm db:likes:recount -- --remote --apply   # remote, write
+```
+
+**Rotating `LIKES_IP_SALT`:** bump `LIKES_SALT_VERSION` in `src/config` in the same
+change (this also re-keys visitor hashes, so prior likes can't be re-cast or
+inflate the count), deploy, then run `pnpm db:likes:recount -- --remote --apply` to
+drop the prior era from the public counts.
+
+**Before applying a migration that adds `CHECK (... >= 0)` constraints**, confirm no
+existing counter is negative (the table rebuild copies rows through the new
+constraints and aborts otherwise):
+
+```sh
+pnpm exec wrangler d1 execute sreetamdas_com --remote --command \
+  "SELECT slug, view_count, likes FROM page_details WHERE view_count < 0 OR likes < 0"
+```

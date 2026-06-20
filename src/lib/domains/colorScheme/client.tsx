@@ -69,7 +69,7 @@ export const ColorSchemeToggle = () => {
 	return (
 		<button
 			onClick={() => handleColorSchemeToggle()}
-			className="link-base text-foreground hover:text-primary flex h-6 w-6 items-center text-2xl"
+			className="flex h-6 w-6 items-center link-base text-2xl text-foreground hover:text-primary"
 			type="button"
 		>
 			<ToggleIcon colorScheme={colorScheme} />

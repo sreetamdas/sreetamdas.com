@@ -1,0 +1,41 @@
+name: Setup pnpm
+description: Setup Node, enable pnpm via Corepack, restore the pnpm store, and install dependencies.
+
+runs:
+  using: composite
+  steps:
+    - name: Setup Node
+      uses: actions/setup-node@v6
+      with:
+        node-version-file: .node-version
+
+    - name: Enable Corepack
+      shell: bash
+      run: |
+        corepack enable
+        corepack prepare "$(node -p 'require("./package.json").packageManager')" --activate
+
+    - name: Get pnpm store path
+      id: pnpm-store
+      shell: bash
+      run: echo "path=$(pnpm store path --silent)" >> "$GITHUB_OUTPUT"
+
+    - name: Get pnpm cache key
+      id: pnpm-cache
+      shell: bash
+      run: |
+        lock_hash="$(sha256sum pnpm-lock.yaml | cut -d " " -f 1)"
+        echo "key=${RUNNER_OS}-pnpm-store-${lock_hash}" >> "$GITHUB_OUTPUT"
+        echo "restore-key=${RUNNER_OS}-pnpm-store-" >> "$GITHUB_OUTPUT"
+
+    - name: Cache pnpm store
+      uses: actions/cache@v5
+      with:
+        path: ${{ steps.pnpm-store.outputs.path }}
+        key: ${{ steps.pnpm-cache.outputs.key }}
+        restore-keys: |
+          ${{ steps.pnpm-cache.outputs.restore-key }}
+
+    - name: Install
+      shell: bash
+      run: pnpm install --frozen-lockfile --prefer-offline

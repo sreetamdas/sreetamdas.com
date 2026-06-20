@@ -1,17 +1,17 @@
 import { createFileRoute } from "@tanstack/react-router";
 
-import { ViewsCounter } from "@/lib/components/ViewsCounter";
 import { FoobarSchrodinger } from "@/lib/domains/foobar/DashboardClient";
+import { StatsCounter } from "@/lib/domains/PageInteraction/StatsCounter";
 
 export const Route = createFileRoute("/(main)/(foobar)/foobar/")({
-	component: FoobarArchivePage,
+	component: FoobarPage,
 });
 
-function FoobarArchivePage() {
+function FoobarPage() {
 	return (
 		<>
 			<FoobarSchrodinger completed_page="/" />
-			<ViewsCounter />
+			<StatsCounter />
 		</>
 	);
 }

@@ -3,7 +3,7 @@
  * and are highlighted at build/prerender time when env is available, with a
  * small fallback payload for previews that do not have the gist configured.
  */
-import { readPublicEnvString, readServerEnvString } from "@/lib/helpers/utils";
+import { env } from "cloudflare:workers";
 
 export const FALLBACK_RWC_BACKGROUND = "#17181c";
 
@@ -46,19 +46,12 @@ const fallbackRwcCodeSamples: RWCCodeSamples = {
 	background_color: FALLBACK_RWC_BACKGROUND,
 };
 
-export function resolveRwcEnv(
-	runtimeEnv: object | undefined,
-	buildEnv: object | undefined,
-	viteEnv: object | undefined,
-) {
+type RwcEnv = Pick<CloudflareEnv, "GITHUB_RWC_GIST_ID" | "GITHUB_TOKEN">;
+
+export function resolveRwcEnv(runtimeEnv: RwcEnv | undefined = env) {
 	return {
-		githubGistId:
-			readServerEnvString(runtimeEnv, ["GITHUB_RWC_GIST_ID"]) ??
-			readServerEnvString(buildEnv, ["GITHUB_RWC_GIST_ID"]) ??
-			readPublicEnvString(viteEnv, ["GITHUB_RWC_GIST_ID"]),
-		githubToken:
-			readServerEnvString(runtimeEnv, ["GITHUB_TOKEN"]) ??
-			readServerEnvString(buildEnv, ["GITHUB_TOKEN"]),
+		githubGistId: runtimeEnv?.GITHUB_RWC_GIST_ID || undefined,
+		githubToken: runtimeEnv?.GITHUB_TOKEN || undefined,
 	};
 }
 
