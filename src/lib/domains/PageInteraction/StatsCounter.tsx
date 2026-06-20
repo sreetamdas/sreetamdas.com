@@ -1,6 +1,5 @@
 "use client";
 
-import { Tooltip } from "@base-ui/react/tooltip";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocation } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
@@ -27,10 +26,9 @@ type StatsCounterProps = {
 const statsListClassName = "m-0 flex min-h-5 flex-wrap items-center justify-center gap-4 text-sm";
 const statItemClassName = "flex items-center justify-center gap-1.5";
 const statValueClassName = "inline-block min-w-[2ch] text-left tabular-nums";
-const statTooltipPopupClassName =
-	"z-50 max-w-64 rounded-global border border-solid border-foreground/15 bg-background px-2.5 py-1.5 text-center text-xs leading-snug text-foreground shadow-lg";
-const statTooltipArrowClassName =
-	"size-2 rotate-45 border-r border-b border-solid border-foreground/15 bg-background";
+const statTooltipTriggerClassName = "group relative";
+const statTooltipBubbleClassName =
+	"pointer-events-none absolute bottom-full left-1/2 z-50 mb-2 w-max max-w-64 -translate-x-1/2 rounded-global border border-solid border-foreground/15 bg-background px-2.5 py-1.5 text-center text-xs leading-snug text-foreground opacity-0 shadow-lg transition-opacity duration-100 group-hover:opacity-100 group-focus-within:opacity-100";
 
 export const StatsCounter = ({
 	slug,
@@ -137,7 +135,7 @@ const StatsList = ({
 	statusLabel?: string;
 	children: ReactNode;
 }) => (
-	<Tooltip.Provider delay={100} closeDelay={0}>
+	<>
 		{statusLabel ? (
 			<span className="sr-only" role="status">
 				{statusLabel}
@@ -150,7 +148,7 @@ const StatsList = ({
 		>
 			{children}
 		</dl>
-	</Tooltip.Provider>
+	</>
 );
 
 const MetricSkeleton = ({
@@ -175,18 +173,14 @@ const MetricSkeleton = ({
 	</div>
 );
 
-const StatTooltip = ({ content, children }: { content: ReactNode; children: ReactNode }) => (
-	<Tooltip.Root>
+const StatTooltipBubble = ({ children }: { children: ReactNode }) => (
+	<span aria-hidden="true" className={statTooltipBubbleClassName}>
 		{children}
-		<Tooltip.Portal>
-			<Tooltip.Positioner sideOffset={8}>
-				<Tooltip.Popup className={statTooltipPopupClassName}>
-					{content}
-					<Tooltip.Arrow className={statTooltipArrowClassName} />
-				</Tooltip.Popup>
-			</Tooltip.Positioner>
-		</Tooltip.Portal>
-	</Tooltip.Root>
+		<span
+			aria-hidden="true"
+			className="absolute top-full left-1/2 size-2 -translate-x-1/2 -translate-y-1/2 rotate-45 border-r border-b border-solid border-foreground/15 bg-background"
+		/>
+	</span>
 );
 
 const ViewsStat = ({ value, noun }: { value: number; noun: "post" | "page" }) => {
@@ -197,16 +191,16 @@ const ViewsStat = ({ value, noun }: { value: number; noun: "post" | "page" }) =>
 	return (
 		<div className={statItemClassName}>
 			<dt className="sr-only">Views</dt>
-			<StatTooltip content={tooltipContent}>
-				<Tooltip.Trigger
-					render={<dd className="m-0 inline-flex items-center gap-1.5" aria-label={label} />}
-				>
-					<FaEye aria-hidden="true" focusable={false} className="size-5 text-primary" />
-					<span aria-hidden="true" className={statValueClassName}>
-						{formattedValue}
-					</span>
-				</Tooltip.Trigger>
-			</StatTooltip>
+			<dd
+				className={cn("m-0 inline-flex items-center gap-1.5", statTooltipTriggerClassName)}
+				aria-label={label}
+			>
+				<FaEye aria-hidden="true" focusable={false} className="size-5 text-primary" />
+				<span aria-hidden="true" className={statValueClassName}>
+					{formattedValue}
+				</span>
+				<StatTooltipBubble>{tooltipContent}</StatTooltipBubble>
+			</dd>
 		</div>
 	);
 };
@@ -238,28 +232,28 @@ const LiveStat = () => {
 	return (
 		<div className={statItemClassName}>
 			<dt className="sr-only">Live viewers across the site</dt>
-			<StatTooltip content={tooltipContent}>
-				<Tooltip.Trigger
-					render={<dd className="m-0 inline-flex items-center gap-1.5" aria-label={label} />}
+			<dd
+				className={cn("m-0 inline-flex items-center gap-1.5", statTooltipTriggerClassName)}
+				aria-label={label}
+			>
+				<span
+					aria-hidden="true"
+					className="relative inline-flex size-5 items-center justify-center"
 				>
-					<span
+					{connected ? (
+						<span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-75 animate-duration-[1000ms] motion-reduce:animate-none" />
+					) : null}
+					<FaRegCircleUser
 						aria-hidden="true"
-						className="relative inline-flex size-5 items-center justify-center"
-					>
-						{connected ? (
-							<span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-75 animate-duration-[1000ms] motion-reduce:animate-none" />
-						) : null}
-						<FaRegCircleUser
-							aria-hidden="true"
-							focusable={false}
-							className="relative inline-flex size-5 rounded-full text-primary"
-						/>
-					</span>
-					<span aria-hidden="true" className={statValueClassName}>
-						{formattedCount}
-					</span>
-				</Tooltip.Trigger>
-			</StatTooltip>
+						focusable={false}
+						className="relative inline-flex size-5 rounded-full text-primary"
+					/>
+				</span>
+				<span aria-hidden="true" className={statValueClassName}>
+					{formattedCount}
+				</span>
+				<StatTooltipBubble>{tooltipContent}</StatTooltipBubble>
+			</dd>
 		</div>
 	);
 };
@@ -332,33 +326,28 @@ const LikeStat = ({
 	return (
 		<div className={statItemClassName}>
 			<dt className="sr-only">Likes</dt>
-			<dd className="m-0 inline-flex items-center gap-1.5">
-				<StatTooltip content={isPending ? likeButtonTitle : likeTooltipText}>
-					<Tooltip.Trigger
-						render={
-							<button
-								type="button"
-								onClick={() => mutate()}
-								aria-label={likeButtonLabel}
-								aria-pressed={hasLiked}
-								className={cn(
-									"cursor-pointer text-primary underline-offset-4 transition-colors hover:underline disabled:cursor-default disabled:hover:no-underline",
-									hasLiked && "text-primary/80",
-								)}
-								disabled={is_disabled}
-							/>
-						}
-					>
-						{hasLiked ? (
-							<FaHeart aria-hidden="true" focusable={false} className="size-5" />
-						) : (
-							<FaRegHeart aria-hidden="true" focusable={false} className="size-5" />
-						)}
-					</Tooltip.Trigger>
-				</StatTooltip>
+			<dd className={cn("m-0 inline-flex items-center gap-1.5", statTooltipTriggerClassName)}>
+				<button
+					type="button"
+					onClick={() => mutate()}
+					aria-label={likeButtonLabel}
+					aria-pressed={hasLiked}
+					className={cn(
+						"cursor-pointer text-primary underline-offset-4 transition-colors hover:underline disabled:cursor-default disabled:hover:no-underline",
+						hasLiked && "text-primary/80",
+					)}
+					disabled={is_disabled}
+				>
+					{hasLiked ? (
+						<FaHeart aria-hidden="true" focusable={false} className="size-5" />
+					) : (
+						<FaRegHeart aria-hidden="true" focusable={false} className="size-5" />
+					)}
+				</button>
 				<span aria-hidden="true" className={statValueClassName}>
 					{formatted_like_count}
 				</span>
+				<StatTooltipBubble>{isPending ? likeButtonTitle : likeTooltipText}</StatTooltipBubble>
 			</dd>
 		</div>
 	);
