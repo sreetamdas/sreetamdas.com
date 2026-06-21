@@ -107,6 +107,7 @@
 		"@octokit/types": "^16.0.0",
 		"@playwright/test": "^1.61.0",
 		"@tailwindcss/vite": "^4.3.1",
+		"@tanstack/react-router-devtools": "1.167.0",
 		"@types/better-sqlite3": "^7.6.13",
 		"@types/lodash-es": "^4.17.12",
 		"@types/mdx": "^2.0.14",
@@ -123,6 +124,7 @@
 		"tailwindcss": "^4.3.1",
 		"tsx": "^4.22.4",
 		"typescript": "^6.0.3",
+		"vite": "catalog:",
 		"vite-plus": "catalog:",
 		"vitest": "4.1.9",
 		"wrangler": "^4.103.0"
