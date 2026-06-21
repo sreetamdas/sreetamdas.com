@@ -8,9 +8,7 @@ import { validateShowcaseSearch } from "./-shared";
 import { getShowcaseSnapshot } from "./-showcase.server";
 
 export const Route = createFileRoute("/slides/tanstack-start/showcase")({
-	ssr: "data-only",
 	component: RouteComponent,
-	pendingComponent: ShowcasePending,
 	validateSearch: validateShowcaseSearch,
 	loaderDeps: ({ search }) => ({ feature: search.feature }),
 	loader: ({ deps }) => getShowcaseSnapshot({ data: deps }),
@@ -44,14 +42,4 @@ function RouteComponent() {
 	const snapshot = Route.useLoaderData();
 
 	return <ShowcasePage activeFeature={search.feature} initialSnapshot={snapshot} />;
-}
-
-function ShowcasePending() {
-	return (
-		<div className="mx-auto grid min-h-screen max-w-6xl place-items-center px-4">
-			<p className="font-mono text-sm text-primary">
-				Loading the data-only TanStack Start showcase...
-			</p>
-		</div>
-	);
 }

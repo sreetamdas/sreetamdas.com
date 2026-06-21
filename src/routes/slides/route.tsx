@@ -6,18 +6,26 @@ import { canonicalUrl, defaultOgImageUrl } from "@/lib/seo";
 
 export const Route = createFileRoute("/slides")({
 	component: MainLayout,
-	head: () => ({
-		links: [{ rel: "canonical", href: canonicalUrl("/slides") }],
-		meta: [
-			{ title: `Slides ${SITE_TITLE_APPEND}` },
-			{ property: "og:title", content: `Slides ${SITE_TITLE_APPEND}` },
-			{ property: "og:type", content: "website" },
-			{ property: "og:url", content: canonicalUrl("/slides") },
-			{ property: "og:image", content: defaultOgImageUrl() },
-			{ name: "twitter:title", content: `Slides ${SITE_TITLE_APPEND}` },
-			{ name: "twitter:image", content: defaultOgImageUrl() },
-		],
-	}),
+	head: ({ matches }) => {
+		if (
+			matches.some((match) => match.routeId !== "/slides" && match.routeId.startsWith("/slides/"))
+		) {
+			return {};
+		}
+
+		return {
+			links: [{ rel: "canonical", href: canonicalUrl("/slides") }],
+			meta: [
+				{ title: `Slides ${SITE_TITLE_APPEND}` },
+				{ property: "og:title", content: `Slides ${SITE_TITLE_APPEND}` },
+				{ property: "og:type", content: "website" },
+				{ property: "og:url", content: canonicalUrl("/slides") },
+				{ property: "og:image", content: defaultOgImageUrl() },
+				{ name: "twitter:title", content: `Slides ${SITE_TITLE_APPEND}` },
+				{ name: "twitter:image", content: defaultOgImageUrl() },
+			],
+		};
+	},
 });
 
 function MainLayout() {

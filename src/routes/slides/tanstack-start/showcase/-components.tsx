@@ -59,7 +59,7 @@ const featureCards: Array<FeatureCard> = [
 		repoProof: [
 			"blog MDX is rendered with renderServerComponent",
 			"/rwc, newsletter, and keebs use staticFunctionMiddleware",
-			"this route runs ssr: 'data-only' and defers hydration for a below-fold island",
+			"this route keeps full SSR while deferring hydration for a below-fold island",
 		],
 	},
 	{

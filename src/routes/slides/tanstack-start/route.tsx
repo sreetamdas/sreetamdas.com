@@ -17,27 +17,33 @@ import { canonicalUrl, defaultOgImageUrl } from "@/lib/seo";
 export const Route = createFileRoute("/slides/tanstack-start")({
 	validateSearch: validateSlideSearch,
 	component: MainLayout,
-	head: () => ({
-		links: [{ rel: "canonical", href: canonicalUrl("/slides/tanstack-start") }],
-		meta: [
-			{ title: `TanStack Start ${SITE_TITLE_APPEND}` },
-			{
-				property: "og:title",
-				content: `TanStack Start ${SITE_TITLE_APPEND}`,
-			},
-			{ property: "og:type", content: "website" },
-			{
-				property: "og:url",
-				content: canonicalUrl("/slides/tanstack-start"),
-			},
-			{ property: "og:image", content: defaultOgImageUrl() },
-			{
-				name: "twitter:title",
-				content: `TanStack Start ${SITE_TITLE_APPEND}`,
-			},
-			{ name: "twitter:image", content: defaultOgImageUrl() },
-		],
-	}),
+	head: ({ matches }) => {
+		if (matches.some((match) => match.routeId === "/slides/tanstack-start/showcase")) {
+			return {};
+		}
+
+		return {
+			links: [{ rel: "canonical", href: canonicalUrl("/slides/tanstack-start") }],
+			meta: [
+				{ title: `TanStack Start ${SITE_TITLE_APPEND}` },
+				{
+					property: "og:title",
+					content: `TanStack Start ${SITE_TITLE_APPEND}`,
+				},
+				{ property: "og:type", content: "website" },
+				{
+					property: "og:url",
+					content: canonicalUrl("/slides/tanstack-start"),
+				},
+				{ property: "og:image", content: defaultOgImageUrl() },
+				{
+					name: "twitter:title",
+					content: `TanStack Start ${SITE_TITLE_APPEND}`,
+				},
+				{ name: "twitter:image", content: defaultOgImageUrl() },
+			],
+		};
+	},
 });
 
 const slidesPromise = import("./slides.re.mdx");
