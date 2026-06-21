@@ -145,9 +145,10 @@ function FeatureNav({ activeFeature }: { activeFeature: ShowcaseSection }) {
 	return (
 		<nav aria-label="TanStack Start feature demos" className="flex flex-wrap gap-3">
 			{featureCards.map((card) => (
-				<a
+				<Link
 					key={card.id}
-					href={`/slides/tanstack-start/showcase?feature=${card.id}`}
+					to="/slides/tanstack-start/showcase"
+					search={{ feature: card.id }}
 					className={cn(
 						"rounded-full border px-4 py-2 text-sm transition-colors",
 						card.id === activeFeature
@@ -156,7 +157,7 @@ function FeatureNav({ activeFeature }: { activeFeature: ShowcaseSection }) {
 					)}
 				>
 					{card.label}
-				</a>
+				</Link>
 			))}
 		</nav>
 	);
