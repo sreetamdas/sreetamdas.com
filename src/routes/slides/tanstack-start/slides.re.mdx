@@ -34,6 +34,7 @@ import { MainTitle } from "./-components";
 
 - Senior Frontend Engineer II
 - Web Experience at Remote
+- I build too many things on my personal website
 
 ---
 
@@ -43,7 +44,7 @@ import { MainTitle } from "./-components";
 
 <Steps>
 
-- Full time Employment, Contractors, Payroll
+- Full time employment, contractors, payroll
 - No offices!
 - Yes, I work remotely for Remote
 - Yes, we have received questions about TV remote issues
@@ -61,9 +62,263 @@ import { MainTitle } from "./-components";
 # Engineering at Remote
 
 - Since 2020: Growth Engineering for 4 years, now WebXP
-- ~300 across the entire engineering org, ~50 teams across 40+ countries
+- ~300 across engineering, ~50 teams across 40+ countries
 - Elixir backend: 5 million+ lines of code
-- One of the largest Elixir codebases - working directly with the lang creator
-- Next.js SPA, TanStack goodies
+- Next.js SPA, TanStack Query, TanStack Table, and friends
 
 ---
+
+# The premise
+
+I don't want to sell you a starter template.
+
+I want to show you a real app.
+
+<Steps>
+
+- This deck is a TanStack Start route
+- Its slide position is URL state
+- Its live polls are Durable Objects
+- The companion page is `/slides/tanstack-start/showcase`
+
+</Steps>
+
+---
+
+# Start's pitch in one sentence
+
+Router-first React, with the server added where it helps.
+
+<Steps>
+
+- Type the URL
+- Type the loader
+- Type the server boundary
+- Choose rendering per route
+- Deploy to the runtime you actually want
+
+</Steps>
+
+---
+
+# Map of the app
+
+| Feature                 | Real route/file                       |
+| ----------------------- | ------------------------------------- |
+| Typed URL state         | `/stats`, `/slides/tanstack-start`    |
+| Server functions        | `getStats`, likes/views, GitHub stats |
+| RSC as data             | `blog/$slug/-$slug.server.tsx`        |
+| Static server functions | `/rwc`, newsletter, keebs             |
+| Server routes           | slide sessions, auth, Plausible proxy |
+| Cloudflare primitives   | D1, KV, Durable Objects               |
+
+---
+
+# 1. URL state is not a string bag
+
+```tsx
+export const Route = createFileRoute("/(main)/stats")({
+  validateSearch: (search): StatsSearch => ({
+    period: parseDateRange(search.period),
+  }),
+  loaderDeps: ({ search }) => ({ period: search.period }),
+});
+```
+
+The URL is a state manager with a schema.
+
+---
+
+# Demo: `/stats`
+
+<Steps>
+
+- Change `?period=7d` to `?period=nonsense`
+- The route keeps rendering with a safe default
+- `Route.useSearch()` returns `PlausibleDateRange`, not "some string"
+- `loaderDeps` makes cache invalidation explicit
+
+</Steps>
+
+---
+
+# 2. Server functions are typed RPC
+
+```ts
+export const getStats = createServerFn({ method: "GET" })
+  .validator((data): StatsSearch => validateStatsSearch(data))
+  .handler(async ({ data }) => fetchPlausibleStats(data.period));
+```
+
+A server boundary you can call from loaders, hooks, and components.
+
+---
+
+# The part Next does not have
+
+Server function middleware can run on the client and the server.
+
+```ts
+const middleware = createMiddleware({ type: "function" })
+  .client(({ next }) => next({ sendContext: { clientRuntime } }))
+  .server(({ context, next }) =>
+    next({
+      context: { requestId, clientRuntime: context.clientRuntime },
+    }),
+  );
+```
+
+Open `/slides/tanstack-start/showcase?feature=server`.
+
+---
+
+# 3. RSC as an opt-in data primitive
+
+```tsx
+const Renderable = await renderServerComponent(
+  <MDXContent
+    source={post.raw}
+    components={{ Sparkles, ChameleonHighlight }}
+  />,
+);
+
+return { post, Renderable };
+```
+
+Server-render the heavy content. Compose client islands where they matter.
+
+---
+
+# This is not “RSC-first”
+
+In Start, ordinary React components are interactive by default.
+
+<Steps>
+
+- Use RSC when it buys you something
+- Cache it like route data
+- Pass it through loader data
+- Keep the client in charge of composition
+
+</Steps>
+
+---
+
+# 4. Rendering is a dial
+
+```tsx
+createFileRoute("/blog/$slug")({
+  /* full SSR */
+});
+createFileRoute("/dashboard")({ ssr: "data-only" });
+createFileRoute("/playground")({ ssr: false });
+```
+
+Full SSR, data-only, or client-only — per route.
+
+---
+
+# 5. Hydration can wait
+
+```tsx
+<Hydrate when={visible({ rootMargin: "320px" })}>
+  <BelowTheFoldChart />
+</Hydrate>
+```
+
+The HTML is in the document. The JavaScript does not have to be.
+
+Demo: `/slides/tanstack-start/showcase?feature=rendering`
+
+---
+
+# 6. Build-time server functions
+
+```ts
+export const getHighlightedCode = createServerFn({ method: "GET" })
+  .middleware([staticFunctionMiddleware])
+  .handler(async () => loadRwcCodeSamples());
+```
+
+`/rwc` runs server work at build time and ships static data.
+
+---
+
+# 7. Deployment is part of the design
+
+This site runs on Cloudflare Workers.
+
+<Steps>
+
+- D1 for page views and likes
+- KV for runtime storage
+- Durable Objects for presence and slide sessions
+- Smart Placement, logs, traces, version metadata
+- Same route model, different runtime
+
+</Steps>
+
+---
+
+# Finale: live slides are the demo
+
+This deck has a live session mode.
+
+<Steps>
+
+- Presenter controls viewer navigation
+- Audience votes in polls
+- Reactions go through hibernatable WebSockets
+- One session id maps to one Durable Object
+
+</Steps>
+
+---
+
+# Where Next still wins
+
+Be honest or nobody trusts the comparison.
+
+<Steps>
+
+- RSC ecosystem maturity
+- `<Form>` and Server Action form ergonomics
+- Built-in image and font optimization
+- PPR / ISR polish on Vercel
+- Ecosystem size and hiring familiarity
+
+</Steps>
+
+---
+
+# The tradeoff
+
+Next gives you a platform-shaped happy path.
+
+Start gives you app-shaped primitives.
+
+<Steps>
+
+- More explicit
+- More type-driven
+- More portable
+- More control over where React runs
+
+</Steps>
+
+---
+
+# Takeaways
+
+- Your route tree can be your application contract
+- The server boundary can be typed, validated, and middleware-aware
+- RSC can be a tool, not the architecture
+- Rendering can be a dial, not a default you fight
+- The website itself can be the demo
+
+<a
+  href="/slides/tanstack-start/showcase"
+  className="link-base text-primary"
+>
+  Open the companion showcase
+</a>
