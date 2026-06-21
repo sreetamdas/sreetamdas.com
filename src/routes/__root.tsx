@@ -3,6 +3,7 @@ import interFont from "@fontsource-variable/inter/files/inter-latin-ext-wght-nor
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { HeadContent, Outlet, Scripts, createRootRoute } from "@tanstack/react-router";
+import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 import { type ReactNode, useEffect, useState } from "react";
 
 import { IS_DEV, SITE_TITLE_APPEND } from "@/config";
@@ -129,6 +130,7 @@ function RootComponent() {
 			<QueryClientProvider client={queryClient}>
 				<Outlet />
 				{IS_DEV ? <ReactQueryDevtools initialIsOpen={false} buttonPosition="bottom-left" /> : null}
+				{IS_DEV ? <TanStackRouterDevtools position="bottom-right" /> : null}
 			</QueryClientProvider>
 		</RootDocument>
 	);
