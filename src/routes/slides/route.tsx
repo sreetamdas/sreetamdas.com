@@ -8,7 +8,7 @@ export const Route = createFileRoute("/slides")({
 	component: MainLayout,
 	head: ({ matches }) => {
 		if (
-			matches.some((match) => match.routeId !== "/slides" && match.routeId.startsWith("/slides/"))
+			matches.some((match) => match.pathname !== "/slides" && match.pathname.startsWith("/slides/"))
 		) {
 			return {};
 		}

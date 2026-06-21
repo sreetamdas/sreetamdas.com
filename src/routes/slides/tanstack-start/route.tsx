@@ -18,7 +18,7 @@ export const Route = createFileRoute("/slides/tanstack-start")({
 	validateSearch: validateSlideSearch,
 	component: MainLayout,
 	head: ({ matches }) => {
-		if (matches.some((match) => match.routeId === "/slides/tanstack-start/showcase")) {
+		if (matches.some((match) => match.pathname === "/slides/tanstack-start/showcase")) {
 			return {};
 		}
 
