@@ -1,6 +1,12 @@
 "use client";
 
-import { createFileRoute, useNavigate, useSearch } from "@tanstack/react-router";
+import {
+	createFileRoute,
+	Outlet,
+	useLocation,
+	useNavigate,
+	useSearch,
+} from "@tanstack/react-router";
 import { useCallback } from "react";
 
 import { SITE_TITLE_APPEND } from "@/config";
@@ -37,18 +43,19 @@ export const Route = createFileRoute("/slides/tanstack-start")({
 const slidesPromise = import("./slides.re.mdx");
 const livePolls: Array<SlideSessionPollDefinition> = [
 	{
-		slide: 0,
+		slide: 8,
 		question: "Have you tried TanStack Start yet?",
 		options: ["Yes", "Not yet", "Just here for vibes"],
 	},
 	{
-		slide: 2,
-		question: "What should we dig into after this?",
-		options: ["Routing", "Server functions", "Cloudflare deploys"],
+		slide: 17,
+		question: "Which rendering knob feels most useful?",
+		options: ["Selective SSR", "Deferred hydration", "RSC as data"],
 	},
 ];
 
 function MainLayout() {
+	const location = useLocation();
 	const search = useSearch({ from: "/slides/tanstack-start" });
 	const navigate = useNavigate({ from: "/slides/tanstack-start" });
 	const handlePositionChange = useCallback(
@@ -60,6 +67,10 @@ function MainLayout() {
 		},
 		[navigate],
 	);
+
+	if (location.pathname !== "/slides/tanstack-start") {
+		return <Outlet />;
+	}
 
 	return (
 		<SlideDeckRouteShell
