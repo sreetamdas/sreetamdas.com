@@ -107,6 +107,7 @@
 		"@octokit/types": "^16.0.0",
 		"@playwright/test": "^1.61.0",
 		"@tailwindcss/vite": "^4.3.1",
+		"@tanstack/react-devtools": "^0.10.7",
 		"@tanstack/react-router-devtools": "1.167.0",
 		"@types/better-sqlite3": "^7.6.13",
 		"@types/lodash-es": "^4.17.12",

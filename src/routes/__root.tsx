@@ -1,9 +1,10 @@
 import bricolageGrotesqueFont from "@fontsource-variable/bricolage-grotesque/files/bricolage-grotesque-latin-standard-normal.woff2?url";
 import interFont from "@fontsource-variable/inter/files/inter-latin-ext-wght-normal.woff2?url";
+import { TanStackDevtools } from "@tanstack/react-devtools";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { ReactQueryDevtoolsPanel } from "@tanstack/react-query-devtools";
 import { HeadContent, Outlet, Scripts, createRootRoute } from "@tanstack/react-router";
-import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
+import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 import { type ReactNode, useEffect, useState } from "react";
 
 import { IS_DEV, SITE_TITLE_APPEND } from "@/config";
@@ -129,8 +130,22 @@ function RootComponent() {
 		<RootDocument>
 			<QueryClientProvider client={queryClient}>
 				<Outlet />
-				{IS_DEV ? <ReactQueryDevtools initialIsOpen={false} buttonPosition="bottom-left" /> : null}
-				{IS_DEV ? <TanStackRouterDevtools position="bottom-right" /> : null}
+				{IS_DEV ? (
+					<TanStackDevtools
+						config={{ hideUntilHover: true, panelLocation: "bottom", position: "bottom-right" }}
+						plugins={[
+							{
+								name: "Router",
+								render: <TanStackRouterDevtoolsPanel />,
+								defaultOpen: true,
+							},
+							{
+								name: "Query",
+								render: <ReactQueryDevtoolsPanel />,
+							},
+						]}
+					/>
+				) : null}
 			</QueryClientProvider>
 		</RootDocument>
 	);
