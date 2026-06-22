@@ -6,6 +6,7 @@
 import { env } from "cloudflare:workers";
 
 import { BUTTONDOWN_EMAIL_MOCKS } from "./mocks";
+import newsletterSnapshot from "./newsletter-snapshot.json";
 
 const BUTTONDOWN_BASE_URL = "https://api.buttondown.email/v1";
 const BUTTONDOWN_PLAINTEXT_MARKER = "<!-- buttondown-editor-mode: plaintext -->";
@@ -88,7 +89,31 @@ function isButtondownEmailsResponse(value: unknown): value is ButtondownAPIEmail
 	return value.results.every((entry) => isButtondownEmail(entry));
 }
 
-export async function fetchNewsletterEmails(apiKey?: string): Promise<ButtondownAPIEmailsResponse> {
+/**
+ * Returns the committed newsletter snapshot when it holds issues, otherwise
+ * `undefined`. The published issues no longer change, so the snapshot lets the
+ * build/prerender skip the live Buttondown request. Refresh it with
+ * `pnpm snapshot:newsletter`.
+ */
+export function getNewsletterSnapshot(): ButtondownAPIEmailsResponse | undefined {
+	return isButtondownEmailsResponse(newsletterSnapshot) && newsletterSnapshot.results.length > 0
+		? newsletterSnapshot
+		: undefined;
+}
+
+export async function fetchNewsletterEmails(
+	apiKey?: string,
+	/**
+	 * Snapshot override. Omit to use the committed snapshot; pass `null` to
+	 * force the live API / mock path (used in tests).
+	 */
+	snapshotOverride?: ButtondownAPIEmailsResponse | null,
+): Promise<ButtondownAPIEmailsResponse> {
+	const snapshot = snapshotOverride === undefined ? getNewsletterSnapshot() : snapshotOverride;
+	if (snapshot && snapshot.results.length > 0) {
+		return snapshot;
+	}
+
 	if (!apiKey) {
 		return BUTTONDOWN_EMAIL_MOCKS;
 	}
