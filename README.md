@@ -40,7 +40,7 @@ Pretty much wherever the mini-game is present in the repo, it's placed under a <
 
 ### Page views & likes
 
-Every blog post has a view counter and a little heart you can tap — both live in [Cloudflare D1](https://developers.cloudflare.com/d1/). Likes don't need an account: you're identified by a salted hash of your IP, so no raw IP is ever stored, and the salt can be rotated later without the numbers going haywire. The public count is recomputed from the real likes each time, so it can't quietly drift out of sync. A bit more on how it's wired up (plus a recount script) lives in the [Contributing guide](CONTRIBUTING.md).
+Every blog post has a view counter and a little heart you can tap — both live in [Cloudflare D1](https://developers.cloudflare.com/d1/). Likes do not need an account: the server issues a signed `HttpOnly` `like_id` cookie for anonymous identity, stores only HMAC-derived hashes, and uses a separate salted IP hash as a per-page abuse ceiling. The public count is recomputed from the real likes each time, so it cannot quietly drift out of sync. A bit more on how it is wired up (plus a recount script) lives in the [Contributing guide](CONTRIBUTING.md).
 
 ## Development/Contributing
 
