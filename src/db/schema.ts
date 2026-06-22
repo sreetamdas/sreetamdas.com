@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { check, integer, primaryKey, sqliteTable, text } from "drizzle-orm/sqlite-core";
+import { check, index, integer, primaryKey, sqliteTable, text } from "drizzle-orm/sqlite-core";
 
 export const pageDetails = sqliteTable(
 	"page_details",
@@ -26,14 +26,18 @@ export const postLikes = sqliteTable(
 	{
 		slug: text("slug").notNull(),
 		visitorHash: text("visitor_hash").notNull(),
-		// Salt era for visitorHash; bump LIKES_SALT_VERSION when rotating LIKES_IP_SALT
-		// so likes from older salts stop counting instead of silently inflating the counter.
+		ipHash: text("ip_hash"),
+		// Counted like era. Do not bump for the cookie migration; bump only with
+		// an intentional future identity reset so older rows stop contributing.
 		saltVersion: integer("salt_version").notNull().default(1),
 		createdAt: text("created_at")
 			.notNull()
 			.default(sql`CURRENT_TIMESTAMP`),
 	},
-	(t) => [primaryKey({ columns: [t.slug, t.visitorHash] })],
+	(t) => [
+		primaryKey({ columns: [t.slug, t.visitorHash] }),
+		index("post_likes_slug_ip_hash_idx").on(t.slug, t.ipHash),
+	],
 );
 
 export type PageDetailsRow = typeof pageDetails.$inferSelect;

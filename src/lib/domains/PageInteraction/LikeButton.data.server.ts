@@ -1,59 +1,113 @@
 import "@tanstack/react-start/server-only";
 import { env } from "cloudflare:workers";
 
-import { IS_DEV, LIKES_SALT_VERSION } from "@/config";
+import { IS_DEV, LIKES_IP_ABUSE_LIMIT, LIKES_SALT_VERSION } from "@/config";
 import { getDb } from "@/db";
 import { getLikes, incrementLikes, type LikeCount } from "@/lib/domains/PageViews";
 
-type Visitor = { hash: string; saltVersion: number };
+import {
+	createSignedLikeCookie,
+	getCookieValue,
+	hashLikeIp,
+	hashLikeVisitor,
+	LIKE_ID_COOKIE_NAME,
+	readSignedLikeCookie,
+	type LikeRequestContext,
+} from "./LikeIdentity";
 
+type LikeVisitor = {
+	visitorHash: string;
+	ipHash?: string;
+	saltVersion: number;
+	canWrite: boolean;
+};
+
+let warnedAboutMissingCookieSecret = false;
 let warnedAboutMissingLikesSalt = false;
 
 export async function fetchLikeCountFromDb(
 	normalizedSlug: string,
-	clientIp?: string,
+	context: LikeRequestContext = {},
 ): Promise<LikeCount> {
 	const db = getDb();
-	const visitor = await getVisitorHash(normalizedSlug, clientIp);
-	const likeCount = await getLikes(db, normalizedSlug, visitor?.hash);
-	return { ...likeCount, readOnly: !visitor };
+	const visitor = await getLikeVisitor(normalizedSlug, context);
+	const likeCount = await getLikes(db, normalizedSlug, visitor?.visitorHash);
+	return { ...likeCount, readOnly: !visitor?.canWrite };
 }
 
 export async function incrementLikeCountInDb(
 	normalizedSlug: string,
 	disabled?: boolean,
-	clientIp?: string,
+	context: LikeRequestContext = {},
 ): Promise<LikeCount> {
 	const db = getDb();
-	const visitor = await getVisitorHash(normalizedSlug, clientIp);
-	if (disabled || !visitor) {
-		const likeCount = await getLikes(db, normalizedSlug, visitor?.hash);
-		return { ...likeCount, readOnly: !visitor };
+	const visitor = await getLikeVisitor(normalizedSlug, context);
+	if (disabled || !visitor?.canWrite || !visitor.ipHash) {
+		const likeCount = await getLikes(db, normalizedSlug, visitor?.visitorHash);
+		return { ...likeCount, readOnly: !visitor?.canWrite };
 	}
-	return await incrementLikes(db, normalizedSlug, visitor.hash, visitor.saltVersion);
+
+	return await incrementLikes(db, normalizedSlug, {
+		visitorHash: visitor.visitorHash,
+		ipHash: visitor.ipHash,
+		saltVersion: visitor.saltVersion,
+		abuseLimit: LIKES_IP_ABUSE_LIMIT,
+	});
 }
 
-async function getVisitorHash(
+async function getLikeVisitor(
 	normalizedSlug: string,
-	clientIp?: string,
-): Promise<Visitor | undefined> {
-	const salt = env.LIKES_IP_SALT || undefined;
-	const ip = clientIp;
-	if (!salt || !ip) {
-		if (!salt && !IS_DEV && !warnedAboutMissingLikesSalt) {
-			warnedAboutMissingLikesSalt = true;
-			// oxlint-disable-next-line no-console
-			console.warn("LIKES_IP_SALT is not configured; blog likes are read-only.");
-		}
+	context: LikeRequestContext,
+): Promise<LikeVisitor | undefined> {
+	const cookieSecret = env.LIKES_COOKIE_SECRET || undefined;
+	if (!cookieSecret) {
+		warnMissingCookieSecret();
 		return undefined;
 	}
 
-	// Bind the salt era into the hash so bumping LIKES_SALT_VERSION yields fresh
-	// visitor identities even if the salt itself is reused — a version bump alone
-	// can't collide with a prior-era row under onConflictDoNothing.
-	const bytes = new TextEncoder().encode(`${salt}:${LIKES_SALT_VERSION}:${normalizedSlug}:${ip}`);
-	const hash = await crypto.subtle.digest("SHA-256", bytes);
-	const hex = [...new Uint8Array(hash)].map((byte) => byte.toString(16).padStart(2, "0")).join("");
+	const cookieValue = getCookieValue(context.cookieHeader, LIKE_ID_COOKIE_NAME);
+	let token = await readSignedLikeCookie(cookieSecret, cookieValue);
+	if (!token) {
+		const signedCookie = await createSignedLikeCookie(cookieSecret);
+		token = signedCookie.token;
+		context.setLikeCookie?.(signedCookie.value);
+	}
 
-	return { hash: hex, saltVersion: LIKES_SALT_VERSION };
+	const ipHash = await getIpHash(normalizedSlug, context.clientIp);
+	const visitor: LikeVisitor = {
+		visitorHash: await hashLikeVisitor(cookieSecret, token),
+		saltVersion: LIKES_SALT_VERSION,
+		canWrite: Boolean(ipHash),
+	};
+	if (ipHash) {
+		visitor.ipHash = ipHash;
+	}
+
+	return visitor;
+}
+
+async function getIpHash(normalizedSlug: string, clientIp?: string): Promise<string | undefined> {
+	const ipSalt = env.LIKES_IP_SALT || undefined;
+	if (!ipSalt || !clientIp) {
+		if (!ipSalt) warnMissingLikesSalt();
+		return undefined;
+	}
+
+	return await hashLikeIp(ipSalt, LIKES_SALT_VERSION, normalizedSlug, clientIp);
+}
+
+function warnMissingCookieSecret(): void {
+	if (IS_DEV || warnedAboutMissingCookieSecret) return;
+
+	warnedAboutMissingCookieSecret = true;
+	// oxlint-disable-next-line no-console
+	console.warn("LIKES_COOKIE_SECRET is not configured; blog likes are read-only.");
+}
+
+function warnMissingLikesSalt(): void {
+	if (IS_DEV || warnedAboutMissingLikesSalt) return;
+
+	warnedAboutMissingLikesSalt = true;
+	// oxlint-disable-next-line no-console
+	console.warn("LIKES_IP_SALT is not configured; blog likes are read-only.");
 }
