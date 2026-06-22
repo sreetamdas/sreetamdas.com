@@ -2,29 +2,16 @@
 
 import { useEffect, useRef, useState } from "react";
 
-type LiveViewersPayload = {
-	type: "count";
-	count: number;
-};
+import { getOrCreatePresenceClientId } from "@/lib/domains/Presence/client-id";
+import { PRESENCE_CLIENT_ID_PARAM, isPresenceServerMessage } from "@/lib/domains/Presence/protocol";
 
-function isLiveViewersPayload(value: unknown): value is LiveViewersPayload {
-	if (typeof value !== "object" || value === null) {
-		return false;
-	}
+const CLIENT_PING_INTERVAL_MS = 25_000;
+const CLIENT_SILENCE_TIMEOUT_MS = 70_000;
 
-	if (!("type" in value) || !("count" in value)) {
-		return false;
-	}
-
-	return value.type === "count" && typeof value.count === "number";
-}
-
-const PING_INTERVAL_MS = 60_000;
-const PING_JITTER_MAX_MS = 2_000;
-
-function getWsUrl() {
+function getWsUrl(clientId: string) {
 	const url = new URL("/api/presence", window.location.href);
 	url.protocol = url.protocol === "https:" ? "wss:" : "ws:";
+	url.searchParams.set(PRESENCE_CLIENT_ID_PARAM, clientId);
 	return url.toString();
 }
 
@@ -35,20 +22,22 @@ export type LiveViewers = {
 
 /**
  * Opens a single websocket to the presence Durable Object and tracks the live
- * viewer count. Mount this in exactly one place per page — each consumer opens
- * its own connection, which the DO counts as a separate viewer.
+ * viewer count. The Durable Object counts one stable sessionStorage client id,
+ * not raw sockets, so a reconnect from the same tab does not temporarily count
+ * as an extra viewer while Cloudflare finishes closing the old socket.
  */
 export function useLiveViewerCount(): LiveViewers {
 	const [count, setCount] = useState<number | null>(null);
 	const [connected, setConnected] = useState(false);
 	const wsRef = useRef<WebSocket | null>(null);
 	const reconnectTimerRef = useRef<number | null>(null);
-	const pingTimeoutRef = useRef<number | null>(null);
-	const pingJitterMsRef = useRef<number | null>(null);
+	const pingIntervalRef = useRef<number | null>(null);
+	const silenceTimerRef = useRef<number | null>(null);
 	const reconnectAttemptRef = useRef(0);
 
 	useEffect(() => {
 		let cancelled = false;
+		const clientId = getOrCreatePresenceClientId(window.sessionStorage);
 
 		function clearReconnectTimer() {
 			if (reconnectTimerRef.current !== null) {
@@ -57,49 +46,38 @@ export function useLiveViewerCount(): LiveViewers {
 			}
 		}
 
-		function clearPingTimer() {
-			if (pingTimeoutRef.current !== null) {
-				window.clearTimeout(pingTimeoutRef.current);
-				pingTimeoutRef.current = null;
+		function clearPingInterval() {
+			if (pingIntervalRef.current !== null) {
+				window.clearInterval(pingIntervalRef.current);
+				pingIntervalRef.current = null;
 			}
 		}
 
-		function startUtcAlignedPings(ws: WebSocket, intervalMs: number) {
-			clearPingTimer();
-
-			if (pingJitterMsRef.current === null) {
-				const jitterArray = new Uint32Array(1);
-				crypto.getRandomValues(jitterArray);
-				pingJitterMsRef.current = jitterArray[0] % PING_JITTER_MAX_MS;
+		function clearSilenceTimer() {
+			if (silenceTimerRef.current !== null) {
+				window.clearTimeout(silenceTimerRef.current);
+				silenceTimerRef.current = null;
 			}
-			const jitterMs = pingJitterMsRef.current;
-
-			const scheduleNext = () => {
-				const now = Date.now();
-				const base = (Math.floor(now / intervalMs) + 1) * intervalMs;
-				let next = base + jitterMs;
-				if (next <= now) next += intervalMs;
-
-				pingTimeoutRef.current = window.setTimeout(() => {
-					try {
-						ws.send("ping");
-					} catch {
-						// noop
-					}
-					scheduleNext();
-				}, next - now);
-			};
-
-			scheduleNext();
 		}
 
-		function closeCurrent() {
+		function send(ws: WebSocket, message: string) {
+			if (ws.readyState !== WebSocket.OPEN) return false;
+			try {
+				ws.send(message);
+				return true;
+			} catch {
+				return false;
+			}
+		}
+
+		function closeCurrent(reason = "presence reconnect") {
 			const current = wsRef.current;
 			wsRef.current = null;
-			clearPingTimer();
+			clearPingInterval();
+			clearSilenceTimer();
 			if (current) {
 				try {
-					current.close();
+					current.close(1000, reason);
 				} catch {
 					// noop
 				}
@@ -115,14 +93,39 @@ export function useLiveViewerCount(): LiveViewers {
 			reconnectTimerRef.current = window.setTimeout(connect, delayMs);
 		}
 
+		function handleSilence(ws: WebSocket) {
+			if (cancelled || wsRef.current !== ws) return;
+			setConnected(false);
+			closeCurrent("presence heartbeat timeout");
+			scheduleReconnect();
+		}
+
+		function markServerMessage(ws: WebSocket) {
+			clearSilenceTimer();
+			silenceTimerRef.current = window.setTimeout(
+				() => handleSilence(ws),
+				CLIENT_SILENCE_TIMEOUT_MS,
+			);
+		}
+
+		function startClientHeartbeat(ws: WebSocket) {
+			clearPingInterval();
+			clearSilenceTimer();
+			markServerMessage(ws);
+			pingIntervalRef.current = window.setInterval(() => {
+				if (!send(ws, "ping")) {
+					handleSilence(ws);
+				}
+			}, CLIENT_PING_INTERVAL_MS);
+		}
+
 		function connect() {
 			if (cancelled) return;
 			closeCurrent();
-			pingJitterMsRef.current = null;
 
 			let ws: WebSocket;
 			try {
-				ws = new WebSocket(getWsUrl());
+				ws = new WebSocket(getWsUrl(clientId));
 			} catch {
 				scheduleReconnect();
 				return;
@@ -131,44 +134,52 @@ export function useLiveViewerCount(): LiveViewers {
 			wsRef.current = ws;
 
 			ws.onopen = () => {
-				if (cancelled) return;
+				if (cancelled || wsRef.current !== ws) return;
 				reconnectAttemptRef.current = 0;
 				setConnected(true);
-				startUtcAlignedPings(ws, PING_INTERVAL_MS);
+				startClientHeartbeat(ws);
 			};
 
 			ws.onmessage = (event) => {
-				if (cancelled) return;
+				if (cancelled || wsRef.current !== ws) return;
 				if (typeof event.data !== "string") return;
-				let payload: LiveViewersPayload;
+
+				if (event.data === "pong") {
+					markServerMessage(ws);
+					return;
+				}
+
+				let parsed: unknown;
 				try {
-					const parsed: unknown = JSON.parse(event.data);
-					if (!isLiveViewersPayload(parsed)) return;
-					payload = parsed;
+					parsed = JSON.parse(event.data);
 				} catch {
 					return;
 				}
-				if (payload.type === "count" && Number.isFinite(payload.count)) {
-					setCount(payload.count);
+
+				if (!isPresenceServerMessage(parsed)) return;
+				markServerMessage(ws);
+
+				if (parsed.type === "ping") {
+					send(ws, "pong");
+					return;
 				}
+
+				setCount(parsed.count);
 			};
 
 			ws.onclose = () => {
-				if (cancelled) return;
+				if (cancelled || wsRef.current !== ws) return;
 				setConnected(false);
-				clearPingTimer();
+				clearPingInterval();
+				clearSilenceTimer();
 				scheduleReconnect();
 			};
 
 			ws.onerror = () => {
-				if (cancelled) return;
+				if (cancelled || wsRef.current !== ws) return;
 				setConnected(false);
-				clearPingTimer();
-				try {
-					ws.close();
-				} catch {
-					// noop
-				}
+				closeCurrent("presence websocket error");
+				scheduleReconnect();
 			};
 		}
 
@@ -177,8 +188,7 @@ export function useLiveViewerCount(): LiveViewers {
 		return () => {
 			cancelled = true;
 			clearReconnectTimer();
-			clearPingTimer();
-			closeCurrent();
+			closeCurrent("presence hook cleanup");
 		};
 	}, []);
 
