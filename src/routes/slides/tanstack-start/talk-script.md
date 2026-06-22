@@ -4,6 +4,7 @@ Read-aloud script for the deck at `/slides/tanstack-start`. Paste straight into
 Notion (headings/callouts survive). Target run time **~28–30 min**.
 
 **Legend**
+
 - **SAY** — spoken lines, written the way you'd actually say them (read, don't recite).
 - **(CLICK)** — advance one `<Steps>` reveal or slide.
 - **[DEMO]** — leave the deck / do the live thing.
@@ -27,7 +28,7 @@ Notion (headings/callouts survive). Target run time **~28–30 min**.
 
 ---
 
-## 0–4 · Title build  ⏱ 0:00
+## 0–4 · Title build ⏱ 0:00
 
 > The animated title is intentional — let it breathe.
 
@@ -38,7 +39,7 @@ one — and the framework underneath it."
 
 ---
 
-## 5 · Sreetam Das  ⏱ 1:00
+## 5 · Sreetam Das ⏱ 1:00
 
 **SAY:** "Quick intro: I'm Sreetam. I'm a Senior Frontend Engineer on the Web
 Experience team at Remote. And — full disclosure — I build way too many things on
@@ -47,7 +48,7 @@ deck is a route on it."
 
 ---
 
-## 6 · Remote (sponsor)  ⏱ 1:30
+## 6 · Remote (sponsor) ⏱ 1:30
 
 **SAY:** "One word on Remote, who's making this possible. Remote helps companies
 hire, manage, and pay people anywhere in the world. (CLICK) Full-time, contractors,
@@ -60,7 +61,7 @@ in each market so you don't stitch it together yourself. Keep this to ~20 second
 
 ---
 
-## 7 · Engineering at Remote  ⏱ 2:15
+## 7 · Engineering at Remote ⏱ 2:15
 
 **SAY:** "For context on where my instincts come from: I've been at Remote since
 2020 — four years in Growth Engineering, now Web Experience. We're around 300
@@ -71,7 +72,7 @@ ship Next for a living."
 
 ---
 
-## 8 · The premise  ⏱ 3:00
+## 8 · The premise ⏱ 3:00
 
 **SAY:** "Here's the premise. (CLICK) This deck is a TanStack Start route. (CLICK)
 Its position — what slide we're on — is URL state. (CLICK) The live polls we'll run
@@ -84,7 +85,7 @@ something, I'll show you the line that does it."
 
 ---
 
-## 9 · Start's pitch in one sentence  ⏱ 4:15
+## 9 · Start's pitch in one sentence ⏱ 4:15
 
 **SAY:** "If I had to compress Start into one sentence: router-first React, with the
 server added where it helps. The router is the spine, and everything else is opt-in.
@@ -95,7 +96,7 @@ things, with the real code."
 
 ---
 
-## 10 · Map of the app  ⏱ 5:15
+## 10 · Map of the app ⏱ 5:15
 
 **SAY:** "Quick map so you can follow along — every row here is a real feature of
 this site and the file behind it. Typed URL state, server functions, RSC as data,
@@ -106,7 +107,7 @@ read the table; I'm going to walk down it. This is our agenda."
 
 ---
 
-## 11 · 1. URL state is not a string bag  ⏱ 5:45
+## 11 · 1. URL state is not a string bag ⏱ 5:45
 
 **SAY:** "Feature one. In a lot of apps, search params are a bag of strings, and
 every page re-parses them and re-validates them and hopes. In Start, the route owns
@@ -116,7 +117,7 @@ not vibes."
 
 ---
 
-## 12 · Demo: /stats  ⏱ 6:30
+## 12 · Demo: /stats ⏱ 6:30
 
 **[DEMO]** Switch to the `/stats` tab.
 
@@ -134,17 +135,17 @@ on changes."
 
 ---
 
-## 13 · 2. Server functions are typed RPC  ⏱ 8:00
+## 13 · 2. Server functions are typed RPC ⏱ 8:00
 
 **SAY:** "Feature two: server functions. This is `getStats`. It's an explicit RPC
 boundary — method up front, a validator that runs first, then a handler. The key
-word is *typed*: I can call this from a loader, from a hook, from a component, and
+word is _typed_: I can call this from a loader, from a hook, from a component, and
 the input and output are checked end to end. It's not a magic string endpoint; it's
 a function with a contract."
 
 ---
 
-## 14 · The part Next does not have  ⏱ 9:00
+## 14 · The part Next does not have ⏱ 9:00
 
 **SAY:** "And here's the beat I most want you to take home — the part Next doesn't
 have. Server-function middleware that has a client half and a server half. (CLICK)
@@ -165,9 +166,9 @@ server and never shipped to the client."
 
 ---
 
-## 15 · 3. RSC as an opt-in data primitive  ⏱ 11:00
+## 15 · 3. RSC as an opt-in data primitive ⏱ 11:00
 
-**SAY:** "Feature three: React Server Components — but as a *tool*, not a religion.
+**SAY:** "Feature three: React Server Components — but as a _tool_, not a religion.
 On the blog, the loader server-renders the heavy MDX subtree with
 `renderServerComponent`, and hands the result through loader data like any other
 value. (CLICK) Then I compose client islands — Sparkles, a highlighter — on top of
@@ -176,10 +177,10 @@ is data."
 
 ---
 
-## 16 · This is not "RSC-first"  ⏱ 12:00
+## 16 · This is not "RSC-first" ⏱ 12:00
 
 **SAY:** "And that's the distinction. This is not 'RSC-first.' In Start, an ordinary
-React component is interactive by default — you opt *into* the server, not out of it.
+React component is interactive by default — you opt _into_ the server, not out of it.
 (CLICK) Use RSC when it buys you something. (CLICK) Cache it like route data. (CLICK)
 Pass it through the loader. (CLICK) And keep the client in charge of composition. The
 mental model never inverts on you."
@@ -189,7 +190,7 @@ choice you make per route."
 
 ---
 
-## 17 · 4. Rendering is a dial  ⏱ 13:00
+## 17 · 4. Rendering is a dial ⏱ 13:00
 
 **SAY:** "Feature four. Rendering is a dial, not a doctrine. Same route API: one
 route is full SSR, the next is data-only, the next is client-only. `ssr: false`,
@@ -201,10 +202,10 @@ route — you're turning a knob the framework hands you."
 
 ---
 
-## 18 · 5. Hydration can wait  ⏱ 14:30
+## 18 · 5. Hydration can wait ⏱ 14:30
 
 **SAY:** "Feature five, and this is the one people conflate the most. Rendering and
-hydration are different costs. The HTML can be in the document *now*; the JavaScript
+hydration are different costs. The HTML can be in the document _now_; the JavaScript
 does not have to be. Here I wrap a below-the-fold chart in `Hydrate when visible` —
 it server-renders into the page, but it doesn't load and hydrate its JS until it's
 near the viewport."
@@ -219,16 +220,16 @@ without paying for hydration up front" is the whole point.
 
 ---
 
-## 19 · 6. Build-time server functions  ⏱ 16:30
+## 19 · 6. Build-time server functions ⏱ 16:30
 
 **SAY:** "Feature six, quickly. A server function doesn't have to run at request
-time. With static middleware, `getHighlightedCode` here runs at *build* time and
+time. With static middleware, `getHighlightedCode` here runs at _build_ time and
 ships static data — so `/rwc` does its server work once, during the build, and serves
 it as plain JSON forever. Same primitive, different clock."
 
 ---
 
-## 20 · 7. Deployment is part of the design  ⏱ 18:00
+## 20 · 7. Deployment is part of the design ⏱ 18:00
 
 **SAY:** "Feature seven: deployment isn't an afterthought you bolt on — it's part of
 the design. This site runs on Cloudflare Workers. (CLICK) D1 for views and likes.
@@ -238,7 +239,7 @@ route model — different runtime. I didn't rewrite the app to move it to the ed
 
 ---
 
-## 21 · Finale: live slides are the demo  ⏱ 20:00
+## 21 · Finale: live slides are the demo ⏱ 20:00
 
 **SAY:** "Which brings us all the way back to this deck. It has a live session mode,
 and you've been in it the whole time. (CLICK) I control navigation; your screens
@@ -248,14 +249,14 @@ Object — the same primitive as the presence counter on my site."
 
 **[DEMO]** Trigger a reaction from your phone (or invite one) so the room sees it
 land on the projected deck. "That heart came from a phone, through a Durable Object,
-onto this screen, in real time. The talk *is* the deployment proof."
+onto this screen, in real time. The talk _is_ the deployment proof."
 
-**[FALLBACK]** If the socket dropped, show the poll *results* you already collected —
+**[FALLBACK]** If the socket dropped, show the poll _results_ you already collected —
 those round-tripped through the same DO.
 
 ---
 
-## 22 · Where Next still wins  ⏱ 22:30
+## 22 · Where Next still wins ⏱ 22:30
 
 **SAY:** "Now — be honest, or nobody trusts the comparison. Here's where Next still
 wins today. (CLICK) RSC ecosystem maturity. (CLICK) `<Form>` and Server Action form
@@ -265,7 +266,7 @@ need those tomorrow, Next is the safer bet, and I'll say that to my own team."
 
 ---
 
-## 23 · The tradeoff  ⏱ 24:00
+## 23 · The tradeoff ⏱ 24:00
 
 **SAY:** "So it's a tradeoff, not a winner. Next gives you a platform-shaped happy
 path — it's paved, and it's fast if you stay on it. Start gives you app-shaped
@@ -275,7 +276,7 @@ a lot of control."
 
 ---
 
-## 24 · Takeaways  ⏱ 25:30
+## 24 · Takeaways ⏱ 25:30
 
 **SAY:** "If you forget everything else, five lines. Your route tree can be your
 application contract. The server boundary can be typed, validated, and
