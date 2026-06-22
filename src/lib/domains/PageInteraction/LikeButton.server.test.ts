@@ -15,14 +15,15 @@ beforeEach(() => {
 });
 
 describe("fetchLikeCount", () => {
-	test("delegates slugs to the data layer with a normalized slug and client ip", async () => {
+	test("delegates slugs to the data layer with a normalized slug and like request context", async () => {
 		dataServer.fetchLikeCountFromDb.mockResolvedValue({ likes: 4, hasLiked: true });
+		const context = { clientIp: "1.2.3.4", cookieHeader: "like_id=value" };
 
-		expect(await fetchLikeCount({ slug: "/about/", disabled: false }, "1.2.3.4")).toEqual({
+		expect(await fetchLikeCount({ slug: "/about/", disabled: false }, context)).toEqual({
 			likes: 4,
 			hasLiked: true,
 		});
-		expect(dataServer.fetchLikeCountFromDb).toHaveBeenCalledWith("/about", "1.2.3.4");
+		expect(dataServer.fetchLikeCountFromDb).toHaveBeenCalledWith("/about", context);
 	});
 
 	test("fails open when the data layer throws", async () => {
@@ -36,14 +37,15 @@ describe("fetchLikeCount", () => {
 });
 
 describe("incrementLikeCount", () => {
-	test("delegates slugs with the disabled flag and client ip", async () => {
+	test("delegates slugs with the disabled flag and like request context", async () => {
 		dataServer.incrementLikeCountInDb.mockResolvedValue({ likes: 5, hasLiked: true });
+		const context = { clientIp: "1.2.3.4", cookieHeader: "like_id=value" };
 
-		expect(await incrementLikeCount({ slug: "/about", disabled: false }, "1.2.3.4")).toEqual({
+		expect(await incrementLikeCount({ slug: "/about", disabled: false }, context)).toEqual({
 			likes: 5,
 			hasLiked: true,
 		});
-		expect(dataServer.incrementLikeCountInDb).toHaveBeenCalledWith("/about", false, "1.2.3.4");
+		expect(dataServer.incrementLikeCountInDb).toHaveBeenCalledWith("/about", false, context);
 	});
 
 	test("throws when the data layer write fails instead of failing open", async () => {

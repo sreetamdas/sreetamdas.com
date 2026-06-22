@@ -6,7 +6,7 @@ import { describe, expect, test } from "vitest";
 import * as schema from "@/db/schema";
 import { pageDetails, postLikes } from "@/db/schema";
 
-import type { PageLikesDb, PageLikesTestDb, PageViewsDb } from "./index";
+import type { IncrementLikeInput, PageLikesDb, PageViewsDb } from "./index";
 
 import { getLikes, getPageViews, incrementLikes, upsertPageViews } from "./index";
 
@@ -70,7 +70,10 @@ describe("incrementLikes", () => {
 	test("inserts the first like", async () => {
 		const db = createLikesDb();
 
-		expect(await incrementLikes(db, "/blog/x", "h1", 1)).toEqual({ likes: 1, hasLiked: true });
+		expect(await incrementLikes(db, "/blog/x", likeInput("h1", "ip1"))).toEqual({
+			likes: 1,
+			hasLiked: true,
+		});
 		expect(await getPostLikesCount(db, "/blog/x")).toBe(1);
 		expect(await getPageLikes(db, "/blog/x")).toBe(1);
 	});
@@ -78,9 +81,12 @@ describe("incrementLikes", () => {
 	test("does not increment twice for the same visitor", async () => {
 		const db = createLikesDb();
 
-		await incrementLikes(db, "/blog/x", "h1", 1);
+		await incrementLikes(db, "/blog/x", likeInput("h1", "ip1"));
 
-		expect(await incrementLikes(db, "/blog/x", "h1", 1)).toEqual({ likes: 1, hasLiked: true });
+		expect(await incrementLikes(db, "/blog/x", likeInput("h1", "ip1"))).toEqual({
+			likes: 1,
+			hasLiked: true,
+		});
 		expect(await getPostLikesCount(db, "/blog/x")).toBe(1);
 		expect(await getPageLikes(db, "/blog/x")).toBe(1);
 	});
@@ -88,9 +94,12 @@ describe("incrementLikes", () => {
 	test("keeps a pre-existing visitor like from incrementing again", async () => {
 		const db = createLikesDb();
 		await db.insert(pageDetails).values({ slug: "/blog/x", viewCount: 0, likes: 1 });
-		await db.insert(postLikes).values({ slug: "/blog/x", visitorHash: "h1" });
+		await db.insert(postLikes).values({ slug: "/blog/x", visitorHash: "h1", ipHash: "ip1" });
 
-		expect(await incrementLikes(db, "/blog/x", "h1", 1)).toEqual({ likes: 1, hasLiked: true });
+		expect(await incrementLikes(db, "/blog/x", likeInput("h1", "ip1"))).toEqual({
+			likes: 1,
+			hasLiked: true,
+		});
 		expect(await getPostLikesCount(db, "/blog/x")).toBe(1);
 		expect(await getPageLikes(db, "/blog/x")).toBe(1);
 	});
@@ -98,29 +107,67 @@ describe("incrementLikes", () => {
 	test("repairs stale page likes from recorded visitor likes", async () => {
 		const db = createLikesDb();
 		await db.insert(pageDetails).values({ slug: "/blog/x", viewCount: 0, likes: 0 });
-		await db.insert(postLikes).values({ slug: "/blog/x", visitorHash: "h1" });
-		await db.insert(postLikes).values({ slug: "/blog/x", visitorHash: "h2" });
+		await db.insert(postLikes).values({ slug: "/blog/x", visitorHash: "h1", ipHash: "ip1" });
+		await db.insert(postLikes).values({ slug: "/blog/x", visitorHash: "h2", ipHash: "ip2" });
 
-		expect(await incrementLikes(db, "/blog/x", "h1", 1)).toEqual({ likes: 2, hasLiked: true });
+		expect(await incrementLikes(db, "/blog/x", likeInput("h1", "ip1"))).toEqual({
+			likes: 2,
+			hasLiked: true,
+		});
 		expect(await getPostLikesCount(db, "/blog/x")).toBe(2);
 		expect(await getPageLikes(db, "/blog/x")).toBe(2);
 	});
 
-	test("increments for a second visitor", async () => {
+	test("increments for a second visitor from the same ip while under the abuse ceiling", async () => {
 		const db = createLikesDb();
 
-		await incrementLikes(db, "/blog/x", "h1", 1);
+		await incrementLikes(db, "/blog/x", likeInput("h1", "ip1"));
 
-		expect(await incrementLikes(db, "/blog/x", "h2", 1)).toEqual({ likes: 2, hasLiked: true });
+		expect(await incrementLikes(db, "/blog/x", likeInput("h2", "ip1"))).toEqual({
+			likes: 2,
+			hasLiked: true,
+		});
 		expect(await getPostLikesCount(db, "/blog/x")).toBe(2);
 		expect(await getPageLikes(db, "/blog/x")).toBe(2);
+	});
+
+	test("returns the current unliked state when the ip abuse ceiling is reached", async () => {
+		const db = createLikesDb();
+
+		await incrementLikes(db, "/blog/x", likeInput("h1", "ip1", 1, 2));
+		await incrementLikes(db, "/blog/x", likeInput("h2", "ip1", 1, 2));
+
+		expect(await incrementLikes(db, "/blog/x", likeInput("h3", "ip1", 1, 2))).toEqual({
+			likes: 2,
+			hasLiked: false,
+		});
+		expect(await getPostLikesCount(db, "/blog/x")).toBe(2);
+		expect(await getPageLikes(db, "/blog/x")).toBe(2);
+	});
+
+	test("keeps the abuse ceiling scoped to one slug and ip hash", async () => {
+		const db = createLikesDb();
+
+		await incrementLikes(db, "/blog/x", likeInput("h1", "ip1", 1, 1));
+
+		expect(await incrementLikes(db, "/blog/x", likeInput("h2", "ip2", 1, 1))).toEqual({
+			likes: 2,
+			hasLiked: true,
+		});
+		expect(await incrementLikes(db, "/blog/y", likeInput("h2", "ip1", 1, 1))).toEqual({
+			likes: 1,
+			hasLiked: true,
+		});
 	});
 
 	test("keeps likes isolated by slug", async () => {
 		const db = createLikesDb();
 
-		await incrementLikes(db, "/blog/x", "h1", 1);
-		expect(await incrementLikes(db, "/blog/y", "h1", 1)).toEqual({ likes: 1, hasLiked: true });
+		await incrementLikes(db, "/blog/x", likeInput("h1", "ip1"));
+		expect(await incrementLikes(db, "/blog/y", likeInput("h1", "ip1"))).toEqual({
+			likes: 1,
+			hasLiked: true,
+		});
 
 		expect(await getLikes(db, "/blog/x", "h1")).toEqual({ likes: 1, hasLiked: true });
 		expect(await getLikes(db, "/blog/y", "h1")).toEqual({ likes: 1, hasLiked: true });
@@ -129,7 +176,10 @@ describe("incrementLikes", () => {
 	test("normalizes trailing slashes", async () => {
 		const db = createLikesDb();
 
-		expect(await incrementLikes(db, "/blog/x/", "h1", 1)).toEqual({ likes: 1, hasLiked: true });
+		expect(await incrementLikes(db, "/blog/x/", likeInput("h1", "ip1"))).toEqual({
+			likes: 1,
+			hasLiked: true,
+		});
 
 		expect(await getLikes(db, "/blog/x", "h1")).toEqual({ likes: 1, hasLiked: true });
 		expect(await getPostLikesCount(db, "/blog/x")).toBe(1);
@@ -139,14 +189,30 @@ describe("incrementLikes", () => {
 	test("excludes likes from older salt versions when recomputing the counter", async () => {
 		const db = createLikesDb();
 		await db.insert(pageDetails).values({ slug: "/blog/x", viewCount: 0, likes: 1 });
-		await db.insert(postLikes).values({ slug: "/blog/x", visitorHash: "old", saltVersion: 1 });
+		await db
+			.insert(postLikes)
+			.values({ slug: "/blog/x", visitorHash: "old", ipHash: "ip1", saltVersion: 1 });
 
-		// A like under salt version 2 recomputes the counter from version-2 rows only,
-		// so the orphaned version-1 row is ignored instead of inflating the count.
-		expect(await incrementLikes(db, "/blog/x", "new", 2)).toEqual({ likes: 1, hasLiked: true });
+		expect(await incrementLikes(db, "/blog/x", likeInput("new", "ip1", 2))).toEqual({
+			likes: 1,
+			hasLiked: true,
+		});
 		expect(await getPageLikes(db, "/blog/x")).toBe(1);
-		// Both rows remain on disk for audit; only the counter excludes the old era.
 		expect(await getPostLikesCount(db, "/blog/x")).toBe(2);
+	});
+
+	test("keeps legacy rows without ip hashes counted but outside the new ip ceiling", async () => {
+		const db = createLikesDb();
+		await db.insert(pageDetails).values({ slug: "/blog/x", viewCount: 0, likes: 2 });
+		await db.insert(postLikes).values({ slug: "/blog/x", visitorHash: "legacy-1" });
+		await db.insert(postLikes).values({ slug: "/blog/x", visitorHash: "legacy-2" });
+
+		expect(await incrementLikes(db, "/blog/x", likeInput("new", "ip1", 1, 1))).toEqual({
+			likes: 3,
+			hasLiked: true,
+		});
+		expect(await getPageLikes(db, "/blog/x")).toBe(3);
+		expect(await getPostLikesCount(db, "/blog/x")).toBe(3);
 	});
 });
 
@@ -165,7 +231,7 @@ function createPageViewsDb(): PageViewsDb {
 		);
 	`);
 
-	return createBatchablePageViewsDb(sqlite);
+	return drizzle({ client: sqlite, schema });
 }
 
 function createLikesDb(): PageLikesDb {
@@ -185,15 +251,19 @@ function createLikesDb(): PageLikesDb {
 		CREATE TABLE post_likes (
 			slug text NOT NULL,
 			visitor_hash text NOT NULL,
+			ip_hash text,
 			salt_version integer DEFAULT 1 NOT NULL,
 			created_at text DEFAULT CURRENT_TIMESTAMP NOT NULL
 		);
 
 		CREATE UNIQUE INDEX post_likes_slug_visitor_hash_unique
 		ON post_likes (slug, visitor_hash);
+
+		CREATE INDEX post_likes_slug_ip_hash_idx
+		ON post_likes (slug, ip_hash);
 	`);
 
-	return createBatchablePageViewsDb(sqlite);
+	return drizzle({ client: sqlite, schema });
 }
 
 async function getPostLikesCount(db: PageViewsDb, slug: string): Promise<number> {
@@ -214,9 +284,11 @@ async function getPageLikes(db: PageViewsDb, slug: string): Promise<number> {
 	return rows[0]?.likes ?? 0;
 }
 
-function createBatchablePageViewsDb(sqlite: Database.Database): PageLikesTestDb {
-	return Object.assign(drizzle({ client: sqlite, schema }), {
-		batch: ([first, second]: Parameters<PageLikesTestDb["batch"]>[0]) =>
-			Promise.all([first, second]),
-	});
+function likeInput(
+	visitorHash: string,
+	ipHash: string,
+	saltVersion = 1,
+	abuseLimit = 10,
+): IncrementLikeInput {
+	return { visitorHash, ipHash, saltVersion, abuseLimit };
 }

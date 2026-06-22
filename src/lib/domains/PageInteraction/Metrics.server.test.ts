@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, test, vi } from "vitest";
 
 const views = vi.hoisted(() => ({ fetchViewCount: vi.fn() }));
-const likes = vi.hoisted(() => ({ fetchLikeCount: vi.fn() }));
+const likes = vi.hoisted(() => ({ fetchLikeCount: vi.fn(), getLikeRequestContext: vi.fn() }));
 
 vi.mock("./ViewsCounter.server", () => views);
 vi.mock("./LikeButton.server", () => likes);
@@ -14,20 +14,21 @@ beforeEach(() => {
 });
 
 describe("fetchPageMetrics", () => {
-	test("merges views and likes and forwards the client ip to likes only", async () => {
+	test("merges views and likes and forwards the like request context to likes only", async () => {
 		views.fetchViewCount.mockResolvedValue({ view_count: 12 });
 		likes.fetchLikeCount.mockResolvedValue({ likes: 3, hasLiked: true, readOnly: false });
 
 		const data = { slug: "/blog/x", disabled: false };
+		const context = { clientIp: "1.2.3.4", cookieHeader: "like_id=value" };
 
-		expect(await fetchPageMetrics(data, "1.2.3.4")).toEqual({
+		expect(await fetchPageMetrics(data, context)).toEqual({
 			view_count: 12,
 			likes: 3,
 			hasLiked: true,
 			readOnly: false,
 		});
 		expect(views.fetchViewCount).toHaveBeenCalledWith(data);
-		expect(likes.fetchLikeCount).toHaveBeenCalledWith(data, "1.2.3.4");
+		expect(likes.fetchLikeCount).toHaveBeenCalledWith(data, context);
 	});
 
 	test("runs views and likes concurrently rather than serially", async () => {
