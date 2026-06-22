@@ -5,11 +5,25 @@ import tailwindcss from "@tailwindcss/vite";
 import { tanstackStart } from "@tanstack/react-start/plugin/vite";
 import viteReact from "@vitejs/plugin-react";
 import rsc from "@vitejs/plugin-rsc";
+import { dirname } from "node:path";
+import { fileURLToPath } from "node:url";
 import { defineConfig, type UserConfig } from "vite-plus";
 
 import { slideDeckPlugin } from "./src/lib/domains/slides/vite-plugin.ts";
 
+const repoRoot = dirname(fileURLToPath(import.meta.url));
+
+// Vitest sets this before resolving config. A bare `vitest`/`vp test` run loads
+// this root config; the app plugins (notably `cloudflare()`) inject worker-env
+// options the Cloudflare plugin rejects, so skip them and delegate to the
+// dedicated project configs via `test.projects` below.
+const isVitest = Boolean(process.env.VITEST);
+
 function getPlugins(): Array<unknown> {
+	if (isVitest) {
+		return [];
+	}
+
 	const hasSentryBuildEnv = Boolean(
 		process.env.SENTRY_AUTH_TOKEN && process.env.SENTRY_ORG && process.env.SENTRY_PROJECT,
 	);
@@ -26,7 +40,14 @@ function getPlugins(): Array<unknown> {
 				autoStart: false,
 			},
 		}),
-		contentCollections(),
+		contentCollections({
+			// During `pnpm build`, the `prebuild` step already runs
+			// `content-collections build`, so skip the redundant rebuild here.
+			// The plugin still wires the `content-collections` import alias.
+			// `build:ci` and `vp dev` (no prebuild) leave the flag unset so the
+			// plugin generates as usual.
+			isEnabled: () => process.env.CC_SKIP_VITE_BUILD !== "1",
+		}),
 		tanstackStart({
 			importProtection: {
 				client: {
@@ -298,7 +319,13 @@ export default defineConfig({
 		tsconfigPaths: true,
 	},
 	test: {
-		exclude: ["e2e/**", "node_modules", "dist", ".content-collections"],
+		// A bare `vitest`/`vp test` run delegates to the dedicated project
+		// configs (unit + Cloudflare Workers pool). The `pnpm test:*` scripts
+		// still target each config directly with their required flags.
+		projects: [
+			{ extends: ".config/vitest.unit.config.ts", root: repoRoot },
+			{ extends: ".config/vitest.config.ts", root: repoRoot },
+		],
 		passWithNoTests: true,
 	},
 	// @ts-expect-error type depth

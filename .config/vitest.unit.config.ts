@@ -17,6 +17,7 @@ export default defineConfig({
 		},
 	},
 	test: {
+		name: "unit",
 		environment: "node",
 		exclude: ["e2e/**", "node_modules/**", "dist/**", ".content-collections/**"],
 		include: ["src/**/*.test.ts"],
