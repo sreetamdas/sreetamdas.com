@@ -53,6 +53,7 @@ public/sitemap*.xml
 
 
 # Local agent planning artifacts
+.worktrees/
 .agents/
 task_plan.md
 findings.md
