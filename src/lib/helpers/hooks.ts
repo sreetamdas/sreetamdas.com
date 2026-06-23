@@ -47,7 +47,7 @@ export function useRandomInterval(
 	const savedCallback = useRef(callback);
 	useEffect(() => {
 		savedCallback.current = callback;
-	});
+	}, [callback]);
 	useEffect(() => {
 		if (typeof minDelay === "number" && typeof maxDelay === "number") {
 			const handleTick = () => {

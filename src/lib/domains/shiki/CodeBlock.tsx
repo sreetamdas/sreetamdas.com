@@ -53,6 +53,7 @@ function CodeBlockFrame({
 							<button
 								className="h-fit justify-self-end rounded-global bg-zinc-700 px-1 font-mono text-xs text-background transition-colors hover:bg-zinc-600 sm:text-sm"
 								onClick={onToggleExpand}
+								type="button"
 							>
 								toggle expand
 							</button>
@@ -75,6 +76,7 @@ function CodeBlockFrame({
 					<button
 						className="flex w-full justify-center px-5 py-2 text-xs text-zinc-400 transition-[color] hover:text-zinc-200 max-sm:px-2"
 						onClick={onToggleExpand}
+						type="button"
 					>
 						<FaChevronDown />
 					</button>
@@ -203,6 +205,7 @@ export const CodeBlock = (props: CodeBlockProps) => {
 		className,
 		preClassName: passedPreClassName,
 	} = props;
+	const [is_block_expanded, setBlockExpanded] = useState(false);
 
 	if (!isValidElement(code)) {
 		return null;
@@ -214,7 +217,6 @@ export const CodeBlock = (props: CodeBlockProps) => {
 	} = code;
 	const code_children = Children.toArray(code_children_raw).filter((line) => line !== "\n");
 
-	const [is_block_expanded, setBlockExpanded] = useState(false);
 	const allow_block_expand = code_children.length > 40;
 
 	function toggleExpand() {

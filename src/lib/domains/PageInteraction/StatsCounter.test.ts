@@ -4,7 +4,7 @@ import {
 	getLikeHeartIconClassName,
 	getLikeLoadingHeartIconClassName,
 	getLikeMutationAction,
-} from "./StatsCounter";
+} from "./StatsCounter.helpers";
 
 describe("getLikeHeartIconClassName", () => {
 	test("adds a shimmer treatment while a like is being saved", () => {

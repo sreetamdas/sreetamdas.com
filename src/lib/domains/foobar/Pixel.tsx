@@ -32,7 +32,7 @@ type FoobarPixelProps = {
 	path?: `/${Extract<FoobaFlagPageSlug, "404">}`;
 };
 
-export const FoobarPixel = (props: FoobarPixelProps) => {
+export const FoobarPixel = ({ path }: FoobarPixelProps) => {
 	const { pathname } = useLocation();
 	const has_mounted = useHasMounted();
 	const plausibleEvent = useCustomPlausible();
@@ -56,7 +56,7 @@ export const FoobarPixel = (props: FoobarPixelProps) => {
 
 	useEffect(() => {
 		let page_name = pathname;
-		if (props.path === `/${FOOBAR_FLAGS.error404.slug}`) {
+		if (path === `/${FOOBAR_FLAGS.error404.slug}`) {
 			page_name = `/${FOOBAR_FLAGS.error404.slug}`;
 
 			if (!completed.includes(FOOBAR_FLAGS.error404.name)) {
@@ -79,7 +79,7 @@ export const FoobarPixel = (props: FoobarPixelProps) => {
 				completed: completed.concat([FOOBAR_FLAGS.navigator.name]),
 			});
 		}
-	}, [completed, visited_pages, pathname]);
+	}, [completed, path, pathname, plausibleEvent, setFoobarData, visited_pages]);
 
 	useEffect(() => {
 		// for the `completed` achievement
@@ -89,7 +89,7 @@ export const FoobarPixel = (props: FoobarPixelProps) => {
 				all_achievements: true,
 			});
 		}
-	}, [completed]);
+	}, [completed, plausibleEvent, setFoobarData]);
 
 	return has_mounted && unlocked ? (
 		<span className="col-start-2 col-end-3">

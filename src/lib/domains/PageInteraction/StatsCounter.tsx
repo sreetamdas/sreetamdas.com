@@ -12,6 +12,12 @@ import { cn, normalizePathname } from "@/lib/helpers/utils";
 
 import { decrementLikeServerFn, incrementLikeServerFn, type LikeCount } from "./LikeButton.server";
 import { type PageMetrics } from "./Metrics.server";
+import {
+	getLikeHeartIconClassName,
+	getLikeLoadingHeartIconClassName,
+	getLikeMutationAction,
+	type LikeMutationAction,
+} from "./StatsCounter.helpers";
 import { pageMetricsQueryKey, usePageMetrics } from "./usePageMetrics";
 import { fetchViewCountServerFn, type PageViewCount } from "./ViewsCounter.server";
 
@@ -29,8 +35,6 @@ const statValueClassName = "inline-block min-w-[2ch] text-left tabular-nums";
 const statTooltipTriggerClassName = "group relative";
 const statTooltipBubbleClassName =
 	"pointer-events-none absolute bottom-full left-1/2 z-50 mb-2 w-max max-w-64 -translate-x-1/2 rounded-global border border-solid border-foreground/15 bg-background px-2.5 py-1.5 text-center text-xs leading-snug text-foreground opacity-0 shadow-lg transition-opacity duration-100 group-hover:opacity-100 group-focus-within:opacity-100";
-
-type LikeMutationAction = "like" | "unlike";
 
 export const StatsCounter = ({
 	slug,
@@ -134,11 +138,7 @@ const StatsList = ({
 	children: ReactNode;
 }) => (
 	<>
-		{statusLabel ? (
-			<span className="sr-only" role="status">
-				{statusLabel}
-			</span>
-		) : null}
+		{statusLabel ? <output className="sr-only">{statusLabel}</output> : null}
 		<dl
 			className={statsListClassName}
 			aria-label={statusLabel ?? `${noun} engagement stats`}
@@ -180,32 +180,6 @@ const StatTooltipBubble = ({ children }: { children: ReactNode }) => (
 		/>
 	</span>
 );
-
-export function getLikeHeartIconClassName({
-	isPending,
-}: {
-	hasLiked: boolean;
-	isPending: boolean;
-}) {
-	return cn(
-		"relative inline-flex size-5 items-center justify-center",
-		isPending && "like-heart-shimmer",
-	);
-}
-
-export function getLikeLoadingHeartIconClassName() {
-	return cn("text-primary/70", getLikeHeartIconClassName({ hasLiked: true, isPending: true }));
-}
-
-export function getLikeMutationAction({
-	hasLiked,
-	isDev,
-}: {
-	hasLiked: boolean;
-	isDev: boolean;
-}): LikeMutationAction {
-	return hasLiked && isDev ? "unlike" : "like";
-}
 
 const LoadingLikeHeart = () => (
 	<span className={getLikeLoadingHeartIconClassName()}>

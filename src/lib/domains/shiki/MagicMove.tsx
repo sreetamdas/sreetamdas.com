@@ -51,6 +51,7 @@ export const MagicMove = (props: MagicMoveProps) => {
 					disabled={current_stage_index === index_bounds[0]}
 					aria-disabled={current_stage_index === index_bounds[0]}
 					aria-describedby="previous-stage-button-disabled-description"
+					type="button"
 				>
 					<span id={`previous-stage-button-disabled-description-${unique_id}`} className="sr-only">
 						Currently at first possible stage
@@ -70,6 +71,7 @@ export const MagicMove = (props: MagicMoveProps) => {
 					disabled={current_stage_index === index_bounds[1]}
 					aria-disabled={current_stage_index === index_bounds[1]}
 					aria-describedby="next-stage-button-disabled-description"
+					type="button"
 				>
 					<span id={`next-stage-button-disabled-description-${unique_id}`} className="sr-only">
 						Currently at last possible stage
