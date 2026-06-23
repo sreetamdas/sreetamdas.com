@@ -122,7 +122,12 @@ export function resolveCallbackURL(return_url: string | undefined, site_url: str
 	try {
 		const callback_url = new URL(return_url, site_url);
 		const allowed_origin = new URL(site_url).origin;
-		return callback_url.origin === allowed_origin ? callback_url.toString() : site_url;
+		if (callback_url.origin !== allowed_origin) return site_url;
+
+		callback_url.searchParams.delete("master");
+		callback_url.searchParams.delete("presenter");
+		callback_url.searchParams.delete("role");
+		return callback_url.toString();
 	} catch {
 		return site_url;
 	}
