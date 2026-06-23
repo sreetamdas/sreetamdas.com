@@ -3,7 +3,7 @@ import interFont from "@fontsource-variable/inter/files/inter-latin-ext-wght-nor
 import { TanStackDevtools } from "@tanstack/react-devtools";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtoolsPanel } from "@tanstack/react-query-devtools";
-import { HeadContent, Outlet, Scripts, createRootRoute } from "@tanstack/react-router";
+import { HeadContent, Link, Outlet, Scripts, createRootRoute } from "@tanstack/react-router";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 import { type ReactNode, useEffect, useState } from "react";
 
@@ -170,9 +170,9 @@ function RootErrorComponent({ error, reset }: { error: Error; reset: () => void 
 						>
 							Try again
 						</button>
-						<a href="/" className="link-base text-foreground hover:text-primary">
+						<Link to="/" className="link-base text-foreground hover:text-primary">
 							Go home
-						</a>
+						</Link>
 					</div>
 				</section>
 			</main>

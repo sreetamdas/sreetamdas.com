@@ -3,7 +3,7 @@ import { Gradient } from "@/lib/components/Typography";
 type Stage = "first" | "second" | "final" | "title";
 type Props = { stage: Stage };
 export function MainTitle({ stage }: Props) {
-	const Inner = () => {
+	const title = (() => {
 		switch (stage) {
 			case "first":
 				return (
@@ -42,13 +42,11 @@ export function MainTitle({ stage }: Props) {
 					</>
 				);
 		}
-	};
+	})();
 
 	return (
 		<h1 className="pt-10 font-serif text-9xl font-bold text-balance whitespace-pre-line font-stretch-semi-condensed">
-			<Gradient>
-				<Inner />
-			</Gradient>
+			<Gradient>{title}</Gradient>
 		</h1>
 	);
 }

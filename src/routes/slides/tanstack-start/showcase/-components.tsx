@@ -3,7 +3,7 @@
 import { Link } from "@tanstack/react-router";
 import { Hydrate, useServerFn } from "@tanstack/react-start";
 import { visible } from "@tanstack/react-start/hydration";
-import { type ReactNode, useEffect, useState } from "react";
+import { type ReactNode, useState } from "react";
 
 import { Code, Gradient } from "@/lib/components/Typography";
 import { cn } from "@/lib/helpers/utils";
@@ -412,11 +412,7 @@ function LinkButton({ to, label }: { label: string; to: "/slides/tanstack-start"
 }
 
 function RuntimeCard() {
-	const [runtime, setRuntime] = useState("waiting for hydration");
-
-	useEffect(() => {
-		setRuntime(getRuntimeSide() ?? "unknown runtime");
-	}, []);
+	const runtime = getRuntimeSide() ?? "unknown runtime";
 
 	return (
 		<ExampleCard
@@ -425,7 +421,7 @@ function RuntimeCard() {
 			code={`createIsomorphicFn()\n\t.server(() => "server render")\n\t.client(() => "hydrated browser")`}
 		>
 			<p className="pt-4 text-sm">
-				Current runtime: <Code>{runtime}</Code>
+				Current runtime: <Code suppressHydrationWarning>{runtime}</Code>
 			</p>
 		</ExampleCard>
 	);

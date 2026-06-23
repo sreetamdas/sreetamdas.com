@@ -7,6 +7,8 @@ import { getBlogArchiveRenderable } from "./-index.server";
 
 export const Route = createFileRoute("/(main)/blog/")({
 	component: BlogArchivePage,
+	staleTime: 1000 * 60 * 60 * 24,
+	loader: () => getBlogArchiveRenderable(),
 	head: () => {
 		const title = `Blog archive ${SITE_TITLE_APPEND}`;
 		const description = SITE_DESCRIPTION;
@@ -29,8 +31,6 @@ export const Route = createFileRoute("/(main)/blog/")({
 			],
 		};
 	},
-	staleTime: 1000 * 60 * 60 * 24,
-	loader: () => getBlogArchiveRenderable(),
 });
 
 function BlogArchivePage() {
