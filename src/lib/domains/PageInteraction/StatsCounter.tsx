@@ -6,11 +6,11 @@ import { useServerFn } from "@tanstack/react-start";
 import { type ReactNode } from "react";
 import { FaEye, FaHeart, FaRegCircleUser, FaRegHeart } from "react-icons/fa6";
 
-import { IS_CI } from "@/config";
+import { IS_CI, IS_DEV } from "@/config";
 import { useLiveViewerCount } from "@/lib/components/useLiveViewerCount";
 import { cn, normalizePathname } from "@/lib/helpers/utils";
 
-import { incrementLikeServerFn, type LikeCount } from "./LikeButton.server";
+import { decrementLikeServerFn, incrementLikeServerFn, type LikeCount } from "./LikeButton.server";
 import { type PageMetrics } from "./Metrics.server";
 import { pageMetricsQueryKey, usePageMetrics } from "./usePageMetrics";
 import { fetchViewCountServerFn, type PageViewCount } from "./ViewsCounter.server";
@@ -29,6 +29,8 @@ const statValueClassName = "inline-block min-w-[2ch] text-left tabular-nums";
 const statTooltipTriggerClassName = "group relative";
 const statTooltipBubbleClassName =
 	"pointer-events-none absolute bottom-full left-1/2 z-50 mb-2 w-max max-w-64 -translate-x-1/2 rounded-global border border-solid border-foreground/15 bg-background px-2.5 py-1.5 text-center text-xs leading-snug text-foreground opacity-0 shadow-lg transition-opacity duration-100 group-hover:opacity-100 group-focus-within:opacity-100";
+
+type LikeMutationAction = "like" | "unlike";
 
 export const StatsCounter = ({
 	slug,
@@ -92,11 +94,7 @@ const StatsSentence = ({ normalizedPathname, disabled, page_type }: StatsSentenc
 					label="Views"
 					valueWidthClassName="w-[5ch]"
 				/>
-				<MetricSkeleton
-					icon={<FaRegHeart aria-hidden="true" focusable={false} className="size-5 text-primary" />}
-					label="Likes"
-					valueWidthClassName="w-[2ch]"
-				/>
+				<MetricSkeleton icon={<LoadingLikeHeart />} label="Likes" valueWidthClassName="w-[2ch]" />
 				<LiveStat />
 			</StatsList>
 		);
@@ -179,6 +177,43 @@ const StatTooltipBubble = ({ children }: { children: ReactNode }) => (
 		<span
 			aria-hidden="true"
 			className="absolute top-full left-1/2 size-2 -translate-x-1/2 -translate-y-1/2 rotate-45 border-r border-b border-solid border-foreground/15 bg-background"
+		/>
+	</span>
+);
+
+export function getLikeHeartIconClassName({
+	isPending,
+}: {
+	hasLiked: boolean;
+	isPending: boolean;
+}) {
+	return cn(
+		"relative inline-flex size-5 items-center justify-center",
+		isPending && "like-heart-shimmer",
+	);
+}
+
+export function getLikeLoadingHeartIconClassName() {
+	return cn("text-primary/70", getLikeHeartIconClassName({ hasLiked: true, isPending: true }));
+}
+
+export function getLikeMutationAction({
+	hasLiked,
+	isDev,
+}: {
+	hasLiked: boolean;
+	isDev: boolean;
+}): LikeMutationAction {
+	return hasLiked && isDev ? "unlike" : "like";
+}
+
+const LoadingLikeHeart = () => (
+	<span className={getLikeLoadingHeartIconClassName()}>
+		<FaHeart aria-hidden="true" focusable={false} className="size-5 text-primary/30" />
+		<FaHeart
+			aria-hidden="true"
+			focusable={false}
+			className="pointer-events-none absolute inset-0 size-5 animate-like-heart-shimmer text-secondary motion-reduce:animate-pulse"
 		/>
 	</span>
 );
@@ -275,18 +310,39 @@ const LikeStat = ({
 	const incrementLikeCount = useServerFn<() => Promise<LikeCount>>(() =>
 		incrementLikeServerFn({ data: { slug: normalizedPathname, disabled } }),
 	);
-	const { mutate, isPending } = useMutation({
-		mutationFn: incrementLikeCount,
-		onMutate: async () => {
+	const decrementLikeCount = useServerFn<() => Promise<LikeCount>>(() =>
+		decrementLikeServerFn({ data: { slug: normalizedPathname, disabled } }),
+	);
+	const {
+		mutate,
+		isPending,
+		variables: pendingAction,
+	} = useMutation({
+		mutationFn: (action: LikeMutationAction) =>
+			action === "unlike" ? decrementLikeCount() : incrementLikeCount(),
+		onMutate: async (action) => {
 			await queryClient.cancelQueries({ queryKey });
 
 			const previous = queryClient.getQueryData<PageMetrics>(queryKey);
-			if (previous?.hasLiked) {
+			if (!previous) {
+				return { previous };
+			}
+
+			if (action === "like" && previous.hasLiked) {
+				return { previous };
+			}
+			if (action === "unlike" && !previous.hasLiked) {
 				return { previous };
 			}
 
 			queryClient.setQueryData<PageMetrics>(queryKey, (old) =>
-				old ? { ...old, likes: old.likes + 1, hasLiked: true } : old,
+				old
+					? {
+							...old,
+							likes: action === "unlike" ? Math.max(0, old.likes - 1) : old.likes + 1,
+							hasLiked: action === "like",
+						}
+					: old,
 			);
 
 			return { previous };
@@ -306,21 +362,30 @@ const LikeStat = ({
 	const like_count = metrics.likes;
 	const hasLiked = metrics.hasLiked;
 	const readOnly = metrics.readOnly ?? false;
-	const is_disabled = disabled || hasLiked || isPending || readOnly;
+	const canUnlike = hasLiked && IS_DEV;
+	const nextLikeAction = getLikeMutationAction({ hasLiked, isDev: IS_DEV });
+	const is_disabled = disabled || isPending || readOnly || (hasLiked && !canUnlike);
 	const formatted_like_count = like_count.toLocaleString();
 	const likeUnit = like_count === 1 ? "like" : "likes";
 	const likeSummary = `${formatted_like_count} ${likeUnit}`;
-	const likeActionLabel = hasLiked ? `You liked this ${noun}` : `Like this ${noun}`;
+	const likeActionLabel = hasLiked
+		? canUnlike
+			? `Unlike this ${noun}`
+			: `You liked this ${noun}`
+		: `Like this ${noun}`;
 	const likeTooltipText = readOnly
 		? `This ${noun} has ${likeSummary}. Likes are read-only here.`
 		: hasLiked
-			? `This ${noun} has ${likeSummary}. You have liked it.`
+			? canUnlike
+				? `This ${noun} has ${likeSummary}. Click the heart to unlike it in local dev.`
+				: `This ${noun} has ${likeSummary}. You have liked it.`
 			: `This ${noun} has ${likeSummary}. Click the heart to like it.`;
+	const pendingVerb = pendingAction === "unlike" ? "unlike" : "like";
 	const likeButtonLabel = isPending
-		? `Saving like for this ${noun}. ${likeSummary}`
+		? `Saving ${pendingVerb} for this ${noun}. ${likeSummary}`
 		: `${likeActionLabel}. ${likeSummary}`;
 	const likeButtonTitle = isPending
-		? `Saving like for this ${noun} — ${likeSummary}`
+		? `Saving ${pendingVerb} for this ${noun} — ${likeSummary}`
 		: `${likeActionLabel} — ${likeSummary}`;
 
 	return (
@@ -329,7 +394,7 @@ const LikeStat = ({
 			<dd className={cn("m-0 inline-flex items-center gap-1.5", statTooltipTriggerClassName)}>
 				<button
 					type="button"
-					onClick={() => mutate()}
+					onClick={() => mutate(nextLikeAction)}
 					aria-label={likeButtonLabel}
 					aria-pressed={hasLiked}
 					className={cn(
@@ -339,7 +404,20 @@ const LikeStat = ({
 					disabled={is_disabled}
 				>
 					{hasLiked ? (
-						<FaHeart aria-hidden="true" focusable={false} className="size-5" />
+						<span className={getLikeHeartIconClassName({ hasLiked, isPending })}>
+							<FaHeart
+								aria-hidden="true"
+								focusable={false}
+								className={cn("size-5", isPending && "text-primary/45")}
+							/>
+							{isPending ? (
+								<FaHeart
+									aria-hidden="true"
+									focusable={false}
+									className="pointer-events-none absolute inset-0 size-5 animate-like-heart-shimmer text-secondary motion-reduce:animate-pulse"
+								/>
+							) : null}
+						</span>
 					) : (
 						<FaRegHeart aria-hidden="true" focusable={false} className="size-5" />
 					)}

@@ -6,9 +6,9 @@ import { describe, expect, test } from "vitest";
 import * as schema from "@/db/schema";
 import { pageDetails, postLikes } from "@/db/schema";
 
-import type { IncrementLikeInput, PageLikesDb, PageViewsDb } from "./index";
+import type { DecrementLikeInput, IncrementLikeInput, PageLikesDb, PageViewsDb } from "./index";
 
-import { getLikes, getPageViews, incrementLikes, upsertPageViews } from "./index";
+import { decrementLikes, getLikes, getPageViews, incrementLikes, upsertPageViews } from "./index";
 
 describe("PageViews domain", () => {
 	test("upsertPageViews inserts then increments the same slug", async () => {
@@ -216,6 +216,41 @@ describe("incrementLikes", () => {
 	});
 });
 
+describe("decrementLikes", () => {
+	test("deletes the visitor like and repairs stale page likes", async () => {
+		const db = createLikesDb();
+
+		await incrementLikes(db, "/blog/x", likeInput("h1", "ip1"));
+		await incrementLikes(db, "/blog/x", likeInput("h2", "ip2"));
+		await db.update(pageDetails).set({ likes: 99 }).where(eq(pageDetails.slug, "/blog/x"));
+
+		expect(await decrementLikes(db, "/blog/x", unlikeInput("h1"))).toEqual({
+			likes: 1,
+			hasLiked: false,
+		});
+		expect(await getLikes(db, "/blog/x", "h1")).toEqual({ likes: 1, hasLiked: false });
+		expect(await getLikes(db, "/blog/x", "h2")).toEqual({ likes: 1, hasLiked: true });
+		expect(await getPostLikesCount(db, "/blog/x")).toBe(1);
+		expect(await getPageLikes(db, "/blog/x")).toBe(1);
+	});
+
+	test("keeps other slugs and salt eras isolated", async () => {
+		const db = createLikesDb();
+
+		await incrementLikes(db, "/blog/x", likeInput("h1", "ip1", 1));
+		await incrementLikes(db, "/blog/x", likeInput("h2", "ip2", 2));
+		await incrementLikes(db, "/blog/y", likeInput("h1", "ip1", 1));
+
+		expect(await decrementLikes(db, "/blog/x", unlikeInput("h1", 1))).toEqual({
+			likes: 0,
+			hasLiked: false,
+		});
+		expect(await getPostLikesCount(db, "/blog/x")).toBe(1);
+		expect(await getPageLikes(db, "/blog/x")).toBe(0);
+		expect(await getLikes(db, "/blog/y", "h1")).toEqual({ likes: 1, hasLiked: true });
+	});
+});
+
 function createPageViewsDb(): PageViewsDb {
 	const sqlite = new Database(":memory:");
 	sqlite.exec(`
@@ -291,4 +326,8 @@ function likeInput(
 	abuseLimit = 10,
 ): IncrementLikeInput {
 	return { visitorHash, ipHash, saltVersion, abuseLimit };
+}
+
+function unlikeInput(visitorHash: string, saltVersion = 1): DecrementLikeInput {
+	return { visitorHash, saltVersion };
 }

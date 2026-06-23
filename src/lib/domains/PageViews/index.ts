@@ -29,6 +29,11 @@ export type IncrementLikeInput = {
 	abuseLimit: number;
 };
 
+export type DecrementLikeInput = {
+	visitorHash: string;
+	saltVersion: number;
+};
+
 export type PageViewsDb = BaseSQLiteDatabase<"sync" | "async", unknown, typeof schema>;
 export type PageLikesDb = DrizzleD1Database<typeof schema> | PageViewsDb;
 
@@ -106,6 +111,38 @@ export async function incrementLikes(
 		ON CONFLICT DO NOTHING
 	`);
 
+	const likes = await syncLikeCount(db, normalizedSlug, saltVersion);
+	const hasLiked = await getVisitorLike(db, normalizedSlug, visitorHash);
+
+	return { likes, hasLiked };
+}
+
+export async function decrementLikes(
+	db: PageLikesDb,
+	slug: string,
+	input: DecrementLikeInput,
+): Promise<LikeCount> {
+	const normalizedSlug = normalizePathname(slug);
+	const { visitorHash, saltVersion } = input;
+
+	await db.run(sql`
+		DELETE FROM ${postLikes}
+		WHERE ${postLikes.slug} = ${normalizedSlug}
+			AND ${postLikes.visitorHash} = ${visitorHash}
+			AND ${postLikes.saltVersion} = ${saltVersion}
+	`);
+
+	const likes = await syncLikeCount(db, normalizedSlug, saltVersion);
+	const hasLiked = await getVisitorLike(db, normalizedSlug, visitorHash);
+
+	return { likes, hasLiked };
+}
+
+async function syncLikeCount(
+	db: PageLikesDb,
+	normalizedSlug: string,
+	saltVersion: number,
+): Promise<number> {
 	const likesFromVisitors = sql<number>`(SELECT COUNT(*) FROM ${postLikes} WHERE ${postLikes.slug} = ${normalizedSlug} AND ${postLikes.saltVersion} = ${saltVersion})`;
 	const syncedRows = await db
 		.insert(pageDetails)
@@ -115,9 +152,8 @@ export async function incrementLikes(
 			set: { likes: likesFromVisitors, updatedAt: sql`CURRENT_TIMESTAMP` },
 		})
 		.returning({ likes: pageDetails.likes });
-	const hasLiked = await getVisitorLike(db, normalizedSlug, visitorHash);
 
-	return { likes: syncedRows[0]?.likes ?? 0, hasLiked };
+	return syncedRows[0]?.likes ?? 0;
 }
 
 async function getLikeCount(db: PageViewsDb, slug: string): Promise<number> {

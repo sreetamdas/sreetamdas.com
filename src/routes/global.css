@@ -41,6 +41,7 @@
 
 	--animate-overlayShow: overlayShow 150ms cubic-bezier(0.16, 1, 0.3, 1);
 	--animate-contentShow: contentShow 150ms cubic-bezier(0.16, 1, 0.3, 1);
+	--animate-like-heart-shimmer: like-heart-shimmer 1400ms linear infinite;
 
 	@keyframes overlayShow {
 		from {
@@ -59,6 +60,16 @@
 		to {
 			opacity: 1;
 			transform: translate(-50%, -50%) scale(1);
+		}
+	}
+
+	@keyframes like-heart-shimmer {
+		0% {
+			clip-path: polygon(-65% 0, -30% 0, -55% 100%, -90% 100%);
+		}
+		55%,
+		100% {
+			clip-path: polygon(130% 0, 165% 0, 140% 100%, 105% 100%);
 		}
 	}
 }
@@ -99,6 +110,10 @@
 
 @utility animate-duration-* {
 	animation-duration: --value(--duration-*, [duration], [*]);
+}
+
+@utility like-heart-shimmer {
+	isolation: isolate;
 }
 
 @utility gradient {

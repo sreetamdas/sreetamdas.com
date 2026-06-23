@@ -76,6 +76,36 @@ export const incrementLikeServerFn = createServerFn({
 		return incrementLikeCount(data, context);
 	});
 
+export const decrementLikeServerFn = createServerFn({
+	method: "POST",
+})
+	.validator((data) => {
+		return validatePagePathnamePayload(data, "Invalid likes payload");
+	})
+	.handler(async ({ data }) => {
+		const clientIp = getRequestHeader("cf-connecting-ip");
+		const cookieHeader = getRequestHeader("cookie");
+		const context: LikeRequestContext = {
+			setLikeCookie: (cookieValue) => {
+				setCookie(LIKE_ID_COOKIE_NAME, cookieValue, {
+					httpOnly: true,
+					secure: true,
+					sameSite: "lax",
+					path: "/",
+					maxAge: LIKE_ID_COOKIE_MAX_AGE_SECONDS,
+				});
+			},
+		};
+		if (clientIp) {
+			context.clientIp = clientIp;
+		}
+		if (cookieHeader) {
+			context.cookieHeader = cookieHeader;
+		}
+
+		return decrementLikeCount(data, context);
+	});
+
 export async function fetchLikeCount(
 	data: PagePathnamePayload,
 	context: LikeRequestContext = {},
@@ -105,6 +135,21 @@ export async function incrementLikeCount(
 		// success-shaped zero would silently drop the like (and reset the UI to
 		// 0). Throw so the client mutation rolls back and re-enables retry.
 		warnCounterFailureOnce("increment likes", error);
+		throw error;
+	}
+}
+
+export async function decrementLikeCount(
+	data: PagePathnamePayload,
+	context: LikeRequestContext = {},
+): Promise<LikeCount> {
+	const normalizedSlug = normalizePathname(data.slug);
+
+	try {
+		const { decrementLikeCountInDb } = await import("./LikeButton.data.server");
+		return await decrementLikeCountInDb(normalizedSlug, context);
+	} catch (error) {
+		warnCounterFailureOnce("decrement likes", error);
 		throw error;
 	}
 }

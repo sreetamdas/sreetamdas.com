@@ -1,18 +1,28 @@
 import { beforeEach, describe, expect, test, vi } from "vitest";
 
 const pageViews = vi.hoisted(() => ({
+	decrementLikes: vi.fn(),
 	getLikes: vi.fn(),
 	incrementLikes: vi.fn(),
 }));
 const database = vi.hoisted(() => ({ getDb: vi.fn(() => ({})) }));
 const cloudflare = vi.hoisted<{ env: Record<string, string | undefined> }>(() => ({ env: {} }));
+const config = vi.hoisted(() => ({
+	IS_DEV: true,
+	LIKES_IP_ABUSE_LIMIT: 10,
+	LIKES_SALT_VERSION: 1,
+}));
 
 vi.mock("@/lib/domains/PageViews", () => pageViews);
 vi.mock("@/db", () => database);
 vi.mock("cloudflare:workers", () => cloudflare);
-vi.mock("@/config", () => ({ IS_DEV: true, LIKES_IP_ABUSE_LIMIT: 10, LIKES_SALT_VERSION: 1 }));
+vi.mock("@/config", () => config);
 
-import { fetchLikeCountFromDb, incrementLikeCountInDb } from "./LikeButton.data.server";
+import {
+	decrementLikeCountInDb,
+	fetchLikeCountFromDb,
+	incrementLikeCountInDb,
+} from "./LikeButton.data.server";
 import { createSignedLikeCookie, hashLikeVisitor, LIKE_ID_COOKIE_NAME } from "./LikeIdentity";
 
 const TOKEN = "00000000-0000-4000-8000-000000000001";
@@ -20,9 +30,11 @@ const OTHER_TOKEN = "00000000-0000-4000-8000-000000000002";
 const SHA256_HEX = /^[0-9a-f]{64}$/;
 
 beforeEach(() => {
+	pageViews.decrementLikes.mockReset().mockResolvedValue({ likes: 1, hasLiked: false });
 	pageViews.getLikes.mockReset().mockResolvedValue({ likes: 1, hasLiked: false });
 	pageViews.incrementLikes.mockReset().mockResolvedValue({ likes: 2, hasLiked: true });
 	cloudflare.env = {};
+	config.IS_DEV = true;
 });
 
 describe("incrementLikeCountInDb", () => {
@@ -142,6 +154,46 @@ describe("incrementLikeCountInDb", () => {
 		expect(input?.visitorHash).toEqual(expect.stringMatching(SHA256_HEX));
 		expect(input?.visitorHash).not.toBe(trustedVisitorHash);
 		expect(setLikeCookie).toHaveBeenCalledOnce();
+	});
+});
+
+describe("decrementLikeCountInDb", () => {
+	test("decrements with a cookie visitor hash in local dev", async () => {
+		cloudflare.env = { LIKES_COOKIE_SECRET: "cookie-secret" };
+		const cookie = await createSignedLikeCookie("cookie-secret", TOKEN);
+
+		await decrementLikeCountInDb("/blog/x", {
+			cookieHeader: `${LIKE_ID_COOKIE_NAME}=${cookie.value}`,
+		});
+
+		expect(pageViews.decrementLikes).toHaveBeenCalledWith(expect.anything(), "/blog/x", {
+			visitorHash: expect.stringMatching(SHA256_HEX),
+			saltVersion: 1,
+		});
+		expect(pageViews.getLikes).not.toHaveBeenCalled();
+	});
+
+	test("rejects unlike writes outside local dev", async () => {
+		config.IS_DEV = false;
+		cloudflare.env = { LIKES_COOKIE_SECRET: "cookie-secret" };
+		const cookie = await createSignedLikeCookie("cookie-secret", TOKEN);
+
+		await expect(
+			decrementLikeCountInDb("/blog/x", {
+				cookieHeader: `${LIKE_ID_COOKIE_NAME}=${cookie.value}`,
+			}),
+		).rejects.toThrow("Unliking is only available in local dev");
+		expect(pageViews.decrementLikes).not.toHaveBeenCalled();
+	});
+
+	test("reads existing likes as read-only without a cookie identity", async () => {
+		cloudflare.env = {};
+
+		const result = await decrementLikeCountInDb("/blog/x");
+
+		expect(pageViews.getLikes).toHaveBeenCalledWith(expect.anything(), "/blog/x");
+		expect(pageViews.decrementLikes).not.toHaveBeenCalled();
+		expect(result.readOnly).toBe(true);
 	});
 });
 

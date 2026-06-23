@@ -1,15 +1,17 @@
 import { beforeEach, describe, expect, test, vi } from "vitest";
 
 const dataServer = vi.hoisted(() => ({
+	decrementLikeCountInDb: vi.fn(),
 	fetchLikeCountFromDb: vi.fn(),
 	incrementLikeCountInDb: vi.fn(),
 }));
 
 vi.mock("./LikeButton.data.server", () => dataServer);
 
-import { fetchLikeCount, incrementLikeCount } from "./LikeButton.server";
+import { decrementLikeCount, fetchLikeCount, incrementLikeCount } from "./LikeButton.server";
 
 beforeEach(() => {
+	dataServer.decrementLikeCountInDb.mockReset();
 	dataServer.fetchLikeCountFromDb.mockReset();
 	dataServer.incrementLikeCountInDb.mockReset();
 });
@@ -53,6 +55,27 @@ describe("incrementLikeCount", () => {
 
 		await expect(
 			incrementLikeCount({ slug: "/blog/chameleon-text", disabled: false }),
+		).rejects.toThrow("write failed");
+	});
+});
+
+describe("decrementLikeCount", () => {
+	test("delegates slugs with the like request context", async () => {
+		dataServer.decrementLikeCountInDb.mockResolvedValue({ likes: 4, hasLiked: false });
+		const context = { clientIp: "1.2.3.4", cookieHeader: "like_id=value" };
+
+		expect(await decrementLikeCount({ slug: "/about/", disabled: false }, context)).toEqual({
+			likes: 4,
+			hasLiked: false,
+		});
+		expect(dataServer.decrementLikeCountInDb).toHaveBeenCalledWith("/about", context);
+	});
+
+	test("throws when the data layer write fails instead of failing open", async () => {
+		dataServer.decrementLikeCountInDb.mockRejectedValue(new Error("write failed"));
+
+		await expect(
+			decrementLikeCount({ slug: "/blog/chameleon-text", disabled: false }),
 		).rejects.toThrow("write failed");
 	});
 });

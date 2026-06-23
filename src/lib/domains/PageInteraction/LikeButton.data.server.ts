@@ -3,7 +3,7 @@ import { env } from "cloudflare:workers";
 
 import { IS_DEV, LIKES_IP_ABUSE_LIMIT, LIKES_SALT_VERSION } from "@/config";
 import { getDb } from "@/db";
-import { getLikes, incrementLikes, type LikeCount } from "@/lib/domains/PageViews";
+import { decrementLikes, getLikes, incrementLikes, type LikeCount } from "@/lib/domains/PageViews";
 
 import {
 	createSignedLikeCookie,
@@ -52,6 +52,27 @@ export async function incrementLikeCountInDb(
 		ipHash: visitor.ipHash,
 		saltVersion: visitor.saltVersion,
 		abuseLimit: LIKES_IP_ABUSE_LIMIT,
+	});
+}
+
+export async function decrementLikeCountInDb(
+	normalizedSlug: string,
+	context: LikeRequestContext = {},
+): Promise<LikeCount> {
+	if (!IS_DEV) {
+		throw new Error("Unliking is only available in local dev");
+	}
+
+	const db = getDb();
+	const visitor = await getLikeVisitor(normalizedSlug, context);
+	if (!visitor) {
+		const likeCount = await getLikes(db, normalizedSlug);
+		return { ...likeCount, readOnly: true };
+	}
+
+	return await decrementLikes(db, normalizedSlug, {
+		visitorHash: visitor.visitorHash,
+		saltVersion: visitor.saltVersion,
 	});
 }
 
