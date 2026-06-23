@@ -20,4 +20,3 @@ peerDependencyRules:
 autoInstallPeers: true
 enablePrePostScripts: true
 minimumReleaseAge: 0
-trustPolicy: no-downgrade
