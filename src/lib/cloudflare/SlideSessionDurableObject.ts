@@ -232,9 +232,10 @@ export class SlideSessionDurableObject extends DurableObject<CloudflareEnv> {
 		slide: number | null | undefined,
 	) {
 		const cleanQuestion = question.trim();
-		const cleanOptions = options
-			.map((option) => option.trim())
-			.filter((option) => option.length > 0);
+		const cleanOptions = options.flatMap((option) => {
+			const cleanOption = option.trim();
+			return cleanOption.length > 0 ? [cleanOption] : [];
+		});
 		if (!cleanQuestion || cleanOptions.length < 2) return;
 
 		const poll: PollRecord = {

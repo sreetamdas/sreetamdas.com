@@ -51,12 +51,10 @@ export function getCookieValue(cookieHeader: string | undefined, name: string): 
 
 	for (const part of cookieHeader.split(";")) {
 		const trimmed = part.trim();
-		const equalsAt = trimmed.indexOf("=");
-		if (equalsAt === -1) continue;
+		const cookiePrefix = `${name}=`;
 
-		const cookieName = trimmed.slice(0, equalsAt);
-		if (cookieName === name) {
-			return trimmed.slice(equalsAt + 1);
+		if (trimmed.startsWith(cookiePrefix)) {
+			return trimmed.slice(cookiePrefix.length);
 		}
 	}
 

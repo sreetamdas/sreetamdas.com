@@ -111,8 +111,10 @@ export async function incrementLikes(
 		ON CONFLICT DO NOTHING
 	`);
 
-	const likes = await syncLikeCount(db, normalizedSlug, saltVersion);
-	const hasLiked = await getVisitorLike(db, normalizedSlug, visitorHash);
+	const [likes, hasLiked] = await Promise.all([
+		syncLikeCount(db, normalizedSlug, saltVersion),
+		getVisitorLike(db, normalizedSlug, visitorHash),
+	]);
 
 	return { likes, hasLiked };
 }
@@ -132,8 +134,10 @@ export async function decrementLikes(
 			AND ${postLikes.saltVersion} = ${saltVersion}
 	`);
 
-	const likes = await syncLikeCount(db, normalizedSlug, saltVersion);
-	const hasLiked = await getVisitorLike(db, normalizedSlug, visitorHash);
+	const [likes, hasLiked] = await Promise.all([
+		syncLikeCount(db, normalizedSlug, saltVersion),
+		getVisitorLike(db, normalizedSlug, visitorHash),
+	]);
 
 	return { likes, hasLiked };
 }

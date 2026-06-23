@@ -10,7 +10,7 @@ import { mdxParse } from "safe-mdx/parse";
 import { type Node } from "unist";
 import { visit } from "unist-util-visit";
 
-import { getSlimKarmaHighlighter } from "../../domains/shiki";
+import { getSlimKarmaHighlighter } from "../../domains/shiki/highlighter";
 
 type CodeTreeNode = Node & {
 	type: string;
@@ -132,8 +132,11 @@ export function injectTableOfContents(tree: MarkdownNode): void {
 }
 
 export async function mdxParseWithShiki(code: string): Promise<MdxParseResult> {
-	const { renderCodeBlockToHtml } = await import("../../domains/shiki/plugin");
-	const highlighter = await getSlimKarmaHighlighter();
+	const [plugin, highlighter] = await Promise.all([
+		import("../../domains/shiki/plugin"),
+		getSlimKarmaHighlighter(),
+	]);
+	const { renderCodeBlockToHtml } = plugin;
 	const parsedMdx = mdxParse(code);
 	if (!isMarkdownNode(parsedMdx)) {
 		throw new Error("MDX parser returned unexpected tree");
