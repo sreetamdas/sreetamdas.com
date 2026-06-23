@@ -15,13 +15,11 @@
  */
 import {
 	Children,
-	createContext,
 	isValidElement,
 	useContext,
 	useEffect,
 	useId,
 	useMemo,
-	useRef,
 	type ReactElement,
 	type ReactNode,
 } from "react";
@@ -29,19 +27,7 @@ import {
 import { UnorderedList } from "@/lib/components/Typography";
 import { cn } from "@/lib/helpers/utils";
 
-export interface StepContextValue {
-	currentStep: number;
-	registerSteps: (count: number) => void;
-	unregisterSteps: (id: string) => void;
-}
-
-export const StepContext = createContext<StepContextValue>({
-	currentStep: 0,
-	registerSteps: () => {},
-	unregisterSteps: () => {},
-});
-
-export const SlideActiveContext = createContext(false);
+import { SlideActiveContext, StepContext } from "./steps.context";
 
 type LiElement = ReactElement<{ className?: string; children?: ReactNode }>;
 
@@ -84,19 +70,21 @@ export function Steps({ children }: { children: ReactNode }) {
 	const active = useContext(SlideActiveContext);
 
 	const id = useId();
-	const idRef = useRef(id);
 
 	const liContent = useMemo(() => extractLiContent(children), [children]);
-	const count = liContent.length;
+	const array = Children.toArray(children);
+	const hasListContent = liContent.length > 0;
+	const stepItems = hasListContent ? liContent : array;
+	const count = stepItems.length;
 
 	useEffect(() => {
 		if (active) {
-			registerSteps(count);
-			return () => unregisterSteps(idRef.current);
+			registerSteps(id, count);
+			return () => unregisterSteps(id);
 		}
-	}, [active, count, registerSteps, unregisterSteps]);
+	}, [active, count, id, registerSteps, unregisterSteps]);
 
-	if (liContent.length > 0) {
+	if (hasListContent) {
 		return (
 			<UnorderedList listClasses="mb-4 only:mt-4" markClasses="mt-1.5 text-2xl">
 				{liContent.map((content, i) => (
@@ -107,16 +95,6 @@ export function Steps({ children }: { children: ReactNode }) {
 			</UnorderedList>
 		);
 	}
-
-	// Non-list children: wrap each in a div, reveal one at a time
-	const array = Children.toArray(children);
-
-	useEffect(() => {
-		if (active && count === 0) {
-			registerSteps(array.length);
-			return () => unregisterSteps(idRef.current);
-		}
-	}, [active, array.length, count, registerSteps, unregisterSteps]);
 
 	return (
 		<>

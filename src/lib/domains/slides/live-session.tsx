@@ -34,13 +34,15 @@ export type SlideSessionPollDefinition = {
 };
 type SocialSignInProvider = "cloudflare" | "google";
 
+const EMPTY_POLL_DEFINITIONS: Array<SlideSessionPollDefinition> = [];
+
 export function SlideSessionOverlay({
 	sessionId,
 	role,
 	connected,
 	snapshot,
 	currentSlide,
-	pollDefinitions = [],
+	pollDefinitions = EMPTY_POLL_DEFINITIONS,
 	reactions,
 	createPoll,
 	vote,
@@ -146,10 +148,10 @@ function MasterLiveControl({
 
 	function handleCreatePoll(event: FormEvent<HTMLFormElement>) {
 		event.preventDefault();
-		const cleanOptions = options
-			.split(",")
-			.map((option) => option.trim())
-			.filter(Boolean);
+		const cleanOptions = options.split(",").flatMap((option) => {
+			const cleanOption = option.trim();
+			return cleanOption ? [cleanOption] : [];
+		});
 		createPoll(question, cleanOptions, currentSlide);
 		setQuestion("");
 	}
@@ -227,7 +229,7 @@ function MasterLiveControl({
 					closePoll={closePoll}
 					poll={poll}
 					resetPoll={resetPoll}
-					role="master"
+					sessionRole="master"
 					totalVotes={totalVotes}
 				/>
 			) : (
@@ -253,12 +255,14 @@ function MasterLiveControl({
 					) : null}
 					<form className="grid gap-2" onSubmit={handleCreatePoll}>
 						<input
+							aria-label="Custom poll question"
 							className="rounded-lg border border-white/15 bg-white/10 px-3 py-2 text-xs text-white placeholder:text-white/40"
 							placeholder="Custom poll question"
 							value={question}
 							onChange={(event) => setQuestion(event.target.value)}
 						/>
 						<input
+							aria-label="Comma-separated poll options"
 							className="rounded-lg border border-white/15 bg-white/10 px-3 py-2 text-xs text-white placeholder:text-white/40"
 							placeholder="Comma-separated options"
 							value={options}
@@ -330,7 +334,7 @@ function ViewerLiveButton({
 						))}
 					</div>
 					{poll ? (
-						<PollPanel poll={poll} role="viewer" totalVotes={totalVotes} vote={vote} />
+						<PollPanel poll={poll} sessionRole="viewer" totalVotes={totalVotes} vote={vote} />
 					) : (
 						<p className="m-0 mt-3 text-xs text-white/60">
 							Slides are controlled by the presenter.
@@ -354,14 +358,14 @@ function ViewerLiveButton({
 
 function PollPanel({
 	poll,
-	role,
+	sessionRole,
 	totalVotes,
 	vote,
 	closePoll,
 	resetPoll,
 }: {
 	poll: SlidePoll;
-	role: SlideSessionRole;
+	sessionRole: SlideSessionRole;
 	totalVotes: number;
 	vote?: (pollId: string, optionId: string) => void;
 	closePoll?: () => void;
@@ -377,7 +381,7 @@ function PollPanel({
 						{poll.slide === null ? "" : ` · slide ${poll.slide + 1}`}
 					</p>
 				</div>
-				{role === "master" ? (
+				{sessionRole === "master" ? (
 					<div className="flex gap-2">
 						<button
 							className="rounded-sm bg-white/10 px-2 py-1 text-xs hover:bg-white/20"
@@ -403,10 +407,10 @@ function PollPanel({
 						<button
 							className={cn(
 								"relative overflow-hidden rounded-lg border border-white/15 px-3 py-2 text-left text-xs",
-								poll.open && role === "viewer" ? "hover:border-white/60" : "cursor-default",
+								poll.open && sessionRole === "viewer" ? "hover:border-white/60" : "cursor-default",
 								option.id === poll.selectedOptionId ? "border-primary ring-1 ring-primary/50" : "",
 							)}
-							disabled={!poll.open || role === "master"}
+							disabled={!poll.open || sessionRole === "master"}
 							key={option.id}
 							onClick={() => vote?.(poll.id, option.id)}
 							type="button"
@@ -436,10 +440,10 @@ function PollPanel({
 }
 
 function ReactionCluster({ reactions }: { reactions: Array<SlideSessionReaction> }) {
-	const counts = SLIDE_REACTION_EMOJIS.map((emoji) => ({
-		emoji,
-		count: reactions.filter((reaction) => reaction.emoji === emoji).length,
-	})).filter((reaction) => reaction.count > 0);
+	const counts = SLIDE_REACTION_EMOJIS.flatMap((emoji) => {
+		const count = reactions.filter((reaction) => reaction.emoji === emoji).length;
+		return count > 0 ? [{ emoji, count }] : [];
+	});
 
 	if (counts.length === 0) return null;
 

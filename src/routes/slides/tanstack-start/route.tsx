@@ -11,7 +11,8 @@ import { useCallback } from "react";
 
 import { SITE_TITLE_APPEND } from "@/config";
 import { type SlideSessionPollDefinition } from "@/lib/domains/slides/live-session";
-import { SlideDeckRouteShell, validateSlideSearch } from "@/lib/domains/slides/route-shell";
+import { validateSlideSearch } from "@/lib/domains/slides/route-search";
+import { SlideDeckRouteShell } from "@/lib/domains/slides/route-shell";
 import { canonicalUrl, defaultOgImageUrl } from "@/lib/seo";
 
 export const Route = createFileRoute("/slides/tanstack-start")({

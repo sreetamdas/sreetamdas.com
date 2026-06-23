@@ -24,7 +24,7 @@ import { MDXContent } from "@/lib/components/MDX";
 import { Gradient } from "@/lib/components/Typography";
 import { cn } from "@/lib/helpers/utils";
 
-import { StepContext, SlideActiveContext, type StepContextValue } from "./steps";
+import { SlideActiveContext, StepContext, type StepContextValue } from "./steps.context";
 import { aspectRatioFittingStyles } from "./use-aspect-ratio-fitting";
 
 export interface SlideData {
@@ -101,16 +101,15 @@ export function SlideDeck({
 	const [presenterMode, setPresenterMode] = useState(initialPresenterMode);
 	const [transitionsEnabled, setTransitionsEnabled] = useState(initialTransitions);
 	const [elapsedTime, setElapsedTime] = useState(0);
-	const containerRef = useRef<HTMLDivElement>(null);
 	const timerRef = useRef<ReturnType<typeof setInterval>>(undefined);
 	const touchStartX = useRef<number>(0);
 	const stepRegistrations = useRef<StepEntry[]>([]);
 	const [_stepVersion, setStepVersion] = useState(0);
 	const [fitContainerStyle, fitCanvasStyle] = aspectRatioFittingStyles(aspectRatio);
 
-	const registerSteps = useCallback((count: number) => {
-		const entry: StepEntry = { id: crypto.randomUUID(), count };
-		stepRegistrations.current.push(entry);
+	const registerSteps = useCallback((id: string, count: number) => {
+		stepRegistrations.current = stepRegistrations.current.filter((entry) => entry.id !== id);
+		stepRegistrations.current.push({ id, count });
 		setStepVersion((v) => v + 1);
 	}, []);
 
@@ -167,7 +166,7 @@ export function SlideDeck({
 			setCurrentStep(0);
 			onNavigate?.(currentIndex - 1, 0);
 		}
-	}, [disableUserNavigation, currentStep, currentIndex, slides.length, onNavigate]);
+	}, [disableUserNavigation, currentStep, currentIndex, onNavigate]);
 
 	const togglePresenterMode = useCallback(() => {
 		setPresenterMode((prev) => !prev);
@@ -186,10 +185,6 @@ export function SlideDeck({
 	goPrevRef.current = stepBackward;
 	togglePresenterRef.current = togglePresenterMode;
 	toggleTransitionsRef.current = toggleTransitions;
-
-	useEffect(() => {
-		containerRef.current?.focus();
-	}, []);
 
 	useEffect(() => {
 		if (controlledSlide === undefined) return;
@@ -269,12 +264,9 @@ export function SlideDeck({
 
 	return (
 		<StepContext.Provider value={stepContextValue.current}>
-			<div
-				ref={containerRef}
+			<section
 				className={cn("relative h-full w-full overflow-hidden outline-none", className)}
 				style={style}
-				tabIndex={0}
-				role="region"
 				aria-label="Slide deck"
 				onTouchStart={handleTouchStart}
 				onTouchEnd={handleTouchEnd}
@@ -306,7 +298,7 @@ export function SlideDeck({
 						) : null}
 					</div>
 				</div>
-			</div>
+			</section>
 		</StepContext.Provider>
 	);
 }
@@ -466,6 +458,7 @@ function PresenterMode({
 
 			<div className="flex shrink-0 items-center justify-center gap-4 border-t border-gray-700 px-4 py-3">
 				<button
+					type="button"
 					onClick={goPrev}
 					disabled={currentIndex === 0 && currentStep === 0}
 					className="rounded-global bg-gray-700 px-4 py-2 text-sm transition-colors hover:bg-gray-600 disabled:opacity-30 disabled:hover:bg-gray-700"
@@ -476,6 +469,7 @@ function PresenterMode({
 				<div className="flex max-w-md gap-1 overflow-x-auto">
 					{slides.map((_slide, index) => (
 						<button
+							type="button"
 							key={index}
 							onClick={() => goTo(index, 0)}
 							className={`h-8 w-8 rounded-global text-xs transition-colors ${
@@ -490,6 +484,7 @@ function PresenterMode({
 				</div>
 
 				<button
+					type="button"
 					onClick={goNext}
 					disabled={currentIndex === slides.length - 1}
 					className="rounded-global bg-gray-700 px-4 py-2 text-sm transition-colors hover:bg-gray-600 disabled:opacity-30 disabled:hover:bg-gray-700"
