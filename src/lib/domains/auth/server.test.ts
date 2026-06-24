@@ -21,9 +21,18 @@ describe("resolveCallbackURL", () => {
 			"https://sreetamdas.com/slides/demo?live=abc",
 		);
 
-		expect(resolveCallbackURL("https://sreetamdas.com/slides/demo?master=1", site_url)).toBe(
-			"https://sreetamdas.com/slides/demo?master=1",
+		expect(resolveCallbackURL("https://sreetamdas.com/slides/demo?slide=2&step=1", site_url)).toBe(
+			"https://sreetamdas.com/slides/demo?slide=2&step=1",
 		);
+	});
+
+	test("strips actionful presenter params from same-origin return targets", () => {
+		expect(
+			resolveCallbackURL(
+				"https://sreetamdas.com/slides/demo?live=abc&master=1&presenter=1",
+				site_url,
+			),
+		).toBe("https://sreetamdas.com/slides/demo?live=abc");
 	});
 
 	test("falls back to the site URL for cross-origin or malformed return targets", () => {
@@ -61,7 +70,7 @@ describe("startSocialSignIn", () => {
 		expect(sign_in_request.headers.get("Content-Type")).toBe("application/json");
 		expect(await sign_in_request.json()).toEqual({
 			providerId: "cloudflare",
-			callbackURL: "https://sreetamdas.com/slides/demo?master=1",
+			callbackURL: "https://sreetamdas.com/slides/demo",
 		});
 	});
 
@@ -90,7 +99,7 @@ describe("startSocialSignIn", () => {
 		expect(sign_in_request.headers.get("Content-Type")).toBe("application/json");
 		expect(await sign_in_request.json()).toEqual({
 			provider: "google",
-			callbackURL: "https://sreetamdas.com/slides/demo?master=1",
+			callbackURL: "https://sreetamdas.com/slides/demo",
 		});
 	});
 

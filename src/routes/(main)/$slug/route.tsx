@@ -4,11 +4,15 @@ import { SITE_DESCRIPTION, SITE_TITLE_APPEND } from "@/config";
 import { StatsCounter } from "@/lib/domains/PageInteraction/StatsCounter";
 import { canonicalUrl, defaultOgImageUrl } from "@/lib/seo";
 
-import { getRootPageRenderable, type RootPageLoaderData } from "./-$slug.server";
+import { getRootPageRenderable } from "./-$slug.server";
 
 export const Route = createFileRoute("/(main)/$slug")({
 	component: MDXPageSlugPage,
-	head: ({ loaderData }: { loaderData?: RootPageLoaderData }) => {
+	staleTime: 1000 * 60 * 60 * 24,
+	loader: ({ params }: { params: { slug: string } }) => {
+		return getRootPageRenderable({ data: { slug: params.slug } });
+	},
+	head: ({ loaderData }) => {
 		const post = loaderData?.post;
 		const titleBase = post?.title ?? post?.page_slug ?? "Page";
 		const title = `${titleBase} ${SITE_TITLE_APPEND}`;
@@ -31,10 +35,6 @@ export const Route = createFileRoute("/(main)/$slug")({
 				{ name: "twitter:image", content: ogImage },
 			],
 		};
-	},
-	staleTime: 1000 * 60 * 60 * 24,
-	loader: ({ params }: { params: { slug: string } }) => {
-		return getRootPageRenderable({ data: { slug: params.slug } });
 	},
 });
 

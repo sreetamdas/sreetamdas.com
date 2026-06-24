@@ -1,9 +1,8 @@
 /**
- * D1-backed page view counters. Reads are strict so missing seed data is visible,
- * while writes use an upsert/increment to keep concurrent page views atomic at
- * the database layer.
+ * D1-backed page view and like counters. View writes stay atomic through an
+ * upsert, while like writes use an SQL insert gate so the anonymous cookie
+ * identity is deduped by visitor and abuse-capped by IP in the database.
  */
-import type { BatchItem } from "drizzle-orm/batch";
 import type { DrizzleD1Database } from "drizzle-orm/d1";
 import type { BaseSQLiteDatabase } from "drizzle-orm/sqlite-core";
 
@@ -23,19 +22,20 @@ export type LikeCount = {
 	readOnly?: boolean;
 };
 
-export type PageViewsDb = BaseSQLiteDatabase<"sync" | "async", unknown, typeof schema>;
-
-type PageLikesRow = { likes: number };
-type PageLikesBatch = readonly [
-	BatchItem<"sqlite"> & PromiseLike<unknown>,
-	BatchItem<"sqlite"> & PromiseLike<Array<PageLikesRow>>,
-];
-
-export type PageLikesTestDb = PageViewsDb & {
-	batch(batch: PageLikesBatch): Promise<[unknown, Array<PageLikesRow>]>;
+export type IncrementLikeInput = {
+	visitorHash: string;
+	ipHash: string;
+	saltVersion: number;
+	abuseLimit: number;
 };
 
-export type PageLikesDb = DrizzleD1Database<typeof schema> | PageLikesTestDb;
+export type DecrementLikeInput = {
+	visitorHash: string;
+	saltVersion: number;
+};
+
+export type PageViewsDb = BaseSQLiteDatabase<"sync" | "async", unknown, typeof schema>;
+export type PageLikesDb = DrizzleD1Database<typeof schema> | PageViewsDb;
 
 export async function getPageViews(db: PageViewsDb, slug: string): Promise<PageViewCount> {
 	const normalizedSlug = normalizePathname(slug);
@@ -81,11 +81,14 @@ export async function getLikes(
 	db: PageViewsDb,
 	slug: string,
 	visitorHash?: string,
+	saltVersion = 1,
 ): Promise<LikeCount> {
 	const normalizedSlug = normalizePathname(slug);
 	const [likeCount, visitorLike] = await Promise.all([
 		getLikeCount(db, normalizedSlug),
-		visitorHash ? getVisitorLike(db, normalizedSlug, visitorHash) : Promise.resolve(false),
+		visitorHash
+			? getVisitorLike(db, normalizedSlug, visitorHash, saltVersion)
+			: Promise.resolve(false),
 	]);
 
 	return { likes: likeCount, hasLiked: visitorLike };
@@ -94,18 +97,61 @@ export async function getLikes(
 export async function incrementLikes(
 	db: PageLikesDb,
 	slug: string,
-	visitorHash: string,
-	saltVersion: number,
+	input: IncrementLikeInput,
 ): Promise<LikeCount> {
 	const normalizedSlug = normalizePathname(slug);
+	const { visitorHash, ipHash, saltVersion, abuseLimit } = input;
 
+	await db.run(sql`
+		INSERT INTO post_likes (slug, visitor_hash, ip_hash, salt_version)
+		SELECT ${normalizedSlug}, ${visitorHash}, ${ipHash}, ${saltVersion}
+		WHERE (
+			SELECT COUNT(*) FROM ${postLikes}
+			WHERE ${postLikes.slug} = ${normalizedSlug}
+				AND ${postLikes.ipHash} = ${ipHash}
+				AND ${postLikes.saltVersion} = ${saltVersion}
+		) < ${abuseLimit}
+		ON CONFLICT DO NOTHING
+	`);
+
+	const [likes, hasLiked] = await Promise.all([
+		syncLikeCount(db, normalizedSlug, saltVersion),
+		getVisitorLike(db, normalizedSlug, visitorHash, saltVersion),
+	]);
+
+	return { likes, hasLiked };
+}
+
+export async function decrementLikes(
+	db: PageLikesDb,
+	slug: string,
+	input: DecrementLikeInput,
+): Promise<LikeCount> {
+	const normalizedSlug = normalizePathname(slug);
+	const { visitorHash, saltVersion } = input;
+
+	await db.run(sql`
+		DELETE FROM ${postLikes}
+		WHERE ${postLikes.slug} = ${normalizedSlug}
+			AND ${postLikes.visitorHash} = ${visitorHash}
+			AND ${postLikes.saltVersion} = ${saltVersion}
+	`);
+
+	const [likes, hasLiked] = await Promise.all([
+		syncLikeCount(db, normalizedSlug, saltVersion),
+		getVisitorLike(db, normalizedSlug, visitorHash, saltVersion),
+	]);
+
+	return { likes, hasLiked };
+}
+
+async function syncLikeCount(
+	db: PageLikesDb,
+	normalizedSlug: string,
+	saltVersion: number,
+): Promise<number> {
 	const likesFromVisitors = sql<number>`(SELECT COUNT(*) FROM ${postLikes} WHERE ${postLikes.slug} = ${normalizedSlug} AND ${postLikes.saltVersion} = ${saltVersion})`;
-
-	const insertLike = db
-		.insert(postLikes)
-		.values({ slug: normalizedSlug, visitorHash, saltVersion })
-		.onConflictDoNothing();
-	const syncLikeCount = db
+	const syncedRows = await db
 		.insert(pageDetails)
 		.values({ slug: normalizedSlug, viewCount: 0, likes: likesFromVisitors })
 		.onConflictDoUpdate({
@@ -114,13 +160,7 @@ export async function incrementLikes(
 		})
 		.returning({ likes: pageDetails.likes });
 
-	// Keep the insert and derived-count repair atomic so partial failure cannot stale the public counter.
-	// These must be query-builder statements, not db.run(sql): D1's db.batch prepares each item and
-	// binds its params, but a raw SQLiteRaw exposes no prepared statement to bind, so it throws there.
-	const [, syncedRows] = await db.batch([insertLike, syncLikeCount]);
-
-	// The visitor's like row exists once the insert/conflict resolves, so this visitor has liked.
-	return { likes: syncedRows[0]?.likes ?? 0, hasLiked: true };
+	return syncedRows[0]?.likes ?? 0;
 }
 
 async function getLikeCount(db: PageViewsDb, slug: string): Promise<number> {
@@ -137,11 +177,18 @@ async function getVisitorLike(
 	db: PageViewsDb,
 	slug: string,
 	visitorHash: string,
+	saltVersion: number,
 ): Promise<boolean> {
 	const rows = await db
 		.select({ visitorHash: postLikes.visitorHash })
 		.from(postLikes)
-		.where(and(eq(postLikes.slug, slug), eq(postLikes.visitorHash, visitorHash)))
+		.where(
+			and(
+				eq(postLikes.slug, slug),
+				eq(postLikes.visitorHash, visitorHash),
+				eq(postLikes.saltVersion, saltVersion),
+			),
+		)
 		.limit(1);
 
 	return rows.length > 0;

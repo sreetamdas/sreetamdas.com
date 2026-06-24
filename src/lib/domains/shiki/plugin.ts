@@ -2,12 +2,8 @@ import { transformerColorizedBrackets } from "@shikijs/colorized-brackets";
 import { defaultTheme } from "@sreetamdas/karma";
 import { omit } from "lodash-es";
 import { type BundledLanguage } from "shiki/langs";
-import { type Node } from "unist";
-import { visit } from "unist-util-visit";
 
 import type { KarmaHighlighter } from "./highlighter";
-
-import { getSlimKarmaHighlighter } from "./highlighter";
 
 const SUPPORTED_BUNDLED_LANGUAGES = [
 	"typescript",
@@ -20,23 +16,8 @@ const SUPPORTED_BUNDLED_LANGUAGES = [
 	"elixir",
 ] satisfies Array<BundledLanguage>;
 
-type CodeTreeNode = Node & {
-	type: string;
-	lang?: string;
-	meta?: string | null;
-	value: string;
-};
-
 function isBundledLanguage(value: string): value is (typeof SUPPORTED_BUNDLED_LANGUAGES)[number] {
 	return SUPPORTED_BUNDLED_LANGUAGES.some((lang) => lang === value);
-}
-
-function isCodeTreeNode(value: unknown): value is CodeTreeNode {
-	if (typeof value !== "object" || value === null || !("type" in value)) {
-		return false;
-	}
-
-	return value.type === "code" && "value" in value && typeof value.value === "string";
 }
 
 export function renderCodeBlockToHtml(
@@ -82,54 +63,6 @@ export function renderCodeBlockToHtml(
 	} catch {
 		return null;
 	}
-}
-
-export async function highlightCodeBlocks(tree: Node) {
-	const karma_highlighter = await getSlimKarmaHighlighter();
-
-	visit(tree, (node) => {
-		if (!isCodeTreeNode(node)) {
-			return;
-		}
-
-		const html = renderCodeBlockToHtml(karma_highlighter, node.value, node.lang, node.meta ?? null);
-		if (html === null) {
-			return;
-		}
-
-		node.type = "html";
-		node.value = html;
-	});
-}
-
-export function remarkShiki() {
-	return async (tree: Node) => {
-		await highlightCodeBlocks(tree);
-	};
-}
-
-const CODE_FENCE_REGEX = /```([\w-]+)?([^\n]*)\n([\s\S]*?)```/g;
-export async function highlightMarkdownCodeFences(markdown: string) {
-	const karma_highlighter = await getSlimKarmaHighlighter();
-
-	let lastIndex = 0;
-	let result = "";
-
-	for (const match of markdown.matchAll(CODE_FENCE_REGEX)) {
-		const [fullMatch, lang, meta = "", code = ""] = match;
-		const start = match.index ?? 0;
-
-		result += markdown.slice(lastIndex, start);
-
-		const highlighted = renderCodeBlockToHtml(karma_highlighter, code, lang, meta.trim() || null);
-		result += highlighted ?? fullMatch;
-
-		lastIndex = start + fullMatch.length;
-	}
-
-	result += markdown.slice(lastIndex);
-
-	return result;
 }
 
 /**

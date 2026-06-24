@@ -5,7 +5,7 @@ import { useState } from "react";
 
 import { Image } from "@/lib/components/Image";
 
-export const KARMA_COLOR_PALETTE = [
+const KARMA_COLOR_PALETTE = [
 	"#FC618D",
 	"#51C7DA",
 	"#AF98E6",
@@ -13,7 +13,7 @@ export const KARMA_COLOR_PALETTE = [
 	"#7BD88F",
 	"#FD9353",
 ] as const;
-export const KARMA_LIGHT_COLOR_PALETTE = [
+const KARMA_LIGHT_COLOR_PALETTE = [
 	"#FC618D",
 	"#5688C7",
 	"#6F42C1",

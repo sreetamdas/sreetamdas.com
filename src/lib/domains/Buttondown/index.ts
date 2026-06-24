@@ -6,8 +6,14 @@
 import { env } from "cloudflare:workers";
 
 import { BUTTONDOWN_EMAIL_MOCKS } from "./mocks";
+import newsletterSnapshot from "./newsletter-snapshot.json";
+import {
+	BUTTONDOWN_API_VERSION,
+	BUTTONDOWN_BASE_URL,
+	type ButtondownAPIEmailsResponse,
+	isButtondownEmailsResponse,
+} from "./shared";
 
-const BUTTONDOWN_BASE_URL = "https://api.buttondown.email/v1";
 const BUTTONDOWN_PLAINTEXT_MARKER = "<!-- buttondown-editor-mode: plaintext -->";
 
 export function getButtondownApiKey(): string | undefined {
@@ -18,77 +24,33 @@ export function stripButtondownPlaintextMarker(body: string) {
 	return body.replace(BUTTONDOWN_PLAINTEXT_MARKER, "");
 }
 
-export type ButtondownAPISubscribersResponse = {
-	count: number;
-	next: string;
-	previous: string;
-	results: Array<{
-		creation_date: string;
-		email: string;
-		id: string;
-		notes: string;
-		referrer_url: string;
-		metadata: Record<string, unknown>;
-		secondary_id: number;
-		subscriber_type: string;
-		source: string;
-		tags: Array<string>;
-		utm_campaign: string;
-		utm_medium: string;
-		utm_source: string;
-	}>;
-};
+export type { ButtondownAPIEmailsResponse, ButtondownAPISubscribersResponse } from "./shared";
 
-export type ButtondownAPIEmailsResponse = {
-	count: number;
-	next: string | null;
-	previous: string | null;
-	results: Array<{
-		body: string;
-		email_type: string;
-		excluded_tags: Array<object>;
-		external_url: string;
-		id: string;
-		included_tags: Array<object>;
-		metadata: Record<string, object>;
-		publish_date: string;
-		secondary_id: number;
-		slug: string;
-		status?: string;
-		subject: string;
-	}>;
-};
-
-function isButtondownEmail(
-	value: unknown,
-): value is ButtondownAPIEmailsResponse["results"][number] {
-	if (typeof value !== "object" || value === null) {
-		return false;
-	}
-
-	return (
-		"body" in value &&
-		"slug" in value &&
-		"subject" in value &&
-		typeof value.body === "string" &&
-		typeof value.slug === "string" &&
-		typeof value.subject === "string"
-	);
+/**
+ * Returns the committed newsletter snapshot when it holds issues, otherwise
+ * `undefined`. The published issues no longer change, so the snapshot lets the
+ * build/prerender skip the live Buttondown request. Refresh it with
+ * `pnpm snapshot:newsletter`.
+ */
+export function getNewsletterSnapshot(): ButtondownAPIEmailsResponse | undefined {
+	return isButtondownEmailsResponse(newsletterSnapshot) && newsletterSnapshot.results.length > 0
+		? newsletterSnapshot
+		: undefined;
 }
 
-function isButtondownEmailsResponse(value: unknown): value is ButtondownAPIEmailsResponse {
-	if (typeof value !== "object" || value === null) {
-		return false;
+export async function fetchNewsletterEmails(
+	apiKey?: string,
+	/**
+	 * Snapshot override. Omit to use the committed snapshot; pass `null` to
+	 * force the live API / mock path (used in tests).
+	 */
+	snapshotOverride?: ButtondownAPIEmailsResponse | null,
+): Promise<ButtondownAPIEmailsResponse> {
+	const snapshot = snapshotOverride === undefined ? getNewsletterSnapshot() : snapshotOverride;
+	if (snapshot && snapshot.results.length > 0) {
+		return snapshot;
 	}
 
-	if (!("results" in value) || !Array.isArray(value.results)) {
-		return false;
-	}
-
-	return value.results.every((entry) => isButtondownEmail(entry));
-}
-
-export async function fetchNewsletterEmails(apiKey?: string): Promise<ButtondownAPIEmailsResponse> {
 	if (!apiKey) {
 		return BUTTONDOWN_EMAIL_MOCKS;
 	}
@@ -96,7 +58,7 @@ export async function fetchNewsletterEmails(apiKey?: string): Promise<Buttondown
 	try {
 		const response = await fetch(`${BUTTONDOWN_BASE_URL}/emails`, {
 			headers: {
-				"X-API-Version": "2024-08-15",
+				"X-API-Version": BUTTONDOWN_API_VERSION,
 				Authorization: `Token ${apiKey}`,
 			},
 		});

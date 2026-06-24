@@ -56,7 +56,7 @@ const Badge = ({ badge, completed, all_achievements }: BadgeProps) => {
 
 	return (
 		<button
-			onClick={() => setClicks(clicks + 1)}
+			onClick={() => setClicks((currentClicks) => currentClicks + 1)}
 			className={cn(
 				"group grid grid-cols-[max-content_1fr] items-center gap-4 rounded-global border-2 p-4 text-4xl transition-colors",
 				is_unlocked ? "border-primary text-primary" : "border-zinc-400 text-zinc-400",

@@ -33,17 +33,17 @@ export const FoobarDashboard = ({ completed_page }: FoobarSchrodingerProps) => {
 		})),
 	);
 
-	function handleUserIsOffline() {
-		navigate({ to: "/foobar/$slug", params: { slug: "offline" } });
-	}
-
 	useEffect(() => {
+		function handleUserIsOffline() {
+			navigate({ to: "/foobar/$slug", params: { slug: "offline" } });
+		}
+
 		window.addEventListener("offline", handleUserIsOffline);
 
 		return () => {
 			window.removeEventListener("offline", handleUserIsOffline);
 		};
-	}, []);
+	}, [navigate]);
 
 	function handleClearFoobarData() {
 		plausibleEvent("foobar", { props: { achievement: "restart" } });
@@ -89,13 +89,8 @@ const UnlockedAchievementBanner = ({ completed_page }: FoobarSchrodingerProps) =
 		<h1 className="pt-20 pb-5 text-center text-6xl leading-normal font-bold">
 			— You&apos;ve unlocked —
 			<br />
-			<span role="img" aria-label="sparkle">
-				✨
-			</span>{" "}
-			<Code className="text-5xl">{completed_page}</Code>{" "}
-			<span role="img" aria-label="sparkle">
-				✨
-			</span>
+			<span aria-hidden="true">✨</span> <Code className="text-5xl">{completed_page}</Code>{" "}
+			<span aria-hidden="true">✨</span>
 		</h1>
 	) : null;
 
@@ -179,7 +174,7 @@ export const FoobarSchrodinger = ({ completed_page }: FoobarSchrodingerProps) =>
 				});
 			}
 		}
-	}, [completed, completed_page]);
+	}, [completed, completed_page, plausibleEvent, setFoobarData]);
 
 	if (!has_mounted) return null;
 	if (!unlocked) return <FoobarButLocked />;

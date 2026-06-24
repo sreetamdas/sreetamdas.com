@@ -19,6 +19,7 @@ export default defineConfig({
 		},
 	},
 	test: {
+		name: "workers",
 		include: ["src/**/*.worker.spec.ts"],
 		exclude: ["e2e/**", "node_modules", "dist", ".content-collections"],
 	},

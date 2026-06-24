@@ -1,5 +1,6 @@
 import { DurableObject } from "cloudflare:workers";
 
+import { isRealtimeClientId } from "@/lib/domains/realtime/client-id";
 import {
 	isClosePollMessage,
 	isCreatePollMessage,
@@ -232,9 +233,10 @@ export class SlideSessionDurableObject extends DurableObject<CloudflareEnv> {
 		slide: number | null | undefined,
 	) {
 		const cleanQuestion = question.trim();
-		const cleanOptions = options
-			.map((option) => option.trim())
-			.filter((option) => option.length > 0);
+		const cleanOptions = options.flatMap((option) => {
+			const cleanOption = option.trim();
+			return cleanOption.length > 0 ? [cleanOption] : [];
+		});
 		if (!cleanQuestion || cleanOptions.length < 2) return;
 
 		const poll: PollRecord = {
@@ -290,7 +292,7 @@ function parseClientId(value: string | null): string {
 }
 
 function parseOptionalClientId(value: string | null): string | undefined {
-	if (value && /^[a-zA-Z0-9_-]{8,80}$/.test(value)) {
+	if (isRealtimeClientId(value)) {
 		return value;
 	}
 	return undefined;

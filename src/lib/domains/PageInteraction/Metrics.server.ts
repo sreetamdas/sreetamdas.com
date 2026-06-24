@@ -1,9 +1,10 @@
 import { createServerFn } from "@tanstack/react-start";
-import { getRequestHeader } from "@tanstack/react-start/server";
 
 import { type LikeCount } from "@/lib/domains/PageViews";
 
 import { fetchLikeCount } from "./LikeButton.server";
+import { type LikeRequestContext } from "./LikeIdentity";
+import { getLikeRequestContext } from "./LikeRequestContext.server";
 import { type PagePathnamePayload, validatePagePathnamePayload } from "./shared";
 import { fetchViewCount, type PageViewCount } from "./ViewsCounter.server";
 
@@ -16,7 +17,7 @@ export const fetchPageMetricsServerFn = createServerFn({
 		return validatePagePathnamePayload(data, "Invalid metrics payload");
 	})
 	.handler(async ({ data }) => {
-		return fetchPageMetrics(data, getRequestHeader("cf-connecting-ip"));
+		return fetchPageMetrics(data, getLikeRequestContext());
 	});
 
 // Views and likes are independent reads, so run them concurrently within the one
@@ -25,8 +26,8 @@ export const fetchPageMetricsServerFn = createServerFn({
 // fail-open guard so a failure in one never takes down the other.
 export async function fetchPageMetrics(
 	data: PagePathnamePayload,
-	clientIp?: string,
+	context: LikeRequestContext = {},
 ): Promise<PageMetrics> {
-	const [views, likes] = await Promise.all([fetchViewCount(data), fetchLikeCount(data, clientIp)]);
+	const [views, likes] = await Promise.all([fetchViewCount(data), fetchLikeCount(data, context)]);
 	return { ...views, ...likes };
 }

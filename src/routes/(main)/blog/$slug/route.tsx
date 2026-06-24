@@ -8,11 +8,15 @@ import { StatsCounter } from "@/lib/domains/PageInteraction/StatsCounter";
 import { cn } from "@/lib/helpers/utils";
 import { absoluteUrl, canonicalUrl, defaultOgImageUrl } from "@/lib/seo";
 
-import { getBlogRenderable, type BlogLoaderData } from "./-$slug.server";
+import { getBlogRenderable } from "./-$slug.server";
 
 export const Route = createFileRoute("/(main)/blog/$slug")({
 	component: RouteComponent,
-	head: ({ loaderData }: { loaderData?: BlogLoaderData }) => {
+	staleTime: 1000 * 60 * 60 * 24,
+	loader: ({ params }: { params: { slug: string } }) => {
+		return getBlogRenderable({ data: { slug: params.slug } });
+	},
+	head: ({ loaderData }) => {
 		const post = loaderData?.post;
 		const title = `${post?.seo_title ?? post?.title ?? "Blog"} ${SITE_TITLE_APPEND}`;
 		const description = post?.description ?? SITE_DESCRIPTION;
@@ -34,11 +38,6 @@ export const Route = createFileRoute("/(main)/blog/$slug")({
 				{ name: "twitter:image", content: ogImage },
 			],
 		};
-	},
-	staleTime: 1000 * 60 * 60 * 24,
-
-	loader: ({ params }: { params: { slug: string } }) => {
-		return getBlogRenderable({ data: { slug: params.slug } });
 	},
 	notFoundComponent: () => (
 		<NotFound404 message="The blog post you're looking for doesn't exist :/" />

@@ -63,14 +63,21 @@ pnpm db:migrate:local
 
 This uses Wrangler's local D1 database under `.wrangler/`.
 
-##### Blog likes and salt rotation
+##### Blog likes and identity rotation
 
-Blog likes identify a visitor by a salted hash of their IP (`LIKES_IP_SALT`). Each
-`post_likes` row records the `salt_version` (`LIKES_SALT_VERSION` in `src/config`)
-it was hashed under, and the public `page_details.likes` counter only ever counts
-rows from the current era.
+Blog likes identify a visitor with a signed `HttpOnly` `like_id` cookie
+(`LIKES_COOKIE_SECRET`). New `post_likes.visitor_hash` values are HMACs of that
+anonymous token, not raw tokens or IPs. `LIKES_IP_SALT` is still required, but only
+for the nullable `post_likes.ip_hash` abuse bucket that caps how many independent
+like tokens one IP can add to one slug. Legacy IP-derived `visitor_hash` rows
+remain valid and keep counting.
 
-The counter is denormalized — it's recomputed from `post_likes` whenever a post is
+Each `post_likes` row records the `salt_version` (`LIKES_SALT_VERSION` in
+`src/config`), and the public `page_details.likes` counter only ever counts rows
+from the current era. Do not bump `LIKES_SALT_VERSION` for the cookie migration;
+bump it only when intentionally dropping an older identity era from public counts.
+
+The counter is denormalized — it is recomputed from `post_likes` whenever a post is
 liked, so it self-heals on write but can drift if rows are changed out of band.
 `scripts/likes-recount.mjs` recomputes it on demand (dry run by default, local
 unless `--remote`):
@@ -81,10 +88,10 @@ pnpm db:likes:recount -- --apply      # local, write
 pnpm db:likes:recount -- --remote --apply   # remote, write
 ```
 
-**Rotating `LIKES_IP_SALT`:** bump `LIKES_SALT_VERSION` in `src/config` in the same
-change (this also re-keys visitor hashes, so prior likes can't be re-cast or
-inflate the count), deploy, then run `pnpm db:likes:recount -- --remote --apply` to
-drop the prior era from the public counts.
+**Rotating like identity secrets:** changing `LIKES_COOKIE_SECRET` invalidates signed
+cookies and issues new anonymous tokens. Bump `LIKES_SALT_VERSION` only if you also
+want prior-era rows to stop contributing to public counts, then deploy and run
+`pnpm db:likes:recount -- --remote --apply`.
 
 **Before applying a migration that adds `CHECK (... >= 0)` constraints**, confirm no
 existing counter is negative (the table rebuild copies rows through the new

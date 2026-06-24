@@ -10,6 +10,8 @@ import { customMDXComponents } from "./components";
 
 export { customMDXComponents };
 
+const DEFAULT_MDX_COMPONENTS: MDXComponents = {};
+
 type CodeNode = {
 	type: "code";
 	lang?: string;
@@ -43,7 +45,7 @@ export const MDXContent = ({
 	source,
 	mdast,
 	shikiHighlights,
-	components = {},
+	components = DEFAULT_MDX_COMPONENTS,
 	shikiCodeBlockClassName,
 }: MDXContentCodeType) => {
 	const mergedComponents = { ...customMDXComponents, ...components };

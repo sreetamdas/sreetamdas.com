@@ -28,6 +28,7 @@ interface __BaseEnv_CloudflareEnv {
 	VITE_SENTRY_DSN: string;
 	SENTRY_IGNORE_API_RESOLUTION_ERROR: string;
 	LIKES_IP_SALT: string;
+	LIKES_COOKIE_SECRET: string;
 	CLOUDFLARE_ACCOUNT_ID: string;
 	CLOUDFLARE_D1_DB_ID: string;
 	CLOUDFLARE_D1_TOKEN: string;
@@ -67,6 +68,7 @@ declare namespace Cloudflare {
 		VITE_SENTRY_DSN: string;
 		SENTRY_IGNORE_API_RESOLUTION_ERROR: string;
 		LIKES_IP_SALT: string;
+		LIKES_COOKIE_SECRET: string;
 		CLOUDFLARE_ACCOUNT_ID: string;
 		CLOUDFLARE_D1_DB_ID: string;
 		CLOUDFLARE_D1_TOKEN: string;
@@ -100,6 +102,7 @@ declare namespace Cloudflare {
 		VITE_SENTRY_DSN: string;
 		SENTRY_IGNORE_API_RESOLUTION_ERROR: string;
 		LIKES_IP_SALT: string;
+		LIKES_COOKIE_SECRET: string;
 		CLOUDFLARE_ACCOUNT_ID: string;
 		CLOUDFLARE_D1_DB_ID: string;
 		CLOUDFLARE_D1_TOKEN: string;
@@ -140,6 +143,7 @@ declare namespace NodeJS {
 			| "VITE_SENTRY_DSN"
 			| "SENTRY_IGNORE_API_RESOLUTION_ERROR"
 			| "LIKES_IP_SALT"
+			| "LIKES_COOKIE_SECRET"
 			| "CLOUDFLARE_ACCOUNT_ID"
 			| "CLOUDFLARE_D1_DB_ID"
 			| "CLOUDFLARE_D1_TOKEN"

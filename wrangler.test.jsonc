@@ -4,6 +4,9 @@
 	"main": "./src/testing/worker-test-entry.ts",
 	"compatibility_date": "2026-05-10",
 	"compatibility_flags": ["nodejs_compat"],
+	"vars": {
+		"PRESENCE_HEARTBEAT_INTERVAL_MS": "100"
+	},
 	"d1_databases": [
 		{
 			"binding": "D1",

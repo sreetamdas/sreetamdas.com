@@ -22,6 +22,16 @@ function getDocumentColorScheme() {
 	return parseColorScheme(raw);
 }
 
+function applyColorScheme(colorSchemePreference: ColorScheme) {
+	window.localStorage.setItem("color-scheme", colorSchemePreference);
+
+	if (colorSchemePreference === "system") {
+		document.documentElement.removeAttribute("data-color-scheme");
+	} else {
+		document.documentElement.setAttribute("data-color-scheme", colorSchemePreference);
+	}
+}
+
 export function getNextColorScheme(current: ColorScheme | undefined): ColorScheme {
 	const currentIndex = COLOR_SCHEME_ORDER.findIndex((scheme) => scheme === current);
 	if (currentIndex === -1) {
@@ -39,16 +49,6 @@ export const ColorSchemeToggle = () => {
 		})),
 	);
 
-	function applyColorScheme(colorSchemePreference: ColorScheme) {
-		window.localStorage.setItem("color-scheme", colorSchemePreference);
-
-		if (colorSchemePreference === "system") {
-			document.documentElement.removeAttribute("data-color-scheme");
-		} else {
-			document.documentElement.setAttribute("data-color-scheme", colorSchemePreference);
-		}
-	}
-
 	function handleColorSchemeToggle() {
 		const nextColorScheme = getNextColorScheme(colorScheme);
 
@@ -64,7 +64,7 @@ export const ColorSchemeToggle = () => {
 		} else {
 			setColorScheme(documentColorScheme);
 		}
-	}, []);
+	}, [setColorScheme]);
 
 	return (
 		<button

@@ -8,6 +8,10 @@ import { getHomeRenderable } from "./-index.server";
 
 export const Route = createFileRoute("/(main)/")({
 	component: Home,
+	staleTime: 1000 * 60 * 60 * 24,
+	loader: () => {
+		return getHomeRenderable();
+	},
 	head: () => {
 		const title = `Hello hello! ${SITE_TITLE_APPEND}`;
 		const description = SITE_DESCRIPTION;
@@ -30,10 +34,6 @@ export const Route = createFileRoute("/(main)/")({
 			],
 		};
 	},
-	staleTime: 1000 * 60 * 60 * 24,
-	loader: () => {
-		return getHomeRenderable();
-	},
 });
 
 function Home() {
@@ -41,10 +41,7 @@ function Home() {
 	return (
 		<>
 			<h1 className="py-20 text-center font-serif text-6xl font-bold">
-				Hey, I&apos;m Sreetam!{" "}
-				<span role="img" aria-label="wave">
-					👋
-				</span>
+				Hey, I&apos;m Sreetam! <span aria-hidden="true">👋</span>
 			</h1>
 			{Renderable}
 

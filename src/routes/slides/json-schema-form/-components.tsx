@@ -220,6 +220,7 @@ function FieldRenderer({
 			input = (
 				<input
 					type="checkbox"
+					aria-label={field.label ?? field.name}
 					className="h-4 w-4 rounded-sm border-white/10 bg-white/5"
 					checked={Boolean(value)}
 					onChange={(e) => onChange(e.target.checked)}
@@ -275,6 +276,16 @@ function MonacoEditor({ value, onChange }: { value: string; onChange: (v: string
 	const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null);
 	const modelRef = useRef<monaco.editor.ITextModel | null>(null);
 	const isUpdatingRef = useRef(false);
+	const latestValueRef = useRef(value);
+	const onChangeRef = useRef(onChange);
+
+	useEffect(() => {
+		latestValueRef.current = value;
+	}, [value]);
+
+	useEffect(() => {
+		onChangeRef.current = onChange;
+	}, [onChange]);
 
 	useEffect(() => {
 		if (!containerRef.current) return;
@@ -311,7 +322,7 @@ function MonacoEditor({ value, onChange }: { value: string; onChange: (v: string
 				colors: themeConfig.colors,
 			});
 
-			const model = monaco.editor.createModel(value, "json");
+			const model = monaco.editor.createModel(latestValueRef.current, "json");
 			modelRef.current = model;
 
 			const editor = monaco.editor.create(containerRef.current, {
@@ -340,7 +351,7 @@ function MonacoEditor({ value, onChange }: { value: string; onChange: (v: string
 			editor.onDidChangeModelContent(() => {
 				if (isUpdatingRef.current) return;
 				const newValue = model.getValue();
-				onChange(newValue);
+				onChangeRef.current(newValue);
 			});
 		});
 
@@ -420,6 +431,7 @@ export function JsfPlayground() {
 					<button
 						key={p.name}
 						onClick={() => loadPreset(i)}
+						type="button"
 						className={`rounded-sm px-3 py-1 text-xs font-medium transition-colors ${
 							i === activePreset
 								? "bg-white text-black"

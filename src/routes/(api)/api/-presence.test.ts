@@ -46,6 +46,28 @@ describe("handlePresenceGetForNamespace", () => {
 		expect(await response.text()).toBe("ok");
 	});
 
+	test("preserves websocket upgrade query params for client identity", async () => {
+		const request = new Request("https://example.com/api/presence?clientId=viewer-123", {
+			headers: { Upgrade: "websocket" },
+		});
+		let forwardedUrl = "";
+
+		const presence = {
+			getByName: () => {
+				return {
+					fetch: (incomingRequest: Request) => {
+						forwardedUrl = incomingRequest.url;
+						return new Response("ok", { status: 200 });
+					},
+				};
+			},
+		};
+
+		await handlePresenceGetForNamespace(request, presence);
+
+		expect(forwardedUrl).toBe("https://example.com/api/presence?clientId=viewer-123");
+	});
+
 	test("supports async durable object fetch responses", async () => {
 		const request = new Request("https://example.com/api/presence");
 		const presence = {

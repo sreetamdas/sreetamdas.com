@@ -1,11 +1,11 @@
 "use client";
 
+import { useLocation } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { LuMenu } from "react-icons/lu";
 import { create } from "zustand";
 
 import { DrawerContent, DrawerRoot, DrawerTitle, DrawerTrigger } from "@/lib/components/Drawer";
-import { routerInstance } from "@/router";
 
 import { NavigationItems } from "./NavItems";
 
@@ -20,18 +20,11 @@ export const useMobileNavDrawer = create<MobileNavDrawerState>((set) => ({
 
 export const NavbarMobile = () => {
 	const { open, setOpen } = useMobileNavDrawer();
+	const { pathname } = useLocation();
 
 	useEffect(() => {
-		if (routerInstance !== null) {
-			const unsubscribe = routerInstance.subscribe("onRendered", (_event) => {
-				setOpen(false);
-			});
-
-			return () => {
-				unsubscribe();
-			};
-		}
-	}, [routerInstance]);
+		setOpen(false);
+	}, [pathname, setOpen]);
 
 	return (
 		<DrawerRoot open={open} onOpenChange={setOpen}>

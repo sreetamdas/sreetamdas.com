@@ -41,7 +41,8 @@ export const fetchRepoContributors = createServerFn({ method: "GET" }).handler(a
 	const data: Endpoints["GET /repos/{owner}/{repo}/contributors"]["response"]["data"] =
 		await request.json();
 
-	return data
-		.filter(({ type, login }) => type !== "Bot" && login !== DEFAULT_REPO.owner)
-		.map(({ login, avatar_url, html_url }): RepoContributor => ({ login, avatar_url, html_url }));
+	return data.flatMap(({ type, login, avatar_url, html_url }): Array<RepoContributor> => {
+		if (type === "Bot" || login === DEFAULT_REPO.owner) return [];
+		return [{ login, avatar_url, html_url }];
+	});
 });
