@@ -201,6 +201,23 @@ describe("incrementLikes", () => {
 		expect(await getPostLikesCount(db, "/blog/x")).toBe(2);
 	});
 
+	test("lets the same visitor like again in a new salt era", async () => {
+		const db = createLikesDb();
+		await db.insert(pageDetails).values({ slug: "/blog/x", viewCount: 0, likes: 1 });
+		await db
+			.insert(postLikes)
+			.values({ slug: "/blog/x", visitorHash: "same", ipHash: "ip1", saltVersion: 1 });
+
+		expect(await incrementLikes(db, "/blog/x", likeInput("same", "ip1", 2))).toEqual({
+			likes: 1,
+			hasLiked: true,
+		});
+		expect(await getPageLikes(db, "/blog/x")).toBe(1);
+		expect(await getPostLikesCount(db, "/blog/x")).toBe(2);
+		expect(await getLikes(db, "/blog/x", "same", 1)).toEqual({ likes: 1, hasLiked: true });
+		expect(await getLikes(db, "/blog/x", "same", 2)).toEqual({ likes: 1, hasLiked: true });
+	});
+
 	test("keeps legacy rows without ip hashes counted but outside the new ip ceiling", async () => {
 		const db = createLikesDb();
 		await db.insert(pageDetails).values({ slug: "/blog/x", viewCount: 0, likes: 2 });
@@ -247,7 +264,7 @@ describe("decrementLikes", () => {
 		});
 		expect(await getPostLikesCount(db, "/blog/x")).toBe(1);
 		expect(await getPageLikes(db, "/blog/x")).toBe(0);
-		expect(await getLikes(db, "/blog/y", "h1")).toEqual({ likes: 1, hasLiked: true });
+		expect(await getLikes(db, "/blog/y", "h1", 1)).toEqual({ likes: 1, hasLiked: true });
 	});
 });
 
@@ -291,11 +308,11 @@ function createLikesDb(): PageLikesDb {
 			created_at text DEFAULT CURRENT_TIMESTAMP NOT NULL
 		);
 
-		CREATE UNIQUE INDEX post_likes_slug_visitor_hash_unique
-		ON post_likes (slug, visitor_hash);
+		CREATE UNIQUE INDEX post_likes_slug_visitor_hash_salt_version_unique
+		ON post_likes (slug, visitor_hash, salt_version);
 
-		CREATE INDEX post_likes_slug_ip_hash_idx
-		ON post_likes (slug, ip_hash);
+		CREATE INDEX post_likes_slug_ip_hash_salt_version_idx
+		ON post_likes (slug, ip_hash, salt_version);
 	`);
 
 	return drizzle({ client: sqlite, schema });

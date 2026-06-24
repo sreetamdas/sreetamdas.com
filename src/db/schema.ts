@@ -35,8 +35,8 @@ export const postLikes = sqliteTable(
 			.default(sql`CURRENT_TIMESTAMP`),
 	},
 	(t) => [
-		primaryKey({ columns: [t.slug, t.visitorHash] }),
-		index("post_likes_slug_ip_hash_idx").on(t.slug, t.ipHash),
+		primaryKey({ columns: [t.slug, t.visitorHash, t.saltVersion] }),
+		index("post_likes_slug_ip_hash_salt_version_idx").on(t.slug, t.ipHash, t.saltVersion),
 	],
 );
 

@@ -22,8 +22,8 @@ const SCHEMA_STATEMENTS = [
 	"CREATE TABLE page_details (id integer PRIMARY KEY AUTOINCREMENT, slug text NOT NULL, view_count integer DEFAULT 0 NOT NULL, likes integer DEFAULT 0 NOT NULL, created_at text DEFAULT CURRENT_TIMESTAMP NOT NULL, updated_at text DEFAULT CURRENT_TIMESTAMP NOT NULL, CHECK (view_count >= 0), CHECK (likes >= 0))",
 	"CREATE UNIQUE INDEX page_details_slug_unique ON page_details (slug)",
 	"CREATE TABLE post_likes (slug text NOT NULL, visitor_hash text NOT NULL, ip_hash text, salt_version integer DEFAULT 1 NOT NULL, created_at text DEFAULT CURRENT_TIMESTAMP NOT NULL)",
-	"CREATE UNIQUE INDEX post_likes_slug_visitor_hash_unique ON post_likes (slug, visitor_hash)",
-	"CREATE INDEX post_likes_slug_ip_hash_idx ON post_likes (slug, ip_hash)",
+	"CREATE UNIQUE INDEX post_likes_slug_visitor_hash_salt_version_unique ON post_likes (slug, visitor_hash, salt_version)",
+	"CREATE INDEX post_likes_slug_ip_hash_salt_version_idx ON post_likes (slug, ip_hash, salt_version)",
 ];
 
 const db = drizzle(env.D1, { schema });

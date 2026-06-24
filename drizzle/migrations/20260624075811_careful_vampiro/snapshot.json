@@ -1,0 +1,602 @@
+{
+	"version": "7",
+	"dialect": "sqlite",
+	"id": "4d2e6416-8acf-40de-a4e9-b21b0f297f36",
+	"prevIds": ["2048d9b8-eeca-41b8-aa4d-5ed327ec54ca"],
+	"ddl": [
+		{
+			"name": "account",
+			"entityType": "tables"
+		},
+		{
+			"name": "session",
+			"entityType": "tables"
+		},
+		{
+			"name": "user",
+			"entityType": "tables"
+		},
+		{
+			"name": "verification",
+			"entityType": "tables"
+		},
+		{
+			"name": "page_details",
+			"entityType": "tables"
+		},
+		{
+			"name": "post_likes",
+			"entityType": "tables"
+		},
+		{
+			"type": "text",
+			"notNull": false,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "id",
+			"entityType": "columns",
+			"table": "account"
+		},
+		{
+			"type": "text",
+			"notNull": true,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "account_id",
+			"entityType": "columns",
+			"table": "account"
+		},
+		{
+			"type": "text",
+			"notNull": true,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "provider_id",
+			"entityType": "columns",
+			"table": "account"
+		},
+		{
+			"type": "text",
+			"notNull": true,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "user_id",
+			"entityType": "columns",
+			"table": "account"
+		},
+		{
+			"type": "text",
+			"notNull": false,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "access_token",
+			"entityType": "columns",
+			"table": "account"
+		},
+		{
+			"type": "text",
+			"notNull": false,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "refresh_token",
+			"entityType": "columns",
+			"table": "account"
+		},
+		{
+			"type": "text",
+			"notNull": false,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "id_token",
+			"entityType": "columns",
+			"table": "account"
+		},
+		{
+			"type": "integer",
+			"notNull": false,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "access_token_expires_at",
+			"entityType": "columns",
+			"table": "account"
+		},
+		{
+			"type": "integer",
+			"notNull": false,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "refresh_token_expires_at",
+			"entityType": "columns",
+			"table": "account"
+		},
+		{
+			"type": "text",
+			"notNull": false,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "scope",
+			"entityType": "columns",
+			"table": "account"
+		},
+		{
+			"type": "text",
+			"notNull": false,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "password",
+			"entityType": "columns",
+			"table": "account"
+		},
+		{
+			"type": "integer",
+			"notNull": true,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "created_at",
+			"entityType": "columns",
+			"table": "account"
+		},
+		{
+			"type": "integer",
+			"notNull": true,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "updated_at",
+			"entityType": "columns",
+			"table": "account"
+		},
+		{
+			"type": "text",
+			"notNull": false,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "id",
+			"entityType": "columns",
+			"table": "session"
+		},
+		{
+			"type": "integer",
+			"notNull": true,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "expires_at",
+			"entityType": "columns",
+			"table": "session"
+		},
+		{
+			"type": "text",
+			"notNull": true,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "token",
+			"entityType": "columns",
+			"table": "session"
+		},
+		{
+			"type": "integer",
+			"notNull": true,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "created_at",
+			"entityType": "columns",
+			"table": "session"
+		},
+		{
+			"type": "integer",
+			"notNull": true,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "updated_at",
+			"entityType": "columns",
+			"table": "session"
+		},
+		{
+			"type": "text",
+			"notNull": false,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "ip_address",
+			"entityType": "columns",
+			"table": "session"
+		},
+		{
+			"type": "text",
+			"notNull": false,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "user_agent",
+			"entityType": "columns",
+			"table": "session"
+		},
+		{
+			"type": "text",
+			"notNull": true,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "user_id",
+			"entityType": "columns",
+			"table": "session"
+		},
+		{
+			"type": "text",
+			"notNull": false,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "id",
+			"entityType": "columns",
+			"table": "user"
+		},
+		{
+			"type": "text",
+			"notNull": true,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "name",
+			"entityType": "columns",
+			"table": "user"
+		},
+		{
+			"type": "text",
+			"notNull": true,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "email",
+			"entityType": "columns",
+			"table": "user"
+		},
+		{
+			"type": "integer",
+			"notNull": true,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "email_verified",
+			"entityType": "columns",
+			"table": "user"
+		},
+		{
+			"type": "text",
+			"notNull": false,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "image",
+			"entityType": "columns",
+			"table": "user"
+		},
+		{
+			"type": "integer",
+			"notNull": true,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "created_at",
+			"entityType": "columns",
+			"table": "user"
+		},
+		{
+			"type": "integer",
+			"notNull": true,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "updated_at",
+			"entityType": "columns",
+			"table": "user"
+		},
+		{
+			"type": "text",
+			"notNull": false,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "id",
+			"entityType": "columns",
+			"table": "verification"
+		},
+		{
+			"type": "text",
+			"notNull": true,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "identifier",
+			"entityType": "columns",
+			"table": "verification"
+		},
+		{
+			"type": "text",
+			"notNull": true,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "value",
+			"entityType": "columns",
+			"table": "verification"
+		},
+		{
+			"type": "integer",
+			"notNull": true,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "expires_at",
+			"entityType": "columns",
+			"table": "verification"
+		},
+		{
+			"type": "integer",
+			"notNull": false,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "created_at",
+			"entityType": "columns",
+			"table": "verification"
+		},
+		{
+			"type": "integer",
+			"notNull": false,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "updated_at",
+			"entityType": "columns",
+			"table": "verification"
+		},
+		{
+			"type": "integer",
+			"notNull": false,
+			"autoincrement": true,
+			"default": null,
+			"generated": null,
+			"name": "id",
+			"entityType": "columns",
+			"table": "page_details"
+		},
+		{
+			"type": "text",
+			"notNull": true,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "slug",
+			"entityType": "columns",
+			"table": "page_details"
+		},
+		{
+			"type": "integer",
+			"notNull": true,
+			"autoincrement": false,
+			"default": "0",
+			"generated": null,
+			"name": "view_count",
+			"entityType": "columns",
+			"table": "page_details"
+		},
+		{
+			"type": "integer",
+			"notNull": true,
+			"autoincrement": false,
+			"default": "0",
+			"generated": null,
+			"name": "likes",
+			"entityType": "columns",
+			"table": "page_details"
+		},
+		{
+			"type": "text",
+			"notNull": true,
+			"autoincrement": false,
+			"default": "CURRENT_TIMESTAMP",
+			"generated": null,
+			"name": "created_at",
+			"entityType": "columns",
+			"table": "page_details"
+		},
+		{
+			"type": "text",
+			"notNull": true,
+			"autoincrement": false,
+			"default": "CURRENT_TIMESTAMP",
+			"generated": null,
+			"name": "updated_at",
+			"entityType": "columns",
+			"table": "page_details"
+		},
+		{
+			"type": "text",
+			"notNull": true,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "slug",
+			"entityType": "columns",
+			"table": "post_likes"
+		},
+		{
+			"type": "text",
+			"notNull": true,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "visitor_hash",
+			"entityType": "columns",
+			"table": "post_likes"
+		},
+		{
+			"type": "text",
+			"notNull": false,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "ip_hash",
+			"entityType": "columns",
+			"table": "post_likes"
+		},
+		{
+			"type": "integer",
+			"notNull": true,
+			"autoincrement": false,
+			"default": "1",
+			"generated": null,
+			"name": "salt_version",
+			"entityType": "columns",
+			"table": "post_likes"
+		},
+		{
+			"type": "text",
+			"notNull": true,
+			"autoincrement": false,
+			"default": "CURRENT_TIMESTAMP",
+			"generated": null,
+			"name": "created_at",
+			"entityType": "columns",
+			"table": "post_likes"
+		},
+		{
+			"columns": ["user_id"],
+			"tableTo": "user",
+			"columnsTo": ["id"],
+			"onUpdate": "NO ACTION",
+			"onDelete": "CASCADE",
+			"nameExplicit": false,
+			"name": "fk_account_user_id_user_id_fk",
+			"entityType": "fks",
+			"table": "account"
+		},
+		{
+			"columns": ["user_id"],
+			"tableTo": "user",
+			"columnsTo": ["id"],
+			"onUpdate": "NO ACTION",
+			"onDelete": "CASCADE",
+			"nameExplicit": false,
+			"name": "fk_session_user_id_user_id_fk",
+			"entityType": "fks",
+			"table": "session"
+		},
+		{
+			"columns": ["slug", "visitor_hash", "salt_version"],
+			"nameExplicit": false,
+			"name": "post_likes_pk",
+			"entityType": "pks",
+			"table": "post_likes"
+		},
+		{
+			"columns": ["id"],
+			"nameExplicit": false,
+			"name": "account_pk",
+			"table": "account",
+			"entityType": "pks"
+		},
+		{
+			"columns": ["id"],
+			"nameExplicit": false,
+			"name": "session_pk",
+			"table": "session",
+			"entityType": "pks"
+		},
+		{
+			"columns": ["id"],
+			"nameExplicit": false,
+			"name": "user_pk",
+			"table": "user",
+			"entityType": "pks"
+		},
+		{
+			"columns": ["id"],
+			"nameExplicit": false,
+			"name": "verification_pk",
+			"table": "verification",
+			"entityType": "pks"
+		},
+		{
+			"columns": ["id"],
+			"nameExplicit": false,
+			"name": "page_details_pk",
+			"table": "page_details",
+			"entityType": "pks"
+		},
+		{
+			"columns": [
+				{
+					"value": "slug",
+					"isExpression": false
+				},
+				{
+					"value": "ip_hash",
+					"isExpression": false
+				},
+				{
+					"value": "salt_version",
+					"isExpression": false
+				}
+			],
+			"isUnique": false,
+			"where": null,
+			"origin": "manual",
+			"name": "post_likes_slug_ip_hash_salt_version_idx",
+			"entityType": "indexes",
+			"table": "post_likes"
+		},
+		{
+			"columns": ["token"],
+			"nameExplicit": false,
+			"name": "session_token_unique",
+			"entityType": "uniques",
+			"table": "session"
+		},
+		{
+			"columns": ["email"],
+			"nameExplicit": false,
+			"name": "user_email_unique",
+			"entityType": "uniques",
+			"table": "user"
+		},
+		{
+			"columns": ["slug"],
+			"nameExplicit": false,
+			"name": "page_details_slug_unique",
+			"entityType": "uniques",
+			"table": "page_details"
+		},
+		{
+			"value": "\"view_count\" >= 0",
+			"name": "page_details_view_count_nonneg",
+			"entityType": "checks",
+			"table": "page_details"
+		},
+		{
+			"value": "\"likes\" >= 0",
+			"name": "page_details_likes_nonneg",
+			"entityType": "checks",
+			"table": "page_details"
+		}
+	],
+	"renames": []
+}

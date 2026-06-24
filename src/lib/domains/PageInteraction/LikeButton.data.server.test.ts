@@ -51,6 +51,7 @@ describe("incrementLikeCountInDb", () => {
 			expect.anything(),
 			"/blog/x",
 			expect.stringMatching(SHA256_HEX),
+			1,
 		);
 		expect(pageViews.incrementLikes).not.toHaveBeenCalled();
 	});
@@ -60,7 +61,12 @@ describe("incrementLikeCountInDb", () => {
 
 		const result = await incrementLikeCountInDb("/blog/x", false, { clientIp: "1.2.3.4" });
 
-		expect(pageViews.getLikes).toHaveBeenCalledWith(expect.anything(), "/blog/x", undefined);
+		expect(pageViews.getLikes).toHaveBeenCalledWith(
+			expect.anything(),
+			"/blog/x",
+			undefined,
+			undefined,
+		);
 		expect(pageViews.incrementLikes).not.toHaveBeenCalled();
 		expect(result.readOnly).toBe(true);
 	});
@@ -78,6 +84,7 @@ describe("incrementLikeCountInDb", () => {
 			expect.anything(),
 			"/blog/x",
 			expect.stringMatching(SHA256_HEX),
+			1,
 		);
 		expect(pageViews.incrementLikes).not.toHaveBeenCalled();
 		expect(setLikeCookie).toHaveBeenCalledOnce();
@@ -211,6 +218,7 @@ describe("fetchLikeCountFromDb", () => {
 			expect.anything(),
 			"/blog/x",
 			expect.stringMatching(SHA256_HEX),
+			1,
 		);
 		expect(result.readOnly).toBe(false);
 	});
@@ -228,6 +236,7 @@ describe("fetchLikeCountFromDb", () => {
 			expect.anything(),
 			"/blog/x",
 			expect.stringMatching(SHA256_HEX),
+			1,
 		);
 		expect(setLikeCookie).toHaveBeenCalledOnce();
 		expect(result.readOnly).toBe(false);
@@ -238,7 +247,12 @@ describe("fetchLikeCountFromDb", () => {
 
 		const result = await fetchLikeCountFromDb("/blog/x", { clientIp: "1.2.3.4" });
 
-		expect(pageViews.getLikes).toHaveBeenCalledWith(expect.anything(), "/blog/x", undefined);
+		expect(pageViews.getLikes).toHaveBeenCalledWith(
+			expect.anything(),
+			"/blog/x",
+			undefined,
+			undefined,
+		);
 		expect(result.readOnly).toBe(true);
 	});
 });

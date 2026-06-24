@@ -81,11 +81,14 @@ export async function getLikes(
 	db: PageViewsDb,
 	slug: string,
 	visitorHash?: string,
+	saltVersion = 1,
 ): Promise<LikeCount> {
 	const normalizedSlug = normalizePathname(slug);
 	const [likeCount, visitorLike] = await Promise.all([
 		getLikeCount(db, normalizedSlug),
-		visitorHash ? getVisitorLike(db, normalizedSlug, visitorHash) : Promise.resolve(false),
+		visitorHash
+			? getVisitorLike(db, normalizedSlug, visitorHash, saltVersion)
+			: Promise.resolve(false),
 	]);
 
 	return { likes: likeCount, hasLiked: visitorLike };
@@ -113,7 +116,7 @@ export async function incrementLikes(
 
 	const [likes, hasLiked] = await Promise.all([
 		syncLikeCount(db, normalizedSlug, saltVersion),
-		getVisitorLike(db, normalizedSlug, visitorHash),
+		getVisitorLike(db, normalizedSlug, visitorHash, saltVersion),
 	]);
 
 	return { likes, hasLiked };
@@ -136,7 +139,7 @@ export async function decrementLikes(
 
 	const [likes, hasLiked] = await Promise.all([
 		syncLikeCount(db, normalizedSlug, saltVersion),
-		getVisitorLike(db, normalizedSlug, visitorHash),
+		getVisitorLike(db, normalizedSlug, visitorHash, saltVersion),
 	]);
 
 	return { likes, hasLiked };
@@ -174,11 +177,18 @@ async function getVisitorLike(
 	db: PageViewsDb,
 	slug: string,
 	visitorHash: string,
+	saltVersion: number,
 ): Promise<boolean> {
 	const rows = await db
 		.select({ visitorHash: postLikes.visitorHash })
 		.from(postLikes)
-		.where(and(eq(postLikes.slug, slug), eq(postLikes.visitorHash, visitorHash)))
+		.where(
+			and(
+				eq(postLikes.slug, slug),
+				eq(postLikes.visitorHash, visitorHash),
+				eq(postLikes.saltVersion, saltVersion),
+			),
+		)
 		.limit(1);
 
 	return rows.length > 0;
