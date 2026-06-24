@@ -1,10 +1,22 @@
 import { describe, expect, test } from "vitest";
 
 import {
+	getLikeButtonClassName,
 	getLikeHeartIconClassName,
 	getLikeLoadingHeartIconClassName,
 	getLikeMutationAction,
 } from "./StatsCounter.helpers";
+
+describe("getLikeButtonClassName", () => {
+	test("keeps liked and unliked icon states in the same 20px box", () => {
+		expect(getLikeButtonClassName({ hasLiked: true })).toContain("size-5");
+		expect(getLikeButtonClassName({ hasLiked: true })).toContain("inline-flex");
+		expect(getLikeButtonClassName({ hasLiked: true })).toContain("leading-none");
+		expect(getLikeButtonClassName({ hasLiked: false })).toContain("size-5");
+		expect(getLikeButtonClassName({ hasLiked: false })).toContain("inline-flex");
+		expect(getLikeButtonClassName({ hasLiked: false })).toContain("leading-none");
+	});
+});
 
 describe("getLikeHeartIconClassName", () => {
 	test("adds a shimmer treatment while a like is being saved", () => {

@@ -13,6 +13,7 @@ import { cn, normalizePathname } from "@/lib/helpers/utils";
 import { decrementLikeServerFn, incrementLikeServerFn, type LikeCount } from "./LikeButton.server";
 import { type PageMetrics } from "./Metrics.server";
 import {
+	getLikeButtonClassName,
 	getLikeHeartIconClassName,
 	getLikeLoadingHeartIconClassName,
 	getLikeMutationAction,
@@ -371,10 +372,7 @@ const LikeStat = ({
 					onClick={() => mutate(nextLikeAction)}
 					aria-label={likeButtonLabel}
 					aria-pressed={hasLiked}
-					className={cn(
-						"cursor-pointer text-primary underline-offset-4 transition-colors hover:underline disabled:cursor-default disabled:hover:no-underline",
-						hasLiked && "text-primary/80",
-					)}
+					className={getLikeButtonClassName({ hasLiked })}
 					disabled={is_disabled}
 				>
 					{hasLiked ? (
