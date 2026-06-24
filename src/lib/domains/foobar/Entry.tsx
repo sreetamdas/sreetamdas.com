@@ -4,9 +4,9 @@
  * Hidden entry point for /foobar. The invisible Roman numeral X is placed in
  * regular site UI and unlocks the game the first time a curious visitor finds it.
  */
+import { Link } from "@tanstack/react-router";
 import { useShallow } from "zustand/react/shallow";
 
-import { LinkTo } from "@/lib/components/Anchor";
 import { FOOBAR_FLAGS } from "@/lib/domains/foobar/flags";
 import { useGlobalStore } from "@/lib/domains/global";
 import { useCustomPlausible } from "@/lib/domains/Plausible";
@@ -28,9 +28,9 @@ export const FoobarEntry = () => {
 	}
 	return (
 		<span className="flex justify-center">
-			<LinkTo href="/foobar" data-testid="Ⅹ" className="text-background" onClick={handleXDiscovery}>
+			<Link to="/foobar" data-testid="Ⅹ" className="text-background" onClick={handleXDiscovery}>
 				Ⅹ
-			</LinkTo>
+			</Link>
 		</span>
 	);
 };

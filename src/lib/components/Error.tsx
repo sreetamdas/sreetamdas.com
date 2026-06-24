@@ -1,5 +1,6 @@
 "use client";
 
+import { Link } from "@tanstack/react-router";
 import { ReactNode } from "react";
 import { useShallow } from "zustand/react/shallow";
 
@@ -23,9 +24,9 @@ export const NotFound404 = ({ message }: { message?: ReactNode }) => {
 			)}
 
 			<p className="pt-40 text-center">
-				<a className="link-base" href="/">
+				<Link className="link-base" to="/" preload="intent">
 					Go back home
-				</a>
+				</Link>
 			</p>
 
 			<NotFoundDogsLink />

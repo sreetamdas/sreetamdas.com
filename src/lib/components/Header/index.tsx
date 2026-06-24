@@ -1,6 +1,6 @@
+import { Link } from "@tanstack/react-router";
 import { type HTMLAttributes, Suspense } from "react";
 
-import { LinkTo } from "@/lib/components/Anchor";
 import { ColorSchemeToggle } from "@/lib/domains/colorScheme/client";
 import { cn } from "@/lib/helpers/utils";
 
@@ -17,7 +17,7 @@ export const Header = ({ className }: HTMLAttributes<HTMLDivElement>) => (
 			Skip to main content
 		</a>
 		<header className="mx-auto grid h-full w-full max-w-(--max-width) grid-cols-[max-content_auto] content-center gap-8 px-4 py-4 sm:px-0">
-			<LinkTo href="/">
+			<Link to="/" preload="intent" className="link-base">
 				<svg
 					aria-label="Home"
 					width={25}
@@ -29,7 +29,7 @@ export const Header = ({ className }: HTMLAttributes<HTMLDivElement>) => (
 					<title>Home</title>
 					<rect width="25" height="25" rx="6" fill="currentColor" />
 				</svg>
-			</LinkTo>
+			</Link>
 			<div className="grid grid-flow-col place-items-center justify-center gap-x-4 justify-self-end">
 				<NavbarDesktop />
 				<ColorSchemeToggle />
