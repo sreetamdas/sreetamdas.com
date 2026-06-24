@@ -263,7 +263,7 @@ export function SlideDeck({
 	}
 
 	return (
-		<StepContext.Provider value={stepContextValue.current}>
+		<StepContext value={stepContextValue.current}>
 			<section
 				className={cn("relative h-full w-full overflow-hidden outline-none", className)}
 				style={style}
@@ -274,7 +274,7 @@ export function SlideDeck({
 				<div className="h-full w-full" style={fitContainerStyle}>
 					<div style={fitCanvasStyle}>
 						{slides.map((slide, index) => (
-							<SlideActiveContext.Provider key={index} value={index === currentIndex}>
+							<SlideActiveContext key={index} value={index === currentIndex}>
 								<SlideWrapper
 									isActive={index === currentIndex}
 									isBefore={index < currentIndex}
@@ -283,7 +283,7 @@ export function SlideDeck({
 								>
 									<SlideRenderer slide={slide} components={components} />
 								</SlideWrapper>
-							</SlideActiveContext.Provider>
+							</SlideActiveContext>
 						))}
 
 						{!hide_step_index && maxStep > 0 ? (
@@ -299,7 +299,7 @@ export function SlideDeck({
 					</div>
 				</div>
 			</section>
-		</StepContext.Provider>
+		</StepContext>
 	);
 }
 

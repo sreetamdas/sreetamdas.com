@@ -16,7 +16,7 @@
 import {
 	Children,
 	isValidElement,
-	useContext,
+	use,
 	useEffect,
 	useId,
 	useMemo,
@@ -66,8 +66,8 @@ function extractLiContent(children: ReactNode): ReactNode[] {
  * matching the slide's UnorderedList component.
  */
 export function Steps({ children }: { children: ReactNode }) {
-	const { currentStep, registerSteps, unregisterSteps } = useContext(StepContext);
-	const active = useContext(SlideActiveContext);
+	const { currentStep, registerSteps, unregisterSteps } = use(StepContext);
+	const active = use(SlideActiveContext);
 
 	const id = useId();
 

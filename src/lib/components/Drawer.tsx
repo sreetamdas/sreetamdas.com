@@ -2,12 +2,7 @@
 
 import * as DrawerPrimitive from "@radix-ui/react-dialog";
 import * as VisuallyHidden from "@radix-ui/react-visually-hidden";
-import {
-	type ComponentPropsWithoutRef,
-	type ElementRef,
-	forwardRef,
-	type HTMLAttributes,
-} from "react";
+import { type ComponentProps, type HTMLAttributes } from "react";
 import { LuX } from "react-icons/lu";
 
 import { cn } from "@/lib/helpers/utils";
@@ -17,25 +12,28 @@ const DrawerTrigger = DrawerPrimitive.Trigger;
 const DrawerClose = DrawerPrimitive.Close;
 const DrawerPortal = DrawerPrimitive.Portal;
 
-const DrawerOverlay = forwardRef<
-	ElementRef<typeof DrawerPrimitive.Overlay>,
-	ComponentPropsWithoutRef<typeof DrawerPrimitive.Overlay>
->(({ className, ...props }, ref) => (
-	<DrawerPrimitive.Overlay
-		className={cn(
-			"fixed inset-0 z-50 bg-black/80 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:animate-in data-[state=open]:fade-in-0",
-			className,
-		)}
-		{...props}
-		ref={ref}
-	/>
-));
+function DrawerOverlay({
+	className,
+	ref,
+	...props
+}: ComponentProps<typeof DrawerPrimitive.Overlay>) {
+	return (
+		<DrawerPrimitive.Overlay
+			className={cn(
+				"fixed inset-0 z-50 bg-black/80 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:animate-in data-[state=open]:fade-in-0",
+				className,
+			)}
+			{...props}
+			ref={ref}
+		/>
+	);
+}
 DrawerOverlay.displayName = DrawerPrimitive.Overlay.displayName;
 
-type DrawerContentProps = ComponentPropsWithoutRef<typeof DrawerPrimitive.Content>;
+type DrawerContentProps = ComponentProps<typeof DrawerPrimitive.Content>;
 
-const DrawerContent = forwardRef<ElementRef<typeof DrawerPrimitive.Content>, DrawerContentProps>(
-	({ className, children, ...props }, ref) => (
+function DrawerContent({ className, children, ref, ...props }: DrawerContentProps) {
+	return (
 		<DrawerPortal>
 			<DrawerOverlay />
 			<DrawerPrimitive.Content
@@ -53,8 +51,8 @@ const DrawerContent = forwardRef<ElementRef<typeof DrawerPrimitive.Content>, Dra
 				</DrawerPrimitive.Close>
 			</DrawerPrimitive.Content>
 		</DrawerPortal>
-	),
-);
+	);
+}
 DrawerContent.displayName = DrawerPrimitive.Content.displayName;
 
 const DrawerHeader = ({ className, ...props }: HTMLAttributes<HTMLDivElement>) => (
@@ -70,30 +68,36 @@ const DrawerFooter = ({ className, ...props }: HTMLAttributes<HTMLDivElement>) =
 );
 DrawerFooter.displayName = "DrawerFooter";
 
-const DrawerTitle = forwardRef<
-	ElementRef<typeof DrawerPrimitive.Title>,
-	ComponentPropsWithoutRef<typeof DrawerPrimitive.Title> & { hidden?: boolean }
->(({ className, ...props }, ref) => (
-	<VisuallyHidden.Root asChild>
-		<DrawerPrimitive.Title
-			ref={ref}
-			className={cn("text-lg font-semibold text-foreground", className)}
-			{...props}
-		/>
-	</VisuallyHidden.Root>
-));
+function DrawerTitle({
+	className,
+	ref,
+	...props
+}: ComponentProps<typeof DrawerPrimitive.Title> & { hidden?: boolean }) {
+	return (
+		<VisuallyHidden.Root asChild>
+			<DrawerPrimitive.Title
+				ref={ref}
+				className={cn("text-lg font-semibold text-foreground", className)}
+				{...props}
+			/>
+		</VisuallyHidden.Root>
+	);
+}
 DrawerTitle.displayName = DrawerPrimitive.Title.displayName;
 
-const DrawerDescription = forwardRef<
-	ElementRef<typeof DrawerPrimitive.Description>,
-	ComponentPropsWithoutRef<typeof DrawerPrimitive.Description>
->(({ className, ...props }, ref) => (
-	<DrawerPrimitive.Description
-		ref={ref}
-		className={cn("text-sm text-foreground/70", className)}
-		{...props}
-	/>
-));
+function DrawerDescription({
+	className,
+	ref,
+	...props
+}: ComponentProps<typeof DrawerPrimitive.Description>) {
+	return (
+		<DrawerPrimitive.Description
+			ref={ref}
+			className={cn("text-sm text-foreground/70", className)}
+			{...props}
+		/>
+	);
+}
 DrawerDescription.displayName = DrawerPrimitive.Description.displayName;
 
 export {
