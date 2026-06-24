@@ -313,7 +313,7 @@ export default defineConfig({
 		"*.{json,jsonc}": ["vp fmt"],
 	},
 	server: {
-		port: 3000,
+		port: 5045,
 	},
 	resolve: {
 		tsconfigPaths: true,
