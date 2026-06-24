@@ -16,24 +16,35 @@ async function findLocalD1SqliteFile(): Promise<string> {
 		);
 	}
 
-	const sqliteCandidates: Array<{ file: string; mtimeMs: number }> = [];
+	const sqliteCandidates = (
+		await Promise.all(
+			entries.map(async (entry) => {
+				const maybeDir = path.join(baseDir, entry);
+				let files: string[] = [];
 
-	for (const entry of entries) {
-		const maybeDir = path.join(baseDir, entry);
-		let files: string[] = [];
-		try {
-			files = await readdir(maybeDir);
-		} catch {
-			continue;
-		}
+				try {
+					files = await readdir(maybeDir);
+				} catch {
+					return [];
+				}
 
-		for (const f of files) {
-			if (!f.endsWith(".sqlite")) continue;
-			const full = path.join(maybeDir, f);
-			const s = await stat(full);
-			sqliteCandidates.push({ file: full, mtimeMs: s.mtimeMs });
-		}
-	}
+				const sqliteFiles: string[] = [];
+				for (const file of files) {
+					if (file.endsWith(".sqlite")) {
+						sqliteFiles.push(file);
+					}
+				}
+
+				return Promise.all(
+					sqliteFiles.map(async (file) => {
+						const full = path.join(maybeDir, file);
+						const sqliteFile = await stat(full);
+						return { file: full, mtimeMs: sqliteFile.mtimeMs };
+					}),
+				);
+			}),
+		)
+	).flat();
 
 	if (sqliteCandidates.length === 0) {
 		throw new Error(
