@@ -378,7 +378,7 @@ const LikeStat = ({
 					disabled={is_disabled}
 				>
 					{hasLiked ? (
-						<span className={getLikeHeartIconClassName({ hasLiked, isPending })}>
+						<span className={getLikeHeartIconClassName({ isPending })}>
 							<FaHeart
 								aria-hidden="true"
 								focusable={false}

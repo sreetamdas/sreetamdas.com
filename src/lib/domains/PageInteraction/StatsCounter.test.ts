@@ -8,13 +8,11 @@ import {
 
 describe("getLikeHeartIconClassName", () => {
 	test("adds a shimmer treatment while a like is being saved", () => {
-		expect(getLikeHeartIconClassName({ hasLiked: true, isPending: true })).toContain("shimmer");
+		expect(getLikeHeartIconClassName({ isPending: true })).toContain("shimmer");
 	});
 
 	test("does not shimmer after the pending write has settled", () => {
-		expect(getLikeHeartIconClassName({ hasLiked: true, isPending: false })).not.toContain(
-			"shimmer",
-		);
+		expect(getLikeHeartIconClassName({ isPending: false })).not.toContain("shimmer");
 	});
 });
 
