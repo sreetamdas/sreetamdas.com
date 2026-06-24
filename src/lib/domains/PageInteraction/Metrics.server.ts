@@ -1,14 +1,10 @@
 import { createServerFn } from "@tanstack/react-start";
-import { getRequestHeader, setCookie } from "@tanstack/react-start/server";
 
 import { type LikeCount } from "@/lib/domains/PageViews";
 
 import { fetchLikeCount } from "./LikeButton.server";
-import {
-	LIKE_ID_COOKIE_MAX_AGE_SECONDS,
-	LIKE_ID_COOKIE_NAME,
-	type LikeRequestContext,
-} from "./LikeIdentity";
+import { type LikeRequestContext } from "./LikeIdentity";
+import { getLikeRequestContext } from "./LikeRequestContext.server";
 import { type PagePathnamePayload, validatePagePathnamePayload } from "./shared";
 import { fetchViewCount, type PageViewCount } from "./ViewsCounter.server";
 
@@ -21,27 +17,7 @@ export const fetchPageMetricsServerFn = createServerFn({
 		return validatePagePathnamePayload(data, "Invalid metrics payload");
 	})
 	.handler(async ({ data }) => {
-		const clientIp = getRequestHeader("cf-connecting-ip");
-		const cookieHeader = getRequestHeader("cookie");
-		const context: LikeRequestContext = {
-			setLikeCookie: (cookieValue) => {
-				setCookie(LIKE_ID_COOKIE_NAME, cookieValue, {
-					httpOnly: true,
-					secure: true,
-					sameSite: "lax",
-					path: "/",
-					maxAge: LIKE_ID_COOKIE_MAX_AGE_SECONDS,
-				});
-			},
-		};
-		if (clientIp) {
-			context.clientIp = clientIp;
-		}
-		if (cookieHeader) {
-			context.cookieHeader = cookieHeader;
-		}
-
-		return fetchPageMetrics(data, context);
+		return fetchPageMetrics(data, getLikeRequestContext());
 	});
 
 // Views and likes are independent reads, so run them concurrently within the one

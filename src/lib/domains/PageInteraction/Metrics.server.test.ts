@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, test, vi } from "vitest";
 
 const views = vi.hoisted(() => ({ fetchViewCount: vi.fn() }));
-const likes = vi.hoisted(() => ({ fetchLikeCount: vi.fn(), getLikeRequestContext: vi.fn() }));
+const likes = vi.hoisted(() => ({ fetchLikeCount: vi.fn() }));
 
 vi.mock("./ViewsCounter.server", () => views);
 vi.mock("./LikeButton.server", () => likes);

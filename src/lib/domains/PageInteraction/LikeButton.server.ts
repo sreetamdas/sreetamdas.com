@@ -1,14 +1,10 @@
 import { createServerFn } from "@tanstack/react-start";
-import { getRequestHeader, setCookie } from "@tanstack/react-start/server";
 
 import { type LikeCount } from "@/lib/domains/PageViews";
 import { normalizePathname } from "@/lib/helpers/utils";
 
-import {
-	LIKE_ID_COOKIE_MAX_AGE_SECONDS,
-	LIKE_ID_COOKIE_NAME,
-	type LikeRequestContext,
-} from "./LikeIdentity";
+import { type LikeRequestContext } from "./LikeIdentity";
+import { getLikeRequestContext } from "./LikeRequestContext.server";
 import {
 	type PagePathnamePayload,
 	validatePagePathnamePayload,
@@ -23,27 +19,7 @@ export const fetchLikeCountServerFn = createServerFn({
 		return validatePagePathnamePayload(data, "Invalid likes payload");
 	})
 	.handler(async ({ data }) => {
-		const clientIp = getRequestHeader("cf-connecting-ip");
-		const cookieHeader = getRequestHeader("cookie");
-		const context: LikeRequestContext = {
-			setLikeCookie: (cookieValue) => {
-				setCookie(LIKE_ID_COOKIE_NAME, cookieValue, {
-					httpOnly: true,
-					secure: true,
-					sameSite: "lax",
-					path: "/",
-					maxAge: LIKE_ID_COOKIE_MAX_AGE_SECONDS,
-				});
-			},
-		};
-		if (clientIp) {
-			context.clientIp = clientIp;
-		}
-		if (cookieHeader) {
-			context.cookieHeader = cookieHeader;
-		}
-
-		return fetchLikeCount(data, context);
+		return fetchLikeCount(data, getLikeRequestContext());
 	});
 
 export const incrementLikeServerFn = createServerFn({
@@ -53,27 +29,7 @@ export const incrementLikeServerFn = createServerFn({
 		return validatePagePathnamePayload(data, "Invalid likes payload");
 	})
 	.handler(async ({ data }) => {
-		const clientIp = getRequestHeader("cf-connecting-ip");
-		const cookieHeader = getRequestHeader("cookie");
-		const context: LikeRequestContext = {
-			setLikeCookie: (cookieValue) => {
-				setCookie(LIKE_ID_COOKIE_NAME, cookieValue, {
-					httpOnly: true,
-					secure: true,
-					sameSite: "lax",
-					path: "/",
-					maxAge: LIKE_ID_COOKIE_MAX_AGE_SECONDS,
-				});
-			},
-		};
-		if (clientIp) {
-			context.clientIp = clientIp;
-		}
-		if (cookieHeader) {
-			context.cookieHeader = cookieHeader;
-		}
-
-		return incrementLikeCount(data, context);
+		return incrementLikeCount(data, getLikeRequestContext());
 	});
 
 export const decrementLikeServerFn = createServerFn({
@@ -83,27 +39,7 @@ export const decrementLikeServerFn = createServerFn({
 		return validatePagePathnamePayload(data, "Invalid likes payload");
 	})
 	.handler(async ({ data }) => {
-		const clientIp = getRequestHeader("cf-connecting-ip");
-		const cookieHeader = getRequestHeader("cookie");
-		const context: LikeRequestContext = {
-			setLikeCookie: (cookieValue) => {
-				setCookie(LIKE_ID_COOKIE_NAME, cookieValue, {
-					httpOnly: true,
-					secure: true,
-					sameSite: "lax",
-					path: "/",
-					maxAge: LIKE_ID_COOKIE_MAX_AGE_SECONDS,
-				});
-			},
-		};
-		if (clientIp) {
-			context.clientIp = clientIp;
-		}
-		if (cookieHeader) {
-			context.cookieHeader = cookieHeader;
-		}
-
-		return decrementLikeCount(data, context);
+		return decrementLikeCount(data, getLikeRequestContext());
 	});
 
 export async function fetchLikeCount(
