@@ -24,7 +24,7 @@ describe("isStagingSmokeHost", () => {
 
 describe("handleStagingSmokeGet", () => {
 	test("returns a no-store smoke payload on staging", async () => {
-		const response = handleStagingSmokeGet(
+		const response = await handleStagingSmokeGet(
 			new Request("https://staging.sreetamdas.com/api/staging-smoke"),
 		);
 
@@ -36,6 +36,7 @@ describe("handleStagingSmokeGet", () => {
 			likes: {
 				cookieSecretConfigured: false,
 				ipSaltConfigured: false,
+				likeSchemaReady: false,
 				writeReady: false,
 			},
 			ok: true,
@@ -44,9 +45,10 @@ describe("handleStagingSmokeGet", () => {
 	});
 
 	test("reports like write readiness without exposing secret values", async () => {
-		const response = handleStagingSmokeGet(
+		const response = await handleStagingSmokeGet(
 			new Request("https://staging.sreetamdas.com/api/staging-smoke"),
 			{
+				D1: readyD1(),
 				LIKES_COOKIE_SECRET: "cookie-secret",
 				LIKES_IP_SALT: "ip-salt",
 			},
@@ -57,6 +59,7 @@ describe("handleStagingSmokeGet", () => {
 			likes: {
 				cookieSecretConfigured: true,
 				ipSaltConfigured: true,
+				likeSchemaReady: true,
 				writeReady: true,
 			},
 			ok: true,
@@ -65,7 +68,9 @@ describe("handleStagingSmokeGet", () => {
 	});
 
 	test("returns a no-store 404 on production", async () => {
-		const response = handleStagingSmokeGet(new Request("https://sreetamdas.com/api/staging-smoke"));
+		const response = await handleStagingSmokeGet(
+			new Request("https://sreetamdas.com/api/staging-smoke"),
+		);
 
 		expect(response.status).toBe(404);
 		expect(response.headers.get("cache-control")).toBe("no-store");
@@ -74,30 +79,54 @@ describe("handleStagingSmokeGet", () => {
 });
 
 describe("getLikeRuntimeStatus", () => {
-	test("treats blank secrets as missing", () => {
-		expect(
+	test("treats blank secrets as missing", async () => {
+		await expect(
 			getLikeRuntimeStatus({
+				D1: readyD1(),
 				LIKES_COOKIE_SECRET: " ",
 				LIKES_IP_SALT: "\t",
 			}),
-		).toEqual({
+		).resolves.toEqual({
 			cookieSecretConfigured: false,
 			ipSaltConfigured: false,
+			likeSchemaReady: true,
 			writeReady: false,
 		});
 	});
 
-	test("requires both like secrets for write readiness", () => {
-		expect(getLikeRuntimeStatus({ LIKES_COOKIE_SECRET: "cookie-secret" })).toEqual({
+	test("requires both like secrets and D1 schema readiness for writes", async () => {
+		await expect(getLikeRuntimeStatus({ LIKES_COOKIE_SECRET: "cookie-secret" })).resolves.toEqual({
 			cookieSecretConfigured: true,
+			likeSchemaReady: false,
 			ipSaltConfigured: false,
 			writeReady: false,
 		});
 
-		expect(getLikeRuntimeStatus({ LIKES_IP_SALT: "ip-salt" })).toEqual({
+		await expect(getLikeRuntimeStatus({ LIKES_IP_SALT: "ip-salt" })).resolves.toEqual({
 			cookieSecretConfigured: false,
+			likeSchemaReady: false,
+			ipSaltConfigured: true,
+			writeReady: false,
+		});
+
+		await expect(
+			getLikeRuntimeStatus({
+				LIKES_COOKIE_SECRET: "cookie-secret",
+				LIKES_IP_SALT: "ip-salt",
+			}),
+		).resolves.toEqual({
+			cookieSecretConfigured: true,
+			likeSchemaReady: false,
 			ipSaltConfigured: true,
 			writeReady: false,
 		});
 	});
 });
+
+function readyD1() {
+	return {
+		prepare: () => ({
+			run: () => Promise.resolve({}),
+		}),
+	};
+}
