@@ -161,7 +161,11 @@ export function ShowcasePage({ activeFeature, initialSnapshot }: ShowcasePagePro
 
 			<section className="grid gap-6 py-10 lg:grid-cols-[minmax(0,1.15fr)_minmax(20rem,0.85fr)]">
 				<FeatureStory card={activeCard} />
-				<FunctionMiddlewareDemo feature={activeFeature} initialSnapshot={initialSnapshot} />
+				<FunctionMiddlewareDemo
+					key={activeFeature}
+					feature={activeFeature}
+					initialSnapshot={initialSnapshot}
+				/>
 			</section>
 
 			<section className="py-10">
