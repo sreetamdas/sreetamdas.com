@@ -91,16 +91,6 @@ export class PresenceDurableObject extends DurableObject<CloudflareEnv> {
 		return Math.max(attachment.lastSeenAt, autoResponseAt);
 	}
 
-	private touch(ws: WebSocket, now: number) {
-		const prev = parseConnectionAttachment(ws.deserializeAttachment());
-		if (!prev) return;
-		ws.serializeAttachment({
-			clientId: prev.clientId,
-			connectedAt: prev.connectedAt,
-			lastSeenAt: now,
-		} satisfies ConnectionAttachment);
-	}
-
 	private isSocketActive(ws: WebSocket, now: number) {
 		if (ws.readyState !== WebSocket.OPEN) return false;
 		const attachment = parseConnectionAttachment(ws.deserializeAttachment());
@@ -230,20 +220,6 @@ export class PresenceDurableObject extends DurableObject<CloudflareEnv> {
 		const pruned = this.pruneStaleConnections(now);
 		if (pruned.closedAny || pruned.countChanged) {
 			this.broadcastCount(now);
-		}
-		await this.syncAlarm(now);
-	}
-
-	async webSocketMessage(ws: WebSocket, message: string | ArrayBuffer) {
-		if (typeof message !== "string") return;
-		if (message !== "ping") return;
-
-		const now = Date.now();
-		this.touch(ws, now);
-		try {
-			ws.send("pong");
-		} catch {
-			// noop
 		}
 		await this.syncAlarm(now);
 	}
