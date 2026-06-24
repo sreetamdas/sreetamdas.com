@@ -134,10 +134,6 @@ export class PresenceDurableObject extends DurableObject<CloudflareEnv> {
 		this.broadcast({ type: "count", count: this.getViewerCount(now) }, now);
 	}
 
-	private broadcastHeartbeat(now = Date.now()) {
-		this.broadcast({ type: "ping" }, now);
-	}
-
 	private pruneStaleConnections(now: number) {
 		const before = this.getViewerCount(now);
 		let closedAny = false;
@@ -211,9 +207,8 @@ export class PresenceDurableObject extends DurableObject<CloudflareEnv> {
 				lastSeenAt: now,
 			} satisfies ConnectionAttachment);
 
-			const pruned = this.pruneStaleConnections(now);
+			this.pruneStaleConnections(now);
 			this.broadcastCount(now);
-			if (pruned.closedAny || pruned.countChanged) this.broadcastHeartbeat(now);
 			await this.syncAlarm(now);
 
 			return new Response(null, { status: 101, webSocket: client });
@@ -236,22 +231,19 @@ export class PresenceDurableObject extends DurableObject<CloudflareEnv> {
 		if (pruned.closedAny || pruned.countChanged) {
 			this.broadcastCount(now);
 		}
-		this.broadcastHeartbeat(now);
 		await this.syncAlarm(now);
 	}
 
 	async webSocketMessage(ws: WebSocket, message: string | ArrayBuffer) {
 		if (typeof message !== "string") return;
-		if (message !== "ping" && message !== "pong") return;
+		if (message !== "ping") return;
 
 		const now = Date.now();
 		this.touch(ws, now);
-		if (message === "ping") {
-			try {
-				ws.send("pong");
-			} catch {
-				// noop
-			}
+		try {
+			ws.send("pong");
+		} catch {
+			// noop
 		}
 		await this.syncAlarm(now);
 	}

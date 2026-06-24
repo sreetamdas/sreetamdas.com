@@ -7,8 +7,6 @@ re-arming, and app-level heartbeat behavior are verified together.
 import { env } from "cloudflare:workers";
 import { describe, expect, it } from "vitest";
 
-import { isPresenceServerMessage } from "@/lib/domains/Presence/protocol";
-
 describe("PresenceDurableObject", () => {
 	it("returns a no-store HTTP count", async () => {
 		const response = await presence(uniquePresence("http")).fetch("https://example.com/");
@@ -51,16 +49,16 @@ describe("PresenceDurableObject", () => {
 	it("counts distinct client ids instead of raw sockets", async () => {
 		const name = uniquePresence("distinct");
 		const first = await openSocket(name, "same-client");
-		answerPresencePings(first);
+		startClientPings(first);
 		await waitForCount(first, 1);
 
 		const reconnect = await openSocket(name, "same-client");
-		answerPresencePings(reconnect);
+		startClientPings(reconnect);
 		await waitForCount(reconnect, 1);
 		expect(await fetchCount(name)).toBe(1);
 
 		const secondViewer = await openSocket(name, "other-client");
-		answerPresencePings(secondViewer);
+		startClientPings(secondViewer);
 		await waitForCount(secondViewer, 2);
 		expect(await fetchCount(name)).toBe(2);
 
@@ -72,7 +70,7 @@ describe("PresenceDurableObject", () => {
 	it("re-arms alarms while live clients remain responsive", async () => {
 		const name = uniquePresence("rearm");
 		const socket = await openSocket(name, "responsive-client");
-		answerPresencePings(socket);
+		startClientPings(socket);
 		await waitForCount(socket, 1);
 
 		await sleep(650);
@@ -80,6 +78,22 @@ describe("PresenceDurableObject", () => {
 
 		socket.close();
 		await waitForHttpCount(name, 0);
+	});
+
+	it("does not send server heartbeat messages", async () => {
+		const name = uniquePresence("server-heartbeat");
+		const socket = await openSocket(name, "no-server-heartbeat-client");
+		const messages: string[] = [];
+		socket.addEventListener("message", (event) => {
+			if (typeof event.data === "string") messages.push(event.data);
+		});
+		await waitForCount(socket, 1);
+
+		await sleep(650);
+
+		expect(messages).not.toContain(JSON.stringify({ type: "ping" }));
+		expect(await fetchCount(name)).toBe(0);
+		socket.close();
 	});
 
 	it("reaps a ghost socket by alarm without waiting for incoming traffic", async () => {
@@ -115,19 +129,11 @@ async function openSocket(name: string, clientId: string) {
 	return socket;
 }
 
-function answerPresencePings(socket: WebSocket) {
-	socket.addEventListener("message", (event) => {
-		if (typeof event.data !== "string") return;
-		let parsed: unknown;
-		try {
-			parsed = JSON.parse(event.data);
-		} catch {
-			return;
-		}
-		if (isPresenceServerMessage(parsed) && parsed.type === "ping") {
-			socket.send("pong");
-		}
-	});
+function startClientPings(socket: WebSocket) {
+	const timer = setInterval(() => {
+		if (socket.readyState === WebSocket.OPEN) socket.send("ping");
+	}, 100);
+	socket.addEventListener("close", () => clearInterval(timer));
 }
 
 function waitForCount(socket: WebSocket, count: number) {

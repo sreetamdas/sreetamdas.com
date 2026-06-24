@@ -18,14 +18,14 @@ describe("isPresenceClientId", () => {
 });
 
 describe("isPresenceServerMessage", () => {
-	test("accepts count and ping messages", () => {
+	test("accepts count messages", () => {
 		expect(isPresenceServerMessage({ type: "count", count: 2 })).toBe(true);
-		expect(isPresenceServerMessage({ type: "ping" })).toBe(true);
 	});
 
 	test("rejects malformed messages", () => {
 		expect(isPresenceServerMessage({ type: "count", count: Number.NaN })).toBe(false);
 		expect(isPresenceServerMessage({ type: "count", count: -1 })).toBe(false);
+		expect(isPresenceServerMessage({ type: "ping" })).toBe(false);
 		expect(isPresenceServerMessage({ type: "pong" })).toBe(false);
 		expect(isPresenceServerMessage(null)).toBe(false);
 	});

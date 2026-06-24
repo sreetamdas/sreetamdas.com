@@ -159,11 +159,6 @@ export function useLiveViewerCount(): LiveViewers {
 				if (!isPresenceServerMessage(parsed)) return;
 				markServerMessage(ws);
 
-				if (parsed.type === "ping") {
-					send(ws, "pong");
-					return;
-				}
-
 				setCount(parsed.count);
 			};
 
