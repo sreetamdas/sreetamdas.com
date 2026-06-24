@@ -6,13 +6,12 @@
  * any visited achievement slug as completed and renders the progress dashboard.
  */
 import * as AlertDialogPrimitive from "@radix-ui/react-alert-dialog";
-import { useNavigate } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { isUndefined } from "lodash-es";
 import { useEffect } from "react";
 import { useShallow } from "zustand/react/shallow";
 
 import { IS_DEV } from "@/config";
-import { LinkTo } from "@/lib/components/Anchor";
 import { NotFound404 } from "@/lib/components/Error";
 import { Code } from "@/lib/components/Typography";
 import { ShowCompletedBadges } from "@/lib/domains/foobar/badges";
@@ -66,13 +65,13 @@ export const FoobarDashboard = ({ completed_page }: FoobarSchrodingerProps) => {
 				completed={foobar_data.completed}
 				all_achievements={foobar_data.all_achievements}
 			/>
-			<LinkTo
-				href="/stats"
-				replaceClasses
+			<Link
+				to="/stats"
+				search={{ period: "30d" }}
 				className="my-6 inline-flex rounded-global border-2 border-solid border-secondary bg-background px-6 py-2 text-sm text-foreground transition-[color,background-color] hover:bg-secondary hover:text-background"
 			>
 				View public site stats
-			</LinkTo>
+			</Link>
 			<ResetFoobar handleClearFoobarData={handleClearFoobarData} />
 			{/* <Center>
 				<SupportSreetamDas />

@@ -91,6 +91,24 @@ test("mobile navigation drawer opens and closes during route navigation", async 
 	await expect(page.locator("footer")).toBeVisible();
 });
 
+test("home icon uses client-side routing", async ({ page }) => {
+	await page.goto("/about");
+	await expect(page.getByRole("heading", { level: 1, name: "/about" })).toBeVisible();
+
+	const documentRequests: Array<string> = [];
+	page.on("request", (request) => {
+		if (request.resourceType() === "document") {
+			documentRequests.push(request.url());
+		}
+	});
+
+	await page.getByRole("link", { name: "Home" }).click();
+
+	await expect(page).toHaveURL(/\/$/);
+	await expect(page.getByRole("heading", { level: 1, name: /Hey, I'm Sreetam!/ })).toBeVisible();
+	await expect.poll(() => documentRequests).toEqual([]);
+});
+
 test("blog archive and blog detail route render content-heavy pages correctly", async ({
 	page,
 }) => {
