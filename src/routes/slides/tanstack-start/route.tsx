@@ -10,10 +10,11 @@ import {
 import { useCallback } from "react";
 
 import { SITE_TITLE_APPEND } from "@/config";
-import { type SlideSessionPollDefinition } from "@/lib/domains/slides/live-session";
 import { validateSlideSearch } from "@/lib/domains/slides/route-search";
 import { SlideDeckRouteShell } from "@/lib/domains/slides/route-shell";
 import { canonicalUrl, defaultOgImageUrl } from "@/lib/seo";
+
+import { tanstackStartLivePolls } from "./-live-polls";
 
 export const Route = createFileRoute("/slides/tanstack-start")({
 	validateSearch: validateSlideSearch,
@@ -48,18 +49,6 @@ export const Route = createFileRoute("/slides/tanstack-start")({
 });
 
 const slidesPromise = import("./slides.re.mdx");
-const livePolls: Array<SlideSessionPollDefinition> = [
-	{
-		slide: 8,
-		question: "Have you tried TanStack Start yet?",
-		options: ["Yes", "Not yet", "Just here for vibes"],
-	},
-	{
-		slide: 17,
-		question: "Which rendering knob feels most useful?",
-		options: ["Selective SSR", "Deferred hydration", "RSC as data"],
-	},
-];
 
 function MainLayout() {
 	const location = useLocation();
@@ -83,7 +72,7 @@ function MainLayout() {
 		<SlideDeckRouteShell
 			search={search}
 			slidesPromise={slidesPromise}
-			livePolls={livePolls}
+			livePolls={tanstackStartLivePolls}
 			onPositionChange={handlePositionChange}
 		/>
 	);
