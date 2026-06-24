@@ -1,3 +1,5 @@
+import { isRealtimeClientId } from "@/lib/domains/realtime/client-id";
+
 export const PRESENCE_CLIENT_ID_PARAM = "clientId";
 export const PRESENCE_CLIENT_ID_STORAGE_KEY = "sreetamdas:presence-client-id";
 
@@ -6,10 +8,7 @@ export type PresenceServerMessage = {
 	count: number;
 };
 
-export function isPresenceClientId(value: unknown): value is string {
-	if (typeof value !== "string") return false;
-	return /^[A-Za-z0-9_-]{8,80}$/.test(value);
-}
+export const isPresenceClientId = isRealtimeClientId;
 
 export function isPresenceServerMessage(value: unknown): value is PresenceServerMessage {
 	if (typeof value !== "object" || value === null) return false;

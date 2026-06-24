@@ -1,5 +1,6 @@
 import { DurableObject } from "cloudflare:workers";
 
+import { isRealtimeClientId } from "@/lib/domains/realtime/client-id";
 import {
 	isClosePollMessage,
 	isCreatePollMessage,
@@ -291,7 +292,7 @@ function parseClientId(value: string | null): string {
 }
 
 function parseOptionalClientId(value: string | null): string | undefined {
-	if (value && /^[a-zA-Z0-9_-]{8,80}$/.test(value)) {
+	if (isRealtimeClientId(value)) {
 		return value;
 	}
 	return undefined;
