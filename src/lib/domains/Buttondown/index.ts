@@ -7,8 +7,13 @@ import { env } from "cloudflare:workers";
 
 import { BUTTONDOWN_EMAIL_MOCKS } from "./mocks";
 import newsletterSnapshot from "./newsletter-snapshot.json";
+import {
+	BUTTONDOWN_API_VERSION,
+	BUTTONDOWN_BASE_URL,
+	type ButtondownAPIEmailsResponse,
+	isButtondownEmailsResponse,
+} from "./shared";
 
-const BUTTONDOWN_BASE_URL = "https://api.buttondown.email/v1";
 const BUTTONDOWN_PLAINTEXT_MARKER = "<!-- buttondown-editor-mode: plaintext -->";
 
 export function getButtondownApiKey(): string | undefined {
@@ -19,75 +24,7 @@ export function stripButtondownPlaintextMarker(body: string) {
 	return body.replace(BUTTONDOWN_PLAINTEXT_MARKER, "");
 }
 
-export type ButtondownAPISubscribersResponse = {
-	count: number;
-	next: string;
-	previous: string;
-	results: Array<{
-		creation_date: string;
-		email: string;
-		id: string;
-		notes: string;
-		referrer_url: string;
-		metadata: Record<string, unknown>;
-		secondary_id: number;
-		subscriber_type: string;
-		source: string;
-		tags: Array<string>;
-		utm_campaign: string;
-		utm_medium: string;
-		utm_source: string;
-	}>;
-};
-
-export type ButtondownAPIEmailsResponse = {
-	count: number;
-	next: string | null;
-	previous: string | null;
-	results: Array<{
-		body: string;
-		email_type: string;
-		excluded_tags: Array<object>;
-		external_url: string;
-		id: string;
-		included_tags: Array<object>;
-		metadata: Record<string, object>;
-		publish_date: string;
-		secondary_id: number;
-		slug: string;
-		status?: string;
-		subject: string;
-	}>;
-};
-
-function isButtondownEmail(
-	value: unknown,
-): value is ButtondownAPIEmailsResponse["results"][number] {
-	if (typeof value !== "object" || value === null) {
-		return false;
-	}
-
-	return (
-		"body" in value &&
-		"slug" in value &&
-		"subject" in value &&
-		typeof value.body === "string" &&
-		typeof value.slug === "string" &&
-		typeof value.subject === "string"
-	);
-}
-
-function isButtondownEmailsResponse(value: unknown): value is ButtondownAPIEmailsResponse {
-	if (typeof value !== "object" || value === null) {
-		return false;
-	}
-
-	if (!("results" in value) || !Array.isArray(value.results)) {
-		return false;
-	}
-
-	return value.results.every((entry) => isButtondownEmail(entry));
-}
+export type { ButtondownAPIEmailsResponse, ButtondownAPISubscribersResponse } from "./shared";
 
 /**
  * Returns the committed newsletter snapshot when it holds issues, otherwise
@@ -121,7 +58,7 @@ export async function fetchNewsletterEmails(
 	try {
 		const response = await fetch(`${BUTTONDOWN_BASE_URL}/emails`, {
 			headers: {
-				"X-API-Version": "2024-08-15",
+				"X-API-Version": BUTTONDOWN_API_VERSION,
 				Authorization: `Token ${apiKey}`,
 			},
 		});

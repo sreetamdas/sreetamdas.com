@@ -13,7 +13,11 @@ import { writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
-const BUTTONDOWN_BASE_URL = "https://api.buttondown.email/v1";
+import {
+	BUTTONDOWN_API_VERSION,
+	BUTTONDOWN_BASE_URL,
+	isButtondownEmailsResponse,
+} from "../src/lib/domains/Buttondown/shared";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const SNAPSHOT_PATH = resolve(__dirname, "../src/lib/domains/Buttondown/newsletter-snapshot.json");
@@ -27,7 +31,7 @@ async function main() {
 
 	const response = await fetch(`${BUTTONDOWN_BASE_URL}/emails`, {
 		headers: {
-			"X-API-Version": "2024-08-15",
+			"X-API-Version": BUTTONDOWN_API_VERSION,
 			Authorization: `Token ${apiKey}`,
 		},
 	});
@@ -38,12 +42,7 @@ async function main() {
 	}
 
 	const data = await response.json();
-	if (
-		typeof data !== "object" ||
-		data === null ||
-		!("results" in data) ||
-		!Array.isArray(data.results)
-	) {
+	if (!isButtondownEmailsResponse(data)) {
 		process.stderr.write("Unexpected Buttondown payload; not writing snapshot.\n");
 		process.exit(1);
 	}
