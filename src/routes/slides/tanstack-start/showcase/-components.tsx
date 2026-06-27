@@ -1,9 +1,9 @@
 "use client";
 
-import { Link } from "@tanstack/react-router";
+import { Await, Link } from "@tanstack/react-router";
 import { Hydrate, useServerFn } from "@tanstack/react-start";
 import { visible } from "@tanstack/react-start/hydration";
-import { type ReactNode, useState } from "react";
+import { type ReactNode, Suspense, useState } from "react";
 
 import { Code, Gradient } from "@/lib/components/Typography";
 import { cn } from "@/lib/helpers/utils";
@@ -11,6 +11,11 @@ import { cn } from "@/lib/helpers/utils";
 import { getRuntimeSide } from "./-environment";
 import { type ShowcaseSection } from "./-shared";
 import { getShowcaseSnapshot } from "./-showcase.server";
+import {
+	getStreamingShowcaseData,
+	STREAMING_DEMO_DELAY_MS,
+	type StreamingShowcaseData,
+} from "./-streaming.server";
 
 type ShowcaseSnapshot = Awaited<ReturnType<typeof getShowcaseSnapshot>>;
 
@@ -74,6 +79,50 @@ const featureCards: Array<FeatureCard> = [
 	{
 		codePaths: [
 			"src/routes/(main)/blog/$slug/-$slug.server.tsx",
+			"src/routes/slides/tanstack-start/showcase/-rsc.server.tsx",
+			"src/routes/(main)/blog/$slug/route.tsx",
+		],
+		demoAction:
+			"Look at the bordered panel in the RSC section below: every value in it was produced on the server by renderServerComponent. The page around it is ordinary, interactive React.",
+		id: "rsc",
+		label: "RSC as data",
+		nextPain:
+			"In Next, RSC is the primary paradigm — components are server-first and you opt OUT with 'use client'.",
+		startMove:
+			"renderServerComponent renders a subtree on the server and returns it as loader data; the client stays interactive by default and composes around the result.",
+		talkUse:
+			"Use this to make “RSC is a tool, not the architecture” concrete: the blog server-renders heavy MDX, and this page renders a server-only subtree you can point at.",
+		repoProof: [
+			"blog MDX is server-rendered with renderServerComponent",
+			"this page renders a server-only subtree with request-time values",
+			"client islands compose around server output, not the reverse",
+		],
+	},
+	{
+		codePaths: [
+			"src/routes/(main)/stats/route.tsx",
+			"src/routes/slides/tanstack-start/showcase/-streaming.server.ts",
+			"src/routes/slides/tanstack-start/showcase/route.tsx",
+		],
+		demoAction:
+			"Reload this page or press “Stream again” in the streaming section below. The shell and skeleton paint instantly; the panel fills in ~1.2s later from a single streamed response.",
+		id: "streaming",
+		label: "Streaming SSR",
+		nextPain:
+			"Partial Prerendering is a powerful but proprietary, Vercel-tuned feature with its own mental model.",
+		startMove:
+			"Return an un-awaited promise from the loader: the shell flushes immediately and <Await> streams the slow part into the same HTTP response.",
+		talkUse:
+			"Use this right after the rendering dial. The /stats dashboard already streams its numbers in; this demo is deliberately slowed so the room can watch the skeleton resolve.",
+		repoProof: [
+			"/stats defers getStats and renders it through Suspense + Await",
+			"this page defers getStreamingShowcaseData in its loader",
+			"the streamed HTML is visible without running any client JavaScript",
+		],
+	},
+	{
+		codePaths: [
+			"src/routes/(main)/blog/$slug/-$slug.server.tsx",
 			"src/routes/(main)/rwc/-rwc.server.tsx",
 			"src/routes/slides/tanstack-start/showcase/-components.tsx",
 		],
@@ -118,9 +167,18 @@ const featureCards: Array<FeatureCard> = [
 type ShowcasePageProps = {
 	activeFeature: ShowcaseSection;
 	initialSnapshot: ShowcaseSnapshot;
+	serverComponent: ReactNode;
+	serverComponentRenderedAt: string;
+	streamedData: Promise<StreamingShowcaseData>;
 };
 
-export function ShowcasePage({ activeFeature, initialSnapshot }: ShowcasePageProps) {
+export function ShowcasePage({
+	activeFeature,
+	initialSnapshot,
+	serverComponent,
+	serverComponentRenderedAt,
+	streamedData,
+}: ShowcasePageProps) {
 	const activeCard = featureCards.find((card) => card.id === activeFeature) ?? routerFeatureCard;
 
 	return (
@@ -198,6 +256,15 @@ export function ShowcasePage({ activeFeature, initialSnapshot }: ShowcasePagePro
 					<RuntimeCard />
 				</div>
 			</section>
+
+			<StreamingDemo streamedData={streamedData} />
+
+			<ServerComponentDemo
+				serverComponent={serverComponent}
+				renderedAt={serverComponentRenderedAt}
+			/>
+
+			<CachingDemo />
 
 			<section className="py-12">
 				<div className="mb-4 max-w-[58ch]">
@@ -450,6 +517,181 @@ function DeferredHydrationIsland() {
 				Hydrated clicks: {count}
 			</button>
 		</div>
+	);
+}
+
+function StreamingDemo({ streamedData }: { streamedData: Promise<StreamingShowcaseData> }) {
+	const runStreaming = useServerFn(getStreamingShowcaseData);
+	const [clientData, setClientData] = useState<StreamingShowcaseData | null>(null);
+	const [isStreaming, setIsStreaming] = useState(false);
+
+	async function streamAgain() {
+		setIsStreaming(true);
+		try {
+			setClientData(await runStreaming());
+		} finally {
+			setIsStreaming(false);
+		}
+	}
+
+	return (
+		<section className="py-12">
+			<div className="mb-6 max-w-[64ch]">
+				<p className="font-mono text-sm text-primary">streaming SSR / PPR-style</p>
+				<h2 className="mt-2 font-serif text-4xl font-bold">Shell now, slow data streamed in</h2>
+				<p className="mt-3 text-foreground/75">
+					The loader returns this panel&rsquo;s data as an <Code>un-awaited promise</Code>. Start
+					flushes the shell and skeleton immediately, then streams the resolved panel into the same
+					response — the same outcome as Next.js Partial Prerendering, with no proprietary API.
+				</p>
+				<p className="mt-3 text-sm leading-6 text-foreground/65">
+					It is slowed to ~{STREAMING_DEMO_DELAY_MS}ms on purpose so the transition is visible on a
+					projector. Press &ldquo;Stream again&rdquo; to re-run the same server function from the
+					browser.
+				</p>
+			</div>
+			<div className="rounded-global border border-primary/30 bg-primary/5 p-6">
+				{isStreaming ? (
+					<StreamingSkeleton />
+				) : clientData ? (
+					<StreamedResult data={clientData} source="browser call" />
+				) : (
+					<Suspense fallback={<StreamingSkeleton />}>
+						<Await promise={streamedData}>
+							{(data) => <StreamedResult data={data} source="streamed during SSR" />}
+						</Await>
+					</Suspense>
+				)}
+				<button
+					type="button"
+					onClick={() => void streamAgain()}
+					disabled={isStreaming}
+					className="mt-6 rounded-full bg-primary px-4 py-2 text-sm text-background transition-opacity hover:opacity-80 disabled:opacity-50"
+				>
+					{isStreaming ? "Streaming..." : "Stream again"}
+				</button>
+			</div>
+		</section>
+	);
+}
+
+function StreamedResult({ data, source }: { data: StreamingShowcaseData; source: string }) {
+	return (
+		<div>
+			<div className="flex flex-wrap items-baseline justify-between gap-2">
+				<p className="font-mono text-sm text-primary">{source}</p>
+				<p className="font-mono text-xs text-foreground/55">
+					resolved in {data.durationMs}ms · req {data.requestId}
+				</p>
+			</div>
+			<dl className="mt-4 grid gap-2 text-sm">
+				{data.rows.map((row) => (
+					<div
+						key={row.label}
+						className="grid grid-cols-[9rem_minmax(0,1fr)] gap-3 border-b border-foreground/10 pb-2 last:border-b-0 last:pb-0"
+					>
+						<dt className="font-mono text-foreground/55">{row.label}</dt>
+						<dd className="min-w-0">{row.value}</dd>
+					</div>
+				))}
+			</dl>
+			<p className="mt-4 font-mono text-xs text-foreground/45">rendered at {data.renderedAtIso}</p>
+		</div>
+	);
+}
+
+function StreamingSkeleton() {
+	return (
+		<div className="animate-pulse">
+			<div className="h-4 w-40 rounded bg-foreground/15" />
+			<div className="mt-5 grid gap-3">
+				{[0, 1, 2, 3].map((row) => (
+					<div key={row} className="h-4 w-full rounded bg-foreground/10" />
+				))}
+			</div>
+		</div>
+	);
+}
+
+function ServerComponentDemo({
+	renderedAt,
+	serverComponent,
+}: {
+	renderedAt: string;
+	serverComponent: ReactNode;
+}) {
+	const [clientClicks, setClientClicks] = useState(0);
+
+	return (
+		<section className="py-12">
+			<div className="mb-6 max-w-[64ch]">
+				<p className="font-mono text-sm text-secondary">react server components</p>
+				<h2 className="mt-2 font-serif text-4xl font-bold">
+					A server subtree, composed by the client
+				</h2>
+				<p className="mt-3 text-foreground/75">
+					The bordered panel below was produced on the server by <Code>renderServerComponent</Code>{" "}
+					and handed back as loader data. The button beside it is ordinary client React — the client
+					composes around server output, it does not opt out of it.
+				</p>
+			</div>
+			<div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(16rem,0.6fr)]">
+				{serverComponent}
+				<aside className="rounded-global border border-foreground/10 bg-foreground/[0.03] p-5">
+					<p className="font-mono text-xs text-primary uppercase">client island</p>
+					<h3 className="mt-2 font-serif text-2xl font-bold">Interactive by default</h3>
+					<p className="mt-3 text-sm leading-6 text-foreground/75">
+						This counter ships and hydrates as normal client code, sitting right next to the
+						server-rendered panel.
+					</p>
+					<button
+						type="button"
+						onClick={() => setClientClicks((value) => value + 1)}
+						className="mt-5 rounded-full bg-foreground/10 px-4 py-2 text-sm transition-colors hover:bg-foreground/20"
+					>
+						Client clicks: {clientClicks}
+					</button>
+					<p className="mt-4 font-mono text-xs text-foreground/45">
+						server subtree built at {renderedAt}
+					</p>
+				</aside>
+			</div>
+		</section>
+	);
+}
+
+function CachingDemo() {
+	return (
+		<section className="py-12">
+			<div className="mb-6 max-w-[64ch]">
+				<p className="font-mono text-sm text-primary">built-in client-side caching</p>
+				<h2 className="mt-2 font-serif text-4xl font-bold">
+					Loader data is cached and revalidated
+				</h2>
+				<p className="mt-3 text-foreground/75">
+					Every route here sets a <Code>staleTime</Code>. TanStack Router keeps loader data in a
+					stale-while-revalidate cache, so navigating away and back is instant while fresh data
+					revalidates in the background — no extra data-fetching library required.
+				</p>
+			</div>
+			<div className="grid gap-6 lg:grid-cols-2">
+				<ExampleCard
+					title="Per-route staleTime"
+					description="This showcase route keeps its snapshot fresh for 30s. Revisit it inside that window and the loader is served from cache, skipping the server entirely."
+					code={`createFileRoute("/slides/tanstack-start/showcase")({\n\tloader: ({ deps }) => getShowcaseSnapshot({ data: deps }),\n\tstaleTime: 1000 * 30,\n})`}
+				>
+					<div className="flex flex-wrap gap-3 pt-2">
+						<LinkButton to="/stats" label="Open /stats" />
+						<LinkButton to="/slides/tanstack-start" label="Back to deck" />
+					</div>
+				</ExampleCard>
+				<ExampleCard
+					title="Different freshness per route"
+					description="Each route picks its own window — and the same loader can ensureQueryData from TanStack Query, so the cache you already use plugs straight in."
+					code={`// blog/$slug/route.tsx\nstaleTime: 1000 * 60 * 60 * 24\n// stats/route.tsx\nstaleTime: 1000 * 60 * 5\n// showcase/route.tsx\nstaleTime: 1000 * 30`}
+				/>
+			</div>
+		</section>
 	);
 }
 

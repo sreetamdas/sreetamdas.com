@@ -4,14 +4,21 @@ import { SITE_DESCRIPTION, SITE_TITLE_APPEND } from "@/config";
 import { canonicalUrl, defaultOgImageUrl } from "@/lib/seo";
 
 import { ShowcasePage } from "./-components";
+import { getShowcaseRsc } from "./-rsc.server";
 import { validateShowcaseSearch } from "./-shared";
 import { getShowcaseSnapshot } from "./-showcase.server";
+import { getStreamingShowcaseData } from "./-streaming.server";
 
 export const Route = createFileRoute("/slides/tanstack-start/showcase")({
 	component: RouteComponent,
 	validateSearch: validateShowcaseSearch,
 	loaderDeps: ({ search }) => ({ feature: search.feature }),
-	loader: ({ deps }) => getShowcaseSnapshot({ data: deps }),
+	loader: async ({ deps }) => ({
+		snapshot: await getShowcaseSnapshot({ data: deps }),
+		// Not awaited: streams into the shell when it resolves (PPR-style).
+		streamed: getStreamingShowcaseData(),
+		rsc: await getShowcaseRsc(),
+	}),
 	staleTime: 1000 * 30,
 	head: () => {
 		const title = `TanStack Start showcase ${SITE_TITLE_APPEND}`;
@@ -39,7 +46,15 @@ export const Route = createFileRoute("/slides/tanstack-start/showcase")({
 
 function RouteComponent() {
 	const search = Route.useSearch();
-	const snapshot = Route.useLoaderData();
+	const { snapshot, streamed, rsc } = Route.useLoaderData();
 
-	return <ShowcasePage activeFeature={search.feature} initialSnapshot={snapshot} />;
+	return (
+		<ShowcasePage
+			activeFeature={search.feature}
+			initialSnapshot={snapshot}
+			streamedData={streamed}
+			serverComponent={rsc.Renderable}
+			serverComponentRenderedAt={rsc.renderedAtIso}
+		/>
+	);
 }

@@ -8,6 +8,8 @@ describe("parseShowcaseSection", () => {
 		expect(parseShowcaseSection("server")).toBe("server");
 		expect(parseShowcaseSection("rendering")).toBe("rendering");
 		expect(parseShowcaseSection("deployment")).toBe("deployment");
+		expect(parseShowcaseSection("streaming")).toBe("streaming");
+		expect(parseShowcaseSection("rsc")).toBe("rsc");
 	});
 
 	test("defaults unknown values to router", () => {
