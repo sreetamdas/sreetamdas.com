@@ -123,14 +123,16 @@ Router-first React, with the server added where it helps.
 
 # Map of the app
 
-| Feature                 | Real route/file                       |
-| ----------------------- | ------------------------------------- |
-| Typed URL state         | `/stats`, `/slides/tanstack-start`    |
-| Server functions        | `getStats`, likes/views, GitHub stats |
-| RSC as data             | `blog/$slug/-$slug.server.tsx`        |
-| Static server functions | `/rwc`, newsletter, keebs             |
-| Server routes           | slide sessions, auth, Plausible proxy |
-| Cloudflare primitives   | D1, KV, Durable Objects               |
+| Feature                 | Real route/file                        |
+| ----------------------- | -------------------------------------- |
+| Typed URL state         | `/stats`, `/slides/tanstack-start`     |
+| Server functions        | `getStats`, likes/views, GitHub stats  |
+| Cached loader data      | per-route `staleTime`, everywhere      |
+| RSC as data             | `blog/$slug/-$slug.server.tsx`         |
+| Streaming SSR           | `/stats`, showcase `?feature=streaming`|
+| Static server functions | `/rwc`, newsletter, keebs              |
+| Server routes           | slide sessions, auth, Plausible proxy  |
+| Cloudflare primitives   | D1, KV, Durable Objects                |
 
 ---
 
@@ -181,11 +183,13 @@ The URL is a state manager with a schema.
 
 ```ts
 export const getStats = createServerFn({ method: "GET" })
-  .validator((data): StatsSearch => validateStatsSearch(data))
+  .validator((data): StatsSearch => ({ period: parseDateRange(data?.period) }))
   .handler(async ({ data }) => fetchPlausibleStats(data.period));
 ```
 
 A server boundary you can call from loaders, hooks, and components.
+
+`GET` here — so the RPC is HTTP-cacheable. Server Actions are POST-only.
 
 ---
 
@@ -205,9 +209,12 @@ const middleware = createMiddleware({ type: "function" })
 
 Open `/slides/tanstack-start/showcase?feature=server`.
 
+This is the _per-function_ tier. There's also request middleware for every request.
+
 <Notes>
 
 - THE take-home beat: one middleware with a `.client()` and a `.server()` half spanning the network.
+- Two tiers: request middleware (all SSR/routes/functions) AND per-function middleware (client + server halves). Next has one edge `middleware.ts` that can't even touch a DB.
 - [DEMO] `showcase?feature=server` → press the button → request id changes, server-only context appears.
 - [FALLBACK] SSR values are already on screen; point at `request id` + `server-only fn`.
 
@@ -215,7 +222,29 @@ Open `/slides/tanstack-start/showcase?feature=server`.
 
 ---
 
-# 3. RSC as an opt-in data primitive
+# 3. Loader data is cached
+
+```tsx
+createFileRoute("/blog/$slug")({
+  loader: ({ params }) => getBlogRenderable({ data: params }),
+  staleTime: 1000 * 60 * 60 * 24, // fresh for a day
+});
+```
+
+Stale-while-revalidate, per route. Back-navigation is instant; no React Query required.
+
+<Notes>
+
+- The differentiator the docs lead with: built-in SWR caching via TanStack Router.
+- `staleTime` / `gcTime` per route, structural sharing, background revalidation.
+- Callback to slide 6: the TanStack Query you already use plugs into the loader too.
+- Repo proof: every route sets a staleTime — blog 24h, `/stats` 5m, showcase 30s.
+
+</Notes>
+
+---
+
+# 4. RSC as an opt-in data primitive
 
 ```tsx
 const Renderable = await renderServerComponent(
@@ -229,6 +258,8 @@ return { post, Renderable };
 ```
 
 Server-render the heavy content. Compose client islands where they matter.
+
+RSC is still experimental in Start — I run it in production here anyway.
 
 ---
 
@@ -247,7 +278,7 @@ In Start, ordinary React components are interactive by default.
 
 ---
 
-# 4. Rendering is a dial
+# 5. Rendering is a dial
 
 ```tsx
 createFileRoute("/blog/$slug")({
@@ -268,7 +299,7 @@ Full SSR, data-only, or client-only — per route.
 
 ---
 
-# 5. Hydration can wait
+# 6. Hydration can wait
 
 ```tsx
 <Hydrate when={visible({ rootMargin: "320px" })}>
@@ -290,7 +321,32 @@ Demo: `/slides/tanstack-start/showcase?feature=rendering`
 
 ---
 
-# 6. Build-time server functions
+# 7. Streaming SSR (no PPR required)
+
+```tsx
+loader: ({ deps }) => ({
+  stats: getStats({ data: deps }), // promise, not awaited
+}),
+
+<Suspense fallback={<StatsSkeleton />}>
+  <Await promise={stats}>{(s) => <StatsContent stats={s} />}</Await>
+</Suspense>
+```
+
+Return an un-awaited promise: the shell flushes now, the slow part streams in.
+
+<Notes>
+
+- This is the Next.js PPR analog, but it's just a deferred loader promise + `<Await>`.
+- `/stats` already does this in production; the showcase slows it to ~1.2s so you can see it.
+- [DEMO] `showcase?feature=streaming` → reload → shell + skeleton paint, panel streams in. "Stream again" re-runs it.
+- [FALLBACK] Open `/stats`; the dashboard shell renders before the numbers land.
+
+</Notes>
+
+---
+
+# 8. Build-time server functions
 
 ```ts
 export const getHighlightedCode = createServerFn({ method: "GET" })
@@ -302,7 +358,7 @@ export const getHighlightedCode = createServerFn({ method: "GET" })
 
 ---
 
-# 7. Deployment is part of the design
+# 9. Deployment is part of the design
 
 This site runs on Cloudflare Workers.
 
@@ -315,6 +371,29 @@ This site runs on Cloudflare Workers.
 - Same route model, different runtime
 
 </Steps>
+
+---
+
+# The dev loop, every day
+
+I ship Next for a living. The thing I miss most is the feedback loop.
+
+<Steps>
+
+- Vite or Rsbuild: dev server starts in well under a second
+- HMR is near-instant — no Webpack/Turbopack wait
+- Full-speed navigation in dev, not throttled
+- Light on CPU and RAM on a laptop full of Chrome tabs
+
+</Steps>
+
+<Notes>
+
+- Not a code feature — a productivity one. Say it as someone who ships Next daily.
+- The docs are blunt here: Next dev is "slow/heavy even with Turbopack."
+- Keep it ~30s; it's a credibility beat, not a benchmark slide.
+
+</Notes>
 
 ---
 
@@ -348,17 +427,19 @@ Be honest or nobody trusts the comparison.
 
 <Steps>
 
-- RSC ecosystem maturity
+- RSC ecosystem maturity (it's experimental in Start)
 - `<Form>` and Server Action form ergonomics
 - Built-in image and font optimization
-- PPR / ISR polish on Vercel
+- ISR/PPR that's automatic on Vercel — not just cache headers
 - Ecosystem size and hiring familiarity
+- And: Start is still a Release Candidate
 
 </Steps>
 
 <Notes>
 
 - Credibility anchor — say it plainly, don't hedge. "I ship Next; I'd still pick it for X tomorrow."
+- ISR nuance: Start *can* do ISR via `Cache-Control`; Next's is automatic and Vercel-tuned. Don't over-concede it.
 - Don't rush the list; this is what makes the rest trustworthy.
 
 </Notes>
