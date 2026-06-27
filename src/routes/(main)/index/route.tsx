@@ -45,7 +45,7 @@ function Home() {
 			</h1>
 			{Renderable}
 
-			<StatsCounter hidden />
+			<StatsCounter />
 		</>
 	);
 }
