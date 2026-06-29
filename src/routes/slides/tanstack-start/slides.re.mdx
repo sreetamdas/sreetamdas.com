@@ -321,7 +321,7 @@ Demo: `/slides/tanstack-start/showcase?feature=rendering`
 
 ---
 
-# 7. Streaming SSR (no PPR required)
+# 7. Streaming SSR
 
 ```tsx
 loader: ({ deps }) => ({
@@ -335,9 +335,11 @@ loader: ({ deps }) => ({
 
 Return an un-awaited promise: the shell flushes now, the slow part streams in.
 
+Same React streaming as Next's PPR holes — minus the prebuilt static shell.
+
 <Notes>
 
-- This is the Next.js PPR analog, but it's just a deferred loader promise + `<Await>`.
+- Honest framing: this is PPR's _streaming_ half (Suspense + Await), not its build-time static shell. The shell here is SSR'd per request.
 - `/stats` already does this in production; the showcase slows it to ~1.2s so you can see it.
 - [DEMO] `showcase?feature=streaming` → reload → shell + skeleton paint, panel streams in. "Stream again" re-runs it.
 - [FALLBACK] Open `/stats`; the dashboard shell renders before the numbers land.
@@ -380,7 +382,7 @@ I ship Next for a living. The thing I miss most is the feedback loop.
 
 <Steps>
 
-- Vite or Rsbuild: dev server starts in well under a second
+- Vite or Rsbuild: near-instant dev server startup
 - HMR is near-instant — no Webpack/Turbopack wait
 - Full-speed navigation in dev, not throttled
 - Light on CPU and RAM on a laptop full of Chrome tabs

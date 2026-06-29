@@ -113,11 +113,11 @@ const featureCards: Array<FeatureCard> = [
 		startMove:
 			"Return an un-awaited promise from the loader: the shell flushes immediately and <Await> streams the slow part into the same HTTP response.",
 		talkUse:
-			"Use this right after the rendering dial. The /stats dashboard already streams its numbers in; this demo is deliberately slowed so the room can watch the skeleton resolve.",
+			"Use this right after the rendering dial. The /stats dashboard already streams its numbers in; this demo is deliberately slowed so the room can watch the skeleton resolve. Be precise if asked: this is PPR's streaming half, not its prebuilt static shell.",
 		repoProof: [
 			"/stats defers getStats and renders it through Suspense + Await",
 			"this page defers getStreamingShowcaseData in its loader",
-			"the streamed HTML is visible without running any client JavaScript",
+			"the streamed HTML arrives in the SSR response, not a client-side fetch",
 		],
 	},
 	{
@@ -537,12 +537,13 @@ function StreamingDemo({ streamedData }: { streamedData: Promise<StreamingShowca
 	return (
 		<section className="py-12">
 			<div className="mb-6 max-w-[64ch]">
-				<p className="font-mono text-sm text-primary">streaming SSR / PPR-style</p>
+				<p className="font-mono text-sm text-primary">streaming SSR · deferred data</p>
 				<h2 className="mt-2 font-serif text-4xl font-bold">Shell now, slow data streamed in</h2>
 				<p className="mt-3 text-foreground/75">
 					The loader returns this panel&rsquo;s data as an <Code>un-awaited promise</Code>. Start
 					flushes the shell and skeleton immediately, then streams the resolved panel into the same
-					response — the same outcome as Next.js Partial Prerendering, with no proprietary API.
+					response. It&rsquo;s the same React streaming Next.js PPR uses for its dynamic holes — the
+					difference is that this shell is server-rendered per request, not a prebuilt static one.
 				</p>
 				<p className="mt-3 text-sm leading-6 text-foreground/65">
 					It is slowed to ~{STREAMING_DEMO_DELAY_MS}ms on purpose so the transition is visible on a

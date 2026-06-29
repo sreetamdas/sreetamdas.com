@@ -31,7 +31,7 @@ It demonstrates, top to bottom:
    function with **client + server middleware**, during SSR and again from the browser.
 3. **RSC as data** — a server-rendered subtree from `renderServerComponent`, composed
    next to a client island.
-4. **Streaming SSR (PPR-style)** — a deliberately slow loader promise that streams in.
+4. **Streaming SSR (PPR's streaming half)** — a deliberately slow loader promise that streams in.
 5. **Built-in caching** — per-route `staleTime` examples.
 6. **Deferred hydration** — a below-the-fold island that hydrates on scroll.
 
@@ -79,7 +79,7 @@ never shipped." That single function spanned the network.
 **Fallback:** if the button does nothing (network/socket), the SSR values are still
 on screen — point at `request id` and `server-only fn` and make the same point.
 
-### B. Streaming SSR / PPR — `?feature=streaming`
+### B. Streaming SSR — PPR's streaming half — `?feature=streaming`
 
 **Files:** `showcase/-streaming.server.ts` (the slow server function),
 `showcase/route.tsx` (loader returns the promise **un-awaited**), `StreamingDemo` in
@@ -97,8 +97,17 @@ on screen — point at `request id` and `server-only fn` and make the same point
 paint instantly; ~1.2s later the panel fills. Say: "the real `/stats` does this too,
 just faster." Then press **Stream again** to repeat on demand.
 
-**Why it matters:** this is the Next.js Partial Prerendering analog, but it's just a
-deferred loader promise + `<Await>` — no proprietary API, no Vercel.
+**Why it matters:** it's the same React streaming Next.js PPR uses for its dynamic
+holes — `<Suspense>` + `<Await>` over a single response — with no proprietary API and
+no Vercel lock-in.
+
+**What it is _not_ (be precise on stage):** PPR's defining move is prebuilding a
+**static shell** at build time and serving it from the edge with zero per-request
+work, streaming in only the dynamic holes. Here the shell is **server-rendered per
+request** (the loader reads request headers). So this is the _streaming_ half of PPR,
+not the _partial-prerender_ half. Same user-visible payoff; different mechanism. If
+you want true PPR parity, prerender the shell statically (Start supports it) and defer
+only the dynamic hole — Start just won't infer that boundary for you the way Next does.
 
 **Fallback:** open `/stats` — the dashboard chrome renders before the numbers land
 (real production streaming). If even that resolves too fast on good wifi, lean on the

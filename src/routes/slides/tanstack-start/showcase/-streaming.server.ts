@@ -5,8 +5,10 @@ import { getRequestHeader } from "@tanstack/react-start/server";
  * Deliberately slow so the streaming boundary is *visible* on stage. The route
  * loader returns this promise WITHOUT awaiting it, so TanStack Start flushes the
  * page shell immediately and streams this panel into the same HTTP response when
- * it resolves — the same shape as Next.js Partial Prerendering, but as a plain
- * deferred loader promise consumed by `<Await>`.
+ * it resolves. This is the same React streaming Next.js PPR uses for its dynamic
+ * holes — but note the difference: PPR also *prebuilds a static shell* at build
+ * time, whereas this shell is server-rendered per request. We have the streaming
+ * half (a deferred loader promise + `<Await>`), not the partial-prerender half.
  */
 export const STREAMING_DEMO_DELAY_MS = 1200;
 
@@ -33,7 +35,7 @@ export const getStreamingShowcaseData = createServerFn({ method: "GET" }).handle
 				{ label: "page shell", value: "flushed first, before this resolved" },
 				{ label: "this panel", value: `streamed in after ~${STREAMING_DEMO_DELAY_MS}ms` },
 				{ label: "transport", value: "one response, progressively flushed" },
-				{ label: "client JS", value: "not required to see this HTML" },
+				{ label: "delivery", value: "server-streamed, not a client fetch" },
 			],
 		};
 	},

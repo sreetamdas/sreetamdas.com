@@ -257,14 +257,20 @@ without paying for hydration up front" is the whole point.
 
 ---
 
-## 19 · 7. Streaming SSR (the PPR comparison) ⏱ 16:15
+## 19 · 7. Streaming SSR (the honest PPR comparison) ⏱ 16:15
 
 **SAY:** "Feature seven — and if you've been waiting for the Next.js Partial
-Prerendering comparison, here it is. PPR, without the proprietary part. (CLICK) You
-return a promise from the loader and you _don't_ await it. Start flushes the page
-shell immediately, and streams the slow part into the _same_ HTTP response when it
-resolves. On the client it's just `<Suspense>` and `<Await>` — no special API, no
-Vercel."
+Prerendering comparison, here's the honest version. This is the _streaming_ half of
+PPR — the part that makes the dynamic content feel instant — without a proprietary
+API. (CLICK) You return a promise from the loader and you _don't_ await it. Start
+flushes the page shell immediately, and streams the slow part into the _same_ HTTP
+response when it resolves. On the client it's just `<Suspense>` and `<Await>`. The
+one difference I'll own: the shell here is server-rendered per request, not a
+prebuilt static shell the way PPR's is."
+
+> If a Next expert presses: PPR's signature is the _build-time static shell_ served
+> from the edge; you only have the streaming half. Concede it cleanly — it's still
+> the same user-visible payoff.
 
 **[DEMO]** Switch to `showcase?feature=streaming` and reload. "(CLICK) The shell and
 the skeleton paint instantly — now watch — the panel streams in about a second later.
@@ -300,7 +306,7 @@ route model — different runtime. I didn't rewrite the app to move it to the ed
 
 **SAY:** "One more before the finale — and this one isn't a code feature, it's a
 daily one. I ship Next for a living, and the thing I miss most on Start days is
-just… gone. (CLICK) Vite or Rsbuild: the dev server is up in well under a second.
+just… gone. (CLICK) Vite or Rsbuild: the dev server is up almost immediately.
 (CLICK) HMR is basically instant. (CLICK) Navigation in dev isn't throttled. (CLICK)
 And my laptop fan stays off. The docs put it bluntly — Next dev is slow and heavy
 even with Turbopack. I won't oversell it. But it compounds, every single day."
