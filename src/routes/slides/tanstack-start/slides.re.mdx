@@ -123,16 +123,16 @@ Router-first React, with the server added where it helps.
 
 # Map of the app
 
-| Feature                 | Real route/file                        |
-| ----------------------- | -------------------------------------- |
-| Typed URL state         | `/stats`, `/slides/tanstack-start`     |
-| Server functions        | `getStats`, likes/views, GitHub stats  |
-| Cached loader data      | per-route `staleTime`, everywhere      |
-| RSC as data             | `blog/$slug/-$slug.server.tsx`         |
-| Streaming SSR           | `/stats`, showcase `?feature=streaming`|
-| Static server functions | `/rwc`, newsletter, keebs              |
-| Server routes           | slide sessions, auth, Plausible proxy  |
-| Cloudflare primitives   | D1, KV, Durable Objects                |
+| Feature                 | Real route/file                         |
+| ----------------------- | --------------------------------------- |
+| Typed URL state         | `/stats`, `/slides/tanstack-start`      |
+| Server functions        | `getStats`, likes/views, GitHub stats   |
+| Cached loader data      | per-route `staleTime`, everywhere       |
+| RSC as data             | `blog/$slug/-$slug.server.tsx`          |
+| Streaming SSR           | `/stats`, showcase `?feature=streaming` |
+| Static server functions | `/rwc`, newsletter, keebs               |
+| Server routes           | slide sessions, auth, Plausible proxy   |
+| Cloudflare primitives   | D1, KV, Durable Objects                 |
 
 ---
 
@@ -181,9 +181,11 @@ The URL is a state manager with a schema.
 
 # 2. Server functions are typed RPC
 
-```ts
+```tsx
 export const getStats = createServerFn({ method: "GET" })
-  .validator((data): StatsSearch => ({ period: parseDateRange(data?.period) }))
+  .validator(
+    (data): StatsSearch => ({ period: parseDateRange(data?.period) }),
+  )
   .handler(async ({ data }) => fetchPlausibleStats(data.period));
 ```
 
@@ -197,7 +199,7 @@ A server boundary you can call from loaders, hooks, and components.
 
 Server function middleware can run on the client and the server.
 
-```ts
+```tsx
 const middleware = createMiddleware({ type: "function" })
   .client(({ next }) => next({ sendContext: { clientRuntime } }))
   .server(({ context, next }) =>
@@ -324,13 +326,16 @@ Demo: `/slides/tanstack-start/showcase?feature=rendering`
 # 7. Streaming SSR
 
 ```tsx
-loader: ({ deps }) => ({
+loader: (({ deps }) => ({
   stats: getStats({ data: deps }), // promise, not awaited
 }),
-
-<Suspense fallback={<StatsSkeleton />}>
-  <Await promise={stats}>{(s) => <StatsContent stats={s} />}</Await>
-</Suspense>
+  (
+    <Suspense fallback={<StatsSkeleton />}>
+      <Await promise={stats}>
+        {(s) => <StatsContent stats={s} />}
+      </Await>
+    </Suspense>
+  ));
 ```
 
 Return an un-awaited promise: the shell flushes now, the slow part streams in.
@@ -350,7 +355,7 @@ Same React streaming as Next's PPR holes — minus the prebuilt static shell.
 
 # 8. Build-time server functions
 
-```ts
+```tsx
 export const getHighlightedCode = createServerFn({ method: "GET" })
   .middleware([staticFunctionMiddleware])
   .handler(async () => loadRwcCodeSamples());
@@ -441,7 +446,7 @@ Be honest or nobody trusts the comparison.
 <Notes>
 
 - Credibility anchor — say it plainly, don't hedge. "I ship Next; I'd still pick it for X tomorrow."
-- ISR nuance: Start *can* do ISR via `Cache-Control`; Next's is automatic and Vercel-tuned. Don't over-concede it.
+- ISR nuance: Start _can_ do ISR via `Cache-Control`; Next's is automatic and Vercel-tuned. Don't over-concede it.
 - Don't rush the list; this is what makes the rest trustworthy.
 
 </Notes>
