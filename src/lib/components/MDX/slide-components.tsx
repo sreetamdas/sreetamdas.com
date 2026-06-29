@@ -13,6 +13,7 @@ import { Image } from "@/lib/components/Image";
 import { Blockquote, Code, Heading, UnorderedList } from "@/lib/components/Typography";
 import { CodeBlock } from "@/lib/domains/shiki/CodeBlock";
 import { Steps } from "@/lib/domains/slides/steps";
+import { cn } from "@/lib/helpers/utils";
 
 export const slideMDXComponents: MDXComponents = {
 	h1: ({ children, ...props }: HTMLAttributes<HTMLHeadingElement>) => (
@@ -57,5 +58,36 @@ export const slideMDXComponents: MDXComponents = {
 	img: Image,
 	hr: () => <hr className="my-4" />,
 	blockquote: (props) => <Blockquote {...props} className="border-l-6 border-secondary italic" />,
+
+	// safe-mdx renders GFM tables as table → thead/tbody → tr → td, using `td`
+	// for header cells too (there is no `th`). Header styling therefore lives on
+	// `thead`, and `cn` merges the empty `className` safe-mdx injects into rows
+	// and cells so it can't clobber ours.
+	table: ({ className, ...props }: HTMLAttributes<HTMLTableElement>) => (
+		<div className="my-6 overflow-x-auto">
+			<table className={cn("w-full border-collapse font-serif text-2xl", className)} {...props} />
+		</div>
+	),
+	thead: ({ className, ...props }: HTMLAttributes<HTMLTableSectionElement>) => (
+		<thead
+			className={cn(
+				"border-b-2 border-secondary text-left [&_td]:font-bold [&_td]:text-primary",
+				className,
+			)}
+			{...props}
+		/>
+	),
+	tbody: ({ className, ...props }: HTMLAttributes<HTMLTableSectionElement>) => (
+		<tbody className={cn("divide-y divide-foreground/15", className)} {...props} />
+	),
+	tr: ({ className, ...props }: HTMLAttributes<HTMLTableRowElement>) => (
+		<tr className={cn(className)} {...props} />
+	),
+	td: ({ className, children, ...props }: HTMLAttributes<HTMLTableCellElement>) => (
+		<td className={cn("px-4 py-3 align-top", className)} {...props}>
+			{children}
+		</td>
+	),
+
 	Steps,
 };
