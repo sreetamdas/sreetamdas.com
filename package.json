@@ -85,6 +85,7 @@
 		"react-svg-worldmap": "^2.0.2",
 		"safe-mdx": "^1.11.5",
 		"shiki": "^4.3.0",
+		"shiki-magic-move": "^1.4.0",
 		"tailwind-merge": "^3.6.0",
 		"unist-util-visit": "^5.1.0",
 		"zod": "^4.4.3",
