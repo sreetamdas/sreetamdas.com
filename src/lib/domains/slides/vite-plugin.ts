@@ -135,6 +135,10 @@ function extractTopLevelFrontmatter(source: string): {
 
 /**
  * Extract top-level import/export statements that are NOT inside code fences.
+ *
+ * Handles both single-line and multi-line statements: the formatter wraps long
+ * imports across several lines, so an `import`/`export` that does not end with
+ * `;` continues accumulating until a line that does.
  */
 function extractTopLevelModules(source: string): { modules: string[]; source: string } {
 	const lines = source.split("\n");
@@ -142,9 +146,20 @@ function extractTopLevelModules(source: string): { modules: string[]; source: st
 	const kept: string[] = [];
 	let inFence = false;
 	let fenceChar = "";
+	let pending: string[] | null = null;
 
 	for (const line of lines) {
 		const trimmed = line.trim();
+
+		// Mid-statement: keep accumulating a multi-line import/export until it ends.
+		if (pending) {
+			pending.push(line);
+			if (trimmed.endsWith(";")) {
+				modules.push(pending.join("\n"));
+				pending = null;
+			}
+			continue;
+		}
 
 		if (trimmed.startsWith("```")) {
 			if (!inFence) {
@@ -169,12 +184,19 @@ function extractTopLevelModules(source: string): { modules: string[]; source: st
 			continue;
 		}
 
-		if (!inFence && /^(?:import|export)\s/.test(trimmed) && trimmed.endsWith(";")) {
-			modules.push(line);
+		if (!inFence && /^(?:import|export)\s/.test(trimmed)) {
+			if (trimmed.endsWith(";")) {
+				modules.push(line);
+			} else {
+				pending = [line];
+			}
 		} else {
 			kept.push(line);
 		}
 	}
+
+	// An unterminated statement is not a module; preserve it as content.
+	if (pending) kept.push(...pending);
 
 	return { modules, source: kept.join("\n") };
 }
