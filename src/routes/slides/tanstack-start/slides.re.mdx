@@ -5,6 +5,20 @@ published_at: "2026-05-16"
 ---
 
 import { MainTitle } from "./-components";
+import {
+  RouterStateDemo,
+  ServerBoundaryDemo,
+  StreamingDemo,
+  RscDemo,
+} from "./-demos";
+import {
+  UrlStateBuildUp,
+  ServerFnBuildUp,
+  MiddlewareBuildUp,
+  RscBuildUp,
+  RenderingDial,
+  StreamingBuildUp,
+} from "./-code";
 
 ---
 
@@ -138,14 +152,7 @@ Router-first React, with the server added where it helps.
 
 # 1. URL state is not a string bag
 
-```tsx
-export const Route = createFileRoute("/(main)/stats")({
-  validateSearch: (search): StatsSearch => ({
-    period: parseDateRange(search.period),
-  }),
-  loaderDeps: ({ search }) => ({ period: search.period }),
-});
-```
+<UrlStateBuildUp />
 
 The URL is a state manager with a schema.
 
@@ -179,15 +186,22 @@ The URL is a state manager with a schema.
 
 ---
 
+# Live: this deck's URL state
+
+<RouterStateDemo />
+
+<Notes>
+
+- This is the deck itself: slide/step/live/presenter are validated search params.
+- Walk a step — the values update live. No companion tab needed.
+
+</Notes>
+
+---
+
 # 2. Server functions are typed RPC
 
-```tsx
-export const getStats = createServerFn({ method: "GET" })
-  .validator(
-    (data): StatsSearch => ({ period: parseDateRange(data?.period) }),
-  )
-  .handler(async ({ data }) => fetchPlausibleStats(data.period));
-```
+<ServerFnBuildUp />
 
 A server boundary you can call from loaders, hooks, and components.
 
@@ -199,17 +213,7 @@ A server boundary you can call from loaders, hooks, and components.
 
 Server function middleware can run on the client and the server.
 
-```tsx
-const middleware = createMiddleware({ type: "function" })
-  .client(({ next }) => next({ sendContext: { clientRuntime } }))
-  .server(({ context, next }) =>
-    next({
-      context: { requestId, clientRuntime: context.clientRuntime },
-    }),
-  );
-```
-
-Open `/slides/tanstack-start/showcase?feature=server`.
+<MiddlewareBuildUp />
 
 This is the _per-function_ tier. There's also request middleware for every request.
 
@@ -217,8 +221,20 @@ This is the _per-function_ tier. There's also request middleware for every reque
 
 - THE take-home beat: one middleware with a `.client()` and a `.server()` half spanning the network.
 - Two tiers: request middleware (all SSR/routes/functions) AND per-function middleware (client + server halves). Next has one edge `middleware.ts` that can't even touch a DB.
-- [DEMO] `showcase?feature=server` → press the button → request id changes, server-only context appears.
-- [FALLBACK] SSR values are already on screen; point at `request id` + `server-only fn`.
+
+</Notes>
+
+---
+
+# Live: client → middleware → server
+
+<ServerBoundaryDemo />
+
+<Notes>
+
+- [DEMO] Press the button → request id changes, server-only context appears.
+- The middleware's `.client()` half tags the call; the `.server()` half injects request id + server-only context.
+- [FALLBACK] Values are already on screen from the mount call; point at `request id` + `server-only fn`.
 
 </Notes>
 
@@ -248,16 +264,7 @@ Stale-while-revalidate, per route. Back-navigation is instant; no React Query re
 
 # 4. RSC as an opt-in data primitive
 
-```tsx
-const Renderable = await renderServerComponent(
-  <MDXContent
-    source={post.raw}
-    components={{ Sparkles, ChameleonHighlight }}
-  />,
-);
-
-return { post, Renderable };
-```
+<RscBuildUp />
 
 Server-render the heavy content. Compose client islands where they matter.
 
@@ -280,15 +287,22 @@ In Start, ordinary React components are interactive by default.
 
 ---
 
+# Live: a server subtree as data
+
+<RscDemo />
+
+<Notes>
+
+- [DEMO] The bordered panel was produced by `renderServerComponent` on the server; the counter beside it is ordinary client React.
+- The client never imports the panel's code or its server-only inputs — only the rendered output.
+
+</Notes>
+
+---
+
 # 5. Rendering is a dial
 
-```tsx
-createFileRoute("/blog/$slug")({
-  /* full SSR */
-});
-createFileRoute("/dashboard")({ ssr: "data-only" });
-createFileRoute("/playground")({ ssr: false });
-```
+<RenderingDial />
 
 Full SSR, data-only, or client-only — per route.
 
@@ -325,28 +339,23 @@ Demo: `/slides/tanstack-start/showcase?feature=rendering`
 
 # 7. Streaming SSR
 
-```tsx
-loader: (({ deps }) => ({
-  stats: getStats({ data: deps }), // promise, not awaited
-}),
-  (
-    <Suspense fallback={<StatsSkeleton />}>
-      <Await promise={stats}>
-        {(s) => <StatsContent stats={s} />}
-      </Await>
-    </Suspense>
-  ));
-```
+<StreamingBuildUp />
 
 Return an un-awaited promise: the shell flushes now, the slow part streams in.
 
 Same React streaming as Next's PPR holes — minus the prebuilt static shell.
 
+---
+
+# Live: shell now, slow data later
+
+<StreamingDemo />
+
 <Notes>
 
 - Honest framing: this is PPR's _streaming_ half (Suspense + Await), not its build-time static shell. The shell here is SSR'd per request.
-- `/stats` already does this in production; the showcase slows it to ~1.2s so you can see it.
-- [DEMO] `showcase?feature=streaming` → reload → shell + skeleton paint, panel streams in. "Stream again" re-runs it.
+- In the deck this fires as a real server round-trip with a ~1.2s delay so the skeleton→panel transition is visible; the standalone showcase shows the true server-streamed-into-shell variant.
+- [DEMO] Press "Stream again" → skeleton paints, panel fills in.
 - [FALLBACK] Open `/stats`; the dashboard shell renders before the numbers land.
 
 </Notes>
