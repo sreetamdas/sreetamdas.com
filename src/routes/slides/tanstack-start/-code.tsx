@@ -4,9 +4,10 @@
  * Magic-move code sequences for the TanStack Start deck.
  *
  * Each export is a small wrapper around <MagicMoveCode> holding an ordered list
- * of code states. Keeping the multi-line code here (instead of in the .re.mdx)
- * avoids fighting the MDX formatter and keeps the slides readable. Drop the
- * wrapper into a slide and the deck morphs between states as you advance steps.
+ * of stages (code + optional caption). Keeping the multi-line code here (instead
+ * of in the .re.mdx) avoids fighting the MDX formatter and keeps the slides
+ * readable. Drop the wrapper into a slide and the deck morphs between stages as
+ * you advance steps.
  */
 import { MagicMoveCode } from "@/lib/domains/slides/MagicMove";
 
@@ -15,17 +16,26 @@ export function UrlStateBuildUp() {
 	return (
 		<MagicMoveCode
 			lang="tsx"
-			states={[
-				`export const Route = createFileRoute("/stats")({
+			fileName="stats/route.tsx"
+			stages={[
+				{
+					caption: "Just a route.",
+					code: `export const Route = createFileRoute("/stats")({
   component: StatsPage,
 });`,
-				`export const Route = createFileRoute("/stats")({
+				},
+				{
+					caption: "validateSearch parses the URL once.",
+					code: `export const Route = createFileRoute("/stats")({
   validateSearch: (search): StatsSearch => ({
     period: parseDateRange(search.period),
   }),
   component: StatsPage,
 });`,
-				`export const Route = createFileRoute("/stats")({
+				},
+				{
+					caption: "loaderDeps makes invalidation explicit.",
+					code: `export const Route = createFileRoute("/stats")({
   validateSearch: (search): StatsSearch => ({
     period: parseDateRange(search.period),
   }),
@@ -33,6 +43,7 @@ export function UrlStateBuildUp() {
   loader: ({ deps }) => getStats({ data: deps }),
   component: StatsPage,
 });`,
+				},
 			]}
 		/>
 	);
@@ -43,17 +54,27 @@ export function ServerFnBuildUp() {
 	return (
 		<MagicMoveCode
 			lang="tsx"
-			states={[
-				`export const getStats = createServerFn({ method: "GET" });`,
-				`export const getStats = createServerFn({ method: "GET" })
+			fileName="stats/-stats.server.ts"
+			stages={[
+				{
+					caption: "A GET RPC boundary.",
+					code: `export const getStats = createServerFn({ method: "GET" });`,
+				},
+				{
+					caption: "Validator runs first.",
+					code: `export const getStats = createServerFn({ method: "GET" })
   .validator((data): StatsSearch => ({
     period: parseDateRange(data?.period),
   }));`,
-				`export const getStats = createServerFn({ method: "GET" })
+				},
+				{
+					caption: "Then a typed handler.",
+					code: `export const getStats = createServerFn({ method: "GET" })
   .validator((data): StatsSearch => ({
     period: parseDateRange(data?.period),
   }))
   .handler(async ({ data }) => fetchPlausibleStats(data.period));`,
+				},
 			]}
 		/>
 	);
@@ -64,17 +85,27 @@ export function MiddlewareBuildUp() {
 	return (
 		<MagicMoveCode
 			lang="tsx"
-			states={[
-				`const middleware = createMiddleware({ type: "function" });`,
-				`const middleware = createMiddleware({ type: "function" })
+			fileName="showcase/-showcase.server.ts"
+			stages={[
+				{
+					caption: "One function middleware.",
+					code: `const middleware = createMiddleware({ type: "function" });`,
+				},
+				{
+					caption: "A .client() half, in the browser.",
+					code: `const middleware = createMiddleware({ type: "function" })
   .client(({ next }) => next({ sendContext: { clientRuntime } }));`,
-				`const middleware = createMiddleware({ type: "function" })
+				},
+				{
+					caption: "And a .server() half — one boundary across the network.",
+					code: `const middleware = createMiddleware({ type: "function" })
   .client(({ next }) => next({ sendContext: { clientRuntime } }))
   .server(({ context, next }) =>
     next({
       context: { requestId, clientRuntime: context.clientRuntime },
     }),
   );`,
+				},
 			]}
 		/>
 	);
@@ -85,12 +116,21 @@ export function RscBuildUp() {
 	return (
 		<MagicMoveCode
 			lang="tsx"
-			states={[
-				`const Renderable = <MDXContent source={post.raw} />;`,
-				`const Renderable = await renderServerComponent(
+			fileName="blog/$slug/route.tsx"
+			stages={[
+				{
+					caption: "An ordinary subtree.",
+					code: `const Renderable = <MDXContent source={post.raw} />;`,
+				},
+				{
+					caption: "Render it on the server.",
+					code: `const Renderable = await renderServerComponent(
   <MDXContent source={post.raw} />,
 );`,
-				`const Renderable = await renderServerComponent(
+				},
+				{
+					caption: "Hand it back as loader data; compose client islands on top.",
+					code: `const Renderable = await renderServerComponent(
   <MDXContent
     source={post.raw}
     components={{ Sparkles, ChameleonHighlight }}
@@ -98,6 +138,7 @@ export function RscBuildUp() {
 );
 
 return { post, Renderable };`,
+				},
 			]}
 		/>
 	);
@@ -108,19 +149,26 @@ export function RenderingDial() {
 	return (
 		<MagicMoveCode
 			lang="tsx"
-			states={[
-				`// full SSR — HTML + data on the server
-createFileRoute("/blog/$slug")({
+			fileName="rendering.dial.tsx"
+			stages={[
+				{
+					caption: "Full SSR — HTML + data on the server.",
+					code: `createFileRoute("/blog/$slug")({
   loader: ({ params }) => getPost({ data: params }),
 });`,
-				`// data-only — run the loader on the server, render on the client
-createFileRoute("/dashboard")({
+				},
+				{
+					caption: "data-only — loader on the server, render on the client.",
+					code: `createFileRoute("/dashboard")({
   ssr: "data-only",
 });`,
-				`// client-only — no server render at all
-createFileRoute("/playground")({
+				},
+				{
+					caption: "client-only — no server render at all.",
+					code: `createFileRoute("/playground")({
   ssr: false,
 });`,
+				},
 			]}
 		/>
 	);
@@ -131,11 +179,17 @@ export function StreamingBuildUp() {
 	return (
 		<MagicMoveCode
 			lang="tsx"
-			states={[
-				`loader: ({ deps }) => ({
+			fileName="stats/route.tsx"
+			stages={[
+				{
+					caption: "Return the promise — don't await it.",
+					code: `loader: ({ deps }) => ({
   stats: getStats({ data: deps }), // promise, not awaited
 }),`,
-				`loader: ({ deps }) => ({
+				},
+				{
+					caption: "Stream it in through Suspense + Await.",
+					code: `loader: ({ deps }) => ({
   stats: getStats({ data: deps }), // promise, not awaited
 }),
 
@@ -144,6 +198,7 @@ export function StreamingBuildUp() {
     {(s) => <StatsContent stats={s} />}
   </Await>
 </Suspense>;`,
+				},
 			]}
 		/>
 	);

@@ -1,20 +1,20 @@
 "use client";
 
-import { use, useEffect, useId, useMemo, useState } from "react";
 import "shiki-magic-move/style.css";
 /**
  * Animated code transitions for slides, powered by shiki-magic-move.
  *
- * `<MagicMoveCode>` takes an ordered list of code states and morphs between them
+ * `<MagicMoveCode>` takes an ordered list of stages and morphs between them
  * line-by-line as the presenter advances steps. It plugs into the deck's step
- * system the same way `<Steps>` does: it registers `states.length` steps, and the
- * current step selects which state is shown. Tokenization reuses the shared Karma
+ * system the same way `<Steps>` does: it registers `stages.length` steps, and the
+ * current step selects which stage is shown. Tokenization reuses the shared Karma
  * Shiki highlighter so colors match the static `<CodeBlock>`s elsewhere.
  *
- * Optional `highlight` lets a state spotlight specific 1-based lines (the rest dim),
- * e.g. states=[a, b], highlight={{ 1: "2-3" }} dims everything but lines 2-3 on the
- * second state.
+ * Carries over the original MagicMove preferences: snappy 250ms / no-stagger
+ * animation, line numbers, an editor-tab header (file name + language), and an
+ * optional per-stage caption.
  */
+import { type ReactNode, use, useEffect, useId, useState } from "react";
 import { ShikiMagicMove } from "shiki-magic-move/react";
 
 import { getSlimKarmaHighlighter, type KarmaHighlighter } from "@/lib/domains/shiki/highlighter";
@@ -22,14 +22,24 @@ import { cn } from "@/lib/helpers/utils";
 
 import { SlideActiveContext, StepContext } from "./steps.context";
 
+type Stage = {
+	code: string;
+	/** Optional caption shown under the block for this stage, e.g. "add validateSearch". */
+	caption?: ReactNode;
+};
+
 type MagicMoveCodeProps = {
-	/** Ordered code snapshots. The deck morphs between consecutive entries. */
-	states: Array<string>;
+	/** Ordered stages. The deck morphs between consecutive entries as steps advance. */
+	stages: Array<Stage>;
 	lang?: string;
+	fileName?: string;
 	className?: string;
 };
 
-export function MagicMoveCode({ states, lang = "tsx", className }: MagicMoveCodeProps) {
+// Snappy, all-at-once morph — the original feel, not a slow cascade.
+const MAGIC_MOVE_OPTIONS = { duration: 250, stagger: 0, lineNumbers: true } as const;
+
+export function MagicMoveCode({ stages, lang = "tsx", fileName, className }: MagicMoveCodeProps) {
 	const { currentStep, registerSteps, unregisterSteps } = use(StepContext);
 	const active = use(SlideActiveContext);
 	const id = useId();
@@ -45,37 +55,46 @@ export function MagicMoveCode({ states, lang = "tsx", className }: MagicMoveCode
 		};
 	}, []);
 
-	// Register one step per state so arrow presses index directly into `states`.
+	// Register one step per stage so arrow presses index directly into `stages`.
 	useEffect(() => {
 		if (active) {
-			registerSteps(id, states.length);
+			registerSteps(id, stages.length);
 			return () => unregisterSteps(id);
 		}
-	}, [active, states.length, id, registerSteps, unregisterSteps]);
+	}, [active, stages.length, id, registerSteps, unregisterSteps]);
 
-	const index = Math.min(Math.max(currentStep, 0), states.length - 1);
-	const code = states[index] ?? states[0] ?? "";
-
-	const options = useMemo(
-		() => ({ duration: 650, stagger: 0.18, lineNumbers: false, animateContainer: true }),
-		[],
-	);
+	const index = Math.min(Math.max(currentStep, 0), stages.length - 1);
+	const stage = stages[index] ?? stages[0];
+	const code = stage?.code.trim() ?? "";
 
 	return (
-		<div
-			className={cn("ml-12 font-mono text-2xl leading-relaxed [&_pre]:!bg-transparent", className)}
-		>
+		<figure className={cn("my-4 ml-12 font-mono text-2xl", className)}>
+			{fileName || lang ? (
+				<div className="flex justify-between rounded-t-global bg-karma-background px-5 py-1.5 font-mono text-base text-zinc-400">
+					<span>{fileName}</span>
+					<span>{lang}</span>
+				</div>
+			) : null}
 			{highlighter ? (
 				<ShikiMagicMove
 					highlighter={highlighter}
 					lang={lang}
 					theme="karma"
 					code={code}
-					options={options}
+					options={MAGIC_MOVE_OPTIONS}
+					className={cn(
+						"overflow-x-auto rounded-b-global p-5 leading-relaxed [&_pre]:!bg-transparent",
+						"[&_.shiki-magic-move-line-number]:mr-3 [&_.shiki-magic-move-line-number]:inline-block [&_.shiki-magic-move-line-number]:w-8 [&_.shiki-magic-move-line-number]:pr-2 [&_.shiki-magic-move-line-number]:text-right [&_.shiki-magic-move-line-number]:text-zinc-500",
+					)}
 				/>
 			) : (
-				<pre className="whitespace-pre-wrap text-foreground/80">{code}</pre>
+				<pre className="rounded-b-global p-5 whitespace-pre-wrap text-foreground/80">{code}</pre>
 			)}
-		</div>
+			{stage?.caption ? (
+				<figcaption className="mt-3 font-serif text-xl text-foreground/70">
+					{stage.caption}
+				</figcaption>
+			) : null}
+		</figure>
 	);
 }
