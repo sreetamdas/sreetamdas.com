@@ -4,7 +4,7 @@ published: true
 published_at: "2026-05-16"
 ---
 
-import { MainTitle } from "./-components";
+import { MainTitle, StarHistory } from "./-components";
 import {
   RouterStateDemo,
   ServerBoundaryDemo,
@@ -52,6 +52,21 @@ import {
 
 ---
 
+# Six versions in. Maybe seven.
+
+<StarHistory />
+
+<Notes>
+
+- This is `sreetamdas.com`. First commit: 2016. It's been through a _bunch_ of versions and frameworks.
+- It's my go-to for actually using the cool stuff I find — zustand, styled-components, tailwind, drizzle — instead of throwaway demo apps I'd never maintain.
+- Six or seven rewrites in, I genuinely believe TanStack Start is the best way to build full-stack React today.
+- (the joke: I've lost count — is it six? seven? that's kind of the point.)
+
+</Notes>
+
+---
+
 # Remote
 
 - Help companies hire, manage and pay people
@@ -84,6 +99,70 @@ local legal experts, and owned entities in every market we operate in.
 - ~300 across engineering, ~50 teams across 40+ countries
 - Elixir backend: 5 million+ lines of code
 - Next.js SPA, TanStack Query, TanStack Table, and friends
+
+---
+
+# Next.js is the benchmark
+
+It's easy to dunk on Next. I'll try not to.
+
+<Steps>
+
+- RSC, first teased December 2020 — I was _hyped_
+- Next 13's App Router finally shipped them
+- Layouts: a genuinely great way to share data and rendering
+- And no more API routes just to talk to the server
+
+</Steps>
+
+<Notes>
+
+- Set the tone: Next is the benchmark, not the villain. The excitement was real.
+- Link if asked: react.dev/blog/2020/12/21/data-fetching-with-react-server-components.
+
+</Notes>
+
+---
+
+# But the model flipped
+
+The App Router made React server-first by default.
+
+<Steps>
+
+- `"use client"` everywhere you wanted state or interaction
+- React written backwards from how we'd always written it: client-first
+- The server stops being a tool — the whole app gets built _around_ it
+
+</Steps>
+
+<Notes>
+
+- Don't overstate it — App Router is good. The friction is the inversion: server-by-default reframes everything.
+- The honest gripe: I wanted the server _available_, not _mandatory_.
+
+</Notes>
+
+---
+
+# Start's bet: the server, opt-in
+
+You don't build the app around the server. It's just there when you reach for it.
+
+<Steps>
+
+- Deploy anywhere — no first-party host bending the framework
+- TypeScript, first-class, end to end
+- And my favourite: Vite — an open ecosystem, real plugins
+
+</Steps>
+
+<Notes>
+
+- The thesis of the whole talk: with Start the server is available wherever, whenever — opt-in, not the architecture.
+- These three pillars are a teaser; deployment, types, and the Vite dev loop all get paid off later.
+
+</Notes>
 
 ---
 
