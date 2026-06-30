@@ -37,7 +37,15 @@ type MagicMoveCodeProps = {
 };
 
 // Snappy, all-at-once morph — the original feel, not a slow cascade.
-const MAGIC_MOVE_OPTIONS = { duration: 250, stagger: 0, lineNumbers: true } as const;
+// `animateContainer: false` keeps the editor box from smoothly resizing
+// (the background "growing" horizontally/vertically) between stages — only the
+// tokens themselves move/enter/leave.
+const MAGIC_MOVE_OPTIONS = {
+	duration: 250,
+	stagger: 0,
+	lineNumbers: true,
+	animateContainer: false,
+} as const;
 
 export function MagicMoveCode({ stages, lang = "tsx", fileName, className }: MagicMoveCodeProps) {
 	const { currentStep, registerSteps, unregisterSteps } = use(StepContext);
@@ -63,7 +71,12 @@ export function MagicMoveCode({ stages, lang = "tsx", fileName, className }: Mag
 		}
 	}, [active, stages.length, id, registerSteps, unregisterSteps]);
 
-	const index = Math.min(Math.max(currentStep, 0), stages.length - 1);
+	// Only follow the (deck-global) step while THIS slide is active. Every slide
+	// is mounted at once and shares one `currentStep`, so an inactive instance
+	// would otherwise silently morph along with a different slide and then visibly
+	// re-sync back to stage 0 the moment you navigate to it. Pin inactive
+	// instances to stage 0 so entering a slide is a no-op (nothing to animate).
+	const index = active ? Math.min(Math.max(currentStep, 0), stages.length - 1) : 0;
 	const stage = stages[index] ?? stages[0];
 	const code = stage?.code.trim() ?? "";
 
