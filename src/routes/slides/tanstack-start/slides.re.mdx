@@ -9,13 +9,11 @@ import { Gradient } from "@/lib/components/Typography";
 import {
   RouterStateDemo,
   RscDemo,
-  CompositeSlotsDemo,
 } from "./-demos";
 import {
   UrlStateBuildUp,
   TypeSafetyBuildUp,
   RscBuildUp,
-  CompositeBuildUp,
 } from "./-code";
 
 ---
@@ -360,22 +358,6 @@ In Start, ordinary React components are interactive by default.
 
 ---
 
-# Composite components: slots
-
-<CompositeBuildUp />
-
-The server tree keeps its slots open. The client fills them with interactive islands — and the server passes typed data _out_.
-
-
----
-
-# Live: composite slots
-
-<CompositeSlotsDemo />
-
-
----
-
 # TanStack + Vite
 
 The stack is composable, and the ecosystem is open.
@@ -436,6 +418,17 @@ This site runs on Cloudflare Workers.
 
 </Steps>
 
+
+---
+
+# More to explore
+
+- composite components
+- server routes
+- middleware
+- static server functions
+- SPA / SSR / streaming modes
+- deploy targets and adapters
 
 ---
 
