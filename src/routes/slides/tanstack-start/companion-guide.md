@@ -149,9 +149,9 @@ Polls are pinned to deck-absolute slide indices:
 | Slide | Question                                  | Options                              |
 | ----- | ----------------------------------------- | ------------------------------------ |
 | **15** | “Have you tried TanStack Start yet?”      | Yes · Not yet · Just here for vibes  |
-| **21** | “Which rendering mode fits your app?”     | Full SSR · Data-only · Client-only   |
+| **20** | “Which rendering mode fits your app?”     | Full SSR · Data-only · Client-only   |
 
-These indices are asserted in `-route.test.ts` as `[15, 21]`. If you add, remove, or
+These indices are asserted in `-route.test.ts` as `[15, 20]`. If you add, remove, or
 reorder slides before them, update both `-live-polls.ts` and the test.
 
 ---

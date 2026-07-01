@@ -8,21 +8,14 @@ import { MainTitle, StarHistory,Title } from "./-components";
 import { Gradient } from "@/lib/components/Typography";
 import {
   RouterStateDemo,
-  ServerBoundaryDemo,
-  StreamingDemo,
   RscDemo,
   CompositeSlotsDemo,
 } from "./-demos";
 import {
   UrlStateBuildUp,
   TypeSafetyBuildUp,
-  ServerFnBuildUp,
-  MiddlewareBuildUp,
   RscBuildUp,
   CompositeBuildUp,
-  ConnectedExampleBuildUp,
-  RenderingDial,
-  StreamingBuildUp,
 } from "./-code";
 
 ---
@@ -166,71 +159,52 @@ right person, and take care of all the difficult stuff
 
 <Title>What?</Title>
 
-
 ---
 
-# Start: server, opt-in
+# Server, opt-in
 
-You don't build the app around the server. It's just there when you reach for it.
-
-<Steps>
-
-- No relearning React — Start is full-stack functionality on top of TanStack Router
-- Add the server gradually, per route — you opt _in_, you don't opt out
-- Deploy anywhere — no first-party host bending the framework
-- TypeScript, first-class, end to end — and built on Vite
-
-</Steps>
-
+- full-stack on top of TanStack Router
+- server when the route needs it
+- client-first when it does not
+- Vite, TypeScript, deploy anywhere
 
 ---
 
 # Client-first, server-available
 
-Write your React the way you always have. Reach for the server per route, only where it helps.
-
-<Steps>
-
-- Server-side rendering
-- Progressive loading with streaming
-- Server routes — public HTTP endpoints
-- Server functions — typed RPCs for your own app
-- Middleware — client _and_ server halves
-- Deploy anywhere, or self-host
-
-</Steps>
-
+- SSR
+- streaming
+- server routes
+- server functions
+- middleware
+- route-level caching
 
 ---
 
-# Server functions are typed RPC
+# Server functions / server routes
 
-<ServerFnBuildUp />
+```tsx
+const getStats = createServerFn({ method: "GET" })
+  .validator(parseStatsInput)
+  .handler(async ({ data }) => loadStats(data));
+```
 
-A server boundary you can call from loaders, hooks, and components.
-
-Server routes are public HTTP. Server functions are app-to-server RPC.
-
-`GET` here — so the RPC is HTTP-cacheable. Server Actions are POST-only.
-
-
----
-
-# The part Next does not have
-
-Server function middleware can run on the client and the server.
-
-<MiddlewareBuildUp />
-
-This is the _per-function_ tier. There's also request middleware for every request.
-
+- functions: app-to-server RPC
+- routes: public HTTP endpoints
+- `GET` when the call should be cacheable
 
 ---
 
-# Live: client → middleware → server
+# Middleware across the boundary
 
-<ServerBoundaryDemo />
+```tsx
+const boundaryMiddleware = createMiddleware({ type: "function" })
+  .client(async ({ next }) => next({ context: { source: "browser" } }))
+  .server(async ({ next }) => next({ context: { requestId: crypto.randomUUID() } }));
+```
 
+- `.client()` before the call leaves the browser
+- `.server()` before the handler runs
 
 ---
 
@@ -239,64 +213,36 @@ This is the _per-function_ tier. There's also request middleware for every reque
 ```tsx
 createFileRoute("/blog/$slug")({
   loader: ({ params }) => getBlogRenderable({ data: params }),
-  staleTime: 1000 * 60 * 60 * 24, // fresh for a day
+  staleTime: 1000 * 60 * 60 * 24,
 });
 ```
 
-In Next, caching became a thing to manage. Here it's just `staleTime`, per route.
-
-<Notes>
-
-- How it differs from Next: Next made caching an explicit surface — the `fetch` cache, `"use cache"`, `revalidateTag`, and the mental overhead of knowing which is in play. In Start it's the router's built-in stale-while-revalidate: set a `staleTime`, done.
-- Back-navigation is instant while it revalidates in the background. No React Query required — though the same loader can `ensureQueryData` from the Query client you already use.
-- Repo proof: every route sets a staleTime — blog 24h, `/stats` 5m, this deck's demos 30s.
-
-</Notes>
+Caching moves back to the route.
 
 ---
 
 # Rendering is a dial
 
-<RenderingDial />
+```tsx
+createFileRoute("/slides/tanstack-start/dev-lab")({
+  ssr: true,
+});
+```
 
 Full SSR, data-only, or client-only — per route.
-
-<Notes>
-
-- Same route API, three settings: full SSR / data-only / client-only.
-- 🗳 Second poll fires here ("which rendering mode?"). Let it run while you set up the streaming demo.
-
-</Notes>
 
 ---
 
 # Streaming SSR
 
-<StreamingBuildUp />
+```tsx
+loader: async ({ deps }) => ({
+  shell: await getFastData(deps),
+  slowPanel: getSlowData(deps),
+});
+```
 
-Return an un-awaited promise: the shell flushes now, the slow part streams in.
-
-Same React streaming as Next's PPR holes — minus the prebuilt static shell.
-
-<Notes>
-
-- Honest framing: this is PPR's _streaming_ half (Suspense + Await), not its build-time static shell. The shell here is SSR'd per request.
-
-</Notes>
-
----
-
-# Live: shell now, slow data later
-
-<StreamingDemo />
-
-<Notes>
-
-- In the deck this fires as a real server round-trip with a ~1.2s delay so the skeleton→panel transition is visible; a real page like `/stats` shows the true loader-deferred variant.
-- [DEMO] Press "Stream again" → skeleton paints, panel fills in.
-- [FALLBACK] Open `/stats`; the dashboard shell renders before the numbers land.
-
-</Notes>
+Return an un-awaited promise.
 
 ---
 
@@ -308,28 +254,25 @@ export const getHighlightedCode = createServerFn({ method: "GET" })
   .handler(async () => loadRwcCodeSamples());
 ```
 
-Same server-function API — a different clock. `/rwc` runs the work at build time and ships static data.
-
-<Notes>
-
-- Callback to "server functions are typed RPC": it's the _same_ primitive, just with static middleware so the handler runs once, at build, and serves plain JSON forever.
-
-</Notes>
+Same primitive. Different clock.
 
 ---
 
-# One connected example
+# One route, many choices
 
-<ConnectedExampleBuildUp />
+```tsx
+createFileRoute("/stats")({
+  validateSearch,
+  loaderDeps: ({ search }) => search,
+  loader: ({ deps }) => getStats({ data: deps }),
+  staleTime: 1000 * 60 * 5,
+});
+```
 
-One server function, one route: middleware, SSR, streaming, and caching — composed.
-
-<Notes>
-
-- The payoff to "the server, opt-in": everything you just saw — server function + client/server middleware + awaited SSR data + an un-awaited streamed promise + per-route caching — in a single route.
-- Not five disconnected features; one route that reaches for the server five ways.
-
-</Notes>
+- typed URL state
+- server function
+- caching
+- rendering choice
 
 ---
 

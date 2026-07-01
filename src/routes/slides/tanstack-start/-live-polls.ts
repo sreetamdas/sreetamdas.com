@@ -1,7 +1,7 @@
 import { type SlideSessionPollDefinition } from "@/lib/domains/slides/live-session";
 
 const START_BET_SLIDE_INDEX = 15;
-const RENDERING_DIAL_SLIDE_INDEX = 21;
+const RENDERING_DIAL_SLIDE_INDEX = 20;
 
 export const tanstackStartLivePolls: Array<SlideSessionPollDefinition> = [
 	{
