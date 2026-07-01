@@ -294,14 +294,6 @@ A confession, before I get to the type system.
 
 <TypeSafetyBuildUp />
 
-<Steps>
-
-- Next Pages: `FoobarPageQuery extends ParsedUrlQuery`, `params!`, `InferGetStaticPropsType` — just to give `params` a type
-- Next App Router: every page redeclares `type PageParams = { params: Promise<...> }` and `await`s it — by hand, per route
-- Start: one `validateSearch` schema; `useSearch()` returns `PlausibleDateRange` — no `as`, no `params!`
-
-</Steps>
-
 
 ---
 
