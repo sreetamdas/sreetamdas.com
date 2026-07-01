@@ -85,7 +85,20 @@ using this exact site."
 
 ---
 
-## 6 · Remote (sponsor) ⏱ 2:45
+## 6 · History time ⏱ 2:30
+
+> One line per version — let the list land, don't read them all. The point is the
+> _shape_ of the journey, not any one stop.
+
+**SAY:** "Quick history. v1: plain HTML and CSS. (CLICK) v2: a redesign, still
+static. (CLICK) v3: I went React SPA. (CLICK) v4: Next.js, the pages router. (CLICK)
+v5: the App Router and RSC. (CLICK) v6: Cloudflare and OpenNext. (CLICK) And v7 —
+the current one — TanStack Start. I'm not reading these to brag; I'm reading them
+because I've shipped each of these. The comparison today isn't theoretical."
+
+---
+
+## 7 · Remote (sponsor) ⏱ 3:15
 
 **SAY:** "One quick word on Remote, who's making this possible. Remote helps companies
 hire, manage, and pay people anywhere in the world. (CLICK) Full-time, contractors,
@@ -128,15 +141,39 @@ a big deal."
 rendering model: components are server-first _by default_. (CLICK) So `"use client"`
 ended up everywhere you wanted state, or interactivity, or an effect. (CLICK) You're
 writing React kind of backwards from how we'd always written it — which was
-client-first. (CLICK) And the thing I kept feeling: the server stops being a tool you
-pick up, and the whole app starts getting built _around_ it. I didn't want the server
-to be mandatory. I wanted it to be _available_."
+client-first. (CLICK) And only serializable props could cross the server/client
+boundary — you couldn't just pass anything anymore. (CLICK) And here's the sneakiest
+one: importing a Server Component into a Client Component silently forced the _entire
+subtree_ to become client-side — no error, no warning — just wiping away the RSC
+benefits you came for. (CLICK) Caching was suddenly a thing you had to actively think
+about. (CLICK) The dev server seemed super slow. (CLICK) And honestly — most of our
+projects have exactly zero users, and I was growing wary of being locked into one
+platform. (CLICK) The thing I kept feeling: the server stops being a tool you pick up,
+and the whole app starts getting built _around_ it. I didn't want the server to be
+mandatory. I wanted it to be _available_."
 
 > Don't crap on it — App Router is good. The point is the inversion, not a bug.
+> The composition footgun is the most honest gripe — no error, just silent
+> regression. Say it plainly. The "zero users" line gets a laugh and it's true.
 
 ---
 
-## 10 · Start's bet: the server, opt-in ⏱ 6:30
+## 10 · So around 2024, I was open to looking around ⏱ 6:45
+
+**SAY:** "So around 2024, I was open to looking around. (CLICK) I'd been enjoying
+the Vite dev experience since 2022 — SvelteKit was what made it click for me.
+(CLICK) Remix shipped a new Vite integration — and I was very tempted. (CLICK)
+And right around then, TanStack Start was announced in alpha. (CLICK) And as luck
+would have it, I got pretty busy with work — new role — so the site sat for a bit.
+But the timing stuck with me."
+
+> Keep this to ~40s. It's the bridge from "the model bugged me" to "so I went
+> looking." The Vite appreciation and the "got busy" line make the migration feel
+> earned, not impulsive.
+
+---
+
+## 11 · Start's bet: the server, opt-in ⏱ 7:15
 
 **SAY:** "And that's Start's bet, in one line: you don't build the app around the
 server — the server is just _there_, wherever and whenever you reach for it. It's
@@ -183,7 +220,40 @@ agenda."
 
 ---
 
-## 14 · 1. URL state is not a string bag ⏱ 9:45
+## 14 · I used to be anti-TypeScript ⏱ 9:45
+
+> Personal credibility beat — don't rush it. The "anti-TS" framing hooks anyone
+> who's felt type-fest pain. Sets up the whole "types" thread: URL state, server
+> functions, middleware.
+
+**SAY:** "A confession before the features: I used to be anti-TypeScript. (CLICK) At
+React Nexus _last year_, I was in a corridor debate with a bunch of engineers — I
+remember some folks from Razorpay — about TypeScript. (CLICK) The benefits are obvious:
+it catches bugs, it helps maintain code as it grows. (CLICK) but on any moderately-sized
+project, the types become a whole dimension you wrangle continuously. (CLICK) You know
+exactly what I mean if you've ever reached for `type-fest`. (CLICK) …so I came around.
+Start's end-to-end types won me over — and let me show you why, with my own code."
+
+---
+
+## 15 · Type safety, the old way vs. Start ⏱ 10:30
+
+> Magic-move: Next.js `FoobarPageQuery extends ParsedUrlQuery` + `params!` →
+> App Router `type PageParams = { params: Promise<...> }` → Start `validateSearch`
+> + `useSearch()`. The "before" code is real, pulled from this repo's git history.
+
+**SAY:** "This is real code from my repo. (CLICK) In Next Pages Router, I had to
+hand-write a `FoobarPageQuery extends ParsedUrlQuery` interface _just_ so
+`getStaticProps`'s `params` had a type — plus `params!` with an eslint-disable to
+silence the non-null assertion. (CLICK) In the App Router, every single page
+redeclares `type PageParams = { params: Promise<{ slug: string }> }` and `await`s it
+by hand — there's no shared type, each route writes its own. (CLICK) In Start, one
+`validateSearch` schema — the route owns it — and `useSearch()` hands me back a typed
+`PlausibleDateRange`. No `as` casts. No `params!`. The URL is typed state."
+
+---
+
+## 16 · 1. URL state is not a string bag ⏱ 11:30
 
 > This slide is a magic-move build-up: bare route → `validateSearch` → `loaderDeps`.
 > Each (CLICK) morphs the code; let the lines land before you talk over the next one.
@@ -449,7 +519,21 @@ those round-tripped through the same DO.
 
 ---
 
-## 32 · Where Next still wins ⏱ 29:00
+## 32 · How to start ⏱ 28:15
+
+> One slide, ~40s. Show the on-ramp is shallow and additive.
+
+**SAY:** "So how do you actually start? (CLICK) `npx tsr init` scaffolds a route
+tree. (CLICK) `pnpm dev` — Vite is up almost immediately. (CLICK) Add a server
+function, a `validateSearch`, a loader — incrementally, not all at once. (CLICK)
+And the mental model never inverts: you opt _into_ the server, you don't opt out of
+it. If you're migrating from Next — route by route. The router doesn't demand a
+rewrite; you bring a page over, add a `validateSearch`, pick an `ssr` mode. That's
+the portability pillar paying off."
+
+---
+
+## 33 · Where Next still wins ⏱ 29:00
 
 **SAY:** "Now — be honest, or nobody trusts the comparison. Here's where Next still
 wins today. (CLICK) RSC ecosystem maturity — and remember, it's experimental in

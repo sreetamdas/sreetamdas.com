@@ -49,6 +49,74 @@ export function UrlStateBuildUp() {
 	);
 }
 
+/** Type safety: the old hand-rolled way → Start's typed validateSearch + useSearch. */
+export function TypeSafetyBuildUp() {
+	return (
+		<MagicMoveCode
+			lang="tsx"
+			fileName="foobar/[page].tsx"
+			stages={[
+				{
+					caption: "Next.js: hand-write a query interface just so `params` has a type.",
+					code: `import { ParsedUrlQuery } from "querystring";
+import { GetStaticProps, InferGetStaticPropsType } from "next";
+
+type FoobarPageProps = { page: Exclude<FoobarPage, "/"> };
+
+// Hand-written, just so getStaticProps's params has a type:
+interface FoobarPageQuery extends ParsedUrlQuery {
+  page: Exclude<FoobarPage, "/">;
+}
+
+// And a non-null assertion, with an eslint-disable to silence it:
+export const getStaticProps: GetStaticProps<FoobarPageProps, FoobarPageQuery> = async ({ params }) => {
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  const { page } = params!;
+  return { props: { page } };
+};
+
+const Index = ({ page }: InferGetStaticPropsType<typeof getStaticProps>) => { ... };`,
+				},
+				{
+					caption:
+						"And in the App Router, every page redeclares `type PageParams = { params: Promise<...> }`.",
+					code: `// src/app/(main)/blog/[slug]/page.tsx
+type PageParams = {
+  params: Promise<{ slug: string }>;
+};
+
+export async function generateMetadata(props: PageParams): Promise<Metadata> {
+  const params = await props.params; // unwrap the Promise by hand
+  ...
+}
+
+export default async function BlogPage(props: PageParams) {
+  const params = await props.params;
+  ...
+}`,
+				},
+				{
+					caption: "Start: one schema, the route owns it, `useSearch()` returns the typed value.",
+					code: `export type StatsSearch = { period: PlausibleDateRange };
+
+export const Route = createFileRoute("/stats")({
+  validateSearch: (search): StatsSearch => ({
+    period: parseDateRange(search.period), // coerces bad input to "30d"
+  }),
+  loaderDeps: ({ search }) => ({ period: search.period }), // PlausibleDateRange
+  loader: ({ deps }) => getStats({ data: deps }),
+});
+
+function StatsPage() {
+  const search = Route.useSearch();
+  return <Dashboard period={search.period} />; // typed, no cast
+}`,
+				},
+			]}
+		/>
+	);
+}
+
 /** 2. Server functions: bare fn → validator → handler. */
 export function ServerFnBuildUp() {
 	return (

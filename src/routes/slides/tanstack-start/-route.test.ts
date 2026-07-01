@@ -4,6 +4,6 @@ import { tanstackStartLivePolls } from "./-live-polls";
 
 describe("tanstackStartLivePolls", () => {
 	test("aligns live polls with the slide cues in the talk deck", () => {
-		expect(tanstackStartLivePolls.map((poll) => poll.slide)).toEqual([7, 17]);
+		expect(tanstackStartLivePolls.map((poll) => poll.slide)).toEqual([14, 29]);
 	});
 });

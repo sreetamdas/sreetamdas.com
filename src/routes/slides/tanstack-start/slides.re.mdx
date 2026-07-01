@@ -13,12 +13,17 @@ import {
 } from "./-demos";
 import {
   UrlStateBuildUp,
+  TypeSafetyBuildUp,
   ServerFnBuildUp,
   MiddlewareBuildUp,
   RscBuildUp,
   RenderingDial,
   StreamingBuildUp,
 } from "./-code";
+
+---
+
+<MainTitle stage="hello" />
 
 ---
 
@@ -67,6 +72,29 @@ import {
 
 ---
 
+# History time
+
+<Steps>
+
+- v1: plain HTML + CSS
+- v2: a redesign, still static
+- v3: React SPA
+- v4: Next.js (pages router)
+- v5: Next.js App Router + RSC
+- v6: Cloudflare / OpenNext
+- v7: **TanStack Start**
+
+</Steps>
+
+<Notes>
+
+- One line per version — don't read them all, let the list land. The point is the _shape_ of the journey, not any one stop.
+- This is the "why I'm qualified to compare" slide — I've shipped each of these, not just toyed with them.
+
+</Notes>
+
+---
+
 # Remote
 
 - Help companies hire, manage and pay people
@@ -90,6 +118,13 @@ Remote handles the hard stuff — with in-house payroll teams,
 local legal experts, and owned entities in every market we operate in.
 
 </Notes>
+
+---
+
+<Tweet
+  id="2071647669467201657"
+  className="[zoom:1.4]"
+/>
 
 ---
 
@@ -132,14 +167,41 @@ The App Router made React server-first by default.
 
 - `"use client"` everywhere you wanted state or interaction
 - React written backwards from how we'd always written it: client-first
-- The server stops being a tool — the whole app gets built _around_ it
+- Only serializable props could cross the server/client boundary
+- Composition footgun: importing a Server Component into a Client Component silently forced the whole subtree client-side — wiping away the RSC benefits
+- Caching was suddenly a thing you had to think about
+- The dev server _seemed_ super slow
+- And I was growing wary of being locked into one platform
 
 </Steps>
 
 <Notes>
 
 - Don't overstate it — App Router is good. The friction is the inversion: server-by-default reframes everything.
+- The composition gotcha is the sneakiest one — no error, no warning, just silently losing the thing you came for.
+- The lock-in line is the honest heart of it: "most of our projects have exactly 0 users, and I was wary of being locked into Vercel." Say it lightly — it gets a laugh and it's true.
 - The honest gripe: I wanted the server _available_, not _mandatory_.
+
+</Notes>
+
+---
+
+# So around 2024, I was open to looking around
+
+<Steps>
+
+- I'd been enjoying the Vite dev experience since 2022 — SvelteKit made it click
+- Remix shipped a new Vite integration — I was very tempted
+- And right around then, TanStack Start was announced in alpha
+- As luck would have it, I got busy with work — new role — so the site sat for a bit
+
+</Steps>
+
+<Notes>
+
+- This is the bridge from "the model bugged me" to "so I went looking."
+- The Vite-appreciation tweet (2022) and the Remix-vite/tempted tweets (2024) go here if you want to embed them — keep it quick though, this is a ~40s beat.
+- The "got busy" line is the honest reason the migration took a while — and it lands the "I took this seriously, not on a whim" point.
 
 </Notes>
 
@@ -226,6 +288,53 @@ Router-first React, with the server added where it helps.
 | Static server functions | `/rwc`, newsletter, keebs               |
 | Server routes           | slide sessions, auth, Plausible proxy   |
 | Cloudflare primitives   | D1, KV, Durable Objects                 |
+
+---
+
+# I used to be anti-TypeScript
+
+A confession before the features.
+
+<Steps>
+
+- At React Nexus 2024, I was in a corridor debate with a bunch of engineers — I remember some folks from Razorpay — about TypeScript
+- The benefits are obvious: it catches bugs, it helps maintain code as it grows
+- but on any moderately-sized project, the types become a whole dimension you wrangle continuously
+- you know exactly what I mean if you've ever reached for `type-fest`
+- …so I came around. Start's end-to-end types won me over — let me show you why
+
+</Steps>
+
+<Notes>
+
+- Personal credibility beat — don't rush it. The "anti-TS" framing hooks anyone who's felt type-fest pain.
+- The Razorpay corridor detail is real; name-drop only if it feels natural.
+- This sets up the whole "types" thread that runs through URL state, server functions, and middleware — the payoff is the script's "you never write `as` again" line.
+
+</Notes>
+
+---
+
+# Type safety, the old way vs. Start
+
+<TypeSafetyBuildUp />
+
+<Steps>
+
+- Next Pages: `FoobarPageQuery extends ParsedUrlQuery`, `params!`, `InferGetStaticPropsType` — just to give `params` a type
+- Next App Router: every page redeclares `type PageParams = { params: Promise<...> }` and `await`s it — by hand, per route
+- Start: one `validateSearch` schema; `useSearch()` returns `PlausibleDateRange` — no `as`, no `params!`
+
+</Steps>
+
+<Notes>
+
+- The "before" code is real — pulled from this repo's git history. The `params!` non-null assertion had an eslint-disable next to it; that's how much we didn't want to write it.
+- The App Router `PageParams` boilerplate is the worst part: it's a Promise you unwrap by hand, redeclared on every single page. There's no shared type — each route writes its own.
+- This sets up the whole "types" thread: URL state, server functions, middleware. The payoff is you never write `as` or `params!` again.
+- If a Next person pushes back: "I can zod my searchParams too" — yes, every route, every time, and the cache still doesn't know your schema exists. Concede the parsing, hold the line on integration.
+
+</Notes>
 
 ---
 
@@ -511,6 +620,26 @@ This deck has a live session mode.
 - [DEMO] Fire a reaction from your phone so it lands on the projected deck.
 - [FALLBACK] Show the poll results already collected — same DO round-trip.
 - One session id = one Durable Object = same primitive as the site's presence counter.
+
+</Notes>
+
+---
+
+# How to start
+
+<Steps>
+
+- `npx tsr init` — scaffold a route tree
+- `pnpm dev` — Vite is up almost immediately
+- Add a server function, a `validateSearch`, a loader — incrementally, not all at once
+- The mental model never inverts: you opt _into_ the server, you don't opt out of it
+
+</Steps>
+
+<Notes>
+
+- The "How" beat — one slide, ~40s. Show that the on-ramp is shallow and additive.
+- If someone asks "migrate from Next?": do it route by route. The router doesn't demand a rewrite; you bring a page over, add a `validateSearch`, pick an `ssr` mode. That's the portability pillar paying off.
 
 </Notes>
 

@@ -25,6 +25,9 @@ type Props = { stage: Stage };
 export function MainTitle({ stage }: Props) {
 	const title = (() => {
 		switch (stage) {
+			case "hello":
+				return <>Hello! 👋</>;
+
 			case "first":
 				return (
 					<>
