@@ -415,16 +415,16 @@ changes."
 ## 30 · Live: this deck's URL state ⏱ 19:45
 
 > In-deck demo. This panel reads the deck's _own_ validated search params live.
-> Optional expansion: switch to a tiny local dev route/app to show the same typed
+> Optional expansion: switch to `/slides/tanstack-start/dev-lab` to show the same typed
 > URL/search experience under Vite HMR and TypeScript errors in the editor.
 
 **SAY:** "And I don't even need to leave the deck for it. This panel is reading this
 deck's own URL state — `slide`, `step`, `live`, `presenter` — all validated by the
 same `validateSearch`. Watch the numbers as I move. (CLICK a step) That's not a string
 bag; that's a typed schema the route owns. Feed it `?slide=banana` and it coerces away
-instead of breaking the deck. If I have the local mini-app open, this is the same
-thing I'd show in dev: change the schema, watch TypeScript complain, save, and Vite
-updates the route without losing the flow."
+instead of breaking the deck. If I switch to `/slides/tanstack-start/dev-lab`, it's
+the same idea in a local edit loop: change the schema, watch TypeScript complain,
+save, and Vite updates the route without losing the flow."
 
 **Transition:** "So the URL is typed. Now the richest server feature — server
 components."
@@ -525,8 +525,9 @@ made adopting Start feel like coming home rather than starting over."
 ## 37 · The dev loop, every day ⏱ 25:45
 
 **SAY:** "And this is the Vite pillar paying off every single day. It's not a code
-feature, it's a productivity one. This is where I may switch to a tiny local route,
-not a separate production showcase — just enough app to edit a typed search schema,
+feature, it's a productivity one. This is where I may switch to
+`/slides/tanstack-start/dev-lab`: not a separate production showcase, just enough
+app to edit a typed search schema,
 watch a TypeScript error appear, save, and keep the browser state. I ship Next for a
 living, and the thing I miss most on Start days is just… gone. (CLICK) Vite: the dev
 server is up almost immediately.

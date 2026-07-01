@@ -14,8 +14,8 @@ Routes involved:
 
 > The premise is “the website is the demo.” The current flow is intentionally
 > self-contained: the live demos live inside the deck, not on a separate showcase
-> route. If you build the optional local dev mini-app, treat it as a quick dev-loop
-> cutaway, not a second talk track.
+> route. `/slides/tanstack-start/dev-lab` is the quick dev-loop cutaway, not a
+> second talk track.
 
 ---
 
@@ -31,7 +31,7 @@ Routes involved:
 | 30           | Stay on deck                      | The deck's own URL state is validated state     | `route.tsx`, `route-search.ts` |
 | 33           | Stay on deck                      | RSC as server-produced data + client island     | `-rsc.server.tsx`, `-demos.tsx` |
 | 35           | Stay on deck                      | Composite slots: server card, client-filled UI  | `-composite.server.tsx`, `-demos.tsx` |
-| 37           | Optional local dev mini-app       | Vite + TypeScript feedback loop                 | TBD dev-only route/app |
+| 37           | Optional `/slides/tanstack-start/dev-lab`       | Vite + TypeScript feedback loop                 | `/slides/tanstack-start/dev-lab` |
 | 40           | Presenter deck + phone reaction   | Live slides over a Durable Object session       | `SlideSessionDurableObject.ts` |
 
 Rule of thumb: **claim on the deck → prove in the deck → only cut away for `/stats`
@@ -100,12 +100,12 @@ from phone → Durable Object → presenter deck in real time.
 
 ---
 
-## 3. Optional local dev mini-app
+## 3. `/slides/tanstack-start/dev-lab` cutaway
 
-This replaces the old “showcase page” idea. Keep it intentionally small and local:
-one route/app you can switch to while `pnpm dev` is running.
+This replaces the old “showcase page” idea. It is intentionally small and local: one
+nested route you can switch to while `pnpm dev` is running.
 
-Recommended shape:
+Current shape:
 
 1. A typed search schema with one or two values, similar to `/stats`.
 2. A loader depending on that parsed search state via `loaderDeps`.
@@ -115,8 +115,8 @@ Recommended shape:
    - break the schema and show TypeScript complain,
    - save and show Vite HMR preserve the browser flow.
 
-Do **not** make it a second production companion page unless the talk changes again.
-It should exist to show the local dev and TypeScript experience, not to compete with
+Do **not** let it become a second production companion page unless the talk changes
+again. It exists to show the local dev and TypeScript experience, not to compete with
 the deck.
 
 ---
@@ -163,7 +163,7 @@ reorder slides before them, update both `-live-polls.ts` and the test.
 - [ ] Editor open on: `-boundary.server.ts`, `-rsc.server.tsx`,
       `-composite.server.tsx`, `-streaming.server.ts`,
       `src/routes/(main)/stats/route.tsx`, and `SlideSessionDurableObject.ts`.
-- [ ] Optional: local dev mini-app route open if you decide to show Vite/TS live.
+- [ ] Optional: `/slides/tanstack-start/dev-lab` route open if you decide to show Vite/TS live.
 - [ ] Disable OS notifications / Do Not Disturb.
 - [ ] Know the fallbacks above.
 

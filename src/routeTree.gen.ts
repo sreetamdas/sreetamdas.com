@@ -31,6 +31,7 @@ import { Route as mainBlogIndexRouteImport } from './routes/(main)/blog/index'
 import { Route as apiApiStagingSmokeRouteImport } from './routes/(api)/api/staging-smoke'
 import { Route as apiApiPresenceRouteImport } from './routes/(api)/api/presence'
 import { Route as apiApiCoffeeRouteImport } from './routes/(api)/api/coffee'
+import { Route as SlidesTanstackStartDevLabRouteRouteImport } from './routes/slides/tanstack-start/dev-lab/route'
 import { Route as mainNewsletterSlugRouteRouteImport } from './routes/(main)/newsletter/$slug/route'
 import { Route as mainBlogSlugRouteRouteImport } from './routes/(main)/blog/$slug/route'
 import { Route as mainfoobarFoobarRouteRouteImport } from './routes/(main)/(foobar)/foobar/route'
@@ -153,6 +154,12 @@ const apiApiCoffeeRoute = apiApiCoffeeRouteImport.update({
   path: '/api/coffee',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SlidesTanstackStartDevLabRouteRoute =
+  SlidesTanstackStartDevLabRouteRouteImport.update({
+    id: '/dev-lab',
+    path: '/dev-lab',
+    getParentRoute: () => SlidesTanstackStartRouteRoute,
+  } as any)
 const mainNewsletterSlugRouteRoute = mainNewsletterSlugRouteRouteImport.update({
   id: '/$slug',
   path: '/$slug',
@@ -226,10 +233,11 @@ export interface FileRoutesByFullPath {
   '/resume': typeof pureResumeRouteRoute
   '/version': typeof pureVersionRouteRoute
   '/slides/json-schema-form': typeof SlidesJsonSchemaFormRouteRoute
-  '/slides/tanstack-start': typeof SlidesTanstackStartRouteRoute
+  '/slides/tanstack-start': typeof SlidesTanstackStartRouteRouteWithChildren
   '/foobar': typeof mainfoobarFoobarRouteRouteWithChildren
   '/blog/$slug': typeof mainBlogSlugRouteRoute
   '/newsletter/$slug': typeof mainNewsletterSlugRouteRoute
+  '/slides/tanstack-start/dev-lab': typeof SlidesTanstackStartDevLabRouteRoute
   '/api/coffee': typeof apiApiCoffeeRoute
   '/api/presence': typeof apiApiPresenceRoute
   '/api/staging-smoke': typeof apiApiStagingSmokeRoute
@@ -257,9 +265,10 @@ export interface FileRoutesByTo {
   '/resume': typeof pureResumeRouteRoute
   '/version': typeof pureVersionRouteRoute
   '/slides/json-schema-form': typeof SlidesJsonSchemaFormRouteRoute
-  '/slides/tanstack-start': typeof SlidesTanstackStartRouteRoute
+  '/slides/tanstack-start': typeof SlidesTanstackStartRouteRouteWithChildren
   '/blog/$slug': typeof mainBlogSlugRouteRoute
   '/newsletter/$slug': typeof mainNewsletterSlugRouteRoute
+  '/slides/tanstack-start/dev-lab': typeof SlidesTanstackStartDevLabRouteRoute
   '/api/coffee': typeof apiApiCoffeeRoute
   '/api/presence': typeof apiApiPresenceRoute
   '/api/staging-smoke': typeof apiApiStagingSmokeRoute
@@ -292,10 +301,11 @@ export interface FileRoutesById {
   '/(pure)/resume': typeof pureResumeRouteRoute
   '/(pure)/version': typeof pureVersionRouteRoute
   '/slides/json-schema-form': typeof SlidesJsonSchemaFormRouteRoute
-  '/slides/tanstack-start': typeof SlidesTanstackStartRouteRoute
+  '/slides/tanstack-start': typeof SlidesTanstackStartRouteRouteWithChildren
   '/(main)/(foobar)/foobar': typeof mainfoobarFoobarRouteRouteWithChildren
   '/(main)/blog/$slug': typeof mainBlogSlugRouteRoute
   '/(main)/newsletter/$slug': typeof mainNewsletterSlugRouteRoute
+  '/slides/tanstack-start/dev-lab': typeof SlidesTanstackStartDevLabRouteRoute
   '/(api)/api/coffee': typeof apiApiCoffeeRoute
   '/(api)/api/presence': typeof apiApiPresenceRoute
   '/(api)/api/staging-smoke': typeof apiApiStagingSmokeRoute
@@ -331,6 +341,7 @@ export interface FileRouteTypes {
     | '/foobar'
     | '/blog/$slug'
     | '/newsletter/$slug'
+    | '/slides/tanstack-start/dev-lab'
     | '/api/coffee'
     | '/api/presence'
     | '/api/staging-smoke'
@@ -361,6 +372,7 @@ export interface FileRouteTypes {
     | '/slides/tanstack-start'
     | '/blog/$slug'
     | '/newsletter/$slug'
+    | '/slides/tanstack-start/dev-lab'
     | '/api/coffee'
     | '/api/presence'
     | '/api/staging-smoke'
@@ -396,6 +408,7 @@ export interface FileRouteTypes {
     | '/(main)/(foobar)/foobar'
     | '/(main)/blog/$slug'
     | '/(main)/newsletter/$slug'
+    | '/slides/tanstack-start/dev-lab'
     | '/(api)/api/coffee'
     | '/(api)/api/presence'
     | '/(api)/api/staging-smoke'
@@ -582,6 +595,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof apiApiCoffeeRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/slides/tanstack-start/dev-lab': {
+      id: '/slides/tanstack-start/dev-lab'
+      path: '/dev-lab'
+      fullPath: '/slides/tanstack-start/dev-lab'
+      preLoaderRoute: typeof SlidesTanstackStartDevLabRouteRouteImport
+      parentRoute: typeof SlidesTanstackStartRouteRoute
+    }
     '/(main)/newsletter/$slug': {
       id: '/(main)/newsletter/$slug'
       path: '/$slug'
@@ -750,14 +770,28 @@ const pureRouteRouteWithChildren = pureRouteRoute._addFileChildren(
   pureRouteRouteChildren,
 )
 
+interface SlidesTanstackStartRouteRouteChildren {
+  SlidesTanstackStartDevLabRouteRoute: typeof SlidesTanstackStartDevLabRouteRoute
+}
+
+const SlidesTanstackStartRouteRouteChildren: SlidesTanstackStartRouteRouteChildren =
+  {
+    SlidesTanstackStartDevLabRouteRoute: SlidesTanstackStartDevLabRouteRoute,
+  }
+
+const SlidesTanstackStartRouteRouteWithChildren =
+  SlidesTanstackStartRouteRoute._addFileChildren(
+    SlidesTanstackStartRouteRouteChildren,
+  )
+
 interface SlidesRouteRouteChildren {
   SlidesJsonSchemaFormRouteRoute: typeof SlidesJsonSchemaFormRouteRoute
-  SlidesTanstackStartRouteRoute: typeof SlidesTanstackStartRouteRoute
+  SlidesTanstackStartRouteRoute: typeof SlidesTanstackStartRouteRouteWithChildren
 }
 
 const SlidesRouteRouteChildren: SlidesRouteRouteChildren = {
   SlidesJsonSchemaFormRouteRoute: SlidesJsonSchemaFormRouteRoute,
-  SlidesTanstackStartRouteRoute: SlidesTanstackStartRouteRoute,
+  SlidesTanstackStartRouteRoute: SlidesTanstackStartRouteRouteWithChildren,
 }
 
 const SlidesRouteRouteWithChildren = SlidesRouteRoute._addFileChildren(
