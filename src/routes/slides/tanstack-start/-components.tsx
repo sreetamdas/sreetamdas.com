@@ -67,9 +67,13 @@ export function MainTitle({ stage }: Props) {
 		}
 	})();
 
+	return <Title>{title}</Title>;
+}
+
+export function Title({ children }) {
 	return (
 		<h1 className="pt-10 font-serif text-9xl font-bold text-balance whitespace-pre-line font-stretch-semi-condensed">
-			<Gradient>{title}</Gradient>
+			<Gradient>{children}</Gradient>
 		</h1>
 	);
 }

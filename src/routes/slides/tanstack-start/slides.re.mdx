@@ -4,7 +4,7 @@ published: true
 published_at: "2026-05-16"
 ---
 
-import { MainTitle, StarHistory } from "./-components";
+import { MainTitle, StarHistory,Title } from "./-components";
 import { Gradient } from "@/lib/components/Typography";
 import {
   RouterStateDemo,
@@ -28,9 +28,7 @@ import {
 ---
 
 <div className="flex items-center justify-center pt-40">
-  <h1 className="font-serif text-9xl font-bold text-balance whitespace-pre-line font-stretch-semi-condensed">
-    Hello 👋
-  </h1>
+  <h1 className="font-serif text-9xl font-bold text-balance whitespace-pre-line font-stretch-semi-condensed">Hello 👋</h1>
 </div>
 
 ---
@@ -89,6 +87,10 @@ right person, and take care of all the difficult stuff
 
 ---
 
+<Title>Why?</Title>
+
+---
+
 # sreetamdas.com
 
 <StarHistory />
@@ -104,98 +106,70 @@ right person, and take care of all the difficult stuff
 - Next.js (pages router)
 - Next.js App Router + RSC
 - Cloudflare / OpenNext
-- <Gradient className="py-3 font-serif text-3xl first:pt-0 last:pb-0 font-bold">
-    TanStack Start
-  </Gradient>
+- **TanStack Start**
 
 </Steps>
 
 ---
 
-# Next.js is the benchmark
-
-It's easy to dunk on Next. I'll try not to.
-
-<Steps>
+# the benchmark: Next.js
 
 - RSC, first teased December 2020 — I was _hyped_
-- Next 13's App Router finally shipped them
-- Layouts: a genuinely great way to share data and rendering
-- And no more API routes just to talk to the server
-
-</Steps>
-
-<Notes>
-
-- Set the tone: Next is the benchmark, not the villain. It was the de-facto framework — even the React docs recommended it. The excitement was real.
-- Link if asked: react.dev/blog/2020/12/21/data-fetching-with-react-server-components.
-
-</Notes>
-
----
-
-<Tweet id="2071647669467201657" className="[zoom:1.4]" />
-
-<Notes>
-
-- Credit where it's due: with the 16.3 preview, the team really cooked.
-- I'm not here to dunk — this slide is the proof I mean it.
-
-</Notes>
+- Layouts: a genuinely great approach to share data and rendering
+- No more API routes just to talk to the server
 
 ---
 
 # But the model flipped
 
-The App Router made React server-first by default.
-
-<Steps>
-
-- `"use client"` everywhere you wanted state or interaction
-- React written backwards from how we'd always written it: client-first, functions as first-class citizens
-- Only serializable props could cross the server/client boundary
-- Composition footgun: importing a Server Component into a Client Component silently forced the whole subtree client-side — wiping away the RSC benefits
+- server-first by default.
+- `"use client"`
+- serializable props
+- Composition footgun
 - Caching was suddenly a thing you had to think about
-- The dev server _seemed_ super slow — and I hated being locked out of Vite
-- Then more surface to learn: partial pre-rendering, `"use cache"`, and I grew wary of platform lock-in
-
-</Steps>
-
-<Notes>
-
-- Don't overstate it — App Router is good. The friction is the inversion: server-by-default reframes everything, and it felt like the whole app had to be built _around_ RSCs.
-- The composition gotcha is the sneakiest one — no error, no warning, just silently losing the thing you came for.
-- The lock-in line is the honest heart of it: "most of my projects have exactly 0 users, and I was wary of being locked into Vercel." Say it lightly — it gets a laugh and it's true.
-- The honest gripe: I wanted the server _available_, not _mandatory_.
-
-</Notes>
+- The dev server _seemed_ super slow
 
 ---
 
-# So around 2024, I was open to looking around
-
-<Steps>
-
-- I'd been enjoying the Vite dev experience since 2022 — SvelteKit (and `sreetamandareena.com`) made it click
-- Remix shipped a new Vite integration — I was very tempted
-- And right around then, TanStack Start was announced in alpha
-- As luck would have it, I got busy with work — new role — so the site sat for a bit, and Start kept getting polished
-
-</Steps>
-
-<Notes>
-
-- This is the bridge from "the model bugged me" to "so I went looking."
-- Tweets to embed if you want (keep it quick, ~40s beat): Vite appreciation from 2022 — `1499430674746736644`; Remix + Vite — `1813803190414110874`; "very tempted" — `1813803997876441264`.
-- The SvelteKit detour (`sreetamandareena.com`) is where Vite's dev loop really sold me.
-- The "got busy" line is the honest reason it took a while — and lands the "I took this seriously, not on a whim" point.
-- Callback: since 2024, large-scale migrations got _much_ more approachable — even with a lot going on in life. Wink at the reason.
-
-</Notes>
+# Looking around for options
 
 ---
 
-# Start's bet: the server, opt-in
+# SvelteKit
+
+- SvelteKit made Vite click
+- data loading in nested routes
+
+<img
+  src="/images/slides/tanstack-start/sreetamandareena.webp"
+  alt="Screenshot of sreetamandareena.com — SvelteKit site that made it click"
+  className="mx-auto mt-6 rounded-lg border border-white/10 shadow-xl h-fit w-1/2"
+/>
+
+---
+
+# Remix
+
+<Tweet id="1813803190414110874" />
+
+---
+
+# Vite-pilled!
+
+<Tweet id="1813803997876441264" />
+
+---
+
+# In summary
+
+---
+
+<Title>What?</Title>
+
+
+---
+
+# Start: server, opt-in
 
 You don't build the app around the server. It's just there when you reach for it.
 
@@ -208,12 +182,6 @@ You don't build the app around the server. It's just there when you reach for it
 
 </Steps>
 
-<Notes>
-
-- The thesis of the whole talk: with Start the server is available wherever, whenever — opt-in, not the architecture.
-- 🗳 Poll fires here ("tried Start yet?"). Let it run; read the room out loud.
-
-</Notes>
 
 ---
 
@@ -232,12 +200,6 @@ Write your React the way you always have. Reach for the server per route, only w
 
 </Steps>
 
-<Notes>
-
-- This is the "What" — everything the server gives you, all opt-in. We'll walk each one, then tie them together in one connected example.
-- The server is available whenever, wherever. You never invert the mental model to get it.
-
-</Notes>
 
 ---
 
@@ -251,11 +213,6 @@ Server routes are public HTTP. Server functions are app-to-server RPC.
 
 `GET` here — so the RPC is HTTP-cacheable. Server Actions are POST-only.
 
-<Notes>
-
-- First server feature: server functions are type-safe RPCs. Input and output checked end to end, callable from anywhere on the client.
-
-</Notes>
 
 ---
 
@@ -267,12 +224,6 @@ Server function middleware can run on the client and the server.
 
 This is the _per-function_ tier. There's also request middleware for every request.
 
-<Notes>
-
-- THE take-home beat: one middleware with a `.client()` and a `.server()` half spanning the network.
-- Two tiers: request middleware (all SSR/routes/functions) AND per-function middleware (client + server halves). Next has one edge `middleware.ts` that can't even touch a DB.
-
-</Notes>
 
 ---
 
@@ -280,13 +231,6 @@ This is the _per-function_ tier. There's also request middleware for every reque
 
 <ServerBoundaryDemo />
 
-<Notes>
-
-- [DEMO] Press the button → request id changes, server-only context appears.
-- The middleware's `.client()` half tags the call; the `.server()` half injects request id + server-only context.
-- [FALLBACK] Values are already on screen from the mount call; point at `request id` + `server-only fn`.
-
-</Notes>
 
 ---
 
