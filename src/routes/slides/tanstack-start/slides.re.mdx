@@ -8,14 +8,21 @@ import { MainTitle, StarHistory,Title } from "./-components";
 import { Gradient } from "@/lib/components/Typography";
 import {
   RouterStateDemo,
+  ServerBoundaryDemo,
+  StreamingDemo,
   RscDemo,
   CompositeSlotsDemo,
 } from "./-demos";
 import {
   UrlStateBuildUp,
   TypeSafetyBuildUp,
+  ServerFnBuildUp,
+  MiddlewareBuildUp,
   RscBuildUp,
   CompositeBuildUp,
+  ConnectedExampleBuildUp,
+  RenderingDial,
+  StreamingBuildUp,
 } from "./-code";
 
 ---
@@ -56,18 +63,6 @@ import {
 
 </Steps>
 
-<Notes>
-
-Suppose your company wants to hire somone in Singapore,
-it's pretty straightforward when they're a contractor, but for
-FTEs, it gets complicated fast: payroll, benefits, tax deductions,
-filing income tax, employments laws are different in every country,
-Global employment is hard - Remote builds the indrastructure to do it right
-
-we manage our own entities in different countries, allowing your company to hire the
-right person, and take care of all the difficult stuff
-
-</Notes>
 
 ---
 
@@ -159,52 +154,71 @@ right person, and take care of all the difficult stuff
 
 <Title>What?</Title>
 
+
 ---
 
-# Server, opt-in
+# Start: server, opt-in
 
-- full-stack on top of TanStack Router
-- server when the route needs it
-- client-first when it does not
-- Vite, TypeScript, deploy anywhere
+You don't build the app around the server. It's just there when you reach for it.
+
+<Steps>
+
+- No relearning React — Start is full-stack functionality on top of TanStack Router
+- Add the server gradually, per route — you opt _in_, you don't opt out
+- Deploy anywhere — no first-party host bending the framework
+- TypeScript, first-class, end to end — and built on Vite
+
+</Steps>
+
 
 ---
 
 # Client-first, server-available
 
-- SSR
-- streaming
-- server routes
-- server functions
-- middleware
-- route-level caching
+Write your React the way you always have. Reach for the server per route, only where it helps.
+
+<Steps>
+
+- Server-side rendering
+- Progressive loading with streaming
+- Server routes — public HTTP endpoints
+- Server functions — typed RPCs for your own app
+- Middleware — client _and_ server halves
+- Deploy anywhere, or self-host
+
+</Steps>
+
 
 ---
 
-# Server functions / server routes
+# Server functions are typed RPC
 
-```tsx
-const getStats = createServerFn({ method: "GET" })
-  .validator(parseStatsInput)
-  .handler(async ({ data }) => loadStats(data));
-```
+<ServerFnBuildUp />
 
-- functions: app-to-server RPC
-- routes: public HTTP endpoints
-- `GET` when the call should be cacheable
+A server boundary you can call from loaders, hooks, and components.
+
+Server routes are public HTTP. Server functions are app-to-server RPC.
+
+`GET` here — so the RPC is HTTP-cacheable. Server Actions are POST-only.
+
 
 ---
 
-# Middleware across the boundary
+# The part Next does not have
 
-```tsx
-const boundaryMiddleware = createMiddleware({ type: "function" })
-  .client(async ({ next }) => next({ context: { source: "browser" } }))
-  .server(async ({ next }) => next({ context: { requestId: crypto.randomUUID() } }));
-```
+Server function middleware can run on the client and the server.
 
-- `.client()` before the call leaves the browser
-- `.server()` before the handler runs
+<MiddlewareBuildUp />
+
+This is the _per-function_ tier. There's also request middleware for every request.
+
+
+---
+
+# Live: client → middleware → server
+
+<ServerBoundaryDemo />
+
 
 ---
 
@@ -213,36 +227,39 @@ const boundaryMiddleware = createMiddleware({ type: "function" })
 ```tsx
 createFileRoute("/blog/$slug")({
   loader: ({ params }) => getBlogRenderable({ data: params }),
-  staleTime: 1000 * 60 * 60 * 24,
+  staleTime: 1000 * 60 * 60 * 24, // fresh for a day
 });
 ```
 
-Caching moves back to the route.
+In Next, caching became a thing to manage. Here it's just `staleTime`, per route.
+
 
 ---
 
 # Rendering is a dial
 
-```tsx
-createFileRoute("/slides/tanstack-start/dev-lab")({
-  ssr: true,
-});
-```
+<RenderingDial />
 
 Full SSR, data-only, or client-only — per route.
+
 
 ---
 
 # Streaming SSR
 
-```tsx
-loader: async ({ deps }) => ({
-  shell: await getFastData(deps),
-  slowPanel: getSlowData(deps),
-});
-```
+<StreamingBuildUp />
 
-Return an un-awaited promise.
+Return an un-awaited promise: the shell flushes now, the slow part streams in.
+
+Same React streaming as Next's PPR holes — minus the prebuilt static shell.
+
+
+---
+
+# Live: shell now, slow data later
+
+<StreamingDemo />
+
 
 ---
 
@@ -254,25 +271,17 @@ export const getHighlightedCode = createServerFn({ method: "GET" })
   .handler(async () => loadRwcCodeSamples());
 ```
 
-Same primitive. Different clock.
+Same server-function API — a different clock. `/rwc` runs the work at build time and ships static data.
+
 
 ---
 
-# One route, many choices
+# One connected example
 
-```tsx
-createFileRoute("/stats")({
-  validateSearch,
-  loaderDeps: ({ search }) => search,
-  loader: ({ deps }) => getStats({ data: deps }),
-  staleTime: 1000 * 60 * 5,
-});
-```
+<ConnectedExampleBuildUp />
 
-- typed URL state
-- server function
-- caching
-- rendering choice
+One server function, one route: middleware, SSR, streaming, and caching — composed.
+
 
 ---
 
@@ -290,13 +299,6 @@ A confession, before I get to the type system.
 
 </Steps>
 
-<Notes>
-
-- Personal credibility beat — don't rush it. The "anti-TS" framing hooks anyone who's felt type-fest pain.
-- The Razorpay corridor detail is real; name-drop only if it feels natural.
-- This opens the "types" thread: the old-vs-new comparison, then URL state as typed state. The payoff is the "you never write `as` again" line.
-
-</Notes>
 
 ---
 
@@ -312,13 +314,6 @@ A confession, before I get to the type system.
 
 </Steps>
 
-<Notes>
-
-- The "before" code is real — pulled from this repo's git history. The `params!` non-null assertion had an eslint-disable next to it; that's how much we didn't want to write it.
-- The App Router `PageParams` boilerplate is the worst part: a Promise you unwrap by hand, redeclared on every single page. No shared type — each route writes its own.
-- If a Next person pushes back: "I can zod my searchParams too" — yes, every route, every time, and the cache still doesn't know your schema exists. Concede the parsing, hold the line on integration.
-
-</Notes>
 
 ---
 
@@ -328,12 +323,6 @@ A confession, before I get to the type system.
 
 The URL is a state manager with a schema.
 
-<Notes>
-
-- Contrast: search params as a "string bag" everyone re-parses vs. a schema the route owns.
-- `validateSearch` parses once; `loaderDeps` makes invalidation explicit, not vibes.
-
-</Notes>
 
 ---
 
@@ -348,13 +337,6 @@ The URL is a state manager with a schema.
 
 </Steps>
 
-<Notes>
-
-- [DEMO] Pre-opened tabs: `/stats` and `?period=nonsense`. Click, don't type.
-- Point: garbage → safe default; `useSearch()` returns a typed `PlausibleDateRange`.
-- [FALLBACK] If the tab is stale, read it from `validateSearch` in the editor.
-
-</Notes>
 
 ---
 
@@ -362,12 +344,6 @@ The URL is a state manager with a schema.
 
 <RouterStateDemo />
 
-<Notes>
-
-- This is the deck itself: slide/step/live/presenter are validated search params.
-- Walk a step — the values update live. No companion tab needed.
-
-</Notes>
 
 ---
 
@@ -379,12 +355,6 @@ Server-render the heavy content. Compose client islands where they matter.
 
 RSC is still experimental in Start — I run it in production here anyway.
 
-<Notes>
-
-- On the blog, the loader server-renders the heavy MDX subtree with `renderServerComponent` and hands the result through loader data. It is _data_.
-- This slide sets up composite components next — you need "RSC as data" before "RSC with slots" lands.
-
-</Notes>
 
 ---
 
@@ -401,11 +371,6 @@ In Start, ordinary React components are interactive by default.
 
 </Steps>
 
-<Notes>
-
-- The mental model never inverts on you — which is exactly the thing that bugged me about server-first.
-
-</Notes>
 
 ---
 
@@ -413,12 +378,6 @@ In Start, ordinary React components are interactive by default.
 
 <RscDemo />
 
-<Notes>
-
-- [DEMO] The bordered panel was produced by `renderServerComponent` on the server; the counter beside it is ordinary client React.
-- The client never imports the panel's code or its server-only inputs — only the rendered output.
-
-</Notes>
 
 ---
 
@@ -428,14 +387,6 @@ In Start, ordinary React components are interactive by default.
 
 The server tree keeps its slots open. The client fills them with interactive islands — and the server passes typed data _out_.
 
-<Notes>
-
-- This is the clean inverse of the App Router footgun: there, a client import silently dragged the server subtree client-side. Here the server tree stays server-side and hands typed data out to the client island it wraps.
-- Three slot types: `children` (no data), render props (server → client data), component props (reusable client components fed server data).
-- Be honest about the edges: slots are opaque on the server (`React.Children.map`/`cloneElement` won't work on `props.children` — use render props), and render-prop args must be serializable (they cross React's Flight protocol).
-- Still experimental into early v1; server-component serialization uses React Flight today (primitives, Dates, React elements).
-
-</Notes>
 
 ---
 
@@ -443,13 +394,6 @@ The server tree keeps its slots open. The client fills them with interactive isl
 
 <CompositeSlotsDemo />
 
-<Notes>
-
-- [DEMO] The card is `createCompositeComponent` on the server. The "client island" box is a render-prop slot — it's client React, but the request id and render time inside it came _from the server_.
-- The "Client clicks" button is the `children` slot: plain interactivity, no server data.
-- [FALLBACK] If the composite round-trip fails (it's RC-stage RSC), fall back to the code build-up on the previous slide — the point is the shape, not the network.
-
-</Notes>
 
 ---
 
@@ -466,12 +410,6 @@ The stack is composable, and the ecosystem is open.
 
 </Steps>
 
-<Notes>
-
-- This ties back to the Remote slide: I didn't adopt Start cold — I'd been living in TanStack Query and Table at work.
-- The point of the ecosystem beat: nothing here is a walled garden. Composable libraries, an open bundler, and types that hold across the seams.
-
-</Notes>
 
 ---
 
@@ -488,12 +426,6 @@ I ship Next for a living. The thing I miss most is the feedback loop.
 
 </Steps>
 
-<Notes>
-
-- Not a code feature — a productivity one. Say it as someone who ships Next daily.
-- Keep it ~30s; it's a credibility beat, not a benchmark slide.
-
-</Notes>
 
 ---
 
@@ -511,11 +443,6 @@ This site runs on Cloudflare Workers.
 
 </Steps>
 
-<Notes>
-
-- The deploy-anywhere pillar paying off: I didn't rewrite the app to move it to the edge.
-
-</Notes>
 
 ---
 
@@ -530,13 +457,6 @@ This site runs on Cloudflare Workers.
 
 </Steps>
 
-<Notes>
-
-- The "How" beat — one slide, ~40s. Keep it minimal: TanStack CLI is more than a template printer; it connects setup with docs/add-ons/integrations.
-- If someone asks "migrate from Next?": route by route. Bring a page over, add a `validateSearch`, pick an `ssr` mode.
-- Shoutouts to slip in near the close: Elixir (the backend that made me comfortable with a real type system) and Cloudflare (the runtime that made deploy-anywhere real).
-
-</Notes>
 
 ---
 
@@ -553,11 +473,3 @@ Everything you've watched is one TanStack Start route — including this live se
 
 </Steps>
 
-<Notes>
-
-- Self-contained close: introduce the live session here as the final proof — the website _is_ the demo.
-- [DEMO] Fire a reaction from your phone so it lands on the projected deck.
-- [FALLBACK] Show the poll results already collected — same DO round-trip.
-- [CLOSE] Leave the deck up; take Q&A against the live session so the last thing they see is it working. Thank you.
-
-</Notes>
