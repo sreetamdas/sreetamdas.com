@@ -1,17 +1,17 @@
 import { type SlideSessionPollDefinition } from "@/lib/domains/slides/live-session";
 
-const PREMISE_SLIDE_INDEX = 14;
-const RENDERING_DIAL_SLIDE_INDEX = 29;
+const START_BET_SLIDE_INDEX = 15;
+const RENDERING_DIAL_SLIDE_INDEX = 21;
 
 export const tanstackStartLivePolls: Array<SlideSessionPollDefinition> = [
 	{
-		slide: PREMISE_SLIDE_INDEX,
+		slide: START_BET_SLIDE_INDEX,
 		question: "Have you tried TanStack Start yet?",
 		options: ["Yes", "Not yet", "Just here for vibes"],
 	},
 	{
 		slide: RENDERING_DIAL_SLIDE_INDEX,
-		question: "Which rendering knob feels most useful?",
-		options: ["Selective SSR", "Deferred hydration", "RSC as data"],
+		question: "Which rendering mode fits your app?",
+		options: ["Full SSR", "Data-only", "Client-only"],
 	},
 ];

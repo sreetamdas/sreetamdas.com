@@ -48,7 +48,7 @@ function ServerComposedPanel() {
 
 // Return type is intentionally inferred so `Renderable` keeps the renderable type
 // from `renderServerComponent` (annotating it as `unknown` would break `{Renderable}`).
-export const getShowcaseRsc = createServerFn({ method: "GET" }).handler(async () => {
+export const getRscPanel = createServerFn({ method: "GET" }).handler(async () => {
 	const Renderable = await renderServerComponent(<ServerComposedPanel />);
 	return { renderedAtIso: new Date().toISOString(), Renderable };
 });

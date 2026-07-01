@@ -3,11 +3,10 @@
 /**
  * Slide-embeddable demos for the TanStack Start deck.
  *
- * These are compact, projector-sized versions of the standalone showcase
- * (./showcase). They run *inside* a slide so the talk does not need to switch to
- * a companion route. Everything here is genuinely client-callable: server
- * functions execute on the server no matter who invokes them, so calling them
- * from a button via `useServerFn` is real work, not a mock.
+ * These run *inside* a slide, so the talk never leaves the deck. Everything here
+ * is genuinely client-callable: server functions execute on the server no matter
+ * who invokes them, so calling them from a button via `useServerFn` is real work,
+ * not a mock.
  *
  * The one mechanic that cannot run inside a client-rendered slide is the
  * server-stream-into-SSR-shell `<Await>` (the deck has no per-slide loader to
@@ -16,21 +15,16 @@
  */
 import { useSearch } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
+import { CompositeComponent } from "@tanstack/react-start/rsc";
 import { type ReactNode, useEffect, useState } from "react";
 
 import { Code } from "@/lib/components/Typography";
 import { cn } from "@/lib/helpers/utils";
 
-import { getRuntimeSide } from "./showcase/-environment";
-import { getShowcaseRsc } from "./showcase/-rsc.server";
-import { getShowcaseSnapshot } from "./showcase/-showcase.server";
-import {
-	getStreamingShowcaseData,
-	STREAMING_DEMO_DELAY_MS,
-	type StreamingShowcaseData,
-} from "./showcase/-streaming.server";
-
-type ShowcaseSnapshot = Awaited<ReturnType<typeof getShowcaseSnapshot>>;
+import { type BoundarySnapshot, getBoundarySnapshot } from "./-boundary.server";
+import { getCompositeCard } from "./-composite.server";
+import { getRscPanel } from "./-rsc.server";
+import { getStreamingData, STREAMING_DEMO_DELAY_MS, type StreamingData } from "./-streaming.server";
 
 function DemoShell({
 	kicker,
@@ -115,14 +109,14 @@ export function RouterStateDemo() {
  * Middleware tags which side initiated the call and injects server-only context.
  */
 export function ServerBoundaryDemo() {
-	const getSnapshot = useServerFn(getShowcaseSnapshot);
-	const [snapshot, setSnapshot] = useState<ShowcaseSnapshot | null>(null);
+	const getSnapshot = useServerFn(getBoundarySnapshot);
+	const [snapshot, setSnapshot] = useState<BoundarySnapshot | null>(null);
 	const [isLoading, setIsLoading] = useState(false);
 
 	async function call() {
 		setIsLoading(true);
 		try {
-			setSnapshot(await getSnapshot({ data: { feature: "server" } }));
+			setSnapshot(await getSnapshot());
 		} finally {
 			setIsLoading(false);
 		}
@@ -154,13 +148,13 @@ export function ServerBoundaryDemo() {
 
 /**
  * Streaming SSR — perceived. The shell renders now; the slow panel arrives after a
- * real server round-trip carrying a deliberate delay. (The true server-stream-into-
- * shell variant lives on the standalone showcase route; a client-rendered slide has
- * no loader to defer, so this shows the same behavior via a server call.)
+ * real server round-trip carrying a deliberate delay. (A client-rendered slide has
+ * no loader to defer, so this shows the same visible behavior via a server call;
+ * the true loader-deferred variant runs on real pages like `/stats`.)
  */
 export function StreamingDemo() {
-	const runStreaming = useServerFn(getStreamingShowcaseData);
-	const [data, setData] = useState<StreamingShowcaseData | null>(null);
+	const runStreaming = useServerFn(getStreamingData);
+	const [data, setData] = useState<StreamingData | null>(null);
 	const [isStreaming, setIsStreaming] = useState(false);
 
 	async function stream() {
@@ -214,7 +208,7 @@ export function StreamingDemo() {
  * the component's code or its server-only inputs.
  */
 export function RscDemo() {
-	const fetchRsc = useServerFn(getShowcaseRsc);
+	const fetchRsc = useServerFn(getRscPanel);
 	const [rsc, setRsc] = useState<{ renderedAtIso: string; Renderable: ReactNode } | null>(null);
 	const [clientClicks, setClientClicks] = useState(0);
 	const [error, setError] = useState<string | null>(null);
@@ -256,12 +250,52 @@ export function RscDemo() {
 	);
 }
 
-/** Environment functions — server/client implementations tree-shaken per bundle. */
-export function RuntimeBadge() {
-	const runtime = getRuntimeSide() ?? "unknown runtime";
+/**
+ * Composite slots — `createCompositeComponent` builds a card on the server whose
+ * function props are slots. The client fills them: `renderMeta` is a render-prop
+ * slot that receives *server* data (request id, render time), and `children` is a
+ * plain interactive client island. The server tree stays on the server; the
+ * client composes into it. The inverse of the App Router footgun.
+ */
+export function CompositeSlotsDemo() {
+	const fetchCard = useServerFn(getCompositeCard);
+	const [card, setCard] = useState<Awaited<ReturnType<typeof getCompositeCard>> | null>(null);
+	const [clientClicks, setClientClicks] = useState(0);
+	const [error, setError] = useState<string | null>(null);
+
+	useEffect(() => {
+		void fetchCard()
+			.then(setCard)
+			.catch((cause: unknown) => setError(cause instanceof Error ? cause.message : String(cause)));
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
+
 	return (
-		<span className="font-mono text-2xl text-primary" suppressHydrationWarning>
-			{runtime}
-		</span>
+		<DemoShell kicker="composite slots · live" title="A server card, client-filled slots">
+			{error ? (
+				<p className="font-mono text-lg text-red-500">Composite round-trip failed: {error}</p>
+			) : card ? (
+				<CompositeComponent
+					src={card.src}
+					renderMeta={({ renderedAtIso, requestId }) => (
+						<div className="rounded-global border border-foreground/10 bg-foreground/[0.03] p-4">
+							<p className="font-mono text-sm text-primary uppercase">
+								client island · filled a server slot
+							</p>
+							<dl className="mt-3 grid gap-3">
+								<DemoRow label="server request id" value={requestId} />
+								<DemoRow label="server rendered at" value={renderedAtIso} />
+							</dl>
+						</div>
+					)}
+				>
+					<DemoButton onClick={() => setClientClicks((value) => value + 1)}>
+						Client clicks: {clientClicks}
+					</DemoButton>
+				</CompositeComponent>
+			) : (
+				<p className="font-mono text-lg text-foreground/55">opening server slots…</p>
+			)}
+		</DemoShell>
 	);
 }

@@ -10,6 +10,7 @@ import {
   ServerBoundaryDemo,
   StreamingDemo,
   RscDemo,
+  CompositeSlotsDemo,
 } from "./-demos";
 import {
   UrlStateBuildUp,
@@ -17,6 +18,8 @@ import {
   ServerFnBuildUp,
   MiddlewareBuildUp,
   RscBuildUp,
+  CompositeBuildUp,
+  ConnectedExampleBuildUp,
   RenderingDial,
   StreamingBuildUp,
 } from "./-code";
@@ -25,9 +28,22 @@ import {
 
 <MainTitle stage="hello" />
 
+<Notes>
+
+- Hello, good morning everyone! It's so awesome to be here at React Nexus — in front of, and among, so many amazing speakers.
+
+</Notes>
+
 ---
 
 <MainTitle stage="title" />
+
+<Notes>
+
+- I gave my first talk back in 2021, at React Day Bangalore — so it's really special to be back here, on such a huge stage.
+- Today I'll be talking about TanStack Start.
+
+</Notes>
 
 ---
 
@@ -63,10 +79,10 @@ import {
 
 <Notes>
 
-- This is `sreetamdas.com`. First commit: 2016. It's been through a _bunch_ of versions and frameworks.
-- It's my go-to for actually using the cool stuff I find — zustand, styled-components, tailwind, drizzle — instead of throwaway demo apps I'd never maintain.
+- This is `sreetamdas.com`. My first commit was back in 2016, and since then it's been through a _bunch_ of versions — and a bunch of frameworks.
+- It's my go-to for actually using the cool stuff I come across — zustand, styled-components, Tailwind, Drizzle — instead of throwaway demo apps I'd never maintain past the demo stage.
 - Six or seven rewrites in, I genuinely believe TanStack Start is the best way to build full-stack React today.
-- (the joke: I've lost count — is it six? seven? that's kind of the point.)
+- (the joke: I've honestly lost count — six? seven? that's kind of the point.)
 
 </Notes>
 
@@ -89,7 +105,7 @@ import {
 <Notes>
 
 - One line per version — don't read them all, let the list land. The point is the _shape_ of the journey, not any one stop.
-- This is the "why I'm qualified to compare" slide — I've shipped each of these, not just toyed with them.
+- I've shipped each of these, not just toyed with them — so the comparison today isn't theoretical.
 
 </Notes>
 
@@ -110,7 +126,7 @@ import {
 
 <Notes>
 
-- Talk about my sponsor
+- Talk about my sponsor. Keep it to ~20s.
 
 Global employment is hard. We built the infrastructure to do it right.
 Every country has different laws, tax codes, payroll rules, and compliance requirements.
@@ -121,19 +137,19 @@ local legal experts, and owned entities in every market we operate in.
 
 ---
 
-<Tweet
-  id="2071647669467201657"
-  className="[zoom:1.4]"
-/>
-
----
-
 # Engineering at Remote
 
 - Since 2020: Growth Engineering for 4 years, now WebXP
 - ~300 across engineering, ~50 teams across 40+ countries
 - Elixir backend: 5 million+ lines of code
 - Next.js SPA, TanStack Query, TanStack Table, and friends
+
+<Notes>
+
+- Context for where my instincts come from: when I compare Start to Next today, it's not theoretical — I ship Next for a living.
+- Seed the thread: I started using TanStack Query and Table _at work_, and really enjoyed the experience. Callback later.
+
+</Notes>
 
 ---
 
@@ -152,8 +168,19 @@ It's easy to dunk on Next. I'll try not to.
 
 <Notes>
 
-- Set the tone: Next is the benchmark, not the villain. The excitement was real.
+- Set the tone: Next is the benchmark, not the villain. It was the de-facto framework — even the React docs recommended it. The excitement was real.
 - Link if asked: react.dev/blog/2020/12/21/data-fetching-with-react-server-components.
+
+</Notes>
+
+---
+
+<Tweet id="2071647669467201657" className="[zoom:1.4]" />
+
+<Notes>
+
+- Credit where it's due: with the latest 16.3 release, the team really cooked.
+- I'm not here to dunk — this slide is the proof I mean it.
 
 </Notes>
 
@@ -166,20 +193,20 @@ The App Router made React server-first by default.
 <Steps>
 
 - `"use client"` everywhere you wanted state or interaction
-- React written backwards from how we'd always written it: client-first
+- React written backwards from how we'd always written it: client-first, functions as first-class citizens
 - Only serializable props could cross the server/client boundary
 - Composition footgun: importing a Server Component into a Client Component silently forced the whole subtree client-side — wiping away the RSC benefits
 - Caching was suddenly a thing you had to think about
-- The dev server _seemed_ super slow
-- And I was growing wary of being locked into one platform
+- The dev server _seemed_ super slow — and I hated being locked out of Vite
+- Then more surface to learn: partial pre-rendering, `"use cache"`, and I grew wary of platform lock-in
 
 </Steps>
 
 <Notes>
 
-- Don't overstate it — App Router is good. The friction is the inversion: server-by-default reframes everything.
+- Don't overstate it — App Router is good. The friction is the inversion: server-by-default reframes everything, and it felt like the whole app had to be built _around_ RSCs.
 - The composition gotcha is the sneakiest one — no error, no warning, just silently losing the thing you came for.
-- The lock-in line is the honest heart of it: "most of our projects have exactly 0 users, and I was wary of being locked into Vercel." Say it lightly — it gets a laugh and it's true.
+- The lock-in line is the honest heart of it: "most of my projects have exactly 0 users, and I was wary of being locked into Vercel." Say it lightly — it gets a laugh and it's true.
 - The honest gripe: I wanted the server _available_, not _mandatory_.
 
 </Notes>
@@ -190,18 +217,20 @@ The App Router made React server-first by default.
 
 <Steps>
 
-- I'd been enjoying the Vite dev experience since 2022 — SvelteKit made it click
+- I'd been enjoying the Vite dev experience since 2022 — SvelteKit (and `sreetamandareena.com`) made it click
 - Remix shipped a new Vite integration — I was very tempted
 - And right around then, TanStack Start was announced in alpha
-- As luck would have it, I got busy with work — new role — so the site sat for a bit
+- As luck would have it, I got busy with work — new role — so the site sat for a bit, and Start kept getting polished
 
 </Steps>
 
 <Notes>
 
 - This is the bridge from "the model bugged me" to "so I went looking."
-- The Vite-appreciation tweet (2022) and the Remix-vite/tempted tweets (2024) go here if you want to embed them — keep it quick though, this is a ~40s beat.
-- The "got busy" line is the honest reason the migration took a while — and it lands the "I took this seriously, not on a whim" point.
+- Tweets to embed if you want (keep it quick, ~40s beat): Vite appreciation from 2022 — `1499430674746736644`; Remix + Vite — `1813803190414110874`; "very tempted" — `1813803997876441264`.
+- The SvelteKit detour (`sreetamandareena.com`) is where Vite's dev loop really sold me.
+- The "got busy" line is the honest reason it took a while — and lands the "I took this seriously, not on a whim" point.
+- Callback: since 2024, large-scale migrations got _much_ more approachable — even with a lot going on in life. Wink at the reason.
 
 </Notes>
 
@@ -213,91 +242,199 @@ You don't build the app around the server. It's just there when you reach for it
 
 <Steps>
 
+- No relearning React — Start is full-stack functionality on top of TanStack Router
+- Add the server gradually, per route — you opt _in_, you don't opt out
 - Deploy anywhere — no first-party host bending the framework
-- TypeScript, first-class, end to end
-- And my favourite: Vite — an open ecosystem, real plugins
+- TypeScript, first-class, end to end — and built on Vite
 
 </Steps>
 
 <Notes>
 
 - The thesis of the whole talk: with Start the server is available wherever, whenever — opt-in, not the architecture.
-- These three pillars are a teaser; deployment, types, and the Vite dev loop all get paid off later.
-
-</Notes>
-
----
-
-# The premise
-
-I don't want to sell you a starter template.
-
-I want to show you a real app.
-
-<Steps>
-
-- This deck is a TanStack Start route
-- Its slide position is URL state
-- Its live polls are Durable Objects
-- The companion page is `/slides/tanstack-start/showcase`
-
-</Steps>
-
-<Notes>
-
-- Beat: "the website is the demo" — if I claim it, I show the file.
 - 🗳 Poll fires here ("tried Start yet?"). Let it run; read the room out loud.
-- ~45s. Don't over-explain — the proof comes later.
 
 </Notes>
 
 ---
 
-# Start's pitch in one sentence
+# Client-first, server-available
 
-Router-first React, with the server added where it helps.
+Write your React the way you always have. Reach for the server per route, only where it helps.
 
 <Steps>
 
-- Type the URL
-- Type the loader
-- Type the server boundary
-- Choose rendering per route
-- Deploy to the runtime you actually want
+- Server-side rendering
+- Progressive loading with streaming
+- API routes
+- Server functions — type-safe RPCs, callable from the client
+- Middleware — client _and_ server halves
+- Deploy anywhere, or self-host
 
 </Steps>
 
 <Notes>
 
-- The five-word spine: URL → loader → server boundary → rendering → runtime.
-- Everything after this is just these five, with real code. Tell them to hold the shape.
+- This is the "What" — everything the server gives you, all opt-in. We'll walk each one, then tie them together in one connected example.
+- The server is available whenever, wherever. You never invert the mental model to get it.
 
 </Notes>
 
 ---
 
-# Map of the app
+# Server functions are typed RPC
 
-| Feature                 | Real route/file                         |
-| ----------------------- | --------------------------------------- |
-| Typed URL state         | `/stats`, `/slides/tanstack-start`      |
-| Server functions        | `getStats`, likes/views, GitHub stats   |
-| Cached loader data      | per-route `staleTime`, everywhere       |
-| RSC as data             | `blog/$slug/-$slug.server.tsx`          |
-| Streaming SSR           | `/stats`, showcase `?feature=streaming` |
-| Static server functions | `/rwc`, newsletter, keebs               |
-| Server routes           | slide sessions, auth, Plausible proxy   |
-| Cloudflare primitives   | D1, KV, Durable Objects                 |
+<ServerFnBuildUp />
+
+A server boundary you can call from loaders, hooks, and components.
+
+`GET` here — so the RPC is HTTP-cacheable. Server Actions are POST-only.
+
+<Notes>
+
+- First server feature: server functions are type-safe RPCs. Input and output checked end to end, callable from anywhere on the client.
+
+</Notes>
+
+---
+
+# The part Next does not have
+
+Server function middleware can run on the client and the server.
+
+<MiddlewareBuildUp />
+
+This is the _per-function_ tier. There's also request middleware for every request.
+
+<Notes>
+
+- THE take-home beat: one middleware with a `.client()` and a `.server()` half spanning the network.
+- Two tiers: request middleware (all SSR/routes/functions) AND per-function middleware (client + server halves). Next has one edge `middleware.ts` that can't even touch a DB.
+
+</Notes>
+
+---
+
+# Live: client → middleware → server
+
+<ServerBoundaryDemo />
+
+<Notes>
+
+- [DEMO] Press the button → request id changes, server-only context appears.
+- The middleware's `.client()` half tags the call; the `.server()` half injects request id + server-only context.
+- [FALLBACK] Values are already on screen from the mount call; point at `request id` + `server-only fn`.
+
+</Notes>
+
+---
+
+# Loader data is cached
+
+```tsx
+createFileRoute("/blog/$slug")({
+  loader: ({ params }) => getBlogRenderable({ data: params }),
+  staleTime: 1000 * 60 * 60 * 24, // fresh for a day
+});
+```
+
+In Next, caching became a thing to manage. Here it's just `staleTime`, per route.
+
+<Notes>
+
+- How it differs from Next: Next made caching an explicit surface — the `fetch` cache, `"use cache"`, `revalidateTag`, and the mental overhead of knowing which is in play. In Start it's the router's built-in stale-while-revalidate: set a `staleTime`, done.
+- Back-navigation is instant while it revalidates in the background. No React Query required — though the same loader can `ensureQueryData` from the Query client you already use.
+- Repo proof: every route sets a staleTime — blog 24h, `/stats` 5m, this deck's demos 30s.
+
+</Notes>
+
+---
+
+# Rendering is a dial
+
+<RenderingDial />
+
+Full SSR, data-only, or client-only — per route.
+
+<Notes>
+
+- Same route API, three settings: full SSR / data-only / client-only.
+- 🗳 Second poll fires here ("which rendering mode?"). Let it run while you set up the streaming demo.
+
+</Notes>
+
+---
+
+# Streaming SSR
+
+<StreamingBuildUp />
+
+Return an un-awaited promise: the shell flushes now, the slow part streams in.
+
+Same React streaming as Next's PPR holes — minus the prebuilt static shell.
+
+<Notes>
+
+- Honest framing: this is PPR's _streaming_ half (Suspense + Await), not its build-time static shell. The shell here is SSR'd per request.
+
+</Notes>
+
+---
+
+# Live: shell now, slow data later
+
+<StreamingDemo />
+
+<Notes>
+
+- In the deck this fires as a real server round-trip with a ~1.2s delay so the skeleton→panel transition is visible; a real page like `/stats` shows the true loader-deferred variant.
+- [DEMO] Press "Stream again" → skeleton paints, panel fills in.
+- [FALLBACK] Open `/stats`; the dashboard shell renders before the numbers land.
+
+</Notes>
+
+---
+
+# Build-time server functions
+
+```tsx
+export const getHighlightedCode = createServerFn({ method: "GET" })
+  .middleware([staticFunctionMiddleware])
+  .handler(async () => loadRwcCodeSamples());
+```
+
+Same server-function API — a different clock. `/rwc` runs the work at build time and ships static data.
+
+<Notes>
+
+- Callback to "server functions are typed RPC": it's the _same_ primitive, just with static middleware so the handler runs once, at build, and serves plain JSON forever.
+
+</Notes>
+
+---
+
+# One connected example
+
+<ConnectedExampleBuildUp />
+
+One server function, one route: middleware, SSR, streaming, and caching — composed.
+
+<Notes>
+
+- The payoff to "the server, opt-in": everything you just saw — server function + client/server middleware + awaited SSR data + an un-awaited streamed promise + per-route caching — in a single route.
+- Not five disconnected features; one route that reaches for the server five ways.
+
+</Notes>
 
 ---
 
 # I used to be anti-TypeScript
 
-A confession before the features.
+A confession, before I get to the type system.
 
 <Steps>
 
-- At React Nexus 2024, I was in a corridor debate with a bunch of engineers — I remember some folks from Razorpay — about TypeScript
+- At React Nexus 2024, I was in a corridor debate with a bunch of engineers — some folks from Razorpay — about TypeScript
 - The benefits are obvious: it catches bugs, it helps maintain code as it grows
 - but on any moderately-sized project, the types become a whole dimension you wrangle continuously
 - you know exactly what I mean if you've ever reached for `type-fest`
@@ -309,7 +446,7 @@ A confession before the features.
 
 - Personal credibility beat — don't rush it. The "anti-TS" framing hooks anyone who's felt type-fest pain.
 - The Razorpay corridor detail is real; name-drop only if it feels natural.
-- This sets up the whole "types" thread that runs through URL state, server functions, and middleware — the payoff is the script's "you never write `as` again" line.
+- This opens the "types" thread: the old-vs-new comparison, then URL state as typed state. The payoff is the "you never write `as` again" line.
 
 </Notes>
 
@@ -330,15 +467,14 @@ A confession before the features.
 <Notes>
 
 - The "before" code is real — pulled from this repo's git history. The `params!` non-null assertion had an eslint-disable next to it; that's how much we didn't want to write it.
-- The App Router `PageParams` boilerplate is the worst part: it's a Promise you unwrap by hand, redeclared on every single page. There's no shared type — each route writes its own.
-- This sets up the whole "types" thread: URL state, server functions, middleware. The payoff is you never write `as` or `params!` again.
+- The App Router `PageParams` boilerplate is the worst part: a Promise you unwrap by hand, redeclared on every single page. No shared type — each route writes its own.
 - If a Next person pushes back: "I can zod my searchParams too" — yes, every route, every time, and the cache still doesn't know your schema exists. Concede the parsing, hold the line on integration.
 
 </Notes>
 
 ---
 
-# 1. URL state is not a string bag
+# URL state is not a string bag
 
 <UrlStateBuildUp />
 
@@ -387,76 +523,20 @@ The URL is a state manager with a schema.
 
 ---
 
-# 2. Server functions are typed RPC
-
-<ServerFnBuildUp />
-
-A server boundary you can call from loaders, hooks, and components.
-
-`GET` here — so the RPC is HTTP-cacheable. Server Actions are POST-only.
-
----
-
-# The part Next does not have
-
-Server function middleware can run on the client and the server.
-
-<MiddlewareBuildUp />
-
-This is the _per-function_ tier. There's also request middleware for every request.
-
-<Notes>
-
-- THE take-home beat: one middleware with a `.client()` and a `.server()` half spanning the network.
-- Two tiers: request middleware (all SSR/routes/functions) AND per-function middleware (client + server halves). Next has one edge `middleware.ts` that can't even touch a DB.
-
-</Notes>
-
----
-
-# Live: client → middleware → server
-
-<ServerBoundaryDemo />
-
-<Notes>
-
-- [DEMO] Press the button → request id changes, server-only context appears.
-- The middleware's `.client()` half tags the call; the `.server()` half injects request id + server-only context.
-- [FALLBACK] Values are already on screen from the mount call; point at `request id` + `server-only fn`.
-
-</Notes>
-
----
-
-# 3. Loader data is cached
-
-```tsx
-createFileRoute("/blog/$slug")({
-  loader: ({ params }) => getBlogRenderable({ data: params }),
-  staleTime: 1000 * 60 * 60 * 24, // fresh for a day
-});
-```
-
-Stale-while-revalidate, per route. Back-navigation is instant; no React Query required.
-
-<Notes>
-
-- The differentiator the docs lead with: built-in SWR caching via TanStack Router.
-- `staleTime` / `gcTime` per route, structural sharing, background revalidation.
-- Callback to slide 6: the TanStack Query you already use plugs into the loader too.
-- Repo proof: every route sets a staleTime — blog 24h, `/stats` 5m, showcase 30s.
-
-</Notes>
-
----
-
-# 4. RSC as an opt-in data primitive
+# RSC as an opt-in data primitive
 
 <RscBuildUp />
 
 Server-render the heavy content. Compose client islands where they matter.
 
 RSC is still experimental in Start — I run it in production here anyway.
+
+<Notes>
+
+- On the blog, the loader server-renders the heavy MDX subtree with `renderServerComponent` and hands the result through loader data. It is _data_.
+- This slide sets up composite components next — you need "RSC as data" before "RSC with slots" lands.
+
+</Notes>
 
 ---
 
@@ -473,6 +553,12 @@ In Start, ordinary React components are interactive by default.
 
 </Steps>
 
+<Notes>
+
+- The mental model never inverts on you — which is exactly the thing that bugged me about server-first.
+
+</Notes>
+
 ---
 
 # Live: a server subtree as data
@@ -488,93 +574,56 @@ In Start, ordinary React components are interactive by default.
 
 ---
 
-# 5. Rendering is a dial
+# Composite components: slots
 
-<RenderingDial />
+<CompositeBuildUp />
 
-Full SSR, data-only, or client-only — per route.
+The server tree keeps its slots open. The client fills them with interactive islands — and the server passes typed data _out_.
 
 <Notes>
 
-- Same route API, three settings: full SSR / data-only / client-only.
-- 🗳 Second poll fires here ("which rendering knob?"). Let it run while you set up the hydration demo.
+- This is the clean inverse of the App Router footgun: there, a client import silently dragged the server subtree client-side. Here the server tree stays server-side and hands typed data out to the client island it wraps.
+- Three slot types: `children` (no data), render props (server → client data), component props (reusable client components fed server data).
+- Be honest about the edges: slots are opaque on the server (`React.Children.map`/`cloneElement` won't work on `props.children` — use render props), and render-prop args must be serializable (they cross React's Flight protocol).
+- Still experimental into early v1; server-component serialization uses React Flight today (primitives, Dates, React elements).
 
 </Notes>
 
 ---
 
-# 6. Hydration can wait
+# Live: composite slots
 
-```tsx
-<Hydrate when={visible({ rootMargin: "320px" })}>
-  <BelowTheFoldChart />
-</Hydrate>
-```
-
-The HTML is in the document. The JavaScript does not have to be.
-
-Demo: `/slides/tanstack-start/showcase?feature=rendering`
+<CompositeSlotsDemo />
 
 <Notes>
 
-- The conflation to break: rendering ≠ hydration. HTML now, JS later.
-- [DEMO] `showcase?feature=rendering` → scroll to the island → view source shows markup; the counter hydrates on scroll.
-- [FALLBACK] Just say the line and move on.
+- [DEMO] The card is `createCompositeComponent` on the server. The "client island" box is a render-prop slot — it's client React, but the request id and render time inside it came _from the server_.
+- The "Client clicks" button is the `children` slot: plain interactivity, no server data.
+- [FALLBACK] If the composite round-trip fails (it's RC-stage RSC), fall back to the code build-up on the previous slide — the point is the shape, not the network.
 
 </Notes>
 
 ---
 
-# 7. Streaming SSR
+# TanStack + Vite
 
-<StreamingBuildUp />
-
-Return an un-awaited promise: the shell flushes now, the slow part streams in.
-
-Same React streaming as Next's PPR holes — minus the prebuilt static shell.
-
----
-
-# Live: shell now, slow data later
-
-<StreamingDemo />
-
-<Notes>
-
-- Honest framing: this is PPR's _streaming_ half (Suspense + Await), not its build-time static shell. The shell here is SSR'd per request.
-- In the deck this fires as a real server round-trip with a ~1.2s delay so the skeleton→panel transition is visible; the standalone showcase shows the true server-streamed-into-shell variant.
-- [DEMO] Press "Stream again" → skeleton paints, panel fills in.
-- [FALLBACK] Open `/stats`; the dashboard shell renders before the numbers land.
-
-</Notes>
-
----
-
-# 8. Build-time server functions
-
-```tsx
-export const getHighlightedCode = createServerFn({ method: "GET" })
-  .middleware([staticFunctionMiddleware])
-  .handler(async () => loadRwcCodeSamples());
-```
-
-`/rwc` runs server work at build time and ships static data.
-
----
-
-# 9. Deployment is part of the design
-
-This site runs on Cloudflare Workers.
+The stack is composable, and the ecosystem is open.
 
 <Steps>
 
-- D1 for page views and likes
-- KV for runtime storage
-- Durable Objects for presence and slide sessions
-- Smart Placement, logs, traces, version metadata
-- Same route model, different runtime
+- Router → Query → Table → Start — the same headline primitives, composing together
+- The TanStack Query and Table I already use at work, plus TanStack DB
+- Built on Vite: an open ecosystem, real plugins — not a bespoke bundler
+- First-class TypeScript across all of it
 
 </Steps>
+
+<Notes>
+
+- This ties back to the Remote slide: I didn't adopt Start cold — I'd been living in TanStack Query and Table at work.
+- The point of the ecosystem beat: nothing here is a walled garden. Composable libraries, an open bundler, and types that hold across the seams.
+
+</Notes>
 
 ---
 
@@ -594,32 +643,29 @@ I ship Next for a living. The thing I miss most is the feedback loop.
 <Notes>
 
 - Not a code feature — a productivity one. Say it as someone who ships Next daily.
-- The docs are blunt here: Next dev is "slow/heavy even with Turbopack."
 - Keep it ~30s; it's a credibility beat, not a benchmark slide.
 
 </Notes>
 
 ---
 
-# Finale: live slides are the demo
+# Deployment is part of the design
 
-This deck has a live session mode.
+This site runs on Cloudflare Workers.
 
 <Steps>
 
-- Presenter controls viewer navigation
-- Audience votes in polls
-- Reactions go through hibernatable WebSockets
-- One session id maps to one Durable Object
+- D1 for page views and likes
+- KV for runtime storage
+- Durable Objects for presence and slide sessions
+- Smart Placement, logs, traces, version metadata
+- Same route model, different runtime
 
 </Steps>
 
 <Notes>
 
-- Callback to the premise: they've been IN the live session the whole time.
-- [DEMO] Fire a reaction from your phone so it lands on the projected deck.
-- [FALLBACK] Show the poll results already collected — same DO round-trip.
-- One session id = one Durable Object = same primitive as the site's presence counter.
+- The deploy-anywhere pillar paying off: I didn't rewrite the app to move it to the edge.
 
 </Notes>
 
@@ -629,7 +675,7 @@ This deck has a live session mode.
 
 <Steps>
 
-- `npx tsr init` — scaffold a route tree
+- `npm create @tanstack/start` — scaffold a route tree with the CLI
 - `pnpm dev` — Vite is up almost immediately
 - Add a server function, a `validateSearch`, a loader — incrementally, not all at once
 - The mental model never inverts: you opt _into_ the server, you don't opt out of it
@@ -639,72 +685,31 @@ This deck has a live session mode.
 <Notes>
 
 - The "How" beat — one slide, ~40s. Show that the on-ramp is shallow and additive.
-- If someone asks "migrate from Next?": do it route by route. The router doesn't demand a rewrite; you bring a page over, add a `validateSearch`, pick an `ssr` mode. That's the portability pillar paying off.
+- If someone asks "migrate from Next?": route by route. Bring a page over, add a `validateSearch`, pick an `ssr` mode.
+- Shoutouts to slip in near the close: Elixir (the backend that made me comfortable with a real type system) and Cloudflare (the runtime that made deploy-anywhere real).
 
 </Notes>
 
 ---
 
-# Where Next still wins
+# Finale: live slides are the demo
 
-Be honest or nobody trusts the comparison.
+Everything you've watched is one TanStack Start route — including this live session.
 
 <Steps>
 
-- RSC ecosystem maturity (it's experimental in Start)
-- `<Form>` and Server Action form ergonomics
-- Built-in image and font optimization
-- ISR/PPR that's automatic on Vercel — not just cache headers
-- Ecosystem size and hiring familiarity
-- And: Start is still a Release Candidate
+- This deck's slide position is URL state; the live session is running right now
+- Presenter controls viewer navigation
+- Audience votes in polls
+- Reactions go through hibernatable WebSockets — one session id maps to one Durable Object
 
 </Steps>
 
 <Notes>
 
-- Credibility anchor — say it plainly, don't hedge. "I ship Next; I'd still pick it for X tomorrow."
-- ISR nuance: Start _can_ do ISR via `Cache-Control`; Next's is automatic and Vercel-tuned. Don't over-concede it.
-- Don't rush the list; this is what makes the rest trustworthy.
-
-</Notes>
-
----
-
-# The tradeoff
-
-Next gives you a platform-shaped happy path.
-
-Start gives you app-shaped primitives.
-
-<Steps>
-
-- More explicit
-- More type-driven
-- More portable
-- More control over where React runs
-
-</Steps>
-
----
-
-# Takeaways
-
-- Your route tree can be your application contract
-- The server boundary can be typed, validated, and middleware-aware
-- RSC can be a tool, not the architecture
-- Rendering can be a dial, not a default you fight
-- The website itself can be the demo
-
-<a
-  href="/slides/tanstack-start/showcase"
-  className="link-base text-primary"
->
-  Open the companion showcase
-</a>
-
-<Notes>
-
-- Five lines — slow down, land each one.
-- [CLOSE] Leave the showcase URL up; take Q&A against the live deck so the last thing they see is it working.
+- Self-contained close: introduce the live session here as the final proof — the website _is_ the demo.
+- [DEMO] Fire a reaction from your phone so it lands on the projected deck.
+- [FALLBACK] Show the poll results already collected — same DO round-trip.
+- [CLOSE] Leave the deck up; take Q&A against the live session so the last thing they see is it working. Thank you.
 
 </Notes>

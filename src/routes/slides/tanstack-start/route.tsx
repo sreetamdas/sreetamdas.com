@@ -19,11 +19,7 @@ import { tanstackStartLivePolls } from "./-live-polls";
 export const Route = createFileRoute("/slides/tanstack-start")({
 	validateSearch: validateSlideSearch,
 	component: MainLayout,
-	head: ({ matches }) => {
-		if (matches.some((match) => match.pathname === "/slides/tanstack-start/showcase")) {
-			return {};
-		}
-
+	head: () => {
 		return {
 			links: [{ rel: "canonical", href: canonicalUrl("/slides/tanstack-start") }],
 			meta: [

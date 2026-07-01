@@ -20,7 +20,7 @@ export function StarHistory() {
 	);
 }
 
-type Stage = "first" | "second" | "final" | "title";
+type Stage = "hello" | "first" | "second" | "final" | "title";
 type Props = { stage: Stage };
 export function MainTitle({ stage }: Props) {
 	const title = (() => {

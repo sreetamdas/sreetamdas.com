@@ -153,7 +153,7 @@ export function MiddlewareBuildUp() {
 	return (
 		<MagicMoveCode
 			lang="tsx"
-			fileName="showcase/-showcase.server.ts"
+			fileName="-boundary.server.ts"
 			stages={[
 				{
 					caption: "One function middleware.",
@@ -212,7 +212,105 @@ return { post, Renderable };`,
 	);
 }
 
-/** 5. Rendering is a dial: the same route API, three SSR settings. */
+/** Composite slots: renderable (no slots) → composite source → client fills the slot. */
+export function CompositeBuildUp() {
+	return (
+		<MagicMoveCode
+			lang="tsx"
+			fileName="-composite.server.tsx"
+			stages={[
+				{
+					caption: "renderServerComponent hands back finished markup — no slots.",
+					code: `const Renderable = await renderServerComponent(<Card />);
+// The client can drop it in, but it cannot compose *into* it.`,
+				},
+				{
+					caption: "createCompositeComponent: function props become slots the client fills.",
+					code: `const src = await createCompositeComponent(
+  (props: {
+    renderMeta?: (data: { requestId: string }) => React.ReactNode;
+    children?: React.ReactNode;
+  }) => (
+    <div className="card">
+      <h2>Server-rendered header</h2>
+      {props.renderMeta?.({ requestId })} {/* server → client data */}
+      {props.children}
+    </div>
+  ),
+);`,
+				},
+				{
+					caption: "The client fills the slots with interactive islands.",
+					code: `<CompositeComponent
+  src={card.src}
+  renderMeta={({ requestId }) => <LiveBadge id={requestId} />}
+>
+  <Counter />
+</CompositeComponent>;
+// Server tree stays on the server; the client composes into it.`,
+				},
+			]}
+		/>
+	);
+}
+
+/**
+ * The connected example: one server function with client+server middleware, wired
+ * into a route that does SSR *and* streaming *and* caching in a single loader.
+ */
+export function ConnectedExampleBuildUp() {
+	return (
+		<MagicMoveCode
+			lang="tsx"
+			fileName="dashboard/route.tsx"
+			stages={[
+				{
+					caption: "One server function — a validator, and middleware with a client + server half.",
+					code: `const getSnapshot = createServerFn({ method: "GET" })
+  .middleware([boundaryMiddleware]) // .client() tags the call, .server() injects requestId
+  .validator((data): { range: DateRange } => ({
+    range: parseDateRange(data?.range),
+  }))
+  .handler(async ({ context, data }) => ({
+    range: data.range,
+    requestId: context.requestId,
+    serverRuntime: context.serverRuntime,
+  }));`,
+				},
+				{
+					caption: "The route wires it up: SSR (awaited), streaming (not awaited), caching.",
+					code: `export const Route = createFileRoute("/dashboard")({
+  validateSearch,                              // typed URL state
+  loaderDeps: ({ search }) => ({ range: search.range }),
+  loader: async ({ deps }) => ({
+    snapshot: await getSnapshot({ data: deps }), // SSR: in the shell
+    streamed: getStreamingData(),                // streaming: NOT awaited
+  }),
+  staleTime: 1000 * 30,                          // cached, per route
+});`,
+				},
+				{
+					caption: "The component: shell renders now, the deferred panel streams in later.",
+					code: `function DashboardPage() {
+  const { snapshot, streamed } = Route.useLoaderData();
+  return (
+    <>
+      <Panel snapshot={snapshot} />            {/* SSR'd immediately */}
+      <Suspense fallback={<Skeleton />}>
+        <Await promise={streamed}>
+          {(data) => <SlowPanel data={data} />} {/* streamed into the same response */}
+        </Await>
+      </Suspense>
+    </>
+  );
+}`,
+				},
+			]}
+		/>
+	);
+}
+
+/** Rendering is a dial: the same route API, three SSR settings. */
 export function RenderingDial() {
 	return (
 		<MagicMoveCode
