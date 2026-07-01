@@ -25,7 +25,7 @@ Routes involved:
 | ------------ | --------------------------------- | ----------------------------------------------- | --------------- |
 | 15           | Stay on deck                      | Poll + thesis: server is opt-in                 | `-live-polls.ts` |
 | 19           | Stay on deck                      | Client → middleware → server, typed context     | `-boundary.server.ts`, `-demos.tsx` |
-| 21           | Stay on deck                      | Rendering mode poll                             | `-live-polls.ts` |
+| 20           | Stay on deck                      | Rendering mode poll                             | `-live-polls.ts` |
 | 23           | Stay on deck                      | Skeleton now, slow server data later            | `-streaming.server.ts`, `-demos.tsx` |
 | 29           | Optional `/stats?period=nonsense` | Garbage URL → typed safe default                | `src/routes/(main)/stats/route.tsx` |
 | 30           | Stay on deck                      | The deck's own URL state is validated state     | `route.tsx`, `route-search.ts` |
