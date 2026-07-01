@@ -162,7 +162,7 @@ It's easy to dunk on Next. I'll try not to.
 - RSC, first teased December 2020 — I was _hyped_
 - Next 13's App Router finally shipped them
 - Layouts: a genuinely great way to share data and rendering
-- And no more API routes just to talk to the server
+- And no more API routes just to talk to your own server
 
 </Steps>
 
@@ -179,8 +179,8 @@ It's easy to dunk on Next. I'll try not to.
 
 <Notes>
 
-- Credit where it's due: with the latest 16.3 release, the team really cooked.
-- I'm not here to dunk — this slide is the proof I mean it.
+- Credit where it's due: with the 16.3 preview, the team really cooked.
+- I'm not here to dunk — this slide is the proof I mean it, and the benchmark keeps responding to React developer feedback.
 
 </Notes>
 
@@ -266,8 +266,8 @@ Write your React the way you always have. Reach for the server per route, only w
 
 - Server-side rendering
 - Progressive loading with streaming
-- API routes
-- Server functions — type-safe RPCs, callable from the client
+- Server routes — public HTTP endpoints
+- Server functions — type-safe RPCs, callable from your own app
 - Middleware — client _and_ server halves
 - Deploy anywhere, or self-host
 
@@ -290,9 +290,12 @@ A server boundary you can call from loaders, hooks, and components.
 
 `GET` here — so the RPC is HTTP-cacheable. Server Actions are POST-only.
 
+Server functions are app-to-app RPC. Server routes are public HTTP endpoints.
+
 <Notes>
 
 - First server feature: server functions are type-safe RPCs. Input and output checked end to end, callable from anywhere on the client.
+- Distinction to say out loud: server functions are for this app talking to itself; server routes are for public endpoints like the live slide session API.
 
 </Notes>
 
@@ -484,6 +487,7 @@ The URL is a state manager with a schema.
 
 - Contrast: search params as a "string bag" everyone re-parses vs. a schema the route owns.
 - `validateSearch` parses once; `loaderDeps` makes invalidation explicit, not vibes.
+- Router-first means the URL, loader, cache key, and navigation contract live together instead of being duplicated in separate app glue.
 
 </Notes>
 
@@ -518,6 +522,7 @@ The URL is a state manager with a schema.
 
 - This is the deck itself: slide/step/live/presenter are validated search params.
 - Walk a step — the values update live. No companion tab needed.
+- Optional expansion: switch to a tiny local dev route/app to show the same typed URL/search experience under Vite HMR and TypeScript errors in the editor.
 
 </Notes>
 
@@ -614,6 +619,7 @@ The stack is composable, and the ecosystem is open.
 - Router → Query → Table → Start — the same headline primitives, composing together
 - The TanStack Query and Table I already use at work, plus TanStack DB
 - Built on Vite: an open ecosystem, real plugins — not a bespoke bundler
+- This deck is proof: MDX slides, a custom slide plugin, Content Collections, Cloudflare's Vite plugin
 - First-class TypeScript across all of it
 
 </Steps>
@@ -622,6 +628,7 @@ The stack is composable, and the ecosystem is open.
 
 - This ties back to the Remote slide: I didn't adopt Start cold — I'd been living in TanStack Query and Table at work.
 - The point of the ecosystem beat: nothing here is a walled garden. Composable libraries, an open bundler, and types that hold across the seams.
+- Mention the repo proof: the deck itself is MDX processed by project tooling, not a separate presentation app.
 
 </Notes>
 
@@ -630,6 +637,8 @@ The stack is composable, and the ecosystem is open.
 # The dev loop, every day
 
 I ship Next for a living. The thing I miss most is the feedback loop.
+
+If there is time, switch to a tiny local dev route: edit typed URL state, watch TypeScript, save, keep the browser flow.
 
 <Steps>
 
@@ -643,7 +652,8 @@ I ship Next for a living. The thing I miss most is the feedback loop.
 <Notes>
 
 - Not a code feature — a productivity one. Say it as someone who ships Next daily.
-- Keep it ~30s; it's a credibility beat, not a benchmark slide.
+- Optional local demo should be a tiny dev-only route/app, not the old production showcase: edit a schema, trigger a TS error, save, see HMR.
+- Keep it ~30s if not demoing; it's a credibility beat, not a benchmark slide.
 
 </Notes>
 
@@ -673,8 +683,11 @@ This site runs on Cloudflare Workers.
 
 # How to start
 
+Start is not the universal answer. Next still wins for RSC ecosystem depth, image/font polish, Vercel integration, and hiring.
+
 <Steps>
 
+- If you want router-first, type-first, Vite-first, deployment-portable React: start here
 - `npm create @tanstack/start` — scaffold a route tree with the CLI
 - `pnpm dev` — Vite is up almost immediately
 - Add a server function, a `validateSearch`, a loader — incrementally, not all at once
@@ -685,6 +698,7 @@ This site runs on Cloudflare Workers.
 <Notes>
 
 - The "How" beat — one slide, ~40s. Show that the on-ramp is shallow and additive.
+- Include the fair Next caveat before the recommendation so the endorsement feels earned.
 - If someone asks "migrate from Next?": route by route. Bring a page over, add a `validateSearch`, pick an `ssr` mode.
 - Shoutouts to slip in near the close: Elixir (the backend that made me comfortable with a real type system) and Cloudflare (the runtime that made deploy-anywhere real).
 

@@ -143,12 +143,13 @@ a big deal."
 
 ---
 
-## 12 · Next.js 16.3 (credit where due) ⏱ 5:15
+## 12 · Next.js 16.3 preview (credit where due) ⏱ 5:15
 
-**SAY:** "And credit where it's due — with the latest release, 16.3, the team really
+**SAY:** "And credit where it's due — with the 16.3 preview, the team really
 cooked. I mean that. I'm not up here to dunk; this is me saying the benchmark keeps
-getting better. (beat) But even so — the App Router changed something fundamental for
-me, and that's the part I want to talk about."
+responding to exactly the feedback React developers have had. (beat) But even so —
+the App Router changed something fundamental for me, and that's the part I want to
+talk about."
 
 > This is the tweet slide. Let it sit for a second; it earns you the goodwill to be
 > critical next.
@@ -213,10 +214,10 @@ later; hold onto them."
 **SAY:** "So what does 'the server, available' actually get you? You write your React
 the way you always have, and you reach for these per route, only where they help.
 (CLICK) Server-side rendering. (CLICK) Progressive loading with streaming. (CLICK)
-API routes. (CLICK) Server functions — type-safe RPCs you call straight from the
-client. (CLICK) Middleware — with a client half and a server half. (CLICK) And you
-deploy anywhere, or self-host. We'll walk each one, then tie them together in one
-connected example."
+Server routes, for public HTTP endpoints. (CLICK) Server functions — type-safe RPCs
+you call straight from your own app. (CLICK) Middleware — with a client half and a
+server half. (CLICK) And you deploy anywhere, or self-host. We'll walk each one,
+then tie them together in one connected example."
 
 ---
 
@@ -229,7 +230,9 @@ boundary — method up front, (CLICK) a validator that runs first, (CLICK) then 
 handler. The key word is _typed_: I can call this from a loader, from a hook, from a
 component, and the input and output are checked end to end. And notice the method —
 this one's a `GET`, so the RPC is HTTP-cacheable. Next's Server Actions are POST-only.
-It's not a magic string endpoint; it's a function with a contract."
+It's not a magic string endpoint; it's a function with a contract. And the
+distinction matters: server functions are for my app talking to itself; server routes
+are for public endpoints like the live slide session API."
 
 ---
 
@@ -387,7 +390,9 @@ by hand — there's no shared type, each route writes its own. (CLICK) In Start,
 and every page re-parses them and re-validates them and hopes. In Start, the route
 owns the URL as state — with a schema. (CLICK) `validateSearch` parses it once.
 (CLICK) And `loaderDeps` says exactly which part of that state the loader depends on.
-So invalidation is explicit, not vibes."
+So invalidation is explicit, not vibes. That's the router-first point: the URL,
+loader, cache key, and navigation contract live together instead of being four
+duplicated pieces of app glue."
 
 ---
 
@@ -410,12 +415,16 @@ changes."
 ## 30 · Live: this deck's URL state ⏱ 19:45
 
 > In-deck demo. This panel reads the deck's _own_ validated search params live.
+> Optional expansion: switch to a tiny local dev route/app to show the same typed
+> URL/search experience under Vite HMR and TypeScript errors in the editor.
 
 **SAY:** "And I don't even need to leave the deck for it. This panel is reading this
 deck's own URL state — `slide`, `step`, `live`, `presenter` — all validated by the
 same `validateSearch`. Watch the numbers as I move. (CLICK a step) That's not a string
 bag; that's a typed schema the route owns. Feed it `?slide=banana` and it coerces away
-instead of breaking the deck."
+instead of breaking the deck. If I have the local mini-app open, this is the same
+thing I'd show in dev: change the schema, watch TypeScript complain, save, and Vite
+updates the route without losing the flow."
 
 **Transition:** "So the URL is typed. Now the richest server feature — server
 components."
@@ -506,17 +515,21 @@ left: the ecosystem it lives in, and where it runs."
 same headline primitives, and they compose together. (CLICK) The TanStack Query and
 Table I mentioned I use at work — plus TanStack DB — it's one composable, headless
 stack. (CLICK) And it's built on Vite: an open ecosystem with real plugins, not a
-bespoke bundler you can't see into. (CLICK) With first-class TypeScript holding across
-all of it. That's the part that made adopting Start feel like coming home rather than
-starting over."
+bespoke bundler you can't see into. This deck itself is proof — MDX slides, a custom
+slide plugin, Content Collections, Cloudflare's Vite plugin, all in one build.
+(CLICK) With first-class TypeScript holding across all of it. That's the part that
+made adopting Start feel like coming home rather than starting over."
 
 ---
 
 ## 37 · The dev loop, every day ⏱ 25:45
 
 **SAY:** "And this is the Vite pillar paying off every single day. It's not a code
-feature, it's a productivity one. I ship Next for a living, and the thing I miss most
-on Start days is just… gone. (CLICK) Vite: the dev server is up almost immediately.
+feature, it's a productivity one. This is where I may switch to a tiny local route,
+not a separate production showcase — just enough app to edit a typed search schema,
+watch a TypeScript error appear, save, and keep the browser state. I ship Next for a
+living, and the thing I miss most on Start days is just… gone. (CLICK) Vite: the dev
+server is up almost immediately.
 (CLICK) HMR is basically instant. (CLICK) Navigation in dev isn't throttled. (CLICK)
 And my laptop fan stays off. I won't oversell it — but it compounds."
 
@@ -536,15 +549,21 @@ model — different runtime. I didn't rewrite the app to move it to the edge."
 
 ## 39 · How to start ⏱ 27:15
 
-> One slide, ~40s. Show the on-ramp is shallow and additive.
+> One slide, ~40s. Show the on-ramp is shallow and additive. Include the fair Next
+> caveat before the recommendation so the endorsement feels earned.
 
-**SAY:** "So how do you actually start? (CLICK) `npm create @tanstack/start` scaffolds
-a route tree with the CLI. (CLICK) `pnpm dev` — Vite is up almost immediately. (CLICK)
-Add a server function, a `validateSearch`, a loader — incrementally, not all at once.
-(CLICK) And the mental model never inverts: you opt _into_ the server, you don't opt
-out of it. If you're migrating from Next — route by route. Quick shoutouts while I'm
-here: to Elixir, the backend that made me comfortable trusting a real type system, and
-to Cloudflare, the runtime that made 'deploy anywhere' actually true for me."
+**SAY:** "Before the recommendation, the honest caveat: I'd still pick Next for a
+team that needs the deepest RSC ecosystem today, image and font polish out of the box,
+Vercel-first integration, and the easiest hiring story. That's real. (CLICK) But if
+your priorities are a router-first model, end-to-end types, Vite, explicit server
+boundaries, and deployment portability, Start is where I'd begin. (CLICK) So how do
+you actually start? `npm create @tanstack/start` scaffolds a route tree with the CLI.
+(CLICK) `pnpm dev` — Vite is up almost immediately. (CLICK) Add a server function, a
+`validateSearch`, a loader — incrementally, not all at once. (CLICK) And the mental
+model never inverts: you opt _into_ the server, you don't opt out of it. If you're
+migrating from Next — route by route. Quick shoutouts while I'm here: to Elixir, the
+backend that made me comfortable trusting a real type system, and to Cloudflare, the
+runtime that made 'deploy anywhere' actually true for me."
 
 ---
 
