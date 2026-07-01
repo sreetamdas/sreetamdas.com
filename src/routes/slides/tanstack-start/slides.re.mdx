@@ -5,6 +5,7 @@ published_at: "2026-05-16"
 ---
 
 import { MainTitle, StarHistory } from "./-components";
+import { Gradient } from "@/lib/components/Typography";
 import {
   RouterStateDemo,
   ServerBoundaryDemo,
@@ -26,36 +27,15 @@ import {
 
 ---
 
-<MainTitle stage="hello" />
-
-<Notes>
-
-- Hello, good morning everyone! It's so awesome to be here at React Nexus — in front of, and among, so many amazing speakers.
-
-</Notes>
+<div className="flex items-center justify-center pt-40">
+  <h1 className="font-serif text-9xl font-bold text-balance whitespace-pre-line font-stretch-semi-condensed">
+    Hello 👋
+  </h1>
+</div>
 
 ---
 
 <MainTitle stage="title" />
-
-<Notes>
-
-- I gave my first talk back in 2021, at React Day Bangalore — so it's really special to be back here, on such a huge stage.
-- Today I'll be talking about TanStack Start.
-
-</Notes>
-
----
-
-<MainTitle stage="first" />
-
----
-
-<MainTitle stage="second" />
-
----
-
-<MainTitle stage="final" />
 
 ---
 
@@ -69,45 +49,6 @@ import {
 
 - Senior Frontend Engineer II
 - Web Experience at Remote
-- I build too many things on my personal website
-
----
-
-# Six versions in. Maybe seven.
-
-<StarHistory />
-
-<Notes>
-
-- This is `sreetamdas.com`. My first commit was back in 2016, and since then it's been through a _bunch_ of versions — and a bunch of frameworks.
-- It's my go-to for actually using the cool stuff I come across — zustand, styled-components, Tailwind, Drizzle — instead of throwaway demo apps I'd never maintain past the demo stage.
-- Six or seven rewrites in, I genuinely believe TanStack Start is the best way to build full-stack React today.
-- (the joke: I've honestly lost count — six? seven? that's kind of the point.)
-
-</Notes>
-
----
-
-# History time
-
-<Steps>
-
-- v1: plain HTML + CSS
-- v2: a redesign, still static
-- v3: React SPA
-- v4: Next.js (pages router)
-- v5: Next.js App Router + RSC
-- v6: Cloudflare / OpenNext
-- v7: **TanStack Start**
-
-</Steps>
-
-<Notes>
-
-- One line per version — don't read them all, let the list land. The point is the _shape_ of the journey, not any one stop.
-- I've shipped each of these, not just toyed with them — so the comparison today isn't theoretical.
-
-</Notes>
 
 ---
 
@@ -126,14 +67,14 @@ import {
 
 <Notes>
 
-Suppose your company wants to hire someone in Singapore,
+Suppose your company wants to hire somone in Singapore,
 it's pretty straightforward when they're a contractor, but for
 FTEs, it gets complicated fast: payroll, benefits, tax deductions,
-filing income tax, employment laws are different in every country.
-Global employment is hard — Remote builds the infrastructure to do it right.
+filing income tax, employments laws are different in every country,
+Global employment is hard - Remote builds the indrastructure to do it right
 
-We manage our own entities in different countries, allowing your company to hire the
-right person, and take care of all the difficult stuff.
+we manage our own entities in different countries, allowing your company to hire the
+right person, and take care of all the difficult stuff
 
 </Notes>
 
@@ -145,6 +86,29 @@ right person, and take care of all the difficult stuff.
 - ~300 across engineering, ~50 teams across 40+ countries
 - Elixir backend: 5 million+ lines of code
 - Next.js SPA, TanStack Query, TanStack Table, and friends
+
+---
+
+# sreetamdas.com
+
+<StarHistory />
+
+---
+
+# Over the years
+
+<Steps>
+
+- plain HTML + CSS
+- React SPA
+- Next.js (pages router)
+- Next.js App Router + RSC
+- Cloudflare / OpenNext
+- <Gradient className="py-3 font-serif text-3xl first:pt-0 last:pb-0 font-bold">
+    TanStack Start
+  </Gradient>
+
+</Steps>
 
 ---
 
