@@ -169,19 +169,24 @@ import {
 
 # Server functions / server routes
 
+- functions: app-to-server RPC
+- routes: public HTTP endpoints
+- validated input, typed output
+- `GET` when the call should be cacheable
+
 ```tsx
 const getStats = createServerFn({ method: "GET" })
   .validator(parseStatsInput)
   .handler(async ({ data }) => loadStats(data));
 ```
 
-- functions: app-to-server RPC
-- routes: public HTTP endpoints
-- `GET` when the call should be cacheable
-
 ---
 
 # Middleware across the boundary
+
+- `.client()` before the call leaves the browser
+- `.server()` before the handler runs
+- one boundary across the network
 
 ```tsx
 const boundaryMiddleware = createMiddleware({ type: "function" })
@@ -189,25 +194,30 @@ const boundaryMiddleware = createMiddleware({ type: "function" })
   .server(async ({ next }) => next({ context: { requestId: crypto.randomUUID() } }));
 ```
 
-- `.client()` before the call leaves the browser
-- `.server()` before the handler runs
-
 ---
 
 # Loader data is cached
 
+- route owns the data contract
+- `loaderDeps` shapes the cache key
+- `staleTime` says how fresh it is
+
 ```tsx
-createFileRoute("/blog/$slug")({
-  loader: ({ params }) => getBlogRenderable({ data: params }),
-  staleTime: 1000 * 60 * 60 * 24,
+createFileRoute("/stats")({
+  loaderDeps: ({ search }) => search,
+  loader: ({ deps }) => getStats({ data: deps }),
+  staleTime: 1000 * 60 * 5,
 });
 ```
-
-Caching moves back to the route.
 
 ---
 
 # Rendering is a dial
+
+- full SSR
+- data-only SSR
+- client-only
+- per route
 
 ```tsx
 createFileRoute("/slides/tanstack-start/dev-lab")({
@@ -215,11 +225,13 @@ createFileRoute("/slides/tanstack-start/dev-lab")({
 });
 ```
 
-Full SSR, data-only, or client-only — per route.
-
 ---
 
 # Streaming SSR
+
+- shell now
+- slow data later
+- return an un-awaited promise
 
 ```tsx
 loader: async ({ deps }) => ({
@@ -228,11 +240,13 @@ loader: async ({ deps }) => ({
 });
 ```
 
-Return an un-awaited promise.
-
 ---
 
 # Build-time server functions
+
+- same primitive
+- different clock
+- build once, serve static data
 
 ```tsx
 export const getHighlightedCode = createServerFn({ method: "GET" })
@@ -240,11 +254,14 @@ export const getHighlightedCode = createServerFn({ method: "GET" })
   .handler(async () => loadRwcCodeSamples());
 ```
 
-Same primitive. Different clock.
-
 ---
 
 # One route, many choices
+
+- typed URL state
+- server function
+- caching
+- rendering choice
 
 ```tsx
 createFileRoute("/stats")({
@@ -254,11 +271,6 @@ createFileRoute("/stats")({
   staleTime: 1000 * 60 * 5,
 });
 ```
-
-- typed URL state
-- server function
-- caching
-- rendering choice
 
 ---
 
@@ -294,26 +306,27 @@ A confession, before I get to the type system.
 
 ---
 
-# URL state is not a string bag
+# URL state belongs to the route
 
-<UrlStateBuildUp />
-
-The URL is a state manager with a schema.
-
+- the route owns the schema
+- bad input becomes a safe default
+- hooks get typed state
+- navigation stays valid
 
 ---
 
-# Demo: `/stats`
+# URL state, in code
 
-<Steps>
+- `validateSearch` parses once
+- `loaderDeps` makes data dependencies explicit
+- `Route.useSearch()` returns the validated shape
 
-- Change `?period=7d` to `?period=nonsense`
-- The route keeps rendering with a safe default
-- `Route.useSearch()` returns `PlausibleDateRange`, not "some string"
-- `loaderDeps` makes cache invalidation explicit
-
-</Steps>
-
+```tsx
+createFileRoute("/stats")({
+  validateSearch: parseStatsSearch,
+  loaderDeps: ({ search }) => search,
+});
+```
 
 ---
 
