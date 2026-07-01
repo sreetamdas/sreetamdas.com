@@ -102,22 +102,24 @@ from phone → Durable Object → presenter deck in real time.
 
 ## 3. `/slides/tanstack-start/dev-lab` cutaway
 
-This replaces the old “showcase page” idea. It is intentionally small and local: one
-nested route you can switch to while `pnpm dev` is running.
+This replaces the old “showcase page” idea. It is intentionally small, local, and
+source-first: the browser only proves the route is alive while the IDE does the real
+demo.
 
 Current shape:
 
-1. A typed search schema with one or two values, similar to `/stats`.
-2. A loader depending on that parsed search state via `loaderDeps`.
-3. A tiny server function with a validator.
-4. One deliberate edit you can make live:
-   - add/remove a search option,
-   - break the schema and show TypeScript complain,
+1. Open `route.tsx` beside `-dev-lab.server.ts` while `pnpm dev` is running.
+2. Hover `validateSearch`, `loaderDeps`, `deps`, `Route.useSearch()`,
+   `Route.useLoaderData()`, and `navigate({ search })`.
+3. Make one deliberate edit live:
+   - add/remove a `DevLabTopic`,
+   - rename a search field,
+   - pass an invalid value to a typed navigation helper,
    - save and show Vite HMR preserve the browser flow.
 
 Do **not** let it become a second production companion page unless the talk changes
-again. It exists to show the local dev and TypeScript experience, not to compete with
-the deck.
+again. It exists to show local IDE type inference and the Vite feedback loop, not to
+compete with the deck.
 
 ---
 

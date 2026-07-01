@@ -261,8 +261,8 @@ Write your React the way you always have. Reach for the server per route, only w
 
 - Server-side rendering
 - Progressive loading with streaming
-- API routes
-- Server functions — type-safe RPCs, callable from the client
+- Server routes — public HTTP endpoints
+- Server functions — typed RPCs for your own app
 - Middleware — client _and_ server halves
 - Deploy anywhere, or self-host
 
@@ -282,6 +282,8 @@ Write your React the way you always have. Reach for the server per route, only w
 <ServerFnBuildUp />
 
 A server boundary you can call from loaders, hooks, and components.
+
+Server routes are public HTTP. Server functions are app-to-server RPC.
 
 `GET` here — so the RPC is HTTP-cacheable. Server Actions are POST-only.
 
@@ -670,16 +672,16 @@ This site runs on Cloudflare Workers.
 
 <Steps>
 
-- `npm create @tanstack/start` — scaffold a route tree with the CLI
-- `pnpm dev` — Vite is up almost immediately
-- Add a server function, a `validateSearch`, a loader — incrementally, not all at once
-- The mental model never inverts: you opt _into_ the server, you don't opt out of it
+- TanStack CLI connects setup, docs, add-ons, and generated changes
+- Use it to scaffold, search docs, and choose integrations
+- Add a server function, a `validateSearch`, a loader — incrementally
+- The mental model never inverts: you opt _into_ the server
 
 </Steps>
 
 <Notes>
 
-- The "How" beat — one slide, ~40s. Show that the on-ramp is shallow and additive.
+- The "How" beat — one slide, ~40s. Keep it minimal: TanStack CLI is more than a template printer; it connects setup with docs/add-ons/integrations.
 - If someone asks "migrate from Next?": route by route. Bring a page over, add a `validateSearch`, pick an `ssr` mode.
 - Shoutouts to slip in near the close: Elixir (the backend that made me comfortable with a real type system) and Cloudflare (the runtime that made deploy-anywhere real).
 

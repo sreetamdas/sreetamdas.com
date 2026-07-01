@@ -230,9 +230,9 @@ boundary — method up front, (CLICK) a validator that runs first, (CLICK) then 
 handler. The key word is _typed_: I can call this from a loader, from a hook, from a
 component, and the input and output are checked end to end. And notice the method —
 this one's a `GET`, so the RPC is HTTP-cacheable. Next's Server Actions are POST-only.
-It's not a magic string endpoint; it's a function with a contract. And the
-distinction matters: server functions are for my app talking to itself; server routes
-are for public endpoints like the live slide session API."
+It's not a magic string endpoint; it's a function with a contract. The distinction
+matters: server routes are public HTTP endpoints; server functions are typed RPC for
+my app talking to itself."
 
 ---
 
@@ -526,10 +526,11 @@ made adopting Start feel like coming home rather than starting over."
 
 **SAY:** "And this is the Vite pillar paying off every single day. It's not a code
 feature, it's a productivity one. This is where I may switch to
-`/slides/tanstack-start/dev-lab`: not a separate production showcase, just enough
-app to edit a typed search schema,
-watch a TypeScript error appear, save, and keep the browser state. I ship Next for a
-living, and the thing I miss most on Start days is just… gone. (CLICK) Vite: the dev
+`/slides/tanstack-start/dev-lab`: not a separate production showcase, just a tiny
+local route I can open in the IDE. I hover the search schema, loader deps, loader
+data, and typed navigation; then I make one small edit, watch a TypeScript error
+appear, save, and keep the browser state. I ship Next for a living, and the thing I
+miss most on Start days is just… gone. (CLICK) Vite: the dev
 server is up almost immediately.
 (CLICK) HMR is basically instant. (CLICK) Navigation in dev isn't throttled. (CLICK)
 And my laptop fan stays off. I won't oversell it — but it compounds."
@@ -558,10 +559,11 @@ team that needs the deepest RSC ecosystem today, image and font polish out of th
 Vercel-first integration, and the easiest hiring story. That's real. (CLICK) But if
 your priorities are a router-first model, end-to-end types, Vite, explicit server
 boundaries, and deployment portability, Start is where I'd begin. (CLICK) So how do
-you actually start? `npm create @tanstack/start` scaffolds a route tree with the CLI.
-(CLICK) `pnpm dev` — Vite is up almost immediately. (CLICK) Add a server function, a
-`validateSearch`, a loader — incrementally, not all at once. (CLICK) And the mental
-model never inverts: you opt _into_ the server, you don't opt out of it. If you're
+you actually start? TanStack CLI is more than a template printer: it connects setup,
+docs, add-ons, integrations, and generated changes. (CLICK) Use it to scaffold,
+search docs, and choose the pieces of the stack you want. (CLICK) Then add a server
+function, a `validateSearch`, a loader — incrementally, not all at once. (CLICK) And
+the mental model never inverts: you opt _into_ the server. If you're
 migrating from Next — route by route. Quick shoutouts while I'm here: to Elixir, the
 backend that made me comfortable trusting a real type system, and to Cloudflare, the
 runtime that made 'deploy anywhere' actually true for me."
