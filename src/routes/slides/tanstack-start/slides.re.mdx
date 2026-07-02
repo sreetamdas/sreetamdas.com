@@ -28,6 +28,7 @@ import { TypeSafetyBuildUp, RscBuildUp } from "./-code";
 
 - Senior Frontend Engineer II
 - Web Experience at Remote
+- Chennai 👋
 
 ---
 
@@ -35,14 +36,10 @@ import { TypeSafetyBuildUp, RscBuildUp } from "./-code";
 
 - Help companies hire, manage and pay people
 
-<Steps>
-
 - Full time employment, contractors, payroll
 - No offices!
 - Yes, I work remotely for Remote
 - Yes, we have received questions about TV remote issues
-
-</Steps>
 
 ---
 
@@ -197,7 +194,9 @@ is the one you _don't_ need to write yourself
 - everything typed, everywhere
 
 ```tsx
-function parseStatsSearch(search: Record<string, unknown>): StatsSearch {
+function parseStatsSearch(
+  search: Record<string, unknown>,
+): StatsSearch {
   return { period: parseDateRange(search.period) };
 }
 
@@ -257,8 +256,9 @@ const statsMiddleware = createMiddleware({ type: "function" })
     next({ context: { requestId: crypto.randomUUID() } }),
   );
 
-const getLiveStats = createServerFn({ method: "GET" })
-  .middleware([statsMiddleware]);
+const getLiveStats = createServerFn({ method: "GET" }).middleware([
+  statsMiddleware,
+]);
 ```
 
 ---
@@ -357,6 +357,18 @@ In Start, ordinary React components are interactive by default.
 - React, Solid today
 - 🔜 Vue, Angular
 - uncompromised
+
+---
+
+# So, why does this feel good?
+
+- Type Safety across the stack
+- No lock-in, devs are the focus, not a parent company - open-source!
+- No mental model update needed
+
+---
+
+<Title>How</Title>
 
 ---
 
