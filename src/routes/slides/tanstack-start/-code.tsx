@@ -57,34 +57,32 @@ export function TypeSafetyBuildUp() {
 			fileName="route types"
 			stages={[
 				{
-					caption: "Next Pages: define route params separately, then assert they exist.",
-					code: `type Query = { page: Exclude<FoobarPage, "/"> };
+					caption: "Next Pages: write the dynamic param type, then assert it exists.",
+					code: `type Query = { postId: string };
 
 export const getStaticProps: GetStaticProps<Props, Query> = async ({ params }) => ({
-  props: { page: params!.page },
+  props: { postId: params!.postId },
 });`,
 				},
 				{
 					caption: "Next App Router: every page repeats and unwraps its params shape.",
-					code: `type PageProps = { params: Promise<{ slug: string }> };
+					code: `type PageProps = { params: Promise<{ postId: string }> };
 
-export default async function BlogPage({ params }: PageProps) {
-  return <Post slug={(await params).slug} />;
+export default async function PostPage({ params }: PageProps) {
+  return <Post postId={(await params).postId} />;
 }`,
 				},
 				{
-					caption: "Start: the route owns the schema; hooks inherit the validated type.",
-					code: `const parseStatsSearch = (search: Record<string, unknown>) => ({
-  period: parseDateRange(search.period),
+					caption: "Start: the dynamic param, loader data, and hooks are inferred from the route.",
+					code: `export const Route = createFileRoute("/posts/$postId")({
+  loader: ({ params: { postId } }) => fetchPost({ data: postId }),
+  errorComponent: PostErrorComponent,
+  component: PostComponent,
 });
 
-export const Route = createFileRoute("/stats")({
-  validateSearch: parseStatsSearch,
-});
-
-function StatsPage() {
-  const { period } = Route.useSearch();
-  return <Dashboard period={period} />;
+function PostComponent() {
+  const post = Route.useLoaderData();
+  return <Post post={post} />;
 }`,
 				},
 			]}
