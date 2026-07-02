@@ -187,15 +187,16 @@ export function SlideDeck({
 	toggleTransitionsRef.current = toggleTransitions;
 
 	useEffect(() => {
-		if (controlledSlide === undefined) return;
-		const nextIndex = Math.max(0, Math.min(controlledSlide, slides.length - 1));
+		const requestedSlide = controlledSlide ?? initialSlide;
+		const requestedStep = controlledSlide === undefined ? initialStep : controlledStep;
+		const nextIndex = Math.max(0, Math.min(requestedSlide, slides.length - 1));
 		const nextStep =
-			controlledStep === undefined || controlledStep < 0 || !Number.isFinite(controlledStep)
+			requestedStep === undefined || requestedStep < 0 || !Number.isFinite(requestedStep)
 				? 0
-				: controlledStep;
+				: requestedStep;
 		setCurrentIndex(nextIndex);
 		setCurrentStep(nextStep);
-	}, [controlledSlide, controlledStep, slides.length]);
+	}, [controlledSlide, controlledStep, initialSlide, initialStep, slides.length]);
 
 	useEffect(() => {
 		const manager = getHotkeyManager();
