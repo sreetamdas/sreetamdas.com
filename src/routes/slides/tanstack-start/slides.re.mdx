@@ -6,11 +6,7 @@ published_at: "2026-05-16"
 
 import { MainTitle, StarHistory, Title } from "./-components";
 import { RouterStateDemo, RscDemo } from "./-demos";
-import {
-  UrlStateBuildUp,
-  TypeSafetyBuildUp,
-  RscBuildUp,
-} from "./-code";
+import { TypeSafetyBuildUp, RscBuildUp } from "./-code";
 
 ---
 
@@ -201,10 +197,13 @@ is the one you _don't_ need to write yourself
 - everything typed, everywhere
 
 ```tsx
-createFileRoute("/stats")({
-  validateSearch: parseStatsSearch,
-  loaderDeps: ({ search }) => search,
-});
+function parseStatsSearch(search: Record<string, unknown>): StatsSearch {
+  return { period: parseDateRange(search.period) };
+}
+
+<Link to="/stats" search={{ period: "91d" }}>
+  Last 90 days
+</Link>;
 ```
 
 ---
@@ -217,8 +216,11 @@ createFileRoute("/stats")({
 
 ```tsx
 createFileRoute("/stats")({
-  loaderDeps: ({ search }) => search,
-  loader: ({ deps }) => getStats({ data: deps }),
+  validateSearch: parseStatsSearch,
+  loaderDeps: ({ search }) => ({ period: search.period }),
+  loader: ({ deps }) => ({
+    live: getLiveStats({ data: deps }),
+  }),
   staleTime: 1000 * 60 * 5,
 });
 ```
@@ -233,9 +235,9 @@ createFileRoute("/stats")({
 - `GET` when the result should be cacheable
 
 ```tsx
-const getStats = createServerFn({ method: "GET" })
-  .validator(parseStatsInput)
-  .handler(async ({ data }) => loadStats(data));
+const getLiveStats = createServerFn({ method: "GET" })
+  .validator((data): StatsSearch => parseStatsSearch(data))
+  .handler(async ({ data }) => fetchPlausibleStats(data.period));
 ```
 
 ---
@@ -247,13 +249,16 @@ const getStats = createServerFn({ method: "GET" })
 - one boundary across the network
 
 ```tsx
-const boundaryMiddleware = createMiddleware({ type: "function" })
+const statsMiddleware = createMiddleware({ type: "function" })
   .client(async ({ next }) =>
-    next({ context: { source: "browser" } }),
+    next({ context: { timezone: getUserTimeZone() } }),
   )
   .server(async ({ next }) =>
     next({ context: { requestId: crypto.randomUUID() } }),
   );
+
+const getLiveStats = createServerFn({ method: "GET" })
+  .middleware([statsMiddleware]);
 ```
 
 ---
@@ -266,7 +271,7 @@ const boundaryMiddleware = createMiddleware({ type: "function" })
 - per route
 
 ```tsx
-createFileRoute("/slides/tanstack-start")({
+createFileRoute("/stats")({
   ssr: true,
 });
 ```
@@ -281,8 +286,8 @@ createFileRoute("/slides/tanstack-start")({
 
 ```tsx
 loader: async ({ deps }) => ({
-  shell: await getFastData(deps),
-  slowPanel: getSlowData(deps),
+  historic: await getHistoricStats(),
+  live: getLiveStats({ data: deps }), // promise, not awaited
 });
 ```
 
@@ -294,9 +299,12 @@ loader: async ({ deps }) => ({
 - build once, serve static data
 
 ```tsx
-export const getData = createServerFn({ method: "GET" })
+const getHistoricStats = createServerFn({ method: "GET" })
   .middleware([staticFunctionMiddleware])
-  .handler(async () => loadHeavyData());
+  .handler(async () => {
+    const { importedGoogleAnalytics } = await import("./-ga-import");
+    return importedGoogleAnalytics;
+  });
 ```
 
 ---
@@ -314,13 +322,14 @@ The route is the unit of decision
 
 ```tsx
 createFileRoute("/stats")({
-  validateSearch: (search) => ({
-    period: parseDateRange(search.period),
-  }),
+  validateSearch: parseStatsSearch,
   loaderDeps: ({ search }) => ({ period: search.period }),
-  loader: ({ deps }) => getStats({ data: deps }),
+  loader: async ({ deps }) => ({
+    historic: await getHistoricStats(),
+    live: getLiveStats({ data: deps }),
+  }),
   staleTime: 1000 * 60 * 5,
-  ssr: "data-only",
+  ssr: true,
 });
 ```
 

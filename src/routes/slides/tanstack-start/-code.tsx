@@ -80,10 +80,16 @@ export default async function BlogPage(props: PageProps) {
 				},
 				{
 					caption: "Start: the route owns the schema; hooks inherit the validated type.",
-					code: `export const Route = createFileRoute("/stats")({
-  validateSearch: (search): StatsSearch => ({
-    period: parseDateRange(search.period),
-  }),
+					code: `type StatsSearch = {
+  period: PlausibleDateRange;
+};
+
+function parseStatsSearch(search: Record<string, unknown>): StatsSearch {
+  return { period: parseDateRange(search.period) };
+}
+
+export const Route = createFileRoute("/stats")({
+  validateSearch: parseStatsSearch,
 });
 
 function StatsPage() {
