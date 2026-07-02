@@ -62,10 +62,7 @@ export function TypeSafetyBuildUp() {
   page: Exclude<FoobarPage, "/">;
 }
 
-export const getStaticProps: GetStaticProps<
-  Props,
-  FoobarPageQuery
-> = async ({ params }) => {
+export const getStaticProps: GetStaticProps<Props, FoobarPageQuery> = async ({ params }) => {
   const page = params!.page;
   return { props: { page } };
 };`,

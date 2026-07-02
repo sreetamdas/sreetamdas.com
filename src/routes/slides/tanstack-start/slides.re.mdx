@@ -132,38 +132,6 @@ import {
 
 ---
 
-# TanStack + Vite
-
-The stack is composable, and the ecosystem is open.
-
-<Steps>
-
-- Router → Query → Table → Start — the same headline primitives, composing together
-- The TanStack Query and Table I already use at work, plus TanStack DB
-- Built on Vite: an open ecosystem, real plugins — not a bespoke bundler
-- First-class TypeScript across all of it
-
-</Steps>
-
-
----
-
-# The dev loop, every day
-
-I ship Next for a living. The thing I miss most is the feedback loop.
-
-<Steps>
-
-- Vite or Rsbuild: near-instant dev server startup
-- HMR is near-instant — no Webpack/Turbopack wait
-- Full-speed navigation in dev, not throttled
-- Light on CPU and RAM on a laptop full of Chrome tabs
-
-</Steps>
-
-
----
-
 # In summary
 
 ---
@@ -175,8 +143,7 @@ I ship Next for a living. The thing I miss most is the feedback loop.
 # TanStack Start
 
 - full-stack on top of TanStack Router
-- server when the route needs it
-- client-first when it does not
+- client-first by default
 - Vite, TypeScript, deploy anywhere
 
 ---
@@ -192,20 +159,16 @@ I ship Next for a living. The thing I miss most is the feedback loop.
 
 ---
 
-# I used to be anti-TypeScript
+# TypeScript fatigue
 
-A confession, before I get to the type system.
+- obvious benefits: catches bugs, helps maintain code as it grows
 
 <Steps>
 
-- At React Nexus 2024, I was in a corridor debate with a bunch of engineers — some folks from Razorpay — about TypeScript
-- The benefits are obvious: it catches bugs, it helps maintain code as it grows
-- but on any moderately-sized project, the types become a whole dimension you wrangle continuously
+- types become a whole dimension you wrangle continuously
 - you know exactly what I mean if you've ever reached for `type-fest`
-- …so I came around. Start's end-to-end types won me over — let me show you why
 
 </Steps>
-
 
 ---
 
@@ -213,6 +176,11 @@ A confession, before I get to the type system.
 
 <TypeSafetyBuildUp />
 
+---
+
+# The Best TypeScript
+
+is the one you _don't_ need to write yourself
 
 ---
 
@@ -230,6 +198,7 @@ A confession, before I get to the type system.
 - `validateSearch` parses once
 - `loaderDeps` makes data dependencies explicit
 - `Route.useSearch()` returns the validated shape
+- everything typed, everywhere
 
 ```tsx
 createFileRoute("/stats")({
@@ -237,13 +206,6 @@ createFileRoute("/stats")({
   loaderDeps: ({ search }) => search,
 });
 ```
-
----
-
-# This deck's URL state
-
-<RouterStateDemo />
-
 
 ---
 
@@ -265,10 +227,10 @@ createFileRoute("/stats")({
 
 # Server functions / server routes
 
-- functions: app-to-server RPC
 - routes: public HTTP endpoints
+- functions: app-to-server RPC
 - validated input, typed output
-- `GET` when the call should be cacheable
+- `GET` when the result should be cacheable
 
 ```tsx
 const getStats = createServerFn({ method: "GET" })
@@ -280,8 +242,8 @@ const getStats = createServerFn({ method: "GET" })
 
 # Middleware across the boundary
 
-- `.client()` before the call leaves the browser
-- `.server()` before the handler runs
+- `.client()` context before the call leaves the browser
+- `.server()` context before the handler runs
 - one boundary across the network
 
 ```tsx
@@ -304,7 +266,7 @@ const boundaryMiddleware = createMiddleware({ type: "function" })
 - per route
 
 ```tsx
-createFileRoute("/slides/tanstack-start/dev-lab")({
+createFileRoute("/slides/tanstack-start")({
   ssr: true,
 });
 ```
@@ -329,30 +291,36 @@ loader: async ({ deps }) => ({
 # Build-time server functions
 
 - same primitive
-- different clock
 - build once, serve static data
 
 ```tsx
-export const getHighlightedCode = createServerFn({ method: "GET" })
+export const getData = createServerFn({ method: "GET" })
   .middleware([staticFunctionMiddleware])
-  .handler(async () => loadRwcCodeSamples());
+  .handler(async () => loadHeavyData());
 ```
 
 ---
 
 # One route, many choices
 
+The route is the unit of decision
+
 - typed URL state
 - server function
-- caching
-- rendering choice
+- caching policy
+- rendering mode
+
+---
 
 ```tsx
 createFileRoute("/stats")({
-  validateSearch,
-  loaderDeps: ({ search }) => search,
+  validateSearch: (search) => ({
+    period: parseDateRange(search.period),
+  }),
+  loaderDeps: ({ search }) => ({ period: search.period }),
   loader: ({ deps }) => getStats({ data: deps }),
   staleTime: 1000 * 60 * 5,
+  ssr: "data-only",
 });
 ```
 
@@ -362,85 +330,52 @@ createFileRoute("/stats")({
 
 <RscBuildUp />
 
-Server-render the heavy content. Compose client islands where they matter.
-
-RSC is still experimental in Start — I run it in production here anyway.
-
 ---
 
-# This is not “RSC-first”
+# client-driven, not RSC-driven
 
 In Start, ordinary React components are interactive by default.
 
-<Steps>
-
 - Use RSC when it buys you something
-- Cache it like route data
 - Pass it through loader data
 - Keep the client in charge of composition
 
-</Steps>
-
 ---
 
-# Server subtree as data
+# Agnostic
 
-<RscDemo />
-
----
-
-# Deployment is part of the design
-
-This site runs on Cloudflare Workers.
-
-<Steps>
-
-- D1 for page views and likes
-- KV for runtime storage
-- Durable Objects for presence and slide sessions
-- Smart Placement, logs, traces, version metadata
-- Same route model, different runtime
-
-</Steps>
+- Deployment target: node, bun, Cloudflare workers
+- React, Solid today
+- 🔜 Vue, Angular
+- uncompromised
 
 ---
 
 # How to start
 
-<Steps>
-
+- `@tanstack/cli`
+- for all of TanStack's libraries
 - TanStack CLI connects setup, docs, add-ons, and generated changes
-- Use it to scaffold, search docs, and choose integrations
-- Add a server function, a `validateSearch`, a loader — incrementally
-- The mental model never inverts: you opt _into_ the server
-
-</Steps>
+- Agent ready!
 
 ---
 
 # More to explore
 
 - composite components
-- server routes in depth
-- request middleware patterns
-- static server functions
-- deployment adapters
-- RSC edges
+- import protection
+- `createServerOnlyfn`
+- `createClientOnlyfn`
+- `createIsomorphicfn`
+- Deferred hydration
 
 ---
 
-# Finale: live slides are the demo
+# What next?
 
-Everything you've watched is one TanStack Start route — including this live session.
-
-<Steps>
-
-- This deck's slide position is URL state; the live session is running right now
-- Presenter controls viewer navigation
-- Audience votes in polls
-- Reactions go through hibernatable WebSockets — one session id maps to one Durable Object
-
-</Steps>
+- Still in RC
+- many in production already
+- Say hi!
 
 ---
 
