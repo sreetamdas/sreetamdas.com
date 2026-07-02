@@ -58,35 +58,25 @@ export function TypeSafetyBuildUp() {
 			stages={[
 				{
 					caption: "Next Pages: define route params separately, then assert they exist.",
-					code: `interface FoobarPageQuery extends ParsedUrlQuery {
-  page: Exclude<FoobarPage, "/">;
-}
+					code: `type Query = { page: Exclude<FoobarPage, "/"> };
 
-export const getStaticProps: GetStaticProps<Props, FoobarPageQuery> = async ({ params }) => {
-  const page = params!.page;
-  return { props: { page } };
-};`,
+export const getStaticProps: GetStaticProps<Props, Query> = async ({ params }) => ({
+  props: { page: params!.page },
+});`,
 				},
 				{
 					caption: "Next App Router: every page repeats and unwraps its params shape.",
-					code: `type PageProps = {
-  params: Promise<{ slug: string }>;
-};
+					code: `type PageProps = { params: Promise<{ slug: string }> };
 
-export default async function BlogPage(props: PageProps) {
-  const { slug } = await props.params;
-  return <Post slug={slug} />;
+export default async function BlogPage({ params }: PageProps) {
+  return <Post slug={(await params).slug} />;
 }`,
 				},
 				{
 					caption: "Start: the route owns the schema; hooks inherit the validated type.",
-					code: `type StatsSearch = {
-  period: PlausibleDateRange;
-};
-
-function parseStatsSearch(search: Record<string, unknown>): StatsSearch {
-  return { period: parseDateRange(search.period) };
-}
+					code: `const parseStatsSearch = (search: Record<string, unknown>) => ({
+  period: parseDateRange(search.period),
+});
 
 export const Route = createFileRoute("/stats")({
   validateSearch: parseStatsSearch,
