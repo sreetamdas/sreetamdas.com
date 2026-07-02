@@ -12,7 +12,6 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as SlidesRouteRouteImport } from './routes/slides/route'
 import { Route as pureRouteRouteImport } from './routes/(pure)/route'
 import { Route as mainRouteRouteImport } from './routes/(main)/route'
-import { Route as SlidesReactNexusStubRouteImport } from './routes/slides/react-nexus-stub'
 import { Route as SlidesTanstackStartRouteRouteImport } from './routes/slides/tanstack-start/route'
 import { Route as SlidesJsonSchemaFormRouteRouteImport } from './routes/slides/json-schema-form/route'
 import { Route as pureVersionRouteRouteImport } from './routes/(pure)/version/route'
@@ -57,11 +56,6 @@ const pureRouteRoute = pureRouteRouteImport.update({
 const mainRouteRoute = mainRouteRouteImport.update({
   id: '/(main)',
   getParentRoute: () => rootRouteImport,
-} as any)
-const SlidesReactNexusStubRoute = SlidesReactNexusStubRouteImport.update({
-  id: '/react-nexus-stub',
-  path: '/react-nexus-stub',
-  getParentRoute: () => SlidesRouteRoute,
 } as any)
 const SlidesTanstackStartRouteRoute =
   SlidesTanstackStartRouteRouteImport.update({
@@ -240,7 +234,6 @@ export interface FileRoutesByFullPath {
   '/version': typeof pureVersionRouteRoute
   '/slides/json-schema-form': typeof SlidesJsonSchemaFormRouteRoute
   '/slides/tanstack-start': typeof SlidesTanstackStartRouteRouteWithChildren
-  '/slides/react-nexus-stub': typeof SlidesReactNexusStubRoute
   '/foobar': typeof mainfoobarFoobarRouteRouteWithChildren
   '/blog/$slug': typeof mainBlogSlugRouteRoute
   '/newsletter/$slug': typeof mainNewsletterSlugRouteRoute
@@ -273,7 +266,6 @@ export interface FileRoutesByTo {
   '/version': typeof pureVersionRouteRoute
   '/slides/json-schema-form': typeof SlidesJsonSchemaFormRouteRoute
   '/slides/tanstack-start': typeof SlidesTanstackStartRouteRouteWithChildren
-  '/slides/react-nexus-stub': typeof SlidesReactNexusStubRoute
   '/blog/$slug': typeof mainBlogSlugRouteRoute
   '/newsletter/$slug': typeof mainNewsletterSlugRouteRoute
   '/slides/tanstack-start/dev-lab': typeof SlidesTanstackStartDevLabRouteRoute
@@ -310,7 +302,6 @@ export interface FileRoutesById {
   '/(pure)/version': typeof pureVersionRouteRoute
   '/slides/json-schema-form': typeof SlidesJsonSchemaFormRouteRoute
   '/slides/tanstack-start': typeof SlidesTanstackStartRouteRouteWithChildren
-  '/slides/react-nexus-stub': typeof SlidesReactNexusStubRoute
   '/(main)/(foobar)/foobar': typeof mainfoobarFoobarRouteRouteWithChildren
   '/(main)/blog/$slug': typeof mainBlogSlugRouteRoute
   '/(main)/newsletter/$slug': typeof mainNewsletterSlugRouteRoute
@@ -347,7 +338,6 @@ export interface FileRouteTypes {
     | '/version'
     | '/slides/json-schema-form'
     | '/slides/tanstack-start'
-    | '/slides/react-nexus-stub'
     | '/foobar'
     | '/blog/$slug'
     | '/newsletter/$slug'
@@ -380,7 +370,6 @@ export interface FileRouteTypes {
     | '/version'
     | '/slides/json-schema-form'
     | '/slides/tanstack-start'
-    | '/slides/react-nexus-stub'
     | '/blog/$slug'
     | '/newsletter/$slug'
     | '/slides/tanstack-start/dev-lab'
@@ -416,7 +405,6 @@ export interface FileRouteTypes {
     | '/(pure)/version'
     | '/slides/json-schema-form'
     | '/slides/tanstack-start'
-    | '/slides/react-nexus-stub'
     | '/(main)/(foobar)/foobar'
     | '/(main)/blog/$slug'
     | '/(main)/newsletter/$slug'
@@ -473,13 +461,6 @@ declare module '@tanstack/react-router' {
       fullPath: ''
       preLoaderRoute: typeof mainRouteRouteImport
       parentRoute: typeof rootRouteImport
-    }
-    '/slides/react-nexus-stub': {
-      id: '/slides/react-nexus-stub'
-      path: '/react-nexus-stub'
-      fullPath: '/slides/react-nexus-stub'
-      preLoaderRoute: typeof SlidesReactNexusStubRouteImport
-      parentRoute: typeof SlidesRouteRoute
     }
     '/slides/tanstack-start': {
       id: '/slides/tanstack-start'
@@ -806,13 +787,11 @@ const SlidesTanstackStartRouteRouteWithChildren =
 interface SlidesRouteRouteChildren {
   SlidesJsonSchemaFormRouteRoute: typeof SlidesJsonSchemaFormRouteRoute
   SlidesTanstackStartRouteRoute: typeof SlidesTanstackStartRouteRouteWithChildren
-  SlidesReactNexusStubRoute: typeof SlidesReactNexusStubRoute
 }
 
 const SlidesRouteRouteChildren: SlidesRouteRouteChildren = {
   SlidesJsonSchemaFormRouteRoute: SlidesJsonSchemaFormRouteRoute,
   SlidesTanstackStartRouteRoute: SlidesTanstackStartRouteRouteWithChildren,
-  SlidesReactNexusStubRoute: SlidesReactNexusStubRoute,
 }
 
 const SlidesRouteRouteWithChildren = SlidesRouteRoute._addFileChildren(
