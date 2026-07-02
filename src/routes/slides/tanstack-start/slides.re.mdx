@@ -5,10 +5,7 @@ published_at: "2026-05-16"
 ---
 
 import { MainTitle, StarHistory, Title } from "./-components";
-import {
-  RouterStateDemo,
-  RscDemo,
-} from "./-demos";
+import { RouterStateDemo, RscDemo } from "./-demos";
 import {
   UrlStateBuildUp,
   TypeSafetyBuildUp,
@@ -17,9 +14,7 @@ import {
 
 ---
 
-<div className="flex items-center justify-center pt-40">
-  <h1 className="font-serif text-9xl font-bold text-balance whitespace-pre-line font-stretch-semi-condensed">Hello 👋</h1>
-</div>
+<Title>Hello 👋</Title>
 
 ---
 
@@ -52,7 +47,6 @@ import {
 - Yes, we have received questions about TV remote issues
 
 </Steps>
-
 
 ---
 
@@ -178,7 +172,7 @@ I ship Next for a living. The thing I miss most is the feedback loop.
 
 ---
 
-# Server, opt-in
+# TanStack Start
 
 - full-stack on top of TanStack Router
 - server when the route needs it
@@ -292,8 +286,12 @@ const getStats = createServerFn({ method: "GET" })
 
 ```tsx
 const boundaryMiddleware = createMiddleware({ type: "function" })
-  .client(async ({ next }) => next({ context: { source: "browser" } }))
-  .server(async ({ next }) => next({ context: { requestId: crypto.randomUUID() } }));
+  .client(async ({ next }) =>
+    next({ context: { source: "browser" } }),
+  )
+  .server(async ({ next }) =>
+    next({ context: { requestId: crypto.randomUUID() } }),
+  );
 ```
 
 ---
@@ -360,6 +358,58 @@ createFileRoute("/stats")({
 
 ---
 
+# I used to be anti-TypeScript
+
+A confession, before I get to the type system.
+
+<Steps>
+
+- At React Nexus 2024, I was in a corridor debate with a bunch of engineers — some folks from Razorpay — about TypeScript
+- The benefits are obvious: it catches bugs, it helps maintain code as it grows
+- but on any moderately-sized project, the types become a whole dimension you wrangle continuously
+- you know exactly what I mean if you've ever reached for `type-fest`
+- …so I came around. Start's end-to-end types won me over — let me show you why
+
+</Steps>
+
+---
+
+# Type safety, the old way vs. Start
+
+<TypeSafetyBuildUp />
+
+---
+
+# URL state belongs to the route
+
+- the route owns the schema
+- bad input becomes a safe default
+- hooks get typed state
+- navigation stays valid
+
+---
+
+# URL state, in code
+
+- `validateSearch` parses once
+- `loaderDeps` makes data dependencies explicit
+- `Route.useSearch()` returns the validated shape
+
+```tsx
+createFileRoute("/stats")({
+  validateSearch: parseStatsSearch,
+  loaderDeps: ({ search }) => search,
+});
+```
+
+---
+
+# This deck's URL state
+
+<RouterStateDemo />
+
+---
+
 # RSC as an opt-in data primitive
 
 <RscBuildUp />
@@ -367,7 +417,6 @@ createFileRoute("/stats")({
 Server-render the heavy content. Compose client islands where they matter.
 
 RSC is still experimental in Start — I run it in production here anyway.
-
 
 ---
 
@@ -384,13 +433,41 @@ In Start, ordinary React components are interactive by default.
 
 </Steps>
 
-
 ---
 
 # Server subtree as data
 
 <RscDemo />
 
+---
+
+# TanStack + Vite
+
+The stack is composable, and the ecosystem is open.
+
+<Steps>
+
+- Router → Query → Table → Start — the same headline primitives, composing together
+- The TanStack Query and Table I already use at work, plus TanStack DB
+- Built on Vite: an open ecosystem, real plugins — not a bespoke bundler
+- First-class TypeScript across all of it
+
+</Steps>
+
+---
+
+# The dev loop, every day
+
+I ship Next for a living. The thing I miss most is the feedback loop.
+
+<Steps>
+
+- Vite or Rsbuild: near-instant dev server startup
+- HMR is near-instant — no Webpack/Turbopack wait
+- Full-speed navigation in dev, not throttled
+- Light on CPU and RAM on a laptop full of Chrome tabs
+
+</Steps>
 
 ---
 
@@ -408,7 +485,6 @@ This site runs on Cloudflare Workers.
 
 </Steps>
 
-
 ---
 
 # How to start
@@ -421,7 +497,6 @@ This site runs on Cloudflare Workers.
 - The mental model never inverts: you opt _into_ the server
 
 </Steps>
-
 
 ---
 
