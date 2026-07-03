@@ -517,3 +517,50 @@ export function JsfPlayground() {
 		</div>
 	);
 }
+
+export function SchemaFormPreview({ schema }: { schema: JsfObjectSchema }) {
+	const [values, setValues] = useState<FormValues>({});
+
+	const formResult = createHeadlessForm(schema, { initialValues: values });
+
+	return (
+		<div className="grid grid-cols-2 gap-4 overflow-hidden rounded-sm border border-white/10 bg-black/30">
+			<div className="flex flex-col overflow-hidden">
+				<div className="border-b border-white/10 px-3 py-1.5 text-xs font-medium text-white/50">
+					JSON Schema
+				</div>
+				<pre className="flex-1 overflow-auto p-3 font-mono text-xs leading-relaxed text-green-300">
+					{JSON.stringify(schema, null, 2)}
+				</pre>
+			</div>
+
+			<div className="flex flex-col overflow-hidden">
+				<div className="border-b border-white/10 px-3 py-1.5 text-xs font-medium text-white/50">
+					Live Form
+				</div>
+				<div className="flex-1 overflow-y-auto p-4">
+					{formResult?.isError ? (
+						<div className="text-sm text-red-400">{formResult.error}</div>
+					) : formResult ? (
+						<form>
+							{(formResult.fields ?? []).map((field) => (
+								<FieldRenderer
+									key={field.name}
+									field={field}
+									value={values[field.name]}
+									onChange={(val) => {
+										setValues((prev) => {
+											return { ...prev, [field.name]: val };
+										});
+									}}
+								/>
+							))}
+						</form>
+					) : (
+						<div className="text-sm text-white/40">Invalid schema</div>
+					)}
+				</div>
+			</div>
+		</div>
+	);
+}
