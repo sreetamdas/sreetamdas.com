@@ -52,7 +52,8 @@
 		"deploy:staging": "CLOUDFLARE_ENV=staging pnpm build && CLOUDFLARE_ENV=staging wrangler deploy -e staging",
 		"deploy:preview": "node scripts/deploy-preview.mjs",
 		"prepare": "vp config",
-		"lint-staged": "vp staged"
+		"lint-staged": "vp staged",
+		"knip": "knip"
 	},
 	"dependencies": {
 		"@better-auth/drizzle-adapter": "^1.6.23",
@@ -68,6 +69,7 @@
 		"@sentry/tanstackstart-react": "^10.62.0",
 		"@shikijs/colorized-brackets": "^4.3.0",
 		"@shikijs/langs-precompiled": "^4.3.0",
+		"@shikijs/magic-move": "^4.3.0",
 		"@sreetamdas/karma": "^3.1.1",
 		"@tanstack/hotkeys": "^0.8.0",
 		"@tanstack/react-query": "^5.101.2",
@@ -86,7 +88,6 @@
 		"react-tweet": "^3.3.1",
 		"safe-mdx": "^1.11.5",
 		"shiki": "^4.3.0",
-		"shiki-magic-move": "^1.4.0",
 		"tailwind-merge": "^3.6.0",
 		"unist-util-visit": "^5.1.0",
 		"zod": "^4.4.3",
@@ -117,6 +118,7 @@
 		"better-sqlite3": "^12.11.1",
 		"drizzle-kit": "1.0.0-rc.3",
 		"eslint-plugin-better-tailwindcss": "^4.6.0",
+		"knip": "^6.24.0",
 		"tailwindcss": "^4.3.2",
 		"tsx": "^4.22.4",
 		"typescript": "^6.0.3",

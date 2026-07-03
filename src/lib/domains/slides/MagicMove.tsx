@@ -1,6 +1,7 @@
 "use client";
 
-import "shiki-magic-move/style.css";
+import "@shikijs/magic-move/style.css";
+import { ShikiMagicMove } from "@shikijs/magic-move/react";
 /**
  * Animated code transitions for slides, powered by shiki-magic-move.
  *
@@ -15,7 +16,6 @@ import "shiki-magic-move/style.css";
  * optional per-stage caption.
  */
 import { type ReactNode, use, useEffect, useId, useState } from "react";
-import { ShikiMagicMove } from "shiki-magic-move/react";
 
 import { getSlimKarmaHighlighter, type KarmaHighlighter } from "@/lib/domains/shiki/highlighter";
 import { cn } from "@/lib/helpers/utils";
