@@ -20,7 +20,9 @@ export function usePageMetrics(normalizedPathname: string, disabled: boolean) {
 		queryFn: fetchMetrics,
 		queryKey: pageMetricsQueryKey(normalizedPathname),
 		staleTime: 1000 * 30,
-		// The view-count read also records a view; avoid automatic background replays.
+		// This RPC no longer records a view (the increment moved to the Worker
+		// document-request path), but we still avoid background replays so a stale
+		// window doesn't churn the counter reads.
 		refetchOnWindowFocus: false,
 		refetchOnReconnect: false,
 		retry: false,

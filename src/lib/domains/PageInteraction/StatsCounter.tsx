@@ -411,7 +411,9 @@ const StandaloneViews = ({ normalizedPathname, disabled, page_type }: InnerViews
 		queryFn: fetchViewCount,
 		queryKey: [normalizedPathname, "get-views"],
 		staleTime: 1000 * 30,
-		// Reading the count also records a view; avoid automatic background replays.
+		// This RPC is now read-only (the increment moved to the Worker
+		// document-request path), but we still avoid background replays so a stale
+		// window doesn't churn the counter reads.
 		refetchOnWindowFocus: false,
 		refetchOnReconnect: false,
 		retry: false,
