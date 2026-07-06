@@ -3,6 +3,8 @@
  * TanStack Sentry runtime modules because they can pull Node-only dependencies
  * into Cloudflare/prerender builds.
  */
+import type { ErrorEvent, EventHint } from "@sentry/cloudflare";
+
 type SentryRuntimeConfig = Partial<Pick<CloudflareEnv, "VITE_SENTRY_DSN">>;
 
 export function isBrowserSentryRuntime() {
@@ -18,6 +20,13 @@ export function getSentryRuntimeOptions(config: SentryRuntimeConfig | undefined)
 		enableLogs: true,
 		sendDefaultPii: false,
 		tracesSampleRate: 0.1,
+		beforeSend(event: ErrorEvent, _hint?: EventHint) {
+			const serialized = event.extra?.__serialized__;
+			if (serialized && typeof serialized === "object" && "isNotFound" in serialized) {
+				return null;
+			}
+			return event;
+		},
 	};
 }
 

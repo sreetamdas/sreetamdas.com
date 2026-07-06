@@ -14,4 +14,11 @@ Sentry.init({
 	integrations: [Sentry.replayIntegration()],
 	replaysOnErrorSampleRate: 1,
 	replaysSessionSampleRate: 0.1,
+	beforeSend(event) {
+		const serialized = event.extra?.__serialized__;
+		if (serialized && typeof serialized === "object" && "isNotFound" in serialized) {
+			return null;
+		}
+		return event;
+	},
 });
