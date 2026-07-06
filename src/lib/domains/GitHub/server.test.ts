@@ -8,17 +8,15 @@ vi.mock("cloudflare:workers", () => cloudflare);
 
 function createCacheMock() {
 	const store = new Map<string, Response>();
-	const cache: Cache = {
-		match: vi.fn(async (key: Request) => store.get(key.url) ?? undefined),
-		put: vi.fn(async (key: Request, response: Response) => {
-			store.set(key.url, response.clone());
-		}),
-		delete: vi.fn(async () => true),
-	};
+	const match = vi.fn(async (key: Request) => store.get(key.url) ?? undefined);
+	const put = vi.fn(async (key: Request, response: Response) => {
+		store.set(key.url, response.clone());
+	});
+	const cache = { match, put, delete: vi.fn(async () => true) };
 	return {
 		store,
-		match: cache.match,
-		put: cache.put,
+		match,
+		put,
 		reset: () => store.clear(),
 		open: vi.fn(async () => cache),
 	};

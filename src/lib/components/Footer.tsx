@@ -1,19 +1,19 @@
-"use client";
-
-import { useQuery } from "@tanstack/react-query";
-import { useServerFn } from "@tanstack/react-start";
 import { type HTMLAttributes } from "react";
 import { FaRegStar } from "react-icons/fa";
 import { VscRepoForked } from "react-icons/vsc";
 
-import { fetchGitHubStats } from "@/lib/domains/GitHub/server";
+import { type GitHubStats } from "@/lib/domains/GitHub/server";
 import { cn } from "@/lib/helpers/utils";
 
 /**
  * Allow passing `FoobarPixel` as a child so that we can optionally set the `path` prop for it
  */
 
-export const Footer = ({ children, className }: HTMLAttributes<HTMLDivElement>) => {
+type FooterProps = HTMLAttributes<HTMLDivElement> & {
+	gitHubStats?: GitHubStats;
+};
+
+export const Footer = ({ children, className, gitHubStats }: FooterProps) => {
 	return (
 		<footer
 			className={cn(
@@ -22,7 +22,7 @@ export const Footer = ({ children, className }: HTMLAttributes<HTMLDivElement>) 
 			)}
 		>
 			{children}
-			<GitHubStats />
+			<GitHubStats stats={gitHubStats} />
 			<p>
 				Made with{" "}
 				<a className="link-base" href="https://tanstack.com/start">
@@ -51,15 +51,7 @@ export const Footer = ({ children, className }: HTMLAttributes<HTMLDivElement>) 
 	);
 };
 
-export const GitHubStats = () => {
-	const getGitHubStats = useServerFn(fetchGitHubStats);
-
-	const { data, isLoading } = useQuery({
-		queryFn: getGitHubStats,
-		queryKey: ["github-stats"],
-		staleTime: Infinity,
-	});
-
+const GitHubStats = ({ stats }: { stats?: GitHubStats }) => {
 	return (
 		<div className="grid grid-cols-[max-content_max-content] justify-center gap-4 py-2.5">
 			<a
@@ -69,14 +61,14 @@ export const GitHubStats = () => {
 				<span className="leading-4">
 					<FaRegStar title="star" aria-label="star" className="h-[18px] w-[18px] text-current" />
 				</span>
-				<span className={isLoading ? "animate-pulse" : ""}>{data?.stars ?? "…"}</span>
+				<span>{stats?.stars ?? "…"}</span>
 			</a>
 			<a
 				href="https://github.com/sreetamdas/sreetamdas.com/network/members"
 				className="flex w-max items-center gap-1 link-base text-foreground transition-[color] hover:text-primary hover:no-underline"
 			>
 				<VscRepoForked title="fork" aria-label="fork" className="h-[18px] w-[18px] text-current" />
-				<span className={isLoading ? "animate-pulse" : ""}>{data?.forks ?? "…"}</span>
+				<span>{stats?.forks ?? "…"}</span>
 			</a>
 		</div>
 	);

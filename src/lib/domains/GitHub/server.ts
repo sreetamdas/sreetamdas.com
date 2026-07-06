@@ -5,7 +5,7 @@ import { DEFAULT_REPO } from "@/config";
 import { GITHUB_API_BASE_URL, getGitHubHeaders, getGitHubToken } from "@/lib/domains/GitHub/shared";
 import { type RepoContributor } from "@/lib/domains/GitHub/types";
 
-type GitHubStats = { stars: number; forks: number };
+export type GitHubStats = { stars: number; forks: number };
 
 function isGitHubStats(value: unknown): value is GitHubStats {
 	return (
@@ -60,10 +60,6 @@ export async function readGitHubStats(): Promise<GitHubStats> {
 
 	return stats;
 }
-
-export const fetchGitHubStats = createServerFn({ method: "GET" }).handler(async () => {
-	return readGitHubStats();
-});
 
 export const fetchRepoContributors = createServerFn({ method: "GET" }).handler(async () => {
 	const token = getGitHubToken();
