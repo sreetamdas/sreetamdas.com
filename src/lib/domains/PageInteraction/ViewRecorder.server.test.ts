@@ -14,12 +14,18 @@ import {
 	createSignedLikeCookie,
 	LIKE_ID_COOKIE_NAME,
 } from "@/lib/domains/PageInteraction/LikeIdentity";
-import { handleViewRecordRequestForRuntime } from "@/lib/domains/PageInteraction/ViewRecorder.server";
+
+import { recordPageView } from "./ViewRecorder.server";
 
 type KvPut = {
 	key: string;
 	value: string;
 	expirationTtl: number | undefined;
+};
+
+type TestDedupeStore = {
+	get: (key: string) => Promise<string | null>;
+	put: (key: string, value: string, options: KVNamespacePutOptions) => Promise<void>;
 };
 
 function createKv(existingKeys: Array<string> = []) {
@@ -38,10 +44,7 @@ function createKv(existingKeys: Array<string> = []) {
 	};
 }
 
-function createRuntime(kv: {
-	get: (key: string) => Promise<string | null>;
-	put: (key: string, value: string, options: KVNamespacePutOptions) => Promise<void>;
-}) {
+function createRuntime(kv: TestDedupeStore) {
 	return {
 		KV: kv,
 		LIKES_COOKIE_SECRET: "cookie-secret",
@@ -49,35 +52,24 @@ function createRuntime(kv: {
 	};
 }
 
-function createViewRequest(init: RequestInit = {}) {
-	const headers = new Headers(init.headers);
-	if (!headers.has("origin")) headers.set("origin", "https://example.com");
-	if (!headers.has("cf-connecting-ip")) headers.set("cf-connecting-ip", "1.2.3.4");
-	return new Request("https://example.com/api/views", {
-		...init,
-		method: "POST",
-		headers,
-		body: init.body ?? JSON.stringify({ slug: "/about?ignored=true" }),
-	});
-}
-
 beforeEach(() => {
 	pageViews.upsertPageViews.mockReset().mockResolvedValue({ view_count: 12 });
 	database.getDb.mockClear();
 });
 
-describe("handleViewRecordRequestForRuntime", () => {
-	test("records a same-origin page view, dedupes it in KV, and sets a visitor cookie", async () => {
+describe("recordPageView", () => {
+	test("records a page view, dedupes it in KV, and sets a visitor cookie", async () => {
 		const { kv, puts } = createKv();
+		const setViewCookie = vi.fn();
 
-		const response = await handleViewRecordRequestForRuntime(
-			createViewRequest(),
+		const result = await recordPageView(
+			{ slug: "/about?ignored=true", disabled: false },
+			{ clientIp: "1.2.3.4", setViewCookie },
 			createRuntime(kv),
 		);
 
-		expect(response.status).toBe(204);
-		expect(response.headers.get("Cache-Control")).toBe("no-store");
-		expect(response.headers.get("Set-Cookie") ?? "").toContain(`${LIKE_ID_COOKIE_NAME}=`);
+		expect(result).toEqual({ recorded: true });
+		expect(setViewCookie).toHaveBeenCalledOnce();
 		expect(pageViews.upsertPageViews).toHaveBeenCalledWith(expect.anything(), "/about");
 		expect(puts).toHaveLength(2);
 		expect(puts.every((put) => put.expirationTtl === 3600)).toBe(true);
@@ -89,48 +81,50 @@ describe("handleViewRecordRequestForRuntime", () => {
 			"00000000-0000-4000-8000-000000000001",
 		);
 		const { kv } = createKv();
-		const firstResponse = await handleViewRecordRequestForRuntime(
-			createViewRequest({
-				headers: { cookie: `${LIKE_ID_COOKIE_NAME}=${cookie.value}` },
-			}),
+		const context = {
+			clientIp: "1.2.3.4",
+			cookieHeader: `${LIKE_ID_COOKIE_NAME}=${cookie.value}`,
+		};
+
+		const firstResult = await recordPageView(
+			{ slug: "/about", disabled: false },
+			context,
 			createRuntime(kv),
 		);
-		const firstCookie = firstResponse.headers.get("Set-Cookie");
-
-		const secondResponse = await handleViewRecordRequestForRuntime(
-			createViewRequest({
-				headers: { cookie: `${LIKE_ID_COOKIE_NAME}=${cookie.value}` },
-			}),
+		const secondResult = await recordPageView(
+			{ slug: "/about", disabled: false },
+			context,
 			createRuntime(kv),
 		);
 
-		expect(firstCookie).toBeNull();
-		expect(secondResponse.status).toBe(204);
+		expect(firstResult).toEqual({ recorded: true });
+		expect(secondResult).toEqual({ recorded: false });
 		expect(pageViews.upsertPageViews).toHaveBeenCalledOnce();
 	});
 
-	test("rejects cross-origin posts before writing", async () => {
+	test("does not write when the counter is disabled", async () => {
 		const { kv } = createKv();
 
-		const response = await handleViewRecordRequestForRuntime(
-			createViewRequest({ headers: { origin: "https://attacker.example" } }),
+		const result = await recordPageView(
+			{ slug: "/about", disabled: true },
+			{ clientIp: "1.2.3.4" },
 			createRuntime(kv),
 		);
 
-		expect(response.status).toBe(403);
-		expect(response.headers.get("Cache-Control")).toBe("no-store");
+		expect(result).toEqual({ recorded: false });
 		expect(pageViews.upsertPageViews).not.toHaveBeenCalled();
 	});
 
 	test("rejects invalid or non-page slugs before writing", async () => {
 		const { kv } = createKv();
 
-		const response = await handleViewRecordRequestForRuntime(
-			createViewRequest({ body: JSON.stringify({ slug: "/api/presence" }) }),
+		const result = await recordPageView(
+			{ slug: "/api/presence", disabled: false },
+			{ clientIp: "1.2.3.4" },
 			createRuntime(kv),
 		);
 
-		expect(response.status).toBe(400);
+		expect(result).toEqual({ recorded: false });
 		expect(pageViews.upsertPageViews).not.toHaveBeenCalled();
 	});
 });

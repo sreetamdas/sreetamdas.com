@@ -1,12 +1,15 @@
 /**
- * Worker API-backed page view recorder.
+ * Server-function page view recorder.
  *
- * The public HTML can stay edge-cached because the browser records a same-origin
- * POST to /api/views. Writes are deduped in KV by both signed visitor identity
- * and Cloudflare client IP hash so repeated reloads or no-cookie replays from
- * one visitor do not inflate D1 counters within the TTL window.
+ * Cached HTML cannot reliably run Worker document hooks, so hydrated pages call
+ * this same-origin TanStack server function once per pathname. The write is
+ * deduped in KV by both signed visitor identity and Cloudflare client IP hash so
+ * repeated reloads or no-cookie replays from one visitor do not inflate D1
+ * counters within the TTL window.
  */
 import "@tanstack/react-start/server-only";
+import { createServerFn } from "@tanstack/react-start";
+import { getRequestHeader, setCookie } from "@tanstack/react-start/server";
 import { env } from "cloudflare:workers";
 
 import { LIKES_SALT_VERSION } from "@/config";
@@ -23,11 +26,14 @@ import {
 	LIKE_ID_COOKIE_NAME,
 	readSignedLikeCookie,
 } from "./LikeIdentity";
-import { warnCounterFailureOnce } from "./shared";
+import {
+	type PagePathnamePayload,
+	validatePagePathnamePayload,
+	warnCounterFailureOnce,
+} from "./shared";
 
 const VIEW_DEDUP_TTL_SECONDS = 60 * 60;
 const MAX_SLUG_LENGTH = 512;
-const NO_STORE_HEADERS = { "Cache-Control": "no-store" };
 
 type ViewDedupeStore = {
 	get: (key: string) => Promise<string | null>;
@@ -40,115 +46,97 @@ type ViewRuntime = {
 	LIKES_IP_SALT?: string;
 };
 
-type ViewPayload = {
-	slug: string;
-};
-
 type ViewVisitor = {
 	visitorHash: string;
 	ipHash: string;
-	setCookieValue?: string;
 };
 
-export async function handleViewRecordRequest(request: Request): Promise<Response> {
-	return await handleViewRecordRequestForRuntime(request, env);
-}
+export type PageViewRecordResult = {
+	recorded: boolean;
+};
 
-export async function handleViewRecordRequestForRuntime(
-	request: Request,
-	runtime: ViewRuntime,
-): Promise<Response> {
-	if (!isSameOriginMutation(request)) {
-		return noStoreResponse(null, 403);
-	}
+export type ViewRecordContext = {
+	clientIp?: string;
+	cookieHeader?: string;
+	setViewCookie?: (cookieValue: string) => void;
+};
 
-	const payload = await readViewPayload(request);
-	if (!payload) {
-		return noStoreResponse(null, 400);
-	}
+export const recordPageViewServerFn = createServerFn({
+	method: "POST",
+})
+	.validator((data) => {
+		return validatePagePathnamePayload(data, "Invalid page view record payload");
+	})
+	.handler(async ({ data }) => {
+		return await recordPageView(data, getViewRecordContext());
+	});
 
-	const normalizedSlug = normalizeViewSlug(payload.slug, request.url);
-	if (!normalizedSlug) {
-		return noStoreResponse(null, 400);
+export async function recordPageView(
+	data: PagePathnamePayload,
+	context: ViewRecordContext = {},
+	runtime: ViewRuntime = env,
+): Promise<PageViewRecordResult> {
+	const normalizedSlug = normalizeViewSlug(data.slug);
+	if (data.disabled || !normalizedSlug) {
+		return { recorded: false };
 	}
 
 	try {
-		const visitor = await getViewVisitor(request, runtime, normalizedSlug);
+		const visitor = await getViewVisitor(context, runtime, normalizedSlug);
 		if (!visitor) {
 			warnCounterFailureOnce(
 				"record page view identity",
 				new Error("Missing page view identity configuration"),
 			);
-			return noStoreResponse(null, 204);
+			return { recorded: false };
 		}
 
 		const dedupeKeys = getDedupeKeys(normalizedSlug, visitor);
 		const alreadyRecorded = await hasRecentView(runtime.KV, dedupeKeys);
-		const headers = getResponseHeaders(visitor);
-
-		if (!alreadyRecorded) {
-			await markRecentView(runtime.KV, dedupeKeys);
-			await upsertPageViews(getDb(), normalizedSlug);
+		if (alreadyRecorded) {
+			return { recorded: false };
 		}
 
-		return new Response(null, { status: 204, headers });
+		await markRecentView(runtime.KV, dedupeKeys);
+		await upsertPageViews(getDb(), normalizedSlug);
+		return { recorded: true };
 	} catch (error) {
 		warnCounterFailureOnce("record page view", error);
-		return noStoreResponse(null, 204);
+		return { recorded: false };
 	}
 }
 
-function isSameOriginMutation(request: Request): boolean {
-	const requestOrigin = new URL(request.url).origin;
-	const origin = request.headers.get("origin");
-	if (origin) {
-		return origin === requestOrigin;
+function getViewRecordContext(): ViewRecordContext {
+	const clientIp = getRequestHeader("cf-connecting-ip");
+	const cookieHeader = getRequestHeader("cookie");
+	const context: ViewRecordContext = {
+		setViewCookie: (cookieValue) => {
+			setCookie(LIKE_ID_COOKIE_NAME, cookieValue, {
+				httpOnly: true,
+				secure: true,
+				sameSite: "lax",
+				path: "/",
+				maxAge: LIKE_ID_COOKIE_MAX_AGE_SECONDS,
+			});
+		},
+	};
+
+	if (clientIp) {
+		context.clientIp = clientIp;
+	}
+	if (cookieHeader) {
+		context.cookieHeader = cookieHeader;
 	}
 
-	const referer = request.headers.get("referer");
-	if (!referer) {
-		return false;
-	}
-
-	try {
-		return new URL(referer).origin === requestOrigin;
-	} catch {
-		return false;
-	}
+	return context;
 }
 
-async function readViewPayload(request: Request): Promise<ViewPayload | undefined> {
-	let parsed: unknown;
-	try {
-		parsed = JSON.parse(await request.text());
-	} catch {
+function normalizeViewSlug(slug: string): string | undefined {
+	if (slug.length > MAX_SLUG_LENGTH || !slug.startsWith("/") || slug.startsWith("//")) {
 		return undefined;
 	}
 
-	if (!isViewPayload(parsed)) {
-		return undefined;
-	}
-
-	return { slug: parsed.slug };
-}
-
-function isViewPayload(data: unknown): data is ViewPayload {
-	return (
-		typeof data === "object" &&
-		data !== null &&
-		"slug" in data &&
-		typeof data.slug === "string" &&
-		data.slug.length > 0 &&
-		data.slug.length <= MAX_SLUG_LENGTH
-	);
-}
-
-function normalizeViewSlug(slug: string, requestUrl: string): string | undefined {
-	if (!slug.startsWith("/") || slug.startsWith("//")) {
-		return undefined;
-	}
-
-	const url = new URL(slug, requestUrl);
+	const url = new URL(slug, "https://sreetamdas.com");
 	if (url.pathname.startsWith("/api/") || url.pathname.startsWith("/assets/")) {
 		return undefined;
 	}
@@ -157,38 +145,28 @@ function normalizeViewSlug(slug: string, requestUrl: string): string | undefined
 }
 
 async function getViewVisitor(
-	request: Request,
+	context: ViewRecordContext,
 	runtime: ViewRuntime,
 	normalizedSlug: string,
 ): Promise<ViewVisitor | undefined> {
 	const cookieSecret = runtime.LIKES_COOKIE_SECRET || undefined;
 	const ipSalt = runtime.LIKES_IP_SALT || undefined;
-	const clientIp = request.headers.get("cf-connecting-ip") ?? undefined;
-	if (!cookieSecret || !ipSalt || !clientIp) {
+	if (!cookieSecret || !ipSalt || !context.clientIp) {
 		return undefined;
 	}
 
-	const cookieValue = getCookieValue(
-		request.headers.get("cookie") ?? undefined,
-		LIKE_ID_COOKIE_NAME,
-	);
+	const cookieValue = getCookieValue(context.cookieHeader, LIKE_ID_COOKIE_NAME);
 	let token = await readSignedLikeCookie(cookieSecret, cookieValue);
-	let setCookieValue: string | undefined;
 	if (!token) {
 		const signedCookie = await createSignedLikeCookie(cookieSecret);
 		token = signedCookie.token;
-		setCookieValue = signedCookie.value;
+		context.setViewCookie?.(signedCookie.value);
 	}
 
-	const visitor: ViewVisitor = {
+	return {
 		visitorHash: await hashLikeVisitor(cookieSecret, token),
-		ipHash: await hashLikeIp(ipSalt, LIKES_SALT_VERSION, normalizedSlug, clientIp),
+		ipHash: await hashLikeIp(ipSalt, LIKES_SALT_VERSION, normalizedSlug, context.clientIp),
 	};
-	if (setCookieValue) {
-		visitor.setCookieValue = setCookieValue;
-	}
-
-	return visitor;
 }
 
 function getDedupeKeys(normalizedSlug: string, visitor: ViewVisitor): Array<string> {
@@ -207,20 +185,4 @@ async function markRecentView(kv: ViewDedupeStore, dedupeKeys: Array<string>): P
 	await Promise.all(
 		dedupeKeys.map((key) => kv.put(key, "1", { expirationTtl: VIEW_DEDUP_TTL_SECONDS })),
 	);
-}
-
-function getResponseHeaders(visitor: ViewVisitor): Headers {
-	const headers = new Headers(NO_STORE_HEADERS);
-	if (visitor.setCookieValue) {
-		headers.set("Set-Cookie", getViewCookieHeader(visitor.setCookieValue));
-	}
-	return headers;
-}
-
-function getViewCookieHeader(cookieValue: string): string {
-	return `${LIKE_ID_COOKIE_NAME}=${cookieValue}; Max-Age=${LIKE_ID_COOKIE_MAX_AGE_SECONDS}; Path=/; HttpOnly; Secure; SameSite=Lax`;
-}
-
-function noStoreResponse(body: BodyInit | null, status: number): Response {
-	return new Response(body, { status, headers: NO_STORE_HEADERS });
 }
