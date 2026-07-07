@@ -1,5 +1,5 @@
 import bricolageGrotesqueFont from "@fontsource-variable/bricolage-grotesque/files/bricolage-grotesque-latin-standard-normal.woff2?url";
-import interFont from "@fontsource-variable/inter/files/inter-latin-ext-wght-normal.woff2?url";
+import interFont from "@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url";
 import { TanStackDevtools } from "@tanstack/react-devtools";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtoolsPanel } from "@tanstack/react-query-devtools";
@@ -76,6 +76,10 @@ export const Route = createRootRoute({
 				type: "font/woff2",
 				href: interFont,
 				crossOrigin: "anonymous",
+			},
+			{
+				rel: "preconnect",
+				href: "https://static.cloudflareinsights.com",
 			},
 			{ rel: "stylesheet", href: appCss },
 			{
