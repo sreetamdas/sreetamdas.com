@@ -49,11 +49,6 @@ function getPlugins(): Array<unknown> {
 			isEnabled: () => process.env.CC_SKIP_VITE_BUILD !== "1",
 		}),
 		tanstackStart({
-			server: {
-				build: {
-					inlineCss: true,
-				},
-			},
 			importProtection: {
 				client: {
 					files: [
