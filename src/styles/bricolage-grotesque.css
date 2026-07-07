@@ -1,16 +1,13 @@
 /*
  * Vendored from @fontsource-variable/bricolage-grotesque/standard.css.
  * Only the Latin subset is included (Vietnamese and Latin-Extended are dropped —
- * they aren't needed for English, and with `font-display: optional` those
- * code points would just stay on the serif fallback with no swap anyway).
+ * they aren't needed for English, and those code points will use the serif
+ * fallback).
  *
- * `font-display` is changed from `swap` to `optional` to eliminate the CLS
- * caused by the fallback-to-Bricolage swap on the /about h1 (`text-8xl`,
- * ~0.12 layout shift). With `optional`, if the font isn't loaded within the
- * ~100ms window the browser keeps the serif fallback and never swaps — zero
- * CLS. A bare `@font-face` override with only `font-family` + `font-display`
- * doesn't work; the full block is required to match/replace the fontsource
- * declaration.
+ * Keep `font-display: swap` for visual fidelity. Using `optional` prevents
+ * layout shift, but Chrome may permanently keep the serif fallback if the
+ * Bricolage file misses the short optional window, which makes the heading
+ * visibly wrong.
  *
  * The `src` URL uses a bare specifier (`@fontsource-variable/...`) so Vite /
  * Lightning CSS resolves it to the installed package — no need to copy the
@@ -21,7 +18,7 @@
 @font-face {
 	font-family: "Bricolage Grotesque Variable";
 	font-style: normal;
-	font-display: optional;
+	font-display: swap;
 	font-weight: 200 800;
 	font-stretch: 75% 100%;
 	src: url("@fontsource-variable/bricolage-grotesque/files/bricolage-grotesque-latin-standard-normal.woff2")
