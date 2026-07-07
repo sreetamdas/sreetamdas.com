@@ -1,6 +1,6 @@
 @import "tailwindcss";
 @import "../styles/bricolage-grotesque.css";
-@import "@fontsource-variable/inter/index.css";
+@import "../styles/inter.css";
 
 /*
  * Inter fallback with metric overrides so the system-font fallback matches
