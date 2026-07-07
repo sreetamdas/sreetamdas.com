@@ -1,14 +1,10 @@
 import { beforeEach, describe, expect, test, vi } from "vitest";
 
 const pageViews = vi.hoisted(() => ({ upsertPageViews: vi.fn() }));
-const database = vi.hoisted(() => ({ getDb: vi.fn(() => ({ name: "db" })) }));
 const config = vi.hoisted(() => ({ LIKES_SALT_VERSION: 1 }));
-const cloudflare = vi.hoisted(() => ({ env: {} }));
 
 vi.mock("@/lib/domains/PageViews", () => pageViews);
-vi.mock("@/db", () => database);
 vi.mock("@/config", () => config);
-vi.mock("cloudflare:workers", () => cloudflare);
 
 import {
 	createSignedLikeCookie,
@@ -54,7 +50,6 @@ function createRuntime(kv: TestDedupeStore) {
 
 beforeEach(() => {
 	pageViews.upsertPageViews.mockReset().mockResolvedValue({ view_count: 12 });
-	database.getDb.mockClear();
 });
 
 describe("recordPageView", () => {
@@ -66,11 +61,12 @@ describe("recordPageView", () => {
 			{ slug: "/about?ignored=true", disabled: false },
 			{ clientIp: "1.2.3.4", setViewCookie },
 			createRuntime(kv),
+			pageViews.upsertPageViews,
 		);
 
 		expect(result).toEqual({ recorded: true });
 		expect(setViewCookie).toHaveBeenCalledOnce();
-		expect(pageViews.upsertPageViews).toHaveBeenCalledWith(expect.anything(), "/about");
+		expect(pageViews.upsertPageViews).toHaveBeenCalledWith("/about");
 		expect(puts).toHaveLength(2);
 		expect(puts.every((put) => put.expirationTtl === 3600)).toBe(true);
 	});
@@ -90,11 +86,13 @@ describe("recordPageView", () => {
 			{ slug: "/about", disabled: false },
 			context,
 			createRuntime(kv),
+			pageViews.upsertPageViews,
 		);
 		const secondResult = await recordPageView(
 			{ slug: "/about", disabled: false },
 			context,
 			createRuntime(kv),
+			pageViews.upsertPageViews,
 		);
 
 		expect(firstResult).toEqual({ recorded: true });
@@ -109,6 +107,7 @@ describe("recordPageView", () => {
 			{ slug: "/about", disabled: true },
 			{ clientIp: "1.2.3.4" },
 			createRuntime(kv),
+			pageViews.upsertPageViews,
 		);
 
 		expect(result).toEqual({ recorded: false });
@@ -122,6 +121,7 @@ describe("recordPageView", () => {
 			{ slug: "/api/presence", disabled: false },
 			{ clientIp: "1.2.3.4" },
 			createRuntime(kv),
+			pageViews.upsertPageViews,
 		);
 
 		expect(result).toEqual({ recorded: false });

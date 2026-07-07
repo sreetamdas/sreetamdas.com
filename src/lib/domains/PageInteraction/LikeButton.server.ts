@@ -1,10 +1,9 @@
-import { createServerFn } from "@tanstack/react-start";
+import { createServerFn, createServerOnlyFn } from "@tanstack/react-start";
 
 import { type LikeCount } from "@/lib/domains/PageViews";
 import { normalizePathname } from "@/lib/helpers/utils";
 
 import { type LikeRequestContext } from "./LikeIdentity";
-import { getLikeRequestContext } from "./LikeRequestContext.server";
 import {
 	type PagePathnamePayload,
 	validatePagePathnamePayload,
@@ -19,7 +18,7 @@ export const fetchLikeCountServerFn = createServerFn({
 		return validatePagePathnamePayload(data, "Invalid likes payload");
 	})
 	.handler(async ({ data }) => {
-		return fetchLikeCount(data, getLikeRequestContext());
+		return fetchLikeCount(data, await getLikeRequestContextServer());
 	});
 
 export const incrementLikeServerFn = createServerFn({
@@ -29,7 +28,7 @@ export const incrementLikeServerFn = createServerFn({
 		return validatePagePathnamePayload(data, "Invalid likes payload");
 	})
 	.handler(async ({ data }) => {
-		return incrementLikeCount(data, getLikeRequestContext());
+		return incrementLikeCount(data, await getLikeRequestContextServer());
 	});
 
 export const decrementLikeServerFn = createServerFn({
@@ -39,8 +38,38 @@ export const decrementLikeServerFn = createServerFn({
 		return validatePagePathnamePayload(data, "Invalid likes payload");
 	})
 	.handler(async ({ data }) => {
-		return decrementLikeCount(data, getLikeRequestContext());
+		return decrementLikeCount(data, await getLikeRequestContextServer());
 	});
+
+const getLikeRequestContextServer = createServerOnlyFn(async (): Promise<LikeRequestContext> => {
+	const { getLikeRequestContext } = await import("./LikeRequestContext.server");
+	return getLikeRequestContext();
+});
+
+const fetchLikeCountFromDbServer = createServerOnlyFn(
+	async (normalizedSlug: string, context: LikeRequestContext): Promise<LikeCount> => {
+		const { fetchLikeCountFromDb } = await import("./LikeButton.data.server");
+		return await fetchLikeCountFromDb(normalizedSlug, context);
+	},
+);
+
+const incrementLikeCountInDbServer = createServerOnlyFn(
+	async (
+		normalizedSlug: string,
+		disabled: boolean | undefined,
+		context: LikeRequestContext,
+	): Promise<LikeCount> => {
+		const { incrementLikeCountInDb } = await import("./LikeButton.data.server");
+		return await incrementLikeCountInDb(normalizedSlug, disabled, context);
+	},
+);
+
+const decrementLikeCountInDbServer = createServerOnlyFn(
+	async (normalizedSlug: string, context: LikeRequestContext): Promise<LikeCount> => {
+		const { decrementLikeCountInDb } = await import("./LikeButton.data.server");
+		return await decrementLikeCountInDb(normalizedSlug, context);
+	},
+);
 
 export async function fetchLikeCount(
 	data: PagePathnamePayload,
@@ -49,8 +78,7 @@ export async function fetchLikeCount(
 	const normalizedSlug = normalizePathname(data.slug);
 
 	try {
-		const { fetchLikeCountFromDb } = await import("./LikeButton.data.server");
-		return await fetchLikeCountFromDb(normalizedSlug, context);
+		return await fetchLikeCountFromDbServer(normalizedSlug, context);
 	} catch (error) {
 		warnCounterFailureOnce("fetch likes", error);
 		return { likes: 0, hasLiked: false };
@@ -64,8 +92,7 @@ export async function incrementLikeCount(
 	const normalizedSlug = normalizePathname(data.slug);
 
 	try {
-		const { incrementLikeCountInDb } = await import("./LikeButton.data.server");
-		return await incrementLikeCountInDb(normalizedSlug, data.disabled, context);
+		return await incrementLikeCountInDbServer(normalizedSlug, data.disabled, context);
 	} catch (error) {
 		// Unlike the read path, a failed write must not fail open: returning a
 		// success-shaped zero would silently drop the like (and reset the UI to
@@ -82,8 +109,7 @@ export async function decrementLikeCount(
 	const normalizedSlug = normalizePathname(data.slug);
 
 	try {
-		const { decrementLikeCountInDb } = await import("./LikeButton.data.server");
-		return await decrementLikeCountInDb(normalizedSlug, context);
+		return await decrementLikeCountInDbServer(normalizedSlug, context);
 	} catch (error) {
 		warnCounterFailureOnce("decrement likes", error);
 		throw error;

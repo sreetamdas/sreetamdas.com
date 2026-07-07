@@ -7,14 +7,9 @@
  * repeated reloads or no-cookie replays from one visitor do not inflate D1
  * counters within the TTL window.
  */
-import "@tanstack/react-start/server-only";
-import { createServerFn } from "@tanstack/react-start";
-import { getRequestHeader, setCookie } from "@tanstack/react-start/server";
-import { env } from "cloudflare:workers";
+import { createServerFn, createServerOnlyFn } from "@tanstack/react-start";
 
 import { LIKES_SALT_VERSION } from "@/config";
-import { getDb } from "@/db";
-import { upsertPageViews } from "@/lib/domains/PageViews";
 import { normalizePathname } from "@/lib/helpers/utils";
 
 import {
@@ -51,6 +46,8 @@ type ViewVisitor = {
 	ipHash: string;
 };
 
+type ViewWrite = (normalizedSlug: string) => Promise<void>;
+
 export type PageViewRecordResult = {
 	recorded: boolean;
 };
@@ -68,16 +65,18 @@ export const recordPageViewServerFn = createServerFn({
 		return validatePagePathnamePayload(data, "Invalid page view record payload");
 	})
 	.handler(async ({ data }) => {
-		return await recordPageView(data, getViewRecordContext());
+		const [context, runtime] = await Promise.all([getViewRecordContext(), getViewRuntime()]);
+		return await recordPageView(data, context, runtime, upsertPageViewInDb);
 	});
 
 export async function recordPageView(
 	data: PagePathnamePayload,
 	context: ViewRecordContext = {},
-	runtime: ViewRuntime = env,
+	runtime?: ViewRuntime,
+	writeView: ViewWrite = upsertPageViewInDb,
 ): Promise<PageViewRecordResult> {
 	const normalizedSlug = normalizeViewSlug(data.slug);
-	if (data.disabled || !normalizedSlug) {
+	if (data.disabled || !normalizedSlug || !runtime) {
 		return { recorded: false };
 	}
 
@@ -98,7 +97,7 @@ export async function recordPageView(
 		}
 
 		await markRecentView(runtime.KV, dedupeKeys);
-		await upsertPageViews(getDb(), normalizedSlug);
+		await writeView(normalizedSlug);
 		return { recorded: true };
 	} catch (error) {
 		warnCounterFailureOnce("record page view", error);
@@ -106,7 +105,23 @@ export async function recordPageView(
 	}
 }
 
-function getViewRecordContext(): ViewRecordContext {
+const getViewRuntime = createServerOnlyFn(async (): Promise<ViewRuntime> => {
+	const { env } = await import("cloudflare:workers");
+	return {
+		KV: env.KV,
+		LIKES_COOKIE_SECRET: env.LIKES_COOKIE_SECRET,
+		LIKES_IP_SALT: env.LIKES_IP_SALT,
+	};
+});
+
+const upsertPageViewInDb = createServerOnlyFn(async (normalizedSlug: string): Promise<void> => {
+	const { getDb } = await import("@/db");
+	const { upsertPageViews } = await import("@/lib/domains/PageViews");
+	await upsertPageViews(getDb(), normalizedSlug);
+});
+
+const getViewRecordContext = createServerOnlyFn(async (): Promise<ViewRecordContext> => {
+	const { getRequestHeader, setCookie } = await import("@tanstack/react-start/server");
 	const clientIp = getRequestHeader("cf-connecting-ip");
 	const cookieHeader = getRequestHeader("cookie");
 	const context: ViewRecordContext = {
@@ -129,7 +144,7 @@ function getViewRecordContext(): ViewRecordContext {
 	}
 
 	return context;
-}
+});
 
 function normalizeViewSlug(slug: string): string | undefined {
 	if (slug.length > MAX_SLUG_LENGTH || !slug.startsWith("/") || slug.startsWith("//")) {
