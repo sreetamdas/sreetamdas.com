@@ -18,9 +18,24 @@
  * Steps are handled at runtime by the <Steps> component (see slide-components.tsx),
  * not by build-time content splitting.
  */
+import { dirname, relative, resolve as resolvePath, sep } from "node:path";
 import { type Plugin } from "vite-plus";
 
 const NOTES_REGEXP = /<Notes>([\s\S]*?)<\/Notes>/g;
+
+const SLIDE_COMPONENTS_MODULE = "src/lib/components/MDX/slide-components";
+
+/**
+ * Resolve the slide-components import to a path relative to the transformed
+ * `.re.mdx` file. The plugin runs at `enforce: "pre"`, before the alias plugin
+ * resolves `@/...`, so an aliased import survives into Rolldown's build-time
+ * resolution and fails there. A relative specifier resolves without the alias.
+ */
+function slideComponentsSpecifier(root: string, id: string): string {
+	const targetAbs = resolvePath(root, SLIDE_COMPONENTS_MODULE);
+	const relativePath = relative(dirname(id), targetAbs).split(sep).join("/");
+	return relativePath.startsWith(".") ? relativePath : `./${relativePath}`;
+}
 
 /**
  * Split source on delimiter lines, respecting code fences (``` and ~~~).
@@ -246,9 +261,13 @@ function extractNotes(text: string): { content: string; notes: string | null } {
 }
 
 export function slideDeckPlugin(): Plugin {
+	let root = process.cwd();
 	return {
 		name: "slide-deck-transform",
 		enforce: "pre",
+		configResolved(config) {
+			root = config.root;
+		},
 		async transform(code: string, id: string) {
 			if (!id.endsWith(".re.mdx")) return;
 
@@ -289,7 +308,7 @@ export function slideDeckPlugin(): Plugin {
 					: "{ ..._slideMDXComponents }";
 
 				return `
-				import { slideMDXComponents as _slideMDXComponents } from "@/lib/components/MDX/slide-components";
+				import { slideMDXComponents as _slideMDXComponents } from "${slideComponentsSpecifier(root, id)}";
 				${uniqueModules.join("\n")}
 
 				export default ${JSON.stringify(slides)};
