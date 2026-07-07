@@ -8,7 +8,7 @@ import { IS_DEV, SITE_TITLE_APPEND } from "@/config";
 import { FOOBAR_SOURCE_CODE } from "@/lib/domains/foobar/helpers";
 import { captureException } from "@/lib/domains/Sentry";
 
-import "./global.css";
+import appCss from "./global.css?url";
 
 /*
  * Devtools are dev-only but the top-level imports were pulling the packages
@@ -100,6 +100,7 @@ export const Route = createRootRoute({
 				rel: "preconnect",
 				href: "https://static.cloudflareinsights.com",
 			},
+			{ rel: "stylesheet", href: appCss },
 			{
 				rel: "icon",
 				href: "/favicon.png",
