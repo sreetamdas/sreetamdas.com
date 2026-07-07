@@ -2,6 +2,22 @@
 @import "../styles/bricolage-grotesque.css";
 @import "@fontsource-variable/inter/index.css";
 
+/*
+ * Inter fallback with metric overrides so the system-font fallback matches
+ * Inter's metrics. This prevents the ~0.12 CLS from paragraph reflow when
+ * Inter swaps in on fast (cache-hit) loads. Without this, the fallback
+ * sans-serif has different glyph widths, causing line breaks to shift.
+ */
+@font-face {
+	font-family: "Inter Fallback";
+	src: local("Arial");
+	font-display: swap;
+	size-adjust: 100.2%;
+	ascent-override: 90.6%;
+	descent-override: 22.5%;
+	line-gap-override: 0%;
+}
+
 @source "../../content";
 
 @custom-variant dark {
@@ -31,7 +47,7 @@
 	--color-background: var(--not-white);
 	--color-karma-background: var(--karma-background);
 
-	--font-sans: "Inter Variable", sans-serif;
+	--font-sans: "Inter Variable", "Inter Fallback", sans-serif;
 	--font-serif: "Bricolage Grotesque Variable", serif;
 	--font-mono: "Iosevka", monospace;
 
