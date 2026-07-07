@@ -1,5 +1,5 @@
 @import "tailwindcss";
-@import "@fontsource-variable/bricolage-grotesque/standard.css";
+@import "../styles/bricolage-grotesque.css";
 @import "@fontsource-variable/inter/index.css";
 
 @source "../../content";
