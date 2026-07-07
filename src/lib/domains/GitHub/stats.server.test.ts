@@ -22,7 +22,7 @@ function createCacheMock() {
 	};
 }
 
-import { readGitHubStats } from "./server";
+import { readGitHubStats } from "./stats.server";
 
 describe("readGitHubStats", () => {
 	let cacheMock: ReturnType<typeof createCacheMock>;
