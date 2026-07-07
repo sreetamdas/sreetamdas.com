@@ -95,7 +95,7 @@
 	},
 	"devDependencies": {
 		"@cloudflare/vite-plugin": "1.43.0",
-		"@cloudflare/vitest-pool-workers": "0.18.0",
+		"@cloudflare/vitest-pool-workers": "^0.17.0",
 		"@content-collections/cli": "^0.1.9",
 		"@content-collections/core": "^0.15.2",
 		"@content-collections/vite": "^0.3.0",
@@ -124,7 +124,7 @@
 		"typescript": "^6.0.3",
 		"vite": "npm:@voidzero-dev/vite-plus-core@0.2.1",
 		"vite-plus": "catalog:",
-		"vitest": "4.1.10",
+		"vitest": "4.1.9",
 		"wrangler": "^4.107.0"
 	},
 	"engines": {
