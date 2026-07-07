@@ -8,7 +8,7 @@ allowBuilds:
   "@tailwindcss/oxide": true
 catalog:
   vite: npm:@voidzero-dev/vite-plus-core@latest
-  vite-plus: ^0.2.1
+  vite-plus: ^0.2.2
 overrides:
   kysely: 0.28.8
   vite: "catalog:"
