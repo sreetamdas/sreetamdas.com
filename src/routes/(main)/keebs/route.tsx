@@ -9,6 +9,9 @@ import { getKeebsRenderable } from "./-keebs.server";
 
 export const Route = createFileRoute("/(main)/keebs")({
 	component: KeebsPage,
+	headers: () => ({
+		"cache-control": "public, s-maxage=3600, stale-while-revalidate=86400",
+	}),
 	staleTime: STATIC_SERVER_FUNCTION_STALE_TIME,
 	loader: () => getKeebsRenderable(),
 	head: () => ({

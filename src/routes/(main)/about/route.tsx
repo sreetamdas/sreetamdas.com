@@ -9,6 +9,9 @@ import { getAboutRenderable } from "./-about.server";
 
 export const Route = createFileRoute("/(main)/about")({
 	component: AboutPage,
+	headers: () => ({
+		"cache-control": "public, s-maxage=3600, stale-while-revalidate=86400",
+	}),
 	loader: () => {
 		return getAboutRenderable();
 	},

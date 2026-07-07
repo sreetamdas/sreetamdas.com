@@ -9,6 +9,9 @@ import { getNewsletterEmailsPreviewsRenderable } from "./-index.server";
 
 export const Route = createFileRoute("/(main)/newsletter/")({
 	component: NewsletterEmailsPage,
+	headers: () => ({
+		"cache-control": "public, s-maxage=3600, stale-while-revalidate=86400",
+	}),
 	staleTime: STATIC_SERVER_FUNCTION_STALE_TIME,
 	loader: async () => {
 		return getNewsletterEmailsPreviewsRenderable();

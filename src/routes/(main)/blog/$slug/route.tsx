@@ -12,6 +12,9 @@ import { getBlogRenderable } from "./-$slug.server";
 
 export const Route = createFileRoute("/(main)/blog/$slug")({
 	component: RouteComponent,
+	headers: () => ({
+		"cache-control": "public, s-maxage=3600, stale-while-revalidate=86400",
+	}),
 	staleTime: 1000 * 60 * 60 * 24,
 	loader: ({ params }: { params: { slug: string } }) => {
 		return getBlogRenderable({ data: { slug: params.slug } });
