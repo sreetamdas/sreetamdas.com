@@ -28,6 +28,7 @@ import { Route as mainSlugRouteRouteImport } from './routes/(main)/$slug/route'
 import { Route as mainIndexRouteRouteImport } from './routes/(main)/index/route'
 import { Route as mainNewsletterIndexRouteImport } from './routes/(main)/newsletter/index'
 import { Route as mainBlogIndexRouteImport } from './routes/(main)/blog/index'
+import { Route as apiApiViewsRouteImport } from './routes/(api)/api/views'
 import { Route as apiApiStagingSmokeRouteImport } from './routes/(api)/api/staging-smoke'
 import { Route as apiApiPresenceRouteImport } from './routes/(api)/api/presence'
 import { Route as apiApiCoffeeRouteImport } from './routes/(api)/api/coffee'
@@ -139,6 +140,11 @@ const mainBlogIndexRoute = mainBlogIndexRouteImport.update({
   path: '/',
   getParentRoute: () => mainBlogRouteRoute,
 } as any)
+const apiApiViewsRoute = apiApiViewsRouteImport.update({
+  id: '/(api)/api/views',
+  path: '/api/views',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const apiApiStagingSmokeRoute = apiApiStagingSmokeRouteImport.update({
   id: '/(api)/api/staging-smoke',
   path: '/api/staging-smoke',
@@ -241,6 +247,7 @@ export interface FileRoutesByFullPath {
   '/api/coffee': typeof apiApiCoffeeRoute
   '/api/presence': typeof apiApiPresenceRoute
   '/api/staging-smoke': typeof apiApiStagingSmokeRoute
+  '/api/views': typeof apiApiViewsRoute
   '/blog/': typeof mainBlogIndexRoute
   '/newsletter/': typeof mainNewsletterIndexRoute
   '/foobar/$slug': typeof mainfoobarFoobarSlugRouteRoute
@@ -272,6 +279,7 @@ export interface FileRoutesByTo {
   '/api/coffee': typeof apiApiCoffeeRoute
   '/api/presence': typeof apiApiPresenceRoute
   '/api/staging-smoke': typeof apiApiStagingSmokeRoute
+  '/api/views': typeof apiApiViewsRoute
   '/blog': typeof mainBlogIndexRoute
   '/newsletter': typeof mainNewsletterIndexRoute
   '/foobar/$slug': typeof mainfoobarFoobarSlugRouteRoute
@@ -309,6 +317,7 @@ export interface FileRoutesById {
   '/(api)/api/coffee': typeof apiApiCoffeeRoute
   '/(api)/api/presence': typeof apiApiPresenceRoute
   '/(api)/api/staging-smoke': typeof apiApiStagingSmokeRoute
+  '/(api)/api/views': typeof apiApiViewsRoute
   '/(main)/blog/': typeof mainBlogIndexRoute
   '/(main)/newsletter/': typeof mainNewsletterIndexRoute
   '/(main)/(foobar)/foobar/$slug': typeof mainfoobarFoobarSlugRouteRoute
@@ -345,6 +354,7 @@ export interface FileRouteTypes {
     | '/api/coffee'
     | '/api/presence'
     | '/api/staging-smoke'
+    | '/api/views'
     | '/blog/'
     | '/newsletter/'
     | '/foobar/$slug'
@@ -376,6 +386,7 @@ export interface FileRouteTypes {
     | '/api/coffee'
     | '/api/presence'
     | '/api/staging-smoke'
+    | '/api/views'
     | '/blog'
     | '/newsletter'
     | '/foobar/$slug'
@@ -412,6 +423,7 @@ export interface FileRouteTypes {
     | '/(api)/api/coffee'
     | '/(api)/api/presence'
     | '/(api)/api/staging-smoke'
+    | '/(api)/api/views'
     | '/(main)/blog/'
     | '/(main)/newsletter/'
     | '/(main)/(foobar)/foobar/$slug'
@@ -431,6 +443,7 @@ export interface RootRouteChildren {
   apiApiCoffeeRoute: typeof apiApiCoffeeRoute
   apiApiPresenceRoute: typeof apiApiPresenceRoute
   apiApiStagingSmokeRoute: typeof apiApiStagingSmokeRoute
+  apiApiViewsRoute: typeof apiApiViewsRoute
   apiApiAuthSplatRoute: typeof apiApiAuthSplatRoute
   apiApiLoginCloudflareRoute: typeof apiApiLoginCloudflareRoute
   apiApiLoginGoogleRoute: typeof apiApiLoginGoogleRoute
@@ -573,6 +586,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/blog/'
       preLoaderRoute: typeof mainBlogIndexRouteImport
       parentRoute: typeof mainBlogRouteRoute
+    }
+    '/(api)/api/views': {
+      id: '/(api)/api/views'
+      path: '/api/views'
+      fullPath: '/api/views'
+      preLoaderRoute: typeof apiApiViewsRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/(api)/api/staging-smoke': {
       id: '/(api)/api/staging-smoke'
@@ -805,6 +825,7 @@ const rootRouteChildren: RootRouteChildren = {
   apiApiCoffeeRoute: apiApiCoffeeRoute,
   apiApiPresenceRoute: apiApiPresenceRoute,
   apiApiStagingSmokeRoute: apiApiStagingSmokeRoute,
+  apiApiViewsRoute: apiApiViewsRoute,
   apiApiAuthSplatRoute: apiApiAuthSplatRoute,
   apiApiLoginCloudflareRoute: apiApiLoginCloudflareRoute,
   apiApiLoginGoogleRoute: apiApiLoginGoogleRoute,

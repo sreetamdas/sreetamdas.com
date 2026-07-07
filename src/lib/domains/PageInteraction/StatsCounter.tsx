@@ -20,6 +20,7 @@ import {
 	type LikeMutationAction,
 } from "./StatsCounter.helpers";
 import { pageMetricsQueryKey, usePageMetrics } from "./usePageMetrics";
+import { useRecordPageView } from "./useRecordPageView";
 import { fetchViewCountServerFn, type PageViewCount } from "./ViewsCounter.server";
 
 type StatsCounterProps = {
@@ -47,6 +48,7 @@ export const StatsCounter = ({
 	const { pathname } = useLocation();
 	const normalized_slug = slug ?? pathname;
 	const normalizedPathname = normalizePathname(normalized_slug);
+	useRecordPageView(normalizedPathname, disabled);
 
 	if (variant === "engagement") {
 		return (
