@@ -1,8 +1,7 @@
 import bricolageGrotesqueFont from "@fontsource-variable/bricolage-grotesque/files/bricolage-grotesque-latin-standard-normal.woff2?url";
 import interFont from "@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { HeadContent, Link, Outlet, Scripts, createRootRoute } from "@tanstack/react-router";
-import { lazy, type ReactNode, Suspense, useEffect, useState } from "react";
+import { lazy, type ReactNode, Suspense, useEffect } from "react";
 
 import { IS_DEV, SITE_TITLE_APPEND } from "@/config";
 import { FOOBAR_SOURCE_CODE } from "@/lib/domains/foobar/helpers";
@@ -137,41 +136,27 @@ export const Route = createRootRoute({
 });
 
 function RootComponent() {
-	const [queryClient] = useState(
-		() =>
-			new QueryClient({
-				defaultOptions: {
-					queries: {
-						refetchOnWindowFocus: false,
-						refetchOnReconnect: false,
-					},
-				},
-			}),
-	);
-
 	return (
 		<RootDocument>
-			<QueryClientProvider client={queryClient}>
-				<Outlet />
-				{IS_DEV && TanStackDevtools && TanStackRouterDevtoolsPanel && ReactQueryDevtoolsPanel ? (
-					<Suspense fallback={null}>
-						<TanStackDevtools
-							config={{ hideUntilHover: true, panelLocation: "bottom", position: "bottom-right" }}
-							plugins={[
-								{
-									name: "Router",
-									render: <TanStackRouterDevtoolsPanel />,
-									defaultOpen: true,
-								},
-								{
-									name: "Query",
-									render: <ReactQueryDevtoolsPanel />,
-								},
-							]}
-						/>
-					</Suspense>
-				) : null}
-			</QueryClientProvider>
+			<Outlet />
+			{IS_DEV && TanStackDevtools && TanStackRouterDevtoolsPanel && ReactQueryDevtoolsPanel ? (
+				<Suspense fallback={null}>
+					<TanStackDevtools
+						config={{ hideUntilHover: true, panelLocation: "bottom", position: "bottom-right" }}
+						plugins={[
+							{
+								name: "Router",
+								render: <TanStackRouterDevtoolsPanel />,
+								defaultOpen: true,
+							},
+							{
+								name: "Query",
+								render: <ReactQueryDevtoolsPanel />,
+							},
+						]}
+					/>
+				</Suspense>
+			) : null}
 		</RootDocument>
 	);
 }

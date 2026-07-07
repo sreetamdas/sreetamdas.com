@@ -7,16 +7,22 @@
  */
 "use client";
 
-import { useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useEffect } from "react";
 
 import { recordPageViewServerFn, type PageViewRecordResult } from "./ViewRecorder.server";
 
 const recordedPathnames = new Set<string>();
+const recordPromises = new Map<string, Promise<PageViewRecordResult>>();
+
+export function waitForPageViewRecord(normalizedPathname: string) {
+	return (
+		recordPromises.get(normalizedPathname) ??
+		Promise.resolve<PageViewRecordResult>({ recorded: false })
+	);
+}
 
 export function useRecordPageView(normalizedPathname: string, disabled: boolean) {
-	const queryClient = useQueryClient();
 	const recordPageView = useServerFn<() => Promise<PageViewRecordResult>>(() =>
 		recordPageViewServerFn({ data: { slug: normalizedPathname, disabled } }),
 	);
@@ -27,12 +33,8 @@ export function useRecordPageView(normalizedPathname: string, disabled: boolean)
 		}
 
 		recordedPathnames.add(normalizedPathname);
-		void recordPageView()
-			.then((result) => {
-				if (result.recorded) {
-					void queryClient.invalidateQueries({ queryKey: [normalizedPathname] });
-				}
-			})
-			.catch(() => undefined);
-	}, [disabled, normalizedPathname, queryClient, recordPageView]);
+		const recordPromise = recordPageView().catch(() => ({ recorded: false }));
+		recordPromises.set(normalizedPathname, recordPromise);
+		void recordPromise;
+	}, [disabled, normalizedPathname, recordPageView]);
 }
