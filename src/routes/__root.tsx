@@ -1,4 +1,4 @@
-import bricolageGrotesqueFont from "@fontsource-variable/bricolage-grotesque/files/bricolage-grotesque-latin-wght-normal.woff2?url";
+import bricolageGrotesqueFont from "@fontsource-variable/bricolage-grotesque/files/bricolage-grotesque-latin-standard-normal.woff2?url";
 import interFont from "@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { HeadContent, Link, Outlet, Scripts, createRootRoute } from "@tanstack/react-router";
