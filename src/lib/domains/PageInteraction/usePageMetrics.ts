@@ -4,7 +4,6 @@ import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 
 import { fetchPageMetricsServerFn, type PageMetrics } from "./Metrics.server";
-import { waitForPageViewRecord } from "./useRecordPageView";
 
 export function pageMetricsQueryKey(normalizedPathname: string) {
 	return [normalizedPathname, "metrics"] as const;
@@ -18,10 +17,7 @@ export function usePageMetrics(normalizedPathname: string, disabled: boolean) {
 	);
 
 	return useQuery({
-		queryFn: async () => {
-			await waitForPageViewRecord(normalizedPathname);
-			return fetchMetrics();
-		},
+		queryFn: fetchMetrics,
 		queryKey: pageMetricsQueryKey(normalizedPathname),
 		enabled: !disabled,
 		staleTime: 1000 * 30,
