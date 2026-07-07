@@ -19,6 +19,7 @@ export function usePageMetrics(normalizedPathname: string, disabled: boolean) {
 	return useQuery({
 		queryFn: fetchMetrics,
 		queryKey: pageMetricsQueryKey(normalizedPathname),
+		enabled: !disabled,
 		staleTime: 1000 * 30,
 		// This RPC no longer records a view (the increment moved to the Worker
 		// document-request path), but we still avoid background replays so a stale
