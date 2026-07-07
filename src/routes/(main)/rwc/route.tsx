@@ -11,9 +11,7 @@ import { getHighlightedCode } from "./-rwc.server";
 
 export const Route = createFileRoute("/(main)/rwc")({
 	component: RWCPage,
-	headers: () => ({
-		"cache-control": "public, max-age=0, stale-while-revalidate=3600",
-	}),
+	headers: () => HTML_CACHE_HEADERS,
 	staleTime: STATIC_SERVER_FUNCTION_STALE_TIME,
 	loader: async () => getHighlightedCode(),
 	errorComponent: (err) => <ErrorComponent error={err} />,

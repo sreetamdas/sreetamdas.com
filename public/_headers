@@ -1,6 +1,12 @@
 /*
   Cache-Control: public, max-age=0, stale-while-revalidate=3600
+  Cloudflare-CDN-Cache-Control: public, max-age=300, stale-while-revalidate=3600
+
+/stats
+  ! Cloudflare-CDN-Cache-Control
+  Cloudflare-CDN-Cache-Control: public, max-age=60, stale-while-revalidate=600
 
 /assets/*
   ! Cache-Control
+  ! Cloudflare-CDN-Cache-Control
   Cache-Control: public, max-age=31536000, immutable

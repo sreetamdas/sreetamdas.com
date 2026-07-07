@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 
 import { SITE_DESCRIPTION, SITE_TITLE_APPEND } from "@/config";
+import { HTML_CACHE_HEADERS } from "@/lib/cacheHeaders";
 import { StatsCounter } from "@/lib/domains/PageInteraction/StatsCounter";
 import { canonicalUrl, defaultOgImageUrl } from "@/lib/seo";
 
@@ -8,9 +9,7 @@ import { getRootPageRenderable } from "./-$slug.server";
 
 export const Route = createFileRoute("/(main)/$slug")({
 	component: MDXPageSlugPage,
-	headers: () => ({
-		"cache-control": "public, max-age=0, stale-while-revalidate=3600",
-	}),
+	headers: () => HTML_CACHE_HEADERS,
 	staleTime: 1000 * 60 * 60 * 24,
 	loader: ({ params }: { params: { slug: string } }) => {
 		return getRootPageRenderable({ data: { slug: params.slug } });
