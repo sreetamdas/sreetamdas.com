@@ -9,7 +9,7 @@ import { getRootPageRenderable } from "./-$slug.server";
 export const Route = createFileRoute("/(main)/$slug")({
 	component: MDXPageSlugPage,
 	headers: () => ({
-		"cache-control": "public, s-maxage=3600, stale-while-revalidate=86400",
+		"cache-control": "public, max-age=0, stale-while-revalidate=3600",
 	}),
 	staleTime: 1000 * 60 * 60 * 24,
 	loader: ({ params }: { params: { slug: string } }) => {

@@ -8,7 +8,7 @@ import { getBlogArchiveRenderable } from "./-index.server";
 export const Route = createFileRoute("/(main)/blog/")({
 	component: BlogArchivePage,
 	headers: () => ({
-		"cache-control": "public, s-maxage=3600, stale-while-revalidate=86400",
+		"cache-control": "public, max-age=0, stale-while-revalidate=3600",
 	}),
 	staleTime: 1000 * 60 * 60 * 24,
 	loader: () => getBlogArchiveRenderable(),

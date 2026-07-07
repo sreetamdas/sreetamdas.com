@@ -23,7 +23,7 @@ import { getStats, parseDateRange, type StatsSearch } from "./-stats.server";
 export const Route = createFileRoute("/(main)/stats")({
 	component: StatsPage,
 	headers: () => ({
-		"cache-control": "public, s-maxage=300, stale-while-revalidate=600",
+		"cache-control": "public, max-age=0, stale-while-revalidate=600",
 	}),
 	validateSearch: (search: Record<string, string>): StatsSearch => ({
 		period: parseDateRange(search.period),
