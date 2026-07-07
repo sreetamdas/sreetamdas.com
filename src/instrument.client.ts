@@ -4,9 +4,11 @@
  */
 import * as Sentry from "@sentry/tanstackstart-react";
 
+import { IS_DEV } from "./config";
+
 Sentry.init({
 	dsn: import.meta.env.VITE_SENTRY_DSN,
-	enabled: !import.meta.env.DEV,
+	enabled: !IS_DEV,
 	environment: import.meta.env.MODE,
 	enableLogs: true,
 	sendDefaultPii: false,
