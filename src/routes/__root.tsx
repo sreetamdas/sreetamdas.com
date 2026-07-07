@@ -1,17 +1,36 @@
 import bricolageGrotesqueFont from "@fontsource-variable/bricolage-grotesque/files/bricolage-grotesque-latin-standard-normal.woff2?url";
 import interFont from "@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url";
-import { TanStackDevtools } from "@tanstack/react-devtools";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { ReactQueryDevtoolsPanel } from "@tanstack/react-query-devtools";
 import { HeadContent, Link, Outlet, Scripts, createRootRoute } from "@tanstack/react-router";
-import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
-import { type ReactNode, useEffect, useState } from "react";
+import { lazy, type ReactNode, Suspense, useEffect, useState } from "react";
 
 import { IS_DEV, SITE_TITLE_APPEND } from "@/config";
 import { FOOBAR_SOURCE_CODE } from "@/lib/domains/foobar/helpers";
 import { captureException } from "@/lib/domains/Sentry";
 
 import appCss from "./global.css?url";
+
+/*
+ * Devtools are dev-only but the top-level imports were pulling the packages
+ * into the production bundle. Lazy-load them so the code only ships in dev.
+ */
+const TanStackDevtools = IS_DEV
+	? lazy(() => import("@tanstack/react-devtools").then((m) => ({ default: m.TanStackDevtools })))
+	: null;
+const TanStackRouterDevtoolsPanel = IS_DEV
+	? lazy(() =>
+			import("@tanstack/react-router-devtools").then((m) => ({
+				default: m.TanStackRouterDevtoolsPanel,
+			})),
+		)
+	: null;
+const ReactQueryDevtoolsPanel = IS_DEV
+	? lazy(() =>
+			import("@tanstack/react-query-devtools").then((m) => ({
+				default: m.ReactQueryDevtoolsPanel,
+			})),
+		)
+	: null;
 
 export const Route = createRootRoute({
 	component: RootComponent,
@@ -134,21 +153,23 @@ function RootComponent() {
 		<RootDocument>
 			<QueryClientProvider client={queryClient}>
 				<Outlet />
-				{IS_DEV ? (
-					<TanStackDevtools
-						config={{ hideUntilHover: true, panelLocation: "bottom", position: "bottom-right" }}
-						plugins={[
-							{
-								name: "Router",
-								render: <TanStackRouterDevtoolsPanel />,
-								defaultOpen: true,
-							},
-							{
-								name: "Query",
-								render: <ReactQueryDevtoolsPanel />,
-							},
-						]}
-					/>
+				{IS_DEV && TanStackDevtools && TanStackRouterDevtoolsPanel && ReactQueryDevtoolsPanel ? (
+					<Suspense fallback={null}>
+						<TanStackDevtools
+							config={{ hideUntilHover: true, panelLocation: "bottom", position: "bottom-right" }}
+							plugins={[
+								{
+									name: "Router",
+									render: <TanStackRouterDevtoolsPanel />,
+									defaultOpen: true,
+								},
+								{
+									name: "Query",
+									render: <ReactQueryDevtoolsPanel />,
+								},
+							]}
+						/>
+					</Suspense>
 				) : null}
 			</QueryClientProvider>
 		</RootDocument>
