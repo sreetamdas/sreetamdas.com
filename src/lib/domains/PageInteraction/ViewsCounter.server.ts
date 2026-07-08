@@ -1,4 +1,5 @@
 import { createServerFn, createServerOnlyFn } from "@tanstack/react-start";
+import { setResponseHeader } from "@tanstack/react-start/server";
 
 import { normalizePathname } from "@/lib/helpers/utils";
 
@@ -19,6 +20,9 @@ export const fetchViewCountServerFn = createServerFn({
 		return validatePagePathnamePayload(data, "Invalid page views payload");
 	})
 	.handler(async ({ data }) => {
+		// Live counter: keep this read out of the Worker response cache
+		// (cache.enabled) so the displayed count isn't served stale.
+		setResponseHeader("Cache-Control", "no-store");
 		return fetchViewCount(data);
 	});
 
