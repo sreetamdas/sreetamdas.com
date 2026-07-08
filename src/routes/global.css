@@ -48,7 +48,7 @@
 	--color-karma-background: var(--karma-background);
 
 	--font-sans: "Inter Variable", "Inter Fallback", sans-serif;
-	--font-serif: "Bricolage Grotesque Variable", serif;
+	--font-serif: "Bricolage Grotesque Variable", "Bricolage Fallback", serif;
 	--font-mono: "Iosevka", monospace;
 
 	--max-width: 650px;
