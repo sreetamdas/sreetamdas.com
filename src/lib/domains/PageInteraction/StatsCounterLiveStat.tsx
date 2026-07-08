@@ -13,8 +13,11 @@ import { cn } from "@/lib/helpers/utils";
 const statItemClassName = "flex items-center justify-center gap-1.5";
 const statValueClassName = "inline-block min-w-[2ch] text-left tabular-nums";
 const statTooltipTriggerClassName = "group relative";
+// No opacity transition: this stat mounts client-side after paint, and a
+// transition on the freshly-inserted tooltip animates opacity 1→0 (a flash
+// without hover), so the tooltip just shows/hides instantly on hover.
 const statTooltipBubbleClassName =
-	"pointer-events-none absolute bottom-full left-1/2 z-50 mb-2 w-max max-w-64 -translate-x-1/2 rounded-global border border-solid border-foreground/15 bg-background px-2.5 py-1.5 text-center text-xs leading-snug text-foreground opacity-0 shadow-lg transition-opacity duration-100 group-hover:opacity-100 group-focus-within:opacity-100";
+	"pointer-events-none absolute bottom-full left-1/2 z-50 mb-2 w-max max-w-64 -translate-x-1/2 rounded-global border border-solid border-foreground/15 bg-background px-2.5 py-1.5 text-center text-xs leading-snug text-foreground opacity-0 shadow-lg group-hover:opacity-100 group-focus-within:opacity-100";
 
 export const StatsCounterLiveStat = () => {
 	const { count, connected } = useLiveViewerCount();
