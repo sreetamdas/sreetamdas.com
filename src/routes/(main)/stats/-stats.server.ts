@@ -15,8 +15,8 @@ export const getStats = createServerFn({ method: "GET" })
 		return { period: parseDateRange(data.period) };
 	})
 	.handler(async ({ data }) => {
-		const { fetchPlausibleStats } = await import("@/lib/domains/Plausible/stats");
-		return fetchPlausibleStats(data.period);
+		const { readPlausibleStatsCached } = await import("@/lib/domains/Plausible/stats");
+		return readPlausibleStatsCached(data.period);
 	});
 
 export function parseDateRange(value: unknown): PlausibleDateRange {

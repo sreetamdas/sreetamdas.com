@@ -179,6 +179,51 @@ export async function fetchPlausibleStats(
 	}
 }
 
+const STATS_CACHE_NAME = "plausible-stats";
+const STATS_CACHE_KEY_PREFIX = "https://internal.cache/plausible-stats/";
+const STATS_CACHE_TTL = 300;
+
+/**
+ * Explicit per-period edge cache for the /stats read. `fetchPlausibleStats` fans
+ * out ~13 Plausible API calls, so an uncached period view is expensive. Caching
+ * is opt-in via the Cache API (like the GitHub footer stats) rather than the
+ * blanket Worker response cache, which also swept up dynamic per-visitor reads.
+ */
+export async function readPlausibleStatsCached(
+	dateRange: PlausibleDateRange = "30d",
+): Promise<PlausibleStats> {
+	const period = normalizePlausibleDateRange(dateRange);
+	const cache = await caches.open(STATS_CACHE_NAME);
+	const cacheKey = new Request(`${STATS_CACHE_KEY_PREFIX}${period}`);
+
+	const cached = await cache.match(cacheKey);
+	if (cached) {
+		const data: unknown = await cached.json();
+		if (isPlausibleStats(data)) return data;
+	}
+
+	const stats = await fetchPlausibleStats(period);
+	// Only cache a successful read; leave error/missing-config states uncached so
+	// they recover on the next request instead of sticking for the whole TTL.
+	if (stats.status === "ready") {
+		await cache.put(
+			cacheKey,
+			new Response(JSON.stringify(stats), {
+				headers: {
+					"content-type": "application/json",
+					"cache-control": `max-age=${STATS_CACHE_TTL}`,
+				},
+			}),
+		);
+	}
+
+	return stats;
+}
+
+function isPlausibleStats(value: unknown): value is PlausibleStats {
+	return typeof value === "object" && value !== null && "status" in value && "overview" in value;
+}
+
 function normalizePlausibleDateRange(value: PlausibleDateRange): PlausibleDateRange {
 	return PLAUSIBLE_DATE_RANGES.includes(value) ? value : "30d";
 }
