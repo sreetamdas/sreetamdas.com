@@ -1,10 +1,9 @@
-import { createServerFn } from "@tanstack/react-start";
+import { createServerFn, createServerOnlyFn } from "@tanstack/react-start";
 
 import { type LikeCount } from "@/lib/domains/PageViews";
 
 import { fetchLikeCount } from "./LikeButton.server";
 import { type LikeRequestContext } from "./LikeIdentity";
-import { getLikeRequestContext } from "./LikeRequestContext.server";
 import { type PagePathnamePayload, validatePagePathnamePayload } from "./shared";
 import { fetchViewCount, type PageViewCount } from "./ViewsCounter.server";
 
@@ -17,8 +16,13 @@ export const fetchPageMetricsServerFn = createServerFn({
 		return validatePagePathnamePayload(data, "Invalid metrics payload");
 	})
 	.handler(async ({ data }) => {
-		return fetchPageMetrics(data, getLikeRequestContext());
+		return fetchPageMetrics(data, await getLikeRequestContextServer());
 	});
+
+const getLikeRequestContextServer = createServerOnlyFn(async (): Promise<LikeRequestContext> => {
+	const { getLikeRequestContext } = await import("./LikeRequestContext.server");
+	return getLikeRequestContext();
+});
 
 // Views and likes are independent reads, so run them concurrently within the one
 // request. The win over two separate client calls is a single round-trip and one

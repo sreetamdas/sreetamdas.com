@@ -2,6 +2,7 @@ import { Await, createFileRoute } from "@tanstack/react-router";
 import { Suspense } from "react";
 
 import { SITE_DESCRIPTION, SITE_TITLE_APPEND } from "@/config";
+import { STATS_CACHE_HEADERS } from "@/lib/cacheHeaders";
 import { StatsCounter } from "@/lib/domains/PageInteraction/StatsCounter";
 import {
 	createEmptyStats,
@@ -22,6 +23,7 @@ import { getStats, parseDateRange, type StatsSearch } from "./-stats.server";
 
 export const Route = createFileRoute("/(main)/stats")({
 	component: StatsPage,
+	headers: () => STATS_CACHE_HEADERS,
 	validateSearch: (search: Record<string, string>): StatsSearch => ({
 		period: parseDateRange(search.period),
 	}),

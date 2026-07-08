@@ -1,12 +1,14 @@
 import { createFileRoute } from "@tanstack/react-router";
 
 import { SITE_TITLE_APPEND, SITE_URL } from "@/config";
+import { HTML_CACHE_HEADERS } from "@/lib/cacheHeaders";
 import { KarmaShowcase } from "@/lib/components/KarmaShowcase";
 import { StatsCounter } from "@/lib/domains/PageInteraction/StatsCounter";
 import { canonicalUrl } from "@/lib/seo";
 
 export const Route = createFileRoute("/(main)/karma")({
 	component: KarmaPage,
+	headers: () => HTML_CACHE_HEADERS,
 	staleTime: 1000 * 60 * 60 * 24,
 	head: () => ({
 		links: [{ rel: "canonical", href: canonicalUrl("/karma") }],

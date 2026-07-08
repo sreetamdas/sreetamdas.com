@@ -2,6 +2,7 @@ import { createFileRoute, ErrorComponent } from "@tanstack/react-router";
 import { FiLink } from "react-icons/fi";
 
 import { SITE_DESCRIPTION, SITE_TITLE_APPEND } from "@/config";
+import { HTML_CACHE_HEADERS } from "@/lib/cacheHeaders";
 import { StatsCounter } from "@/lib/domains/PageInteraction/StatsCounter";
 import { canonicalUrl, defaultOgImageUrl } from "@/lib/seo";
 import { STATIC_SERVER_FUNCTION_STALE_TIME } from "@/lib/static-server-functions";
@@ -11,6 +12,7 @@ import { getHighlightedCode } from "./-rwc.server";
 
 export const Route = createFileRoute("/(main)/rwc")({
 	component: RWCPage,
+	headers: () => HTML_CACHE_HEADERS,
 	staleTime: STATIC_SERVER_FUNCTION_STALE_TIME,
 	loader: async () => getHighlightedCode(),
 	errorComponent: (err) => <ErrorComponent error={err} />,

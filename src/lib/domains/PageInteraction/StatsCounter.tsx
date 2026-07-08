@@ -3,11 +3,10 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocation } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
-import { type ReactNode } from "react";
-import { FaEye, FaHeart, FaRegCircleUser, FaRegHeart } from "react-icons/fa6";
+import { lazy, type ReactNode, Suspense, useEffect, useState } from "react";
+import { FaEye, FaHeart, FaRegHeart } from "react-icons/fa6";
 
 import { IS_CI, IS_DEV } from "@/config";
-import { useLiveViewerCount } from "@/lib/components/useLiveViewerCount";
 import { cn, normalizePathname } from "@/lib/helpers/utils";
 
 import { decrementLikeServerFn, incrementLikeServerFn, type LikeCount } from "./LikeButton.server";
@@ -20,6 +19,7 @@ import {
 	type LikeMutationAction,
 } from "./StatsCounter.helpers";
 import { pageMetricsQueryKey, usePageMetrics } from "./usePageMetrics";
+import { useRecordPageView } from "./useRecordPageView";
 import { fetchViewCountServerFn, type PageViewCount } from "./ViewsCounter.server";
 
 type StatsCounterProps = {
@@ -37,6 +37,10 @@ const statTooltipTriggerClassName = "group relative";
 const statTooltipBubbleClassName =
 	"pointer-events-none absolute bottom-full left-1/2 z-50 mb-2 w-max max-w-64 -translate-x-1/2 rounded-global border border-solid border-foreground/15 bg-background px-2.5 py-1.5 text-center text-xs leading-snug text-foreground opacity-0 shadow-lg transition-opacity duration-100 group-hover:opacity-100 group-focus-within:opacity-100";
 
+const StatsCounterLiveStat = lazy(() =>
+	import("./StatsCounterLiveStat").then((module) => ({ default: module.StatsCounterLiveStat })),
+);
+
 export const StatsCounter = ({
 	slug,
 	page_type = "page",
@@ -47,6 +51,7 @@ export const StatsCounter = ({
 	const { pathname } = useLocation();
 	const normalized_slug = slug ?? pathname;
 	const normalizedPathname = normalizePathname(normalized_slug);
+	useRecordPageView(normalizedPathname, disabled);
 
 	if (variant === "engagement") {
 		return (
@@ -216,57 +221,45 @@ const ViewsStat = ({ value, noun }: { value: number; noun: "post" | "page" }) =>
 };
 
 const LiveStat = () => {
-	const { count, connected } = useLiveViewerCount();
+	const [shouldRender, setShouldRender] = useState(false);
 
-	if (count === null) {
-		return (
-			<MetricSkeleton
-				icon={
-					<FaRegCircleUser
-						aria-hidden="true"
-						focusable={false}
-						className="size-5 rounded-full text-primary"
-					/>
-				}
-				label="Live viewers across the site"
-				valueWidthClassName="w-[2ch]"
-			/>
-		);
+	useEffect(() => {
+		if (shouldRender) {
+			return;
+		}
+
+		if (typeof window.requestIdleCallback === "function") {
+			const idleId = window.requestIdleCallback(() => setShouldRender(true), { timeout: 3000 });
+			return () => window.cancelIdleCallback(idleId);
+		}
+
+		const timeoutId = window.setTimeout(() => setShouldRender(true), 1500);
+		return () => window.clearTimeout(timeoutId);
+	}, [shouldRender]);
+
+	if (!shouldRender) {
+		return <LiveStatSkeleton />;
 	}
 
-	const formattedCount = count.toLocaleString();
-	const liveViewerUnit = count === 1 ? "live viewer" : "live viewers";
-	const label = `${formattedCount} ${liveViewerUnit} across the site`;
-	const tooltipContent = `There ${count === 1 ? "is" : "are"} ${label} right now.`;
-
 	return (
-		<div className={statItemClassName}>
-			<dt className="sr-only">Live viewers across the site</dt>
-			<dd
-				className={cn("m-0 inline-flex items-center gap-1.5", statTooltipTriggerClassName)}
-				aria-label={label}
-			>
-				<span
-					aria-hidden="true"
-					className="relative inline-flex size-5 items-center justify-center"
-				>
-					{connected ? (
-						<span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-75 animate-duration-[1000ms] motion-reduce:animate-none" />
-					) : null}
-					<FaRegCircleUser
-						aria-hidden="true"
-						focusable={false}
-						className="relative inline-flex size-5 rounded-full text-primary"
-					/>
-				</span>
-				<span aria-hidden="true" className={statValueClassName}>
-					{formattedCount}
-				</span>
-				<StatTooltipBubble>{tooltipContent}</StatTooltipBubble>
-			</dd>
-		</div>
+		<Suspense fallback={<LiveStatSkeleton />}>
+			<StatsCounterLiveStat />
+		</Suspense>
 	);
 };
+
+const LiveStatSkeleton = () => (
+	<MetricSkeleton
+		icon={
+			<span
+				aria-hidden="true"
+				className="inline-flex size-5 rounded-full border-2 border-solid border-primary/60"
+			/>
+		}
+		label="Live viewers across the site"
+		valueWidthClassName="w-[2ch]"
+	/>
+);
 
 const LikeStat = ({
 	normalizedPathname,
@@ -411,7 +404,9 @@ const StandaloneViews = ({ normalizedPathname, disabled, page_type }: InnerViews
 		queryFn: fetchViewCount,
 		queryKey: [normalizedPathname, "get-views"],
 		staleTime: 1000 * 30,
-		// Reading the count also records a view; avoid automatic background replays.
+		// This RPC is now read-only (the increment moved to the Worker
+		// document-request path), but we still avoid background replays so a stale
+		// window doesn't churn the counter reads.
 		refetchOnWindowFocus: false,
 		refetchOnReconnect: false,
 		retry: false,

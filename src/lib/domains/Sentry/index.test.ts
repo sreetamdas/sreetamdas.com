@@ -8,12 +8,14 @@ describe("Sentry runtime helpers", () => {
 	});
 
 	test("builds conservative runtime options from Cloudflare env", () => {
-		expect(getSentryRuntimeOptions({ VITE_SENTRY_DSN: "https://example@sentry.io/1" })).toEqual({
+		const options = getSentryRuntimeOptions({ VITE_SENTRY_DSN: "https://example@sentry.io/1" });
+		expect(options).toMatchObject({
 			dsn: "https://example@sentry.io/1",
 			enableLogs: true,
 			sendDefaultPii: false,
 			tracesSampleRate: 0.1,
 		});
+		expect(typeof options?.beforeSend).toBe("function");
 	});
 
 	test("does not treat node tests as a browser Sentry runtime", () => {

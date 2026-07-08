@@ -5,13 +5,16 @@ import { NotFound404 } from "@/lib/components/Error";
 import { Footer } from "@/lib/components/Footer";
 import { Header } from "@/lib/components/Header";
 import { FoobarPixel } from "@/lib/domains/foobar/Pixel";
+import { fetchGitHubStats } from "@/lib/domains/GitHub/server";
 
 export const Route = createFileRoute("/(main)")({
 	component: RouteComponent,
+	loader: () => fetchGitHubStats().catch(() => ({ stars: 0, forks: 0 })),
 	notFoundComponent: () => <NotFound404 />,
 });
 
 function RouteComponent() {
+	const gitHubStats = Route.useLoaderData();
 	return (
 		<>
 			<Header />
@@ -21,7 +24,7 @@ function RouteComponent() {
 			>
 				<Outlet />
 			</main>
-			<Footer>
+			<Footer gitHubStats={gitHubStats}>
 				<FoobarPixel />
 			</Footer>
 		</>

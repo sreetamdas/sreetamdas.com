@@ -1,4 +1,4 @@
-import { createServerFn } from "@tanstack/react-start";
+import { createServerFn, createServerOnlyFn } from "@tanstack/react-start";
 
 import { normalizePathname } from "@/lib/helpers/utils";
 
@@ -22,12 +22,18 @@ export const fetchViewCountServerFn = createServerFn({
 		return fetchViewCount(data);
 	});
 
+const fetchViewCountFromDbServer = createServerOnlyFn(
+	async (normalizedSlug: string, disabled?: boolean): Promise<PageViewCount> => {
+		const { fetchViewCountFromDb } = await import("./ViewsCounter.data.server");
+		return await fetchViewCountFromDb(normalizedSlug, disabled);
+	},
+);
+
 export async function fetchViewCount(data: PagePathnamePayload): Promise<PageViewCount> {
 	const normalizedSlug = normalizePathname(data.slug);
 
 	try {
-		const { fetchViewCountFromDb } = await import("./ViewsCounter.data.server");
-		return await fetchViewCountFromDb(normalizedSlug, data.disabled);
+		return await fetchViewCountFromDbServer(normalizedSlug, data.disabled);
 	} catch (error) {
 		warnCounterFailureOnce("fetch views", error);
 		return { view_count: 0 };
