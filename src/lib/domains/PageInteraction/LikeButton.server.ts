@@ -1,5 +1,4 @@
 import { createServerFn, createServerOnlyFn } from "@tanstack/react-start";
-import { setResponseHeader } from "@tanstack/react-start/server";
 
 import { type LikeCount } from "@/lib/domains/PageViews";
 import { normalizePathname } from "@/lib/helpers/utils";
@@ -19,9 +18,6 @@ export const fetchLikeCountServerFn = createServerFn({
 		return validatePagePathnamePayload(data, "Invalid likes payload");
 	})
 	.handler(async ({ data }) => {
-		// Per-visitor `hasLiked`: never store in the URL-keyed Worker response cache
-		// (cache.enabled), which would leak one visitor's like state to everyone.
-		setResponseHeader("Cache-Control", "no-store");
 		return fetchLikeCount(data, await getLikeRequestContextServer());
 	});
 

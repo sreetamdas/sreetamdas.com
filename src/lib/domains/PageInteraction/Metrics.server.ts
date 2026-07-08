@@ -1,5 +1,4 @@
 import { createServerFn, createServerOnlyFn } from "@tanstack/react-start";
-import { setResponseHeader } from "@tanstack/react-start/server";
 
 import { type LikeCount } from "@/lib/domains/PageViews";
 
@@ -17,10 +16,6 @@ export const fetchPageMetricsServerFn = createServerFn({
 		return validatePagePathnamePayload(data, "Invalid metrics payload");
 	})
 	.handler(async ({ data }) => {
-		// Per-visitor (`hasLiked`) and live (`view_count`) data: never store in the
-		// Worker response cache (cache.enabled), which is keyed by URL only and would
-		// both freeze the counter and leak one visitor's like state to everyone.
-		setResponseHeader("Cache-Control", "no-store");
 		return fetchPageMetrics(data, await getLikeRequestContextServer());
 	});
 
