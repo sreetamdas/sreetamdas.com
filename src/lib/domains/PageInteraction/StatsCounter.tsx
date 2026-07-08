@@ -34,9 +34,9 @@ const statsListClassName = "m-0 flex min-h-5 flex-wrap items-center justify-cent
 const statItemClassName = "flex items-center justify-center gap-1.5";
 const statValueClassName = "inline-block min-w-[2ch] text-left tabular-nums";
 const statTooltipTriggerClassName = "group relative";
-// Transition is added post-mount (see StatTooltipBubble) so the tooltip doesn't
-// animate opacity 1→0 when the stat mounts as its metrics arrive client-side —
-// that insert-time transition briefly flashed the tooltip without hover.
+// No opacity transition: these stats mount as their metrics arrive client-side,
+// and a transition on the freshly-inserted tooltip animates opacity 1→0 (a flash
+// without hover), so the tooltip just shows/hides instantly on hover.
 const statTooltipBubbleClassName =
 	"pointer-events-none absolute bottom-full left-1/2 z-50 mb-2 w-max max-w-64 -translate-x-1/2 rounded-global border border-solid border-foreground/15 bg-background px-2.5 py-1.5 text-center text-xs leading-snug text-foreground opacity-0 shadow-lg group-hover:opacity-100 group-focus-within:opacity-100";
 
@@ -180,29 +180,15 @@ const MetricSkeleton = ({
 	</div>
 );
 
-const StatTooltipBubble = ({ children }: { children: ReactNode }) => {
-	const [transitionReady, setTransitionReady] = useState(false);
-	useEffect(() => {
-		const id = requestAnimationFrame(() => setTransitionReady(true));
-		return () => cancelAnimationFrame(id);
-	}, []);
-
-	return (
+const StatTooltipBubble = ({ children }: { children: ReactNode }) => (
+	<span aria-hidden="true" className={statTooltipBubbleClassName}>
+		{children}
 		<span
 			aria-hidden="true"
-			className={cn(
-				statTooltipBubbleClassName,
-				transitionReady && "transition-opacity duration-100",
-			)}
-		>
-			{children}
-			<span
-				aria-hidden="true"
-				className="absolute top-full left-1/2 size-2 -translate-x-1/2 -translate-y-1/2 rotate-45 border-r border-b border-solid border-foreground/15 bg-background"
-			/>
-		</span>
-	);
-};
+			className="absolute top-full left-1/2 size-2 -translate-x-1/2 -translate-y-1/2 rotate-45 border-r border-b border-solid border-foreground/15 bg-background"
+		/>
+	</span>
+);
 
 const LoadingLikeHeart = () => (
 	<span className={getLikeLoadingHeartIconClassName()}>

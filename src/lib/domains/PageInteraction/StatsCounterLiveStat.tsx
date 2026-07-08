@@ -5,7 +5,6 @@
  */
 "use client";
 
-import { useEffect, useState } from "react";
 import { FaRegCircleUser } from "react-icons/fa6";
 
 import { useLiveViewerCount } from "@/lib/components/useLiveViewerCount";
@@ -14,21 +13,14 @@ import { cn } from "@/lib/helpers/utils";
 const statItemClassName = "flex items-center justify-center gap-1.5";
 const statValueClassName = "inline-block min-w-[2ch] text-left tabular-nums";
 const statTooltipTriggerClassName = "group relative";
-// Transition is added post-mount (see `tooltipTransitionReady`) so the tooltip
-// doesn't animate opacity 1→0 when this deferred island mounts client-side —
-// that insert-time transition caused a brief tooltip flash without hover.
+// No opacity transition: this stat mounts client-side after paint, and a
+// transition on the freshly-inserted tooltip animates opacity 1→0 (a flash
+// without hover), so the tooltip just shows/hides instantly on hover.
 const statTooltipBubbleClassName =
 	"pointer-events-none absolute bottom-full left-1/2 z-50 mb-2 w-max max-w-64 -translate-x-1/2 rounded-global border border-solid border-foreground/15 bg-background px-2.5 py-1.5 text-center text-xs leading-snug text-foreground opacity-0 shadow-lg group-hover:opacity-100 group-focus-within:opacity-100";
 
 export const StatsCounterLiveStat = () => {
 	const { count, connected } = useLiveViewerCount();
-
-	const [tooltipTransitionReady, setTooltipTransitionReady] = useState(false);
-	useEffect(() => {
-		if (count === null || tooltipTransitionReady) return;
-		const id = requestAnimationFrame(() => setTooltipTransitionReady(true));
-		return () => cancelAnimationFrame(id);
-	}, [count, tooltipTransitionReady]);
 
 	if (count === null) {
 		return (
@@ -78,13 +70,7 @@ export const StatsCounterLiveStat = () => {
 				<span aria-hidden="true" className={statValueClassName}>
 					{formattedCount}
 				</span>
-				<span
-					aria-hidden="true"
-					className={cn(
-						statTooltipBubbleClassName,
-						tooltipTransitionReady && "transition-opacity duration-100",
-					)}
-				>
+				<span aria-hidden="true" className={statTooltipBubbleClassName}>
 					{tooltipContent}
 					<span
 						aria-hidden="true"
