@@ -2,6 +2,8 @@ import { describe, expect, test } from "vitest";
 
 import {
 	FOOBAR_ACHIEVEMENTS,
+	FOOBAR_REQUIRED_ACHIEVEMENTS,
+	FOOBAR_TEASERS,
 	FOOBAR_TIER_ORDER,
 	FOOBAR_TIERS,
 	getFoobarClue,
@@ -21,10 +23,33 @@ describe("Foobar catalogue", () => {
 			(achievement) => achievement.hints.length > 0,
 		);
 
-		expect(hintable).toHaveLength(14);
+		expect(hintable).toHaveLength(21);
 		for (const achievement of hintable) {
 			expect(achievement.hints).toHaveLength(4);
 			expect(achievement.hints.every((hint) => hint.text.trim().length > 0)).toBe(true);
+		}
+	});
+
+	test("catalogues every requested follow-up achievement", () => {
+		expect(Object.keys(FOOBAR_ACHIEVEMENTS)).toEqual(
+			expect.arrayContaining([
+				"campfire",
+				"paper-trail",
+				"print-preview",
+				"feed-reader",
+				"cookie-jar",
+				"service-worker",
+				"og-qr",
+			]),
+		);
+		expect(FOOBAR_REQUIRED_ACHIEVEMENTS).toContain("campfire");
+		expect(FOOBAR_REQUIRED_ACHIEVEMENTS).not.toContain("completed");
+	});
+
+	test("gives every achievement a locked teaser", () => {
+		for (const achievement of Object.keys(FOOBAR_ACHIEVEMENTS)) {
+			if (!isFoobarAchievement(achievement)) continue;
+			expect(FOOBAR_TEASERS[achievement].trim()).not.toBe("");
 		}
 	});
 

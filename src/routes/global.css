@@ -256,6 +256,10 @@
 	}
 }
 
+[data-foobar-print-clue] {
+	display: none;
+}
+
 @media print {
 	@page {
 		margin: 0;
@@ -267,6 +271,14 @@
 		--color-secondary: var(--light-blue);
 		--color-foreground: var(--black);
 		--color-background: var(--not-white);
+	}
+
+	[data-foobar-print-clue] {
+		display: block;
+		margin: 2rem 0;
+		border: 1px dashed currentColor;
+		padding: 1rem;
+		font-family: var(--font-mono);
 	}
 }
 

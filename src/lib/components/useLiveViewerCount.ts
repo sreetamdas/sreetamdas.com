@@ -3,21 +3,32 @@
 import { useEffect, useRef, useState } from "react";
 
 import { getOrCreatePresenceClientId } from "@/lib/domains/Presence/client-id";
-import { PRESENCE_CLIENT_ID_PARAM, isPresenceServerMessage } from "@/lib/domains/Presence/protocol";
+import {
+	PRESENCE_CLIENT_ID_PARAM,
+	PRESENCE_HUNTER_PARAM,
+	isPresenceServerMessage,
+} from "@/lib/domains/Presence/protocol";
 
 const CLIENT_PING_INTERVAL_MS = 25_000;
 const CLIENT_SILENCE_TIMEOUT_MS = 70_000;
 
-function getWsUrl(clientId: string) {
+function getWsUrl(clientId: string, hunter: boolean) {
 	const url = new URL("/api/presence", window.location.href);
 	url.protocol = url.protocol === "https:" ? "wss:" : "ws:";
 	url.searchParams.set(PRESENCE_CLIENT_ID_PARAM, clientId);
+	if (hunter) url.searchParams.set(PRESENCE_HUNTER_PARAM, "1");
 	return url.toString();
 }
 
 export type LiveViewers = {
 	count: number | null;
 	connected: boolean;
+	hunters: number | null;
+};
+
+type LiveViewerOptions = {
+	enabled?: boolean;
+	hunter?: boolean;
 };
 
 /**
@@ -26,8 +37,12 @@ export type LiveViewers = {
  * not raw sockets, so a reconnect from the same tab does not temporarily count
  * as an extra viewer while Cloudflare finishes closing the old socket.
  */
-export function useLiveViewerCount(): LiveViewers {
+export function useLiveViewerCount({
+	enabled = true,
+	hunter = false,
+}: LiveViewerOptions = {}): LiveViewers {
 	const [count, setCount] = useState<number | null>(null);
+	const [hunters, setHunters] = useState<number | null>(null);
 	const [connected, setConnected] = useState(false);
 	const wsRef = useRef<WebSocket | null>(null);
 	const reconnectTimerRef = useRef<number | null>(null);
@@ -36,6 +51,13 @@ export function useLiveViewerCount(): LiveViewers {
 	const reconnectAttemptRef = useRef(0);
 
 	useEffect(() => {
+		if (!enabled) {
+			setConnected(false);
+			setCount(null);
+			setHunters(null);
+			return;
+		}
+
 		let cancelled = false;
 		const clientId = getOrCreatePresenceClientId(window.sessionStorage);
 
@@ -125,7 +147,7 @@ export function useLiveViewerCount(): LiveViewers {
 
 			let ws: WebSocket;
 			try {
-				ws = new WebSocket(getWsUrl(clientId));
+				ws = new WebSocket(getWsUrl(clientId, hunter));
 			} catch {
 				scheduleReconnect();
 				return;
@@ -160,6 +182,7 @@ export function useLiveViewerCount(): LiveViewers {
 				markServerMessage(ws);
 
 				setCount(parsed.count);
+				setHunters(parsed.hunters ?? 0);
 			};
 
 			ws.onclose = () => {
@@ -185,7 +208,7 @@ export function useLiveViewerCount(): LiveViewers {
 			clearReconnectTimer();
 			closeCurrent("presence hook cleanup");
 		};
-	}, []);
+	}, [enabled, hunter]);
 
-	return { count, connected };
+	return { count, connected, hunters };
 }

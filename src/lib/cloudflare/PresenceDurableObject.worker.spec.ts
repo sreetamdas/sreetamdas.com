@@ -15,6 +15,7 @@ describe("PresenceDurableObject", () => {
 		expect(response.status).toBe(200);
 		expect(response.headers.get("Cache-Control")).toBe("no-store");
 		expect(getCount(body)).toBe(0);
+		expect(getHunters(body)).toBe(0);
 	});
 
 	it("rejects websocket connections from disallowed origins", async () => {
@@ -67,6 +68,30 @@ describe("PresenceDurableObject", () => {
 		secondViewer.close();
 	});
 
+	it("broadcasts distinct Foobar hunter counts", async () => {
+		const name = uniquePresence("hunters");
+		const viewer = await openSocket(name, "ordinary-viewer");
+		startClientPings(viewer);
+
+		const firstHunter = await openSocket(name, "hunter-one", true);
+		startClientPings(firstHunter);
+		await waitForHunters(firstHunter, 1);
+
+		const duplicateHunter = await openSocket(name, "hunter-one", true);
+		startClientPings(duplicateHunter);
+		await waitForHunters(duplicateHunter, 1);
+
+		const secondHunter = await openSocket(name, "hunter-two", true);
+		startClientPings(secondHunter);
+		await waitForHunters(secondHunter, 2);
+		expect(await fetchHunters(name)).toBe(2);
+
+		viewer.close();
+		firstHunter.close();
+		duplicateHunter.close();
+		secondHunter.close();
+	});
+
 	it("re-arms alarms while live clients remain responsive", async () => {
 		const name = uniquePresence("rearm");
 		const socket = await openSocket(name, "responsive-client");
@@ -115,9 +140,10 @@ function presence(name: string) {
 	return env.SITE_PRESENCE.getByName(name);
 }
 
-async function openSocket(name: string, clientId: string) {
+async function openSocket(name: string, clientId: string, hunter = false) {
 	const url = new URL("https://example.com/");
 	url.searchParams.set("clientId", clientId);
+	if (hunter) url.searchParams.set("hunter", "1");
 	const response = await presence(name).fetch(url.toString(), {
 		headers: { Upgrade: "websocket", Origin: "https://example.com" },
 	});
@@ -138,6 +164,10 @@ function startClientPings(socket: WebSocket) {
 
 function waitForCount(socket: WebSocket, count: number) {
 	return waitForMessage(socket, (value) => getCount(value) === count);
+}
+
+function waitForHunters(socket: WebSocket, count: number) {
+	return waitForMessage(socket, (value) => getHunters(value) === count);
 }
 
 function waitForMessage(socket: WebSocket, matches: (value: unknown) => boolean) {
@@ -169,6 +199,12 @@ async function fetchCount(name: string) {
 	const response = await presence(name).fetch("https://example.com/");
 	const body: unknown = await response.json();
 	return getCount(body);
+}
+
+async function fetchHunters(name: string) {
+	const response = await presence(name).fetch("https://example.com/");
+	const body: unknown = await response.json();
+	return getHunters(body);
 }
 
 function waitForHttpCount(name: string, expected: number) {
@@ -209,6 +245,16 @@ function getCount(value: unknown) {
 		throw new Error("Expected numeric count");
 	}
 	return value.count;
+}
+
+function getHunters(value: unknown) {
+	if (typeof value !== "object" || value === null || !("hunters" in value)) {
+		throw new Error("Expected hunters payload");
+	}
+	if (typeof value.hunters !== "number") {
+		throw new Error("Expected numeric hunters");
+	}
+	return value.hunters;
 }
 
 function uniquePresence(prefix: string) {

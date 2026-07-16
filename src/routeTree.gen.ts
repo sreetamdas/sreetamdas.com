@@ -38,11 +38,14 @@ import { Route as mainfoobarFoobarRouteRouteImport } from './routes/(main)/(foob
 import { Route as mainfoobarFoobarIndexRouteImport } from './routes/(main)/(foobar)/foobar/index'
 import { Route as apiApiLoginGoogleRouteImport } from './routes/(api)/api/login/google'
 import { Route as apiApiLoginCloudflareRouteImport } from './routes/(api)/api/login/cloudflare'
+import { Route as apiApiFoobarCookieRouteImport } from './routes/(api)/api/foobar/cookie'
 import { Route as apiApiAuthSplatRouteImport } from './routes/(api)/api/auth/$'
 import { Route as mainfoobarFoobarSlugRouteRouteImport } from './routes/(main)/(foobar)/foobar/$slug/route'
+import { Route as mainfoobarFoobarCertificateTokenRouteImport } from './routes/(main)/(foobar)/foobar/certificate/$token'
 import { Route as apiPrxyPlsblJsScriptRouteImport } from './routes/(api)/prxy/plsbl/js/$script'
 import { Route as apiPrxyPlsblApiEventRouteImport } from './routes/(api)/prxy/plsbl/api/event'
 import { Route as apiApiSlidesSessionSessionIdRouteImport } from './routes/(api)/api/slides/session/$sessionId'
+import { Route as apiApiFoobarCertificateTokenOgDotpngRouteImport } from './routes/(api)/api/foobar/certificate/$token/og[.]png'
 
 const SlidesRouteRoute = SlidesRouteRouteImport.update({
   id: '/slides',
@@ -190,6 +193,11 @@ const apiApiLoginCloudflareRoute = apiApiLoginCloudflareRouteImport.update({
   path: '/api/login/cloudflare',
   getParentRoute: () => rootRouteImport,
 } as any)
+const apiApiFoobarCookieRoute = apiApiFoobarCookieRouteImport.update({
+  id: '/(api)/api/foobar/cookie',
+  path: '/api/foobar/cookie',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const apiApiAuthSplatRoute = apiApiAuthSplatRouteImport.update({
   id: '/(api)/api/auth/$',
   path: '/api/auth/$',
@@ -199,6 +207,12 @@ const mainfoobarFoobarSlugRouteRoute =
   mainfoobarFoobarSlugRouteRouteImport.update({
     id: '/$slug',
     path: '/$slug',
+    getParentRoute: () => mainfoobarFoobarRouteRoute,
+  } as any)
+const mainfoobarFoobarCertificateTokenRoute =
+  mainfoobarFoobarCertificateTokenRouteImport.update({
+    id: '/certificate/$token',
+    path: '/certificate/$token',
     getParentRoute: () => mainfoobarFoobarRouteRoute,
   } as any)
 const apiPrxyPlsblJsScriptRoute = apiPrxyPlsblJsScriptRouteImport.update({
@@ -215,6 +229,12 @@ const apiApiSlidesSessionSessionIdRoute =
   apiApiSlidesSessionSessionIdRouteImport.update({
     id: '/(api)/api/slides/session/$sessionId',
     path: '/api/slides/session/$sessionId',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const apiApiFoobarCertificateTokenOgDotpngRoute =
+  apiApiFoobarCertificateTokenOgDotpngRouteImport.update({
+    id: '/(api)/api/foobar/certificate/$token/og.png',
+    path: '/api/foobar/certificate/$token/og.png',
     getParentRoute: () => rootRouteImport,
   } as any)
 
@@ -245,12 +265,15 @@ export interface FileRoutesByFullPath {
   '/newsletter/': typeof mainNewsletterIndexRoute
   '/foobar/$slug': typeof mainfoobarFoobarSlugRouteRoute
   '/api/auth/$': typeof apiApiAuthSplatRoute
+  '/api/foobar/cookie': typeof apiApiFoobarCookieRoute
   '/api/login/cloudflare': typeof apiApiLoginCloudflareRoute
   '/api/login/google': typeof apiApiLoginGoogleRoute
   '/foobar/': typeof mainfoobarFoobarIndexRoute
   '/api/slides/session/$sessionId': typeof apiApiSlidesSessionSessionIdRoute
   '/prxy/plsbl/api/event': typeof apiPrxyPlsblApiEventRoute
   '/prxy/plsbl/js/$script': typeof apiPrxyPlsblJsScriptRoute
+  '/foobar/certificate/$token': typeof mainfoobarFoobarCertificateTokenRoute
+  '/api/foobar/certificate/$token/og.png': typeof apiApiFoobarCertificateTokenOgDotpngRoute
 }
 export interface FileRoutesByTo {
   '/slides': typeof SlidesRouteRouteWithChildren
@@ -276,12 +299,15 @@ export interface FileRoutesByTo {
   '/newsletter': typeof mainNewsletterIndexRoute
   '/foobar/$slug': typeof mainfoobarFoobarSlugRouteRoute
   '/api/auth/$': typeof apiApiAuthSplatRoute
+  '/api/foobar/cookie': typeof apiApiFoobarCookieRoute
   '/api/login/cloudflare': typeof apiApiLoginCloudflareRoute
   '/api/login/google': typeof apiApiLoginGoogleRoute
   '/foobar': typeof mainfoobarFoobarIndexRoute
   '/api/slides/session/$sessionId': typeof apiApiSlidesSessionSessionIdRoute
   '/prxy/plsbl/api/event': typeof apiPrxyPlsblApiEventRoute
   '/prxy/plsbl/js/$script': typeof apiPrxyPlsblJsScriptRoute
+  '/foobar/certificate/$token': typeof mainfoobarFoobarCertificateTokenRoute
+  '/api/foobar/certificate/$token/og.png': typeof apiApiFoobarCertificateTokenOgDotpngRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -313,12 +339,15 @@ export interface FileRoutesById {
   '/(main)/newsletter/': typeof mainNewsletterIndexRoute
   '/(main)/(foobar)/foobar/$slug': typeof mainfoobarFoobarSlugRouteRoute
   '/(api)/api/auth/$': typeof apiApiAuthSplatRoute
+  '/(api)/api/foobar/cookie': typeof apiApiFoobarCookieRoute
   '/(api)/api/login/cloudflare': typeof apiApiLoginCloudflareRoute
   '/(api)/api/login/google': typeof apiApiLoginGoogleRoute
   '/(main)/(foobar)/foobar/': typeof mainfoobarFoobarIndexRoute
   '/(api)/api/slides/session/$sessionId': typeof apiApiSlidesSessionSessionIdRoute
   '/(api)/prxy/plsbl/api/event': typeof apiPrxyPlsblApiEventRoute
   '/(api)/prxy/plsbl/js/$script': typeof apiPrxyPlsblJsScriptRoute
+  '/(main)/(foobar)/foobar/certificate/$token': typeof mainfoobarFoobarCertificateTokenRoute
+  '/(api)/api/foobar/certificate/$token/og.png': typeof apiApiFoobarCertificateTokenOgDotpngRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -349,12 +378,15 @@ export interface FileRouteTypes {
     | '/newsletter/'
     | '/foobar/$slug'
     | '/api/auth/$'
+    | '/api/foobar/cookie'
     | '/api/login/cloudflare'
     | '/api/login/google'
     | '/foobar/'
     | '/api/slides/session/$sessionId'
     | '/prxy/plsbl/api/event'
     | '/prxy/plsbl/js/$script'
+    | '/foobar/certificate/$token'
+    | '/api/foobar/certificate/$token/og.png'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/slides'
@@ -380,12 +412,15 @@ export interface FileRouteTypes {
     | '/newsletter'
     | '/foobar/$slug'
     | '/api/auth/$'
+    | '/api/foobar/cookie'
     | '/api/login/cloudflare'
     | '/api/login/google'
     | '/foobar'
     | '/api/slides/session/$sessionId'
     | '/prxy/plsbl/api/event'
     | '/prxy/plsbl/js/$script'
+    | '/foobar/certificate/$token'
+    | '/api/foobar/certificate/$token/og.png'
   id:
     | '__root__'
     | '/(main)'
@@ -416,12 +451,15 @@ export interface FileRouteTypes {
     | '/(main)/newsletter/'
     | '/(main)/(foobar)/foobar/$slug'
     | '/(api)/api/auth/$'
+    | '/(api)/api/foobar/cookie'
     | '/(api)/api/login/cloudflare'
     | '/(api)/api/login/google'
     | '/(main)/(foobar)/foobar/'
     | '/(api)/api/slides/session/$sessionId'
     | '/(api)/prxy/plsbl/api/event'
     | '/(api)/prxy/plsbl/js/$script'
+    | '/(main)/(foobar)/foobar/certificate/$token'
+    | '/(api)/api/foobar/certificate/$token/og.png'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -432,11 +470,13 @@ export interface RootRouteChildren {
   apiApiPresenceRoute: typeof apiApiPresenceRoute
   apiApiStagingSmokeRoute: typeof apiApiStagingSmokeRoute
   apiApiAuthSplatRoute: typeof apiApiAuthSplatRoute
+  apiApiFoobarCookieRoute: typeof apiApiFoobarCookieRoute
   apiApiLoginCloudflareRoute: typeof apiApiLoginCloudflareRoute
   apiApiLoginGoogleRoute: typeof apiApiLoginGoogleRoute
   apiApiSlidesSessionSessionIdRoute: typeof apiApiSlidesSessionSessionIdRoute
   apiPrxyPlsblApiEventRoute: typeof apiPrxyPlsblApiEventRoute
   apiPrxyPlsblJsScriptRoute: typeof apiPrxyPlsblJsScriptRoute
+  apiApiFoobarCertificateTokenOgDotpngRoute: typeof apiApiFoobarCertificateTokenOgDotpngRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -644,6 +684,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof apiApiLoginCloudflareRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/(api)/api/foobar/cookie': {
+      id: '/(api)/api/foobar/cookie'
+      path: '/api/foobar/cookie'
+      fullPath: '/api/foobar/cookie'
+      preLoaderRoute: typeof apiApiFoobarCookieRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/(api)/api/auth/$': {
       id: '/(api)/api/auth/$'
       path: '/api/auth/$'
@@ -656,6 +703,13 @@ declare module '@tanstack/react-router' {
       path: '/$slug'
       fullPath: '/foobar/$slug'
       preLoaderRoute: typeof mainfoobarFoobarSlugRouteRouteImport
+      parentRoute: typeof mainfoobarFoobarRouteRoute
+    }
+    '/(main)/(foobar)/foobar/certificate/$token': {
+      id: '/(main)/(foobar)/foobar/certificate/$token'
+      path: '/certificate/$token'
+      fullPath: '/foobar/certificate/$token'
+      preLoaderRoute: typeof mainfoobarFoobarCertificateTokenRouteImport
       parentRoute: typeof mainfoobarFoobarRouteRoute
     }
     '/(api)/prxy/plsbl/js/$script': {
@@ -677,6 +731,13 @@ declare module '@tanstack/react-router' {
       path: '/api/slides/session/$sessionId'
       fullPath: '/api/slides/session/$sessionId'
       preLoaderRoute: typeof apiApiSlidesSessionSessionIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/(api)/api/foobar/certificate/$token/og.png': {
+      id: '/(api)/api/foobar/certificate/$token/og.png'
+      path: '/api/foobar/certificate/$token/og.png'
+      fullPath: '/api/foobar/certificate/$token/og.png'
+      preLoaderRoute: typeof apiApiFoobarCertificateTokenOgDotpngRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -712,11 +773,13 @@ const mainNewsletterRouteRouteWithChildren =
 interface mainfoobarFoobarRouteRouteChildren {
   mainfoobarFoobarSlugRouteRoute: typeof mainfoobarFoobarSlugRouteRoute
   mainfoobarFoobarIndexRoute: typeof mainfoobarFoobarIndexRoute
+  mainfoobarFoobarCertificateTokenRoute: typeof mainfoobarFoobarCertificateTokenRoute
 }
 
 const mainfoobarFoobarRouteRouteChildren: mainfoobarFoobarRouteRouteChildren = {
   mainfoobarFoobarSlugRouteRoute: mainfoobarFoobarSlugRouteRoute,
   mainfoobarFoobarIndexRoute: mainfoobarFoobarIndexRoute,
+  mainfoobarFoobarCertificateTokenRoute: mainfoobarFoobarCertificateTokenRoute,
 }
 
 const mainfoobarFoobarRouteRouteWithChildren =
@@ -806,11 +869,14 @@ const rootRouteChildren: RootRouteChildren = {
   apiApiPresenceRoute: apiApiPresenceRoute,
   apiApiStagingSmokeRoute: apiApiStagingSmokeRoute,
   apiApiAuthSplatRoute: apiApiAuthSplatRoute,
+  apiApiFoobarCookieRoute: apiApiFoobarCookieRoute,
   apiApiLoginCloudflareRoute: apiApiLoginCloudflareRoute,
   apiApiLoginGoogleRoute: apiApiLoginGoogleRoute,
   apiApiSlidesSessionSessionIdRoute: apiApiSlidesSessionSessionIdRoute,
   apiPrxyPlsblApiEventRoute: apiPrxyPlsblApiEventRoute,
   apiPrxyPlsblJsScriptRoute: apiPrxyPlsblJsScriptRoute,
+  apiApiFoobarCertificateTokenOgDotpngRoute:
+    apiApiFoobarCertificateTokenOgDotpngRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

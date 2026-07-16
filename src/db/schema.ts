@@ -91,3 +91,23 @@ export const authVerification = sqliteTable("verification", {
 	createdAt: integer("created_at", { mode: "timestamp" }),
 	updatedAt: integer("updated_at", { mode: "timestamp" }),
 });
+
+export const foobarProgress = sqliteTable(
+	"foobar_progress",
+	{
+		userId: text("user_id")
+			.notNull()
+			.primaryKey()
+			.references(() => authUser.id, { onDelete: "cascade" }),
+		progressJson: text("progress_json").notNull(),
+		completedAt: integer("completed_at"),
+		publicProfile: integer("public_profile", { mode: "boolean" }).notNull().default(false),
+		certificateId: text("certificate_id").unique(),
+		createdAt: integer("created_at").notNull(),
+		updatedAt: integer("updated_at").notNull(),
+	},
+	(t) => [
+		index("foobar_progress_completed_at_idx").on(t.completedAt),
+		index("foobar_progress_public_completed_idx").on(t.publicProfile, t.completedAt),
+	],
+);

@@ -14,8 +14,11 @@ import { useShallow } from "zustand/react/shallow";
 import { IS_DEV } from "@/config";
 import { NotFound404 } from "@/lib/components/Error";
 import { Code } from "@/lib/components/Typography";
+import { useLiveViewerCount } from "@/lib/components/useLiveViewerCount";
 import { ShowCompletedBadges } from "@/lib/domains/foobar/badges";
 import { isFoobarAchievement } from "@/lib/domains/foobar/catalog";
+import { resetFoobarProgressServerFn } from "@/lib/domains/foobar/cloud-progress.server";
+import { CloudProgressPanel } from "@/lib/domains/foobar/CloudProgressPanel";
 import { FieldNotes } from "@/lib/domains/foobar/FieldNotes";
 import { FOOBAR_FLAGS } from "@/lib/domains/foobar/flags";
 import { type FoobarSchrodingerProps, initialFoobarData } from "@/lib/domains/foobar/store";
@@ -48,6 +51,9 @@ export const FoobarDashboard = ({ completed_page }: FoobarSchrodingerProps) => {
 
 	function handleClearFoobarData() {
 		plausibleEvent("foobar", { props: { achievement: "restart" } });
+		void resetFoobarProgressServerFn().catch(() => {
+			// Signed-out players have no cloud copy; the local reset still succeeds.
+		});
 		setFoobarData(initialFoobarData);
 
 		// eslint-disable-next-line no-console
@@ -69,6 +75,11 @@ export const FoobarDashboard = ({ completed_page }: FoobarSchrodingerProps) => {
 				clues_seen={foobar_data.clues_seen}
 			/>
 			<FieldNotes clues_seen={foobar_data.clues_seen} />
+			<CampfireStatus />
+			<CloudProgressPanel />
+			<p aria-hidden="true" data-foobar-print-clue>
+				The paper remembers a path the screen will not: /foobar/print-preview
+			</p>
 			<Link
 				to="/stats"
 				search={{ period: "30d" }}
@@ -97,7 +108,30 @@ const UnlockedAchievementBanner = ({ completed_page }: FoobarSchrodingerProps) =
 		</h1>
 	) : null;
 
-const XMarksTheSpot = (_: { foobar: string }) => null;
+const XMarksTheSpot = ({ foobar }: { foobar: string }) => (
+	<span aria-hidden="true" className="hidden" data-foobar={foobar} />
+);
+
+const CampfireStatus = () => {
+	const { connected, hunters } = useLiveViewerCount({ hunter: true });
+	const count = hunters ?? 0;
+
+	return (
+		<section
+			aria-labelledby="foobar-campfire-status"
+			className="mt-8 border-t border-foreground/15 pt-5"
+		>
+			<h2 id="foobar-campfire-status" className="font-serif text-2xl leading-normal">
+				Campfire
+			</h2>
+			<p className="mt-2 text-sm text-foreground/70" aria-live="polite">
+				{connected
+					? `${count} ${count === 1 ? "hunter" : "hunters"} online. The fire needs company.`
+					: "Listening for other hunters…"}
+			</p>
+		</section>
+	);
+};
 
 const ResetFoobar = ({ handleClearFoobarData }: { handleClearFoobarData: () => void }) => (
 	<AlertDialogPrimitive.Root>
@@ -135,7 +169,7 @@ const ResetFoobar = ({ handleClearFoobarData }: { handleClearFoobarData: () => v
 							onClick={handleClearFoobarData}
 							type="button"
 						>
-							Yes, delete account
+							Yes, reset progress
 						</button>
 					</AlertDialogPrimitive.Action>
 				</div>
