@@ -17,6 +17,7 @@ import { Code } from "@/lib/components/Typography";
 import { useLiveViewerCount } from "@/lib/components/useLiveViewerCount";
 import { ShowCompletedBadges } from "@/lib/domains/foobar/badges";
 import { isFoobarAchievement } from "@/lib/domains/foobar/catalog";
+import { CloudProgressPanel } from "@/lib/domains/foobar/CloudProgressPanel";
 import { FieldNotes } from "@/lib/domains/foobar/FieldNotes";
 import { FOOBAR_FLAGS } from "@/lib/domains/foobar/flags";
 import { type FoobarSchrodingerProps, initialFoobarData } from "@/lib/domains/foobar/store";
@@ -71,6 +72,7 @@ export const FoobarDashboard = ({ completed_page }: FoobarSchrodingerProps) => {
 			/>
 			<FieldNotes clues_seen={foobar_data.clues_seen} />
 			<CampfireStatus />
+			<CloudProgressPanel />
 			<p aria-hidden="true" data-foobar-print-clue>
 				The paper remembers a path the screen will not: /foobar/print-preview
 			</p>

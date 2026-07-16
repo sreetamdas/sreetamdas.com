@@ -27,7 +27,7 @@ test("groups achievements and persists revealed field notes", async ({ page }) =
 	await expect(page.getByText("2 / 5 complete")).toBeVisible();
 	await expect(page.getByRole("heading", { name: "Field notes" })).toBeVisible();
 	await expect(page.getByText("Earlier", { exact: true })).toHaveCount(2);
-	await expect(page.getByText("A small fire burns brighter with company.")).toBeVisible();
+	await expect(page.getByText("Even crawlers are handed house rules.")).toBeVisible();
 	const fieldNotes = page.getByRole("region", { name: "Field notes" });
 
 	const firstHintButton = page.getByRole("button", { name: "Reveal hint 1 of 4 for dns-txt" });
@@ -38,6 +38,22 @@ test("groups achievements and persists revealed field notes", async ({ page }) =
 	await expect(fieldNotes.getByText("The clue lives below HTTP.")).toBeVisible();
 	await expect(page.getByRole("button", { name: "Reveal hint 2 of 4 for dns-txt" })).toHaveText(
 		"Reveal hint 2 of 4",
+	);
+});
+
+test("keeps local progress as the default and offers optional cloud save", async ({ page }) => {
+	await seedLegacyProgress(page);
+	await page.goto("/foobar");
+
+	await expect(page.getByRole("heading", { name: "Hunter registry" })).toBeVisible();
+	await expect(page.getByText("Sign in to save progress across devices.")).toBeVisible();
+	await expect(page.getByRole("link", { name: "Sign in with Cloudflare" })).toHaveAttribute(
+		"href",
+		"/api/login/cloudflare?returnTo=/foobar",
+	);
+	await expect(page.getByRole("link", { name: "Sign in with Google" })).toHaveAttribute(
+		"href",
+		"/api/login/google?returnTo=/foobar",
 	);
 });
 
