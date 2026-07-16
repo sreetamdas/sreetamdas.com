@@ -1,7 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 
 import { SITE_DESCRIPTION, SITE_TITLE_APPEND } from "@/config";
-import { HTML_CACHE_HEADERS } from "@/lib/cacheHeaders";
 import { NotFound404 } from "@/lib/components/Error";
 import { ReadingProgress } from "@/lib/components/ProgressBar";
 import { Gradient } from "@/lib/components/Typography";
@@ -13,7 +12,6 @@ import { getBlogRenderable } from "./-$slug.server";
 
 export const Route = createFileRoute("/(main)/blog/$slug")({
 	component: RouteComponent,
-	headers: () => HTML_CACHE_HEADERS,
 	staleTime: 1000 * 60 * 60 * 24,
 	loader: ({ params }: { params: { slug: string } }) => {
 		return getBlogRenderable({ data: { slug: params.slug } });
