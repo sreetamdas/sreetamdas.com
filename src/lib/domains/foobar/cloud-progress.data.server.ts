@@ -64,12 +64,13 @@ export async function syncFoobarProgress(
 	const completedAt = stored?.completedAt ?? (progress.all_achievements ? now : null);
 	const certificateId =
 		stored?.certificateId ?? (progress.all_achievements ? createCertificateId() : null);
+	const progressJson = JSON.stringify(progress);
 
 	const rows = await db
 		.insert(foobarProgress)
 		.values({
 			userId,
-			progressJson: JSON.stringify(progress),
+			progressJson,
 			completedAt,
 			certificateId,
 			createdAt: now,
@@ -78,7 +79,7 @@ export async function syncFoobarProgress(
 		.onConflictDoUpdate({
 			target: foobarProgress.userId,
 			set: {
-				progressJson: JSON.stringify(progress),
+				progressJson,
 				completedAt: sql`coalesce(${foobarProgress.completedAt}, excluded.completed_at)`,
 				certificateId: sql`coalesce(${foobarProgress.certificateId}, excluded.certificate_id)`,
 				updatedAt: now,

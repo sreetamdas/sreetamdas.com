@@ -110,19 +110,3 @@ describe("Foobar cloud progress merge", () => {
 		expect(JSON.stringify(merged)).not.toBe(JSON.stringify(normalizedRemote));
 	});
 });
-
-describe("Foobar service worker filter", () => {
-	const endsWithFoobarSw = (url: string | undefined): boolean =>
-		url?.endsWith("/foobar-sw.js") ?? false;
-
-	test("matches /foobar-sw.js registrations", () => {
-		expect(endsWithFoobarSw("https://sreetamdas.com/foobar-sw.js")).toBe(true);
-		expect(endsWithFoobarSw("/foobar-sw.js")).toBe(true);
-	});
-
-	test("does not match other registrations", () => {
-		expect(endsWithFoobarSw("https://sreetamdas.com/mockServiceWorker.js")).toBe(false);
-		expect(endsWithFoobarSw("https://sreetamdas.com/sw.js")).toBe(false);
-		expect(endsWithFoobarSw(undefined)).toBe(false);
-	});
-});

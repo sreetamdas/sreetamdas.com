@@ -43,7 +43,6 @@ export const FOOBAR_TIER_ORDER: ReadonlyArray<FoobarTier> = [
 export const FOOBAR_ACHIEVEMENTS = {
 	unlocked: {
 		tier: "discovery",
-		difficulty: 1,
 		completion: { id: "unlocked:completed", note: "You found the first door." },
 		hints: [
 			{ id: "unlocked:hint:1", text: "The map begins somewhere personal." },
@@ -60,7 +59,6 @@ export const FOOBAR_ACHIEVEMENTS = {
 	},
 	"source-code": {
 		tier: "discovery",
-		difficulty: 1,
 		completion: {
 			id: "source-code:completed",
 			note: "You found a note beneath the paint.",
@@ -86,7 +84,6 @@ export const FOOBAR_ACHIEVEMENTS = {
 	},
 	headers: {
 		tier: "discovery",
-		difficulty: 1,
 		completion: {
 			id: "headers:completed",
 			note: "The server spoke before the page did.",
@@ -109,7 +106,6 @@ export const FOOBAR_ACHIEVEMENTS = {
 	},
 	localforage: {
 		tier: "discovery",
-		difficulty: 1,
 		completion: {
 			id: "localforage:completed",
 			note: "The browser opened its small box of secrets.",
@@ -132,7 +128,6 @@ export const FOOBAR_ACHIEVEMENTS = {
 	},
 	teapot: {
 		tier: "discovery",
-		difficulty: 1,
 		completion: { id: "teapot:completed", note: "The server refused, but politely." },
 		hints: [
 			{ id: "teapot:hint:1", text: "Not every machine agrees to make coffee." },
@@ -149,7 +144,6 @@ export const FOOBAR_ACHIEVEMENTS = {
 	},
 	devtools: {
 		tier: "browser",
-		difficulty: 2,
 		completion: {
 			id: "devtools:completed",
 			note: "You looked behind the stage curtain.",
@@ -175,7 +169,6 @@ export const FOOBAR_ACHIEVEMENTS = {
 	},
 	hack: {
 		tier: "browser",
-		difficulty: 2,
 		completion: { id: "hack:completed", note: "The console opened its trapdoor." },
 		hints: [
 			{
@@ -195,7 +188,6 @@ export const FOOBAR_ACHIEVEMENTS = {
 	},
 	offline: {
 		tier: "browser",
-		difficulty: 2,
 		completion: {
 			id: "offline:completed",
 			note: "The site remembered you after the network left.",
@@ -218,7 +210,6 @@ export const FOOBAR_ACHIEVEMENTS = {
 	},
 	navigator: {
 		tier: "browser",
-		difficulty: 2,
 		completion: {
 			id: "navigator:completed",
 			note: "You drew enough of the map to be recognized.",
@@ -238,7 +229,6 @@ export const FOOBAR_ACHIEVEMENTS = {
 	},
 	"easter-egg": {
 		tier: "browser",
-		difficulty: 2,
 		completion: {
 			id: "easter-egg:completed",
 			note: "A decoration turned out to be a switch.",
@@ -264,7 +254,6 @@ export const FOOBAR_ACHIEVEMENTS = {
 	},
 	konami: {
 		tier: "browser",
-		difficulty: 2,
 		completion: { id: "konami:completed", note: "An old cheat code still worked here." },
 		hints: [
 			{ id: "konami:hint:1", text: "Old games taught players a famous sequence." },
@@ -284,7 +273,6 @@ export const FOOBAR_ACHIEVEMENTS = {
 	},
 	error404: {
 		tier: "archaeology",
-		difficulty: 3,
 		completion: { id: "error404:completed", note: "A wrong turn was still a turn." },
 		hints: [
 			{
@@ -304,7 +292,6 @@ export const FOOBAR_ACHIEVEMENTS = {
 	},
 	dogs: {
 		tier: "archaeology",
-		difficulty: 3,
 		completion: {
 			id: "dogs:completed",
 			note: "The guard dogs were friendlier than they looked.",
@@ -327,7 +314,6 @@ export const FOOBAR_ACHIEVEMENTS = {
 	},
 	"dns-txt": {
 		tier: "protocol",
-		difficulty: 4,
 		completion: {
 			id: "dns-txt:completed",
 			note: "You read the old phonebook beneath the site.",
@@ -347,7 +333,6 @@ export const FOOBAR_ACHIEVEMENTS = {
 	},
 	campfire: {
 		tier: "browser",
-		difficulty: 2,
 		completion: {
 			id: "campfire:completed",
 			note: "Another hunter stepped into the firelight.",
@@ -370,7 +355,6 @@ export const FOOBAR_ACHIEVEMENTS = {
 	},
 	"print-preview": {
 		tier: "browser",
-		difficulty: 2,
 		completion: { id: "print-preview:completed", note: "The paper version kept a secret." },
 		hints: [
 			{ id: "print-preview:hint:1", text: "Some ink only appears before printing." },
@@ -384,7 +368,6 @@ export const FOOBAR_ACHIEVEMENTS = {
 	},
 	"paper-trail": {
 		tier: "archaeology",
-		difficulty: 3,
 		completion: { id: "paper-trail:completed", note: "The crawlers left a paper trail." },
 		hints: [
 			{ id: "paper-trail:hint:1", text: "Machines are given house rules too." },
@@ -401,7 +384,6 @@ export const FOOBAR_ACHIEVEMENTS = {
 	},
 	"feed-reader": {
 		tier: "archaeology",
-		difficulty: 3,
 		completion: { id: "feed-reader:completed", note: "You read between the feed lines." },
 		hints: [
 			{ id: "feed-reader:hint:1", text: "The blog speaks to machines as well as people." },
@@ -412,7 +394,6 @@ export const FOOBAR_ACHIEVEMENTS = {
 	},
 	"og-qr": {
 		tier: "archaeology",
-		difficulty: 3,
 		completion: { id: "og-qr:completed", note: "The social card answered a scanner." },
 		hints: [
 			{ id: "og-qr:hint:1", text: "Shared pages carry a picture most visitors never open." },
@@ -423,7 +404,6 @@ export const FOOBAR_ACHIEVEMENTS = {
 	},
 	"cookie-jar": {
 		tier: "protocol",
-		difficulty: 4,
 		completion: { id: "cookie-jar:completed", note: "You changed the label on the jar." },
 		hints: [
 			{ id: "cookie-jar:hint:1", text: "A sealed jar arrives with the response." },
@@ -437,7 +417,6 @@ export const FOOBAR_ACHIEVEMENTS = {
 	},
 	"service-worker": {
 		tier: "protocol",
-		difficulty: 4,
 		completion: { id: "service-worker:completed", note: "A worker replied without the network." },
 		hints: [
 			{ id: "service-worker:hint:1", text: "An invisible worker watches one unusual request." },
@@ -454,7 +433,6 @@ export const FOOBAR_ACHIEVEMENTS = {
 	},
 	completed: {
 		tier: "meta",
-		difficulty: 5,
 		completion: {
 			id: "completed:completed",
 			note: "You learned the site's hidden language.",

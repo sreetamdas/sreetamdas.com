@@ -1,17 +1,17 @@
 /*
  * Vendored from @fontsource-variable/inter/index.css.
  * Only the Latin subset is included because the site content is English and
- * `__root.tsx` preloads this same file. `font-display: optional` mirrors the
- * Bricolage strategy: if Inter misses the initial layout window, the browser
- * keeps the metric-compatible fallback instead of swapping later and shifting
- * paragraph line breaks.
+ * `__root.tsx` preloads this same file. `font-display: swap` matches the
+ * Bricolage strategy: the "Inter Fallback" metric overrides in global.css make
+ * the swap reflow-free, and unlike `optional` the page always ends up in Inter
+ * instead of sometimes keeping Arial for the whole visit.
  */
 
 /* inter-latin-wght-normal */
 @font-face {
 	font-family: "Inter Variable";
 	font-style: normal;
-	font-display: optional;
+	font-display: swap;
 	font-weight: 100 900;
 	src: url("@fontsource-variable/inter/files/inter-latin-wght-normal.woff2")
 		format("woff2-variations");

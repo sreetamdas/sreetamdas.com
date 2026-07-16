@@ -97,6 +97,13 @@ export const Route = createRootRoute({
 				crossOrigin: "anonymous",
 			},
 			{
+				rel: "preload",
+				as: "font",
+				type: "font/woff2",
+				href: "/fonts/iosevka/iosevka-das-version-regular.subset.woff2",
+				crossOrigin: "anonymous",
+			},
+			{
 				rel: "preconnect",
 				href: "https://static.cloudflareinsights.com",
 			},

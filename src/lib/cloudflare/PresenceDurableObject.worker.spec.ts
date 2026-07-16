@@ -70,15 +70,15 @@ describe("PresenceDurableObject", () => {
 
 	it("deduplicates hunter count by device-stable hunterId over per-tab clientId", async () => {
 		const name = uniquePresence("device-hunters");
-		const firstTab = await openSocket(name, "tab-a", true, "device-one");
+		const firstTab = await openSocket(name, "tab-alpha", true, "device-one");
 		startClientPings(firstTab);
 		await waitForHunters(firstTab, 1);
 
-		const secondTab = await openSocket(name, "tab-b", true, "device-one");
+		const secondTab = await openSocket(name, "tab-bravo", true, "device-one");
 		startClientPings(secondTab);
 		await waitForHunters(secondTab, 1);
 
-		const otherDevice = await openSocket(name, "tab-c", true, "device-two");
+		const otherDevice = await openSocket(name, "tab-charlie", true, "device-two");
 		startClientPings(otherDevice);
 		await waitForHunters(otherDevice, 2);
 		expect(await fetchHunters(name)).toBe(2);

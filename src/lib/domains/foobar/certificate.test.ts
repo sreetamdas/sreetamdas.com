@@ -11,11 +11,11 @@ describe("Foobar certificate presentation", () => {
 		});
 
 		expect(head.links).toEqual([
-			{ rel: "canonical", href: "http://localhost:3000/foobar/certificate/cert-a" },
+			{ rel: "canonical", href: "http://localhost:5045/foobar/certificate/cert-a" },
 		]);
 		expect(head.meta).toContainEqual({
 			property: "og:image",
-			content: "http://localhost:3000/api/foobar/certificate/cert-a/og.png",
+			content: "http://localhost:5045/api/foobar/certificate/cert-a/og.png",
 		});
 		expect(head.meta).toContainEqual({ property: "og:title", content: "Ada completed Foobar" });
 	});
