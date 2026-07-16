@@ -165,7 +165,7 @@ describe("validateSocialSignInRequest", () => {
 
 	test("rejects unknown providers or missing return URLs", () => {
 		expect(() =>
-			validateSocialSignInRequest({ provider: "github", return_url: "/slides/demo" }),
+			validateSocialSignInRequest({ provider: "microsoft", return_url: "/slides/demo" }),
 		).toThrow("Invalid social sign-in payload");
 		expect(() => validateSocialSignInRequest({ provider: "google" })).toThrow(
 			"Invalid social sign-in payload",

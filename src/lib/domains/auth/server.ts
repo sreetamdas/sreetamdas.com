@@ -6,11 +6,12 @@
 
 import { getAuth, getSiteUrl } from "@/lib/auth";
 
-export type SocialSignInProvider = "cloudflare" | "google";
+export type SocialSignInProvider = "cloudflare" | "google" | "github";
 
 export const SOCIAL_SIGN_IN_PROVIDERS: ReadonlyArray<SocialSignInProvider> = [
 	"cloudflare",
 	"google",
+	"github",
 ];
 
 type AuthHandler = (request: Request) => Promise<Response> | Response;
@@ -50,6 +51,14 @@ const SOCIAL_SIGN_IN_PROVIDER_CONFIGS = {
 		path: "/api/auth/sign-in/social",
 		create_body: (callback_url: string) => ({
 			provider: "google",
+			callbackURL: callback_url,
+		}),
+	},
+	github: {
+		error_message: "GitHub OAuth is not configured",
+		path: "/api/auth/sign-in/social",
+		create_body: (callback_url: string) => ({
+			provider: "github",
 			callbackURL: callback_url,
 		}),
 	},

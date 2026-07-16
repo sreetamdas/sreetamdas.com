@@ -1,6 +1,6 @@
 import "@tanstack/react-start/server-only";
 import { drizzleAdapter } from "@better-auth/drizzle-adapter";
-import { betterAuth } from "better-auth";
+import { betterAuth, type SocialProviders } from "better-auth";
 import { genericOAuth } from "better-auth/plugins";
 import { tanstackStartCookies } from "better-auth/tanstack-start";
 import { env } from "cloudflare:workers";
@@ -39,6 +39,11 @@ export function getAuth() {
 	const siteUrl = getSiteUrl();
 	const cloudflare_oauth_config = getCloudflareOAuthConfig();
 	const google_oauth_config = getGoogleOAuthConfig();
+	const github_oauth_config = getGithubOAuthConfig();
+
+	const socialProviders: SocialProviders = {};
+	if (google_oauth_config) socialProviders.google = google_oauth_config;
+	if (github_oauth_config) socialProviders.github = github_oauth_config;
 
 	return betterAuth({
 		baseURL: `${siteUrl}/api/auth`,
@@ -53,7 +58,7 @@ export function getAuth() {
 				verification: schema.authVerification,
 			},
 		}),
-		socialProviders: google_oauth_config ? { google: google_oauth_config } : {},
+		socialProviders,
 		plugins: cloudflare_oauth_config
 			? [
 					genericOAuth({
@@ -171,6 +176,21 @@ function getGoogleOAuthConfig() {
 	return {
 		clientId: client_id,
 		clientSecret: client_secret,
+	};
+}
+
+function getGithubOAuthConfig() {
+	const client_id = env.GITHUB_OAUTH_CLIENT_ID;
+	const client_secret = env.GITHUB_OAUTH_CLIENT_SECRET;
+
+	if (!client_id || !client_secret) {
+		return undefined;
+	}
+
+	return {
+		clientId: client_id,
+		clientSecret: client_secret,
+		mapProfileToUser: (profile: { login: string }) => ({ name: profile.login }),
 	};
 }
 
