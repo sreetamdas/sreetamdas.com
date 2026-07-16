@@ -27,11 +27,12 @@ test("groups achievements and persists revealed field notes", async ({ page }) =
 	await expect(page.getByText("2 / 5 complete")).toBeVisible();
 	await expect(page.getByRole("heading", { name: "Field notes" })).toBeVisible();
 	await expect(page.getByText("Earlier", { exact: true })).toHaveCount(2);
+	const fieldNotes = page.getByRole("region", { name: "Field notes" });
 
 	await page.getByRole("button", { name: "Reveal hint 1 of 4 for dns-txt" }).click();
-	await expect(page.getByText("The clue lives below HTTP.").first()).toBeVisible();
+	await expect(fieldNotes.getByText("The clue lives below HTTP.")).toBeVisible();
 	await page.reload();
-	await expect(page.getByText("The clue lives below HTTP.").first()).toBeVisible();
+	await expect(fieldNotes.getByText("The clue lives below HTTP.")).toBeVisible();
 	await expect(page.getByRole("button", { name: "Reveal hint 2 of 4 for dns-txt" })).toBeVisible();
 });
 

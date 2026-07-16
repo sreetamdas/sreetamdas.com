@@ -32,6 +32,18 @@ describe("Foobar progress", () => {
 		expect(result.clues_seen).toEqual([{ id: "headers:hint:1", seen_at: 10 }]);
 	});
 
+	test("removes clue timestamps outside the JavaScript Date range", () => {
+		const result = normalizeFoobarData({
+			...initialFoobarData,
+			clues_seen: [
+				{ id: "headers:hint:1", seen_at: Number.MAX_VALUE },
+				{ id: "headers:hint:2", seen_at: 1_234 },
+			],
+		});
+
+		expect(result.clues_seen).toEqual([{ id: "headers:hint:2", seen_at: 1_234 }]);
+	});
+
 	test("updates partial state immutably and replaces arrays", () => {
 		const store = create(createFoobarSlice);
 		const before = store.getState().foobar_data;

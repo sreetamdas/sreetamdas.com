@@ -49,6 +49,15 @@ function uniqueStrings(value: unknown): Array<string> {
 	return [...new Set(value.filter((item): item is string => typeof item === "string"))];
 }
 
+function isValidSeenAt(value: unknown): value is number | null {
+	return (
+		value === null ||
+		(typeof value === "number" &&
+			Number.isFinite(value) &&
+			!Number.isNaN(new Date(value).getTime()))
+	);
+}
+
 export function normalizeFoobarData(value: unknown): FoobarDataType {
 	if (!isRecord(value)) {
 		return { ...initialFoobarData };
@@ -63,8 +72,7 @@ export function normalizeFoobarData(value: unknown): FoobarDataType {
 			if (
 				!isRecord(entry) ||
 				!isFoobarClueId(entry.id) ||
-				(entry.seen_at !== null &&
-					(typeof entry.seen_at !== "number" || !Number.isFinite(entry.seen_at))) ||
+				!isValidSeenAt(entry.seen_at) ||
 				clueIds.has(entry.id)
 			) {
 				continue;
