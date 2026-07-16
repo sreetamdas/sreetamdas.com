@@ -26,4 +26,13 @@ describe("Foobar static clues", () => {
 		expect(read("src/routes/global.css")).toContain("[data-foobar-print-clue]");
 		expect(read("src/lib/domains/foobar/DashboardClient.tsx")).toContain("/foobar/print-preview");
 	});
+
+	test("ships the service-worker clue and unlocked registration", () => {
+		const worker = read("public/foobar-sw.js");
+		expect(worker).toContain("/foobar/service-worker-clue");
+		expect(worker).toContain("/foobar/service-worker");
+		expect(read("src/lib/domains/foobar/Pixel.tsx")).toContain(
+			'navigator.serviceWorker.register("/foobar-sw.js")',
+		);
+	});
 });

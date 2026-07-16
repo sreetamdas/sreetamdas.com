@@ -133,3 +133,23 @@ test("publishes machine-facing and print-only clues", async ({ page, request }) 
 	await page.emulateMedia({ media: "print" });
 	await expect(printClue).toBeVisible();
 });
+
+test("reveals the service-worker clue without touching normal traffic", async ({ page }) => {
+	await seedLegacyProgress(page);
+	await page.goto("/foobar");
+	await page.evaluate(() => navigator.serviceWorker.ready);
+	await page.reload();
+	await page.waitForFunction(() => navigator.serviceWorker.controller !== null);
+
+	const clue = await page.evaluate(async () => {
+		const response = await fetch("/foobar/service-worker-clue");
+		return response.json();
+	});
+	expect(clue).toEqual({
+		message: "The worker heard you without asking the network.",
+		foobar: "/foobar/service-worker",
+	});
+
+	const aboutResponse = await page.request.get("/about");
+	expect(aboutResponse.status()).toBe(200);
+});

@@ -10,3 +10,9 @@
   ! Cache-Control
   ! Cloudflare-CDN-Cache-Control
   Cache-Control: public, max-age=31536000, immutable
+
+/foobar-sw.js
+  ! Cache-Control
+  ! Cloudflare-CDN-Cache-Control
+  Cache-Control: no-cache
+  Cloudflare-CDN-Cache-Control: no-store

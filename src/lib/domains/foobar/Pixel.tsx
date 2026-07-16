@@ -19,6 +19,7 @@ import {
 } from "@/lib/domains/foobar/helpers";
 import { useGlobalStore } from "@/lib/domains/global";
 import { useCustomPlausible } from "@/lib/domains/Plausible";
+import { captureException } from "@/lib/domains/Sentry";
 import { useHasMounted } from "@/lib/helpers/hooks";
 
 import { type FoobaFlagPageSlug, FOOBAR_FLAGS } from "./flags";
@@ -69,6 +70,19 @@ export const FoobarPixel = ({ path }: FoobarPixelProps) => {
 			logConsoleMessages();
 		}
 	}, []);
+
+	useEffect(() => {
+		if (!unlocked || !("serviceWorker" in navigator)) return;
+
+		let active = true;
+		void navigator.serviceWorker.register("/foobar-sw.js").catch((error: unknown) => {
+			if (active) captureException(error);
+		});
+
+		return () => {
+			active = false;
+		};
+	}, [unlocked]);
 
 	useEffect(() => {
 		let page_name = pathname;
