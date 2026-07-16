@@ -97,7 +97,9 @@ const UnlockedAchievementBanner = ({ completed_page }: FoobarSchrodingerProps) =
 		</h1>
 	) : null;
 
-const XMarksTheSpot = (_: { foobar: string }) => null;
+const XMarksTheSpot = ({ foobar }: { foobar: string }) => (
+	<span aria-hidden="true" className="hidden" data-foobar={foobar} />
+);
 
 const ResetFoobar = ({ handleClearFoobarData }: { handleClearFoobarData: () => void }) => (
 	<AlertDialogPrimitive.Root>

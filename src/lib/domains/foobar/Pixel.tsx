@@ -6,7 +6,7 @@
  * after the persisted foobar state says the game has been unlocked.
  */
 import { Link, useLocation } from "@tanstack/react-router";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { useShallow } from "zustand/react/shallow";
 
 import { IS_DEV } from "@/config";
@@ -23,6 +23,7 @@ import { useHasMounted } from "@/lib/helpers/hooks";
 
 import { type FoobaFlagPageSlug, FOOBAR_FLAGS } from "./flags";
 import { type FoobarSliceType } from "./store";
+import { useKonamiAchievement } from "./useKonamiAchievement";
 
 const foobarDataSelector = (state: FoobarSliceType) => ({
 	foobar_data: state.foobar_data,
@@ -43,6 +44,16 @@ export const FoobarPixel = ({ path }: FoobarPixelProps) => {
 		useShallow(foobarDataSelector),
 	);
 	const { unlocked, visited_pages, completed, all_achievements } = foobar_data;
+	const handleKonamiComplete = useCallback(() => {
+		plausibleEvent("foobar", { props: { achievement: FOOBAR_FLAGS.konami.name } });
+		setFoobarData({ konami: true });
+		completeFoobarFlag(FOOBAR_FLAGS.konami.name);
+	}, [completeFoobarFlag, plausibleEvent, setFoobarData]);
+
+	useKonamiAchievement(
+		unlocked && !completed.includes(FOOBAR_FLAGS.konami.name),
+		handleKonamiComplete,
+	);
 
 	useEffect(() => {
 		// Add functions for Foobar badges
@@ -65,6 +76,7 @@ export const FoobarPixel = ({ path }: FoobarPixelProps) => {
 			page_name = `/${FOOBAR_FLAGS.error404.slug}`;
 
 			if (!completed.includes(FOOBAR_FLAGS.error404.name)) {
+				plausibleEvent("foobar", { props: { achievement: FOOBAR_FLAGS.error404.name } });
 				completeFoobarFlag(FOOBAR_FLAGS.error404.name);
 			}
 		}

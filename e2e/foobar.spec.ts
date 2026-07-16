@@ -52,3 +52,64 @@ test("tier dashboard fits a mobile viewport", async ({ page }) => {
 		.evaluate((element) => element.scrollWidth > element.clientWidth);
 	expect(hasHorizontalOverflow).toBe(false);
 });
+
+test("completes browser-only achievements and plants the devtools clue", async ({ page }) => {
+	await seedLegacyProgress(page);
+	await page.goto("/foobar");
+
+	await expect(page.locator('[data-foobar="/foobar/devtools"]')).toHaveCount(1);
+
+	for (const key of [
+		"ArrowUp",
+		"ArrowUp",
+		"ArrowDown",
+		"ArrowDown",
+		"ArrowLeft",
+		"ArrowRight",
+		"ArrowLeft",
+		"ArrowRight",
+		"b",
+		"a",
+	]) {
+		await page.keyboard.press(key);
+	}
+
+	await expect
+		.poll(() =>
+			page.evaluate(() => {
+				const raw = window.localStorage.getItem("foobar-zustand");
+				if (!raw) return false;
+				const persisted = JSON.parse(raw);
+				return (
+					persisted.state.foobar_data.konami === true &&
+					persisted.state.foobar_data.completed.includes("konami")
+				);
+			}),
+		)
+		.toBe(true);
+
+	await page.goto("/about");
+	await page.evaluate(() => {
+		document.addEventListener(
+			"click",
+			(event) => {
+				if (event.target instanceof Element && event.target.closest('a[href*="giphy.com"]')) {
+					event.preventDefault();
+				}
+			},
+			{ capture: true },
+		);
+	});
+	await page.getByRole("link", { name: "Sreetam Das' Reddit" }).click();
+
+	await expect
+		.poll(() =>
+			page.evaluate(() => {
+				const raw = window.localStorage.getItem("foobar-zustand");
+				if (!raw) return false;
+				const persisted = JSON.parse(raw);
+				return persisted.state.foobar_data.completed.includes("easter-egg");
+			}),
+		)
+		.toBe(true);
+});
