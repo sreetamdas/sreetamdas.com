@@ -16,6 +16,7 @@ import { NotFound404 } from "@/lib/components/Error";
 import { Code } from "@/lib/components/Typography";
 import { ShowCompletedBadges } from "@/lib/domains/foobar/badges";
 import { isFoobarAchievement } from "@/lib/domains/foobar/catalog";
+import { FieldNotes } from "@/lib/domains/foobar/FieldNotes";
 import { FOOBAR_FLAGS } from "@/lib/domains/foobar/flags";
 import { type FoobarSchrodingerProps, initialFoobarData } from "@/lib/domains/foobar/store";
 import { useGlobalStore } from "@/lib/domains/global";
@@ -65,7 +66,9 @@ export const FoobarDashboard = ({ completed_page }: FoobarSchrodingerProps) => {
 			<ShowCompletedBadges
 				completed={foobar_data.completed}
 				all_achievements={foobar_data.all_achievements}
+				clues_seen={foobar_data.clues_seen}
 			/>
+			<FieldNotes clues_seen={foobar_data.clues_seen} />
 			<Link
 				to="/stats"
 				search={{ period: "30d" }}
