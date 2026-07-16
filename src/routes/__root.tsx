@@ -112,7 +112,7 @@ export const Route = createRootRoute({
 		],
 		scripts: [
 			{
-				defer: true,
+				async: true,
 				"data-domain": "sreetamdas.com",
 				"data-api": "/prxy/plsbl/api/event",
 				src: "/prxy/plsbl/js/pa-9_SvPsvmZhj3FQWGOD3c1.js",
