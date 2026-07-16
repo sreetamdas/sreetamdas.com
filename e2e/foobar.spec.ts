@@ -51,9 +51,9 @@ test("keeps local progress as the default and offers optional cloud save", async
 		"href",
 		"/api/login/cloudflare?returnTo=/foobar",
 	);
-	await expect(page.getByRole("link", { name: "Sign in with Google" })).toHaveAttribute(
+	await expect(page.getByRole("link", { name: "Sign in with GitHub" })).toHaveAttribute(
 		"href",
-		"/api/login/google?returnTo=/foobar",
+		"/api/login/github?returnTo=/foobar",
 	);
 });
 
