@@ -68,7 +68,7 @@ function generateRssFeed(blogPosts: Array<BlogPost>): string {
 		})
 		.join("\n");
 
-	return `<?xml version="1.0" encoding="UTF-8"?>\n<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">\n  <channel>\n    <title>${OWNER_NAME}&apos;s Blog</title>\n    <link>${SITE_URL}/blog</link>\n    <description>Blog posts by ${OWNER_NAME}</description>\n    <language>en-us</language>\n    <lastBuildDate>${lastUpdated}</lastBuildDate>\n    <atom:link href="${SITE_URL}/rss/feed.xml" rel="self" type="application/rss+xml" />\n${items}\n  </channel>\n</rss>`;
+	return `<?xml version="1.0" encoding="UTF-8"?>\n<!-- A patient reader found a loose page: ${SITE_URL}/foobar/feed-reader -->\n<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">\n  <channel>\n    <title>${OWNER_NAME}&apos;s Blog</title>\n    <link>${SITE_URL}/blog</link>\n    <description>Blog posts by ${OWNER_NAME}</description>\n    <language>en-us</language>\n    <lastBuildDate>${lastUpdated}</lastBuildDate>\n    <atom:link href="${SITE_URL}/rss/feed.xml" rel="self" type="application/rss+xml" />\n${items}\n  </channel>\n</rss>`;
 }
 
 // ---------------------------------------------------------------------------

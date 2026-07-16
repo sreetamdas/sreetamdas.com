@@ -69,6 +69,9 @@ export const FoobarDashboard = ({ completed_page }: FoobarSchrodingerProps) => {
 				clues_seen={foobar_data.clues_seen}
 			/>
 			<FieldNotes clues_seen={foobar_data.clues_seen} />
+			<p aria-hidden="true" data-foobar-print-clue>
+				The paper remembers a path the screen will not: /foobar/print-preview
+			</p>
 			<Link
 				to="/stats"
 				search={{ period: "30d" }}

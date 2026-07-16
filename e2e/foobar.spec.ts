@@ -114,3 +114,22 @@ test("completes browser-only achievements and plants the devtools clue", async (
 		)
 		.toBe(true);
 });
+
+test("publishes machine-facing and print-only clues", async ({ page, request }) => {
+	for (const [path, clue] of [
+		["/robots.txt", "/foobar/paper-trail"],
+		["/.well-known/security.txt", "/foobar/paper-trail"],
+		["/rss/feed.xml", "/foobar/feed-reader"],
+	]) {
+		const response = await request.get(path);
+		expect(response.status()).toBe(200);
+		expect(await response.text()).toContain(clue);
+	}
+
+	await seedLegacyProgress(page);
+	await page.goto("/foobar");
+	const printClue = page.getByText(/paper remembers.*\/foobar\/print-preview/i);
+	await expect(printClue).toBeHidden();
+	await page.emulateMedia({ media: "print" });
+	await expect(printClue).toBeVisible();
+});
