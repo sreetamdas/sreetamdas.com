@@ -35,10 +35,10 @@ export const NotFound404 = ({ message }: { message?: ReactNode }) => {
 };
 
 export const NotFoundDogsLink = () => {
-	const { setFoobarData, completed } = useGlobalStore(
+	const { completeFoobarFlag, completed } = useGlobalStore(
 		useShallow((state) => ({
 			completed: state.foobar_data.completed,
-			setFoobarData: state.setFoobarData,
+			completeFoobarFlag: state.completeFoobarFlag,
 		})),
 	);
 	const plausibleEvent = useCustomPlausible();
@@ -46,9 +46,7 @@ export const NotFoundDogsLink = () => {
 	function handleDogsLinkClicked() {
 		if (!completed.includes(FOOBAR_FLAGS.dogs.name)) {
 			plausibleEvent("foobar", { props: { achievement: FOOBAR_FLAGS.dogs.name } });
-			setFoobarData({
-				completed: completed.concat([FOOBAR_FLAGS.dogs.name]),
-			});
+			completeFoobarFlag(FOOBAR_FLAGS.dogs.name);
 		}
 	}
 
