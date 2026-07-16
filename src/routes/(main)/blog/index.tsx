@@ -1,14 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
 
 import { SITE_DESCRIPTION, SITE_TITLE_APPEND } from "@/config";
-import { HTML_CACHE_HEADERS } from "@/lib/cacheHeaders";
 import { canonicalUrl, defaultOgImageUrl } from "@/lib/seo";
 
 import { getBlogArchiveRenderable } from "./-index.server";
 
 export const Route = createFileRoute("/(main)/blog/")({
 	component: BlogArchivePage,
-	headers: () => HTML_CACHE_HEADERS,
 	staleTime: 1000 * 60 * 60 * 24,
 	loader: () => getBlogArchiveRenderable(),
 	head: () => {

@@ -1,7 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 
 import { SITE_DESCRIPTION, SITE_TITLE_APPEND } from "@/config";
-import { HTML_CACHE_HEADERS } from "@/lib/cacheHeaders";
 import { StatsCounter } from "@/lib/domains/PageInteraction/StatsCounter";
 import { canonicalUrl, defaultOgImageUrl } from "@/lib/seo";
 
@@ -9,7 +8,6 @@ import { getHomeRenderable } from "./-index.server";
 
 export const Route = createFileRoute("/(main)/")({
 	component: Home,
-	headers: () => HTML_CACHE_HEADERS,
 	staleTime: 1000 * 60 * 60 * 24,
 	loader: () => {
 		return getHomeRenderable();

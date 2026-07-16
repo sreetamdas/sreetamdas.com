@@ -2,6 +2,8 @@ import { DurableObject } from "cloudflare:workers";
 
 import {
 	PRESENCE_CLIENT_ID_PARAM,
+	PRESENCE_HUNTER_ID_PARAM,
+	PRESENCE_HUNTER_PARAM,
 	isPresenceClientId,
 	type PresenceServerMessage,
 } from "@/lib/domains/Presence/protocol";
@@ -12,6 +14,8 @@ type ConnectionAttachment = {
 	clientId: string;
 	connectedAt: number;
 	lastSeenAt: number;
+	hunter: boolean;
+	hunterId?: string;
 };
 
 type PresenceTimings = {
@@ -46,6 +50,9 @@ function parseConnectionAttachment(value: unknown): ConnectionAttachment | null 
 		clientId: value.clientId,
 		connectedAt: value.connectedAt,
 		lastSeenAt: value.lastSeenAt,
+		hunter: "hunter" in value && value.hunter === true,
+		hunterId:
+			"hunterId" in value && typeof value.hunterId === "string" ? value.hunterId : undefined,
 	};
 }
 
@@ -69,6 +76,14 @@ function getPresenceTimings(platformEnv: CloudflareEnv): PresenceTimings {
 function getClientId(request: Request) {
 	const value = new URL(request.url).searchParams.get(PRESENCE_CLIENT_ID_PARAM);
 	return isPresenceClientId(value) ? value : null;
+}
+
+function isHunter(request: Request) {
+	return new URL(request.url).searchParams.get(PRESENCE_HUNTER_PARAM) === "1";
+}
+
+function getHunterId(request: Request) {
+	return new URL(request.url).searchParams.get(PRESENCE_HUNTER_ID_PARAM) || undefined;
 }
 
 export class PresenceDurableObject extends DurableObject<CloudflareEnv> {
@@ -108,6 +123,18 @@ export class PresenceDurableObject extends DurableObject<CloudflareEnv> {
 		return clientIds.size;
 	}
 
+	private getHunterCount(now = Date.now()) {
+		const hunterIds = new Set<string>();
+		for (const ws of this.ctx.getWebSockets()) {
+			if (!this.isSocketActive(ws, now)) continue;
+			const attachment = parseConnectionAttachment(ws.deserializeAttachment());
+			if (attachment?.hunter) {
+				hunterIds.add(attachment.hunterId ?? attachment.clientId);
+			}
+		}
+		return hunterIds.size;
+	}
+
 	private broadcast(message: PresenceServerMessage, now = Date.now()) {
 		const payload = JSON.stringify(message);
 		for (const ws of this.ctx.getWebSockets()) {
@@ -121,7 +148,10 @@ export class PresenceDurableObject extends DurableObject<CloudflareEnv> {
 	}
 
 	private broadcastCount(now = Date.now()) {
-		this.broadcast({ type: "count", count: this.getViewerCount(now) }, now);
+		this.broadcast(
+			{ type: "count", count: this.getViewerCount(now), hunters: this.getHunterCount(now) },
+			now,
+		);
 	}
 
 	private pruneStaleConnections(now: number) {
@@ -195,6 +225,8 @@ export class PresenceDurableObject extends DurableObject<CloudflareEnv> {
 				clientId,
 				connectedAt: now,
 				lastSeenAt: now,
+				hunter: isHunter(request),
+				hunterId: getHunterId(request),
 			} satisfies ConnectionAttachment);
 
 			this.pruneStaleConnections(now);
@@ -210,7 +242,7 @@ export class PresenceDurableObject extends DurableObject<CloudflareEnv> {
 		await this.syncAlarm(now);
 
 		return Response.json(
-			{ count: this.getViewerCount(now) },
+			{ count: this.getViewerCount(now), hunters: this.getHunterCount(now) },
 			{ headers: { "Cache-Control": "no-store" } },
 		);
 	}

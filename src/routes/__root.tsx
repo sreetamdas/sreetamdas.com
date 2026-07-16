@@ -97,6 +97,13 @@ export const Route = createRootRoute({
 				crossOrigin: "anonymous",
 			},
 			{
+				rel: "preload",
+				as: "font",
+				type: "font/woff2",
+				href: "/fonts/iosevka/iosevka-das-version-regular.subset.woff2",
+				crossOrigin: "anonymous",
+			},
+			{
 				rel: "preconnect",
 				href: "https://static.cloudflareinsights.com",
 			},
@@ -112,7 +119,7 @@ export const Route = createRootRoute({
 		],
 		scripts: [
 			{
-				defer: true,
+				async: true,
 				"data-domain": "sreetamdas.com",
 				"data-api": "/prxy/plsbl/api/event",
 				src: "/prxy/plsbl/js/pa-9_SvPsvmZhj3FQWGOD3c1.js",

@@ -1,0 +1,5 @@
+Contact: mailto:sreetam@sreetamdas.com
+Canonical: https://sreetamdas.com/.well-known/security.txt
+Expires: 2027-07-16T00:00:00.000Z
+
+# A machine-facing field note: /foobar/paper-trail

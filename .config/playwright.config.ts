@@ -9,15 +9,15 @@ export default defineConfig({
 	workers: process.env.CI ? 2 : undefined,
 	reporter: process.env.CI ? [["github"], ["html", { open: "never" }]] : "list",
 	use: {
-		baseURL: "http://127.0.0.1:3000",
+		baseURL: "http://127.0.0.1:5045",
 		trace: "retain-on-failure",
 		video: "retain-on-failure",
 		screenshot: "only-on-failure",
 	},
 	webServer: {
 		cwd: "..",
-		command: "pnpm exec vp preview --host 127.0.0.1 --port 3000",
-		url: "http://127.0.0.1:3000",
+		command: "pnpm exec vp preview --host 127.0.0.1 --port 5045",
+		url: "http://127.0.0.1:5045",
 		reuseExistingServer: !process.env.CI,
 		timeout: 600000,
 	},

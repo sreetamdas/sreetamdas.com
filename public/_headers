@@ -1,3 +1,11 @@
+# Cloudflare Workers Assets serves prerendered HTML and hashed build output
+# directly (before the Worker runs), so this file — not the Worker or route
+# `headers()` — controls their caching.
+#
+# NOTE: Workers Assets *combines* (comma-joins) the headers of every rule whose
+# pattern matches a request; a more specific rule does NOT override a broader
+# one. Rules that need different values must first detach the broader rule's
+# header with `! Header-Name` before setting their own.
 /*
   Cache-Control: public, max-age=0, stale-while-revalidate=3600
   Cloudflare-CDN-Cache-Control: public, max-age=300, stale-while-revalidate=3600
@@ -10,3 +18,9 @@
   ! Cache-Control
   ! Cloudflare-CDN-Cache-Control
   Cache-Control: public, max-age=31536000, immutable
+
+/foobar-sw.js
+  ! Cache-Control
+  ! Cloudflare-CDN-Cache-Control
+  Cache-Control: no-cache
+  Cloudflare-CDN-Cache-Control: no-store

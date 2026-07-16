@@ -3,18 +3,19 @@
 @import "../styles/inter.css";
 
 /*
- * Inter fallback with metric overrides so the system-font fallback matches
- * Inter's metrics. This prevents the ~0.12 CLS from paragraph reflow when
- * Inter swaps in on fast (cache-hit) loads. Without this, the fallback
- * sans-serif has different glyph widths, causing line breaks to shift.
+ * Metric-matched fallback so the Arial->Inter swap causes no paragraph reflow:
+ * without size-adjust, Arial runs ~7% wider per average glyph than Inter, so
+ * line breaks shift when Inter arrives. Overrides generated with @capsizecss
+ * from the shipped Inter woff2 against Arial; they shape only the fallback box,
+ * Inter itself renders unchanged.
  */
 @font-face {
 	font-family: "Inter Fallback";
-	src: local("Arial");
+	src: local("Arial"), local("ArialMT");
 	font-display: swap;
-	size-adjust: 100.2%;
-	ascent-override: 90.6%;
-	descent-override: 22.5%;
+	size-adjust: 107.1194%;
+	ascent-override: 90.4365%;
+	descent-override: 22.518%;
 	line-gap-override: 0%;
 }
 
@@ -256,6 +257,10 @@
 	}
 }
 
+[data-foobar-print-clue] {
+	display: none;
+}
+
 @media print {
 	@page {
 		margin: 0;
@@ -267,6 +272,14 @@
 		--color-secondary: var(--light-blue);
 		--color-foreground: var(--black);
 		--color-background: var(--not-white);
+	}
+
+	[data-foobar-print-clue] {
+		display: block;
+		margin: 2rem 0;
+		border: 1px dashed currentColor;
+		padding: 1rem;
+		font-family: var(--font-mono);
 	}
 }
 

@@ -14,7 +14,10 @@ import {
 	FaTwitter,
 } from "react-icons/fa";
 import { SiPeerlist } from "react-icons/si";
+import { useShallow } from "zustand/react/shallow";
 
+import { FOOBAR_FLAGS } from "@/lib/domains/foobar/flags";
+import { useGlobalStore } from "@/lib/domains/global";
 import { useCustomPlausible } from "@/lib/domains/Plausible";
 
 type ExternalLinksArrayType = Array<{
@@ -25,6 +28,19 @@ type ExternalLinksArrayType = Array<{
 }>;
 export const SocialLinks = () => {
 	const plausibleEvent = useCustomPlausible();
+	const { completed, completeFoobarFlag } = useGlobalStore(
+		useShallow((state) => ({
+			completed: state.foobar_data.completed,
+			completeFoobarFlag: state.completeFoobarFlag,
+		})),
+	);
+
+	function completeEasterEgg() {
+		if (completed.includes(FOOBAR_FLAGS["easter-egg"].name)) return;
+
+		plausibleEvent("foobar", { props: { achievement: FOOBAR_FLAGS["easter-egg"].name } });
+		completeFoobarFlag(FOOBAR_FLAGS["easter-egg"].name);
+	}
 
 	const external_links: ExternalLinksArrayType = [
 		{
@@ -66,9 +82,7 @@ export const SocialLinks = () => {
 			link: "https://giphy.com/gifs/LrmU6jXIjwziE/tile",
 			title: "Sreetam Das' Reddit",
 			Icon: (props) => <FaRedditAlien {...props} />,
-			onClick: () => {
-				plausibleEvent("foobar", { props: { achievement: "easter-egg" } });
-			},
+			onClick: completeEasterEgg,
 		},
 		{
 			link: "https://open.spotify.com/user/22nkuerb2tgjpqwhy4tp4aecq",

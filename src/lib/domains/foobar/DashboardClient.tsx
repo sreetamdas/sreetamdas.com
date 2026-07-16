@@ -15,7 +15,12 @@ import { IS_DEV } from "@/config";
 import { NotFound404 } from "@/lib/components/Error";
 import { Code } from "@/lib/components/Typography";
 import { ShowCompletedBadges } from "@/lib/domains/foobar/badges";
+import { isFoobarAchievement } from "@/lib/domains/foobar/catalog";
+import { resetFoobarProgressServerFn } from "@/lib/domains/foobar/cloud-progress.server";
+import { CloudProgressPanel } from "@/lib/domains/foobar/CloudProgressPanel";
+import { FieldNotes } from "@/lib/domains/foobar/FieldNotes";
 import { FOOBAR_FLAGS } from "@/lib/domains/foobar/flags";
+import { useSharedHunterPresence } from "@/lib/domains/foobar/sharedHunterPresence";
 import { type FoobarSchrodingerProps, initialFoobarData } from "@/lib/domains/foobar/store";
 import { useGlobalStore } from "@/lib/domains/global";
 import { useCustomPlausible } from "@/lib/domains/Plausible";
@@ -46,7 +51,26 @@ export const FoobarDashboard = ({ completed_page }: FoobarSchrodingerProps) => {
 
 	function handleClearFoobarData() {
 		plausibleEvent("foobar", { props: { achievement: "restart" } });
+		void resetFoobarProgressServerFn().catch(() => {
+			// Signed-out players have no cloud copy; the local reset still succeeds.
+		});
 		setFoobarData(initialFoobarData);
+
+		if ("serviceWorker" in navigator) {
+			void navigator.serviceWorker
+				.getRegistrations()
+				.then((registrations) => {
+					for (const reg of registrations) {
+						const url = reg.active?.scriptURL ?? reg.installing?.scriptURL;
+						if (url?.endsWith("/foobar-sw.js")) {
+							void reg.unregister();
+						}
+					}
+				})
+				.catch(() => {
+					// SW APIs are unavailable; reset succeeds regardless.
+				});
+		}
 
 		// eslint-disable-next-line no-console
 		console.log("cleared");
@@ -64,7 +88,14 @@ export const FoobarDashboard = ({ completed_page }: FoobarSchrodingerProps) => {
 			<ShowCompletedBadges
 				completed={foobar_data.completed}
 				all_achievements={foobar_data.all_achievements}
+				clues_seen={foobar_data.clues_seen}
 			/>
+			<FieldNotes clues_seen={foobar_data.clues_seen} />
+			<CampfireStatus />
+			<CloudProgressPanel />
+			<p aria-hidden="true" data-foobar-print-clue>
+				The paper remembers a path the screen will not: /foobar/print-preview
+			</p>
 			<Link
 				to="/stats"
 				search={{ period: "30d" }}
@@ -93,7 +124,30 @@ const UnlockedAchievementBanner = ({ completed_page }: FoobarSchrodingerProps) =
 		</h1>
 	) : null;
 
-const XMarksTheSpot = (_: { foobar: string }) => null;
+const XMarksTheSpot = ({ foobar }: { foobar: string }) => (
+	<span aria-hidden="true" className="hidden" data-foobar={foobar} />
+);
+
+const CampfireStatus = () => {
+	const { connected, hunters } = useSharedHunterPresence(true);
+	const count = hunters ?? 0;
+
+	return (
+		<section
+			aria-labelledby="foobar-campfire-status"
+			className="mt-8 border-t border-foreground/15 pt-5"
+		>
+			<h2 id="foobar-campfire-status" className="font-serif text-2xl leading-normal">
+				Campfire
+			</h2>
+			<p className="mt-2 text-sm text-foreground/70" aria-live="polite">
+				{connected
+					? `${count} ${count === 1 ? "hunter" : "hunters"} online. The fire needs company.`
+					: "Listening for other hunters…"}
+			</p>
+		</section>
+	);
+};
 
 const ResetFoobar = ({ handleClearFoobarData }: { handleClearFoobarData: () => void }) => (
 	<AlertDialogPrimitive.Root>
@@ -131,7 +185,7 @@ const ResetFoobar = ({ handleClearFoobarData }: { handleClearFoobarData: () => v
 							onClick={handleClearFoobarData}
 							type="button"
 						>
-							Yes, delete account
+							Yes, reset progress
 						</button>
 					</AlertDialogPrimitive.Action>
 				</div>
@@ -147,11 +201,11 @@ const FoobarButLocked = () => (
 );
 
 export const FoobarSchrodinger = ({ completed_page }: FoobarSchrodingerProps) => {
-	const { unlocked, setFoobarData, completed } = useGlobalStore(
+	const { unlocked, completeFoobarFlag, completed } = useGlobalStore(
 		useShallow((state) => ({
 			unlocked: state.foobar_data.unlocked,
 			completed: state.foobar_data.completed,
-			setFoobarData: state.setFoobarData,
+			completeFoobarFlag: state.completeFoobarFlag,
 		})),
 	);
 	const has_mounted = useHasMounted();
@@ -166,14 +220,16 @@ export const FoobarSchrodinger = ({ completed_page }: FoobarSchrodingerProps) =>
 				return false;
 			})?.name;
 
-			if (!isUndefined(completed_flag) && !completed?.includes(completed_flag)) {
+			if (
+				!isUndefined(completed_flag) &&
+				isFoobarAchievement(completed_flag) &&
+				!completed.includes(completed_flag)
+			) {
 				plausibleEvent("foobar", { props: { achievement: completed_flag } });
-				setFoobarData({
-					completed: completed.concat([completed_flag]),
-				});
+				completeFoobarFlag(completed_flag);
 			}
 		}
-	}, [completed, completed_page, plausibleEvent, setFoobarData]);
+	}, [completeFoobarFlag, completed, completed_page, plausibleEvent]);
 
 	if (!has_mounted) return null;
 	if (!unlocked) return <FoobarButLocked />;

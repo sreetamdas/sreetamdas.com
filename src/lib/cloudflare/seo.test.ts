@@ -43,8 +43,8 @@ describe("maybeHideFromSeo", () => {
 
 	test("does nothing on local development hostnames", () => {
 		const localRequest = new Request("http://localhost:5173/about");
-		const ipv4Request = new Request("http://127.0.0.1:3000/about");
-		const ipv6Request = new Request("http://[::1]:3000/about");
+		const ipv4Request = new Request("http://127.0.0.1:5045/about");
+		const ipv6Request = new Request("http://[::1]:5045/about");
 		const response = new Response("<html></html>", {
 			status: 200,
 			headers: { "content-type": "text/html" },
