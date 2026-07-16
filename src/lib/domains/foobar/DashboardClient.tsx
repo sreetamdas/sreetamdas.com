@@ -14,6 +14,7 @@ import { useShallow } from "zustand/react/shallow";
 import { IS_DEV } from "@/config";
 import { NotFound404 } from "@/lib/components/Error";
 import { Code } from "@/lib/components/Typography";
+import { useLiveViewerCount } from "@/lib/components/useLiveViewerCount";
 import { ShowCompletedBadges } from "@/lib/domains/foobar/badges";
 import { isFoobarAchievement } from "@/lib/domains/foobar/catalog";
 import { FieldNotes } from "@/lib/domains/foobar/FieldNotes";
@@ -69,6 +70,7 @@ export const FoobarDashboard = ({ completed_page }: FoobarSchrodingerProps) => {
 				clues_seen={foobar_data.clues_seen}
 			/>
 			<FieldNotes clues_seen={foobar_data.clues_seen} />
+			<CampfireStatus />
 			<p aria-hidden="true" data-foobar-print-clue>
 				The paper remembers a path the screen will not: /foobar/print-preview
 			</p>
@@ -103,6 +105,27 @@ const UnlockedAchievementBanner = ({ completed_page }: FoobarSchrodingerProps) =
 const XMarksTheSpot = ({ foobar }: { foobar: string }) => (
 	<span aria-hidden="true" className="hidden" data-foobar={foobar} />
 );
+
+const CampfireStatus = () => {
+	const { connected, hunters } = useLiveViewerCount({ hunter: true });
+	const count = hunters ?? 0;
+
+	return (
+		<section
+			aria-labelledby="foobar-campfire-status"
+			className="mt-8 border-t border-foreground/15 pt-5"
+		>
+			<h2 id="foobar-campfire-status" className="font-serif text-2xl leading-normal">
+				Campfire
+			</h2>
+			<p className="mt-2 text-sm text-foreground/70" aria-live="polite">
+				{connected
+					? `${count} ${count === 1 ? "hunter" : "hunters"} online. The fire needs company.`
+					: "Listening for other hunters…"}
+			</p>
+		</section>
+	);
+};
 
 const ResetFoobar = ({ handleClearFoobarData }: { handleClearFoobarData: () => void }) => (
 	<AlertDialogPrimitive.Root>

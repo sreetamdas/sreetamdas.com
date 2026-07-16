@@ -153,3 +153,31 @@ test("reveals the service-worker clue without touching normal traffic", async ({
 	const aboutResponse = await page.request.get("/about");
 	expect(aboutResponse.status()).toBe(200);
 });
+
+test("unlocks campfire for two simultaneous hunters", async ({ browser }) => {
+	const firstContext = await browser.newContext();
+	const secondContext = await browser.newContext();
+	const first = await firstContext.newPage();
+	const second = await secondContext.newPage();
+	await seedLegacyProgress(first);
+	await seedLegacyProgress(second);
+
+	await Promise.all([first.goto("/foobar"), second.goto("/foobar")]);
+	await expect(first.getByRole("heading", { name: "Campfire", exact: true })).toBeVisible();
+
+	for (const hunter of [first, second]) {
+		await expect
+			.poll(() =>
+				hunter.evaluate(() => {
+					const raw = window.localStorage.getItem("foobar-zustand");
+					if (!raw) return false;
+					const persisted = JSON.parse(raw);
+					return persisted.state.foobar_data.completed.includes("campfire");
+				}),
+			)
+			.toBe(true);
+	}
+
+	await firstContext.close();
+	await secondContext.close();
+});

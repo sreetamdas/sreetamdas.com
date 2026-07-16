@@ -11,6 +11,7 @@ import { useShallow } from "zustand/react/shallow";
 
 import { IS_DEV } from "@/config";
 import { Code } from "@/lib/components/Typography";
+import { useLiveViewerCount } from "@/lib/components/useLiveViewerCount";
 import { FOOBAR_ACHIEVEMENTS } from "@/lib/domains/foobar/catalog";
 import {
 	addFoobarToLocalStorage,
@@ -45,6 +46,7 @@ export const FoobarPixel = ({ path }: FoobarPixelProps) => {
 		useShallow(foobarDataSelector),
 	);
 	const { unlocked, visited_pages, completed, all_achievements } = foobar_data;
+	const { hunters } = useLiveViewerCount({ enabled: unlocked, hunter: true });
 	const handleKonamiComplete = useCallback(() => {
 		plausibleEvent("foobar", { props: { achievement: FOOBAR_FLAGS.konami.name } });
 		setFoobarData({ konami: true });
@@ -55,6 +57,15 @@ export const FoobarPixel = ({ path }: FoobarPixelProps) => {
 		unlocked && !completed.includes(FOOBAR_FLAGS.konami.name),
 		handleKonamiComplete,
 	);
+
+	useEffect(() => {
+		if (hunters === null || hunters < 2 || completed.includes(FOOBAR_FLAGS.campfire.name)) {
+			return;
+		}
+
+		plausibleEvent("foobar", { props: { achievement: FOOBAR_FLAGS.campfire.name } });
+		completeFoobarFlag(FOOBAR_FLAGS.campfire.name);
+	}, [completeFoobarFlag, completed, hunters, plausibleEvent]);
 
 	useEffect(() => {
 		// Add functions for Foobar badges
