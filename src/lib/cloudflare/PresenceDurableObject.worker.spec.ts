@@ -68,7 +68,27 @@ describe("PresenceDurableObject", () => {
 		secondViewer.close();
 	});
 
-	it("broadcasts distinct Foobar hunter counts", async () => {
+	it("deduplicates hunter count by device-stable hunterId over per-tab clientId", async () => {
+		const name = uniquePresence("device-hunters");
+		const firstTab = await openSocket(name, "tab-a", true, "device-one");
+		startClientPings(firstTab);
+		await waitForHunters(firstTab, 1);
+
+		const secondTab = await openSocket(name, "tab-b", true, "device-one");
+		startClientPings(secondTab);
+		await waitForHunters(secondTab, 1);
+
+		const otherDevice = await openSocket(name, "tab-c", true, "device-two");
+		startClientPings(otherDevice);
+		await waitForHunters(otherDevice, 2);
+		expect(await fetchHunters(name)).toBe(2);
+
+		firstTab.close();
+		secondTab.close();
+		otherDevice.close();
+	});
+
+	it("falls back to clientId dedup when hunterId is absent", async () => {
 		const name = uniquePresence("hunters");
 		const viewer = await openSocket(name, "ordinary-viewer");
 		startClientPings(viewer);
@@ -140,10 +160,11 @@ function presence(name: string) {
 	return env.SITE_PRESENCE.getByName(name);
 }
 
-async function openSocket(name: string, clientId: string, hunter = false) {
+async function openSocket(name: string, clientId: string, hunter = false, hunterId?: string) {
 	const url = new URL("https://example.com/");
 	url.searchParams.set("clientId", clientId);
 	if (hunter) url.searchParams.set("hunter", "1");
+	if (hunterId) url.searchParams.set("hunterId", hunterId);
 	const response = await presence(name).fetch(url.toString(), {
 		headers: { Upgrade: "websocket", Origin: "https://example.com" },
 	});

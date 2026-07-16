@@ -2,6 +2,7 @@ import { DurableObject } from "cloudflare:workers";
 
 import {
 	PRESENCE_CLIENT_ID_PARAM,
+	PRESENCE_HUNTER_ID_PARAM,
 	PRESENCE_HUNTER_PARAM,
 	isPresenceClientId,
 	type PresenceServerMessage,
@@ -14,6 +15,7 @@ type ConnectionAttachment = {
 	connectedAt: number;
 	lastSeenAt: number;
 	hunter: boolean;
+	hunterId?: string;
 };
 
 type PresenceTimings = {
@@ -49,6 +51,8 @@ function parseConnectionAttachment(value: unknown): ConnectionAttachment | null 
 		connectedAt: value.connectedAt,
 		lastSeenAt: value.lastSeenAt,
 		hunter: "hunter" in value && value.hunter === true,
+		hunterId:
+			"hunterId" in value && typeof value.hunterId === "string" ? value.hunterId : undefined,
 	};
 }
 
@@ -76,6 +80,10 @@ function getClientId(request: Request) {
 
 function isHunter(request: Request) {
 	return new URL(request.url).searchParams.get(PRESENCE_HUNTER_PARAM) === "1";
+}
+
+function getHunterId(request: Request) {
+	return new URL(request.url).searchParams.get(PRESENCE_HUNTER_ID_PARAM) || undefined;
 }
 
 export class PresenceDurableObject extends DurableObject<CloudflareEnv> {
@@ -116,13 +124,15 @@ export class PresenceDurableObject extends DurableObject<CloudflareEnv> {
 	}
 
 	private getHunterCount(now = Date.now()) {
-		const clientIds = new Set<string>();
+		const hunterIds = new Set<string>();
 		for (const ws of this.ctx.getWebSockets()) {
 			if (!this.isSocketActive(ws, now)) continue;
 			const attachment = parseConnectionAttachment(ws.deserializeAttachment());
-			if (attachment?.hunter) clientIds.add(attachment.clientId);
+			if (attachment?.hunter) {
+				hunterIds.add(attachment.hunterId ?? attachment.clientId);
+			}
 		}
-		return clientIds.size;
+		return hunterIds.size;
 	}
 
 	private broadcast(message: PresenceServerMessage, now = Date.now()) {
@@ -216,6 +226,7 @@ export class PresenceDurableObject extends DurableObject<CloudflareEnv> {
 				connectedAt: now,
 				lastSeenAt: now,
 				hunter: isHunter(request),
+				hunterId: getHunterId(request),
 			} satisfies ConnectionAttachment);
 
 			this.pruneStaleConnections(now);
