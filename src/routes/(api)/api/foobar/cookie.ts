@@ -4,11 +4,14 @@
  */
 import { createFileRoute } from "@tanstack/react-router";
 
+import { getCookieValue } from "@/lib/domains/PageInteraction/LikeIdentity";
+
 const FOOBAR_COOKIE_NAME = "foobar-cookie";
 const FOOBAR_COOKIE_OPEN_VALUE = "open-sesame";
 
 export function handleFoobarCookie(request: Request): Response {
-	if (readCookie(request.headers.get("cookie"), FOOBAR_COOKIE_NAME) === FOOBAR_COOKIE_OPEN_VALUE) {
+	const cookieHeader = request.headers.get("cookie") ?? undefined;
+	if (getCookieValue(cookieHeader, FOOBAR_COOKIE_NAME) === FOOBAR_COOKIE_OPEN_VALUE) {
 		return Response.json({ message: "The jar opened.", foobar: "/foobar/cookie-jar" });
 	}
 
@@ -24,19 +27,6 @@ export function handleFoobarCookie(request: Request): Response {
 		{ message: "The jar is sealed. Change its value to open-sesame, then ask again." },
 		{ headers: { "Set-Cookie": attributes.join("; "), "Cache-Control": "no-store" } },
 	);
-}
-
-function readCookie(header: string | null, name: string): string | undefined {
-	if (!header) return undefined;
-
-	for (const part of header.split(";")) {
-		const separator = part.indexOf("=");
-		if (separator < 0) continue;
-		if (part.slice(0, separator).trim() !== name) continue;
-		return part.slice(separator + 1).trim();
-	}
-
-	return undefined;
 }
 
 export const Route = createFileRoute("/(api)/api/foobar/cookie")({

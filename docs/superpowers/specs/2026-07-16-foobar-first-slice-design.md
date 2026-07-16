@@ -56,26 +56,26 @@ to evolve without migrating localStorage.
 Define the five tiers once, in display order, with a stable key, label, difficulty, and short flavor
 description:
 
-| Key | Label | Difficulty | Purpose |
-| --- | --- | ---: | --- |
-| `discovery` | Warmup / Discovery | 1 | Learn that the site hides things. |
-| `browser` | Browser Goblin | 2 | Use browser behavior and developer tools. |
-| `archaeology` | Site Archaeology | 3 | Learn from wrong turns and site structure. |
-| `protocol` | Protocol / Web Weirdness | 4 | Look below rendered pages into web protocols. |
-| `meta` | Meta / Endgame | 5 | Finish or reset the overall journey. |
+| Key           | Label                    | Difficulty | Purpose                                       |
+| ------------- | ------------------------ | ---------: | --------------------------------------------- |
+| `discovery`   | Warmup / Discovery       |          1 | Learn that the site hides things.             |
+| `browser`     | Browser Goblin           |          2 | Use browser behavior and developer tools.     |
+| `archaeology` | Site Archaeology         |          3 | Learn from wrong turns and site structure.    |
+| `protocol`    | Protocol / Web Weirdness |          4 | Look below rendered pages into web protocols. |
+| `meta`        | Meta / Endgame           |          5 | Finish or reset the overall journey.          |
 
 Tier definitions are presentational. Existing route slugs and `checkIfAllAchievementsAreDone`
 remain authoritative for completion.
 
 ### Existing achievement mapping
 
-| Tier | Achievements |
-| --- | --- |
-| Discovery | `unlocked`, `source-code`, `headers`, `localforage`, `teapot` |
-| Browser | `devtools`, `hack`, `offline`, `navigator`, `easter-egg`, `konami` |
-| Site Archaeology | `error404`, `dogs` |
-| Protocol | `dns-txt` |
-| Meta | `completed` |
+| Tier             | Achievements                                                       |
+| ---------------- | ------------------------------------------------------------------ |
+| Discovery        | `unlocked`, `source-code`, `headers`, `localforage`, `teapot`      |
+| Browser          | `devtools`, `hack`, `offline`, `navigator`, `easter-egg`, `konami` |
+| Site Archaeology | `error404`, `dogs`                                                 |
+| Protocol         | `dns-txt`                                                          |
+| Meta             | `completed`                                                        |
 
 `restart` remains in the catalogue for the reset action and analytics event, but is not rendered as
 tier progress. Resetting immediately clears progress, so treating it as a persistent achievement

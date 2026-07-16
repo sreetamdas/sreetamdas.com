@@ -63,4 +63,3 @@ staging proof.
 - Verify all static/API/browser clues, two-browser campfire, anonymous and signed-out sync UI,
   certificate/OG behavior available without credentials, 390x844 layout, and `/about`.
 - Record exact commands, commits, URLs, statuses, and any credential-bound verification limits.
-

@@ -28,6 +28,7 @@
 ## Task 1: Add the Pure Achievement Catalogue
 
 **Files:**
+
 - Create: `src/lib/domains/foobar/catalog.test.ts`
 - Create: `src/lib/domains/foobar/catalog.ts`
 - Modify: `src/lib/domains/foobar/flags.tsx`
@@ -49,16 +50,8 @@ import {
 
 describe("Foobar catalogue", () => {
 	test("defines all five tiers in progression order", () => {
-		expect(FOOBAR_TIER_ORDER).toEqual([
-			"discovery",
-			"browser",
-			"archaeology",
-			"protocol",
-			"meta",
-		]);
-		expect(FOOBAR_TIER_ORDER.map((tier) => FOOBAR_TIERS[tier].difficulty)).toEqual([
-			1, 2, 3, 4, 5,
-		]);
+		expect(FOOBAR_TIER_ORDER).toEqual(["discovery", "browser", "archaeology", "protocol", "meta"]);
+		expect(FOOBAR_TIER_ORDER.map((tier) => FOOBAR_TIERS[tier].difficulty)).toEqual([1, 2, 3, 4, 5]);
 	});
 
 	test("gives every navigable achievement four ordered hints", () => {
@@ -163,9 +156,15 @@ export const FOOBAR_ACHIEVEMENTS = {
 		completion: { id: "source-code:completed", note: "You found a note beneath the paint." },
 		hints: [
 			{ id: "source-code:hint:1", text: "Rendered pages hide how they were assembled." },
-			{ id: "source-code:hint:2", text: "Ask the browser for the original document, not the Elements panel." },
+			{
+				id: "source-code:hint:2",
+				text: "Ask the browser for the original document, not the Elements panel.",
+			},
 			{ id: "source-code:hint:3", text: "Use View Page Source and search for foobar." },
-			{ id: "source-code:hint:4", text: "Follow the /foobar/source-code path embedded in the page source." },
+			{
+				id: "source-code:hint:4",
+				text: "Follow the /foobar/source-code path embedded in the page source.",
+			},
 		],
 	},
 	headers: {
@@ -182,7 +181,10 @@ export const FOOBAR_ACHIEVEMENTS = {
 	localforage: {
 		tier: "discovery",
 		difficulty: 1,
-		completion: { id: "localforage:completed", note: "The browser opened its small box of secrets." },
+		completion: {
+			id: "localforage:completed",
+			note: "The browser opened its small box of secrets.",
+		},
 		hints: [
 			{ id: "localforage:hint:1", text: "The browser remembers more than your progress." },
 			{ id: "localforage:hint:2", text: "Inspect this site's local storage in developer tools." },
@@ -208,7 +210,10 @@ export const FOOBAR_ACHIEVEMENTS = {
 		hints: [
 			{ id: "devtools:hint:1", text: "Some props only exist behind the rendered page." },
 			{ id: "devtools:hint:2", text: "Inspect the Foobar dashboard with browser developer tools." },
-			{ id: "devtools:hint:3", text: "Look for a hidden component or DOM clue near the dashboard." },
+			{
+				id: "devtools:hint:3",
+				text: "Look for a hidden component or DOM clue near the dashboard.",
+			},
 			{ id: "devtools:hint:4", text: "Find the clue that points to /foobar/devtools." },
 		],
 	},
@@ -226,11 +231,17 @@ export const FOOBAR_ACHIEVEMENTS = {
 	offline: {
 		tier: "browser",
 		difficulty: 2,
-		completion: { id: "offline:completed", note: "The site remembered you after the network left." },
+		completion: {
+			id: "offline:completed",
+			note: "The site remembered you after the network left.",
+		},
 		hints: [
 			{ id: "offline:hint:1", text: "What remains when the wire goes quiet?" },
 			{ id: "offline:hint:2", text: "Developer tools can simulate losing the network." },
-			{ id: "offline:hint:3", text: "Stay on a Foobar page and switch the browser network to Offline." },
+			{
+				id: "offline:hint:3",
+				text: "Stay on a Foobar page and switch the browser network to Offline.",
+			},
 			{ id: "offline:hint:4", text: "Trigger the browser's offline event while viewing /foobar." },
 		],
 	},
@@ -250,10 +261,16 @@ export const FOOBAR_ACHIEVEMENTS = {
 		difficulty: 2,
 		completion: { id: "easter-egg:completed", note: "A decoration turned out to be a switch." },
 		hints: [
-			{ id: "easter-egg:hint:1", text: "One ordinary social detail is less ordinary than it looks." },
+			{
+				id: "easter-egg:hint:1",
+				text: "One ordinary social detail is less ordinary than it looks.",
+			},
 			{ id: "easter-egg:hint:2", text: "Explore the social links on the About page." },
 			{ id: "easter-egg:hint:3", text: "Try the link whose icon suggests an egg-shaped surprise." },
-			{ id: "easter-egg:hint:4", text: "Find the hidden social interaction that leads to /foobar/easter-egg." },
+			{
+				id: "easter-egg:hint:4",
+				text: "Find the hidden social interaction that leads to /foobar/easter-egg.",
+			},
 		],
 	},
 	konami: {
@@ -343,6 +360,7 @@ rtk git commit -m "feat(foobar): add tier and clue catalogue"
 ## Task 2: Make Progress Updates Immutable and Migration-safe
 
 **Files:**
+
 - Create: `src/lib/domains/foobar/store.test.ts`
 - Modify: `src/lib/domains/foobar/store.ts`
 - Modify: `src/lib/domains/global/index.ts`
@@ -502,6 +520,7 @@ rtk git commit -m "feat(foobar): persist clue progress safely"
 ## Task 3: Route Every Completion Through the Store Invariant
 
 **Files:**
+
 - Modify: `src/lib/domains/foobar/DashboardClient.tsx`
 - Modify: `src/lib/domains/foobar/Pixel.tsx`
 - Modify: `src/lib/components/Error.tsx`
@@ -546,6 +565,7 @@ rtk git commit -m "refactor(foobar): centralize achievement completion"
 ## Task 4: Render Tier Progress, Hint Ladders, and Field Notes
 
 **Files:**
+
 - Create: `src/lib/domains/foobar/FieldNotes.tsx`
 - Modify: `src/lib/domains/foobar/badges.tsx`
 - Modify: `src/lib/domains/foobar/DashboardClient.tsx`
@@ -680,6 +700,7 @@ rtk git commit -m "feat(foobar): add tiered field-notes dashboard"
 ## Task 5: Verify, Push, and Prove Staging
 
 **Files:**
+
 - Modify only if verification reveals a first-slice defect.
 
 - [ ] **Step 1: Run formatter and lint autofix, then inspect changes**

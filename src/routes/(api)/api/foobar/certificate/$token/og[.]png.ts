@@ -5,8 +5,12 @@
  */
 import { createFileRoute } from "@tanstack/react-router";
 
-type Certificate = { name: string; completedAt: number; certificateId: string };
-type CertificateResolver = (token: string) => Promise<Certificate | null>;
+import {
+	type FoobarCertificate,
+	formatFoobarCertificateDate,
+} from "@/lib/domains/foobar/certificate";
+
+type CertificateResolver = (token: string) => Promise<FoobarCertificate | null>;
 type CertificateRenderer = (html: string) => Promise<Response> | Response;
 
 export async function handleFoobarCertificateImage(
@@ -19,7 +23,7 @@ export async function handleFoobarCertificateImage(
 	const certificate = await resolve(token);
 	if (!certificate) return new Response("Not found", { status: 404 });
 
-	const date = formatCertificateDate(certificate.completedAt);
+	const date = formatFoobarCertificateDate(certificate.completedAt);
 	const html = `<div style="display:flex;flex-direction:column;justify-content:space-between;width:100%;height:100%;padding:72px;background:#17131f;color:#f3edf7;font-family:Bitter">
 		<div style="display:flex;justify-content:space-between;align-items:center;font-size:24px;color:#c8b8d8"><span>SREETAMDAS.COM</span><span>FOOBAR FIELD CERTIFICATE</span></div>
 		<div style="display:flex;flex-direction:column;gap:18px"><div style="display:flex;font-size:30px;color:#a999b8">CERTIFIES THAT</div><div style="display:flex;font-size:76px;font-weight:600">${escapeHtml(certificate.name)}</div><div style="display:flex;font-size:34px;line-height:1.35;max-width:900px">mapped every hidden corner and completed the Foobar hunt.</div></div>
@@ -31,7 +35,7 @@ export async function handleFoobarCertificateImage(
 	return response;
 }
 
-async function resolveCertificate(token: string): Promise<Certificate | null> {
+async function resolveCertificate(token: string): Promise<FoobarCertificate | null> {
 	try {
 		const [{ getDb }, { getFoobarCertificate }] = await Promise.all([
 			import("@/db"),
@@ -46,10 +50,6 @@ async function resolveCertificate(token: string): Promise<Certificate | null> {
 async function renderCertificate(html: string): Promise<Response> {
 	const { ImageResponse } = await import("workers-og");
 	return new ImageResponse(html, { width: 1200, height: 630 });
-}
-
-function formatCertificateDate(timestamp: number): string {
-	return new Intl.DateTimeFormat("en", { dateStyle: "long", timeZone: "UTC" }).format(timestamp);
 }
 
 function escapeHtml(value: string): string {

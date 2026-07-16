@@ -175,4 +175,3 @@ silently deleting remote data.
   service worker clue, account signed-out UI, certificate not-found, and mobile layout.
 - Staging: D1 migration, real two-browser campfire, static files/API clues, generated QR/OG image,
   certificate route where auth is available, and `/about` regression check.
-
