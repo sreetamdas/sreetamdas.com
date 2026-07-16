@@ -4,18 +4,23 @@
 
 /*
  * Inter fallback with metric overrides so the system-font fallback matches
- * Inter's metrics. This prevents the ~0.12 CLS from paragraph reflow when
- * Inter swaps in on fast (cache-hit) loads. Without this, the fallback
- * sans-serif has different glyph widths, causing line breaks to shift.
+ * Inter's metrics. This prevents CLS from paragraph reflow when Inter swaps in,
+ * because the fallback occupies the same space Inter will.
+ *
+ * Metrics generated with @capsizecss/core `createFontStack`, unpacked from the
+ * exact shipped woff2 (inter-latin-wght-normal). `ArialMT` is Arial's macOS
+ * PostScript name; on Linux `local("Arial")` resolves to the metric-compatible
+ * Liberation Sans via fontconfig aliasing. (Android has no Arial, so the
+ * override can't apply there — an acceptable gap.)
  */
 @font-face {
 	font-family: "Inter Fallback";
-	src: local("Arial");
+	src: local("Arial"), local("ArialMT");
 	font-display: swap;
-	size-adjust: 100.2%;
-	ascent-override: 90.6%;
-	descent-override: 22.5%;
+	ascent-override: 90.4365%;
+	descent-override: 22.518%;
 	line-gap-override: 0%;
+	size-adjust: 107.1194%;
 }
 
 @source "../../content";
@@ -47,8 +52,10 @@
 	--color-background: var(--not-white);
 	--color-karma-background: var(--karma-background);
 
-	--font-sans: "Inter Variable", "Inter Fallback", sans-serif;
-	--font-serif: "Bricolage Grotesque Variable", serif;
+	--font-sans: "Inter Variable", "Inter Fallback", Arial, sans-serif;
+	--font-serif:
+		"Bricolage Grotesque Variable", "Bricolage Fallback Georgia", "Bricolage Fallback Times",
+		Georgia, "Times New Roman", serif;
 	--font-mono: "Iosevka", monospace;
 
 	--max-width: 650px;

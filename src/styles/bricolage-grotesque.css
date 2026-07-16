@@ -1,16 +1,16 @@
 /*
  * Vendored from @fontsource-variable/bricolage-grotesque/standard.css.
  * Only the Latin subset is included (Vietnamese and Latin-Extended are dropped —
- * they aren't needed for English, and with `font-display: optional` those
- * code points would just stay on the serif fallback with no swap anyway).
+ * they aren't needed for English text).
  *
- * `font-display` is changed from `swap` to `optional` to eliminate the CLS
- * caused by the fallback-to-Bricolage swap on the /about h1 (`text-8xl`,
- * ~0.12 layout shift). With `optional`, if the font isn't loaded within the
- * ~100ms window the browser keeps the serif fallback and never swaps — zero
- * CLS. A bare `@font-face` override with only `font-family` + `font-display`
- * doesn't work; the full block is required to match/replace the fontsource
- * declaration.
+ * `font-display: swap` (not the fontsource default which is fine, and not
+ * `optional`): the display heading font is preloaded in `__root.tsx`, so we
+ * *want* it to show. The CLS that `swap` would otherwise cause on the /about h1
+ * (`text-8xl`) is eliminated by the metric-override fallback faces below —
+ * "Bricolage Fallback Georgia"/"…Times" occupy the exact same space Bricolage
+ * will, so the swap is a repaint with zero layout shift. This gives us the
+ * brand font *and* zero CLS, unlike `optional` which never showed the font on
+ * first (cold-cache) load.
  *
  * The `src` URL uses a bare specifier (`@fontsource-variable/...`) so Vite /
  * Lightning CSS resolves it to the installed package — no need to copy the
@@ -21,7 +21,7 @@
 @font-face {
 	font-family: "Bricolage Grotesque Variable";
 	font-style: normal;
-	font-display: optional;
+	font-display: swap;
 	font-weight: 200 800;
 	font-stretch: 75% 100%;
 	src: url("@fontsource-variable/bricolage-grotesque/files/bricolage-grotesque-latin-standard-normal.woff2")
@@ -29,4 +29,31 @@
 	unicode-range:
 		U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329,
 		U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/*
+ * Metric-override fallbacks for Bricolage Grotesque, generated with
+ * @capsizecss/core `createFontStack` from the shipped woff2. Georgia is the
+ * preferred fallback (present on Windows/macOS); Times New Roman covers the
+ * rest. Both are sized so the serif fallback matches Bricolage's box metrics —
+ * no layout shift when the real font swaps in.
+ */
+@font-face {
+	font-family: "Bricolage Fallback Georgia";
+	src: local("Georgia");
+	font-display: swap;
+	ascent-override: 92.9585%;
+	descent-override: 26.9879%;
+	line-gap-override: 0%;
+	size-adjust: 100.0447%;
+}
+
+@font-face {
+	font-family: "Bricolage Fallback Times";
+	src: local("Times New Roman"), local("TimesNewRomanPSMT");
+	font-display: swap;
+	ascent-override: 84.7113%;
+	descent-override: 24.5936%;
+	line-gap-override: 0%;
+	size-adjust: 109.7846%;
 }
