@@ -61,7 +61,6 @@
 	],
 	"env": {
 		"staging": {
-			"name": "sreetamdas-com-staging",
 			"routes": [
 				{
 					"custom_domain": true,
@@ -111,7 +110,6 @@
 			]
 		},
 		"production": {
-			"name": "sreetamdas-com",
 			"routes": [
 				{
 					"custom_domain": true,
