@@ -122,6 +122,7 @@ const Badge = ({ achievement, isUnlocked, clueIds, recordFoobarClue }: BadgeProp
 	const metadata = FOOBAR_ACHIEVEMENTS[achievement];
 	const revealedHints = metadata.hints.filter((hint) => clueIds.includes(hint.id));
 	const nextHint = metadata.hints.find((hint) => !clueIds.includes(hint.id));
+	const nextHintNumber = revealedHints.length + 1;
 	const { icon: Icon, description } = FOOBAR_FLAGS[achievement];
 
 	return (
@@ -161,9 +162,9 @@ const Badge = ({ achievement, isUnlocked, clueIds, recordFoobarClue }: BadgeProp
 								type="button"
 								onClick={() => recordFoobarClue(nextHint.id)}
 								className="mt-3 rounded-global border border-primary px-3 py-2 font-mono text-xs text-primary transition-colors hover:bg-primary hover:text-background focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
-								aria-label={`Reveal hint ${revealedHints.length + 1} of 4 for ${achievement}`}
+								aria-label={`Reveal hint ${nextHintNumber} of 4 for ${achievement}`}
 							>
-								Reveal next hint
+								Reveal hint {nextHintNumber} of 4
 							</button>
 						)}
 					</>
