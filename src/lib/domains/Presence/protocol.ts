@@ -2,7 +2,9 @@ import { isRealtimeClientId } from "@/lib/domains/realtime/client-id";
 
 export const PRESENCE_CLIENT_ID_PARAM = "clientId";
 export const PRESENCE_HUNTER_PARAM = "hunter";
+export const PRESENCE_HUNTER_ID_PARAM = "hunterId";
 export const PRESENCE_CLIENT_ID_STORAGE_KEY = "sreetamdas:presence-client-id";
+export const PRESENCE_HUNTER_ID_STORAGE_KEY = "sreetamdas:hunter-id";
 
 export type PresenceServerMessage = {
 	type: "count";

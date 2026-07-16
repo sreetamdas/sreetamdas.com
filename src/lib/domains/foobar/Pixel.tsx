@@ -11,13 +11,13 @@ import { useShallow } from "zustand/react/shallow";
 
 import { IS_DEV } from "@/config";
 import { Code } from "@/lib/components/Typography";
-import { useLiveViewerCount } from "@/lib/components/useLiveViewerCount";
 import { FOOBAR_ACHIEVEMENTS } from "@/lib/domains/foobar/catalog";
 import {
 	addFoobarToLocalStorage,
 	checkIfAllAchievementsAreDone,
 	logConsoleMessages,
 } from "@/lib/domains/foobar/helpers";
+import { useSharedHunterPresence } from "@/lib/domains/foobar/sharedHunterPresence";
 import { useGlobalStore } from "@/lib/domains/global";
 import { useCustomPlausible } from "@/lib/domains/Plausible";
 import { captureException } from "@/lib/domains/Sentry";
@@ -46,7 +46,9 @@ export const FoobarPixel = ({ path }: FoobarPixelProps) => {
 		useShallow(foobarDataSelector),
 	);
 	const { unlocked, visited_pages, completed, all_achievements } = foobar_data;
-	const { hunters } = useLiveViewerCount({ enabled: unlocked, hunter: true });
+	const { hunters } = useSharedHunterPresence(
+		unlocked && !completed.includes(FOOBAR_FLAGS.campfire.name),
+	);
 	const handleKonamiComplete = useCallback(() => {
 		plausibleEvent("foobar", { props: { achievement: FOOBAR_FLAGS.konami.name } });
 		setFoobarData({ konami: true });

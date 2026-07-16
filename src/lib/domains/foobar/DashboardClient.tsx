@@ -14,13 +14,13 @@ import { useShallow } from "zustand/react/shallow";
 import { IS_DEV } from "@/config";
 import { NotFound404 } from "@/lib/components/Error";
 import { Code } from "@/lib/components/Typography";
-import { useLiveViewerCount } from "@/lib/components/useLiveViewerCount";
 import { ShowCompletedBadges } from "@/lib/domains/foobar/badges";
 import { isFoobarAchievement } from "@/lib/domains/foobar/catalog";
 import { resetFoobarProgressServerFn } from "@/lib/domains/foobar/cloud-progress.server";
 import { CloudProgressPanel } from "@/lib/domains/foobar/CloudProgressPanel";
 import { FieldNotes } from "@/lib/domains/foobar/FieldNotes";
 import { FOOBAR_FLAGS } from "@/lib/domains/foobar/flags";
+import { useSharedHunterPresence } from "@/lib/domains/foobar/sharedHunterPresence";
 import { type FoobarSchrodingerProps, initialFoobarData } from "@/lib/domains/foobar/store";
 import { useGlobalStore } from "@/lib/domains/global";
 import { useCustomPlausible } from "@/lib/domains/Plausible";
@@ -55,6 +55,22 @@ export const FoobarDashboard = ({ completed_page }: FoobarSchrodingerProps) => {
 			// Signed-out players have no cloud copy; the local reset still succeeds.
 		});
 		setFoobarData(initialFoobarData);
+
+		if ("serviceWorker" in navigator) {
+			void navigator.serviceWorker
+				.getRegistrations()
+				.then((registrations) => {
+					for (const reg of registrations) {
+						const url = reg.active?.scriptURL ?? reg.installing?.scriptURL;
+						if (url?.endsWith("/foobar-sw.js")) {
+							void reg.unregister();
+						}
+					}
+				})
+				.catch(() => {
+					// SW APIs are unavailable; reset succeeds regardless.
+				});
+		}
 
 		// eslint-disable-next-line no-console
 		console.log("cleared");
@@ -113,7 +129,7 @@ const XMarksTheSpot = ({ foobar }: { foobar: string }) => (
 );
 
 const CampfireStatus = () => {
-	const { connected, hunters } = useLiveViewerCount({ hunter: true });
+	const { connected, hunters } = useSharedHunterPresence(true);
 	const count = hunters ?? 0;
 
 	return (

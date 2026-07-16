@@ -15,15 +15,16 @@ export function createPresenceClientId(): string {
 export function getOrCreatePresenceClientId(
 	storage: PresenceClientIdStorage,
 	createId: () => string = createPresenceClientId,
+	key: string = PRESENCE_CLIENT_ID_STORAGE_KEY,
 ): string {
 	try {
-		const existing = storage.getItem(PRESENCE_CLIENT_ID_STORAGE_KEY);
+		const existing = storage.getItem(key);
 		if (isPresenceClientId(existing)) return existing;
-		if (existing !== null) storage.removeItem(PRESENCE_CLIENT_ID_STORAGE_KEY);
+		if (existing !== null) storage.removeItem(key);
 
 		const next = createId();
 		if (isPresenceClientId(next)) {
-			storage.setItem(PRESENCE_CLIENT_ID_STORAGE_KEY, next);
+			storage.setItem(key, next);
 			return next;
 		}
 	} catch {

@@ -50,6 +50,13 @@ export function CloudProgressPanel() {
 				const serialized = JSON.stringify(merged);
 				lastSynced.current = serialized;
 				setFoobarData(merged);
+
+				const normalizedCloud = JSON.stringify(result.cloud?.progress);
+				if (serialized === normalizedCloud) {
+					setSyncState("saved");
+					return;
+				}
+
 				setSyncState("saving");
 				const synced = await syncFoobarProgressServerFn({ data: { progress: merged } });
 				if (!active) return;
@@ -161,9 +168,9 @@ export function CloudProgressPanel() {
 						</a>
 						<a
 							className="rounded-global border border-foreground/25 px-3 py-1.5"
-							href="/api/login/google?returnTo=/foobar"
+							href="/api/login/github?returnTo=/foobar"
 						>
-							Sign in with Google
+							Sign in with GitHub
 						</a>
 					</div>
 				</div>
@@ -188,7 +195,8 @@ export function CloudProgressPanel() {
 }
 
 function syncLabel(state: SyncState): string {
-	if (state === "saving" || state === "loading") return "Saving…";
+	if (state === "loading") return "Checking cloud save…";
+	if (state === "saving") return "Saving…";
 	if (state === "error") return "Cloud save needs another try.";
 	return "Progress saved.";
 }
