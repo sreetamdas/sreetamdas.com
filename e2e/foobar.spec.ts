@@ -57,6 +57,14 @@ test("keeps local progress as the default and offers optional cloud save", async
 	);
 });
 
+test("keeps unknown certificate pages and cards private", async ({ request }) => {
+	const pageResponse = await request.get("/foobar/certificate/missing");
+	const imageResponse = await request.get("/api/foobar/certificate/missing/og.png");
+
+	expect(pageResponse.status()).toBe(404);
+	expect(imageResponse.status()).toBe(404);
+});
+
 test("tier dashboard fits a mobile viewport", async ({ page }) => {
 	await page.setViewportSize({ width: 390, height: 844 });
 	await seedLegacyProgress(page);

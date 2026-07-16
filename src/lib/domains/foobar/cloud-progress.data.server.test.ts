@@ -7,6 +7,7 @@ import * as schema from "@/db/schema";
 import { FOOBAR_REQUIRED_ACHIEVEMENTS } from "./catalog";
 import {
 	getFoobarCommunity,
+	getFoobarCertificate,
 	loadFoobarProgress,
 	resetFoobarProgress,
 	setFoobarPublicProfile,
@@ -85,6 +86,11 @@ describe("Foobar cloud progress data", () => {
 
 		expect(first).toMatchObject({ completedAt: 100, certificateId: "cert-a" });
 		expect(second).toMatchObject({ completedAt: 100, certificateId: "cert-a" });
+		expect(await getFoobarCertificate(db, "cert-a")).toEqual({
+			name: "Ada",
+			completedAt: 100,
+			certificateId: "cert-a",
+		});
 	});
 
 	test("counts every finisher but ranks only opted-in profiles", async () => {
