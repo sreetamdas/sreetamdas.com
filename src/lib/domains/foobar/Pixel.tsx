@@ -11,6 +11,7 @@ import { useShallow } from "zustand/react/shallow";
 
 import { IS_DEV } from "@/config";
 import { Code } from "@/lib/components/Typography";
+import { FOOBAR_ACHIEVEMENTS } from "@/lib/domains/foobar/catalog";
 import {
 	addFoobarToLocalStorage,
 	checkIfAllAchievementsAreDone,
@@ -26,6 +27,8 @@ import { type FoobarSliceType } from "./store";
 const foobarDataSelector = (state: FoobarSliceType) => ({
 	foobar_data: state.foobar_data,
 	setFoobarData: state.setFoobarData,
+	completeFoobarFlag: state.completeFoobarFlag,
+	recordFoobarClue: state.recordFoobarClue,
 });
 
 type FoobarPixelProps = {
@@ -36,8 +39,10 @@ export const FoobarPixel = ({ path }: FoobarPixelProps) => {
 	const { pathname } = useLocation();
 	const has_mounted = useHasMounted();
 	const plausibleEvent = useCustomPlausible();
-	const { foobar_data, setFoobarData } = useGlobalStore(useShallow(foobarDataSelector));
-	const { unlocked, visited_pages, completed } = foobar_data;
+	const { foobar_data, setFoobarData, completeFoobarFlag, recordFoobarClue } = useGlobalStore(
+		useShallow(foobarDataSelector),
+	);
+	const { unlocked, visited_pages, completed, all_achievements } = foobar_data;
 
 	useEffect(() => {
 		// Add functions for Foobar badges
@@ -60,9 +65,7 @@ export const FoobarPixel = ({ path }: FoobarPixelProps) => {
 			page_name = `/${FOOBAR_FLAGS.error404.slug}`;
 
 			if (!completed.includes(FOOBAR_FLAGS.error404.name)) {
-				setFoobarData({
-					completed: completed.concat([FOOBAR_FLAGS.error404.name]),
-				});
+				completeFoobarFlag(FOOBAR_FLAGS.error404.name);
 			}
 		}
 
@@ -75,21 +78,20 @@ export const FoobarPixel = ({ path }: FoobarPixelProps) => {
 		// for the `navigator` achievement
 		if (visited_pages.length >= 5 && !completed.includes(FOOBAR_FLAGS.navigator.name)) {
 			plausibleEvent("foobar", { props: { achievement: FOOBAR_FLAGS.navigator.name } });
-			setFoobarData({
-				completed: completed.concat([FOOBAR_FLAGS.navigator.name]),
-			});
+			completeFoobarFlag(FOOBAR_FLAGS.navigator.name);
 		}
-	}, [completed, path, pathname, plausibleEvent, setFoobarData, visited_pages]);
+	}, [completeFoobarFlag, completed, path, pathname, plausibleEvent, setFoobarData, visited_pages]);
 
 	useEffect(() => {
 		// for the `completed` achievement
-		if (checkIfAllAchievementsAreDone(completed)) {
+		if (!all_achievements && checkIfAllAchievementsAreDone(completed)) {
 			plausibleEvent("foobar", { props: { achievement: "completed" } });
+			recordFoobarClue(FOOBAR_ACHIEVEMENTS.completed.completion.id);
 			setFoobarData({
 				all_achievements: true,
 			});
 		}
-	}, [completed, plausibleEvent, setFoobarData]);
+	}, [all_achievements, completed, plausibleEvent, recordFoobarClue, setFoobarData]);
 
 	return has_mounted && unlocked ? (
 		<span className="col-start-2 col-end-3">

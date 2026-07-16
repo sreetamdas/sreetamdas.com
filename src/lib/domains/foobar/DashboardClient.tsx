@@ -15,6 +15,8 @@ import { IS_DEV } from "@/config";
 import { NotFound404 } from "@/lib/components/Error";
 import { Code } from "@/lib/components/Typography";
 import { ShowCompletedBadges } from "@/lib/domains/foobar/badges";
+import { isFoobarAchievement } from "@/lib/domains/foobar/catalog";
+import { FieldNotes } from "@/lib/domains/foobar/FieldNotes";
 import { FOOBAR_FLAGS } from "@/lib/domains/foobar/flags";
 import { type FoobarSchrodingerProps, initialFoobarData } from "@/lib/domains/foobar/store";
 import { useGlobalStore } from "@/lib/domains/global";
@@ -64,7 +66,9 @@ export const FoobarDashboard = ({ completed_page }: FoobarSchrodingerProps) => {
 			<ShowCompletedBadges
 				completed={foobar_data.completed}
 				all_achievements={foobar_data.all_achievements}
+				clues_seen={foobar_data.clues_seen}
 			/>
+			<FieldNotes clues_seen={foobar_data.clues_seen} />
 			<Link
 				to="/stats"
 				search={{ period: "30d" }}
@@ -147,11 +151,11 @@ const FoobarButLocked = () => (
 );
 
 export const FoobarSchrodinger = ({ completed_page }: FoobarSchrodingerProps) => {
-	const { unlocked, setFoobarData, completed } = useGlobalStore(
+	const { unlocked, completeFoobarFlag, completed } = useGlobalStore(
 		useShallow((state) => ({
 			unlocked: state.foobar_data.unlocked,
 			completed: state.foobar_data.completed,
-			setFoobarData: state.setFoobarData,
+			completeFoobarFlag: state.completeFoobarFlag,
 		})),
 	);
 	const has_mounted = useHasMounted();
@@ -166,14 +170,16 @@ export const FoobarSchrodinger = ({ completed_page }: FoobarSchrodingerProps) =>
 				return false;
 			})?.name;
 
-			if (!isUndefined(completed_flag) && !completed?.includes(completed_flag)) {
+			if (
+				!isUndefined(completed_flag) &&
+				isFoobarAchievement(completed_flag) &&
+				!completed.includes(completed_flag)
+			) {
 				plausibleEvent("foobar", { props: { achievement: completed_flag } });
-				setFoobarData({
-					completed: completed.concat([completed_flag]),
-				});
+				completeFoobarFlag(completed_flag);
 			}
 		}
-	}, [completed, completed_page, plausibleEvent, setFoobarData]);
+	}, [completeFoobarFlag, completed, completed_page, plausibleEvent]);
 
 	if (!has_mounted) return null;
 	if (!unlocked) return <FoobarButLocked />;

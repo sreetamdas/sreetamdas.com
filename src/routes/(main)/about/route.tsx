@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 
 import { SITE_DESCRIPTION, SITE_TITLE_APPEND } from "@/config";
+import { HTML_CACHE_HEADERS } from "@/lib/cacheHeaders";
 import { FoobarEntry } from "@/lib/domains/foobar/Entry";
 import { StatsCounter } from "@/lib/domains/PageInteraction/StatsCounter";
 import { canonicalUrl, defaultOgImageUrl } from "@/lib/seo";
@@ -9,9 +10,7 @@ import { getAboutRenderable } from "./-about.server";
 
 export const Route = createFileRoute("/(main)/about")({
 	component: AboutPage,
-	headers: () => ({
-		"cache-control": "public, s-maxage=3600, stale-while-revalidate=86400",
-	}),
+	headers: () => HTML_CACHE_HEADERS,
 	loader: () => {
 		return getAboutRenderable();
 	},

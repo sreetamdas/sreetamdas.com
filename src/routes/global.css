@@ -1,26 +1,21 @@
 @import "tailwindcss";
 @import "../styles/bricolage-grotesque.css";
-@import "@fontsource-variable/inter/index.css";
+@import "../styles/inter.css";
 
 /*
  * Inter fallback with metric overrides so the system-font fallback matches
- * Inter's metrics. This prevents CLS from paragraph reflow when Inter swaps in,
- * because the fallback occupies the same space Inter will.
- *
- * Metrics generated with @capsizecss/core `createFontStack`, unpacked from the
- * exact shipped woff2 (inter-latin-wght-normal). `ArialMT` is Arial's macOS
- * PostScript name; on Linux `local("Arial")` resolves to the metric-compatible
- * Liberation Sans via fontconfig aliasing. (Android has no Arial, so the
- * override can't apply there — an acceptable gap.)
+ * Inter's metrics. This prevents the ~0.12 CLS from paragraph reflow when
+ * Inter swaps in on fast (cache-hit) loads. Without this, the fallback
+ * sans-serif has different glyph widths, causing line breaks to shift.
  */
 @font-face {
 	font-family: "Inter Fallback";
-	src: local("Arial"), local("ArialMT");
+	src: local("Arial");
 	font-display: swap;
-	ascent-override: 90.4365%;
-	descent-override: 22.518%;
+	size-adjust: 100.2%;
+	ascent-override: 90.6%;
+	descent-override: 22.5%;
 	line-gap-override: 0%;
-	size-adjust: 107.1194%;
 }
 
 @source "../../content";
@@ -52,11 +47,9 @@
 	--color-background: var(--not-white);
 	--color-karma-background: var(--karma-background);
 
-	--font-sans: "Inter Variable", "Inter Fallback", Arial, sans-serif;
-	--font-serif:
-		"Bricolage Grotesque Variable", "Bricolage Fallback Georgia", "Bricolage Fallback Times",
-		Georgia, "Times New Roman", serif;
-	--font-mono: "Iosevka", monospace;
+	--font-sans: "Inter Variable", "Inter Fallback", sans-serif;
+	--font-serif: "Bricolage Grotesque Variable", "Bricolage Fallback", serif;
+	--font-mono: "Iosevka", "Iosevka Fallback", monospace;
 
 	--max-width: 650px;
 	--radius-global: 5px;
@@ -199,6 +192,24 @@
 	font-weight: 700;
 	font-style: italic;
 	font-display: swap;
+}
+
+/*
+ * Metric-matched fallback for Iosevka so code blocks / inline code don't reflow
+ * when Iosevka swaps in (its ~0.5em cell is narrower than system monospace).
+ * Overrides generated with @capsizecss from the shipped Iosevka woff2. Courier
+ * New (macOS/Windows) and Roboto Mono (Android) share the same advance ratio, so
+ * one size-adjust covers both; metrics apply only to the fallback, not Iosevka.
+ */
+@font-face {
+	font-family: "Iosevka Fallback";
+	src:
+		local("Courier New"), local("CourierNewPSMT"), local("Roboto Mono"), local("RobotoMono-Regular");
+	font-display: swap;
+	ascent-override: 115.8188%;
+	descent-override: 25.8042%;
+	line-gap-override: 8.4014%;
+	size-adjust: 83.3198%;
 }
 
 @keyframes enter {

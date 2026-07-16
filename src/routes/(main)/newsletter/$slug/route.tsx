@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 
 import { SITE_DESCRIPTION, SITE_TITLE_APPEND } from "@/config";
+import { HTML_CACHE_HEADERS } from "@/lib/cacheHeaders";
 import { canonicalUrl, defaultOgImageUrl, excerptFromMarkdown } from "@/lib/seo";
 import { STATIC_SERVER_FUNCTION_STALE_TIME } from "@/lib/static-server-functions";
 
@@ -8,9 +9,7 @@ import { getNewsletterEmailRenderable } from "./-$slug.server";
 
 export const Route = createFileRoute("/(main)/newsletter/$slug")({
 	component: NewsletterEmailDetailPage,
-	headers: () => ({
-		"cache-control": "public, s-maxage=3600, stale-while-revalidate=86400",
-	}),
+	headers: () => HTML_CACHE_HEADERS,
 	staleTime: STATIC_SERVER_FUNCTION_STALE_TIME,
 	loader: async ({ params: { slug } }) => {
 		return getNewsletterEmailRenderable({ data: { slug } });
