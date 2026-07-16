@@ -17,6 +17,7 @@ import { Code } from "@/lib/components/Typography";
 import { useLiveViewerCount } from "@/lib/components/useLiveViewerCount";
 import { ShowCompletedBadges } from "@/lib/domains/foobar/badges";
 import { isFoobarAchievement } from "@/lib/domains/foobar/catalog";
+import { resetFoobarProgressServerFn } from "@/lib/domains/foobar/cloud-progress.server";
 import { CloudProgressPanel } from "@/lib/domains/foobar/CloudProgressPanel";
 import { FieldNotes } from "@/lib/domains/foobar/FieldNotes";
 import { FOOBAR_FLAGS } from "@/lib/domains/foobar/flags";
@@ -50,6 +51,9 @@ export const FoobarDashboard = ({ completed_page }: FoobarSchrodingerProps) => {
 
 	function handleClearFoobarData() {
 		plausibleEvent("foobar", { props: { achievement: "restart" } });
+		void resetFoobarProgressServerFn().catch(() => {
+			// Signed-out players have no cloud copy; the local reset still succeeds.
+		});
 		setFoobarData(initialFoobarData);
 
 		// eslint-disable-next-line no-console
@@ -165,7 +169,7 @@ const ResetFoobar = ({ handleClearFoobarData }: { handleClearFoobarData: () => v
 							onClick={handleClearFoobarData}
 							type="button"
 						>
-							Yes, delete account
+							Yes, reset progress
 						</button>
 					</AlertDialogPrimitive.Action>
 				</div>
