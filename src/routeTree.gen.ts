@@ -36,9 +36,7 @@ import { Route as mainNewsletterSlugRouteRouteImport } from './routes/(main)/new
 import { Route as mainBlogSlugRouteRouteImport } from './routes/(main)/blog/$slug/route'
 import { Route as mainfoobarFoobarRouteRouteImport } from './routes/(main)/(foobar)/foobar/route'
 import { Route as mainfoobarFoobarIndexRouteImport } from './routes/(main)/(foobar)/foobar/index'
-import { Route as apiApiLoginGoogleRouteImport } from './routes/(api)/api/login/google'
-import { Route as apiApiLoginGithubRouteImport } from './routes/(api)/api/login/github'
-import { Route as apiApiLoginCloudflareRouteImport } from './routes/(api)/api/login/cloudflare'
+import { Route as apiApiLoginProviderRouteImport } from './routes/(api)/api/login/$provider'
 import { Route as apiApiFoobarCookieRouteImport } from './routes/(api)/api/foobar/cookie'
 import { Route as apiApiAuthSplatRouteImport } from './routes/(api)/api/auth/$'
 import { Route as mainfoobarFoobarSlugRouteRouteImport } from './routes/(main)/(foobar)/foobar/$slug/route'
@@ -184,19 +182,9 @@ const mainfoobarFoobarIndexRoute = mainfoobarFoobarIndexRouteImport.update({
   path: '/',
   getParentRoute: () => mainfoobarFoobarRouteRoute,
 } as any)
-const apiApiLoginGoogleRoute = apiApiLoginGoogleRouteImport.update({
-  id: '/(api)/api/login/google',
-  path: '/api/login/google',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const apiApiLoginGithubRoute = apiApiLoginGithubRouteImport.update({
-  id: '/(api)/api/login/github',
-  path: '/api/login/github',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const apiApiLoginCloudflareRoute = apiApiLoginCloudflareRouteImport.update({
-  id: '/(api)/api/login/cloudflare',
-  path: '/api/login/cloudflare',
+const apiApiLoginProviderRoute = apiApiLoginProviderRouteImport.update({
+  id: '/(api)/api/login/$provider',
+  path: '/api/login/$provider',
   getParentRoute: () => rootRouteImport,
 } as any)
 const apiApiFoobarCookieRoute = apiApiFoobarCookieRouteImport.update({
@@ -272,9 +260,7 @@ export interface FileRoutesByFullPath {
   '/foobar/$slug': typeof mainfoobarFoobarSlugRouteRoute
   '/api/auth/$': typeof apiApiAuthSplatRoute
   '/api/foobar/cookie': typeof apiApiFoobarCookieRoute
-  '/api/login/cloudflare': typeof apiApiLoginCloudflareRoute
-  '/api/login/github': typeof apiApiLoginGithubRoute
-  '/api/login/google': typeof apiApiLoginGoogleRoute
+  '/api/login/$provider': typeof apiApiLoginProviderRoute
   '/foobar/': typeof mainfoobarFoobarIndexRoute
   '/api/slides/session/$sessionId': typeof apiApiSlidesSessionSessionIdRoute
   '/prxy/plsbl/api/event': typeof apiPrxyPlsblApiEventRoute
@@ -307,9 +293,7 @@ export interface FileRoutesByTo {
   '/foobar/$slug': typeof mainfoobarFoobarSlugRouteRoute
   '/api/auth/$': typeof apiApiAuthSplatRoute
   '/api/foobar/cookie': typeof apiApiFoobarCookieRoute
-  '/api/login/cloudflare': typeof apiApiLoginCloudflareRoute
-  '/api/login/github': typeof apiApiLoginGithubRoute
-  '/api/login/google': typeof apiApiLoginGoogleRoute
+  '/api/login/$provider': typeof apiApiLoginProviderRoute
   '/foobar': typeof mainfoobarFoobarIndexRoute
   '/api/slides/session/$sessionId': typeof apiApiSlidesSessionSessionIdRoute
   '/prxy/plsbl/api/event': typeof apiPrxyPlsblApiEventRoute
@@ -348,9 +332,7 @@ export interface FileRoutesById {
   '/(main)/(foobar)/foobar/$slug': typeof mainfoobarFoobarSlugRouteRoute
   '/(api)/api/auth/$': typeof apiApiAuthSplatRoute
   '/(api)/api/foobar/cookie': typeof apiApiFoobarCookieRoute
-  '/(api)/api/login/cloudflare': typeof apiApiLoginCloudflareRoute
-  '/(api)/api/login/github': typeof apiApiLoginGithubRoute
-  '/(api)/api/login/google': typeof apiApiLoginGoogleRoute
+  '/(api)/api/login/$provider': typeof apiApiLoginProviderRoute
   '/(main)/(foobar)/foobar/': typeof mainfoobarFoobarIndexRoute
   '/(api)/api/slides/session/$sessionId': typeof apiApiSlidesSessionSessionIdRoute
   '/(api)/prxy/plsbl/api/event': typeof apiPrxyPlsblApiEventRoute
@@ -388,9 +370,7 @@ export interface FileRouteTypes {
     | '/foobar/$slug'
     | '/api/auth/$'
     | '/api/foobar/cookie'
-    | '/api/login/cloudflare'
-    | '/api/login/github'
-    | '/api/login/google'
+    | '/api/login/$provider'
     | '/foobar/'
     | '/api/slides/session/$sessionId'
     | '/prxy/plsbl/api/event'
@@ -423,9 +403,7 @@ export interface FileRouteTypes {
     | '/foobar/$slug'
     | '/api/auth/$'
     | '/api/foobar/cookie'
-    | '/api/login/cloudflare'
-    | '/api/login/github'
-    | '/api/login/google'
+    | '/api/login/$provider'
     | '/foobar'
     | '/api/slides/session/$sessionId'
     | '/prxy/plsbl/api/event'
@@ -463,9 +441,7 @@ export interface FileRouteTypes {
     | '/(main)/(foobar)/foobar/$slug'
     | '/(api)/api/auth/$'
     | '/(api)/api/foobar/cookie'
-    | '/(api)/api/login/cloudflare'
-    | '/(api)/api/login/github'
-    | '/(api)/api/login/google'
+    | '/(api)/api/login/$provider'
     | '/(main)/(foobar)/foobar/'
     | '/(api)/api/slides/session/$sessionId'
     | '/(api)/prxy/plsbl/api/event'
@@ -483,9 +459,7 @@ export interface RootRouteChildren {
   apiApiStagingSmokeRoute: typeof apiApiStagingSmokeRoute
   apiApiAuthSplatRoute: typeof apiApiAuthSplatRoute
   apiApiFoobarCookieRoute: typeof apiApiFoobarCookieRoute
-  apiApiLoginCloudflareRoute: typeof apiApiLoginCloudflareRoute
-  apiApiLoginGithubRoute: typeof apiApiLoginGithubRoute
-  apiApiLoginGoogleRoute: typeof apiApiLoginGoogleRoute
+  apiApiLoginProviderRoute: typeof apiApiLoginProviderRoute
   apiApiSlidesSessionSessionIdRoute: typeof apiApiSlidesSessionSessionIdRoute
   apiPrxyPlsblApiEventRoute: typeof apiPrxyPlsblApiEventRoute
   apiPrxyPlsblJsScriptRoute: typeof apiPrxyPlsblJsScriptRoute
@@ -683,25 +657,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof mainfoobarFoobarIndexRouteImport
       parentRoute: typeof mainfoobarFoobarRouteRoute
     }
-    '/(api)/api/login/google': {
-      id: '/(api)/api/login/google'
-      path: '/api/login/google'
-      fullPath: '/api/login/google'
-      preLoaderRoute: typeof apiApiLoginGoogleRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/(api)/api/login/github': {
-      id: '/(api)/api/login/github'
-      path: '/api/login/github'
-      fullPath: '/api/login/github'
-      preLoaderRoute: typeof apiApiLoginGithubRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/(api)/api/login/cloudflare': {
-      id: '/(api)/api/login/cloudflare'
-      path: '/api/login/cloudflare'
-      fullPath: '/api/login/cloudflare'
-      preLoaderRoute: typeof apiApiLoginCloudflareRouteImport
+    '/(api)/api/login/$provider': {
+      id: '/(api)/api/login/$provider'
+      path: '/api/login/$provider'
+      fullPath: '/api/login/$provider'
+      preLoaderRoute: typeof apiApiLoginProviderRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/(api)/api/foobar/cookie': {
@@ -890,9 +850,7 @@ const rootRouteChildren: RootRouteChildren = {
   apiApiStagingSmokeRoute: apiApiStagingSmokeRoute,
   apiApiAuthSplatRoute: apiApiAuthSplatRoute,
   apiApiFoobarCookieRoute: apiApiFoobarCookieRoute,
-  apiApiLoginCloudflareRoute: apiApiLoginCloudflareRoute,
-  apiApiLoginGithubRoute: apiApiLoginGithubRoute,
-  apiApiLoginGoogleRoute: apiApiLoginGoogleRoute,
+  apiApiLoginProviderRoute: apiApiLoginProviderRoute,
   apiApiSlidesSessionSessionIdRoute: apiApiSlidesSessionSessionIdRoute,
   apiPrxyPlsblApiEventRoute: apiPrxyPlsblApiEventRoute,
   apiPrxyPlsblJsScriptRoute: apiPrxyPlsblJsScriptRoute,

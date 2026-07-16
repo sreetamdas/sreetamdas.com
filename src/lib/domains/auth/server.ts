@@ -189,6 +189,6 @@ function getSetCookieHeaders(headers: Headers): Array<string> {
 	return headers.getSetCookie();
 }
 
-function isSocialSignInProvider(value: unknown): value is SocialSignInProvider {
+export function isSocialSignInProvider(value: unknown): value is SocialSignInProvider {
 	return SOCIAL_SIGN_IN_PROVIDERS.some((provider) => provider === value);
 }
