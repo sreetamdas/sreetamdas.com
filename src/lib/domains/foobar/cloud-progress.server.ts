@@ -53,16 +53,21 @@ const fetchFoobarBootstrapFromDb = createServerOnlyFn(async (): Promise<FoobarBo
 		import("./cloud-progress.data.server"),
 		import("./cloud-progress.request.server"),
 	]);
-	const [user, community] = await Promise.all([
-		request.getFoobarAuthUser(),
-		data.getFoobarCommunity(getDb()),
-	]);
-	if (!user) return { user: null, cloud: null, community };
-	return {
-		user: { name: user.name },
-		cloud: await data.loadFoobarProgress(getDb(), user.id),
-		community,
-	};
+	const db = getDb();
+	// The community query does not depend on the user, so it runs alongside the
+	// auth lookup instead of after it.
+	const communityPromise = data.getFoobarCommunity(db).catch(() => EMPTY_COMMUNITY);
+	const user = await request.getFoobarAuthUser();
+	if (!user) {
+		return { user: null, cloud: null, community: await communityPromise };
+	}
+
+	try {
+		const cloud = await data.loadFoobarProgress(db, user.id);
+		return { user: { name: user.name }, cloud, community: await communityPromise };
+	} catch {
+		return { user: { name: user.name }, cloud: null, community: await communityPromise };
+	}
 });
 
 const syncFoobarProgressInDb = createServerOnlyFn(async (progress: FoobarDataType) => {

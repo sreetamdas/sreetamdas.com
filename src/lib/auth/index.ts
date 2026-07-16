@@ -190,7 +190,32 @@ function getGithubOAuthConfig() {
 	return {
 		clientId: client_id,
 		clientSecret: client_secret,
-		mapProfileToUser: (profile: { login: string }) => ({ name: profile.login }),
+		overrideUserInfoOnSignIn: true,
+		getUserInfo: async (token: { accessToken?: string }) => {
+			if (!token.accessToken) return null;
+			const response = await fetch("https://api.github.com/user", {
+				headers: {
+					Authorization: `Bearer ${token.accessToken}`,
+					"User-Agent": "sreetamdas.com",
+				},
+			});
+			const profile: {
+				id: number;
+				login: string;
+				email: string | null;
+				avatar_url: string;
+			} = await response.json();
+			return {
+				user: {
+					id: String(profile.id),
+					name: profile.login,
+					email: profile.email ?? `${profile.id}@github.local`,
+					image: profile.avatar_url,
+					emailVerified: false,
+				},
+				data: profile,
+			};
+		},
 	};
 }
 

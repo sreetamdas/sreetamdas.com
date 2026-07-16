@@ -51,6 +51,11 @@ export function CloudProgressPanel() {
 				lastSynced.current = serialized;
 				setFoobarData(merged);
 
+				if (!result.cloud) {
+					setSyncState("saved");
+					return;
+				}
+
 				const normalizedCloud = JSON.stringify(result.cloud?.progress);
 				if (serialized === normalizedCloud) {
 					setSyncState("saved");
@@ -77,7 +82,7 @@ export function CloudProgressPanel() {
 	}, [hasHydrated, setFoobarData]);
 
 	useEffect(() => {
-		if (!bootstrap?.user) return;
+		if (!bootstrap?.user || !bootstrap.cloud) return;
 		const serialized = JSON.stringify(foobarData);
 		if (serialized === lastSynced.current) return;
 
