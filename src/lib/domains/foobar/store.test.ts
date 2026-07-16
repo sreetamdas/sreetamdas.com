@@ -72,4 +72,14 @@ describe("Foobar progress", () => {
 		store.getState().setFoobarData(initialFoobarData);
 		expect(store.getState().foobar_data).toEqual(initialFoobarData);
 	});
+
+	test("recomputes stale endgame state against the current catalogue", () => {
+		const result = normalizeFoobarData({
+			...initialFoobarData,
+			completed: ["unlocked", "headers"],
+			all_achievements: true,
+		});
+
+		expect(result.all_achievements).toBe(false);
+	});
 });

@@ -345,6 +345,113 @@ export const FOOBAR_ACHIEVEMENTS = {
 			},
 		],
 	},
+	campfire: {
+		tier: "browser",
+		difficulty: 2,
+		completion: {
+			id: "campfire:completed",
+			note: "Another hunter stepped into the firelight.",
+		},
+		hints: [
+			{ id: "campfire:hint:1", text: "Some discoveries need company." },
+			{
+				id: "campfire:hint:2",
+				text: "The site can notice when more than one hunter is awake.",
+			},
+			{
+				id: "campfire:hint:3",
+				text: "Keep Foobar unlocked while another person visits the site.",
+			},
+			{
+				id: "campfire:hint:4",
+				text: "Two distinct Foobar-unlocked browsers must be online together.",
+			},
+		],
+	},
+	"print-preview": {
+		tier: "browser",
+		difficulty: 2,
+		completion: { id: "print-preview:completed", note: "The paper version kept a secret." },
+		hints: [
+			{ id: "print-preview:hint:1", text: "Some ink only appears before printing." },
+			{ id: "print-preview:hint:2", text: "Ask the browser for a print preview of Foobar." },
+			{ id: "print-preview:hint:3", text: "Look for a note that is hidden on screen." },
+			{
+				id: "print-preview:hint:4",
+				text: "Open print preview on /foobar and follow /foobar/print-preview.",
+			},
+		],
+	},
+	"paper-trail": {
+		tier: "archaeology",
+		difficulty: 3,
+		completion: { id: "paper-trail:completed", note: "The crawlers left a paper trail." },
+		hints: [
+			{ id: "paper-trail:hint:1", text: "Machines are given house rules too." },
+			{
+				id: "paper-trail:hint:2",
+				text: "Inspect the site's crawler and security text files.",
+			},
+			{ id: "paper-trail:hint:3", text: "Read /robots.txt or /.well-known/security.txt." },
+			{
+				id: "paper-trail:hint:4",
+				text: "Follow the note pointing to /foobar/paper-trail.",
+			},
+		],
+	},
+	"feed-reader": {
+		tier: "archaeology",
+		difficulty: 3,
+		completion: { id: "feed-reader:completed", note: "You read between the feed lines." },
+		hints: [
+			{ id: "feed-reader:hint:1", text: "The blog speaks to machines as well as people." },
+			{ id: "feed-reader:hint:2", text: "Find the site's RSS feed and inspect its XML." },
+			{ id: "feed-reader:hint:3", text: "Search /rss/feed.xml for a Foobar comment." },
+			{ id: "feed-reader:hint:4", text: "Follow /foobar/feed-reader from the RSS source." },
+		],
+	},
+	"og-qr": {
+		tier: "archaeology",
+		difficulty: 3,
+		completion: { id: "og-qr:completed", note: "The social card answered a scanner." },
+		hints: [
+			{ id: "og-qr:hint:1", text: "Shared pages carry a picture most visitors never open." },
+			{ id: "og-qr:hint:2", text: "Inspect the site's Open Graph image." },
+			{ id: "og-qr:hint:3", text: "Look closely for a small square code in /og-image.png." },
+			{ id: "og-qr:hint:4", text: "Scan the QR code and follow /foobar/og-qr." },
+		],
+	},
+	"cookie-jar": {
+		tier: "protocol",
+		difficulty: 4,
+		completion: { id: "cookie-jar:completed", note: "You changed the label on the jar." },
+		hints: [
+			{ id: "cookie-jar:hint:1", text: "A sealed jar arrives with the response." },
+			{ id: "cookie-jar:hint:2", text: "Visit /api/foobar/cookie and inspect its cookie." },
+			{ id: "cookie-jar:hint:3", text: "Edit foobar-cookie in browser storage." },
+			{
+				id: "cookie-jar:hint:4",
+				text: "Change foobar-cookie to open-sesame, then reload /api/foobar/cookie.",
+			},
+		],
+	},
+	"service-worker": {
+		tier: "protocol",
+		difficulty: 4,
+		completion: { id: "service-worker:completed", note: "A worker replied without the network." },
+		hints: [
+			{ id: "service-worker:hint:1", text: "An invisible worker watches one unusual request." },
+			{
+				id: "service-worker:hint:2",
+				text: "Inspect registered workers in browser Application tools.",
+			},
+			{ id: "service-worker:hint:3", text: "Read /foobar-sw.js or fetch its private clue path." },
+			{
+				id: "service-worker:hint:4",
+				text: "After the worker controls the page, fetch /foobar/service-worker-clue.",
+			},
+		],
+	},
 	completed: {
 		tier: "meta",
 		difficulty: 5,
@@ -357,6 +464,31 @@ export const FOOBAR_ACHIEVEMENTS = {
 } as const;
 
 export type FoobarAchievement = keyof typeof FOOBAR_ACHIEVEMENTS;
+
+export const FOOBAR_TEASERS = {
+	unlocked: "The map begins somewhere personal.",
+	"source-code": "The paint is not the page.",
+	headers: "The server speaks before the document.",
+	localforage: "The browser keeps a small box of secrets.",
+	teapot: "Some machines refuse to make coffee.",
+	devtools: "A prop is waiting behind the stage curtain.",
+	hack: "A familiar word is attached to the browser.",
+	offline: "See what remains when the wire goes quiet.",
+	navigator: "Explorers earn their name by moving.",
+	"easter-egg": "One social detail is not what it claims.",
+	konami: "Old games taught players a famous rhythm.",
+	error404: "Missing edges still belong to the map.",
+	dogs: "The wrong-turn page offers a friendly detour.",
+	"dns-txt": "A clue lives below HTTP.",
+	campfire: "A small fire burns brighter with company.",
+	"print-preview": "Not every note is meant for a screen.",
+	"paper-trail": "Even crawlers are handed house rules.",
+	"feed-reader": "The blog has a voice for machines.",
+	"og-qr": "A social card contains more than a picture.",
+	"cookie-jar": "A sealed jar arrives with the response.",
+	"service-worker": "An invisible worker knows one private path.",
+	completed: "Read the whole map as one language.",
+} satisfies Record<FoobarAchievement, string>;
 
 type FoobarAchievementMetadata = (typeof FOOBAR_ACHIEVEMENTS)[FoobarAchievement];
 
@@ -373,6 +505,16 @@ export type FoobarClue = {
 
 export function isFoobarAchievement(value: unknown): value is FoobarAchievement {
 	return typeof value === "string" && Object.hasOwn(FOOBAR_ACHIEVEMENTS, value);
+}
+
+export const FOOBAR_REQUIRED_ACHIEVEMENTS: ReadonlyArray<FoobarAchievement> = Object.keys(
+	FOOBAR_ACHIEVEMENTS,
+)
+	.filter(isFoobarAchievement)
+	.filter((achievement) => achievement !== "completed");
+
+export function hasCompletedFoobar(completed: ReadonlyArray<FoobarAchievement>) {
+	return FOOBAR_REQUIRED_ACHIEVEMENTS.every((achievement) => completed.includes(achievement));
 }
 
 export function getFoobarClue(value: unknown): FoobarClue | undefined {

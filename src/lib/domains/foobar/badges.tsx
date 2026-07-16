@@ -11,6 +11,7 @@ import {
 	FOOBAR_ACHIEVEMENTS,
 	FOOBAR_TIERS,
 	FOOBAR_TIER_ORDER,
+	FOOBAR_TEASERS,
 	isFoobarAchievement,
 	type FoobarAchievement,
 	type FoobarClueId,
@@ -147,6 +148,7 @@ const Badge = ({ achievement, isUnlocked, clueIds, recordFoobarClue }: BadgeProp
 					<p className="mt-2 text-sm text-foreground/80">{description}</p>
 				) : (
 					<>
+						<p className="mt-2 text-sm text-foreground/70">{FOOBAR_TEASERS[achievement]}</p>
 						{revealedHints.length > 0 && (
 							<ol className="mt-3 grid gap-2 text-sm text-foreground/80">
 								{revealedHints.map((hint, index) => (

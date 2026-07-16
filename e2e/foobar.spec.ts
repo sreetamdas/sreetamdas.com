@@ -27,6 +27,7 @@ test("groups achievements and persists revealed field notes", async ({ page }) =
 	await expect(page.getByText("2 / 5 complete")).toBeVisible();
 	await expect(page.getByRole("heading", { name: "Field notes" })).toBeVisible();
 	await expect(page.getByText("Earlier", { exact: true })).toHaveCount(2);
+	await expect(page.getByText("A small fire burns brighter with company.")).toBeVisible();
 	const fieldNotes = page.getByRole("region", { name: "Field notes" });
 
 	const firstHintButton = page.getByRole("button", { name: "Reveal hint 1 of 4 for dns-txt" });

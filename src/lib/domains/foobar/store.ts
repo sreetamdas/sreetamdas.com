@@ -7,6 +7,7 @@ import { type StateCreator } from "zustand";
 
 import {
 	FOOBAR_ACHIEVEMENTS,
+	hasCompletedFoobar,
 	type FoobarAchievement,
 	type FoobarClueId,
 	isFoobarAchievement,
@@ -96,10 +97,7 @@ export function normalizeFoobarData(value: unknown): FoobarDataType {
 		konami: typeof value.konami === "boolean" ? value.konami : initialFoobarData.konami,
 		unlocked: typeof value.unlocked === "boolean" ? value.unlocked : initialFoobarData.unlocked,
 		completed,
-		all_achievements:
-			typeof value.all_achievements === "boolean"
-				? value.all_achievements
-				: initialFoobarData.all_achievements,
+		all_achievements: hasCompletedFoobar(completed),
 		clues_seen: cluesSeen,
 	};
 }
