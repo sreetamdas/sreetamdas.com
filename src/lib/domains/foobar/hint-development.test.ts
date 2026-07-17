@@ -24,6 +24,7 @@ describe("Foobar hint development", () => {
 		const seenAt = 1_000;
 		const availableAt = seenAt + FOOBAR_HINT_DEVELOPMENT_MS;
 
+		expect(FOOBAR_HINT_DEVELOPMENT_MS).toBe(24 * 60 * 60 * 1_000);
 		expect(getFoobarHintDevelopment(seenAt, seenAt)).toEqual({
 			status: "developing",
 			availableAt,
@@ -61,7 +62,9 @@ describe("Foobar hint development", () => {
 
 		expect(getFoobarHintElapsedBucket(null, now)).toBe("legacy");
 		expect(getFoobarHintElapsedBucket(now - DAY_MS, now)).toBe("24-48h");
+		expect(getFoobarHintElapsedBucket(now - (2 * DAY_MS - 1), now)).toBe("24-48h");
 		expect(getFoobarHintElapsedBucket(now - 2 * DAY_MS, now)).toBe("2-7d");
+		expect(getFoobarHintElapsedBucket(now - (8 * DAY_MS - 1), now)).toBe("2-7d");
 		expect(getFoobarHintElapsedBucket(now - 8 * DAY_MS, now)).toBe("8d+");
 	});
 });
