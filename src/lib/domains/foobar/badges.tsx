@@ -251,7 +251,7 @@ const DevelopingHint = ({ achievement, hint3SeenAt, onRead }: DevelopingHintProp
 			window.clearTimeout(deadline);
 			document.removeEventListener("visibilitychange", handleVisibilityChange);
 		};
-	}, [hint3SeenAt]);
+	}, [development.status, hint3SeenAt]);
 
 	if (development.status === "not-started") return null;
 
