@@ -8,7 +8,9 @@ const legacyProgress = {
 	all_achievements: false,
 };
 
-async function seedLegacyProgress(page: Page) {
+const plausibleEventsKey = "foobar-e2e-plausible-events";
+
+async function seedProgress(page: Page, progress: Record<string, unknown> = legacyProgress) {
 	await page.addInitScript((progress) => {
 		if (window.sessionStorage.getItem("foobar-e2e-seeded")) return;
 
@@ -16,11 +18,44 @@ async function seedLegacyProgress(page: Page) {
 		window.localStorage.setItem("foobar-zustand", value);
 		window.localStorage.setItem("foobar-zustand-dev", value);
 		window.sessionStorage.setItem("foobar-e2e-seeded", "true");
-	}, legacyProgress);
+	}, progress);
+}
+
+async function capturePlausibleEvents(page: Page) {
+	await page.addInitScript((storageKey) => {
+		Object.defineProperty(window, "plausible", {
+			configurable: false,
+			writable: false,
+			value: (event: string, options?: unknown) => {
+				const rawEvents = window.localStorage.getItem(storageKey);
+				const parsedEvents: unknown = rawEvents ? JSON.parse(rawEvents) : [];
+				const events = Array.isArray(parsedEvents) ? parsedEvents : [];
+				events.push({ event, options });
+				window.localStorage.setItem(storageKey, JSON.stringify(events));
+			},
+		});
+	}, plausibleEventsKey);
+}
+
+async function readHintDevelopmentEvents(page: Page) {
+	return page.evaluate((storageKey) => {
+		const rawEvents = window.localStorage.getItem(storageKey);
+		const parsedEvents: unknown = rawEvents ? JSON.parse(rawEvents) : [];
+		if (!Array.isArray(parsedEvents)) return [];
+
+		return parsedEvents.filter(
+			(entry) =>
+				typeof entry === "object" &&
+				entry !== null &&
+				"event" in entry &&
+				(entry.event === "foobar_hint_development_started" ||
+					entry.event === "foobar_developed_hint_read"),
+		);
+	}, plausibleEventsKey);
 }
 
 test("groups achievements and persists revealed field notes", async ({ page }) => {
-	await seedLegacyProgress(page);
+	await seedProgress(page);
 	await page.goto("/foobar");
 
 	await expect(page.getByRole("heading", { name: "Warmup / Discovery" })).toBeVisible();
@@ -41,8 +76,85 @@ test("groups achievements and persists revealed field notes", async ({ page }) =
 	);
 });
 
+test("develops hint 4 without exposing its text", async ({ page }) => {
+	await seedProgress(page, {
+		...legacyProgress,
+		clues_seen: [
+			{ id: "dns-txt:hint:1", seen_at: Date.now() - 2_000 },
+			{ id: "dns-txt:hint:2", seen_at: Date.now() - 1_000 },
+		],
+	});
+	await capturePlausibleEvents(page);
+	await page.goto("/foobar");
+
+	const dnsTxtBadge = page.getByRole("article").filter({
+		has: page.getByRole("heading", { name: "dns-txt", exact: true }),
+	});
+	await dnsTxtBadge.getByRole("button", { name: "Reveal hint 3 of 4 for dns-txt" }).click();
+
+	await expect(dnsTxtBadge.getByText("Hint 4 · Developing", { exact: true })).toBeVisible();
+	await expect(
+		dnsTxtBadge.getByText(/The ink is still drying\. Return in \d+h \d+m\./),
+	).toBeVisible();
+	await expect(
+		dnsTxtBadge.getByText("Run dig TXT sreetamdas.com and follow the Foobar value.", {
+			exact: true,
+		}),
+	).toHaveCount(0);
+	await expect(
+		dnsTxtBadge.getByRole("button", { name: "Reveal hint 4 of 4 for dns-txt" }),
+	).toHaveCount(0);
+	await expect
+		.poll(() => readHintDevelopmentEvents(page))
+		.toEqual([
+			{
+				event: "foobar_hint_development_started",
+				options: { props: { achievement: "dns-txt", wait_hours: 24 } },
+			},
+		]);
+});
+
+test("reads and persists a developed hint", async ({ page }) => {
+	const hourMs = 60 * 60 * 1_000;
+	await seedProgress(page, {
+		...legacyProgress,
+		clues_seen: [
+			{ id: "dns-txt:hint:1", seen_at: Date.now() - 27 * hourMs },
+			{ id: "dns-txt:hint:2", seen_at: Date.now() - 26 * hourMs },
+			{ id: "dns-txt:hint:3", seen_at: Date.now() - 25 * hourMs },
+		],
+	});
+	await capturePlausibleEvents(page);
+	await page.goto("/foobar");
+
+	const hintText = "Run dig TXT sreetamdas.com and follow the Foobar value.";
+	const dnsTxtBadge = page.getByRole("article").filter({
+		has: page.getByRole("heading", { name: "dns-txt", exact: true }),
+	});
+	const fieldNotes = page.getByRole("region", { name: "Field notes" });
+	const readButton = dnsTxtBadge.getByRole("button", {
+		name: "Read developed hint 4 of 4 for dns-txt",
+	});
+	await expect(readButton).toHaveText("Read developed hint");
+	await readButton.click();
+
+	await expect(dnsTxtBadge.getByText(hintText, { exact: true })).toBeVisible();
+	await expect(fieldNotes.getByText(hintText, { exact: true })).toBeVisible();
+	await page.reload();
+	await expect(dnsTxtBadge.getByText(hintText, { exact: true })).toBeVisible();
+	await expect(fieldNotes.getByText(hintText, { exact: true })).toBeVisible();
+	await expect
+		.poll(() => readHintDevelopmentEvents(page))
+		.toEqual([
+			{
+				event: "foobar_developed_hint_read",
+				options: { props: { achievement: "dns-txt", elapsed_bucket: "24-48h" } },
+			},
+		]);
+});
+
 test("keeps local progress as the default and offers optional cloud save", async ({ page }) => {
-	await seedLegacyProgress(page);
+	await seedProgress(page);
 	await page.goto("/foobar");
 
 	await expect(page.getByRole("heading", { name: "Hunter registry" })).toBeVisible();
@@ -67,11 +179,19 @@ test("keeps unknown certificate pages and cards private", async ({ request }) =>
 
 test("tier dashboard fits a mobile viewport", async ({ page }) => {
 	await page.setViewportSize({ width: 390, height: 844 });
-	await seedLegacyProgress(page);
+	await seedProgress(page, {
+		...legacyProgress,
+		clues_seen: [
+			{ id: "dns-txt:hint:1", seen_at: Date.now() - 2_000 },
+			{ id: "dns-txt:hint:2", seen_at: Date.now() - 1_000 },
+			{ id: "dns-txt:hint:3", seen_at: Date.now() },
+		],
+	});
 	await page.goto("/foobar");
 
 	await expect(page.getByRole("heading", { name: "Warmup / Discovery" })).toBeVisible();
 	await expect(page.getByRole("heading", { name: "Field notes" })).toBeVisible();
+	await expect(page.getByText("Hint 4 · Developing", { exact: true })).toBeVisible();
 	const hasHorizontalOverflow = await page
 		.locator("main")
 		.evaluate((element) => element.scrollWidth > element.clientWidth);
@@ -79,7 +199,7 @@ test("tier dashboard fits a mobile viewport", async ({ page }) => {
 });
 
 test("completes browser-only achievements and plants the devtools clue", async ({ page }) => {
-	await seedLegacyProgress(page);
+	await seedProgress(page);
 	await page.goto("/foobar");
 
 	await expect(page.locator('[data-foobar="/foobar/devtools"]')).toHaveCount(1);
@@ -150,7 +270,7 @@ test("publishes machine-facing and print-only clues", async ({ page, request }) 
 		expect(await response.text()).toContain(clue);
 	}
 
-	await seedLegacyProgress(page);
+	await seedProgress(page);
 	await page.goto("/foobar");
 	const printClue = page.getByText(/paper remembers.*\/foobar\/print-preview/i);
 	await expect(printClue).toBeHidden();
@@ -159,7 +279,7 @@ test("publishes machine-facing and print-only clues", async ({ page, request }) 
 });
 
 test("reveals the service-worker clue without touching normal traffic", async ({ page }) => {
-	await seedLegacyProgress(page);
+	await seedProgress(page);
 	await page.goto("/foobar");
 	await page.evaluate(() => navigator.serviceWorker.ready);
 	await page.reload();
@@ -183,8 +303,8 @@ test("unlocks campfire for two simultaneous hunters", async ({ browser }) => {
 	const secondContext = await browser.newContext();
 	const first = await firstContext.newPage();
 	const second = await secondContext.newPage();
-	await seedLegacyProgress(first);
-	await seedLegacyProgress(second);
+	await seedProgress(first);
+	await seedProgress(second);
 
 	await Promise.all([first.goto("/foobar"), second.goto("/foobar")]);
 	await expect(first.getByRole("heading", { name: "Campfire", exact: true })).toBeVisible();
