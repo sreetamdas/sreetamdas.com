@@ -230,6 +230,7 @@ type DevelopingHintProps = {
 
 const DevelopingHint = ({ achievement, hint3SeenAt, onRead }: DevelopingHintProps) => {
 	const [now, setNow] = useState(Date.now);
+	const [announcement, setAnnouncement] = useState("");
 	const development = getFoobarHintDevelopment(hint3SeenAt, now);
 
 	useEffect(() => {
@@ -260,14 +261,31 @@ const DevelopingHint = ({ achievement, hint3SeenAt, onRead }: DevelopingHintProp
 		};
 	}, [development.status, hint3SeenAt]);
 
+	useEffect(() => {
+		if (development.status === "not-started") {
+			setAnnouncement("");
+			return;
+		}
+
+		const announcementTimer = window.setTimeout(() => {
+			setAnnouncement(
+				development.status === "developing"
+					? "Hint 4 is developing. Return tomorrow."
+					: "Hint 4 has developed.",
+			);
+		}, 0);
+
+		return () => window.clearTimeout(announcementTimer);
+	}, [development.status]);
+
 	if (development.status === "not-started") return null;
 
-	if (development.status === "ready") {
-		return (
-			<>
-				<p className="sr-only" aria-live="polite">
-					Hint 4 has developed.
-				</p>
+	return (
+		<>
+			<p className="sr-only" aria-live="polite">
+				{announcement}
+			</p>
+			{development.status === "ready" ? (
 				<button
 					type="button"
 					onClick={onRead}
@@ -276,24 +294,19 @@ const DevelopingHint = ({ achievement, hint3SeenAt, onRead }: DevelopingHintProp
 				>
 					Read developed hint
 				</button>
-			</>
-		);
-	}
-
-	return (
-		<div className="mt-3 rounded-global border border-foreground/15 bg-background/40 p-3">
-			<p className="sr-only" aria-live="polite">
-				Hint 4 is developing. Return tomorrow.
-			</p>
-			<p className="font-mono text-xs text-primary">Hint 4 · Developing</p>
-			<div aria-hidden="true" className="mt-3 grid max-w-xs gap-2 opacity-35 blur-[2px]">
-				<span className="h-2 w-full rounded-full bg-foreground" />
-				<span className="h-2 w-4/5 rounded-full bg-foreground" />
-				<span className="h-2 w-2/3 rounded-full bg-foreground" />
-			</div>
-			<p className="mt-3 text-sm text-foreground/70">
-				The ink is still drying. Return in {formatFoobarHintRemaining(development.remainingMs)}.
-			</p>
-		</div>
+			) : (
+				<div className="mt-3 rounded-global border border-foreground/15 bg-background/40 p-3">
+					<p className="font-mono text-xs text-primary">Hint 4 · Developing</p>
+					<div aria-hidden="true" className="mt-3 grid max-w-xs gap-2 opacity-35 blur-[2px]">
+						<span className="h-2 w-full rounded-full bg-foreground" />
+						<span className="h-2 w-4/5 rounded-full bg-foreground" />
+						<span className="h-2 w-2/3 rounded-full bg-foreground" />
+					</div>
+					<p className="mt-3 text-sm text-foreground/70">
+						The ink is still drying. Return in {formatFoobarHintRemaining(development.remainingMs)}.
+					</p>
+				</div>
+			)}
+		</>
 	);
 };

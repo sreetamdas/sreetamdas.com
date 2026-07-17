@@ -90,15 +90,20 @@ test("develops hint 4 without exposing its text", async ({ page }) => {
 	const dnsTxtBadge = page.getByRole("article").filter({
 		has: page.getByRole("heading", { name: "dns-txt", exact: true }),
 	});
+	const pausedAt = new Date();
+	await page.clock.install({ time: pausedAt });
+	await page.clock.pauseAt(pausedAt);
 	await dnsTxtBadge.getByRole("button", { name: "Reveal hint 3 of 4 for dns-txt" }).click();
 
+	const liveStatus = dnsTxtBadge.locator('[aria-live="polite"]');
+	await expect(liveStatus).toHaveCount(1);
+	await expect(liveStatus).toHaveText("");
+	await page.clock.runFor(1);
 	await expect(dnsTxtBadge.getByText("Hint 4 · Developing", { exact: true })).toBeVisible();
 	await expect(
 		dnsTxtBadge.getByText(/The ink is still drying\. Return in \d+h \d+m\./),
 	).toBeVisible();
-	await expect(
-		dnsTxtBadge.getByText("Hint 4 is developing. Return tomorrow.", { exact: true }),
-	).toHaveAttribute("aria-live", "polite");
+	await expect(liveStatus).toHaveText("Hint 4 is developing. Return tomorrow.");
 	await expect(
 		dnsTxtBadge.getByText("Run dig TXT sreetamdas.com and follow the Foobar value.", {
 			exact: true,
