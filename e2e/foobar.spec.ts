@@ -21,6 +21,50 @@ async function seedProgress(page: Page, progress: Record<string, unknown> = lega
 	}, progress);
 }
 
+async function hasPersistedAchievement(page: Page, achievement: string, requireKonami = false) {
+	return page.evaluate(
+		({ achievement, requireKonami }) => {
+			for (const key of ["foobar-zustand-dev", "foobar-zustand"]) {
+				const raw = window.localStorage.getItem(key);
+				if (!raw) continue;
+
+				let persisted: unknown;
+				try {
+					persisted = JSON.parse(raw);
+				} catch {
+					continue;
+				}
+
+				if (typeof persisted !== "object" || persisted === null || !("state" in persisted)) {
+					continue;
+				}
+				const { state } = persisted;
+				if (typeof state !== "object" || state === null || !("foobar_data" in state)) continue;
+
+				const foobarData = state.foobar_data;
+				if (
+					typeof foobarData !== "object" ||
+					foobarData === null ||
+					!("completed" in foobarData) ||
+					!Array.isArray(foobarData.completed)
+				) {
+					continue;
+				}
+
+				if (
+					foobarData.completed.includes(achievement) &&
+					(!requireKonami || ("konami" in foobarData && foobarData.konami === true))
+				) {
+					return true;
+				}
+			}
+
+			return false;
+		},
+		{ achievement, requireKonami },
+	);
+}
+
 async function capturePlausibleEvents(page: Page) {
 	await page.addInitScript((storageKey) => {
 		Object.defineProperty(window, "plausible", {
@@ -251,19 +295,7 @@ test("completes browser-only achievements and plants the devtools clue", async (
 		await page.keyboard.press(key);
 	}
 
-	await expect
-		.poll(() =>
-			page.evaluate(() => {
-				const raw = window.localStorage.getItem("foobar-zustand");
-				if (!raw) return false;
-				const persisted = JSON.parse(raw);
-				return (
-					persisted.state.foobar_data.konami === true &&
-					persisted.state.foobar_data.completed.includes("konami")
-				);
-			}),
-		)
-		.toBe(true);
+	await expect.poll(() => hasPersistedAchievement(page, "konami", true)).toBe(true);
 
 	await page.goto("/about");
 	await page.evaluate(() => {
@@ -277,17 +309,13 @@ test("completes browser-only achievements and plants the devtools clue", async (
 			{ capture: true },
 		);
 	});
-	await page.getByRole("link", { name: "Sreetam Das' Reddit" }).click();
+	const redditLink = page.getByRole("link", { name: "Sreetam Das' Reddit" });
 
 	await expect
-		.poll(() =>
-			page.evaluate(() => {
-				const raw = window.localStorage.getItem("foobar-zustand");
-				if (!raw) return false;
-				const persisted = JSON.parse(raw);
-				return persisted.state.foobar_data.completed.includes("easter-egg");
-			}),
-		)
+		.poll(async () => {
+			await redditLink.click();
+			return hasPersistedAchievement(page, "easter-egg");
+		})
 		.toBe(true);
 });
 
@@ -342,16 +370,7 @@ test("unlocks campfire for two simultaneous hunters", async ({ browser }) => {
 	await expect(first.getByRole("heading", { name: "Campfire", exact: true })).toBeVisible();
 
 	for (const hunter of [first, second]) {
-		await expect
-			.poll(() =>
-				hunter.evaluate(() => {
-					const raw = window.localStorage.getItem("foobar-zustand");
-					if (!raw) return false;
-					const persisted = JSON.parse(raw);
-					return persisted.state.foobar_data.completed.includes("campfire");
-				}),
-			)
-			.toBe(true);
+		await expect.poll(() => hasPersistedAchievement(hunter, "campfire")).toBe(true);
 	}
 
 	await firstContext.close();
