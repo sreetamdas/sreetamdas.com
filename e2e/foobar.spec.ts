@@ -97,6 +97,9 @@ test("develops hint 4 without exposing its text", async ({ page }) => {
 		dnsTxtBadge.getByText(/The ink is still drying\. Return in \d+h \d+m\./),
 	).toBeVisible();
 	await expect(
+		dnsTxtBadge.getByText("Hint 4 is developing. Return tomorrow.", { exact: true }),
+	).toHaveAttribute("aria-live", "polite");
+	await expect(
 		dnsTxtBadge.getByText("Run dig TXT sreetamdas.com and follow the Foobar value.", {
 			exact: true,
 		}),
@@ -116,6 +119,27 @@ test("develops hint 4 without exposing its text", async ({ page }) => {
 
 test("reads and persists a developed hint", async ({ page }) => {
 	const hourMs = 60 * 60 * 1_000;
+	const hintText = "Run dig TXT sreetamdas.com and follow the Foobar value.";
+	const irregularPage = await page.context().newPage();
+	await seedProgress(irregularPage, {
+		...legacyProgress,
+		clues_seen: [
+			{ id: "dns-txt:hint:1", seen_at: Date.now() - 27 * hourMs },
+			{ id: "dns-txt:hint:2", seen_at: Date.now() - 26 * hourMs },
+			{ id: "dns-txt:hint:4", seen_at: Date.now() - 25 * hourMs },
+		],
+	});
+	await irregularPage.goto("/foobar");
+	const irregularBadge = irregularPage.getByRole("article").filter({
+		has: irregularPage.getByRole("heading", { name: "dns-txt", exact: true }),
+	});
+	const persistedFinalHint = irregularBadge.getByRole("listitem").filter({ hasText: hintText });
+	await expect(persistedFinalHint.getByText("Hint 4", { exact: true })).toBeVisible();
+	await irregularBadge.getByRole("button", { name: "Reveal hint 3 of 4 for dns-txt" }).click();
+	await expect(persistedFinalHint.getByText("Hint 4", { exact: true })).toBeVisible();
+	await expect(irregularBadge.getByText("Hint 4 · Developing", { exact: true })).toHaveCount(0);
+	await irregularPage.close();
+
 	await seedProgress(page, {
 		...legacyProgress,
 		clues_seen: [
@@ -127,7 +151,6 @@ test("reads and persists a developed hint", async ({ page }) => {
 	await capturePlausibleEvents(page);
 	await page.goto("/foobar");
 
-	const hintText = "Run dig TXT sreetamdas.com and follow the Foobar value.";
 	const dnsTxtBadge = page.getByRole("article").filter({
 		has: page.getByRole("heading", { name: "dns-txt", exact: true }),
 	});
@@ -135,6 +158,10 @@ test("reads and persists a developed hint", async ({ page }) => {
 	const readButton = dnsTxtBadge.getByRole("button", {
 		name: "Read developed hint 4 of 4 for dns-txt",
 	});
+	await expect(dnsTxtBadge.getByText("Hint 4 has developed.", { exact: true })).toHaveAttribute(
+		"aria-live",
+		"polite",
+	);
 	await expect(readButton).toHaveText("Read developed hint");
 	await readButton.click();
 

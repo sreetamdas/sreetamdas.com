@@ -132,9 +132,12 @@ const Badge = ({ achievement, isUnlocked, cluesSeen, recordFoobarClue }: BadgePr
 	const plausibleEvent = useCustomPlausible();
 	const metadata = FOOBAR_ACHIEVEMENTS[achievement];
 	const clueIds = cluesSeen.map(({ id }) => id);
-	const revealedHints = metadata.hints.filter((hint) => clueIds.includes(hint.id));
-	const nextHint = metadata.hints.find((hint) => !clueIds.includes(hint.id));
-	const nextHintNumber = revealedHints.length + 1;
+	const revealedHints = metadata.hints.flatMap((hint, index) =>
+		clueIds.includes(hint.id) ? [{ hint, number: index + 1 }] : [],
+	);
+	const nextHintIndex = metadata.hints.findIndex((hint) => !clueIds.includes(hint.id));
+	const nextHint = nextHintIndex === -1 ? undefined : metadata.hints[nextHintIndex];
+	const nextHintNumber = nextHintIndex + 1;
 	const hint3SeenAt = cluesSeen.find(({ id }) => id === metadata.hints[2]?.id)?.seen_at;
 	const { icon: Icon, description } = FOOBAR_FLAGS[achievement];
 	const revealNextHint = () => {
@@ -187,9 +190,9 @@ const Badge = ({ achievement, isUnlocked, cluesSeen, recordFoobarClue }: BadgePr
 						<p className="mt-2 text-sm text-foreground/70">{FOOBAR_TEASERS[achievement]}</p>
 						{revealedHints.length > 0 && (
 							<ol className="mt-3 grid gap-2 text-sm text-foreground/80">
-								{revealedHints.map((hint, index) => (
+								{revealedHints.map(({ hint, number }) => (
 									<li key={hint.id}>
-										<span className="font-mono text-xs text-primary">Hint {index + 1}</span>
+										<span className="font-mono text-xs text-primary">Hint {number}</span>
 										<span className="block break-words">{hint.text}</span>
 									</li>
 								))}
@@ -232,14 +235,18 @@ const DevelopingHint = ({ achievement, hint3SeenAt, onRead }: DevelopingHintProp
 	useEffect(() => {
 		if (hint3SeenAt === undefined || hint3SeenAt === null) return;
 
-		const initialDevelopment = getFoobarHintDevelopment(hint3SeenAt, Date.now());
-		if (initialDevelopment.status !== "developing") return;
+		const currentNow = Date.now();
+		const initialDevelopment = getFoobarHintDevelopment(hint3SeenAt, currentNow);
+		if (initialDevelopment.status !== "developing") {
+			setNow(currentNow);
+			return;
+		}
 
 		const updateDevelopment = () => setNow(Date.now());
 		const interval = window.setInterval(updateDevelopment, 60 * 1_000);
 		const deadline = window.setTimeout(
 			updateDevelopment,
-			Math.max(0, initialDevelopment.availableAt - Date.now()),
+			Math.max(0, initialDevelopment.availableAt - currentNow),
 		);
 		const handleVisibilityChange = () => {
 			if (document.visibilityState === "visible") updateDevelopment();
@@ -257,19 +264,27 @@ const DevelopingHint = ({ achievement, hint3SeenAt, onRead }: DevelopingHintProp
 
 	if (development.status === "ready") {
 		return (
-			<button
-				type="button"
-				onClick={onRead}
-				className="mt-3 rounded-global border border-primary px-3 py-2 font-mono text-xs text-primary transition-colors hover:bg-primary hover:text-background focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
-				aria-label={`Read developed hint 4 of 4 for ${achievement}`}
-			>
-				Read developed hint
-			</button>
+			<>
+				<p className="sr-only" aria-live="polite">
+					Hint 4 has developed.
+				</p>
+				<button
+					type="button"
+					onClick={onRead}
+					className="mt-3 rounded-global border border-primary px-3 py-2 font-mono text-xs text-primary transition-colors hover:bg-primary hover:text-background focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+					aria-label={`Read developed hint 4 of 4 for ${achievement}`}
+				>
+					Read developed hint
+				</button>
+			</>
 		);
 	}
 
 	return (
 		<div className="mt-3 rounded-global border border-foreground/15 bg-background/40 p-3">
+			<p className="sr-only" aria-live="polite">
+				Hint 4 is developing. Return tomorrow.
+			</p>
 			<p className="font-mono text-xs text-primary">Hint 4 · Developing</p>
 			<div aria-hidden="true" className="mt-3 grid max-w-xs gap-2 opacity-35 blur-[2px]">
 				<span className="h-2 w-full rounded-full bg-foreground" />
