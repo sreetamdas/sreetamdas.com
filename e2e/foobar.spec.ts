@@ -178,6 +178,7 @@ test("reads and persists a developed hint", async ({ page }) => {
 			{ id: "dns-txt:hint:4", seen_at: Date.now() - 25 * hourMs },
 		],
 	});
+	await capturePlausibleEvents(irregularPage);
 	await irregularPage.goto("/foobar");
 	const irregularBadge = irregularPage.getByRole("article").filter({
 		has: irregularPage.getByRole("heading", { name: "dns-txt", exact: true }),
@@ -185,6 +186,7 @@ test("reads and persists a developed hint", async ({ page }) => {
 	const persistedFinalHint = irregularBadge.getByRole("listitem").filter({ hasText: hintText });
 	await expect(persistedFinalHint.getByText("Hint 4", { exact: true })).toBeVisible();
 	await irregularBadge.getByRole("button", { name: "Reveal hint 3 of 4 for dns-txt" }).click();
+	expect(await readHintDevelopmentEvents(irregularPage)).toEqual([]);
 	await expect(persistedFinalHint.getByText("Hint 4", { exact: true })).toBeVisible();
 	await expect(irregularBadge.getByText("Hint 4 · Developing", { exact: true })).toHaveCount(0);
 	await irregularPage.close();

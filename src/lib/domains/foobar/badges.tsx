@@ -139,12 +139,13 @@ const Badge = ({ achievement, isUnlocked, cluesSeen, recordFoobarClue }: BadgePr
 	const nextHint = nextHintIndex === -1 ? undefined : metadata.hints[nextHintIndex];
 	const nextHintNumber = nextHintIndex + 1;
 	const hint3SeenAt = cluesSeen.find(({ id }) => id === metadata.hints[2]?.id)?.seen_at;
+	const finalHint = metadata.hints[3];
 	const { icon: Icon, description } = FOOBAR_FLAGS[achievement];
 	const revealNextHint = () => {
 		if (!nextHint) return;
 
 		recordFoobarClue(nextHint.id);
-		if (nextHint.id === metadata.hints[2]?.id) {
+		if (nextHint.id === metadata.hints[2]?.id && finalHint && !clueIds.includes(finalHint.id)) {
 			plausibleEvent("foobar_hint_development_started", {
 				props: {
 					achievement,
