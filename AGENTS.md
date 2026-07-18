@@ -40,7 +40,6 @@ This file documents project conventions for humans and coding agents.
   - `no-console` is an error.
   - `@typescript-eslint/no-explicit-any` is an error (prefer `unknown` + narrowing).
   - Unused vars are allowed only if prefixed with `_`.
-- Type checking: `tsgo` (`@typescript/native-preview`) — the native Go port of `tsc`.
 
 ## Architecture Conventions
 
