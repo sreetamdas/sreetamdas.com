@@ -115,7 +115,7 @@
 		"@types/react-dom": "^19.2.3",
 		"@types/unist": "~3.0.3",
 		"@vitejs/plugin-react": "^6.0.3",
-		"@vitejs/plugin-rsc": "^0.5.27",
+		"@vitejs/plugin-rsc": "^0.5.30",
 		"better-sqlite3": "^12.11.1",
 		"drizzle-kit": "1.0.0-rc.3",
 		"eslint-plugin-better-tailwindcss": "^4.6.1",
