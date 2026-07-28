@@ -10,6 +10,7 @@ import * as schema from "@/db/schema";
 import { authUser, foobarProgress } from "@/db/schema";
 
 import { mergeFoobarProgress } from "./cloud-progress";
+import { recordFoobarCloudOperation } from "./cloud-progress.observability.server";
 import { initialFoobarData, normalizeFoobarData, type FoobarDataType } from "./store";
 
 export type FoobarProgressDb = BaseSQLiteDatabase<"sync" | "async", unknown, typeof schema>;
@@ -98,6 +99,7 @@ async function writeFoobarProgress(
 ): Promise<FoobarCloudProgress> {
 	const storedState = await loadFoobarProgressState(db, userId);
 	if (!enableDisabled && !storedState.syncEnabled) {
+		recordFoobarCloudOperation("rejected_disabled_write");
 		throw new Error("Foobar cloud sync is disabled");
 	}
 
@@ -132,7 +134,11 @@ async function writeFoobarProgress(
 		})
 		.returning();
 	const row = rows[0];
-	if (!row) throw new Error("Foobar cloud sync is disabled");
+	if (!row) {
+		recordFoobarCloudOperation("rejected_disabled_write");
+		throw new Error("Foobar cloud sync is disabled");
+	}
+	if (enableDisabled) recordFoobarCloudOperation("enabled");
 
 	return {
 		progress: parseProgress(row.progressJson),
@@ -180,6 +186,7 @@ export async function resetFoobarProgress(db: FoobarProgressDb, userId: string):
 				updatedAt: now,
 			},
 		});
+	recordFoobarCloudOperation("disabled");
 }
 
 export async function getFoobarCommunity(db: FoobarProgressDb): Promise<FoobarCommunity> {

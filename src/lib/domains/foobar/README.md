@@ -15,6 +15,9 @@ Design history lives in `docs/superpowers/specs/2026-07-16-foobar-first-slice-de
   discoveries. `all_achievements` is always recomputed server-side, never trusted.
 - Deleting a cloud save leaves a disabled server tombstone. Background writes cannot recreate
   it; the player must explicitly enable cloud saving again from the retained browser progress.
+- Cloud lifecycle changes propagate between open tabs through a storage event; retryable failures
+  identify the failed operation instead of collapsing every error into a generic status.
+- Operational telemetry records lifecycle operation names only—never user IDs or progress.
 - Every achievement has a four-step hint ladder, so devtools-centric puzzles stay accessible.
 - Clues stay out of normal navigation and search indexing (`/foobar` is disallowed in
   `robots.txt`).
@@ -28,7 +31,7 @@ Design history lives in `docs/superpowers/specs/2026-07-16-foobar-first-slice-de
 | `store.ts`                                                   | Zustand slice + `normalizeFoobarData`, which makes stale/malformed persisted state inert.                                              |
 | `Pixel.tsx`                                                  | Site-wide instrumentation: visit tracking (`navigator`), Konami, 404, campfire completion, service-worker registration, console clues. |
 | `DashboardClient.tsx`                                        | The `/foobar` gate (`FoobarSchrodinger`), dashboard layout, local-only reset.                                                          |
-| `CloudProgressPanel.tsx` / `cloud-sync-session.ts`           | Optional account-backed save UI: bootstrap merge, debounced D1 sync, stale-response invalidation, leaderboard, explicit cloud reset.   |
+| `CloudProgressPanel.tsx` / `cloud-sync-*.ts`                 | Optional account-backed save UI: bootstrap merge, debounced D1 sync, stale-response invalidation, cross-tab lifecycle, explicit reset. |
 | `cloud-progress.ts`                                          | Pure merge rules (client + server shared).                                                                                             |
 | `cloud-progress.server.ts` / `cloud-progress.data.server.ts` | Server-function boundary and D1 persistence (`foobar_progress` table).                                                                 |
 | `certificate*.ts(x)`                                         | Public completion certificates keyed by unguessable token, plus OG image data.                                                         |
@@ -54,4 +57,5 @@ image). Static clue surfaces: `public/robots.txt`, `public/.well-known/security.
 ## Tests
 
 Unit tests sit next to their sources (`*.test.ts`); Playwright coverage is in
-`e2e/foobar.spec.ts`.
+`e2e/foobar.spec.ts`. The authenticated browser fixture is statically available only in
+`VITE_CI=1` builds and uses an exact CI-only cookie; production builds cannot activate it.

@@ -10,6 +10,8 @@ import { useEffect, useRef, useState } from "react";
 import { useShallow } from "zustand/react/shallow";
 
 import { useGlobalStore } from "@/lib/domains/global";
+import { useCustomPlausible } from "@/lib/domains/Plausible";
+import { captureException } from "@/lib/domains/Sentry";
 
 import { mergeFoobarProgress } from "./cloud-progress";
 import {
@@ -20,9 +22,11 @@ import {
 	syncFoobarProgressServerFn,
 	type FoobarBootstrap,
 } from "./cloud-progress.server";
+import { publishFoobarCloudLifecycle, subscribeFoobarCloudLifecycle } from "./cloud-sync-lifecycle";
 import { createFoobarCloudSyncSession } from "./cloud-sync-session";
 
 type SyncState = "loading" | "local" | "saving" | "saved" | "deleting" | "disabled" | "error";
+type FailedOperation = "load" | "sync" | "delete" | "enable" | "profile";
 
 export function CloudProgressPanel() {
 	const { foobarData, setFoobarData, hasHydrated } = useGlobalStore(
@@ -34,8 +38,32 @@ export function CloudProgressPanel() {
 	);
 	const [bootstrap, setBootstrap] = useState<FoobarBootstrap | null>(null);
 	const [syncState, setSyncState] = useState<SyncState>("loading");
+	const [failedOperation, setFailedOperation] = useState<FailedOperation | null>(null);
+	const [failedProfileValue, setFailedProfileValue] = useState(false);
+	const [reloadKey, setReloadKey] = useState(0);
 	const lastSynced = useRef("");
 	const syncSession = useRef(createFoobarCloudSyncSession());
+	const plausible = useCustomPlausible();
+
+	useEffect(
+		() =>
+			subscribeFoobarCloudLifecycle((lifecycle) => {
+				syncSession.current.invalidate();
+				if (lifecycle === "disabled") {
+					lastSynced.current = JSON.stringify(useGlobalStore.getState().foobar_data);
+					setBootstrap((value) =>
+						value ? { ...value, cloud: null, cloudSyncEnabled: false } : value,
+					);
+					setFailedOperation(null);
+					setSyncState("disabled");
+					return;
+				}
+
+				setSyncState("loading");
+				setReloadKey((value) => value + 1);
+			}),
+		[],
+	);
 
 	useEffect(() => {
 		if (!hasHydrated) return;
@@ -44,12 +72,14 @@ export function CloudProgressPanel() {
 		void fetchFoobarBootstrapServerFn()
 			.then(async (result) => {
 				if (!active) return;
+				setFailedOperation(null);
 				setBootstrap(result);
 				if (!result.user) {
 					setSyncState("local");
 					return;
 				}
 				if (result.cloudSyncEnabled === null) {
+					setFailedOperation("load");
 					setSyncState("error");
 					return;
 				}
@@ -78,8 +108,12 @@ export function CloudProgressPanel() {
 				let synced: Awaited<ReturnType<typeof syncFoobarProgressServerFn>>;
 				try {
 					synced = await syncFoobarProgressServerFn({ data: { progress: merged } });
-				} catch {
-					if (active && syncSession.current.isCurrent(token)) setSyncState("error");
+				} catch (error) {
+					if (active && syncSession.current.isCurrent(token)) {
+						captureException(error);
+						setFailedOperation("sync");
+						setSyncState("error");
+					}
 					return;
 				}
 				if (!active || !syncSession.current.isCurrent(token)) return;
@@ -90,14 +124,18 @@ export function CloudProgressPanel() {
 				);
 				setSyncState("saved");
 			})
-			.catch(() => {
-				if (active) setSyncState("error");
+			.catch((error: unknown) => {
+				if (active) {
+					captureException(error);
+					setFailedOperation("load");
+					setSyncState("error");
+				}
 			});
 
 		return () => {
 			active = false;
 		};
-	}, [hasHydrated, setFoobarData]);
+	}, [hasHydrated, reloadKey, setFoobarData]);
 
 	useEffect(() => {
 		if (!bootstrap?.user || !bootstrap.cloudSyncEnabled || !bootstrap.cloud) return;
@@ -117,8 +155,12 @@ export function CloudProgressPanel() {
 					);
 					setSyncState("saved");
 				})
-				.catch(() => {
-					if (syncSession.current.isCurrent(token)) setSyncState("error");
+				.catch((error: unknown) => {
+					if (syncSession.current.isCurrent(token)) {
+						captureException(error);
+						setFailedOperation("sync");
+						setSyncState("error");
+					}
 				});
 		}, 700);
 
@@ -126,35 +168,46 @@ export function CloudProgressPanel() {
 	}, [bootstrap?.cloudSyncEnabled, bootstrap?.user, foobarData, setFoobarData]);
 
 	async function handlePublicProfile(publicProfile: boolean) {
+		setFailedOperation(null);
 		setBootstrap((value) =>
 			value?.cloud ? { ...value, cloud: { ...value.cloud, publicProfile } } : value,
 		);
 		try {
 			await setFoobarPublicProfileServerFn({ data: { publicProfile } });
-		} catch {
+			setSyncState("saved");
+		} catch (error) {
+			captureException(error);
 			setBootstrap((value) =>
 				value?.cloud
 					? { ...value, cloud: { ...value.cloud, publicProfile: !publicProfile } }
 					: value,
 			);
+			setFailedProfileValue(publicProfile);
+			setFailedOperation("profile");
 			setSyncState("error");
 		}
 	}
 
 	async function handleCloudReset() {
+		setFailedOperation(null);
 		syncSession.current.invalidate();
 		setSyncState("deleting");
 		setBootstrap((value) => (value ? { ...value, cloud: null, cloudSyncEnabled: false } : value));
 		try {
 			await resetFoobarProgressServerFn();
 			lastSynced.current = JSON.stringify(useGlobalStore.getState().foobar_data);
+			publishFoobarCloudLifecycle("disabled");
+			plausible("foobar_cloud_lifecycle", { props: { operation: "disabled" } });
 			setSyncState("disabled");
-		} catch {
+		} catch (error) {
+			captureException(error);
+			setFailedOperation("delete");
 			setSyncState("error");
 		}
 	}
 
 	async function handleCloudEnable() {
+		setFailedOperation(null);
 		setSyncState("saving");
 		const progress = useGlobalStore.getState().foobar_data;
 		const token = syncSession.current.begin();
@@ -173,10 +226,24 @@ export function CloudProgressPanel() {
 						}
 					: value,
 			);
+			publishFoobarCloudLifecycle("enabled");
+			plausible("foobar_cloud_lifecycle", { props: { operation: "enabled" } });
 			setSyncState("saved");
-		} catch {
-			if (syncSession.current.isCurrent(token)) setSyncState("error");
+		} catch (error) {
+			if (syncSession.current.isCurrent(token)) {
+				captureException(error);
+				setFailedOperation("enable");
+				setSyncState("error");
+			}
 		}
+	}
+
+	function retryFailedOperation() {
+		if (failedOperation === "delete") return void handleCloudReset();
+		if (failedOperation === "enable") return void handleCloudEnable();
+		if (failedOperation === "profile") return void handlePublicProfile(failedProfileValue);
+		setSyncState("loading");
+		setReloadKey((value) => value + 1);
 	}
 
 	const community = bootstrap?.community ?? { finisherCount: 0, leaderboard: [] };
@@ -194,6 +261,18 @@ export function CloudProgressPanel() {
 					{community.finisherCount} {community.finisherCount === 1 ? "finisher" : "finishers"}
 				</p>
 			</div>
+			{failedOperation ? (
+				<div className="mt-3 flex flex-wrap items-center gap-2 text-sm" role="alert">
+					<span>{failureLabel(failedOperation)}</span>
+					<button
+						className="rounded-global border border-foreground/25 px-2 py-1 font-medium"
+						onClick={retryFailedOperation}
+						type="button"
+					>
+						Retry
+					</button>
+				</div>
+			) : null}
 
 			{bootstrap?.user ? (
 				<div className="mt-3 space-y-3 text-sm">
@@ -279,6 +358,14 @@ function syncLabel(state: SyncState): string {
 	if (state === "error") return "Cloud save needs another try.";
 	if (state === "local") return "Progress stays in this browser.";
 	return "Progress saved.";
+}
+
+function failureLabel(operation: FailedOperation): string {
+	if (operation === "load") return "Could not check your cloud save.";
+	if (operation === "sync") return "Could not save your latest progress.";
+	if (operation === "delete") return "Could not delete your cloud save.";
+	if (operation === "enable") return "Could not turn cloud saving back on.";
+	return "Could not update your leaderboard preference.";
 }
 
 function CloudResetDialog({ onReset }: { onReset: () => void }) {
