@@ -136,7 +136,10 @@ test("develops hint 4 without exposing its text", async ({ page }) => {
 	});
 	const pausedAt = new Date();
 	await page.clock.install({ time: pausedAt });
-	await page.clock.pauseAt(pausedAt);
+	// `install` starts the fake clock running from `time`, so it can already be
+	// past `pausedAt` by the time we pause it — and `pauseAt` refuses to rewind.
+	// Pause a moment ahead instead; a second is nothing against the 24h window.
+	await page.clock.pauseAt(new Date(pausedAt.getTime() + 1_000));
 	await dnsTxtBadge.getByRole("button", { name: "Reveal hint 3 of 4 for dns-txt" }).click();
 
 	const liveStatus = dnsTxtBadge.locator('[aria-live="polite"]');
