@@ -98,6 +98,13 @@ function deployStaging() {
 }
 
 if (branch === "dev") {
+	runRequiredWrangler(["d1", "execute", "sreetamdas_com", "--remote", "--command", "SELECT 1"]);
+	const migration = spawnSync("node", ["scripts/migrate-d1.mjs"], {
+		encoding: "utf-8",
+		stdio: "inherit",
+	});
+	if (migration.status !== 0) process.exit(migration.status ?? 1);
+
 	// The @cloudflare/vite-plugin generates dist/server/wrangler.json as a
 	// "redirected" config (via .wrangler/deploy/config.json) and strips env
 	// sections. Wrangler refuses to deploy redirected configs with env blocks.

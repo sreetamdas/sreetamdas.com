@@ -57,8 +57,8 @@ Notes:
 
 - `pnpm dev` runs the Vite dev server with Content Collections integration.
 - `pnpm build` runs `pnpm build:content-collections` automatically via `prebuild`.
-- `pnpm deploy` runs `pnpm build` and deploys production to Cloudflare via Wrangler.
-- `pnpm deploy:staging` also builds first, then deploys the staging Worker.
+- `pnpm deploy` applies pending D1 migrations, runs `pnpm build`, and deploys production via Wrangler.
+- `pnpm deploy:staging` applies the same shared-D1 migration gate before building and deploying staging.
 
 ### Environment variables
 
