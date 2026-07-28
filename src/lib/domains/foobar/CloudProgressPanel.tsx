@@ -22,11 +22,11 @@ import {
 	syncFoobarProgressServerFn,
 	type FoobarBootstrap,
 } from "./cloud-progress.server";
+import { foobarCloudFailureLabel, type FoobarCloudFailedOperation } from "./cloud-sync-errors";
 import { publishFoobarCloudLifecycle, subscribeFoobarCloudLifecycle } from "./cloud-sync-lifecycle";
 import { createFoobarCloudSyncSession } from "./cloud-sync-session";
 
 type SyncState = "loading" | "local" | "saving" | "saved" | "deleting" | "disabled" | "error";
-type FailedOperation = "load" | "sync" | "delete" | "enable" | "profile";
 
 export function CloudProgressPanel() {
 	const { foobarData, setFoobarData, hasHydrated } = useGlobalStore(
@@ -38,7 +38,7 @@ export function CloudProgressPanel() {
 	);
 	const [bootstrap, setBootstrap] = useState<FoobarBootstrap | null>(null);
 	const [syncState, setSyncState] = useState<SyncState>("loading");
-	const [failedOperation, setFailedOperation] = useState<FailedOperation | null>(null);
+	const [failedOperation, setFailedOperation] = useState<FoobarCloudFailedOperation | null>(null);
 	const [failedProfileValue, setFailedProfileValue] = useState(false);
 	const [reloadKey, setReloadKey] = useState(0);
 	const lastSynced = useRef("");
@@ -263,7 +263,7 @@ export function CloudProgressPanel() {
 			</div>
 			{failedOperation ? (
 				<div className="mt-3 flex flex-wrap items-center gap-2 text-sm" role="alert">
-					<span>{failureLabel(failedOperation)}</span>
+					<span>{foobarCloudFailureLabel(failedOperation)}</span>
 					<button
 						className="rounded-global border border-foreground/25 px-2 py-1 font-medium"
 						onClick={retryFailedOperation}
@@ -358,14 +358,6 @@ function syncLabel(state: SyncState): string {
 	if (state === "error") return "Cloud save needs another try.";
 	if (state === "local") return "Progress stays in this browser.";
 	return "Progress saved.";
-}
-
-function failureLabel(operation: FailedOperation): string {
-	if (operation === "load") return "Could not check your cloud save.";
-	if (operation === "sync") return "Could not save your latest progress.";
-	if (operation === "delete") return "Could not delete your cloud save.";
-	if (operation === "enable") return "Could not turn cloud saving back on.";
-	return "Could not update your leaderboard preference.";
 }
 
 function CloudResetDialog({ onReset }: { onReset: () => void }) {
