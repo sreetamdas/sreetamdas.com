@@ -5,21 +5,11 @@ import { expect, type Locator, test, type Page } from "@playwright/test";
  * handlers, so a click that lands too early is dropped (buttons) or falls
  * through to a full document navigation (links). That made several of these
  * tests flaky under parallel workers, where hydration is slower. Wait until
- * React has actually wired the element up before driving it.
+ * the root's public hydration marker is present before driving it.
  */
 async function waitForInteractive(locator: Locator) {
 	await expect(locator).toBeVisible();
-	await expect
-		.poll(() =>
-			locator.evaluate((element) => {
-				const propsKey = Object.keys(element).find((key) => key.startsWith("__reactProps$"));
-				if (!propsKey) return false;
-
-				const props = (element as unknown as Record<string, { onClick?: unknown }>)[propsKey];
-				return typeof props?.onClick === "function";
-			}),
-		)
-		.toBe(true);
+	await expect(locator.page().locator("html")).toHaveAttribute("data-hydrated", "true");
 }
 
 async function clearLocalState(page: Page) {

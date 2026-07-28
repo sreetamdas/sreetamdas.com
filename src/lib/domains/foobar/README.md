@@ -13,6 +13,8 @@ Design history lives in `docs/superpowers/specs/2026-07-16-foobar-first-slice-de
 - Anonymous localStorage play is the default; sign-in is optional and additive.
 - Merges are lossless and forward-only: neither the browser nor D1 can erase the other's
   discoveries. `all_achievements` is always recomputed server-side, never trusted.
+- Deleting a cloud save leaves a disabled server tombstone. Background writes cannot recreate
+  it; the player must explicitly enable cloud saving again from the retained browser progress.
 - Every achievement has a four-step hint ladder, so devtools-centric puzzles stay accessible.
 - Clues stay out of normal navigation and search indexing (`/foobar` is disallowed in
   `robots.txt`).
@@ -26,7 +28,7 @@ Design history lives in `docs/superpowers/specs/2026-07-16-foobar-first-slice-de
 | `store.ts`                                                   | Zustand slice + `normalizeFoobarData`, which makes stale/malformed persisted state inert.                                              |
 | `Pixel.tsx`                                                  | Site-wide instrumentation: visit tracking (`navigator`), Konami, 404, campfire completion, service-worker registration, console clues. |
 | `DashboardClient.tsx`                                        | The `/foobar` gate (`FoobarSchrodinger`), dashboard layout, local-only reset.                                                          |
-| `CloudProgressPanel.tsx`                                     | Optional account-backed save UI: bootstrap merge, debounced D1 sync, leaderboard, explicit cloud reset.                                |
+| `CloudProgressPanel.tsx` / `cloud-sync-session.ts`           | Optional account-backed save UI: bootstrap merge, debounced D1 sync, stale-response invalidation, leaderboard, explicit cloud reset.   |
 | `cloud-progress.ts`                                          | Pure merge rules (client + server shared).                                                                                             |
 | `cloud-progress.server.ts` / `cloud-progress.data.server.ts` | Server-function boundary and D1 persistence (`foobar_progress` table).                                                                 |
 | `certificate*.ts(x)`                                         | Public completion certificates keyed by unguessable token, plus OG image data.                                                         |
