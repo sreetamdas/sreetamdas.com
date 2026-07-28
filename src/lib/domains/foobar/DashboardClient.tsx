@@ -16,7 +16,6 @@ import { NotFound404 } from "@/lib/components/Error";
 import { Code } from "@/lib/components/Typography";
 import { ShowCompletedBadges } from "@/lib/domains/foobar/badges";
 import { isFoobarAchievement } from "@/lib/domains/foobar/catalog";
-import { resetFoobarProgressServerFn } from "@/lib/domains/foobar/cloud-progress.server";
 import { CloudProgressPanel } from "@/lib/domains/foobar/CloudProgressPanel";
 import { FieldNotes } from "@/lib/domains/foobar/FieldNotes";
 import { FOOBAR_FLAGS } from "@/lib/domains/foobar/flags";
@@ -51,9 +50,8 @@ export const FoobarDashboard = ({ completed_page }: FoobarSchrodingerProps) => {
 
 	function handleClearFoobarData() {
 		plausibleEvent("foobar", { props: { achievement: "restart" } });
-		void resetFoobarProgressServerFn().catch(() => {
-			// Signed-out players have no cloud copy; the local reset still succeeds.
-		});
+		// Local reset only: signed-in players delete their cloud save separately
+		// from the Hunter registry, so a stray restart cannot erase remote progress.
 		setFoobarData(initialFoobarData);
 
 		if ("serviceWorker" in navigator) {
@@ -168,7 +166,9 @@ const ResetFoobar = ({ handleClearFoobarData }: { handleClearFoobarData: () => v
 				<AlertDialogPrimitive.Description className="mt-4 mb-5 text-[15px] leading-normal text-zinc-500">
 					This action cannot be undone.
 					<br />
-					This will reset your <Code>/foobar</Code> progress.
+					This will reset your <Code>/foobar</Code> progress in this browser. A cloud save is not
+					deleted here — it will restore your progress on the next sync unless you delete it from
+					the Hunter registry.
 				</AlertDialogPrimitive.Description>
 				<div className="flex justify-end gap-[25px]">
 					<AlertDialogPrimitive.Cancel asChild>

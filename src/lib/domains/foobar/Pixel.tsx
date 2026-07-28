@@ -108,14 +108,15 @@ export const FoobarPixel = ({ path }: FoobarPixelProps) => {
 			}
 		}
 
-		if (!visited_pages?.includes(page_name)) {
-			setFoobarData({
-				visited_pages: visited_pages.concat([page_name]),
-			});
+		const next_visited_pages = visited_pages.includes(page_name)
+			? visited_pages
+			: visited_pages.concat([page_name]);
+		if (next_visited_pages !== visited_pages) {
+			setFoobarData({ visited_pages: next_visited_pages });
 		}
 
 		// for the `navigator` achievement
-		if (visited_pages.length >= 5 && !completed.includes(FOOBAR_FLAGS.navigator.name)) {
+		if (next_visited_pages.length >= 5 && !completed.includes(FOOBAR_FLAGS.navigator.name)) {
 			plausibleEvent("foobar", { props: { achievement: FOOBAR_FLAGS.navigator.name } });
 			completeFoobarFlag(FOOBAR_FLAGS.navigator.name);
 		}

@@ -495,34 +495,32 @@ export function hasCompletedFoobar(completed: ReadonlyArray<FoobarAchievement>) 
 	return FOOBAR_REQUIRED_ACHIEVEMENTS.every((achievement) => completed.includes(achievement));
 }
 
+const FOOBAR_CLUES_BY_ID: ReadonlyMap<string, FoobarClue> = new Map(
+	Object.keys(FOOBAR_ACHIEVEMENTS)
+		.filter(isFoobarAchievement)
+		.flatMap((key) => {
+			const achievement = FOOBAR_ACHIEVEMENTS[key];
+			const clues: Array<FoobarClue> = [
+				{
+					id: achievement.completion.id,
+					achievement: key,
+					kind: "completion",
+					text: achievement.completion.note,
+				},
+				...achievement.hints.map(
+					(hint): FoobarClue => ({ id: hint.id, achievement: key, kind: "hint", text: hint.text }),
+				),
+			];
+			return clues.map((clue): [string, FoobarClue] => [clue.id, clue]);
+		}),
+);
+
 export function getFoobarClue(value: unknown): FoobarClue | undefined {
 	if (typeof value !== "string") {
 		return undefined;
 	}
 
-	for (const key of Object.keys(FOOBAR_ACHIEVEMENTS)) {
-		if (!isFoobarAchievement(key)) {
-			continue;
-		}
-
-		const achievement = FOOBAR_ACHIEVEMENTS[key];
-		if (achievement.completion.id === value) {
-			return {
-				id: achievement.completion.id,
-				achievement: key,
-				kind: "completion",
-				text: achievement.completion.note,
-			};
-		}
-
-		for (const hint of achievement.hints) {
-			if (hint.id === value) {
-				return { id: hint.id, achievement: key, kind: "hint", text: hint.text };
-			}
-		}
-	}
-
-	return undefined;
+	return FOOBAR_CLUES_BY_ID.get(value);
 }
 
 export function isFoobarClueId(value: unknown): value is FoobarClueId {

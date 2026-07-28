@@ -13,6 +13,7 @@ import { useGlobalStore } from "@/lib/domains/global";
 import { mergeFoobarProgress } from "./cloud-progress";
 import {
 	fetchFoobarBootstrapServerFn,
+	resetFoobarProgressServerFn,
 	setFoobarPublicProfileServerFn,
 	syncFoobarProgressServerFn,
 	type FoobarBootstrap,
@@ -30,6 +31,7 @@ export function CloudProgressPanel() {
 	);
 	const [bootstrap, setBootstrap] = useState<FoobarBootstrap | null>(null);
 	const [syncState, setSyncState] = useState<SyncState>("loading");
+	const [confirmingCloudReset, setConfirmingCloudReset] = useState(false);
 	const lastSynced = useRef("");
 
 	useEffect(() => {
@@ -51,17 +53,13 @@ export function CloudProgressPanel() {
 				lastSynced.current = serialized;
 				setFoobarData(merged);
 
-				if (!result.cloud) {
+				if (result.cloud && serialized === JSON.stringify(result.cloud.progress)) {
 					setSyncState("saved");
 					return;
 				}
 
-				const normalizedCloud = JSON.stringify(result.cloud?.progress);
-				if (serialized === normalizedCloud) {
-					setSyncState("saved");
-					return;
-				}
-
+				// No stored row yet (first sign-in) or the merge learned something new:
+				// sync now so the D1 copy exists and matches the browser.
 				setSyncState("saving");
 				const synced = await syncFoobarProgressServerFn({ data: { progress: merged } });
 				if (!active) return;
@@ -119,6 +117,20 @@ export function CloudProgressPanel() {
 		}
 	}
 
+	async function handleCloudReset() {
+		setConfirmingCloudReset(false);
+		try {
+			await resetFoobarProgressServerFn();
+			// Keep lastSynced at the current local state so the debounced sync does
+			// not immediately recreate the deleted row from this browser.
+			lastSynced.current = JSON.stringify(useGlobalStore.getState().foobar_data);
+			setBootstrap((value) => (value ? { ...value, cloud: null } : value));
+			setSyncState("local");
+		} catch {
+			setSyncState("error");
+		}
+	}
+
 	const community = bootstrap?.community ?? { finisherCount: 0, leaderboard: [] };
 
 	return (
@@ -157,6 +169,34 @@ export function CloudProgressPanel() {
 						>
 							Open completion certificate
 						</a>
+					) : null}
+					{bootstrap.cloud ? (
+						confirmingCloudReset ? (
+							<div className="flex flex-wrap items-center gap-2">
+								<button
+									className="rounded-global border border-red-300 px-3 py-1.5 text-red-700 hover:bg-red-100"
+									onClick={() => void handleCloudReset()}
+									type="button"
+								>
+									Yes, delete cloud save
+								</button>
+								<button
+									className="rounded-global border border-foreground/25 px-3 py-1.5"
+									onClick={() => setConfirmingCloudReset(false)}
+									type="button"
+								>
+									Keep it
+								</button>
+							</div>
+						) : (
+							<button
+								className="rounded-global border border-foreground/25 px-3 py-1.5 text-foreground/75 hover:border-red-300 hover:text-red-700"
+								onClick={() => setConfirmingCloudReset(true)}
+								type="button"
+							>
+								Delete cloud save
+							</button>
+						)
 					) : null}
 				</div>
 			) : (
@@ -203,5 +243,6 @@ function syncLabel(state: SyncState): string {
 	if (state === "loading") return "Checking cloud save…";
 	if (state === "saving") return "Saving…";
 	if (state === "error") return "Cloud save needs another try.";
+	if (state === "local") return "Cloud save deleted. Progress stays in this browser.";
 	return "Progress saved.";
 }
