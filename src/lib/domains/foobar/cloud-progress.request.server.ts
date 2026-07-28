@@ -10,6 +10,9 @@ export type FoobarAuthUser = { id: string; name: string };
 export async function getFoobarAuthUser(): Promise<FoobarAuthUser | null> {
 	const cookie = getRequestHeader("cookie");
 	if (!cookie) return null;
+	const { ensureFoobarE2eUser } = await import("./cloud-progress.e2e.server");
+	const e2eUser = await ensureFoobarE2eUser(cookie);
+	if (e2eUser) return e2eUser;
 
 	const headers = new Headers({ cookie });
 	const { getAuth } = await import("@/lib/auth");

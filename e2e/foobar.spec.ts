@@ -21,6 +21,24 @@ async function seedProgress(page: Page, progress: Record<string, unknown> = lega
 	}, progress);
 }
 
+async function authenticateFoobarE2e(page: Page) {
+	await page.context().addCookies([
+		{
+			name: "foobar-e2e-auth",
+			value: "enabled",
+			url: "http://127.0.0.1:5045",
+			httpOnly: true,
+			sameSite: "Lax",
+		},
+	]);
+}
+
+async function ensureCloudEnabled(page: Page) {
+	const enable = page.getByRole("button", { name: "Save this browser's progress to cloud" });
+	if (await enable.isVisible()) await enable.click();
+	await expect(page.getByRole("button", { name: "Delete cloud save" })).toBeVisible();
+}
+
 async function hasPersistedAchievement(page: Page, achievement: string, requireKonami = false) {
 	return page.evaluate(
 		({ achievement, requireKonami }) => {
@@ -248,6 +266,63 @@ test("keeps local progress as the default and offers optional cloud save", async
 		"href",
 		"/api/login/github?returnTo=/foobar",
 	);
+});
+
+test("deletes cloud progress durably and synchronizes the lifecycle across tabs", async ({
+	page,
+}) => {
+	await authenticateFoobarE2e(page);
+	await seedProgress(page);
+	await page.goto("/foobar");
+	await expect(page.getByText("Signed in as Foobar E2E Hunter.")).toBeVisible();
+	await ensureCloudEnabled(page);
+
+	const second = await page.context().newPage();
+	await seedProgress(second);
+	await second.goto("/foobar");
+	await ensureCloudEnabled(second);
+
+	const trigger = page.getByRole("button", { name: "Delete cloud save" });
+	await trigger.click();
+	const cancel = page.getByRole("button", { name: "Keep cloud save" });
+	await expect(cancel).toBeFocused();
+	await cancel.click();
+	await expect(trigger).toBeFocused();
+
+	await trigger.click();
+	await page.getByRole("button", { name: "Yes, delete cloud save" }).click();
+	const enable = second.getByRole("button", { name: "Save this browser's progress to cloud" });
+	await expect(enable).toBeVisible();
+
+	await Promise.all([page.reload(), second.reload()]);
+	await expect(
+		page.getByRole("button", { name: "Save this browser's progress to cloud" }),
+	).toBeVisible();
+	await expect(enable).toBeVisible();
+
+	await enable.click();
+	await expect(page.getByRole("button", { name: "Delete cloud save" })).toBeVisible();
+	await second.close();
+});
+
+test("offers an operation-specific retry when cloud deletion fails", async ({ page }) => {
+	await authenticateFoobarE2e(page);
+	await seedProgress(page);
+	await page.goto("/foobar");
+	await ensureCloudEnabled(page);
+
+	await page.route("**/_serverFn/**", (route) => route.abort("failed"));
+	await page.getByRole("button", { name: "Delete cloud save" }).click();
+	await page.getByRole("button", { name: "Yes, delete cloud save" }).click();
+	await expect(page.getByRole("alert")).toContainText("Could not delete your cloud save.");
+	const retry = page.getByRole("button", { name: "Retry" });
+	await expect(retry).toBeVisible();
+
+	await page.unroute("**/_serverFn/**");
+	await retry.click();
+	await expect(
+		page.getByText("Cloud saving is off. Progress stays in this browser."),
+	).toBeVisible();
 });
 
 test("keeps unknown certificate pages and cards private", async ({ request }) => {
