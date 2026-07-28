@@ -8,7 +8,9 @@ import { FOOBAR_REQUIRED_ACHIEVEMENTS } from "./catalog";
 import {
 	getFoobarCommunity,
 	getFoobarCertificate,
+	loadFoobarProgressState,
 	loadFoobarProgress,
+	enableFoobarProgress,
 	resetFoobarProgress,
 	setFoobarPublicProfile,
 	syncFoobarProgress,
@@ -35,7 +37,8 @@ beforeEach(() => {
 			user_id text PRIMARY KEY NOT NULL REFERENCES user(id) ON DELETE CASCADE,
 			progress_json text NOT NULL,
 			completed_at integer,
-			public_profile integer DEFAULT 0 NOT NULL,
+				public_profile integer DEFAULT 0 NOT NULL,
+				sync_enabled integer DEFAULT 1 NOT NULL,
 			certificate_id text UNIQUE,
 			created_at integer NOT NULL,
 			updated_at integer NOT NULL
@@ -107,11 +110,73 @@ describe("Foobar cloud progress data", () => {
 		});
 	});
 
-	test("resets only the signed-in user's cloud copy", async () => {
+	test("keeps a durable tombstone when cloud sync is disabled", async () => {
 		await addUser("a", "Ada");
 		await syncFoobarProgress(db, "a", initialFoobarData, 100, () => "unused");
 		await resetFoobarProgress(db, "a");
-		expect(await loadFoobarProgress(db, "a")).toBeNull();
+
+		expect(await loadFoobarProgressState(db, "a")).toEqual({
+			cloud: null,
+			syncEnabled: false,
+		});
+	});
+
+	test("rejects a stale sync after cloud sync has been disabled", async () => {
+		await addUser("a", "Ada");
+		await syncFoobarProgress(db, "a", { ...initialFoobarData, unlocked: true });
+		await resetFoobarProgress(db, "a");
+
+		await expect(
+			syncFoobarProgress(db, "a", { ...initialFoobarData, completed: ["headers"] }),
+		).rejects.toThrow("Foobar cloud sync is disabled");
+		expect(await loadFoobarProgressState(db, "a")).toEqual({
+			cloud: null,
+			syncEnabled: false,
+		});
+	});
+
+	test("lets deletion win when an earlier sync request is still in flight", async () => {
+		await addUser("a", "Ada");
+		await syncFoobarProgress(db, "a", { ...initialFoobarData, unlocked: true });
+
+		const staleSync = syncFoobarProgress(db, "a", {
+			...initialFoobarData,
+			completed: ["headers"],
+		});
+		await resetFoobarProgress(db, "a");
+
+		await expect(staleSync).rejects.toThrow("Foobar cloud sync is disabled");
+		expect(await loadFoobarProgressState(db, "a")).toEqual({
+			cloud: null,
+			syncEnabled: false,
+		});
+	});
+
+	test("re-enables cloud sync only through the explicit enable operation", async () => {
+		await addUser("a", "Ada");
+		await syncFoobarProgress(db, "a", { ...initialFoobarData, unlocked: true });
+		await resetFoobarProgress(db, "a");
+
+		const enabled = await enableFoobarProgress(db, "a", {
+			...initialFoobarData,
+			completed: ["headers"],
+		});
+
+		expect(enabled.progress.completed).toEqual(["headers"]);
+		expect(await loadFoobarProgressState(db, "a")).toEqual({
+			cloud: enabled,
+			syncEnabled: true,
+		});
+	});
+
+	test("does not let a stale profile update mutate a disabled tombstone", async () => {
+		await addUser("a", "Ada");
+		await syncFoobarProgress(db, "a", initialFoobarData);
+		await resetFoobarProgress(db, "a");
+
+		expect(await setFoobarPublicProfile(db, "a", true)).toBe(false);
+		const enabled = await enableFoobarProgress(db, "a", initialFoobarData);
+		expect(enabled.publicProfile).toBe(false);
 	});
 });
 

@@ -102,6 +102,7 @@ export const foobarProgress = sqliteTable(
 		progressJson: text("progress_json").notNull(),
 		completedAt: integer("completed_at"),
 		publicProfile: integer("public_profile", { mode: "boolean" }).notNull().default(false),
+		syncEnabled: integer("sync_enabled", { mode: "boolean" }).notNull().default(true),
 		certificateId: text("certificate_id").unique(),
 		createdAt: integer("created_at").notNull(),
 		updatedAt: integer("updated_at").notNull(),
