@@ -309,7 +309,11 @@ export default defineConfig({
 	fmt: oxfmt_config,
 	lint: oxlint_config,
 	staged: {
-		"*.{ts,tsx,js,jsx}": ["vp fmt", "vp lint"],
+		// `routeTree.gen.ts` is generated and sits in `fmt.ignorePatterns`, so a
+		// commit that stages only that file would hand `vp fmt` a list it filters
+		// down to nothing and fail with "Expected at least one target file".
+		// Keep generated output out of the matcher instead.
+		"!(*.gen).{ts,tsx,js,jsx}": ["vp fmt", "vp lint"],
 		"*.{json,jsonc}": ["vp fmt"],
 	},
 	server: {

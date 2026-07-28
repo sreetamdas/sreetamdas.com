@@ -52,8 +52,7 @@
 		"deploy:staging": "CLOUDFLARE_ENV=staging pnpm build && CLOUDFLARE_ENV=staging wrangler deploy -e staging",
 		"deploy:preview": "node scripts/deploy-preview.mjs",
 		"prepare": "vp config",
-		"lint-staged": "vp staged",
-		"knip": "knip"
+		"lint-staged": "vp staged"
 	},
 	"dependencies": {
 		"@better-auth/drizzle-adapter": "^1.6.23",
