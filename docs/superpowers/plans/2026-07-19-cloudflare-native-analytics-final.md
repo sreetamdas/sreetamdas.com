@@ -1,5 +1,9 @@
 # Cloudflare-native analytics — final implementation plan
 
+**Tracking:** [#286](https://github.com/sreetamdas/sreetamdas.com/issues/286) —
+that issue carries the phased checklist; this document stays the source of
+truth for detail.
+
 **Status:** ready for implementation. Supersedes
 `2026-07-17-cloudflare-native-analytics.md` (WAE-based) and the June
 Queue-based design. This document is self-contained: everything needed to
