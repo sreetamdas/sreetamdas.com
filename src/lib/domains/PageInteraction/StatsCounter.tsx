@@ -18,6 +18,12 @@ import {
 	getLikeMutationAction,
 	type LikeMutationAction,
 } from "./StatsCounter.helpers";
+import {
+	statItemClassName,
+	statTooltipBubbleClassName,
+	statTooltipTriggerClassName,
+	statValueClassName,
+} from "./StatsCounter.styles";
 import { pageMetricsQueryKey, usePageMetrics } from "./usePageMetrics";
 import { useRecordPageView } from "./useRecordPageView";
 import { fetchViewCountServerFn, type PageViewCount } from "./ViewsCounter.server";
@@ -31,14 +37,6 @@ type StatsCounterProps = {
 };
 
 const statsListClassName = "m-0 flex min-h-5 flex-wrap items-center justify-center gap-4 text-sm";
-const statItemClassName = "flex items-center justify-center gap-1.5";
-const statValueClassName = "inline-block min-w-[2ch] text-left tabular-nums";
-const statTooltipTriggerClassName = "group relative";
-// No opacity transition: these stats mount as their metrics arrive client-side,
-// and a transition on the freshly-inserted tooltip animates opacity 1→0 (a flash
-// without hover), so the tooltip just shows/hides instantly on hover.
-const statTooltipBubbleClassName =
-	"pointer-events-none absolute bottom-full left-1/2 z-50 mb-2 w-max max-w-64 -translate-x-1/2 rounded-global border border-solid border-foreground/15 bg-background px-2.5 py-1.5 text-center text-xs leading-snug text-foreground opacity-0 shadow-lg group-hover:opacity-100 group-focus-within:opacity-100";
 
 const StatsCounterLiveStat = lazy(() =>
 	import("./StatsCounterLiveStat").then((module) => ({ default: module.StatsCounterLiveStat })),
