@@ -64,6 +64,29 @@ describe("Foobar progress", () => {
 			{ id: "headers:hint:1", seen_at: 1234 },
 			{ id: "headers:completed", seen_at: 1234 },
 		]);
+		expect(store.getState().foobar_reveal_queue).toEqual(["headers"]);
+	});
+
+	test("does not announce a legacy completion clue repair", () => {
+		const store = create(createFoobarSlice);
+		store.getState().setFoobarData({ completed: ["headers"] });
+		store.getState().completeFoobarFlag("headers");
+
+		expect(store.getState().foobar_data.clues_seen).toEqual([
+			{ id: "headers:completed", seen_at: expect.any(Number) },
+		]);
+		expect(store.getState().foobar_reveal_queue).toEqual([]);
+	});
+
+	test("queues meta reveals once and dismisses them in order", () => {
+		const store = create(createFoobarSlice);
+		store.getState().enqueueFoobarReveal("headers");
+		store.getState().enqueueFoobarReveal("completed");
+		store.getState().enqueueFoobarReveal("headers");
+
+		expect(store.getState().foobar_reveal_queue).toEqual(["headers", "completed"]);
+		store.getState().dismissFoobarReveal();
+		expect(store.getState().foobar_reveal_queue).toEqual(["completed"]);
 	});
 
 	test("reset data clears arrays instead of deep-merging them", () => {

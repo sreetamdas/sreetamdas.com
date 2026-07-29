@@ -42,6 +42,7 @@ export const FOOBAR_TIER_ORDER: ReadonlyArray<FoobarTier> = [
 
 export const FOOBAR_ACHIEVEMENTS = {
 	unlocked: {
+		title: "X Marks the Spot",
 		tier: "discovery",
 		completion: { id: "unlocked:completed", note: "You found the first door." },
 		hints: [
@@ -58,6 +59,7 @@ export const FOOBAR_ACHIEVEMENTS = {
 		],
 	},
 	"source-code": {
+		title: "Behind the Screens",
 		tier: "discovery",
 		completion: {
 			id: "source-code:completed",
@@ -83,6 +85,7 @@ export const FOOBAR_ACHIEVEMENTS = {
 		],
 	},
 	headers: {
+		title: "Heads Up!",
 		tier: "discovery",
 		completion: {
 			id: "headers:completed",
@@ -105,6 +108,7 @@ export const FOOBAR_ACHIEVEMENTS = {
 		],
 	},
 	localforage: {
+		title: "Forage Locally",
 		tier: "discovery",
 		completion: {
 			id: "localforage:completed",
@@ -127,6 +131,7 @@ export const FOOBAR_ACHIEVEMENTS = {
 		],
 	},
 	teapot: {
+		title: "418 and Over It",
 		tier: "discovery",
 		completion: { id: "teapot:completed", note: "The server refused, but politely." },
 		hints: [
@@ -143,6 +148,7 @@ export const FOOBAR_ACHIEVEMENTS = {
 		],
 	},
 	devtools: {
+		title: "Inspect Gadget",
 		tier: "browser",
 		completion: {
 			id: "devtools:completed",
@@ -168,6 +174,7 @@ export const FOOBAR_ACHIEVEMENTS = {
 		],
 	},
 	hack: {
+		title: "Console Yourself",
 		tier: "browser",
 		completion: { id: "hack:completed", note: "The console opened its trapdoor." },
 		hints: [
@@ -187,6 +194,7 @@ export const FOOBAR_ACHIEVEMENTS = {
 		],
 	},
 	offline: {
+		title: "Connection Lost, Clue Found",
 		tier: "browser",
 		completion: {
 			id: "offline:completed",
@@ -208,7 +216,31 @@ export const FOOBAR_ACHIEVEMENTS = {
 			},
 		],
 	},
+	"tab-visibility": {
+		title: "Now You See Me",
+		tier: "browser",
+		completion: {
+			id: "tab-visibility:completed",
+			note: "I only said it when you weren't looking.",
+		},
+		hints: [
+			{ id: "tab-visibility:hint:1", text: "The tab notices when you look away." },
+			{
+				id: "tab-visibility:hint:2",
+				text: "Switch to another tab or window while Foobar is open.",
+			},
+			{
+				id: "tab-visibility:hint:3",
+				text: "Check this tab's title while you are not looking at it.",
+			},
+			{
+				id: "tab-visibility:hint:4",
+				text: "Follow /foobar/now-you-see-me from the changed tab title.",
+			},
+		],
+	},
 	navigator: {
+		title: "Site Seeing",
 		tier: "browser",
 		completion: {
 			id: "navigator:completed",
@@ -228,6 +260,7 @@ export const FOOBAR_ACHIEVEMENTS = {
 		],
 	},
 	"easter-egg": {
+		title: "Hard-Boiled Link",
 		tier: "browser",
 		completion: {
 			id: "easter-egg:completed",
@@ -253,6 +286,7 @@ export const FOOBAR_ACHIEVEMENTS = {
 		],
 	},
 	konami: {
+		title: "Up, Up and Away",
 		tier: "browser",
 		completion: { id: "konami:completed", note: "An old cheat code still worked here." },
 		hints: [
@@ -272,6 +306,7 @@ export const FOOBAR_ACHIEVEMENTS = {
 		],
 	},
 	error404: {
+		title: "The Scenic Route",
 		tier: "archaeology",
 		completion: { id: "error404:completed", note: "A wrong turn was still a turn." },
 		hints: [
@@ -291,6 +326,7 @@ export const FOOBAR_ACHIEVEMENTS = {
 		],
 	},
 	dogs: {
+		title: "Who Let the Dogs Out?",
 		tier: "archaeology",
 		completion: {
 			id: "dogs:completed",
@@ -313,6 +349,7 @@ export const FOOBAR_ACHIEVEMENTS = {
 		],
 	},
 	"dns-txt": {
+		title: "TXT Me Maybe",
 		tier: "protocol",
 		completion: {
 			id: "dns-txt:completed",
@@ -331,7 +368,34 @@ export const FOOBAR_ACHIEVEMENTS = {
 			},
 		],
 	},
+	"well-known": {
+		title: "A Well-Known Nobody",
+		tier: "protocol",
+		completion: {
+			id: "well-known:completed",
+			note: "You found the notice everyone forgot to read.",
+		},
+		hints: [
+			{
+				id: "well-known:hint:1",
+				text: "The web has a standard place for standard things.",
+			},
+			{
+				id: "well-known:hint:2",
+				text: "Some site metadata lives under a path called .well-known.",
+			},
+			{
+				id: "well-known:hint:3",
+				text: "Visit /.well-known/foobar directly.",
+			},
+			{
+				id: "well-known:hint:4",
+				text: "Read the notice and follow /foobar/well-known.",
+			},
+		],
+	},
 	campfire: {
+		title: "Stranger by the Fire",
 		tier: "browser",
 		completion: {
 			id: "campfire:completed",
@@ -354,6 +418,7 @@ export const FOOBAR_ACHIEVEMENTS = {
 		],
 	},
 	"print-preview": {
+		title: "Read the Fine Print",
 		tier: "browser",
 		completion: { id: "print-preview:completed", note: "The paper version kept a secret." },
 		hints: [
@@ -367,6 +432,7 @@ export const FOOBAR_ACHIEVEMENTS = {
 		],
 	},
 	"paper-trail": {
+		title: "Paper Trail",
 		tier: "archaeology",
 		completion: { id: "paper-trail:completed", note: "The crawlers left a paper trail." },
 		hints: [
@@ -383,6 +449,7 @@ export const FOOBAR_ACHIEVEMENTS = {
 		],
 	},
 	"feed-reader": {
+		title: "RSSVP",
 		tier: "archaeology",
 		completion: { id: "feed-reader:completed", note: "You read between the feed lines." },
 		hints: [
@@ -393,6 +460,7 @@ export const FOOBAR_ACHIEVEMENTS = {
 		],
 	},
 	"og-qr": {
+		title: "Card Trick",
 		tier: "archaeology",
 		completion: { id: "og-qr:completed", note: "The social card answered a scanner." },
 		hints: [
@@ -403,6 +471,7 @@ export const FOOBAR_ACHIEVEMENTS = {
 		],
 	},
 	"cookie-jar": {
+		title: "Open Sesame",
 		tier: "protocol",
 		completion: { id: "cookie-jar:completed", note: "You changed the label on the jar." },
 		hints: [
@@ -416,6 +485,7 @@ export const FOOBAR_ACHIEVEMENTS = {
 		],
 	},
 	"service-worker": {
+		title: "Employee of the Month",
 		tier: "protocol",
 		completion: { id: "service-worker:completed", note: "A worker replied without the network." },
 		hints: [
@@ -432,6 +502,7 @@ export const FOOBAR_ACHIEVEMENTS = {
 		],
 	},
 	completed: {
+		title: "Foo Bar None",
 		tier: "meta",
 		completion: {
 			id: "completed:completed",
@@ -452,12 +523,14 @@ export const FOOBAR_TEASERS = {
 	devtools: "A prop is waiting behind the stage curtain.",
 	hack: "A familiar word is attached to the browser.",
 	offline: "See what remains when the wire goes quiet.",
+	"tab-visibility": "The tab notices when you look away.",
 	navigator: "Explorers earn their name by moving.",
 	"easter-egg": "One social detail is not what it claims.",
 	konami: "Old games taught players a famous rhythm.",
 	error404: "Missing edges still belong to the map.",
 	dogs: "The wrong-turn page offers a friendly detour.",
 	"dns-txt": "A clue lives below HTTP.",
+	"well-known": "The web has a standard place for standard things.",
 	campfire: "A small fire burns brighter with company.",
 	"print-preview": "Not every note is meant for a screen.",
 	"paper-trail": "Even crawlers are handed house rules.",

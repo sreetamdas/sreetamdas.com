@@ -24,25 +24,26 @@ Design history lives in `docs/superpowers/specs/2026-07-16-foobar-first-slice-de
 
 ## File map
 
-| File                                                         | Owns                                                                                                                                   |
-| ------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------- |
-| `catalog.ts`                                                 | Canonical achievement/tier/hint/teaser metadata and clue-ID resolution. Pure data — everything else derives from it.                   |
-| `flags.tsx`                                                  | Routable slugs, icons, and dashboard descriptions per achievement.                                                                     |
-| `store.ts`                                                   | Zustand slice + `normalizeFoobarData`, which makes stale/malformed persisted state inert.                                              |
-| `Pixel.tsx`                                                  | Site-wide instrumentation: visit tracking (`navigator`), Konami, 404, campfire completion, service-worker registration, console clues. |
-| `DashboardClient.tsx`                                        | The `/foobar` gate (`FoobarSchrodinger`), dashboard layout, local-only reset.                                                          |
-| `CloudProgressPanel.tsx` / `cloud-sync-*.ts`                 | Optional account-backed save UI: bootstrap merge, debounced D1 sync, stale-response invalidation, cross-tab lifecycle, explicit reset. |
-| `cloud-progress.ts`                                          | Pure merge rules (client + server shared).                                                                                             |
-| `cloud-progress.server.ts` / `cloud-progress.data.server.ts` | Server-function boundary and D1 persistence (`foobar_progress` table).                                                                 |
-| `certificate*.ts(x)`                                         | Public completion certificates keyed by unguessable token, plus OG image data.                                                         |
-| `sharedHunterPresence.ts`                                    | One hunter-flagged presence socket shared across components (campfire achievement).                                                    |
-| `helpers.ts`                                                 | Browser-only clue plumbing: console art, localStorage clue.                                                                            |
-| `badges.tsx` / `FieldNotes.tsx` / `Entry.tsx`                | Dashboard presentation.                                                                                                                |
+| File                                                         | Owns                                                                                                                                                        |
+| ------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `catalog.ts`                                                 | Canonical achievement title/tier/hint/teaser metadata and clue-ID resolution. Pure data — everything else derives from it.                                  |
+| `flags.tsx`                                                  | Routable slugs, icons, and dashboard descriptions per achievement.                                                                                          |
+| `store.ts`                                                   | Zustand slice + `normalizeFoobarData`, which makes stale/malformed persisted state inert.                                                                   |
+| `Pixel.tsx`                                                  | Site-wide instrumentation: visit tracking (`navigator`), Konami, 404, campfire completion, tab-visibility clue, service-worker registration, console clues. |
+| `DashboardClient.tsx`                                        | The `/foobar` gate (`FoobarSchrodinger`), dashboard layout, local-only reset.                                                                               |
+| `CloudProgressPanel.tsx` / `cloud-sync-*.ts`                 | Optional account-backed save UI: bootstrap merge, debounced D1 sync, stale-response invalidation, cross-tab lifecycle, explicit reset.                      |
+| `cloud-progress.ts`                                          | Pure merge rules (client + server shared).                                                                                                                  |
+| `cloud-progress.server.ts` / `cloud-progress.data.server.ts` | Server-function boundary and D1 persistence (`foobar_progress` table).                                                                                      |
+| `certificate*.ts(x)`                                         | Public completion certificates keyed by unguessable token, plus OG image data.                                                                              |
+| `sharedHunterPresence.ts`                                    | One hunter-flagged presence socket shared across components (campfire achievement).                                                                         |
+| `helpers.ts`                                                 | Browser-only clue plumbing: console art, localStorage clue.                                                                                                 |
+| `AchievementReveal.tsx`                                      | Transient visual acknowledgement queue for newly earned achievements; never persisted or replayed after hydration.                                          |
+| `badges.tsx` / `FieldNotes.tsx` / `Entry.tsx`                | Dashboard presentation.                                                                                                                                     |
 
 Routes: `src/routes/(main)/(foobar)/foobar/` (dashboard, `$slug` achievement pages,
 `certificate/$token`) and `src/routes/(api)/api/foobar/` (cookie challenge, certificate OG
 image). Static clue surfaces: `public/robots.txt`, `public/.well-known/security.txt`,
-`public/foobar-sw.js`, the generated RSS feed, and the site OG image's QR code.
+`public/foobar-sw.js`, `public/.well-known/foobar`, the generated RSS feed, and the site OG image's QR code.
 
 ## Adding an achievement
 

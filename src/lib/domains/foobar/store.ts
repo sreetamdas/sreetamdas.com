@@ -108,14 +108,18 @@ export type FoobarSchrodingerProps = {
 
 export type FoobarSliceType = {
 	foobar_data: FoobarDataType;
+	foobar_reveal_queue: Array<FoobarAchievement>;
 	setFoobarData: (data: Partial<FoobarDataType>) => void;
 	recordFoobarClue: (id: FoobarClueId) => void;
 	completeFoobarFlag: (flag: FoobarAchievement) => void;
+	enqueueFoobarReveal: (achievement: FoobarAchievement) => void;
+	dismissFoobarReveal: () => void;
 	_hasHydrated: boolean;
 	setHasHydrated: (hasHydrated: boolean) => void;
 };
 export const createFoobarSlice: StateCreator<FoobarSliceType> = (set, _get) => ({
 	foobar_data: initialFoobarData,
+	foobar_reveal_queue: [],
 	setFoobarData: (data) => set((state) => ({ foobar_data: { ...state.foobar_data, ...data } })),
 	recordFoobarClue: (id) =>
 		set((state) => {
@@ -148,8 +152,19 @@ export const createFoobarSlice: StateCreator<FoobarSliceType> = (set, _get) => (
 						? state.foobar_data.clues_seen
 						: [...state.foobar_data.clues_seen, { id: completionId, seen_at: Date.now() }],
 				},
+				foobar_reveal_queue: hasFlag
+					? state.foobar_reveal_queue
+					: [...state.foobar_reveal_queue, flag],
 			};
 		}),
+	enqueueFoobarReveal: (achievement) =>
+		set((state) => ({
+			foobar_reveal_queue: state.foobar_reveal_queue.includes(achievement)
+				? state.foobar_reveal_queue
+				: [...state.foobar_reveal_queue, achievement],
+		})),
+	dismissFoobarReveal: () =>
+		set((state) => ({ foobar_reveal_queue: state.foobar_reveal_queue.slice(1) })),
 	_hasHydrated: false,
 	setHasHydrated: (state) => {
 		set({

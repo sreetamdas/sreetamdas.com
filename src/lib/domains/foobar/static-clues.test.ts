@@ -18,6 +18,10 @@ describe("Foobar static clues", () => {
 		expect(read("public/.well-known/security.txt")).toContain("/foobar/paper-trail");
 	});
 
+	test("leaves a well-known notice for curious visitors", () => {
+		expect(read("public/.well-known/foobar")).toContain("/foobar/well-known");
+	});
+
 	test("keeps the feed-reader clue in the generated RSS feed", () => {
 		expect(read("public/rss/feed.xml")).toContain("/foobar/feed-reader");
 	});
