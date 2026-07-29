@@ -123,6 +123,7 @@ export const FoobarPixel = ({ path }: FoobarPixelProps) => {
 		}
 
 		document.addEventListener("visibilitychange", handleVisibilityChange);
+		handleVisibilityChange();
 		return () => {
 			document.removeEventListener("visibilitychange", handleVisibilityChange);
 			if (document.title === clueTitle && titleBeforeVisibilityClue.current !== null) {

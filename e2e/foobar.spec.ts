@@ -451,6 +451,17 @@ test("whispers the tab-visibility clue only while Foobar is hidden", async ({ pa
 	await expect.poll(() => hasPersistedAchievement(page, "tab-visibility")).toBe(true);
 });
 
+test("plants the tab-visibility clue when Foobar mounts in a hidden tab", async ({ page }) => {
+	await page.addInitScript(() => {
+		Object.defineProperty(document, "hidden", { configurable: true, value: true });
+	});
+	await seedProgress(page);
+	await page.goto("/foobar");
+
+	await expect(page.getByRole("link", { name: "resume /foobar" })).toBeVisible();
+	await expect(page).toHaveTitle("/foobar/now-you-see-me");
+});
+
 test("reveals the service-worker clue without touching normal traffic", async ({ page }) => {
 	await seedProgress(page);
 	await page.goto("/foobar");
