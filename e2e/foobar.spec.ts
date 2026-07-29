@@ -127,15 +127,15 @@ test("groups achievements and persists revealed field notes", async ({ page }) =
 	await expect(page.getByText("Even crawlers are handed house rules.")).toBeVisible();
 	const fieldNotes = page.getByRole("region", { name: "Field notes" });
 
-	const firstHintButton = page.getByRole("button", { name: "Reveal hint 1 of 4 for dns-txt" });
+	const firstHintButton = page.getByRole("button", { name: "Reveal hint 1 of 4 for TXT Me Maybe" });
 	await expect(firstHintButton).toHaveText("Reveal hint 1 of 4");
 	await firstHintButton.click();
 	await expect(fieldNotes.getByText("The clue lives below HTTP.")).toBeVisible();
 	await page.reload();
 	await expect(fieldNotes.getByText("The clue lives below HTTP.")).toBeVisible();
-	await expect(page.getByRole("button", { name: "Reveal hint 2 of 4 for dns-txt" })).toHaveText(
-		"Reveal hint 2 of 4",
-	);
+	await expect(
+		page.getByRole("button", { name: "Reveal hint 2 of 4 for TXT Me Maybe" }),
+	).toHaveText("Reveal hint 2 of 4");
 });
 
 test("develops hint 4 without exposing its text", async ({ page }) => {
@@ -150,7 +150,7 @@ test("develops hint 4 without exposing its text", async ({ page }) => {
 	await page.goto("/foobar");
 
 	const dnsTxtBadge = page.getByRole("article").filter({
-		has: page.getByRole("heading", { name: "dns-txt", exact: true }),
+		has: page.getByRole("heading", { name: "TXT Me Maybe", exact: true }),
 	});
 	const pausedAt = new Date();
 	await page.clock.install({ time: pausedAt });
@@ -158,7 +158,7 @@ test("develops hint 4 without exposing its text", async ({ page }) => {
 	// past `pausedAt` by the time we pause it — and `pauseAt` refuses to rewind.
 	// Pause a moment ahead instead; a second is nothing against the 24h window.
 	await page.clock.pauseAt(new Date(pausedAt.getTime() + 1_000));
-	await dnsTxtBadge.getByRole("button", { name: "Reveal hint 3 of 4 for dns-txt" }).click();
+	await dnsTxtBadge.getByRole("button", { name: "Reveal hint 3 of 4 for TXT Me Maybe" }).click();
 
 	const liveStatus = dnsTxtBadge.locator('[aria-live="polite"]');
 	await expect(liveStatus).toHaveCount(1);
@@ -175,7 +175,7 @@ test("develops hint 4 without exposing its text", async ({ page }) => {
 		}),
 	).toHaveCount(0);
 	await expect(
-		dnsTxtBadge.getByRole("button", { name: "Reveal hint 4 of 4 for dns-txt" }),
+		dnsTxtBadge.getByRole("button", { name: "Reveal hint 4 of 4 for TXT Me Maybe" }),
 	).toHaveCount(0);
 	await expect
 		.poll(() => readHintDevelopmentEvents(page))
@@ -202,11 +202,11 @@ test("reads and persists a developed hint", async ({ page }) => {
 	await capturePlausibleEvents(irregularPage);
 	await irregularPage.goto("/foobar");
 	const irregularBadge = irregularPage.getByRole("article").filter({
-		has: irregularPage.getByRole("heading", { name: "dns-txt", exact: true }),
+		has: irregularPage.getByRole("heading", { name: "TXT Me Maybe", exact: true }),
 	});
 	const persistedFinalHint = irregularBadge.getByRole("listitem").filter({ hasText: hintText });
 	await expect(persistedFinalHint.getByText("Hint 4", { exact: true })).toBeVisible();
-	await irregularBadge.getByRole("button", { name: "Reveal hint 3 of 4 for dns-txt" }).click();
+	await irregularBadge.getByRole("button", { name: "Reveal hint 3 of 4 for TXT Me Maybe" }).click();
 	expect(await readHintDevelopmentEvents(irregularPage)).toEqual([]);
 	await expect(persistedFinalHint.getByText("Hint 4", { exact: true })).toBeVisible();
 	await expect(irregularBadge.getByText("Hint 4 · Developing", { exact: true })).toHaveCount(0);
@@ -224,11 +224,11 @@ test("reads and persists a developed hint", async ({ page }) => {
 	await page.goto("/foobar");
 
 	const dnsTxtBadge = page.getByRole("article").filter({
-		has: page.getByRole("heading", { name: "dns-txt", exact: true }),
+		has: page.getByRole("heading", { name: "TXT Me Maybe", exact: true }),
 	});
 	const fieldNotes = page.getByRole("region", { name: "Field notes" });
 	const readButton = dnsTxtBadge.getByRole("button", {
-		name: "Read developed hint 4 of 4 for dns-txt",
+		name: "Read developed hint 4 of 4 for TXT Me Maybe",
 	});
 	await expect(dnsTxtBadge.getByText("Hint 4 has developed.", { exact: true })).toHaveAttribute(
 		"aria-live",
@@ -403,6 +403,7 @@ test("publishes machine-facing and print-only clues", async ({ page, request }) 
 	for (const [path, clue] of [
 		["/robots.txt", "/foobar/paper-trail"],
 		["/.well-known/security.txt", "/foobar/paper-trail"],
+		["/.well-known/foobar", "/foobar/well-known"],
 		["/rss/feed.xml", "/foobar/feed-reader"],
 	]) {
 		const response = await request.get(path);
@@ -416,6 +417,38 @@ test("publishes machine-facing and print-only clues", async ({ page, request }) 
 	await expect(printClue).toBeHidden();
 	await page.emulateMedia({ media: "print" });
 	await expect(printClue).toBeVisible();
+});
+
+test("claims the well-known notice and announces it with its display title", async ({ page }) => {
+	await seedProgress(page);
+	await page.goto("/foobar/well-known");
+
+	const reveal = page.getByTestId("foobar-achievement-reveal");
+	await expect(reveal).toContainText("You found the notice everyone forgot to read.");
+	await expect(reveal).toContainText("A Well-Known Nobody");
+	await expect.poll(() => hasPersistedAchievement(page, "well-known")).toBe(true);
+});
+
+test("whispers the tab-visibility clue only while Foobar is hidden", async ({ page }) => {
+	await seedProgress(page);
+	await page.goto("/foobar");
+	const originalTitle = await page.title();
+	await expect(page.getByRole("link", { name: "resume /foobar" })).toBeVisible();
+
+	await page.evaluate(() => {
+		Object.defineProperty(document, "hidden", { configurable: true, value: true });
+		document.dispatchEvent(new Event("visibilitychange"));
+	});
+	await expect(page).toHaveTitle("/foobar/now-you-see-me");
+
+	await page.evaluate(() => {
+		Object.defineProperty(document, "hidden", { configurable: true, value: false });
+		document.dispatchEvent(new Event("visibilitychange"));
+	});
+	await expect(page).toHaveTitle(originalTitle);
+	await page.goto("/foobar/now-you-see-me");
+	await expect(page.getByTestId("foobar-achievement-reveal")).toContainText("Now You See Me");
+	await expect.poll(() => hasPersistedAchievement(page, "tab-visibility")).toBe(true);
 });
 
 test("reveals the service-worker clue without touching normal traffic", async ({ page }) => {

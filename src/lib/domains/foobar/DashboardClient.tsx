@@ -25,7 +25,7 @@ import { useGlobalStore } from "@/lib/domains/global";
 import { useCustomPlausible } from "@/lib/domains/Plausible";
 import { useHasMounted } from "@/lib/helpers/hooks";
 
-export const FoobarDashboard = ({ completed_page }: FoobarSchrodingerProps) => {
+export const FoobarDashboard = () => {
 	// const router = useRouter();
 	const navigate = useNavigate();
 	const plausibleEvent = useCustomPlausible();
@@ -76,7 +76,6 @@ export const FoobarDashboard = ({ completed_page }: FoobarSchrodingerProps) => {
 
 	return (
 		<>
-			<UnlockedAchievementBanner completed_page={completed_page} />
 			{IS_DEV && (
 				<pre className="my-5 rounded-global bg-foreground/10 p-6 font-mono text-sm transition-colors dark:bg-foreground/20">
 					<h2 className="text-4xl font-bold">DEV</h2>
@@ -111,16 +110,6 @@ export const FoobarDashboard = ({ completed_page }: FoobarSchrodingerProps) => {
 		</>
 	);
 };
-
-const UnlockedAchievementBanner = ({ completed_page }: FoobarSchrodingerProps) =>
-	completed_page && completed_page !== "/" ? (
-		<h1 className="pt-20 pb-5 text-center text-6xl leading-normal font-bold">
-			— You&apos;ve unlocked —
-			<br />
-			<span aria-hidden="true">✨</span> <Code className="text-5xl">{completed_page}</Code>{" "}
-			<span aria-hidden="true">✨</span>
-		</h1>
-	) : null;
 
 const XMarksTheSpot = ({ foobar }: { foobar: string }) => (
 	<span aria-hidden="true" className="hidden" data-foobar={foobar} />
@@ -234,5 +223,5 @@ export const FoobarSchrodinger = ({ completed_page }: FoobarSchrodingerProps) =>
 	if (!has_mounted) return null;
 	if (!unlocked) return <FoobarButLocked />;
 
-	return <FoobarDashboard completed_page={completed_page} />;
+	return <FoobarDashboard />;
 };
