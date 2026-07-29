@@ -2,7 +2,7 @@
  * Chronological journal for valid persisted Foobar clues. Legacy completion
  * entries without timestamps are kept first and labelled as earlier discoveries.
  */
-import { getFoobarClue } from "./catalog";
+import { FOOBAR_ACHIEVEMENTS, getFoobarClue } from "./catalog";
 import { type FoobarDataType } from "./store";
 
 type FieldNotesProps = Pick<FoobarDataType, "clues_seen">;
@@ -40,7 +40,8 @@ export const FieldNotes = ({ clues_seen }: FieldNotesProps) => {
 						>
 							<div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 font-mono text-xs text-foreground/65">
 								<span>
-									{clue.kind === "hint" ? "Hint" : "Discovery"} · {clue.achievement}
+									{clue.kind === "hint" ? "Hint" : "Discovery"} ·{" "}
+									{FOOBAR_ACHIEVEMENTS[clue.achievement].title}
 								</span>
 								{seen_at === null ? (
 									<span>Earlier</span>
