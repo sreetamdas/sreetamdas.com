@@ -1,6 +1,6 @@
 // Project-specific Zed settings for sreetamdas.com.
 // Mirrors the workspace conventions in .vscode/settings.json where Zed has
-// equivalent settings: tsgo for JS/TS, Oxc for format/lint, and Tailwind CSS
+// equivalent settings: typescript-ls for JS/TS, Oxc for format/lint, and Tailwind CSS
 // class detection in React helpers.
 {
 	"tab_size": 2,
@@ -46,7 +46,7 @@
 		},
 		"JavaScript": {
 			"language_servers": [
-				"tsgo",
+				"typescript-ls",
 				"tailwindcss-language-server",
 				"oxfmt",
 				"oxlint",
@@ -62,7 +62,7 @@
 		},
 		"TypeScript": {
 			"language_servers": [
-				"tsgo",
+				"typescript-ls",
 				"tailwindcss-language-server",
 				"oxfmt",
 				"oxlint",
@@ -79,7 +79,7 @@
 		},
 		"TSX": {
 			"language_servers": [
-				"tsgo",
+				"typescript-ls",
 				"tailwindcss-language-server",
 				"oxfmt",
 				"oxlint",

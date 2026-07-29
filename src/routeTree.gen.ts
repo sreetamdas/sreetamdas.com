@@ -9,116 +9,59 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as SlidesRouteRouteImport } from './routes/slides/route'
-import { Route as pureRouteRouteImport } from './routes/(pure)/route'
 import { Route as mainRouteRouteImport } from './routes/(main)/route'
-import { Route as SlidesTanstackStartRouteRouteImport } from './routes/slides/tanstack-start/route'
-import { Route as SlidesJsonSchemaFormRouteRouteImport } from './routes/slides/json-schema-form/route'
-import { Route as pureVersionRouteRouteImport } from './routes/(pure)/version/route'
-import { Route as pureResumeRouteRouteImport } from './routes/(pure)/resume/route'
-import { Route as pureFancyPantsRouteRouteImport } from './routes/(pure)/fancy-pants/route'
-import { Route as mainStatsRouteRouteImport } from './routes/(main)/stats/route'
-import { Route as mainRwcRouteRouteImport } from './routes/(main)/rwc/route'
-import { Route as mainNewsletterRouteRouteImport } from './routes/(main)/newsletter/route'
-import { Route as mainKeebsRouteRouteImport } from './routes/(main)/keebs/route'
-import { Route as mainKarmaRouteRouteImport } from './routes/(main)/karma/route'
-import { Route as mainBlogRouteRouteImport } from './routes/(main)/blog/route'
-import { Route as mainAboutRouteRouteImport } from './routes/(main)/about/route'
-import { Route as mainSlugRouteRouteImport } from './routes/(main)/$slug/route'
+import { Route as pureRouteRouteImport } from './routes/(pure)/route'
+import { Route as SlidesRouteRouteImport } from './routes/slides/route'
 import { Route as mainIndexRouteRouteImport } from './routes/(main)/index/route'
-import { Route as mainNewsletterIndexRouteImport } from './routes/(main)/newsletter/index'
-import { Route as mainBlogIndexRouteImport } from './routes/(main)/blog/index'
-import { Route as apiApiStagingSmokeRouteImport } from './routes/(api)/api/staging-smoke'
-import { Route as apiApiPresenceRouteImport } from './routes/(api)/api/presence'
+import { Route as mainSlugRouteRouteImport } from './routes/(main)/$slug/route'
+import { Route as mainAboutRouteRouteImport } from './routes/(main)/about/route'
+import { Route as mainBlogRouteRouteImport } from './routes/(main)/blog/route'
+import { Route as mainKarmaRouteRouteImport } from './routes/(main)/karma/route'
+import { Route as mainKeebsRouteRouteImport } from './routes/(main)/keebs/route'
+import { Route as mainNewsletterRouteRouteImport } from './routes/(main)/newsletter/route'
+import { Route as mainRwcRouteRouteImport } from './routes/(main)/rwc/route'
+import { Route as mainStatsRouteRouteImport } from './routes/(main)/stats/route'
+import { Route as pureFancyPantsRouteRouteImport } from './routes/(pure)/fancy-pants/route'
+import { Route as pureResumeRouteRouteImport } from './routes/(pure)/resume/route'
+import { Route as pureVersionRouteRouteImport } from './routes/(pure)/version/route'
+import { Route as SlidesJsonSchemaFormRouteRouteImport } from './routes/slides/json-schema-form/route'
+import { Route as SlidesTanstackStartRouteRouteImport } from './routes/slides/tanstack-start/route'
 import { Route as apiApiCoffeeRouteImport } from './routes/(api)/api/coffee'
-import { Route as SlidesTanstackStartDevLabRouteRouteImport } from './routes/slides/tanstack-start/dev-lab/route'
-import { Route as mainNewsletterSlugRouteRouteImport } from './routes/(main)/newsletter/$slug/route'
-import { Route as mainBlogSlugRouteRouteImport } from './routes/(main)/blog/$slug/route'
+import { Route as apiApiPresenceRouteImport } from './routes/(api)/api/presence'
+import { Route as apiApiStagingSmokeRouteImport } from './routes/(api)/api/staging-smoke'
 import { Route as mainfoobarFoobarRouteRouteImport } from './routes/(main)/(foobar)/foobar/route'
-import { Route as mainfoobarFoobarIndexRouteImport } from './routes/(main)/(foobar)/foobar/index'
-import { Route as apiApiLoginProviderRouteImport } from './routes/(api)/api/login/$provider'
-import { Route as apiApiFoobarCookieRouteImport } from './routes/(api)/api/foobar/cookie'
+import { Route as mainBlogIndexRouteImport } from './routes/(main)/blog/index'
+import { Route as mainBlogSlugRouteRouteImport } from './routes/(main)/blog/$slug/route'
+import { Route as mainNewsletterIndexRouteImport } from './routes/(main)/newsletter/index'
+import { Route as mainNewsletterSlugRouteRouteImport } from './routes/(main)/newsletter/$slug/route'
+import { Route as SlidesTanstackStartDevLabRouteRouteImport } from './routes/slides/tanstack-start/dev-lab/route'
 import { Route as apiApiAuthSplatRouteImport } from './routes/(api)/api/auth/$'
+import { Route as apiApiFoobarCookieRouteImport } from './routes/(api)/api/foobar/cookie'
+import { Route as apiApiLoginProviderRouteImport } from './routes/(api)/api/login/$provider'
+import { Route as mainfoobarFoobarIndexRouteImport } from './routes/(main)/(foobar)/foobar/index'
 import { Route as mainfoobarFoobarSlugRouteRouteImport } from './routes/(main)/(foobar)/foobar/$slug/route'
-import { Route as mainfoobarFoobarCertificateTokenRouteImport } from './routes/(main)/(foobar)/foobar/certificate/$token'
-import { Route as apiPrxyPlsblJsScriptRouteImport } from './routes/(api)/prxy/plsbl/js/$script'
-import { Route as apiPrxyPlsblApiEventRouteImport } from './routes/(api)/prxy/plsbl/api/event'
 import { Route as apiApiSlidesSessionSessionIdRouteImport } from './routes/(api)/api/slides/session/$sessionId'
+import { Route as apiPrxyPlsblApiEventRouteImport } from './routes/(api)/prxy/plsbl/api/event'
+import { Route as apiPrxyPlsblJsScriptRouteImport } from './routes/(api)/prxy/plsbl/js/$script'
+import { Route as mainfoobarFoobarCertificateTokenRouteImport } from './routes/(main)/(foobar)/foobar/certificate/$token'
 import { Route as apiApiFoobarCertificateTokenOgDotpngRouteImport } from './routes/(api)/api/foobar/certificate/$token/og[.]png'
 
-const SlidesRouteRoute = SlidesRouteRouteImport.update({
-  id: '/slides',
-  path: '/slides',
+const mainRouteRoute = mainRouteRouteImport.update({
+  id: '/(main)',
   getParentRoute: () => rootRouteImport,
 } as any)
 const pureRouteRoute = pureRouteRouteImport.update({
   id: '/(pure)',
   getParentRoute: () => rootRouteImport,
 } as any)
-const mainRouteRoute = mainRouteRouteImport.update({
-  id: '/(main)',
+const SlidesRouteRoute = SlidesRouteRouteImport.update({
+  id: '/slides',
+  path: '/slides',
   getParentRoute: () => rootRouteImport,
 } as any)
-const SlidesTanstackStartRouteRoute =
-  SlidesTanstackStartRouteRouteImport.update({
-    id: '/tanstack-start',
-    path: '/tanstack-start',
-    getParentRoute: () => SlidesRouteRoute,
-  } as any)
-const SlidesJsonSchemaFormRouteRoute =
-  SlidesJsonSchemaFormRouteRouteImport.update({
-    id: '/json-schema-form',
-    path: '/json-schema-form',
-    getParentRoute: () => SlidesRouteRoute,
-  } as any)
-const pureVersionRouteRoute = pureVersionRouteRouteImport.update({
-  id: '/version',
-  path: '/version',
-  getParentRoute: () => pureRouteRoute,
-} as any)
-const pureResumeRouteRoute = pureResumeRouteRouteImport.update({
-  id: '/resume',
-  path: '/resume',
-  getParentRoute: () => pureRouteRoute,
-} as any)
-const pureFancyPantsRouteRoute = pureFancyPantsRouteRouteImport.update({
-  id: '/fancy-pants',
-  path: '/fancy-pants',
-  getParentRoute: () => pureRouteRoute,
-} as any)
-const mainStatsRouteRoute = mainStatsRouteRouteImport.update({
-  id: '/stats',
-  path: '/stats',
-  getParentRoute: () => mainRouteRoute,
-} as any)
-const mainRwcRouteRoute = mainRwcRouteRouteImport.update({
-  id: '/rwc',
-  path: '/rwc',
-  getParentRoute: () => mainRouteRoute,
-} as any)
-const mainNewsletterRouteRoute = mainNewsletterRouteRouteImport.update({
-  id: '/newsletter',
-  path: '/newsletter',
-  getParentRoute: () => mainRouteRoute,
-} as any)
-const mainKeebsRouteRoute = mainKeebsRouteRouteImport.update({
-  id: '/keebs',
-  path: '/keebs',
-  getParentRoute: () => mainRouteRoute,
-} as any)
-const mainKarmaRouteRoute = mainKarmaRouteRouteImport.update({
-  id: '/karma',
-  path: '/karma',
-  getParentRoute: () => mainRouteRoute,
-} as any)
-const mainBlogRouteRoute = mainBlogRouteRouteImport.update({
-  id: '/blog',
-  path: '/blog',
-  getParentRoute: () => mainRouteRoute,
-} as any)
-const mainAboutRouteRoute = mainAboutRouteRouteImport.update({
-  id: '/about',
-  path: '/about',
+const mainIndexRouteRoute = mainIndexRouteRouteImport.update({
+  id: '/',
+  path: '',
   getParentRoute: () => mainRouteRoute,
 } as any)
 const mainSlugRouteRoute = mainSlugRouteRouteImport.update({
@@ -126,24 +69,71 @@ const mainSlugRouteRoute = mainSlugRouteRouteImport.update({
   path: '/$slug',
   getParentRoute: () => mainRouteRoute,
 } as any)
-const mainIndexRouteRoute = mainIndexRouteRouteImport.update({
-  id: '/',
-  path: '',
+const mainAboutRouteRoute = mainAboutRouteRouteImport.update({
+  id: '/about',
+  path: '/about',
   getParentRoute: () => mainRouteRoute,
 } as any)
-const mainNewsletterIndexRoute = mainNewsletterIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => mainNewsletterRouteRoute,
+const mainBlogRouteRoute = mainBlogRouteRouteImport.update({
+  id: '/blog',
+  path: '/blog',
+  getParentRoute: () => mainRouteRoute,
 } as any)
-const mainBlogIndexRoute = mainBlogIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => mainBlogRouteRoute,
+const mainKarmaRouteRoute = mainKarmaRouteRouteImport.update({
+  id: '/karma',
+  path: '/karma',
+  getParentRoute: () => mainRouteRoute,
 } as any)
-const apiApiStagingSmokeRoute = apiApiStagingSmokeRouteImport.update({
-  id: '/(api)/api/staging-smoke',
-  path: '/api/staging-smoke',
+const mainKeebsRouteRoute = mainKeebsRouteRouteImport.update({
+  id: '/keebs',
+  path: '/keebs',
+  getParentRoute: () => mainRouteRoute,
+} as any)
+const mainNewsletterRouteRoute = mainNewsletterRouteRouteImport.update({
+  id: '/newsletter',
+  path: '/newsletter',
+  getParentRoute: () => mainRouteRoute,
+} as any)
+const mainRwcRouteRoute = mainRwcRouteRouteImport.update({
+  id: '/rwc',
+  path: '/rwc',
+  getParentRoute: () => mainRouteRoute,
+} as any)
+const mainStatsRouteRoute = mainStatsRouteRouteImport.update({
+  id: '/stats',
+  path: '/stats',
+  getParentRoute: () => mainRouteRoute,
+} as any)
+const pureFancyPantsRouteRoute = pureFancyPantsRouteRouteImport.update({
+  id: '/fancy-pants',
+  path: '/fancy-pants',
+  getParentRoute: () => pureRouteRoute,
+} as any)
+const pureResumeRouteRoute = pureResumeRouteRouteImport.update({
+  id: '/resume',
+  path: '/resume',
+  getParentRoute: () => pureRouteRoute,
+} as any)
+const pureVersionRouteRoute = pureVersionRouteRouteImport.update({
+  id: '/version',
+  path: '/version',
+  getParentRoute: () => pureRouteRoute,
+} as any)
+const SlidesJsonSchemaFormRouteRoute =
+  SlidesJsonSchemaFormRouteRouteImport.update({
+    id: '/json-schema-form',
+    path: '/json-schema-form',
+    getParentRoute: () => SlidesRouteRoute,
+  } as any)
+const SlidesTanstackStartRouteRoute =
+  SlidesTanstackStartRouteRouteImport.update({
+    id: '/tanstack-start',
+    path: '/tanstack-start',
+    getParentRoute: () => SlidesRouteRoute,
+  } as any)
+const apiApiCoffeeRoute = apiApiCoffeeRouteImport.update({
+  id: '/(api)/api/coffee',
+  path: '/api/coffee',
   getParentRoute: () => rootRouteImport,
 } as any)
 const apiApiPresenceRoute = apiApiPresenceRouteImport.update({
@@ -151,10 +141,35 @@ const apiApiPresenceRoute = apiApiPresenceRouteImport.update({
   path: '/api/presence',
   getParentRoute: () => rootRouteImport,
 } as any)
-const apiApiCoffeeRoute = apiApiCoffeeRouteImport.update({
-  id: '/(api)/api/coffee',
-  path: '/api/coffee',
+const apiApiStagingSmokeRoute = apiApiStagingSmokeRouteImport.update({
+  id: '/(api)/api/staging-smoke',
+  path: '/api/staging-smoke',
   getParentRoute: () => rootRouteImport,
+} as any)
+const mainfoobarFoobarRouteRoute = mainfoobarFoobarRouteRouteImport.update({
+  id: '/(foobar)/foobar',
+  path: '/foobar',
+  getParentRoute: () => mainRouteRoute,
+} as any)
+const mainBlogIndexRoute = mainBlogIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => mainBlogRouteRoute,
+} as any)
+const mainBlogSlugRouteRoute = mainBlogSlugRouteRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => mainBlogRouteRoute,
+} as any)
+const mainNewsletterIndexRoute = mainNewsletterIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => mainNewsletterRouteRoute,
+} as any)
+const mainNewsletterSlugRouteRoute = mainNewsletterSlugRouteRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => mainNewsletterRouteRoute,
 } as any)
 const SlidesTanstackStartDevLabRouteRoute =
   SlidesTanstackStartDevLabRouteRouteImport.update({
@@ -162,29 +177,9 @@ const SlidesTanstackStartDevLabRouteRoute =
     path: '/dev-lab',
     getParentRoute: () => SlidesTanstackStartRouteRoute,
   } as any)
-const mainNewsletterSlugRouteRoute = mainNewsletterSlugRouteRouteImport.update({
-  id: '/$slug',
-  path: '/$slug',
-  getParentRoute: () => mainNewsletterRouteRoute,
-} as any)
-const mainBlogSlugRouteRoute = mainBlogSlugRouteRouteImport.update({
-  id: '/$slug',
-  path: '/$slug',
-  getParentRoute: () => mainBlogRouteRoute,
-} as any)
-const mainfoobarFoobarRouteRoute = mainfoobarFoobarRouteRouteImport.update({
-  id: '/(foobar)/foobar',
-  path: '/foobar',
-  getParentRoute: () => mainRouteRoute,
-} as any)
-const mainfoobarFoobarIndexRoute = mainfoobarFoobarIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => mainfoobarFoobarRouteRoute,
-} as any)
-const apiApiLoginProviderRoute = apiApiLoginProviderRouteImport.update({
-  id: '/(api)/api/login/$provider',
-  path: '/api/login/$provider',
+const apiApiAuthSplatRoute = apiApiAuthSplatRouteImport.update({
+  id: '/(api)/api/auth/$',
+  path: '/api/auth/$',
   getParentRoute: () => rootRouteImport,
 } as any)
 const apiApiFoobarCookieRoute = apiApiFoobarCookieRouteImport.update({
@@ -192,10 +187,15 @@ const apiApiFoobarCookieRoute = apiApiFoobarCookieRouteImport.update({
   path: '/api/foobar/cookie',
   getParentRoute: () => rootRouteImport,
 } as any)
-const apiApiAuthSplatRoute = apiApiAuthSplatRouteImport.update({
-  id: '/(api)/api/auth/$',
-  path: '/api/auth/$',
+const apiApiLoginProviderRoute = apiApiLoginProviderRouteImport.update({
+  id: '/(api)/api/login/$provider',
+  path: '/api/login/$provider',
   getParentRoute: () => rootRouteImport,
+} as any)
+const mainfoobarFoobarIndexRoute = mainfoobarFoobarIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => mainfoobarFoobarRouteRoute,
 } as any)
 const mainfoobarFoobarSlugRouteRoute =
   mainfoobarFoobarSlugRouteRouteImport.update({
@@ -203,27 +203,27 @@ const mainfoobarFoobarSlugRouteRoute =
     path: '/$slug',
     getParentRoute: () => mainfoobarFoobarRouteRoute,
   } as any)
-const mainfoobarFoobarCertificateTokenRoute =
-  mainfoobarFoobarCertificateTokenRouteImport.update({
-    id: '/certificate/$token',
-    path: '/certificate/$token',
-    getParentRoute: () => mainfoobarFoobarRouteRoute,
-  } as any)
-const apiPrxyPlsblJsScriptRoute = apiPrxyPlsblJsScriptRouteImport.update({
-  id: '/(api)/prxy/plsbl/js/$script',
-  path: '/prxy/plsbl/js/$script',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const apiPrxyPlsblApiEventRoute = apiPrxyPlsblApiEventRouteImport.update({
-  id: '/(api)/prxy/plsbl/api/event',
-  path: '/prxy/plsbl/api/event',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const apiApiSlidesSessionSessionIdRoute =
   apiApiSlidesSessionSessionIdRouteImport.update({
     id: '/(api)/api/slides/session/$sessionId',
     path: '/api/slides/session/$sessionId',
     getParentRoute: () => rootRouteImport,
+  } as any)
+const apiPrxyPlsblApiEventRoute = apiPrxyPlsblApiEventRouteImport.update({
+  id: '/(api)/prxy/plsbl/api/event',
+  path: '/prxy/plsbl/api/event',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const apiPrxyPlsblJsScriptRoute = apiPrxyPlsblJsScriptRouteImport.update({
+  id: '/(api)/prxy/plsbl/js/$script',
+  path: '/prxy/plsbl/js/$script',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const mainfoobarFoobarCertificateTokenRoute =
+  mainfoobarFoobarCertificateTokenRouteImport.update({
+    id: '/certificate/$token',
+    path: '/certificate/$token',
+    getParentRoute: () => mainfoobarFoobarRouteRoute,
   } as any)
 const apiApiFoobarCertificateTokenOgDotpngRoute =
   apiApiFoobarCertificateTokenOgDotpngRouteImport.update({
@@ -468,11 +468,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/slides': {
-      id: '/slides'
-      path: '/slides'
-      fullPath: '/slides'
-      preLoaderRoute: typeof SlidesRouteRouteImport
+    '/(main)': {
+      id: '/(main)'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof mainRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/(pure)': {
@@ -482,95 +482,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof pureRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/(main)': {
-      id: '/(main)'
-      path: ''
-      fullPath: ''
-      preLoaderRoute: typeof mainRouteRouteImport
+    '/slides': {
+      id: '/slides'
+      path: '/slides'
+      fullPath: '/slides'
+      preLoaderRoute: typeof SlidesRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/slides/tanstack-start': {
-      id: '/slides/tanstack-start'
-      path: '/tanstack-start'
-      fullPath: '/slides/tanstack-start'
-      preLoaderRoute: typeof SlidesTanstackStartRouteRouteImport
-      parentRoute: typeof SlidesRouteRoute
-    }
-    '/slides/json-schema-form': {
-      id: '/slides/json-schema-form'
-      path: '/json-schema-form'
-      fullPath: '/slides/json-schema-form'
-      preLoaderRoute: typeof SlidesJsonSchemaFormRouteRouteImport
-      parentRoute: typeof SlidesRouteRoute
-    }
-    '/(pure)/version': {
-      id: '/(pure)/version'
-      path: '/version'
-      fullPath: '/version'
-      preLoaderRoute: typeof pureVersionRouteRouteImport
-      parentRoute: typeof pureRouteRoute
-    }
-    '/(pure)/resume': {
-      id: '/(pure)/resume'
-      path: '/resume'
-      fullPath: '/resume'
-      preLoaderRoute: typeof pureResumeRouteRouteImport
-      parentRoute: typeof pureRouteRoute
-    }
-    '/(pure)/fancy-pants': {
-      id: '/(pure)/fancy-pants'
-      path: '/fancy-pants'
-      fullPath: '/fancy-pants'
-      preLoaderRoute: typeof pureFancyPantsRouteRouteImport
-      parentRoute: typeof pureRouteRoute
-    }
-    '/(main)/stats': {
-      id: '/(main)/stats'
-      path: '/stats'
-      fullPath: '/stats'
-      preLoaderRoute: typeof mainStatsRouteRouteImport
-      parentRoute: typeof mainRouteRoute
-    }
-    '/(main)/rwc': {
-      id: '/(main)/rwc'
-      path: '/rwc'
-      fullPath: '/rwc'
-      preLoaderRoute: typeof mainRwcRouteRouteImport
-      parentRoute: typeof mainRouteRoute
-    }
-    '/(main)/newsletter': {
-      id: '/(main)/newsletter'
-      path: '/newsletter'
-      fullPath: '/newsletter'
-      preLoaderRoute: typeof mainNewsletterRouteRouteImport
-      parentRoute: typeof mainRouteRoute
-    }
-    '/(main)/keebs': {
-      id: '/(main)/keebs'
-      path: '/keebs'
-      fullPath: '/keebs'
-      preLoaderRoute: typeof mainKeebsRouteRouteImport
-      parentRoute: typeof mainRouteRoute
-    }
-    '/(main)/karma': {
-      id: '/(main)/karma'
-      path: '/karma'
-      fullPath: '/karma'
-      preLoaderRoute: typeof mainKarmaRouteRouteImport
-      parentRoute: typeof mainRouteRoute
-    }
-    '/(main)/blog': {
-      id: '/(main)/blog'
-      path: '/blog'
-      fullPath: '/blog'
-      preLoaderRoute: typeof mainBlogRouteRouteImport
-      parentRoute: typeof mainRouteRoute
-    }
-    '/(main)/about': {
-      id: '/(main)/about'
-      path: '/about'
-      fullPath: '/about'
-      preLoaderRoute: typeof mainAboutRouteRouteImport
+    '/(main)/': {
+      id: '/(main)/'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof mainIndexRouteRouteImport
       parentRoute: typeof mainRouteRoute
     }
     '/(main)/$slug': {
@@ -580,32 +503,95 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof mainSlugRouteRouteImport
       parentRoute: typeof mainRouteRoute
     }
-    '/(main)/': {
-      id: '/(main)/'
-      path: ''
-      fullPath: '/'
-      preLoaderRoute: typeof mainIndexRouteRouteImport
+    '/(main)/about': {
+      id: '/(main)/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof mainAboutRouteRouteImport
       parentRoute: typeof mainRouteRoute
     }
-    '/(main)/newsletter/': {
-      id: '/(main)/newsletter/'
-      path: '/'
-      fullPath: '/newsletter/'
-      preLoaderRoute: typeof mainNewsletterIndexRouteImport
-      parentRoute: typeof mainNewsletterRouteRoute
+    '/(main)/blog': {
+      id: '/(main)/blog'
+      path: '/blog'
+      fullPath: '/blog'
+      preLoaderRoute: typeof mainBlogRouteRouteImport
+      parentRoute: typeof mainRouteRoute
     }
-    '/(main)/blog/': {
-      id: '/(main)/blog/'
-      path: '/'
-      fullPath: '/blog/'
-      preLoaderRoute: typeof mainBlogIndexRouteImport
-      parentRoute: typeof mainBlogRouteRoute
+    '/(main)/karma': {
+      id: '/(main)/karma'
+      path: '/karma'
+      fullPath: '/karma'
+      preLoaderRoute: typeof mainKarmaRouteRouteImport
+      parentRoute: typeof mainRouteRoute
     }
-    '/(api)/api/staging-smoke': {
-      id: '/(api)/api/staging-smoke'
-      path: '/api/staging-smoke'
-      fullPath: '/api/staging-smoke'
-      preLoaderRoute: typeof apiApiStagingSmokeRouteImport
+    '/(main)/keebs': {
+      id: '/(main)/keebs'
+      path: '/keebs'
+      fullPath: '/keebs'
+      preLoaderRoute: typeof mainKeebsRouteRouteImport
+      parentRoute: typeof mainRouteRoute
+    }
+    '/(main)/newsletter': {
+      id: '/(main)/newsletter'
+      path: '/newsletter'
+      fullPath: '/newsletter'
+      preLoaderRoute: typeof mainNewsletterRouteRouteImport
+      parentRoute: typeof mainRouteRoute
+    }
+    '/(main)/rwc': {
+      id: '/(main)/rwc'
+      path: '/rwc'
+      fullPath: '/rwc'
+      preLoaderRoute: typeof mainRwcRouteRouteImport
+      parentRoute: typeof mainRouteRoute
+    }
+    '/(main)/stats': {
+      id: '/(main)/stats'
+      path: '/stats'
+      fullPath: '/stats'
+      preLoaderRoute: typeof mainStatsRouteRouteImport
+      parentRoute: typeof mainRouteRoute
+    }
+    '/(pure)/fancy-pants': {
+      id: '/(pure)/fancy-pants'
+      path: '/fancy-pants'
+      fullPath: '/fancy-pants'
+      preLoaderRoute: typeof pureFancyPantsRouteRouteImport
+      parentRoute: typeof pureRouteRoute
+    }
+    '/(pure)/resume': {
+      id: '/(pure)/resume'
+      path: '/resume'
+      fullPath: '/resume'
+      preLoaderRoute: typeof pureResumeRouteRouteImport
+      parentRoute: typeof pureRouteRoute
+    }
+    '/(pure)/version': {
+      id: '/(pure)/version'
+      path: '/version'
+      fullPath: '/version'
+      preLoaderRoute: typeof pureVersionRouteRouteImport
+      parentRoute: typeof pureRouteRoute
+    }
+    '/slides/json-schema-form': {
+      id: '/slides/json-schema-form'
+      path: '/json-schema-form'
+      fullPath: '/slides/json-schema-form'
+      preLoaderRoute: typeof SlidesJsonSchemaFormRouteRouteImport
+      parentRoute: typeof SlidesRouteRoute
+    }
+    '/slides/tanstack-start': {
+      id: '/slides/tanstack-start'
+      path: '/tanstack-start'
+      fullPath: '/slides/tanstack-start'
+      preLoaderRoute: typeof SlidesTanstackStartRouteRouteImport
+      parentRoute: typeof SlidesRouteRoute
+    }
+    '/(api)/api/coffee': {
+      id: '/(api)/api/coffee'
+      path: '/api/coffee'
+      fullPath: '/api/coffee'
+      preLoaderRoute: typeof apiApiCoffeeRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/(api)/api/presence': {
@@ -615,33 +601,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof apiApiPresenceRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/(api)/api/coffee': {
-      id: '/(api)/api/coffee'
-      path: '/api/coffee'
-      fullPath: '/api/coffee'
-      preLoaderRoute: typeof apiApiCoffeeRouteImport
+    '/(api)/api/staging-smoke': {
+      id: '/(api)/api/staging-smoke'
+      path: '/api/staging-smoke'
+      fullPath: '/api/staging-smoke'
+      preLoaderRoute: typeof apiApiStagingSmokeRouteImport
       parentRoute: typeof rootRouteImport
-    }
-    '/slides/tanstack-start/dev-lab': {
-      id: '/slides/tanstack-start/dev-lab'
-      path: '/dev-lab'
-      fullPath: '/slides/tanstack-start/dev-lab'
-      preLoaderRoute: typeof SlidesTanstackStartDevLabRouteRouteImport
-      parentRoute: typeof SlidesTanstackStartRouteRoute
-    }
-    '/(main)/newsletter/$slug': {
-      id: '/(main)/newsletter/$slug'
-      path: '/$slug'
-      fullPath: '/newsletter/$slug'
-      preLoaderRoute: typeof mainNewsletterSlugRouteRouteImport
-      parentRoute: typeof mainNewsletterRouteRoute
-    }
-    '/(main)/blog/$slug': {
-      id: '/(main)/blog/$slug'
-      path: '/$slug'
-      fullPath: '/blog/$slug'
-      preLoaderRoute: typeof mainBlogSlugRouteRouteImport
-      parentRoute: typeof mainBlogRouteRoute
     }
     '/(main)/(foobar)/foobar': {
       id: '/(main)/(foobar)/foobar'
@@ -650,18 +615,46 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof mainfoobarFoobarRouteRouteImport
       parentRoute: typeof mainRouteRoute
     }
-    '/(main)/(foobar)/foobar/': {
-      id: '/(main)/(foobar)/foobar/'
+    '/(main)/blog/': {
+      id: '/(main)/blog/'
       path: '/'
-      fullPath: '/foobar/'
-      preLoaderRoute: typeof mainfoobarFoobarIndexRouteImport
-      parentRoute: typeof mainfoobarFoobarRouteRoute
+      fullPath: '/blog/'
+      preLoaderRoute: typeof mainBlogIndexRouteImport
+      parentRoute: typeof mainBlogRouteRoute
     }
-    '/(api)/api/login/$provider': {
-      id: '/(api)/api/login/$provider'
-      path: '/api/login/$provider'
-      fullPath: '/api/login/$provider'
-      preLoaderRoute: typeof apiApiLoginProviderRouteImport
+    '/(main)/blog/$slug': {
+      id: '/(main)/blog/$slug'
+      path: '/$slug'
+      fullPath: '/blog/$slug'
+      preLoaderRoute: typeof mainBlogSlugRouteRouteImport
+      parentRoute: typeof mainBlogRouteRoute
+    }
+    '/(main)/newsletter/': {
+      id: '/(main)/newsletter/'
+      path: '/'
+      fullPath: '/newsletter/'
+      preLoaderRoute: typeof mainNewsletterIndexRouteImport
+      parentRoute: typeof mainNewsletterRouteRoute
+    }
+    '/(main)/newsletter/$slug': {
+      id: '/(main)/newsletter/$slug'
+      path: '/$slug'
+      fullPath: '/newsletter/$slug'
+      preLoaderRoute: typeof mainNewsletterSlugRouteRouteImport
+      parentRoute: typeof mainNewsletterRouteRoute
+    }
+    '/slides/tanstack-start/dev-lab': {
+      id: '/slides/tanstack-start/dev-lab'
+      path: '/dev-lab'
+      fullPath: '/slides/tanstack-start/dev-lab'
+      preLoaderRoute: typeof SlidesTanstackStartDevLabRouteRouteImport
+      parentRoute: typeof SlidesTanstackStartRouteRoute
+    }
+    '/(api)/api/auth/$': {
+      id: '/(api)/api/auth/$'
+      path: '/api/auth/$'
+      fullPath: '/api/auth/$'
+      preLoaderRoute: typeof apiApiAuthSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/(api)/api/foobar/cookie': {
@@ -671,12 +664,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof apiApiFoobarCookieRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/(api)/api/auth/$': {
-      id: '/(api)/api/auth/$'
-      path: '/api/auth/$'
-      fullPath: '/api/auth/$'
-      preLoaderRoute: typeof apiApiAuthSplatRouteImport
+    '/(api)/api/login/$provider': {
+      id: '/(api)/api/login/$provider'
+      path: '/api/login/$provider'
+      fullPath: '/api/login/$provider'
+      preLoaderRoute: typeof apiApiLoginProviderRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/(main)/(foobar)/foobar/': {
+      id: '/(main)/(foobar)/foobar/'
+      path: '/'
+      fullPath: '/foobar/'
+      preLoaderRoute: typeof mainfoobarFoobarIndexRouteImport
+      parentRoute: typeof mainfoobarFoobarRouteRoute
     }
     '/(main)/(foobar)/foobar/$slug': {
       id: '/(main)/(foobar)/foobar/$slug'
@@ -685,18 +685,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof mainfoobarFoobarSlugRouteRouteImport
       parentRoute: typeof mainfoobarFoobarRouteRoute
     }
-    '/(main)/(foobar)/foobar/certificate/$token': {
-      id: '/(main)/(foobar)/foobar/certificate/$token'
-      path: '/certificate/$token'
-      fullPath: '/foobar/certificate/$token'
-      preLoaderRoute: typeof mainfoobarFoobarCertificateTokenRouteImport
-      parentRoute: typeof mainfoobarFoobarRouteRoute
-    }
-    '/(api)/prxy/plsbl/js/$script': {
-      id: '/(api)/prxy/plsbl/js/$script'
-      path: '/prxy/plsbl/js/$script'
-      fullPath: '/prxy/plsbl/js/$script'
-      preLoaderRoute: typeof apiPrxyPlsblJsScriptRouteImport
+    '/(api)/api/slides/session/$sessionId': {
+      id: '/(api)/api/slides/session/$sessionId'
+      path: '/api/slides/session/$sessionId'
+      fullPath: '/api/slides/session/$sessionId'
+      preLoaderRoute: typeof apiApiSlidesSessionSessionIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/(api)/prxy/plsbl/api/event': {
@@ -706,12 +699,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof apiPrxyPlsblApiEventRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/(api)/api/slides/session/$sessionId': {
-      id: '/(api)/api/slides/session/$sessionId'
-      path: '/api/slides/session/$sessionId'
-      fullPath: '/api/slides/session/$sessionId'
-      preLoaderRoute: typeof apiApiSlidesSessionSessionIdRouteImport
+    '/(api)/prxy/plsbl/js/$script': {
+      id: '/(api)/prxy/plsbl/js/$script'
+      path: '/prxy/plsbl/js/$script'
+      fullPath: '/prxy/plsbl/js/$script'
+      preLoaderRoute: typeof apiPrxyPlsblJsScriptRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/(main)/(foobar)/foobar/certificate/$token': {
+      id: '/(main)/(foobar)/foobar/certificate/$token'
+      path: '/certificate/$token'
+      fullPath: '/foobar/certificate/$token'
+      preLoaderRoute: typeof mainfoobarFoobarCertificateTokenRouteImport
+      parentRoute: typeof mainfoobarFoobarRouteRoute
     }
     '/(api)/api/foobar/certificate/$token/og.png': {
       id: '/(api)/api/foobar/certificate/$token/og.png'

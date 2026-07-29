@@ -4,9 +4,12 @@
  * Tiered achievement map for /foobar. Every catalogue achievement remains
  * visible, while persisted clue IDs control the explicit four-step hint ladder.
  */
+import { useEffect, useState } from "react";
+
 import { cn } from "@/lib/helpers/utils";
 
 import { useGlobalStore } from "../global";
+import { useCustomPlausible } from "../Plausible";
 import {
 	FOOBAR_ACHIEVEMENTS,
 	FOOBAR_TIERS,
@@ -18,6 +21,12 @@ import {
 	type FoobarTier,
 } from "./catalog";
 import { FOOBAR_FLAGS } from "./flags";
+import {
+	FOOBAR_HINT_DEVELOPMENT_MS,
+	formatFoobarHintRemaining,
+	getFoobarHintDevelopment,
+	getFoobarHintElapsedBucket,
+} from "./hint-development";
 import { type FoobarDataType } from "./store";
 
 type ShowCompletedBadgesProps = Pick<
@@ -50,7 +59,7 @@ export const ShowCompletedBadges = ({
 						)}
 						completed={completed}
 						all_achievements={all_achievements}
-						clueIds={clues_seen.map(({ id }) => id)}
+						cluesSeen={clues_seen}
 						recordFoobarClue={recordFoobarClue}
 					/>
 				))}
@@ -62,7 +71,7 @@ export const ShowCompletedBadges = ({
 type TierSectionProps = {
 	tier: FoobarTier;
 	achievements: Array<FoobarAchievement>;
-	clueIds: Array<FoobarClueId>;
+	cluesSeen: FoobarDataType["clues_seen"];
 	recordFoobarClue: (id: FoobarClueId) => void;
 } & Pick<FoobarDataType, "completed" | "all_achievements">;
 
@@ -71,7 +80,7 @@ const TierSection = ({
 	achievements,
 	completed,
 	all_achievements,
-	clueIds,
+	cluesSeen,
 	recordFoobarClue,
 }: TierSectionProps) => {
 	const metadata = FOOBAR_TIERS[tier];
@@ -103,7 +112,7 @@ const TierSection = ({
 						isUnlocked={
 							achievement === "completed" ? all_achievements : completed.includes(achievement)
 						}
-						clueIds={clueIds}
+						cluesSeen={cluesSeen}
 						recordFoobarClue={recordFoobarClue}
 					/>
 				))}
@@ -115,16 +124,47 @@ const TierSection = ({
 type BadgeProps = {
 	achievement: FoobarAchievement;
 	isUnlocked: boolean;
-	clueIds: Array<FoobarClueId>;
+	cluesSeen: FoobarDataType["clues_seen"];
 	recordFoobarClue: (id: FoobarClueId) => void;
 };
 
-const Badge = ({ achievement, isUnlocked, clueIds, recordFoobarClue }: BadgeProps) => {
+const Badge = ({ achievement, isUnlocked, cluesSeen, recordFoobarClue }: BadgeProps) => {
+	const plausibleEvent = useCustomPlausible();
 	const metadata = FOOBAR_ACHIEVEMENTS[achievement];
-	const revealedHints = metadata.hints.filter((hint) => clueIds.includes(hint.id));
-	const nextHint = metadata.hints.find((hint) => !clueIds.includes(hint.id));
-	const nextHintNumber = revealedHints.length + 1;
+	const clueIds = cluesSeen.map(({ id }) => id);
+	const revealedHints = metadata.hints.flatMap((hint, index) =>
+		clueIds.includes(hint.id) ? [{ hint, number: index + 1 }] : [],
+	);
+	const nextHintIndex = metadata.hints.findIndex((hint) => !clueIds.includes(hint.id));
+	const nextHint = nextHintIndex === -1 ? undefined : metadata.hints[nextHintIndex];
+	const nextHintNumber = nextHintIndex + 1;
+	const hint3SeenAt = cluesSeen.find(({ id }) => id === metadata.hints[2]?.id)?.seen_at;
+	const finalHint = metadata.hints[3];
 	const { icon: Icon, description } = FOOBAR_FLAGS[achievement];
+	const revealNextHint = () => {
+		if (!nextHint) return;
+
+		recordFoobarClue(nextHint.id);
+		if (nextHint.id === metadata.hints[2]?.id && finalHint && !clueIds.includes(finalHint.id)) {
+			plausibleEvent("foobar_hint_development_started", {
+				props: {
+					achievement,
+					wait_hours: FOOBAR_HINT_DEVELOPMENT_MS / (60 * 60 * 1_000),
+				},
+			});
+		}
+	};
+	const readDevelopedHint = () => {
+		if (!nextHint || hint3SeenAt === undefined) return;
+
+		recordFoobarClue(nextHint.id);
+		plausibleEvent("foobar_developed_hint_read", {
+			props: {
+				achievement,
+				elapsed_bucket: getFoobarHintElapsedBucket(hint3SeenAt, Date.now()),
+			},
+		});
+	};
 
 	return (
 		<article
@@ -151,27 +191,123 @@ const Badge = ({ achievement, isUnlocked, clueIds, recordFoobarClue }: BadgeProp
 						<p className="mt-2 text-sm text-foreground/70">{FOOBAR_TEASERS[achievement]}</p>
 						{revealedHints.length > 0 && (
 							<ol className="mt-3 grid gap-2 text-sm text-foreground/80">
-								{revealedHints.map((hint, index) => (
+								{revealedHints.map(({ hint, number }) => (
 									<li key={hint.id}>
-										<span className="font-mono text-xs text-primary">Hint {index + 1}</span>
+										<span className="font-mono text-xs text-primary">Hint {number}</span>
 										<span className="block break-words">{hint.text}</span>
 									</li>
 								))}
 							</ol>
 						)}
-						{nextHint && (
+						{nextHint && nextHintNumber <= 3 && (
 							<button
 								type="button"
-								onClick={() => recordFoobarClue(nextHint.id)}
+								onClick={revealNextHint}
 								className="mt-3 rounded-global border border-primary px-3 py-2 font-mono text-xs text-primary transition-colors hover:bg-primary hover:text-background focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
 								aria-label={`Reveal hint ${nextHintNumber} of 4 for ${achievement}`}
 							>
 								Reveal hint {nextHintNumber} of 4
 							</button>
 						)}
+						{nextHint && nextHintNumber === 4 && (
+							<DevelopingHint
+								achievement={achievement}
+								hint3SeenAt={hint3SeenAt}
+								onRead={readDevelopedHint}
+							/>
+						)}
 					</>
 				)}
 			</div>
 		</article>
+	);
+};
+
+type DevelopingHintProps = {
+	achievement: FoobarAchievement;
+	hint3SeenAt: number | null | undefined;
+	onRead: () => void;
+};
+
+const DevelopingHint = ({ achievement, hint3SeenAt, onRead }: DevelopingHintProps) => {
+	const [now, setNow] = useState(Date.now);
+	const [announcement, setAnnouncement] = useState("");
+	const development = getFoobarHintDevelopment(hint3SeenAt, now);
+
+	useEffect(() => {
+		if (hint3SeenAt === undefined || hint3SeenAt === null) return;
+
+		const currentNow = Date.now();
+		const initialDevelopment = getFoobarHintDevelopment(hint3SeenAt, currentNow);
+		if (initialDevelopment.status !== "developing") {
+			setNow(currentNow);
+			return;
+		}
+
+		const updateDevelopment = () => setNow(Date.now());
+		const interval = window.setInterval(updateDevelopment, 60 * 1_000);
+		const deadline = window.setTimeout(
+			updateDevelopment,
+			Math.max(0, initialDevelopment.availableAt - currentNow),
+		);
+		const handleVisibilityChange = () => {
+			if (document.visibilityState === "visible") updateDevelopment();
+		};
+		document.addEventListener("visibilitychange", handleVisibilityChange);
+
+		return () => {
+			window.clearInterval(interval);
+			window.clearTimeout(deadline);
+			document.removeEventListener("visibilitychange", handleVisibilityChange);
+		};
+	}, [development.status, hint3SeenAt]);
+
+	useEffect(() => {
+		if (development.status === "not-started") {
+			setAnnouncement("");
+			return;
+		}
+
+		const announcementTimer = window.setTimeout(() => {
+			setAnnouncement(
+				development.status === "developing"
+					? "Hint 4 is developing. Return tomorrow."
+					: "Hint 4 has developed.",
+			);
+		}, 0);
+
+		return () => window.clearTimeout(announcementTimer);
+	}, [development.status]);
+
+	if (development.status === "not-started") return null;
+
+	return (
+		<>
+			<p className="sr-only" aria-live="polite">
+				{announcement}
+			</p>
+			{development.status === "ready" ? (
+				<button
+					type="button"
+					onClick={onRead}
+					className="mt-3 rounded-global border border-primary px-3 py-2 font-mono text-xs text-primary transition-colors hover:bg-primary hover:text-background focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+					aria-label={`Read developed hint 4 of 4 for ${achievement}`}
+				>
+					Read developed hint
+				</button>
+			) : (
+				<div className="mt-3 rounded-global border border-foreground/15 bg-background/40 p-3">
+					<p className="font-mono text-xs text-primary">Hint 4 · Developing</p>
+					<div aria-hidden="true" className="mt-3 grid max-w-xs gap-2 opacity-35 blur-[2px]">
+						<span className="h-2 w-full rounded-full bg-foreground" />
+						<span className="h-2 w-4/5 rounded-full bg-foreground" />
+						<span className="h-2 w-2/3 rounded-full bg-foreground" />
+					</div>
+					<p className="mt-3 text-sm text-foreground/70">
+						The ink is still drying. Return in {formatFoobarHintRemaining(development.remainingMs)}.
+					</p>
+				</div>
+			)}
+		</>
 	);
 };

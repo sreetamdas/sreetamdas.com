@@ -1,4 +1,16 @@
-import { expect, test, type Page } from "@playwright/test";
+import { expect, type Locator, test, type Page } from "@playwright/test";
+
+/**
+ * Server-rendered controls are present and clickable before React attaches its
+ * handlers, so a click that lands too early is dropped (buttons) or falls
+ * through to a full document navigation (links). That made several of these
+ * tests flaky under parallel workers, where hydration is slower. Wait until
+ * the root's public hydration marker is present before driving it.
+ */
+async function waitForInteractive(locator: Locator) {
+	await expect(locator).toBeVisible();
+	await expect(locator.page().locator("html")).toHaveAttribute("data-hydrated", "true");
+}
 
 async function clearLocalState(page: Page) {
 	await page.addInitScript(() => {
@@ -55,6 +67,7 @@ test("desktop color scheme toggle cycles into dark mode and persists", async ({ 
 
 	const toggle = page.locator("header button:visible").first();
 
+	await waitForInteractive(toggle);
 	await toggle.click();
 	await toggle.click();
 
@@ -68,7 +81,10 @@ test("mobile navigation drawer opens and closes during route navigation", async 
 	await page.setViewportSize({ width: 390, height: 844 });
 	await page.goto("/");
 
-	await page.getByRole("button", { name: "Close mobile navigation drawer" }).click();
+	const drawerTrigger = page.getByRole("button", { name: "Open mobile navigation drawer" });
+	await waitForInteractive(drawerTrigger);
+	await drawerTrigger.click();
+
 	await expect(page.getByRole("dialog")).toBeVisible();
 	await page.getByRole("link", { name: "about" }).click();
 
@@ -95,6 +111,11 @@ test("home icon uses client-side routing", async ({ page }) => {
 	await page.goto("/about");
 	await expect(page.getByRole("heading", { level: 1, name: "/about" })).toBeVisible();
 
+	const homeLink = page.getByRole("link", { name: "Home" });
+	// Until the router hydrates this is a plain anchor, and clicking it would do a
+	// full document navigation — exactly what this test asserts never happens.
+	await waitForInteractive(homeLink);
+
 	const documentRequests: Array<string> = [];
 	page.on("request", (request) => {
 		if (request.resourceType() === "document") {
@@ -102,7 +123,7 @@ test("home icon uses client-side routing", async ({ page }) => {
 		}
 	});
 
-	await page.getByRole("link", { name: "Home" }).click();
+	await homeLink.click();
 
 	await expect(page).toHaveURL(/\/$/);
 	await expect(page.getByRole("heading", { level: 1, name: /Hey, I'm Sreetam!/ })).toBeVisible();
@@ -181,7 +202,9 @@ test("karma route supports theme switching without losing the showcase", async (
 	await expect(page.getByRole("switch")).toBeVisible();
 	await expect(page.getByAltText("Karma theme screenshot for React")).toBeVisible();
 
-	await page.getByRole("switch").click();
+	const themeSwitch = page.getByRole("switch");
+	await waitForInteractive(themeSwitch);
+	await themeSwitch.click();
 
 	await expect(page.getByAltText("Karma Light theme screenshot for React")).toBeVisible();
 	await expect(page.locator('a[href="#react"]')).toBeVisible();

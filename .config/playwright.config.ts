@@ -16,7 +16,9 @@ export default defineConfig({
 	},
 	webServer: {
 		cwd: "..",
-		command: "pnpm exec vp preview --host 127.0.0.1 --port 5045",
+		command: process.env.CI
+			? "pnpm db:migrate:local && pnpm exec vp preview --host 127.0.0.1 --port 5045"
+			: "pnpm exec vp preview --host 127.0.0.1 --port 5045",
 		url: "http://127.0.0.1:5045",
 		reuseExistingServer: !process.env.CI,
 		timeout: 600000,

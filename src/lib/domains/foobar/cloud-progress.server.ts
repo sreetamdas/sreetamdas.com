@@ -20,6 +20,7 @@ export type FoobarBootstrap = {
 		publicProfile: boolean;
 		certificateId: string | null;
 	} | null;
+	cloudSyncEnabled: boolean | null;
 	community: FoobarCommunityView;
 };
 
@@ -30,7 +31,7 @@ export const fetchFoobarBootstrapServerFn = createServerFn({ method: "GET" }).ha
 		try {
 			return await fetchFoobarBootstrapFromDb();
 		} catch {
-			return { user: null, cloud: null, community: EMPTY_COMMUNITY };
+			return { user: null, cloud: null, cloudSyncEnabled: false, community: EMPTY_COMMUNITY };
 		}
 	},
 );
@@ -38,6 +39,10 @@ export const fetchFoobarBootstrapServerFn = createServerFn({ method: "GET" }).ha
 export const syncFoobarProgressServerFn = createServerFn({ method: "POST" })
 	.validator((value) => ({ progress: normalizeFoobarData(readProgress(value)) }))
 	.handler(async ({ data }) => syncFoobarProgressInDb(data.progress));
+
+export const enableFoobarProgressServerFn = createServerFn({ method: "POST" })
+	.validator((value) => ({ progress: normalizeFoobarData(readProgress(value)) }))
+	.handler(async ({ data }) => enableFoobarProgressInDb(data.progress));
 
 export const setFoobarPublicProfileServerFn = createServerFn({ method: "POST" })
 	.validator((value) => ({ publicProfile: readPublicProfile(value) }))
@@ -59,14 +64,24 @@ const fetchFoobarBootstrapFromDb = createServerOnlyFn(async (): Promise<FoobarBo
 	const communityPromise = data.getFoobarCommunity(db).catch(() => EMPTY_COMMUNITY);
 	const user = await request.getFoobarAuthUser();
 	if (!user) {
-		return { user: null, cloud: null, community: await communityPromise };
+		return { user: null, cloud: null, cloudSyncEnabled: false, community: await communityPromise };
 	}
 
 	try {
-		const cloud = await data.loadFoobarProgress(db, user.id);
-		return { user: { name: user.name }, cloud, community: await communityPromise };
+		const state = await data.loadFoobarProgressState(db, user.id);
+		return {
+			user: { name: user.name },
+			cloud: state.cloud,
+			cloudSyncEnabled: state.syncEnabled,
+			community: await communityPromise,
+		};
 	} catch {
-		return { user: { name: user.name }, cloud: null, community: await communityPromise };
+		return {
+			user: { name: user.name },
+			cloud: null,
+			cloudSyncEnabled: null,
+			community: await communityPromise,
+		};
 	}
 });
 
@@ -79,6 +94,18 @@ const syncFoobarProgressInDb = createServerOnlyFn(async (progress: FoobarDataTyp
 	const user = await request.getFoobarAuthUser();
 	if (!user) throw new Error("Sign in to save Foobar progress");
 	const cloud = await data.syncFoobarProgress(getDb(), user.id, progress);
+	return { cloud, community: await data.getFoobarCommunity(getDb()) };
+});
+
+const enableFoobarProgressInDb = createServerOnlyFn(async (progress: FoobarDataType) => {
+	const [{ getDb }, data, request] = await Promise.all([
+		import("@/db"),
+		import("./cloud-progress.data.server"),
+		import("./cloud-progress.request.server"),
+	]);
+	const user = await request.getFoobarAuthUser();
+	if (!user) throw new Error("Sign in to enable Foobar cloud progress");
+	const cloud = await data.enableFoobarProgress(getDb(), user.id, progress);
 	return { cloud, community: await data.getFoobarCommunity(getDb()) };
 });
 

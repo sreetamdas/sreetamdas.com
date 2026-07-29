@@ -1,4 +1,9 @@
-import { describe, expect, test } from "vitest";
+import { describe, expect, test, vi } from "vitest";
+
+vi.mock("@/config", () => ({
+	SITE_OG_IMAGE: "/og-image.png",
+	SITE_URL: "https://example.com",
+}));
 
 import { createFoobarCertificateHead, formatFoobarCertificateDate } from "./certificate";
 
@@ -11,11 +16,11 @@ describe("Foobar certificate presentation", () => {
 		});
 
 		expect(head.links).toEqual([
-			{ rel: "canonical", href: "http://localhost:5045/foobar/certificate/cert-a" },
+			{ rel: "canonical", href: "https://example.com/foobar/certificate/cert-a" },
 		]);
 		expect(head.meta).toContainEqual({
 			property: "og:image",
-			content: "http://localhost:5045/api/foobar/certificate/cert-a/og.png",
+			content: "https://example.com/api/foobar/certificate/cert-a/og.png",
 		});
 		expect(head.meta).toContainEqual({ property: "og:title", content: "Ada completed Foobar" });
 	});

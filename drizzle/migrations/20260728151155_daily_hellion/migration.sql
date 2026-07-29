@@ -1,0 +1,1 @@
+ALTER TABLE `foobar_progress` ADD `sync_enabled` integer DEFAULT true NOT NULL;

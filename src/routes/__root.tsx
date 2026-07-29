@@ -156,6 +156,13 @@ function RootComponent() {
 			}),
 	);
 
+	useEffect(() => {
+		document.documentElement.dataset.hydrated = "true";
+		return () => {
+			delete document.documentElement.dataset.hydrated;
+		};
+	}, []);
+
 	return (
 		<RootDocument>
 			<QueryClientProvider client={queryClient}>
