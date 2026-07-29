@@ -23,11 +23,17 @@ describe("Foobar catalogue", () => {
 			(achievement) => achievement.hints.length > 0,
 		);
 
-		expect(hintable).toHaveLength(21);
+		expect(hintable).toHaveLength(FOOBAR_REQUIRED_ACHIEVEMENTS.length);
 		for (const achievement of hintable) {
 			expect(achievement.hints).toHaveLength(4);
 			expect(achievement.hints.every((hint) => hint.text.trim().length > 0)).toBe(true);
 		}
+	});
+
+	test("gives every achievement a distinct display title", () => {
+		const titles = Object.values(FOOBAR_ACHIEVEMENTS).map((achievement) => achievement.title);
+		expect(titles.every((title) => title.trim().length > 0)).toBe(true);
+		expect(new Set(titles)).toHaveLength(titles.length);
 	});
 
 	test("catalogues every requested follow-up achievement", () => {

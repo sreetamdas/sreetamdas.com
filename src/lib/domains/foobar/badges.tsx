@@ -179,8 +179,8 @@ const Badge = ({ achievement, isUnlocked, cluesSeen, recordFoobarClue }: BadgePr
 			/>
 			<div className="min-w-0">
 				<div className="flex min-w-0 flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
-					<h4 className="font-mono text-base font-semibold break-words text-current">
-						{achievement}
+					<h4 className="font-serif text-lg font-semibold break-words text-current">
+						{metadata.title}
 					</h4>
 					<span className="font-mono text-xs">{isUnlocked ? "Complete" : "Unsolved"}</span>
 				</div>
@@ -204,7 +204,7 @@ const Badge = ({ achievement, isUnlocked, cluesSeen, recordFoobarClue }: BadgePr
 								type="button"
 								onClick={revealNextHint}
 								className="mt-3 rounded-global border border-primary px-3 py-2 font-mono text-xs text-primary transition-colors hover:bg-primary hover:text-background focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
-								aria-label={`Reveal hint ${nextHintNumber} of 4 for ${achievement}`}
+								aria-label={`Reveal hint ${nextHintNumber} of 4 for ${metadata.title}`}
 							>
 								Reveal hint {nextHintNumber} of 4
 							</button>
@@ -291,7 +291,7 @@ const DevelopingHint = ({ achievement, hint3SeenAt, onRead }: DevelopingHintProp
 					type="button"
 					onClick={onRead}
 					className="mt-3 rounded-global border border-primary px-3 py-2 font-mono text-xs text-primary transition-colors hover:bg-primary hover:text-background focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
-					aria-label={`Read developed hint 4 of 4 for ${achievement}`}
+					aria-label={`Read developed hint 4 of 4 for ${FOOBAR_ACHIEVEMENTS[achievement].title}`}
 				>
 					Read developed hint
 				</button>
