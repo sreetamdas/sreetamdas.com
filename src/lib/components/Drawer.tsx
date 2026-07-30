@@ -1,26 +1,21 @@
 "use client";
 
-import * as DrawerPrimitive from "@radix-ui/react-dialog";
-import * as VisuallyHidden from "@radix-ui/react-visually-hidden";
+import { Dialog } from "@base-ui/react/dialog";
 import { type ComponentProps, type HTMLAttributes } from "react";
 import { LuX } from "react-icons/lu";
 
 import { cn } from "@/lib/helpers/utils";
 
-const DrawerRoot = DrawerPrimitive.Root;
-const DrawerTrigger = DrawerPrimitive.Trigger;
-const DrawerClose = DrawerPrimitive.Close;
-const DrawerPortal = DrawerPrimitive.Portal;
+const DrawerRoot = Dialog.Root;
+const DrawerTrigger = Dialog.Trigger;
+const DrawerClose = Dialog.Close;
+const DrawerPortal = Dialog.Portal;
 
-function DrawerOverlay({
-	className,
-	ref,
-	...props
-}: ComponentProps<typeof DrawerPrimitive.Overlay>) {
+function DrawerOverlay({ className, ref, ...props }: ComponentProps<typeof Dialog.Backdrop>) {
 	return (
-		<DrawerPrimitive.Overlay
+		<Dialog.Backdrop
 			className={cn(
-				"fixed inset-0 z-50 bg-black/80 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:animate-in data-[state=open]:fade-in-0",
+				"fixed inset-0 z-50 bg-black/80 data-closed:animate-out data-closed:fade-out-0 data-open:animate-in data-open:fade-in-0",
 				className,
 			)}
 			{...props}
@@ -28,32 +23,30 @@ function DrawerOverlay({
 		/>
 	);
 }
-DrawerOverlay.displayName = DrawerPrimitive.Overlay.displayName;
 
-type DrawerContentProps = ComponentProps<typeof DrawerPrimitive.Content>;
+type DrawerContentProps = ComponentProps<typeof Dialog.Popup>;
 
 function DrawerContent({ className, children, ref, ...props }: DrawerContentProps) {
 	return (
 		<DrawerPortal>
 			<DrawerOverlay />
-			<DrawerPrimitive.Content
+			<Dialog.Popup
 				ref={ref}
 				className={cn(
-					"fixed inset-y-0 left-0 z-50 h-full w-3/4 gap-4 border-r bg-background p-6 shadow-lg transition ease-in-out data-[state=closed]:animate-out data-[state=closed]:animate-duration-(--transition-duration) data-[state=closed]:slide-out-to-left data-[state=open]:animate-in data-[state=open]:animate-duration-(--transition-duration) data-[state=open]:slide-in-from-left sm:max-w-sm",
+					"fixed inset-y-0 left-0 z-50 h-full w-3/4 gap-4 border-r bg-background p-6 shadow-lg transition ease-in-out data-closed:animate-out data-closed:animate-duration-(--transition-duration) data-closed:slide-out-to-left data-open:animate-in data-open:animate-duration-(--transition-duration) data-open:slide-in-from-left sm:max-w-sm",
 					className,
 				)}
 				{...props}
 			>
 				{children}
-				<DrawerPrimitive.Close className="absolute top-4 right-4 rounded-sm text-2xl opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-secondary focus-visible:outline-dashed disabled:pointer-events-none data-[state=open]:bg-secondary">
+				<Dialog.Close className="absolute top-4 right-4 rounded-sm text-2xl opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-secondary focus-visible:outline-dashed disabled:pointer-events-none">
 					<LuX className="size-6" />
 					<span className="sr-only">Close</span>
-				</DrawerPrimitive.Close>
-			</DrawerPrimitive.Content>
+				</Dialog.Close>
+			</Dialog.Popup>
 		</DrawerPortal>
 	);
 }
-DrawerContent.displayName = DrawerPrimitive.Content.displayName;
 
 const DrawerHeader = ({ className, ...props }: HTMLAttributes<HTMLDivElement>) => (
 	<div className={cn("flex flex-col space-y-2 text-center sm:text-left", className)} {...props} />
@@ -72,33 +65,29 @@ function DrawerTitle({
 	className,
 	ref,
 	...props
-}: ComponentProps<typeof DrawerPrimitive.Title> & { hidden?: boolean }) {
+}: ComponentProps<typeof Dialog.Title> & { hidden?: boolean }) {
 	return (
-		<VisuallyHidden.Root asChild>
-			<DrawerPrimitive.Title
-				ref={ref}
-				className={cn("text-lg font-semibold text-foreground", className)}
-				{...props}
-			/>
-		</VisuallyHidden.Root>
+		<Dialog.Title
+			ref={ref}
+			className={cn("sr-only text-lg font-semibold text-foreground", className)}
+			{...props}
+		/>
 	);
 }
-DrawerTitle.displayName = DrawerPrimitive.Title.displayName;
 
 function DrawerDescription({
 	className,
 	ref,
 	...props
-}: ComponentProps<typeof DrawerPrimitive.Description>) {
+}: ComponentProps<typeof Dialog.Description>) {
 	return (
-		<DrawerPrimitive.Description
+		<Dialog.Description
 			ref={ref}
 			className={cn("text-sm text-foreground/70", className)}
 			{...props}
 		/>
 	);
 }
-DrawerDescription.displayName = DrawerPrimitive.Description.displayName;
 
 export {
 	DrawerRoot,

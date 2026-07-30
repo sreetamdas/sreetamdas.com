@@ -5,9 +5,8 @@
  * like a 404 until the hidden entry point flips persisted state, then records
  * any visited achievement slug as completed and renders the progress dashboard.
  */
-import * as AlertDialogPrimitive from "@radix-ui/react-alert-dialog";
+import { AlertDialog } from "@base-ui/react/alert-dialog";
 import { Link, useNavigate } from "@tanstack/react-router";
-import { isUndefined } from "lodash-es";
 import { useEffect, useState } from "react";
 import { useShallow } from "zustand/react/shallow";
 
@@ -243,50 +242,56 @@ const Basecamp = ({ handleClearFoobarData }: { handleClearFoobarData: () => void
 );
 
 const ResetFoobar = ({ handleClearFoobarData }: { handleClearFoobarData: () => void }) => (
-	<AlertDialogPrimitive.Root>
-		<AlertDialogPrimitive.Trigger asChild>
-			<button
-				className="inline-flex min-h-11 items-center rounded-global border border-red-300 bg-background px-4 py-2 text-sm text-red-700 transition-colors hover:bg-red-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600"
-				type="button"
-			>
-				Clear everything and restart
-			</button>
-		</AlertDialogPrimitive.Trigger>
-		<AlertDialogPrimitive.Portal>
-			<AlertDialogPrimitive.Overlay className="fixed inset-0 bg-slate-950/40 data-[state=open]:animate-overlayShow" />
-			<AlertDialogPrimitive.Content className="fixed top-[50%] left-[50%] max-h-[85vh] w-[90vw] max-w-[500px] translate-x-[-50%] translate-y-[-50%] rounded-global bg-white p-[25px] shadow-[hsl(206_22%_7%/35%)_0px_10px_38px_-10px,hsl(206_22%_7%/20%)_0px_10px_20px_-15px] focus:outline-none data-[state=open]:animate-contentShow">
-				<AlertDialogPrimitive.Title className="m-0 text-[17px] font-medium text-slate-950">
+	<AlertDialog.Root>
+		<AlertDialog.Trigger
+			render={
+				<button
+					className="inline-flex min-h-11 items-center rounded-global border border-red-300 bg-background px-4 py-2 text-sm text-red-700 transition-colors hover:bg-red-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600"
+					type="button"
+				/>
+			}
+		>
+			Clear everything and restart
+		</AlertDialog.Trigger>
+		<AlertDialog.Portal>
+			<AlertDialog.Backdrop className="fixed inset-0 bg-slate-950/40 data-open:animate-overlayShow" />
+			<AlertDialog.Popup className="fixed top-[50%] left-[50%] max-h-[85vh] w-[90vw] max-w-[500px] translate-x-[-50%] translate-y-[-50%] rounded-global bg-white p-[25px] shadow-[hsl(206_22%_7%/35%)_0px_10px_38px_-10px,hsl(206_22%_7%/20%)_0px_10px_20px_-15px] focus:outline-none data-open:animate-contentShow">
+				<AlertDialog.Title className="m-0 text-[17px] font-medium text-slate-950">
 					Are you absolutely sure?
-				</AlertDialogPrimitive.Title>
-				<AlertDialogPrimitive.Description className="mt-4 mb-5 text-[15px] leading-normal text-zinc-500">
+				</AlertDialog.Title>
+				<AlertDialog.Description className="mt-4 mb-5 text-[15px] leading-normal text-zinc-500">
 					This action cannot be undone.
 					<br />
 					This will reset your <Code>/foobar</Code> progress in this browser. A cloud save is not
 					deleted here — it will restore your progress on the next sync unless you delete it from
 					the Hunter registry.
-				</AlertDialogPrimitive.Description>
+				</AlertDialog.Description>
 				<div className="flex flex-wrap justify-end gap-3">
-					<AlertDialogPrimitive.Cancel asChild>
-						<button
-							className="inline-flex min-h-11 items-center justify-center rounded-global bg-zinc-100 px-4 py-2 leading-none font-medium text-zinc-600 outline-none hover:bg-zinc-200 focus:shadow-[0_0_0_2px] focus:shadow-zinc-300"
-							type="button"
-						>
-							Cancel
-						</button>
-					</AlertDialogPrimitive.Cancel>
-					<AlertDialogPrimitive.Action asChild>
-						<button
-							className="inline-flex min-h-11 items-center justify-center rounded-global bg-red-100 px-4 py-2 leading-none font-medium text-red-700 outline-none hover:bg-red-200 focus:shadow-[0_0_0_2px] focus:shadow-red-300"
-							onClick={handleClearFoobarData}
-							type="button"
-						>
-							Yes, reset progress
-						</button>
-					</AlertDialogPrimitive.Action>
+					<AlertDialog.Close
+						render={
+							<button
+								className="inline-flex min-h-11 items-center justify-center rounded-global bg-zinc-100 px-4 py-2 leading-none font-medium text-zinc-600 outline-none hover:bg-zinc-200 focus:shadow-[0_0_0_2px] focus:shadow-zinc-300"
+								type="button"
+							/>
+						}
+					>
+						Cancel
+					</AlertDialog.Close>
+					<AlertDialog.Close
+						render={
+							<button
+								className="inline-flex min-h-11 items-center justify-center rounded-global bg-red-100 px-4 py-2 leading-none font-medium text-red-700 outline-none hover:bg-red-200 focus:shadow-[0_0_0_2px] focus:shadow-red-300"
+								onClick={handleClearFoobarData}
+								type="button"
+							/>
+						}
+					>
+						Yes, reset progress
+					</AlertDialog.Close>
 				</div>
-			</AlertDialogPrimitive.Content>
-		</AlertDialogPrimitive.Portal>
-	</AlertDialogPrimitive.Root>
+			</AlertDialog.Popup>
+		</AlertDialog.Portal>
+	</AlertDialog.Root>
 );
 
 const FoobarButLocked = () => (
@@ -316,7 +321,7 @@ export const FoobarSchrodinger = ({ completed_page }: FoobarSchrodingerProps) =>
 			})?.name;
 
 			if (
-				!isUndefined(completed_flag) &&
+				completed_flag !== undefined &&
 				isFoobarAchievement(completed_flag) &&
 				!completed.includes(completed_flag)
 			) {

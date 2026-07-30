@@ -5,7 +5,7 @@
  * default; after sign-in the browser and D1 copies are merged before background
  * sync begins, so neither device can overwrite discoveries from the other.
  */
-import * as AlertDialogPrimitive from "@radix-ui/react-alert-dialog";
+import { AlertDialog } from "@base-ui/react/alert-dialog";
 import { useEffect, useRef, useState } from "react";
 import { useShallow } from "zustand/react/shallow";
 
@@ -359,46 +359,52 @@ function syncLabel(state: SyncState): string {
 
 function CloudResetDialog({ onReset }: { onReset: () => void }) {
 	return (
-		<AlertDialogPrimitive.Root>
-			<AlertDialogPrimitive.Trigger asChild>
-				<button
-					className="inline-flex min-h-11 items-center rounded-global border border-foreground/25 px-3 py-2 text-foreground/75 hover:border-red-300 hover:text-red-700"
-					type="button"
-				>
-					Delete cloud save
-				</button>
-			</AlertDialogPrimitive.Trigger>
-			<AlertDialogPrimitive.Portal>
-				<AlertDialogPrimitive.Overlay className="fixed inset-0 bg-slate-950/40 data-[state=open]:animate-overlayShow" />
-				<AlertDialogPrimitive.Content className="fixed top-1/2 left-1/2 max-h-[85vh] w-[90vw] max-w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-global bg-white p-6 text-slate-950 shadow-lg focus:outline-none data-[state=open]:animate-contentShow">
-					<AlertDialogPrimitive.Title className="text-lg font-medium">
+		<AlertDialog.Root>
+			<AlertDialog.Trigger
+				render={
+					<button
+						className="inline-flex min-h-11 items-center rounded-global border border-foreground/25 px-3 py-2 text-foreground/75 hover:border-red-300 hover:text-red-700"
+						type="button"
+					/>
+				}
+			>
+				Delete cloud save
+			</AlertDialog.Trigger>
+			<AlertDialog.Portal>
+				<AlertDialog.Backdrop className="fixed inset-0 bg-slate-950/40 data-open:animate-overlayShow" />
+				<AlertDialog.Popup className="fixed top-1/2 left-1/2 max-h-[85vh] w-[90vw] max-w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-global bg-white p-6 text-slate-950 shadow-lg focus:outline-none data-open:animate-contentShow">
+					<AlertDialog.Title className="text-lg font-medium">
 						Delete your cloud save?
-					</AlertDialogPrimitive.Title>
-					<AlertDialogPrimitive.Description className="mt-3 text-sm leading-normal text-slate-600">
+					</AlertDialog.Title>
+					<AlertDialog.Description className="mt-3 text-sm leading-normal text-slate-600">
 						Your progress will remain in this browser. Cloud saving stays off until you explicitly
 						enable it again.
-					</AlertDialogPrimitive.Description>
+					</AlertDialog.Description>
 					<div className="mt-5 flex justify-end gap-3">
-						<AlertDialogPrimitive.Cancel asChild>
-							<button
-								className="inline-flex min-h-11 items-center rounded-global bg-slate-100 px-3 py-2 text-sm"
-								type="button"
-							>
-								Keep cloud save
-							</button>
-						</AlertDialogPrimitive.Cancel>
-						<AlertDialogPrimitive.Action asChild>
-							<button
-								className="inline-flex min-h-11 items-center rounded-global bg-red-100 px-3 py-2 text-sm text-red-700"
-								onClick={onReset}
-								type="button"
-							>
-								Yes, delete cloud save
-							</button>
-						</AlertDialogPrimitive.Action>
+						<AlertDialog.Close
+							render={
+								<button
+									className="inline-flex min-h-11 items-center rounded-global bg-slate-100 px-3 py-2 text-sm"
+									type="button"
+								/>
+							}
+						>
+							Keep cloud save
+						</AlertDialog.Close>
+						<AlertDialog.Close
+							render={
+								<button
+									className="inline-flex min-h-11 items-center rounded-global bg-red-100 px-3 py-2 text-sm text-red-700"
+									onClick={onReset}
+									type="button"
+								/>
+							}
+						>
+							Yes, delete cloud save
+						</AlertDialog.Close>
 					</div>
-				</AlertDialogPrimitive.Content>
-			</AlertDialogPrimitive.Portal>
-		</AlertDialogPrimitive.Root>
+				</AlertDialog.Popup>
+			</AlertDialog.Portal>
+		</AlertDialog.Root>
 	);
 }
