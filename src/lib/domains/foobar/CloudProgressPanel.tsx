@@ -249,14 +249,11 @@ export function CloudProgressPanel() {
 	const community = bootstrap?.community ?? { finisherCount: 0, leaderboard: [] };
 
 	return (
-		<section
-			aria-labelledby="foobar-cloud-title"
-			className="mt-8 border-t border-foreground/15 pt-5"
-		>
+		<section aria-labelledby="foobar-cloud-title" className="border-t border-foreground/15 pt-5">
 			<div className="flex flex-wrap items-baseline justify-between gap-2">
-				<h2 id="foobar-cloud-title" className="font-serif text-2xl leading-normal">
+				<h3 id="foobar-cloud-title" className="font-serif text-xl leading-normal">
 					Hunter registry
-				</h2>
+				</h3>
 				<p className="font-mono text-xs text-foreground/55">
 					{community.finisherCount} {community.finisherCount === 1 ? "finisher" : "finishers"}
 				</p>
@@ -265,7 +262,7 @@ export function CloudProgressPanel() {
 				<div className="mt-3 flex flex-wrap items-center gap-2 text-sm" role="alert">
 					<span>{foobarCloudFailureLabel(failedOperation)}</span>
 					<button
-						className="rounded-global border border-foreground/25 px-2 py-1 font-medium"
+						className="inline-flex min-h-11 items-center rounded-global border border-foreground/25 px-3 py-2 font-medium"
 						onClick={retryFailedOperation}
 						type="button"
 					>
@@ -279,7 +276,7 @@ export function CloudProgressPanel() {
 					<p>
 						Signed in as <strong>{bootstrap.user.name}</strong>. {syncLabel(syncState)}
 					</p>
-					<label className="flex max-w-md items-start gap-2 text-foreground/75">
+					<label className="flex min-h-11 max-w-md items-start gap-2 py-2 text-foreground/75">
 						<input
 							checked={bootstrap.cloud?.publicProfile ?? false}
 							className="mt-1"
@@ -301,7 +298,7 @@ export function CloudProgressPanel() {
 						<CloudResetDialog onReset={() => void handleCloudReset()} />
 					) : bootstrap.cloudSyncEnabled === false ? (
 						<button
-							className="rounded-global border border-foreground/25 px-3 py-1.5"
+							className="inline-flex min-h-11 items-center rounded-global border border-foreground/25 px-3 py-2"
 							disabled={syncState === "saving"}
 							onClick={() => void handleCloudEnable()}
 							type="button"
@@ -317,13 +314,13 @@ export function CloudProgressPanel() {
 					</p>
 					<div className="mt-3 flex flex-wrap gap-2">
 						<a
-							className="rounded-global border border-foreground/25 px-3 py-1.5"
+							className="inline-flex min-h-11 items-center rounded-global border border-foreground/25 px-3 py-2"
 							href="/api/login/cloudflare?returnTo=/foobar"
 						>
 							Sign in with Cloudflare
 						</a>
 						<a
-							className="rounded-global border border-foreground/25 px-3 py-1.5"
+							className="inline-flex min-h-11 items-center rounded-global border border-foreground/25 px-3 py-2"
 							href="/api/login/github?returnTo=/foobar"
 						>
 							Sign in with GitHub
@@ -365,7 +362,7 @@ function CloudResetDialog({ onReset }: { onReset: () => void }) {
 		<AlertDialogPrimitive.Root>
 			<AlertDialogPrimitive.Trigger asChild>
 				<button
-					className="rounded-global border border-foreground/25 px-3 py-1.5 text-foreground/75 hover:border-red-300 hover:text-red-700"
+					className="inline-flex min-h-11 items-center rounded-global border border-foreground/25 px-3 py-2 text-foreground/75 hover:border-red-300 hover:text-red-700"
 					type="button"
 				>
 					Delete cloud save
@@ -383,13 +380,16 @@ function CloudResetDialog({ onReset }: { onReset: () => void }) {
 					</AlertDialogPrimitive.Description>
 					<div className="mt-5 flex justify-end gap-3">
 						<AlertDialogPrimitive.Cancel asChild>
-							<button className="rounded-global bg-slate-100 px-3 py-2 text-sm" type="button">
+							<button
+								className="inline-flex min-h-11 items-center rounded-global bg-slate-100 px-3 py-2 text-sm"
+								type="button"
+							>
 								Keep cloud save
 							</button>
 						</AlertDialogPrimitive.Cancel>
 						<AlertDialogPrimitive.Action asChild>
 							<button
-								className="rounded-global bg-red-100 px-3 py-2 text-sm text-red-700"
+								className="inline-flex min-h-11 items-center rounded-global bg-red-100 px-3 py-2 text-sm text-red-700"
 								onClick={onReset}
 								type="button"
 							>
