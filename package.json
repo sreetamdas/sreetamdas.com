@@ -60,9 +60,9 @@
 		"@better-auth/drizzle-adapter": "^1.6.25",
 		"@fontsource-variable/bricolage-grotesque": "^5.3.0",
 		"@fontsource-variable/inter": "^5.3.0",
-		"@notionhq/client": "^5.23.2",
-		"@sentry/cloudflare": "^10.68.0",
-		"@sentry/tanstackstart-react": "^10.68.0",
+		"@notionhq/client": "^5.23.3",
+		"@sentry/cloudflare": "^10.69.0",
+		"@sentry/tanstackstart-react": "^10.69.0",
 		"@shikijs/colorized-brackets": "^4.3.1",
 		"@shikijs/langs-precompiled": "^4.3.1",
 		"@shikijs/magic-move": "^4.3.1",
@@ -70,7 +70,7 @@
 		"@tanstack/hotkeys": "^0.8.0",
 		"@tanstack/react-query": "^5.101.4",
 		"@tanstack/react-router": "^1.170.18",
-		"@tanstack/react-start": "^1.168.32",
+		"@tanstack/react-start": "^1.168.33",
 		"@tanstack/start-static-server-functions": "^1.167.19",
 		"better-auth": "^1.6.25",
 		"clsx": "^2.1.1",
@@ -88,8 +88,8 @@
 		"zustand": "^5.0.14"
 	},
 	"devDependencies": {
-		"@cloudflare/vite-plugin": "1.47.0",
-		"@cloudflare/vitest-pool-workers": "^0.18.8",
+		"@cloudflare/vite-plugin": "1.48.0",
+		"@cloudflare/vitest-pool-workers": "^0.19.0",
 		"@content-collections/cli": "^0.1.9",
 		"@content-collections/core": "^0.15.2",
 		"@content-collections/vite": "^0.3.0",
@@ -106,8 +106,8 @@
 		"@types/react-dom": "^19.2.3",
 		"@types/unist": "~3.0.3",
 		"@vitejs/plugin-react": "^6.0.4",
-		"@vitejs/plugin-rsc": "^0.5.31",
-		"better-sqlite3": "^13.0.1",
+		"@vitejs/plugin-rsc": "^0.5.32",
+		"better-sqlite3": "^13.0.2",
 		"drizzle-kit": "1.0.0-rc.3",
 		"eslint-plugin-better-tailwindcss": "^4.7.0",
 		"tailwindcss": "^4.3.3",
@@ -116,12 +116,12 @@
 		"vite": "npm:@voidzero-dev/vite-plus-core@0.2.6",
 		"vite-plus": "catalog:",
 		"vitest": "4.1.10",
-		"wrangler": "^4.114.0"
+		"wrangler": "^4.115.0"
 	},
 	"engines": {
 		"node": "24"
 	},
-	"packageManager": "pnpm@11.9.0",
+	"packageManager": "pnpm@11.17.0",
 	"msw": {
 		"workerDirectory": "public"
 	}
