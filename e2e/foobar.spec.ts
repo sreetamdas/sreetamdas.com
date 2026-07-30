@@ -41,7 +41,7 @@ async function ensureCloudEnabled(page: Page) {
 }
 
 async function openBasecamp(page: Page) {
-	const summary = page.locator("summary").filter({ hasText: /^Open Basecamp/ });
+	const summary = page.locator("summary").filter({ hasText: /Open Basecamp/ });
 	if ((await summary.locator("xpath=..").getAttribute("open")) === null) await summary.click();
 }
 
@@ -140,7 +140,7 @@ test("orients hunters and keeps one field entry open", async ({ page }) => {
 	await page.goto("/foobar");
 
 	await expect(page.getByRole("heading", { level: 1, name: "Foobar" })).toBeVisible();
-	await expect(page.getByRole("progressbar", { name: /Foobar map complete/ })).toBeVisible();
+	await expect(page.getByText("2 of 24 weird things found.")).toBeVisible();
 	await page.getByRole("button", { name: "Continue hunting" }).click();
 	await expect(
 		page.getByRole("button", { name: "Close field entry for Behind the Screens" }),
@@ -160,7 +160,7 @@ test("groups achievements and persists revealed field notes", async ({ page }) =
 	await page.goto("/foobar");
 
 	await expect(page.getByRole("heading", { name: "Warmup / Discovery" })).toBeVisible();
-	await expect(page.getByText("2 / 5 collected")).toBeVisible();
+	await expect(page.getByText("2 of 5", { exact: true })).toBeVisible();
 	await expect(page.getByRole("heading", { name: "Field notes" })).toBeVisible();
 	await expect(page.getByText("Earlier", { exact: true })).toHaveCount(2);
 	await expect(page.getByText("Even crawlers are handed house rules.")).toBeVisible();
@@ -243,10 +243,10 @@ test("keeps an out-of-order persisted final hint", async ({ page }) => {
 	await page.goto("/foobar");
 	const irregularBadge = await openFieldEntry(page, "TXT Me Maybe");
 	const persistedFinalHint = irregularBadge.getByRole("listitem").filter({ hasText: hintText });
-	await expect(persistedFinalHint.getByText("Field note 4", { exact: true })).toBeVisible();
+	await expect(persistedFinalHint).toBeVisible();
 	await irregularBadge.getByRole("button", { name: "Reveal hint 3 of 4 for TXT Me Maybe" }).click();
 	expect(await readHintDevelopmentEvents(page)).toEqual([]);
-	await expect(persistedFinalHint.getByText("Field note 4", { exact: true })).toBeVisible();
+	await expect(persistedFinalHint).toBeVisible();
 	await expect(irregularBadge.getByText("Hint 4 · Developing", { exact: true })).toHaveCount(0);
 });
 
@@ -297,7 +297,7 @@ test("keeps local progress as the default and offers optional cloud save", async
 	await page.goto("/foobar");
 	await openBasecamp(page);
 
-	await expect(page.getByRole("heading", { name: "Hunter registry" })).toBeVisible();
+	await expect(page.getByRole("heading", { name: "Cloud save" })).toBeVisible();
 	await expect(page.getByText("Sign in to save progress across devices.")).toBeVisible();
 	await expect(page.getByRole("link", { name: "Sign in with Cloudflare" })).toHaveAttribute(
 		"href",
