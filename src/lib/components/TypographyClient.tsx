@@ -1,6 +1,5 @@
 "use client";
 
-import { random } from "lodash-es";
 import {
 	type HTMLAttributes,
 	type PropsWithChildren,
@@ -10,7 +9,7 @@ import {
 } from "react";
 
 import { useInterval, usePrefersReducedMotion, useRandomInterval } from "@/lib/helpers/hooks";
-import { cn } from "@/lib/helpers/utils";
+import { cn, randomIntegerInclusive } from "@/lib/helpers/utils";
 
 export {
 	Blockquote,
@@ -25,9 +24,9 @@ export {
 let root: HTMLElement;
 
 function getNewColor() {
-	const h = random(1, 360);
-	const s = random(80, 90);
-	const l = random(50, 60);
+	const h = randomIntegerInclusive(1, 360);
+	const s = randomIntegerInclusive(80, 90);
+	const l = randomIntegerInclusive(50, 60);
 
 	return `hsl(${h}, ${s}%, ${l}%)`;
 }
@@ -78,13 +77,13 @@ type Sparkle = {
 const DEFAULT_COLOR = "#FFFF00";
 function generateSparkle(color: string): Sparkle {
 	const sparkle = {
-		id: String(random(10000, 99999)),
+		id: String(randomIntegerInclusive(10000, 99999)),
 		createdAt: Date.now(),
 		color,
-		size: random(10, 15),
+		size: randomIntegerInclusive(10, 15),
 		style: {
-			top: `${random(-10, 90)}%`,
-			left: `${random(-10, 90)}%`,
+			top: `${randomIntegerInclusive(-10, 90)}%`,
+			left: `${randomIntegerInclusive(-10, 90)}%`,
 		},
 	};
 	return sparkle;

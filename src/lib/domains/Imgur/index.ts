@@ -4,8 +4,6 @@
  * width/height metadata needed by image rendering.
  */
 
-import { isEmpty, isUndefined } from "lodash-es";
-
 export type KeebDetails = {
 	name: string;
 	tags: Array<{ name: string }>;
@@ -31,10 +29,10 @@ export class ImgurClient {
 	album_url: string;
 
 	constructor({ base_url = "https://api.imgur.com/3", client_id, album_url }: ImgurClientOptions) {
-		if (isUndefined(client_id) || isEmpty(client_id)) {
+		if (!client_id) {
 			throw new Error("Imgur API client ID is missing");
 		}
-		if (isUndefined(album_url) || isEmpty(album_url)) {
+		if (!album_url) {
 			throw new Error("Imgur target album is undefined");
 		}
 

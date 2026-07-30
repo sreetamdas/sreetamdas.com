@@ -1,7 +1,8 @@
 "use client";
 
-import { random } from "lodash-es";
 import { useCallback, useEffect, useRef, useState } from "react";
+
+import { randomIntegerInclusive } from "./utils";
 
 export function useHasMounted() {
 	const [hasMounted, setHasMounted] = useState(false);
@@ -51,7 +52,7 @@ export function useRandomInterval(
 	useEffect(() => {
 		if (typeof minDelay === "number" && typeof maxDelay === "number") {
 			const handleTick = () => {
-				const nextTickAt = random(minDelay, maxDelay);
+				const nextTickAt = randomIntegerInclusive(minDelay, maxDelay);
 				timeoutId.current = window.setTimeout(() => {
 					savedCallback.current();
 					handleTick();

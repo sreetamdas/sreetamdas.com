@@ -1,6 +1,5 @@
 import { transformerColorizedBrackets } from "@shikijs/colorized-brackets";
 import { defaultTheme } from "@sreetamdas/karma";
-import { omit } from "lodash-es";
 import { type BundledLanguage } from "shiki/langs";
 
 import type { KarmaHighlighter } from "./highlighter";
@@ -95,7 +94,7 @@ function parseMeta(meta: string | null) {
 	if (meta === null) {
 		return null;
 	}
-	let matches = meta.split(" ").reduce<Record<string, boolean | string>>((matchesObj, string) => {
+	const matches = meta.split(" ").reduce<Record<string, boolean | string>>((matchesObj, string) => {
 		const match = string.match(META_REGEX);
 		if (match === null) {
 			return matchesObj;
@@ -106,11 +105,11 @@ function parseMeta(meta: string | null) {
 		});
 	}, {});
 
-	matches = omit(matches, ["highlight"]);
+	const { highlight: _highlight, ...metadata } = matches;
 
-	if (Object.keys(matches).length === 0) {
+	if (Object.keys(metadata).length === 0) {
 		return null;
 	}
 
-	return matches;
+	return metadata;
 }

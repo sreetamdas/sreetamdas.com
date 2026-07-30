@@ -1,6 +1,10 @@
-import { describe, expect, test } from "vitest";
+import { afterEach, describe, expect, test, vi } from "vitest";
 
-import { normalizePathname } from "./utils";
+import { normalizePathname, randomIntegerInclusive } from "./utils";
+
+afterEach(() => {
+	vi.restoreAllMocks();
+});
 
 describe("normalizePathname", () => {
 	test("strips a trailing slash from nested paths", () => {
@@ -17,5 +21,17 @@ describe("normalizePathname", () => {
 
 	test("only strips one trailing slash", () => {
 		expect(normalizePathname("/blog/x//")).toBe("/blog/x/");
+	});
+});
+
+describe("randomIntegerInclusive", () => {
+	test("includes the minimum boundary", () => {
+		vi.spyOn(Math, "random").mockReturnValue(0);
+		expect(randomIntegerInclusive(10, 15)).toBe(10);
+	});
+
+	test("includes the maximum boundary", () => {
+		vi.spyOn(Math, "random").mockReturnValue(0.999_999);
+		expect(randomIntegerInclusive(10, 15)).toBe(15);
 	});
 });
