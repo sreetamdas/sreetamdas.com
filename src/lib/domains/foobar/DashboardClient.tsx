@@ -14,11 +14,7 @@ import { IS_DEV } from "@/config";
 import { NotFound404 } from "@/lib/components/Error";
 import { Code } from "@/lib/components/Typography";
 import { ShowCompletedBadges } from "@/lib/domains/foobar/badges";
-import {
-	FOOBAR_ACHIEVEMENTS,
-	isFoobarAchievement,
-	type FoobarAchievement,
-} from "@/lib/domains/foobar/catalog";
+import { isFoobarAchievement, type FoobarAchievement } from "@/lib/domains/foobar/catalog";
 import { CloudProgressPanel } from "@/lib/domains/foobar/CloudProgressPanel";
 import { FieldNotes } from "@/lib/domains/foobar/FieldNotes";
 import { FOOBAR_FLAGS } from "@/lib/domains/foobar/flags";
@@ -39,13 +35,6 @@ export const FoobarDashboard = () => {
 		})),
 	);
 	const [activeAchievement, setActiveAchievement] = useState<FoobarAchievement>();
-	const achievements = Object.keys(FOOBAR_ACHIEVEMENTS).filter(isFoobarAchievement);
-	const nextAchievement = achievements.find((achievement) =>
-		achievement === "completed"
-			? !foobar_data.all_achievements
-			: !foobar_data.completed.includes(achievement),
-	);
-
 	useEffect(() => {
 		function handleUserIsOffline() {
 			navigate({ to: "/foobar/$slug", params: { slug: "offline" } });
@@ -96,7 +85,7 @@ export const FoobarDashboard = () => {
 	}
 
 	return (
-		<div className="relative left-1/2 w-[min(calc(100vw-2rem),64rem)] -translate-x-1/2 pb-16">
+		<div className="pb-16">
 			{IS_DEV && (
 				<details className="mt-5 rounded-global border border-foreground/15 bg-foreground/5 p-3 font-mono text-xs dark:bg-foreground/10">
 					<summary className="flex min-h-11 cursor-pointer items-center font-semibold">
@@ -107,54 +96,19 @@ export const FoobarDashboard = () => {
 					</pre>
 				</details>
 			)}
-			<div className="grid items-start gap-10 lg:grid-cols-[minmax(0,1fr)_19rem] lg:gap-12">
-				<ShowCompletedBadges
-					completed={foobar_data.completed}
-					all_achievements={foobar_data.all_achievements}
-					clues_seen={foobar_data.clues_seen}
-					activeAchievement={activeAchievement}
-					onSelectAchievement={handleSelectAchievement}
-					onCollapseAchievement={() => setActiveAchievement(undefined)}
-				/>
-				<aside
-					aria-label="Hunter notebook"
-					className="min-w-0 lg:sticky lg:top-20 lg:max-h-[calc(100vh-6rem)] lg:overflow-y-auto lg:overscroll-contain lg:pr-1"
-				>
-					<FieldNotes
-						clues_seen={foobar_data.clues_seen}
-						onSelectAchievement={handleSelectAchievement}
-					/>
-					<Basecamp handleClearFoobarData={handleClearFoobarData} />
-				</aside>
-			</div>
-			<section
-				className="mt-12 border-y border-primary/25 py-8 text-center"
-				aria-labelledby="foobar-next-waypoint"
-			>
-				<p className="font-mono text-xs font-semibold tracking-[0.16em] text-primary uppercase">
-					Next waypoint
-				</p>
-				<h2 id="foobar-next-waypoint" className="mt-2 font-serif text-3xl">
-					{nextAchievement
-						? FOOBAR_ACHIEVEMENTS[nextAchievement].title
-						: "The whole strange map is yours"}
-				</h2>
-				<p className="mx-auto mt-2 max-w-xl text-sm text-foreground/70">
-					{nextAchievement
-						? (FOOBAR_ACHIEVEMENTS[nextAchievement].hints[0]?.text ??
-							"One final pattern is waiting to be recognized.")
-						: "Every trail has been followed. Keep an eye out—the web is always growing new corners."}
-				</p>
-				{nextAchievement ? (
-					<button
-						className="mt-5 inline-flex min-h-11 items-center rounded-global border border-primary px-5 py-2 text-sm font-semibold text-primary transition-colors hover:bg-primary hover:text-background focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
-						onClick={() => handleSelectAchievement(nextAchievement)}
-						type="button"
-					>
-						Follow this lead
-					</button>
-				) : null}
-			</section>
+			<ShowCompletedBadges
+				completed={foobar_data.completed}
+				all_achievements={foobar_data.all_achievements}
+				clues_seen={foobar_data.clues_seen}
+				activeAchievement={activeAchievement}
+				onSelectAchievement={handleSelectAchievement}
+				onCollapseAchievement={() => setActiveAchievement(undefined)}
+			/>
+			<FieldNotes
+				clues_seen={foobar_data.clues_seen}
+				onSelectAchievement={handleSelectAchievement}
+			/>
+			<Basecamp handleClearFoobarData={handleClearFoobarData} />
 			<p aria-hidden="true" data-foobar-print-clue>
 				The paper remembers a path the screen will not: /foobar/print-preview
 			</p>
@@ -194,27 +148,25 @@ const CampfireStatus = () => {
 };
 
 const Basecamp = ({ handleClearFoobarData }: { handleClearFoobarData: () => void }) => (
-	<section aria-labelledby="foobar-basecamp" className="mt-5 border-t-2 border-primary/20 pt-5">
-		<p className="font-mono text-[0.65rem] font-semibold tracking-[0.16em] text-primary uppercase">
-			Off the trail
-		</p>
-		<h2 id="foobar-basecamp" className="mt-1 font-serif text-2xl">
+	<section aria-labelledby="foobar-basecamp" className="mt-20 border-t border-foreground/25 pt-8">
+		<h2 id="foobar-basecamp" className="font-serif text-3xl font-bold">
 			Basecamp
 		</h2>
-		<p className="mt-2 text-sm text-foreground/65">
-			Meet other hunters and manage how this map travels.
+		<p className="mt-2 text-sm text-foreground/70">
+			The practical stuff: other visitors, saved progress, stats, and the big reset button.
 		</p>
-		<details className="group mt-4 rounded-global border border-foreground/15 bg-foreground/[0.035]">
-			<summary className="flex min-h-11 cursor-pointer list-none items-center justify-between px-3 py-2 text-sm font-medium marker:hidden focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary">
-				Open Basecamp
-				<span aria-hidden="true" className="text-lg group-open:hidden">
-					+
+		<details className="group mt-4">
+			<summary className="flex min-h-11 cursor-pointer list-none items-center link-base font-medium text-primary marker:hidden focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary">
+				<span aria-hidden="true" className="mr-2 group-open:hidden">
+					→
 				</span>
-				<span aria-hidden="true" className="hidden text-lg group-open:inline">
-					−
+				<span aria-hidden="true" className="mr-2 hidden group-open:inline">
+					↓
 				</span>
+				<span className="group-open:hidden">Open Basecamp</span>
+				<span className="hidden group-open:inline">Close Basecamp</span>
 			</summary>
-			<div className="grid gap-5 border-t border-foreground/15 p-4">
+			<div className="mt-3 grid gap-5">
 				<CampfireStatus />
 				<CloudProgressPanel />
 				<div className="border-t border-foreground/15 pt-5">
@@ -222,8 +174,11 @@ const Basecamp = ({ handleClearFoobarData }: { handleClearFoobarData: () => void
 					<Link
 						to="/stats"
 						search={{ period: "30d" }}
-						className="mt-3 inline-flex min-h-11 items-center rounded-global border border-secondary px-3 py-2 text-sm text-foreground transition-colors hover:bg-secondary hover:text-background focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-secondary"
+						className="mt-2 inline-flex min-h-11 items-center link-base text-sm text-primary"
 					>
+						<span aria-hidden="true" className="mr-2">
+							→
+						</span>
 						View public site stats
 					</Link>
 				</div>

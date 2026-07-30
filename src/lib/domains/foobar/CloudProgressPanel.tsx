@@ -252,7 +252,7 @@ export function CloudProgressPanel() {
 		<section aria-labelledby="foobar-cloud-title" className="border-t border-foreground/15 pt-5">
 			<div className="flex flex-wrap items-baseline justify-between gap-2">
 				<h3 id="foobar-cloud-title" className="font-serif text-xl leading-normal">
-					Hunter registry
+					Cloud save
 				</h3>
 				<p className="font-mono text-xs text-foreground/55">
 					{community.finisherCount} {community.finisherCount === 1 ? "finisher" : "finishers"}
