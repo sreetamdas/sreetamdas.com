@@ -8,14 +8,18 @@
 import * as AlertDialogPrimitive from "@radix-ui/react-alert-dialog";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { isUndefined } from "lodash-es";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useShallow } from "zustand/react/shallow";
 
 import { IS_DEV } from "@/config";
 import { NotFound404 } from "@/lib/components/Error";
 import { Code } from "@/lib/components/Typography";
 import { ShowCompletedBadges } from "@/lib/domains/foobar/badges";
-import { isFoobarAchievement } from "@/lib/domains/foobar/catalog";
+import {
+	FOOBAR_ACHIEVEMENTS,
+	isFoobarAchievement,
+	type FoobarAchievement,
+} from "@/lib/domains/foobar/catalog";
 import { CloudProgressPanel } from "@/lib/domains/foobar/CloudProgressPanel";
 import { FieldNotes } from "@/lib/domains/foobar/FieldNotes";
 import { FOOBAR_FLAGS } from "@/lib/domains/foobar/flags";
@@ -34,6 +38,13 @@ export const FoobarDashboard = () => {
 			foobar_data: state.foobar_data,
 			setFoobarData: state.setFoobarData,
 		})),
+	);
+	const [activeAchievement, setActiveAchievement] = useState<FoobarAchievement>();
+	const achievements = Object.keys(FOOBAR_ACHIEVEMENTS).filter(isFoobarAchievement);
+	const nextAchievement = achievements.find((achievement) =>
+		achievement === "completed"
+			? !foobar_data.all_achievements
+			: !foobar_data.completed.includes(achievement),
 	);
 
 	useEffect(() => {
@@ -74,40 +85,87 @@ export const FoobarDashboard = () => {
 		console.log("cleared");
 	}
 
+	function handleSelectAchievement(achievement: FoobarAchievement) {
+		setActiveAchievement(achievement);
+		window.requestAnimationFrame(() => {
+			const target = document.getElementById(`foobar-achievement-${achievement}`);
+			const drawer = target?.closest("details");
+			if (drawer instanceof HTMLDetailsElement) drawer.open = true;
+			target?.scrollIntoView({ behavior: "smooth", block: "center" });
+			document.getElementById(`foobar-achievement-trigger-${achievement}`)?.focus();
+		});
+	}
+
 	return (
-		<>
+		<div className="relative left-1/2 w-[min(calc(100vw-2rem),64rem)] -translate-x-1/2 pb-16">
 			{IS_DEV && (
-				<pre className="my-5 rounded-global bg-foreground/10 p-6 font-mono text-sm transition-colors dark:bg-foreground/20">
-					<h2 className="text-4xl font-bold">DEV</h2>
-					{JSON.stringify(foobar_data, null, 2)}
-				</pre>
+				<details className="mt-5 rounded-global border border-foreground/15 bg-foreground/5 p-3 font-mono text-xs dark:bg-foreground/10">
+					<summary className="flex min-h-11 cursor-pointer items-center font-semibold">
+						DEV progress data
+					</summary>
+					<pre className="mt-3 overflow-x-auto border-t border-foreground/15 pt-3">
+						{JSON.stringify(foobar_data, null, 2)}
+					</pre>
+				</details>
 			)}
-			<ShowCompletedBadges
-				completed={foobar_data.completed}
-				all_achievements={foobar_data.all_achievements}
-				clues_seen={foobar_data.clues_seen}
-			/>
-			<FieldNotes clues_seen={foobar_data.clues_seen} />
-			<CampfireStatus />
-			<CloudProgressPanel />
+			<div className="grid items-start gap-10 lg:grid-cols-[minmax(0,1fr)_19rem] lg:gap-12">
+				<ShowCompletedBadges
+					completed={foobar_data.completed}
+					all_achievements={foobar_data.all_achievements}
+					clues_seen={foobar_data.clues_seen}
+					activeAchievement={activeAchievement}
+					onSelectAchievement={handleSelectAchievement}
+					onCollapseAchievement={() => setActiveAchievement(undefined)}
+				/>
+				<aside
+					aria-label="Hunter notebook"
+					className="min-w-0 lg:sticky lg:top-20 lg:max-h-[calc(100vh-6rem)] lg:overflow-y-auto lg:overscroll-contain lg:pr-1"
+				>
+					<FieldNotes
+						clues_seen={foobar_data.clues_seen}
+						onSelectAchievement={handleSelectAchievement}
+					/>
+					<Basecamp handleClearFoobarData={handleClearFoobarData} />
+				</aside>
+			</div>
+			<section
+				className="mt-12 border-y border-primary/25 py-8 text-center"
+				aria-labelledby="foobar-next-waypoint"
+			>
+				<p className="font-mono text-xs font-semibold tracking-[0.16em] text-primary uppercase">
+					Next waypoint
+				</p>
+				<h2 id="foobar-next-waypoint" className="mt-2 font-serif text-3xl">
+					{nextAchievement
+						? FOOBAR_ACHIEVEMENTS[nextAchievement].title
+						: "The whole strange map is yours"}
+				</h2>
+				<p className="mx-auto mt-2 max-w-xl text-sm text-foreground/70">
+					{nextAchievement
+						? (FOOBAR_ACHIEVEMENTS[nextAchievement].hints[0]?.text ??
+							"One final pattern is waiting to be recognized.")
+						: "Every trail has been followed. Keep an eye out—the web is always growing new corners."}
+				</p>
+				{nextAchievement ? (
+					<button
+						className="mt-5 inline-flex min-h-11 items-center rounded-global border border-primary px-5 py-2 text-sm font-semibold text-primary transition-colors hover:bg-primary hover:text-background focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+						onClick={() => handleSelectAchievement(nextAchievement)}
+						type="button"
+					>
+						Follow this lead
+					</button>
+				) : null}
+			</section>
 			<p aria-hidden="true" data-foobar-print-clue>
 				The paper remembers a path the screen will not: /foobar/print-preview
 			</p>
-			<Link
-				to="/stats"
-				search={{ period: "30d" }}
-				className="my-6 inline-flex rounded-global border-2 border-solid border-secondary bg-background px-6 py-2 text-sm text-foreground transition-[color,background-color] hover:bg-secondary hover:text-background"
-			>
-				View public site stats
-			</Link>
-			<ResetFoobar handleClearFoobarData={handleClearFoobarData} />
 			{/* <Center>
 				<SupportSreetamDas />
 			</Center> */}
 			{/* <Terminal {...{ visible: terminalVisible, toggleTerminal }} /> */}
 			{/* {!terminalVisible && <KonamiWrapper />} */}
 			<XMarksTheSpot foobar="/foobar/devtools" />
-		</>
+		</div>
 	);
 };
 
@@ -122,28 +180,76 @@ const CampfireStatus = () => {
 	return (
 		<section
 			aria-labelledby="foobar-campfire-status"
-			className="mt-8 border-t border-foreground/15 pt-5"
+			className="border-t border-foreground/15 pt-5"
 		>
-			<h2 id="foobar-campfire-status" className="font-serif text-2xl leading-normal">
+			<h3 id="foobar-campfire-status" className="font-serif text-xl leading-normal">
 				Campfire
-			</h2>
+			</h3>
 			<p className="mt-2 text-sm text-foreground/70" aria-live="polite">
 				{connected
-					? `${count} ${count === 1 ? "hunter" : "hunters"} online. The fire needs company.`
+					? `${count} ${count === 1 ? "hunter" : "hunters"} online. ${count > 1 ? "The fire is lively." : "There is room beside the fire."}`
 					: "Listening for other hunters…"}
 			</p>
 		</section>
 	);
 };
 
+const Basecamp = ({ handleClearFoobarData }: { handleClearFoobarData: () => void }) => (
+	<section aria-labelledby="foobar-basecamp" className="mt-5 border-t-2 border-primary/20 pt-5">
+		<p className="font-mono text-[0.65rem] font-semibold tracking-[0.16em] text-primary uppercase">
+			Off the trail
+		</p>
+		<h2 id="foobar-basecamp" className="mt-1 font-serif text-2xl">
+			Basecamp
+		</h2>
+		<p className="mt-2 text-sm text-foreground/65">
+			Meet other hunters and manage how this map travels.
+		</p>
+		<details className="group mt-4 rounded-global border border-foreground/15 bg-foreground/[0.035]">
+			<summary className="flex min-h-11 cursor-pointer list-none items-center justify-between px-3 py-2 text-sm font-medium marker:hidden focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary">
+				Open Basecamp
+				<span aria-hidden="true" className="text-lg group-open:hidden">
+					+
+				</span>
+				<span aria-hidden="true" className="hidden text-lg group-open:inline">
+					−
+				</span>
+			</summary>
+			<div className="grid gap-5 border-t border-foreground/15 p-4">
+				<CampfireStatus />
+				<CloudProgressPanel />
+				<div className="border-t border-foreground/15 pt-5">
+					<h3 className="font-serif text-xl">Logbook</h3>
+					<Link
+						to="/stats"
+						search={{ period: "30d" }}
+						className="mt-3 inline-flex min-h-11 items-center rounded-global border border-secondary px-3 py-2 text-sm text-foreground transition-colors hover:bg-secondary hover:text-background focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-secondary"
+					>
+						View public site stats
+					</Link>
+				</div>
+				<details className="border-t border-foreground/15 pt-5">
+					<summary className="flex min-h-11 cursor-pointer items-center text-sm font-medium text-foreground/70">
+						Manage progress
+					</summary>
+					<p className="mb-3 text-xs leading-relaxed text-foreground/60">
+						Reset only this browser. Cloud progress is managed separately in the Hunter registry.
+					</p>
+					<ResetFoobar handleClearFoobarData={handleClearFoobarData} />
+				</details>
+			</div>
+		</details>
+	</section>
+);
+
 const ResetFoobar = ({ handleClearFoobarData }: { handleClearFoobarData: () => void }) => (
 	<AlertDialogPrimitive.Root>
 		<AlertDialogPrimitive.Trigger asChild>
 			<button
-				className="rounded-global border-2 border-solid border-primary bg-background px-6 py-1 text-sm text-foreground transition-[color,background-color] hover:bg-primary hover:text-background"
+				className="inline-flex min-h-11 items-center rounded-global border border-red-300 bg-background px-4 py-2 text-sm text-red-700 transition-colors hover:bg-red-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600"
 				type="button"
 			>
-				Clear everything and Restart
+				Clear everything and restart
 			</button>
 		</AlertDialogPrimitive.Trigger>
 		<AlertDialogPrimitive.Portal>
@@ -159,10 +265,10 @@ const ResetFoobar = ({ handleClearFoobarData }: { handleClearFoobarData: () => v
 					deleted here — it will restore your progress on the next sync unless you delete it from
 					the Hunter registry.
 				</AlertDialogPrimitive.Description>
-				<div className="flex justify-end gap-[25px]">
+				<div className="flex flex-wrap justify-end gap-3">
 					<AlertDialogPrimitive.Cancel asChild>
 						<button
-							className="inline-flex h-[35px] items-center justify-center rounded-global bg-zinc-100 px-[15px] leading-none font-medium text-zinc-500 outline-none hover:bg-zinc-200 focus:shadow-[0_0_0_2px] focus:shadow-zinc-300"
+							className="inline-flex min-h-11 items-center justify-center rounded-global bg-zinc-100 px-4 py-2 leading-none font-medium text-zinc-600 outline-none hover:bg-zinc-200 focus:shadow-[0_0_0_2px] focus:shadow-zinc-300"
 							type="button"
 						>
 							Cancel
@@ -170,7 +276,7 @@ const ResetFoobar = ({ handleClearFoobarData }: { handleClearFoobarData: () => v
 					</AlertDialogPrimitive.Cancel>
 					<AlertDialogPrimitive.Action asChild>
 						<button
-							className="inline-flex h-[35px] items-center justify-center rounded-global bg-red-100 px-[15px] leading-none font-medium text-red-700 outline-none hover:bg-red-200 focus:shadow-[0_0_0_2px] focus:shadow-red-300"
+							className="inline-flex min-h-11 items-center justify-center rounded-global bg-red-100 px-4 py-2 leading-none font-medium text-red-700 outline-none hover:bg-red-200 focus:shadow-[0_0_0_2px] focus:shadow-red-300"
 							onClick={handleClearFoobarData}
 							type="button"
 						>
