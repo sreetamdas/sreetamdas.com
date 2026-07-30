@@ -41,7 +41,7 @@ async function ensureCloudEnabled(page: Page) {
 }
 
 async function openBasecamp(page: Page) {
-	const summary = page.getByText("Open Basecamp", { exact: true });
+	const summary = page.locator("summary").filter({ hasText: /^Open Basecamp/ });
 	if ((await summary.locator("xpath=..").getAttribute("open")) === null) await summary.click();
 }
 
@@ -50,7 +50,11 @@ async function openFieldEntry(page: Page, title: string) {
 		has: page.getByRole("heading", { name: title, exact: true }),
 	});
 	const trigger = article.getByRole("button", { name: `Open field entry for ${title}` });
-	if (await trigger.isVisible()) await trigger.click();
+	const closeTrigger = article.getByRole("button", { name: `Close field entry for ${title}` });
+	if (!(await closeTrigger.isVisible())) {
+		await trigger.click();
+		await expect(closeTrigger).toBeVisible();
+	}
 	return article;
 }
 
@@ -224,11 +228,10 @@ test("develops hint 4 without exposing its text", async ({ page }) => {
 		]);
 });
 
-test("reads and persists a developed hint", async ({ page }) => {
+test("keeps an out-of-order persisted final hint", async ({ page }) => {
 	const hourMs = 60 * 60 * 1_000;
 	const hintText = "Run dig TXT sreetamdas.com and follow the Foobar value.";
-	const irregularPage = await page.context().newPage();
-	await seedProgress(irregularPage, {
+	await seedProgress(page, {
 		...legacyProgress,
 		clues_seen: [
 			{ id: "dns-txt:hint:1", seen_at: Date.now() - 27 * hourMs },
@@ -236,17 +239,20 @@ test("reads and persists a developed hint", async ({ page }) => {
 			{ id: "dns-txt:hint:4", seen_at: Date.now() - 25 * hourMs },
 		],
 	});
-	await capturePlausibleEvents(irregularPage);
-	await irregularPage.goto("/foobar");
-	const irregularBadge = await openFieldEntry(irregularPage, "TXT Me Maybe");
+	await capturePlausibleEvents(page);
+	await page.goto("/foobar");
+	const irregularBadge = await openFieldEntry(page, "TXT Me Maybe");
 	const persistedFinalHint = irregularBadge.getByRole("listitem").filter({ hasText: hintText });
-	await expect(persistedFinalHint.getByText("Hint 4", { exact: true })).toBeVisible();
+	await expect(persistedFinalHint.getByText("Field note 4", { exact: true })).toBeVisible();
 	await irregularBadge.getByRole("button", { name: "Reveal hint 3 of 4 for TXT Me Maybe" }).click();
-	expect(await readHintDevelopmentEvents(irregularPage)).toEqual([]);
-	await expect(persistedFinalHint.getByText("Hint 4", { exact: true })).toBeVisible();
+	expect(await readHintDevelopmentEvents(page)).toEqual([]);
+	await expect(persistedFinalHint.getByText("Field note 4", { exact: true })).toBeVisible();
 	await expect(irregularBadge.getByText("Hint 4 · Developing", { exact: true })).toHaveCount(0);
-	await irregularPage.close();
+});
 
+test("reads and persists a developed hint", async ({ page }) => {
+	const hourMs = 60 * 60 * 1_000;
+	const hintText = "Run dig TXT sreetamdas.com and follow the Foobar value.";
 	await seedProgress(page, {
 		...legacyProgress,
 		clues_seen: [
@@ -273,6 +279,7 @@ test("reads and persists a developed hint", async ({ page }) => {
 	await expect(dnsTxtBadge.getByText(hintText, { exact: true })).toBeVisible();
 	await expect(fieldNotes.getByText(hintText, { exact: true })).toBeVisible();
 	await page.reload();
+	await openFieldEntry(page, "TXT Me Maybe");
 	await expect(dnsTxtBadge.getByText(hintText, { exact: true })).toBeVisible();
 	await expect(fieldNotes.getByText(hintText, { exact: true })).toBeVisible();
 	await expect
@@ -317,7 +324,7 @@ test("deletes cloud progress durably and synchronizes the lifecycle across tabs"
 	await second.goto("/foobar");
 	await ensureCloudEnabled(second);
 
-	const trigger = page.getByRole("button", { name: "Delete cloud save" });
+	const trigger = page.getByRole("button", { name: "Delete cloud save", exact: true });
 	await trigger.click();
 	const cancel = page.getByRole("button", { name: "Keep cloud save" });
 	await expect(cancel).toBeFocused();
