@@ -23,5 +23,5 @@ export const getAboutRenderable = createServerFn({ method: "GET" }).handler(asyn
 		/>,
 	);
 
-	return { post, Renderable };
+	return { post: { description: post.description }, Renderable };
 });
