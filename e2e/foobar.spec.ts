@@ -34,9 +34,24 @@ async function authenticateFoobarE2e(page: Page) {
 }
 
 async function ensureCloudEnabled(page: Page) {
+	await openBasecamp(page);
 	const enable = page.getByRole("button", { name: "Save this browser's progress to cloud" });
 	if (await enable.isVisible()) await enable.click();
 	await expect(page.getByRole("button", { name: "Delete cloud save" })).toBeVisible();
+}
+
+async function openBasecamp(page: Page) {
+	const summary = page.getByText("Open Basecamp", { exact: true });
+	if ((await summary.locator("xpath=..").getAttribute("open")) === null) await summary.click();
+}
+
+async function openFieldEntry(page: Page, title: string) {
+	const article = page.getByRole("article").filter({
+		has: page.getByRole("heading", { name: title, exact: true }),
+	});
+	const trigger = article.getByRole("button", { name: `Open field entry for ${title}` });
+	if (await trigger.isVisible()) await trigger.click();
+	return article;
 }
 
 async function hasPersistedAchievement(page: Page, achievement: string, requireKonami = false) {
@@ -116,23 +131,47 @@ async function readHintDevelopmentEvents(page: Page) {
 	}, plausibleEventsKey);
 }
 
+test("orients hunters and keeps one field entry open", async ({ page }) => {
+	await seedProgress(page);
+	await page.goto("/foobar");
+
+	await expect(page.getByRole("heading", { level: 1, name: "Foobar" })).toBeVisible();
+	await expect(page.getByRole("progressbar", { name: /Foobar map complete/ })).toBeVisible();
+	await page.getByRole("button", { name: "Continue hunting" }).click();
+	await expect(
+		page.getByRole("button", { name: "Close field entry for Behind the Screens" }),
+	).toBeFocused();
+
+	await openFieldEntry(page, "TXT Me Maybe");
+	await expect(
+		page.getByRole("button", { name: "Open field entry for Behind the Screens" }),
+	).toBeVisible();
+	const hintButton = page.getByRole("button", { name: "Reveal hint 1 of 4 for TXT Me Maybe" });
+	const hintBox = await hintButton.boundingBox();
+	expect(hintBox?.height).toBeGreaterThanOrEqual(44);
+});
+
 test("groups achievements and persists revealed field notes", async ({ page }) => {
 	await seedProgress(page);
 	await page.goto("/foobar");
 
 	await expect(page.getByRole("heading", { name: "Warmup / Discovery" })).toBeVisible();
-	await expect(page.getByText("2 / 5 complete")).toBeVisible();
+	await expect(page.getByText("2 / 5 collected")).toBeVisible();
 	await expect(page.getByRole("heading", { name: "Field notes" })).toBeVisible();
 	await expect(page.getByText("Earlier", { exact: true })).toHaveCount(2);
 	await expect(page.getByText("Even crawlers are handed house rules.")).toBeVisible();
 	const fieldNotes = page.getByRole("region", { name: "Field notes" });
 
-	const firstHintButton = page.getByRole("button", { name: "Reveal hint 1 of 4 for TXT Me Maybe" });
+	const dnsTxtBadge = await openFieldEntry(page, "TXT Me Maybe");
+	const firstHintButton = dnsTxtBadge.getByRole("button", {
+		name: "Reveal hint 1 of 4 for TXT Me Maybe",
+	});
 	await expect(firstHintButton).toHaveText("Reveal hint 1 of 4");
 	await firstHintButton.click();
 	await expect(fieldNotes.getByText("The clue lives below HTTP.")).toBeVisible();
 	await page.reload();
 	await expect(fieldNotes.getByText("The clue lives below HTTP.")).toBeVisible();
+	await openFieldEntry(page, "TXT Me Maybe");
 	await expect(
 		page.getByRole("button", { name: "Reveal hint 2 of 4 for TXT Me Maybe" }),
 	).toHaveText("Reveal hint 2 of 4");
@@ -149,9 +188,7 @@ test("develops hint 4 without exposing its text", async ({ page }) => {
 	await capturePlausibleEvents(page);
 	await page.goto("/foobar");
 
-	const dnsTxtBadge = page.getByRole("article").filter({
-		has: page.getByRole("heading", { name: "TXT Me Maybe", exact: true }),
-	});
+	const dnsTxtBadge = await openFieldEntry(page, "TXT Me Maybe");
 	const pausedAt = new Date();
 	await page.clock.install({ time: pausedAt });
 	// `install` starts the fake clock running from `time`, so it can already be
@@ -201,9 +238,7 @@ test("reads and persists a developed hint", async ({ page }) => {
 	});
 	await capturePlausibleEvents(irregularPage);
 	await irregularPage.goto("/foobar");
-	const irregularBadge = irregularPage.getByRole("article").filter({
-		has: irregularPage.getByRole("heading", { name: "TXT Me Maybe", exact: true }),
-	});
+	const irregularBadge = await openFieldEntry(irregularPage, "TXT Me Maybe");
 	const persistedFinalHint = irregularBadge.getByRole("listitem").filter({ hasText: hintText });
 	await expect(persistedFinalHint.getByText("Hint 4", { exact: true })).toBeVisible();
 	await irregularBadge.getByRole("button", { name: "Reveal hint 3 of 4 for TXT Me Maybe" }).click();
@@ -223,9 +258,7 @@ test("reads and persists a developed hint", async ({ page }) => {
 	await capturePlausibleEvents(page);
 	await page.goto("/foobar");
 
-	const dnsTxtBadge = page.getByRole("article").filter({
-		has: page.getByRole("heading", { name: "TXT Me Maybe", exact: true }),
-	});
+	const dnsTxtBadge = await openFieldEntry(page, "TXT Me Maybe");
 	const fieldNotes = page.getByRole("region", { name: "Field notes" });
 	const readButton = dnsTxtBadge.getByRole("button", {
 		name: "Read developed hint 4 of 4 for TXT Me Maybe",
@@ -255,6 +288,7 @@ test("reads and persists a developed hint", async ({ page }) => {
 test("keeps local progress as the default and offers optional cloud save", async ({ page }) => {
 	await seedProgress(page);
 	await page.goto("/foobar");
+	await openBasecamp(page);
 
 	await expect(page.getByRole("heading", { name: "Hunter registry" })).toBeVisible();
 	await expect(page.getByText("Sign in to save progress across devices.")).toBeVisible();
@@ -274,6 +308,7 @@ test("deletes cloud progress durably and synchronizes the lifecycle across tabs"
 	await authenticateFoobarE2e(page);
 	await seedProgress(page);
 	await page.goto("/foobar");
+	await openBasecamp(page);
 	await expect(page.getByText("Signed in as Foobar E2E Hunter.")).toBeVisible();
 	await ensureCloudEnabled(page);
 
@@ -295,6 +330,7 @@ test("deletes cloud progress durably and synchronizes the lifecycle across tabs"
 	await expect(enable).toBeVisible();
 
 	await Promise.all([page.reload(), second.reload()]);
+	await Promise.all([openBasecamp(page), openBasecamp(second)]);
 	await expect(
 		page.getByRole("button", { name: "Save this browser's progress to cloud" }),
 	).toBeVisible();
@@ -309,6 +345,7 @@ test("offers an operation-specific retry when cloud deletion fails", async ({ pa
 	await authenticateFoobarE2e(page);
 	await seedProgress(page);
 	await page.goto("/foobar");
+	await openBasecamp(page);
 	await ensureCloudEnabled(page);
 
 	await page.route("**/_serverFn/**", (route) => route.abort("failed"));
@@ -347,6 +384,7 @@ test("tier dashboard fits a mobile viewport", async ({ page }) => {
 
 	await expect(page.getByRole("heading", { name: "Warmup / Discovery" })).toBeVisible();
 	await expect(page.getByRole("heading", { name: "Field notes" })).toBeVisible();
+	await openFieldEntry(page, "TXT Me Maybe");
 	await expect(page.getByText("Hint 4 · Developing", { exact: true })).toBeVisible();
 	const hasHorizontalOverflow = await page
 		.locator("main")
@@ -491,6 +529,7 @@ test("unlocks campfire for two simultaneous hunters", async ({ browser }) => {
 	await seedProgress(second);
 
 	await Promise.all([first.goto("/foobar"), second.goto("/foobar")]);
+	await openBasecamp(first);
 	await expect(first.getByRole("heading", { name: "Campfire", exact: true })).toBeVisible();
 
 	for (const hunter of [first, second]) {
