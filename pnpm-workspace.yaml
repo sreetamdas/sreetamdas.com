@@ -7,7 +7,7 @@ allowBuilds:
   "@parcel/watcher": true
   "@tailwindcss/oxide": true
 catalog:
-  vite: npm:@voidzero-dev/vite-plus-core@latest
+  vite: npm:@voidzero-dev/vite-plus-core@0.2.6
   vite-plus: ^0.2.6
 overrides:
   kysely: 0.28.8
