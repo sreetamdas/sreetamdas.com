@@ -10,14 +10,12 @@ import { type HTMLAttributes } from "react";
 
 import { LinkTo } from "@/lib/components/Anchor";
 import { Image } from "@/lib/components/Image";
-import { Tweet } from "@/lib/components/Tweet";
 import { Blockquote, Code, Heading, UnorderedList } from "@/lib/components/Typography";
 import { CodeBlock } from "@/lib/domains/shiki/CodeBlock";
 import { Steps } from "@/lib/domains/slides/steps";
 import { cn } from "@/lib/helpers/utils";
 
 export const slideMDXComponents: MDXComponents = {
-	Tweet,
 	h1: ({ children, ...props }: HTMLAttributes<HTMLHeadingElement>) => (
 		<Heading.h1
 			className="group pt-10 pb-6 font-serif text-7xl leading-normal font-bold text-primary font-stretch-semi-condensed"
