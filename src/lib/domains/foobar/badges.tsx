@@ -52,10 +52,9 @@ export const ShowCompletedBadges = ({
 	const nextAchievement = achievements.find((achievement) => !isComplete(achievement));
 
 	return (
-		<div className="pt-12 sm:pt-20">
+		<div>
 			<header className="pb-8">
-				<h1 className="font-serif text-6xl leading-none font-bold sm:text-7xl">/foobar</h1>
-				<p className="mt-8 text-pretty">
+				<p className="text-pretty">
 					There are strange things hiding around this website. Some are obvious. Some are decidedly
 					not. This page remembers the ones you find.
 				</p>

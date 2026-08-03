@@ -103,6 +103,9 @@ export const FoobarDashboard = () => {
 					</pre>
 				</details>
 			)}
+			<h1 className="pt-12 font-serif text-6xl leading-none font-bold sm:pt-20 sm:text-7xl">
+				/foobar
+			</h1>
 			<ShowCompletedBadges
 				completed={foobar_data.completed}
 				all_achievements={foobar_data.all_achievements}
