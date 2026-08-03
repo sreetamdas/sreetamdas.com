@@ -10,6 +10,21 @@ const legacyProgress = {
 
 const plausibleEventsKey = "foobar-e2e-plausible-events";
 
+const presenceWorkerRoom = `e2e-worker-${process.env.TEST_WORKER_INDEX ?? 0}`;
+
+/**
+ * Routes this page's presence socket into a per-worker room so parallel e2e
+ * workers never count each other as hunters. The campfire unlock test still
+ * works: both of its pages share the same worker, hence the same room. The
+ * storage key mirrors `PRESENCE_ROOM_OVERRIDE_KEY` in the app source; it is
+ * intentionally not imported so e2e stays a wire-level boundary.
+ */
+async function isolatePresencePerWorker(page: Page) {
+	await page.addInitScript((room) => {
+		window.sessionStorage.setItem("presence-room", room);
+	}, presenceWorkerRoom);
+}
+
 async function seedProgress(page: Page, progress: Record<string, unknown> = legacyProgress) {
 	await page.addInitScript((progress) => {
 		if (window.sessionStorage.getItem("foobar-e2e-seeded")) return;
@@ -135,14 +150,16 @@ async function readHintDevelopmentEvents(page: Page) {
 	}, plausibleEventsKey);
 }
 
+test.beforeEach(async ({ page }) => {
+	await isolatePresencePerWorker(page);
+});
+
 test("orients hunters and keeps one field entry open", async ({ page }) => {
 	await seedProgress(page);
 	await page.goto("/foobar");
 
 	await expect(page.getByRole("heading", { level: 1, name: "Foobar" })).toBeVisible();
-	// Parallel e2e workers act as simultaneous hunters on the shared presence
-	// socket, which can legitimately unlock campfire and raise the count.
-	await expect(page.getByText(/^\d+ of 24 weird things found\.$/)).toBeVisible();
+	await expect(page.getByText("2 of 24 weird things found.", { exact: true })).toBeVisible();
 	await page.getByRole("button", { name: "Continue hunting" }).click();
 	await expect(
 		page.getByRole("button", { name: "Close field entry for Behind the Screens" }),
@@ -534,6 +551,8 @@ test("unlocks campfire for two simultaneous hunters", async ({ browser }) => {
 	const secondContext = await browser.newContext();
 	const first = await firstContext.newPage();
 	const second = await secondContext.newPage();
+	await isolatePresencePerWorker(first);
+	await isolatePresencePerWorker(second);
 	await seedProgress(first);
 	await seedProgress(second);
 
