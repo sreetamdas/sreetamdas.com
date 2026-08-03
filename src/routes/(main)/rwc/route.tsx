@@ -9,16 +9,18 @@ import { StatsCounter } from "@/lib/domains/PageInteraction/StatsCounter";
 import { canonicalUrl, defaultOgImageUrl } from "@/lib/seo";
 import { STATIC_SERVER_FUNCTION_STALE_TIME } from "@/lib/static-server-functions";
 
-import { type RWCCodeSamples, type RWCSolution } from "./-data";
+import { parseRwcCodeSamples, type RWCCodeSamples, type RWCSolution } from "./-data.shared";
 import { getHighlightedCode } from "./-rwc.server";
 
 export const Route = createFileRoute("/(main)/rwc")({
 	component: RWCPage,
 	staleTime: STATIC_SERVER_FUNCTION_STALE_TIME,
-	headers: () => RWC_CACHE_HEADERS,
+	headers: ({ loaderData }) =>
+		loaderData?.all_solutions.length ? RWC_CACHE_HEADERS : { "cache-control": "no-store" },
 	loader: async () => {
 		const response = await getHighlightedCode();
-		return response.json() as Promise<RWCCodeSamples>;
+		const payload: unknown = await response.json();
+		return parseRwcCodeSamples(payload);
 	},
 	errorComponent: (err) => <ErrorComponent error={err} />,
 	head: () => ({
@@ -45,19 +47,23 @@ function RWCPage() {
 	const fetchHighlightedCode = useServerFn(() => getHighlightedCode());
 
 	// The loader is static (build-time) for SEO, but hydration does not re-run
-	// loaders, so refetch on every mount. Cloudflare serves the cached response
-	// with stale-while-revalidate, so this stays cheap while picking up gist
-	// changes within ~24h.
-	const { data: freshData } = useQuery<RWCCodeSamples>({
+	// loaders, so refetch on every mount. The server function's targeted cache
+	// keeps this request cheap while picking up gist changes without a deploy.
+	const { data: freshData = loaderData } = useQuery<RWCCodeSamples>({
 		queryKey: ["rwc", "highlighted-code"],
 		queryFn: async () => {
 			const response = await fetchHighlightedCode();
-			return response.json();
+			const payload: unknown = await response.json();
+			return parseRwcCodeSamples(payload);
 		},
 		staleTime: 0,
+		placeholderData: loaderData,
+		refetchOnWindowFocus: false,
+		refetchOnReconnect: false,
+		retry: false,
 	});
 
-	const { all_solutions, background_color } = freshData ?? loaderData;
+	const { all_solutions, background_color } = freshData;
 
 	return (
 		<>
