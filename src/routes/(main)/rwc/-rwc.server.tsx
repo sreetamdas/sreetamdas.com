@@ -3,20 +3,39 @@ import { createServerFn } from "@tanstack/react-start";
 import { fetchGist } from "@/lib/domains/GitHub/fetchGist";
 import { getSlimKarmaHighlighter } from "@/lib/domains/shiki/highlighter";
 
-import { buildHighlightedCodeResponse, loadRwcCodeSamples, resolveRwcEnv } from "./-data";
+import {
+	buildHighlightedCodeResponse,
+	loadCachedHighlightedCodeResponse,
+	loadRwcCodeSamples,
+	resolveRwcEnv,
+	RWC_CACHE_NAME,
+	type RwcCache,
+} from "./-data";
 
-// Runs at request time (rather than being prerendered into a static asset) so
-// the response can be cached at the edge with stale-while-revalidate and pick
-// up gist changes daily without a deploy.
 export const getHighlightedCode = createServerFn({ method: "GET" }).handler(async () => {
 	const { githubGistId, githubToken } = resolveRwcEnv();
+	const load = () =>
+		loadRwcCodeSamples({
+			githubGistId,
+			githubToken,
+			fetchGist,
+			getHighlighter: getSlimKarmaHighlighter,
+		});
 
-	const result = await loadRwcCodeSamples({
-		githubGistId,
-		githubToken,
-		fetchGist,
-		getHighlighter: getSlimKarmaHighlighter,
-	});
+	if (typeof caches === "undefined") {
+		return buildHighlightedCodeResponse(await load());
+	}
 
-	return buildHighlightedCodeResponse(result);
+	let cache: RwcCache | undefined;
+	try {
+		cache = await caches.open(RWC_CACHE_NAME);
+	} catch {
+		cache = undefined;
+	}
+
+	if (!cache) {
+		return buildHighlightedCodeResponse(await load());
+	}
+
+	return loadCachedHighlightedCodeResponse({ cache, load });
 });
