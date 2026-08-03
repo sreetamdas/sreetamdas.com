@@ -177,6 +177,7 @@ const CompletedAchievement = ({ achievement }: { achievement: FoobarAchievement 
 		<article
 			className="grid grid-cols-[1.25rem_minmax(0,1fr)] gap-2 py-4"
 			id={`foobar-achievement-${achievement}`}
+			tabIndex={-1}
 		>
 			<span aria-hidden="true" className="font-mono text-primary">
 				✓
