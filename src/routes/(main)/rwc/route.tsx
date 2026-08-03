@@ -14,6 +14,8 @@ import { getHighlightedCode } from "./-rwc.server";
 
 export const Route = createFileRoute("/(main)/rwc")({
 	component: RWCPage,
+	// `/rwc` is prerendered, so the loader only ever runs at build time. Keep
+	// its data fresh forever: the client fetches the server function on mount.
 	staleTime: STATIC_SERVER_FUNCTION_STALE_TIME,
 	headers: ({ loaderData }) =>
 		loaderData?.all_solutions.length ? RWC_CACHE_HEADERS : { "cache-control": "no-store" },
@@ -46,9 +48,13 @@ function RWCPage() {
 	const loaderData = Route.useLoaderData();
 	const fetchHighlightedCode = useServerFn(() => getHighlightedCode());
 
-	// The loader is static (build-time) for SEO, but hydration does not re-run
-	// loaders, so refetch on every mount. The server function's targeted cache
-	// keeps this request cheap while picking up gist changes without a deploy.
+	// The HTML is prerendered at build time and served as a static asset, so
+	// `loaderData` is a build-time snapshot used only as first-paint
+	// placeholder. The server function is the only runtime data request; its
+	// browser/CDN cache policies (browser revalidates every load, edge keeps
+	// one hour fresh with 24h stale-while-revalidate) make the refetch cheap
+	// while picking up gist changes without a deploy. `staleTime: 0` forces
+	// this refetch on every mount by design.
 	const { data: freshData = loaderData } = useQuery<RWCCodeSamples>({
 		queryKey: ["rwc", "highlighted-code"],
 		queryFn: async () => {
