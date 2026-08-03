@@ -7,7 +7,7 @@ import { env } from "cloudflare:workers";
 
 import { RWC_CACHE_HEADERS, RWC_EDGE_CACHE_TTL_SECONDS } from "@/lib/cacheHeaders";
 
-import { parseRwcCodeSamples, type RWCCodeSamples, type RWCSolution } from "./-data.shared";
+import { parseRwcCodeSamples, type RWCCodeSamples } from "./-data.shared";
 
 export type { RWCCodeSamples, RWCSolution } from "./-data.shared";
 

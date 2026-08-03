@@ -15,8 +15,7 @@ export const STATS_EDGE_CACHE_CONTROL = "public, max-age=60, stale-while-revalid
 // while revalidating, so new editions do not require a deploy.
 export const RWC_BROWSER_CACHE_CONTROL = "public, max-age=0, stale-while-revalidate=86400";
 export const RWC_EDGE_CACHE_TTL_SECONDS = 3600;
-export const RWC_EDGE_CACHE_CONTROL =
-	`public, max-age=${RWC_EDGE_CACHE_TTL_SECONDS}, stale-while-revalidate=86400`;
+export const RWC_EDGE_CACHE_CONTROL = `public, max-age=${RWC_EDGE_CACHE_TTL_SECONDS}, stale-while-revalidate=86400`;
 
 export const HTML_CACHE_HEADERS = {
 	"cache-control": HTML_BROWSER_CACHE_CONTROL,
