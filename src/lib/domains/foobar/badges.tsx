@@ -205,6 +205,11 @@ type BadgeProps = {
 const Badge = ({ achievement, isExpanded, cluesSeen, recordFoobarClue, onToggle }: BadgeProps) => {
 	const plausibleEvent = useCustomPlausible();
 	const [recordedHint, setRecordedHint] = useState<number | null>(null);
+	// The acknowledgment confirms the most recent reveal; clear it once the
+	// entry collapses so a later visit cannot show a stale confirmation.
+	useEffect(() => {
+		if (!isExpanded) setRecordedHint(null);
+	}, [isExpanded]);
 	const metadata = FOOBAR_ACHIEVEMENTS[achievement];
 	const clueIds = cluesSeen.map(({ id }) => id);
 	const revealedHints = metadata.hints.flatMap((hint, index) =>
