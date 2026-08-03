@@ -23,8 +23,20 @@ export function handlePresenceGetForNamespace(
 		return Response.json({ error: "Live presence is unavailable" }, { status: 500 });
 	}
 
-	const stub = presence.getByName("global");
+	const stub = presence.getByName(getPresenceRoom(request));
 	return stub.fetch(request);
+}
+
+const PRESENCE_ROOM_PATTERN = /^[a-zA-Z0-9._-]{1,64}$/;
+
+/**
+ * Namespaces presence by an optional `room` query parameter so concurrent
+ * consumers (for example parallel e2e workers) do not count each other as
+ * hunters. Unspecified or malformed rooms fall back to the shared "global" room.
+ */
+export function getPresenceRoom(request: Request): string {
+	const room = new URL(request.url).searchParams.get("room");
+	return room !== null && PRESENCE_ROOM_PATTERN.test(room) ? room : "global";
 }
 
 export const Route = createFileRoute("/(api)/api/presence")({
