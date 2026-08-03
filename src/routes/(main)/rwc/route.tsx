@@ -1,18 +1,25 @@
+import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, ErrorComponent } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
 import { FiLink } from "react-icons/fi";
 
 import { SITE_DESCRIPTION, SITE_TITLE_APPEND } from "@/config";
+import { RWC_CACHE_HEADERS } from "@/lib/cacheHeaders";
 import { StatsCounter } from "@/lib/domains/PageInteraction/StatsCounter";
 import { canonicalUrl, defaultOgImageUrl } from "@/lib/seo";
 import { STATIC_SERVER_FUNCTION_STALE_TIME } from "@/lib/static-server-functions";
 
-import { type RWCSolution } from "./-data";
+import { type RWCCodeSamples, type RWCSolution } from "./-data";
 import { getHighlightedCode } from "./-rwc.server";
 
 export const Route = createFileRoute("/(main)/rwc")({
 	component: RWCPage,
 	staleTime: STATIC_SERVER_FUNCTION_STALE_TIME,
-	loader: async () => getHighlightedCode(),
+	headers: () => RWC_CACHE_HEADERS,
+	loader: async () => {
+		const response = await getHighlightedCode();
+		return response.json() as Promise<RWCCodeSamples>;
+	},
 	errorComponent: (err) => <ErrorComponent error={err} />,
 	head: () => ({
 		links: [{ rel: "canonical", href: canonicalUrl("/rwc") }],
@@ -34,7 +41,23 @@ export const Route = createFileRoute("/(main)/rwc")({
 });
 
 function RWCPage() {
-	const { all_solutions, background_color } = Route.useLoaderData();
+	const loaderData = Route.useLoaderData();
+	const fetchHighlightedCode = useServerFn(() => getHighlightedCode());
+
+	// The loader is static (build-time) for SEO, but hydration does not re-run
+	// loaders, so refetch on every mount. Cloudflare serves the cached response
+	// with stale-while-revalidate, so this stays cheap while picking up gist
+	// changes within ~24h.
+	const { data: freshData } = useQuery<RWCCodeSamples>({
+		queryKey: ["rwc", "highlighted-code"],
+		queryFn: async () => {
+			const response = await fetchHighlightedCode();
+			return response.json();
+		},
+		staleTime: 0,
+	});
+
+	const { all_solutions, background_color } = freshData ?? loaderData;
 
 	return (
 		<>

@@ -1,6 +1,13 @@
 import { describe, expect, test } from "vitest";
 
-import { FALLBACK_RWC_BACKGROUND, loadRwcCodeSamples, resolveRwcEnv } from "./-data";
+import { RWC_BROWSER_CACHE_CONTROL, RWC_EDGE_CACHE_CONTROL } from "@/lib/cacheHeaders";
+
+import {
+	buildHighlightedCodeResponse,
+	FALLBACK_RWC_BACKGROUND,
+	loadRwcCodeSamples,
+	resolveRwcEnv,
+} from "./-data";
 
 describe("resolveRwcEnv", () => {
 	test("reads GitHub settings from Cloudflare env", () => {
@@ -117,3 +124,19 @@ function createHighlighter() {
 		},
 	};
 }
+
+describe("buildHighlightedCodeResponse", () => {
+	test("returns the payload as JSON with daily SWR cache headers", async () => {
+		const payload = {
+			all_solutions: [],
+			background_color: FALLBACK_RWC_BACKGROUND,
+		};
+
+		const response = buildHighlightedCodeResponse(payload);
+
+		expect(response.headers.get("content-type")).toBe("application/json");
+		expect(response.headers.get("cache-control")).toBe(RWC_BROWSER_CACHE_CONTROL);
+		expect(response.headers.get("cloudflare-cdn-cache-control")).toBe(RWC_EDGE_CACHE_CONTROL);
+		await expect(response.json()).resolves.toEqual(payload);
+	});
+});

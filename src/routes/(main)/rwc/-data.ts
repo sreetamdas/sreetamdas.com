@@ -5,6 +5,8 @@
  */
 import { env } from "cloudflare:workers";
 
+import { RWC_CACHE_HEADERS } from "@/lib/cacheHeaders";
+
 export const FALLBACK_RWC_BACKGROUND = "#17181c";
 
 export type RWCSolution = {
@@ -96,4 +98,19 @@ export async function loadRwcCodeSamples({
 	});
 
 	return { all_solutions, background_color };
+}
+
+/**
+ * Wraps the highlighted gist payload in a JSON response carrying the RWC SWR
+ * cache policy. The server function returns this raw Response so Cloudflare
+ * caches it at the edge and revalidates it daily, instead of the data being
+ * baked into a static asset at build time.
+ */
+export function buildHighlightedCodeResponse(result: RWCCodeSamples): Response {
+	return new Response(JSON.stringify(result), {
+		headers: {
+			"content-type": "application/json",
+			...RWC_CACHE_HEADERS,
+		},
+	});
 }
