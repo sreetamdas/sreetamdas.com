@@ -70,6 +70,16 @@ describe("handlePresenceGetForNamespace", () => {
 		expect(getPresenceRoom(request)).toBe("global");
 	});
 
+	test("falls back to the global room for well-formed but unauthorized rooms", async () => {
+		const request = new Request("https://example.com/api/presence?room=worker-7");
+		expect(getPresenceRoom(request)).toBe("global");
+	});
+
+	test("rejects oversized worker indexes", async () => {
+		const request = new Request("https://example.com/api/presence?room=e2e-worker-100");
+		expect(getPresenceRoom(request)).toBe("global");
+	});
+
 	test("preserves websocket upgrade query params for client identity", async () => {
 		const request = new Request("https://example.com/api/presence?clientId=viewer-123", {
 			headers: { Upgrade: "websocket" },
