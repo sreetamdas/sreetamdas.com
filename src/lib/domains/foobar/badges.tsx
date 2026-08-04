@@ -52,10 +52,9 @@ export const ShowCompletedBadges = ({
 	const nextAchievement = achievements.find((achievement) => !isComplete(achievement));
 
 	return (
-		<div className="pt-12 sm:pt-20">
+		<div>
 			<header className="pb-8">
-				<h1 className="font-serif text-6xl leading-none font-bold sm:text-7xl">/foobar</h1>
-				<p className="mt-8 text-pretty">
+				<p className="text-pretty">
 					There are strange things hiding around this website. Some are obvious. Some are decidedly
 					not. This page remembers the ones you find.
 				</p>
@@ -133,6 +132,8 @@ const TierSection = ({
 	const completedAchievements = achievements.filter((achievement) =>
 		achievement === "completed" ? all_achievements : completed.includes(achievement),
 	);
+	const toggleAchievement = (achievement: FoobarAchievement) => () =>
+		activeAchievement === achievement ? onCollapseAchievement() : onSelectAchievement(achievement);
 
 	return (
 		<section aria-labelledby={`foobar-tier-${tier}`} className="scroll-mt-24">
@@ -151,7 +152,13 @@ const TierSection = ({
 			<ul className="border-t border-foreground/25">
 				{achievements.map((achievement) =>
 					completedAchievements.includes(achievement) ? (
-						<CompletedAchievement achievement={achievement} key={achievement} />
+						<CompletedAchievement
+							achievement={achievement}
+							cluesSeen={cluesSeen}
+							isExpanded={activeAchievement === achievement}
+							onToggle={toggleAchievement(achievement)}
+							key={achievement}
+						/>
 					) : (
 						<Badge
 							key={achievement}
@@ -159,11 +166,7 @@ const TierSection = ({
 							isExpanded={activeAchievement === achievement}
 							cluesSeen={cluesSeen}
 							recordFoobarClue={recordFoobarClue}
-							onToggle={() =>
-								activeAchievement === achievement
-									? onCollapseAchievement()
-									: onSelectAchievement(achievement)
-							}
+							onToggle={toggleAchievement(achievement)}
 						/>
 					),
 				)}
@@ -172,26 +175,72 @@ const TierSection = ({
 	);
 };
 
-const CompletedAchievement = ({ achievement }: { achievement: FoobarAchievement }) => (
-	<li className="border-b border-foreground/20">
-		<article
-			className="grid grid-cols-[1.25rem_minmax(0,1fr)] gap-2 py-4"
-			id={`foobar-achievement-${achievement}`}
-		>
-			<span aria-hidden="true" className="font-mono text-primary">
-				✓
-			</span>
-			<div>
-				<h3 className="font-serif text-lg font-semibold text-primary">
-					{FOOBAR_ACHIEVEMENTS[achievement].title}
-				</h3>
-				<p className="mt-1 text-sm text-foreground/70">
-					{FOOBAR_ACHIEVEMENTS[achievement].completion.note}
-				</p>
-			</div>
-		</article>
-	</li>
-);
+const CompletedAchievement = ({
+	achievement,
+	cluesSeen,
+	isExpanded,
+	onToggle,
+}: {
+	achievement: FoobarAchievement;
+	cluesSeen: FoobarDataType["clues_seen"];
+	isExpanded: boolean;
+	onToggle: () => void;
+}) => {
+	const metadata = FOOBAR_ACHIEVEMENTS[achievement];
+	const clueIds = cluesSeen.map(({ id }) => id);
+	const revealedHints = metadata.hints.flatMap((hint, index) =>
+		clueIds.includes(hint.id) ? [{ hint, number: index + 1 }] : [],
+	);
+
+	return (
+		<li className="border-b border-foreground/20">
+			<article className="scroll-mt-24" id={`foobar-achievement-${achievement}`}>
+				<div className="grid grid-cols-[1.25rem_minmax(0,1fr)_auto] items-start gap-2 py-4">
+					<span aria-hidden="true" className="pt-0.5 font-mono text-primary">
+						✓
+					</span>
+					<div className="min-w-0">
+						<h3 className="font-serif text-lg font-semibold text-primary">{metadata.title}</h3>
+						<p className="mt-1 text-sm text-foreground/70">{metadata.completion.note}</p>
+					</div>
+					<button
+						aria-controls={`foobar-achievement-details-${achievement}`}
+						aria-expanded={isExpanded}
+						aria-label={`${isExpanded ? "Close" : "Open"} field entry for ${metadata.title}`}
+						className="inline-flex min-h-11 min-w-11 items-start justify-center link-base pt-0.5 font-mono text-lg text-primary"
+						id={`foobar-achievement-trigger-${achievement}`}
+						onClick={onToggle}
+						type="button"
+					>
+						<span aria-hidden="true">{isExpanded ? "−" : "+"}</span>
+					</button>
+				</div>
+
+				{isExpanded ? (
+					<div className="mr-4 pb-5 pl-[2.05rem]" id={`foobar-achievement-details-${achievement}`}>
+						{revealedHints.length > 0 ? (
+							<ol className="grid gap-3 text-sm text-foreground/80">
+								{revealedHints.map(({ hint, number }) => (
+									<li className="grid grid-cols-[auto_minmax(0,1fr)] gap-2" key={hint.id}>
+										<span aria-hidden="true" className="font-mono text-primary">
+											→
+										</span>
+										<span className="break-words">
+											<span className="sr-only">Hint {number}: </span>
+											<span>{hint.text}</span>
+										</span>
+									</li>
+								))}
+							</ol>
+						) : (
+							<p className="text-sm text-foreground/65">Nothing written down yet.</p>
+						)}
+					</div>
+				) : null}
+			</article>
+		</li>
+	);
+};
 
 type BadgeProps = {
 	achievement: FoobarAchievement;
@@ -204,6 +253,11 @@ type BadgeProps = {
 const Badge = ({ achievement, isExpanded, cluesSeen, recordFoobarClue, onToggle }: BadgeProps) => {
 	const plausibleEvent = useCustomPlausible();
 	const [recordedHint, setRecordedHint] = useState<number | null>(null);
+	// The acknowledgment confirms the most recent reveal; clear it once the
+	// entry collapses so a later visit cannot show a stale confirmation.
+	useEffect(() => {
+		if (!isExpanded) setRecordedHint(null);
+	}, [isExpanded]);
 	const metadata = FOOBAR_ACHIEVEMENTS[achievement];
 	const clueIds = cluesSeen.map(({ id }) => id);
 	const revealedHints = metadata.hints.flatMap((hint, index) =>

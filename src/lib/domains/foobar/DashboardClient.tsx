@@ -77,9 +77,13 @@ export const FoobarDashboard = () => {
 		setActiveAchievement(achievement);
 		window.requestAnimationFrame(() => {
 			const target = document.getElementById(`foobar-achievement-${achievement}`);
-			const drawer = target?.closest("details");
-			if (drawer instanceof HTMLDetailsElement) drawer.open = true;
-			target?.scrollIntoView({ behavior: "smooth", block: "center" });
+			const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+			target?.scrollIntoView({
+				behavior: prefersReducedMotion ? "auto" : "smooth",
+				block: "center",
+			});
+			// Every entry has a trigger after completion; focusing it keeps
+			// keyboard users on a visible, operable control.
 			document.getElementById(`foobar-achievement-trigger-${achievement}`)?.focus();
 		});
 	}
@@ -96,6 +100,9 @@ export const FoobarDashboard = () => {
 					</pre>
 				</details>
 			)}
+			<h1 className="pt-12 font-serif text-6xl leading-none font-bold sm:pt-20 sm:text-7xl">
+				/foobar
+			</h1>
 			<ShowCompletedBadges
 				completed={foobar_data.completed}
 				all_achievements={foobar_data.all_achievements}

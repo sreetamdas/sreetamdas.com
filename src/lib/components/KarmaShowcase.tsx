@@ -86,8 +86,6 @@ export const KarmaShowcase = ({ examples }: Props) => {
 					id="theme-switch"
 					checked={isDefaultTheme}
 					onCheckedChange={handleThemeToggle}
-					nativeButton
-					render={<button type="button" />}
 					className="relative mx-4 h-[25px] w-[42px] cursor-default rounded-full bg-primary outline-none"
 				>
 					<Switch.Thumb className="block h-[21px] w-[21px] translate-x-0.5 rounded-full bg-white transition-transform duration-(--transition-duration) will-change-transform data-checked:translate-x-[19px]" />

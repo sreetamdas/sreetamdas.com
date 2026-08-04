@@ -10,6 +10,24 @@ const legacyProgress = {
 
 const plausibleEventsKey = "foobar-e2e-plausible-events";
 
+// TEST_PARALLEL_INDEX is the worker slot (0..workers-1), so it stays within
+// the two-digit bound enforced by the server's room pattern. TEST_WORKER_INDEX
+// increments on every worker restart and can escape that range.
+const presenceWorkerRoom = `e2e-worker-${process.env.TEST_PARALLEL_INDEX ?? 0}`;
+
+/**
+ * Routes this page's presence socket into a per-worker room so parallel e2e
+ * workers never count each other as hunters. The campfire unlock test still
+ * works: both of its pages share the same worker, hence the same room. The
+ * storage key mirrors `PRESENCE_ROOM_OVERRIDE_KEY` in the app source; it is
+ * intentionally not imported so e2e stays a wire-level boundary.
+ */
+async function isolatePresencePerWorker(page: Page) {
+	await page.addInitScript((room) => {
+		window.sessionStorage.setItem("presence-room", room);
+	}, presenceWorkerRoom);
+}
+
 async function seedProgress(page: Page, progress: Record<string, unknown> = legacyProgress) {
 	await page.addInitScript((progress) => {
 		if (window.sessionStorage.getItem("foobar-e2e-seeded")) return;
@@ -135,12 +153,16 @@ async function readHintDevelopmentEvents(page: Page) {
 	}, plausibleEventsKey);
 }
 
+test.beforeEach(async ({ page }) => {
+	await isolatePresencePerWorker(page);
+});
+
 test("orients hunters and keeps one field entry open", async ({ page }) => {
 	await seedProgress(page);
 	await page.goto("/foobar");
 
 	await expect(page.getByRole("heading", { level: 1, name: "Foobar" })).toBeVisible();
-	await expect(page.getByText("2 of 24 weird things found.")).toBeVisible();
+	await expect(page.getByText("2 of 24 weird things found.", { exact: true })).toBeVisible();
 	await page.getByRole("button", { name: "Continue hunting" }).click();
 	await expect(
 		page.getByRole("button", { name: "Close field entry for Behind the Screens" }),
@@ -153,6 +175,17 @@ test("orients hunters and keeps one field entry open", async ({ page }) => {
 	const hintButton = page.getByRole("button", { name: "Reveal hint 1 of 4 for TXT Me Maybe" });
 	const hintBox = await hintButton.boundingBox();
 	expect(hintBox?.height).toBeGreaterThanOrEqual(44);
+
+	// The single-open invariant spans completed entries too: opening a
+	// completed entry from its own trigger collapses the open one.
+	await openFieldEntry(page, "X Marks the Spot");
+	await expect(
+		page.getByRole("button", { name: "Open field entry for TXT Me Maybe" }),
+	).toBeVisible();
+	await expect(
+		page.getByRole("button", { name: "Close field entry for X Marks the Spot" }),
+	).toBeVisible();
+	await expect(page.getByText("Nothing written down yet.")).toBeVisible();
 });
 
 test("groups achievements and persists revealed field notes", async ({ page }) => {
@@ -532,6 +565,8 @@ test("unlocks campfire for two simultaneous hunters", async ({ browser }) => {
 	const secondContext = await browser.newContext();
 	const first = await firstContext.newPage();
 	const second = await secondContext.newPage();
+	await isolatePresencePerWorker(first);
+	await isolatePresencePerWorker(second);
 	await seedProgress(first);
 	await seedProgress(second);
 

@@ -1,22 +1,23 @@
 /**
  * Remote Widget Catalogue data loader. RWC source files live in a GitHub gist
- * and are highlighted at build/prerender time when env is available, with a
- * small fallback payload for previews that do not have the gist configured.
+ * and are highlighted for the build/prerendered shell and request-time refreshes,
+ * with a small fallback payload for previews or temporary GitHub failures.
  */
 import { env } from "cloudflare:workers";
 
+import { RWC_CACHE_HEADERS, RWC_EDGE_CACHE_TTL_SECONDS } from "@/lib/cacheHeaders";
+
+import { parseRwcCodeSamples, type RWCCodeSamples } from "./-data.shared";
+
+export type { RWCCodeSamples, RWCSolution } from "./-data.shared";
+
 export const FALLBACK_RWC_BACKGROUND = "#17181c";
+export const RWC_CACHE_NAME = "rwc-highlighted-code";
+export const RWC_CACHE_KEY = "https://internal.cache/rwc-highlighted-code";
 
-export type RWCSolution = {
-	html: string;
-	slug: string;
-	filename: string | undefined;
-	lang: string;
-};
-
-export type RWCCodeSamples = {
-	all_solutions: Array<RWCSolution>;
-	background_color: string;
+export type RwcCache = {
+	match(request: Request): Promise<Response | undefined>;
+	put(request: Request, response: Response): Promise<void>;
 };
 
 type RwcGistFile = {
@@ -96,4 +97,91 @@ export async function loadRwcCodeSamples({
 	});
 
 	return { all_solutions, background_color };
+}
+
+function isCacheableRwcCodeSamples(result: RWCCodeSamples): boolean {
+	return result.all_solutions.length > 0;
+}
+
+async function readCachedRwcCodeSamples(
+	cache: RwcCache,
+	cacheKey: Request,
+): Promise<RWCCodeSamples | undefined> {
+	let cached: Response | undefined;
+	try {
+		cached = await cache.match(cacheKey);
+	} catch {
+		return undefined;
+	}
+
+	if (!cached) {
+		return undefined;
+	}
+
+	try {
+		const result: unknown = await cached.json();
+		const parsed = parseRwcCodeSamples(result);
+		return isCacheableRwcCodeSamples(parsed) ? parsed : undefined;
+	} catch {
+		return undefined;
+	}
+}
+
+async function writeCachedRwcCodeSamples(
+	cache: RwcCache,
+	cacheKey: Request,
+	result: RWCCodeSamples,
+): Promise<void> {
+	try {
+		await cache.put(
+			cacheKey,
+			new Response(JSON.stringify(result), {
+				headers: {
+					"content-type": "application/json",
+					"cache-control": `public, max-age=${RWC_EDGE_CACHE_TTL_SECONDS}`,
+				},
+			}),
+		);
+	} catch {
+		return;
+	}
+}
+
+export async function loadCachedHighlightedCodeResponse({
+	cache,
+	load,
+}: {
+	cache: RwcCache;
+	load: () => Promise<RWCCodeSamples>;
+}): Promise<Response> {
+	const cacheKey = new Request(RWC_CACHE_KEY);
+	const cached = await readCachedRwcCodeSamples(cache, cacheKey);
+	if (cached) {
+		return buildHighlightedCodeResponse(cached);
+	}
+
+	const result = await load();
+	if (isCacheableRwcCodeSamples(result)) {
+		await writeCachedRwcCodeSamples(cache, cacheKey, result);
+	}
+
+	return buildHighlightedCodeResponse(result);
+}
+
+/**
+ * Wraps the highlighted gist payload in a JSON response carrying the RWC cache
+ * policy. Empty fallback payloads are explicitly non-cacheable so a transient
+ * GitHub failure cannot poison the runtime cache.
+ */
+export function buildHighlightedCodeResponse(result: RWCCodeSamples): Response {
+	const cacheHeaders = isCacheableRwcCodeSamples(result)
+		? RWC_CACHE_HEADERS
+		: { "cache-control": "no-store" };
+
+	return new Response(JSON.stringify(result), {
+		headers: {
+			"content-type": "application/json",
+			...cacheHeaders,
+		},
+	});
 }
