@@ -77,7 +77,11 @@ export const FoobarDashboard = () => {
 		setActiveAchievement(achievement);
 		window.requestAnimationFrame(() => {
 			const target = document.getElementById(`foobar-achievement-${achievement}`);
-			target?.scrollIntoView({ behavior: "smooth", block: "center" });
+			const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+			target?.scrollIntoView({
+				behavior: prefersReducedMotion ? "auto" : "smooth",
+				block: "center",
+			});
 			// Every entry has a trigger after completion; focusing it keeps
 			// keyboard users on a visible, operable control.
 			document.getElementById(`foobar-achievement-trigger-${achievement}`)?.focus();
