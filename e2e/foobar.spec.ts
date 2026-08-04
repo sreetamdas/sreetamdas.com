@@ -10,7 +10,10 @@ const legacyProgress = {
 
 const plausibleEventsKey = "foobar-e2e-plausible-events";
 
-const presenceWorkerRoom = `e2e-worker-${process.env.TEST_WORKER_INDEX ?? 0}`;
+// TEST_PARALLEL_INDEX is the worker slot (0..workers-1), so it stays within
+// the two-digit bound enforced by the server's room pattern. TEST_WORKER_INDEX
+// increments on every worker restart and can escape that range.
+const presenceWorkerRoom = `e2e-worker-${process.env.TEST_PARALLEL_INDEX ?? 0}`;
 
 /**
  * Routes this page's presence socket into a per-worker room so parallel e2e
