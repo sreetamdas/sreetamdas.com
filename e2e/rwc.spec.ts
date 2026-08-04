@@ -33,15 +33,18 @@ test("serves /rwc highlighted code through the server function with correct cach
 	page.on("response", (response) => {
 		if (!response.url().includes("/_serverFn/")) return;
 
-		void response.text().then((body) => {
-			if (!body.includes("all_solutions")) return;
+		void response
+			.text()
+			.catch(() => "")
+			.then((body) => {
+				if (!body.includes("all_solutions")) return;
 
-			hits.push({
-				status: response.status(),
-				cacheControl: response.headers()["cache-control"] ?? null,
-				edgeCacheControl: response.headers()["cloudflare-cdn-cache-control"] ?? null,
+				hits.push({
+					status: response.status(),
+					cacheControl: response.headers()["cache-control"] ?? null,
+					edgeCacheControl: response.headers()["cloudflare-cdn-cache-control"] ?? null,
+				});
 			});
-		});
 	});
 
 	await page.goto("/rwc");
