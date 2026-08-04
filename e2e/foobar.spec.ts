@@ -172,6 +172,17 @@ test("orients hunters and keeps one field entry open", async ({ page }) => {
 	const hintButton = page.getByRole("button", { name: "Reveal hint 1 of 4 for TXT Me Maybe" });
 	const hintBox = await hintButton.boundingBox();
 	expect(hintBox?.height).toBeGreaterThanOrEqual(44);
+
+	// The single-open invariant spans completed entries too: opening a
+	// completed entry from its own trigger collapses the open one.
+	await openFieldEntry(page, "X Marks the Spot");
+	await expect(
+		page.getByRole("button", { name: "Open field entry for TXT Me Maybe" }),
+	).toBeVisible();
+	await expect(
+		page.getByRole("button", { name: "Close field entry for X Marks the Spot" }),
+	).toBeVisible();
+	await expect(page.getByText("Nothing written down yet.")).toBeVisible();
 });
 
 test("groups achievements and persists revealed field notes", async ({ page }) => {

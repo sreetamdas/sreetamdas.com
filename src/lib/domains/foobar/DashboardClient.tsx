@@ -77,17 +77,10 @@ export const FoobarDashboard = () => {
 		setActiveAchievement(achievement);
 		window.requestAnimationFrame(() => {
 			const target = document.getElementById(`foobar-achievement-${achievement}`);
-			const drawer = target?.closest("details");
-			if (drawer instanceof HTMLDetailsElement) drawer.open = true;
 			target?.scrollIntoView({ behavior: "smooth", block: "center" });
-			const trigger = document.getElementById(`foobar-achievement-trigger-${achievement}`);
-			if (trigger) {
-				trigger.focus();
-			} else {
-				// Completed achievements have no trigger; focus their entry so
-				// keyboard users are not left with no visible focus target.
-				target?.focus();
-			}
+			// Every entry has a trigger after completion; focusing it keeps
+			// keyboard users on a visible, operable control.
+			document.getElementById(`foobar-achievement-trigger-${achievement}`)?.focus();
 		});
 	}
 

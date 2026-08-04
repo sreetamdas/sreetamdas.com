@@ -132,6 +132,8 @@ const TierSection = ({
 	const completedAchievements = achievements.filter((achievement) =>
 		achievement === "completed" ? all_achievements : completed.includes(achievement),
 	);
+	const toggleAchievement = (achievement: FoobarAchievement) => () =>
+		activeAchievement === achievement ? onCollapseAchievement() : onSelectAchievement(achievement);
 
 	return (
 		<section aria-labelledby={`foobar-tier-${tier}`} className="scroll-mt-24">
@@ -153,6 +155,8 @@ const TierSection = ({
 						<CompletedAchievement
 							achievement={achievement}
 							cluesSeen={cluesSeen}
+							isExpanded={activeAchievement === achievement}
+							onToggle={toggleAchievement(achievement)}
 							key={achievement}
 						/>
 					) : (
@@ -162,11 +166,7 @@ const TierSection = ({
 							isExpanded={activeAchievement === achievement}
 							cluesSeen={cluesSeen}
 							recordFoobarClue={recordFoobarClue}
-							onToggle={() =>
-								activeAchievement === achievement
-									? onCollapseAchievement()
-									: onSelectAchievement(achievement)
-							}
+							onToggle={toggleAchievement(achievement)}
 						/>
 					),
 				)}
@@ -178,11 +178,14 @@ const TierSection = ({
 const CompletedAchievement = ({
 	achievement,
 	cluesSeen,
+	isExpanded,
+	onToggle,
 }: {
 	achievement: FoobarAchievement;
 	cluesSeen: FoobarDataType["clues_seen"];
+	isExpanded: boolean;
+	onToggle: () => void;
 }) => {
-	const [isExpanded, setIsExpanded] = useState(false);
 	const metadata = FOOBAR_ACHIEVEMENTS[achievement];
 	const clueIds = cluesSeen.map(({ id }) => id);
 	const revealedHints = metadata.hints.flatMap((hint, index) =>
@@ -191,7 +194,7 @@ const CompletedAchievement = ({
 
 	return (
 		<li className="border-b border-foreground/20">
-			<article className="scroll-mt-24" id={`foobar-achievement-${achievement}`} tabIndex={-1}>
+			<article className="scroll-mt-24" id={`foobar-achievement-${achievement}`}>
 				<div className="grid grid-cols-[1.25rem_minmax(0,1fr)_auto] items-start gap-2 py-4">
 					<span aria-hidden="true" className="pt-0.5 font-mono text-primary">
 						✓
@@ -206,7 +209,7 @@ const CompletedAchievement = ({
 						aria-label={`${isExpanded ? "Close" : "Open"} field entry for ${metadata.title}`}
 						className="inline-flex min-h-11 min-w-11 items-start justify-center link-base pt-0.5 font-mono text-lg text-primary"
 						id={`foobar-achievement-trigger-${achievement}`}
-						onClick={() => setIsExpanded((expanded) => !expanded)}
+						onClick={onToggle}
 						type="button"
 					>
 						<span aria-hidden="true">{isExpanded ? "−" : "+"}</span>
