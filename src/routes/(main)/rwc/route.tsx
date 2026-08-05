@@ -22,6 +22,9 @@ export const Route = createFileRoute("/(main)/rwc")({
 	// `/rwc` is prerendered, so the loader only ever runs at build time. Keep
 	// its data fresh forever: the client fetches the server function on mount.
 	staleTime: STATIC_SERVER_FUNCTION_STALE_TIME,
+	// Deliberately diverges from the site's 5-minute HTML edge policy: the
+	// shell is a build-time snapshot whose data refreshes client-side, so the
+	// edge may hold it fresh for an hour before revalidating.
 	headers: ({ loaderData }) =>
 		loaderData?.all_solutions.length ? RWC_CACHE_HEADERS : { "cache-control": "no-store" },
 	loader: async () => {
