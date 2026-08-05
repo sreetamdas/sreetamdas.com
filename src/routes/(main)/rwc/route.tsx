@@ -51,7 +51,7 @@ export const Route = createFileRoute("/(main)/rwc")({
 
 function RWCPage() {
 	const loaderData = Route.useLoaderData();
-	const fetchHighlightedCode = useServerFn(() => getHighlightedCode());
+	const fetchHighlightedCode = useServerFn(getHighlightedCode);
 
 	// The HTML is prerendered at build time and served as a static asset, so
 	// `loaderData` is a build-time snapshot used only as first-paint
