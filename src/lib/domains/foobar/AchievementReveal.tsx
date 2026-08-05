@@ -51,7 +51,7 @@ export const FoobarAchievementReveal = () => {
 			data-testid="foobar-achievement-reveal"
 		>
 			<p className="sr-only" aria-live="polite">
-				Achievement unlocked: {title}. {completion.note}
+				Discovery collected: {title}. {completion.note}
 			</p>
 			<div className="h-1 bg-primary" />
 			<div className="flex items-start gap-3 p-4">
