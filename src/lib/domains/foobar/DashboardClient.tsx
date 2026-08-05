@@ -50,7 +50,7 @@ export const FoobarDashboard = () => {
 	function handleClearFoobarData() {
 		plausibleEvent("foobar", { props: { achievement: "restart" } });
 		// Local reset only: signed-in players delete their cloud save separately
-		// from the Hunter registry, so a stray restart cannot erase remote progress.
+		// via the Cloud save panel, so a stray restart cannot erase remote progress.
 		setFoobarData(initialFoobarData);
 
 		if ("serviceWorker" in navigator) {
@@ -194,7 +194,7 @@ const Basecamp = ({ handleClearFoobarData }: { handleClearFoobarData: () => void
 						Manage progress
 					</summary>
 					<p className="mb-3 text-xs leading-relaxed text-foreground/60">
-						Reset only this browser. Cloud progress is managed separately in the Hunter registry.
+						Reset only this browser. Cloud progress is managed separately in Cloud save.
 					</p>
 					<ResetFoobar handleClearFoobarData={handleClearFoobarData} />
 				</details>
@@ -225,8 +225,8 @@ const ResetFoobar = ({ handleClearFoobarData }: { handleClearFoobarData: () => v
 					This action cannot be undone.
 					<br />
 					This will reset your <Code>/foobar</Code> progress in this browser. A cloud save is not
-					deleted here — it will restore your progress on the next sync unless you delete it from
-					the Hunter registry.
+					deleted here — it will restore your progress on the next sync unless you delete it via the
+					Cloud save panel.
 				</AlertDialog.Description>
 				<div className="flex flex-wrap justify-end gap-3">
 					<AlertDialog.Close
