@@ -61,11 +61,7 @@ const DrawerFooter = ({ className, ...props }: HTMLAttributes<HTMLDivElement>) =
 );
 DrawerFooter.displayName = "DrawerFooter";
 
-function DrawerTitle({
-	className,
-	ref,
-	...props
-}: ComponentProps<typeof Dialog.Title> & { hidden?: boolean }) {
+function DrawerTitle({ className, ref, ...props }: ComponentProps<typeof Dialog.Title>) {
 	return (
 		<Dialog.Title
 			ref={ref}
