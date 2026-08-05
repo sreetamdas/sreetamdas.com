@@ -8,6 +8,9 @@ import {
 	isPresenceServerMessage,
 } from "./protocol";
 
+/** SessionStorage key that overrides the presence room (see getPresenceWsUrl). */
+export const PRESENCE_ROOM_OVERRIDE_KEY = "presence-room";
+
 const CLIENT_PING_INTERVAL_MS = 25_000;
 const CLIENT_SILENCE_TIMEOUT_MS = 70_000;
 
@@ -15,6 +18,10 @@ export function getPresenceWsUrl(clientId: string, hunterId?: string | null) {
 	const url = new URL("/api/presence", window.location.href);
 	url.protocol = url.protocol === "https:" ? "wss:" : "ws:";
 	url.searchParams.set(PRESENCE_CLIENT_ID_PARAM, clientId);
+	// Presence can be namespaced into a scoped room for isolated consumers
+	// (for example parallel e2e workers); real visitors never set this.
+	const roomOverride = window.sessionStorage.getItem(PRESENCE_ROOM_OVERRIDE_KEY);
+	if (roomOverride) url.searchParams.set("room", roomOverride);
 	if (hunterId !== undefined) {
 		url.searchParams.set(PRESENCE_HUNTER_PARAM, "1");
 		if (hunterId) url.searchParams.set(PRESENCE_HUNTER_ID_PARAM, hunterId);

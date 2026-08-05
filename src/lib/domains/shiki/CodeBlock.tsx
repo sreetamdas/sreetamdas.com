@@ -1,6 +1,5 @@
 "use client";
 
-import { isObject } from "lodash-es";
 import {
 	Children,
 	type CSSProperties,
@@ -265,8 +264,8 @@ const CodeBlockChildren = ({
 
 	return Children.toArray(children).map((line, i) => {
 		const should_line_highlight =
-			// @ts-expect-error line props is not unknown
-			isObject(line) && "props" in line && (line.props["data-highlight"] ?? "false") === "true";
+			isValidElement<{ "data-highlight"?: string }>(line) &&
+			(line.props["data-highlight"] ?? "false") === "true";
 
 		return (
 			<span

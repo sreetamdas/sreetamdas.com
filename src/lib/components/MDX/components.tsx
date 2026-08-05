@@ -3,12 +3,10 @@ import { type HTMLAttributes } from "react";
 
 import { LinkTo } from "@/lib/components/Anchor";
 import { Image } from "@/lib/components/Image";
-import { Tweet } from "@/lib/components/Tweet";
 import { Blockquote, Code, Heading, UnorderedList } from "@/lib/components/Typography";
 import { CodeBlock } from "@/lib/domains/shiki/CodeBlock";
 
 export const customMDXComponents: MDXComponents = {
-	Tweet,
 	h1: ({ children, ...props }: HTMLAttributes<HTMLHeadingElement>) => (
 		<Heading.h1
 			className="group pt-10 font-serif text-8xl leading-normal font-bold text-primary"

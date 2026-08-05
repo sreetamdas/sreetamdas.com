@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vitest";
 
-import { handlePresenceGetForNamespace } from "./presence";
+import { getPresenceRoom, handlePresenceGetForNamespace } from "./presence";
 
 type PresenceStub = {
 	fetch: (request: Request) => Promise<Response> | Response;
@@ -44,6 +44,40 @@ describe("handlePresenceGetForNamespace", () => {
 		expect(calledWithRequest).toBe(request);
 		expect(response.status).toBe(200);
 		expect(await response.text()).toBe("ok");
+	});
+
+	test("delegates to a scoped room when one is requested", async () => {
+		const request = new Request("https://example.com/api/presence?room=e2e-worker-0");
+		let calledWithName = "";
+
+		const presence = {
+			getByName: (name: string) => {
+				calledWithName = name;
+				return {
+					fetch: () => new Response("ok", { status: 200 }),
+				};
+			},
+		};
+
+		await handlePresenceGetForNamespace(request, presence);
+
+		expect(calledWithName).toBe("e2e-worker-0");
+		expect(getPresenceRoom(request)).toBe("e2e-worker-0");
+	});
+
+	test("falls back to the global room for malformed room names", async () => {
+		const request = new Request("https://example.com/api/presence?room=bad/../name");
+		expect(getPresenceRoom(request)).toBe("global");
+	});
+
+	test("falls back to the global room for well-formed but unauthorized rooms", async () => {
+		const request = new Request("https://example.com/api/presence?room=worker-7");
+		expect(getPresenceRoom(request)).toBe("global");
+	});
+
+	test("rejects oversized worker indexes", async () => {
+		const request = new Request("https://example.com/api/presence?room=e2e-worker-100");
+		expect(getPresenceRoom(request)).toBe("global");
 	});
 
 	test("preserves websocket upgrade query params for client identity", async () => {

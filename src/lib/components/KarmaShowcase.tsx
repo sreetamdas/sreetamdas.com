@@ -1,6 +1,6 @@
 "use client";
 
-import * as SwitchPrimitive from "@radix-ui/react-switch";
+import { Switch } from "@base-ui/react/switch";
 import { useState } from "react";
 
 import { Image } from "@/lib/components/Image";
@@ -82,14 +82,14 @@ export const KarmaShowcase = ({ examples }: Props) => {
 				<label htmlFor="theme-switch" className="text-[15px] leading-none text-foreground">
 					Light mode
 				</label>
-				<SwitchPrimitive.Root
+				<Switch.Root
 					id="theme-switch"
 					checked={isDefaultTheme}
 					onCheckedChange={handleThemeToggle}
 					className="relative mx-4 h-[25px] w-[42px] cursor-default rounded-full bg-primary outline-none"
 				>
-					<SwitchPrimitive.Thumb className="block h-[21px] w-[21px] translate-x-0.5 rounded-full bg-white transition-transform duration-(--transition-duration) will-change-transform data-[state=checked]:translate-x-[19px]" />
-				</SwitchPrimitive.Root>
+					<Switch.Thumb className="block h-[21px] w-[21px] translate-x-0.5 rounded-full bg-white transition-transform duration-(--transition-duration) will-change-transform data-checked:translate-x-[19px]" />
+				</Switch.Root>
 				<label htmlFor="theme-switch" className="text-[15px] leading-none text-foreground">
 					Dark mode
 				</label>

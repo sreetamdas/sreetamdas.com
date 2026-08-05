@@ -5,7 +5,6 @@
  */
 
 import { type PageObjectResponse } from "@notionhq/client/build/src/api-endpoints";
-import { isEmpty, isUndefined } from "lodash-es";
 
 type QueryDatabaseOptions = {
 	filter_properties?: Array<string>;
@@ -19,7 +18,7 @@ export class NotionClient {
 	#token: string;
 
 	constructor({ token }: NotionClientOptions) {
-		if (isUndefined(token) || isEmpty(token)) {
+		if (!token) {
 			throw new Error("Notion auth token is missing");
 		}
 
@@ -70,7 +69,7 @@ export class NotionClient {
 		const { filter_properties, ...filter } = options;
 		let filter_properties_query = "";
 
-		if (!isUndefined(filter_properties) && !isEmpty(filter_properties)) {
+		if (filter_properties && filter_properties.length > 0) {
 			const property_ids = await this.getPropertiesIDs(database_id, filter_properties);
 
 			filter_properties_query = `?${property_ids?.map(({ id }) => `filter_properties=${id}`).join("&")}`;

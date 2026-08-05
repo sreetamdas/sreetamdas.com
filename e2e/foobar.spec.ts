@@ -10,6 +10,24 @@ const legacyProgress = {
 
 const plausibleEventsKey = "foobar-e2e-plausible-events";
 
+// TEST_PARALLEL_INDEX is the worker slot (0..workers-1), so it stays within
+// the two-digit bound enforced by the server's room pattern. TEST_WORKER_INDEX
+// increments on every worker restart and can escape that range.
+const presenceWorkerRoom = `e2e-worker-${process.env.TEST_PARALLEL_INDEX ?? 0}`;
+
+/**
+ * Routes this page's presence socket into a per-worker room so parallel e2e
+ * workers never count each other as hunters. The campfire unlock test still
+ * works: both of its pages share the same worker, hence the same room. The
+ * storage key mirrors `PRESENCE_ROOM_OVERRIDE_KEY` in the app source; it is
+ * intentionally not imported so e2e stays a wire-level boundary.
+ */
+async function isolatePresencePerWorker(page: Page) {
+	await page.addInitScript((room) => {
+		window.sessionStorage.setItem("presence-room", room);
+	}, presenceWorkerRoom);
+}
+
 async function seedProgress(page: Page, progress: Record<string, unknown> = legacyProgress) {
 	await page.addInitScript((progress) => {
 		if (window.sessionStorage.getItem("foobar-e2e-seeded")) return;
@@ -34,9 +52,28 @@ async function authenticateFoobarE2e(page: Page) {
 }
 
 async function ensureCloudEnabled(page: Page) {
+	await openBasecamp(page);
 	const enable = page.getByRole("button", { name: "Save this browser's progress to cloud" });
 	if (await enable.isVisible()) await enable.click();
 	await expect(page.getByRole("button", { name: "Delete cloud save" })).toBeVisible();
+}
+
+async function openBasecamp(page: Page) {
+	const summary = page.locator("summary").filter({ hasText: /Open Basecamp/ });
+	if ((await summary.locator("xpath=..").getAttribute("open")) === null) await summary.click();
+}
+
+async function openFieldEntry(page: Page, title: string) {
+	const article = page.getByRole("article").filter({
+		has: page.getByRole("heading", { name: title, exact: true }),
+	});
+	const trigger = article.getByRole("button", { name: `Open field entry for ${title}` });
+	const closeTrigger = article.getByRole("button", { name: `Close field entry for ${title}` });
+	if (!(await closeTrigger.isVisible())) {
+		await trigger.click();
+		await expect(closeTrigger).toBeVisible();
+	}
+	return article;
 }
 
 async function hasPersistedAchievement(page: Page, achievement: string, requireKonami = false) {
@@ -116,23 +153,62 @@ async function readHintDevelopmentEvents(page: Page) {
 	}, plausibleEventsKey);
 }
 
+test.beforeEach(async ({ page }) => {
+	await isolatePresencePerWorker(page);
+});
+
+test("orients hunters and keeps one field entry open", async ({ page }) => {
+	await seedProgress(page);
+	await page.goto("/foobar");
+
+	await expect(page.getByRole("heading", { level: 1, name: "Foobar" })).toBeVisible();
+	await expect(page.getByText("2 of 24 weird things found.", { exact: true })).toBeVisible();
+	await page.getByRole("button", { name: "Continue hunting" }).click();
+	await expect(
+		page.getByRole("button", { name: "Close field entry for Behind the Screens" }),
+	).toBeFocused();
+
+	await openFieldEntry(page, "TXT Me Maybe");
+	await expect(
+		page.getByRole("button", { name: "Open field entry for Behind the Screens" }),
+	).toBeVisible();
+	const hintButton = page.getByRole("button", { name: "Reveal hint 1 of 4 for TXT Me Maybe" });
+	const hintBox = await hintButton.boundingBox();
+	expect(hintBox?.height).toBeGreaterThanOrEqual(44);
+
+	// The single-open invariant spans completed entries too: opening a
+	// completed entry from its own trigger collapses the open one.
+	await openFieldEntry(page, "X Marks the Spot");
+	await expect(
+		page.getByRole("button", { name: "Open field entry for TXT Me Maybe" }),
+	).toBeVisible();
+	await expect(
+		page.getByRole("button", { name: "Close field entry for X Marks the Spot" }),
+	).toBeVisible();
+	await expect(page.getByText("Nothing written down yet.")).toBeVisible();
+});
+
 test("groups achievements and persists revealed field notes", async ({ page }) => {
 	await seedProgress(page);
 	await page.goto("/foobar");
 
 	await expect(page.getByRole("heading", { name: "Warmup / Discovery" })).toBeVisible();
-	await expect(page.getByText("2 / 5 complete")).toBeVisible();
+	await expect(page.getByText("2 of 5", { exact: true })).toBeVisible();
 	await expect(page.getByRole("heading", { name: "Field notes" })).toBeVisible();
 	await expect(page.getByText("Earlier", { exact: true })).toHaveCount(2);
 	await expect(page.getByText("Even crawlers are handed house rules.")).toBeVisible();
 	const fieldNotes = page.getByRole("region", { name: "Field notes" });
 
-	const firstHintButton = page.getByRole("button", { name: "Reveal hint 1 of 4 for TXT Me Maybe" });
+	const dnsTxtBadge = await openFieldEntry(page, "TXT Me Maybe");
+	const firstHintButton = dnsTxtBadge.getByRole("button", {
+		name: "Reveal hint 1 of 4 for TXT Me Maybe",
+	});
 	await expect(firstHintButton).toHaveText("Reveal hint 1 of 4");
 	await firstHintButton.click();
 	await expect(fieldNotes.getByText("The clue lives below HTTP.")).toBeVisible();
 	await page.reload();
 	await expect(fieldNotes.getByText("The clue lives below HTTP.")).toBeVisible();
+	await openFieldEntry(page, "TXT Me Maybe");
 	await expect(
 		page.getByRole("button", { name: "Reveal hint 2 of 4 for TXT Me Maybe" }),
 	).toHaveText("Reveal hint 2 of 4");
@@ -149,9 +225,7 @@ test("develops hint 4 without exposing its text", async ({ page }) => {
 	await capturePlausibleEvents(page);
 	await page.goto("/foobar");
 
-	const dnsTxtBadge = page.getByRole("article").filter({
-		has: page.getByRole("heading", { name: "TXT Me Maybe", exact: true }),
-	});
+	const dnsTxtBadge = await openFieldEntry(page, "TXT Me Maybe");
 	const pausedAt = new Date();
 	await page.clock.install({ time: pausedAt });
 	// `install` starts the fake clock running from `time`, so it can already be
@@ -187,11 +261,10 @@ test("develops hint 4 without exposing its text", async ({ page }) => {
 		]);
 });
 
-test("reads and persists a developed hint", async ({ page }) => {
+test("keeps an out-of-order persisted final hint", async ({ page }) => {
 	const hourMs = 60 * 60 * 1_000;
 	const hintText = "Run dig TXT sreetamdas.com and follow the Foobar value.";
-	const irregularPage = await page.context().newPage();
-	await seedProgress(irregularPage, {
+	await seedProgress(page, {
 		...legacyProgress,
 		clues_seen: [
 			{ id: "dns-txt:hint:1", seen_at: Date.now() - 27 * hourMs },
@@ -199,19 +272,20 @@ test("reads and persists a developed hint", async ({ page }) => {
 			{ id: "dns-txt:hint:4", seen_at: Date.now() - 25 * hourMs },
 		],
 	});
-	await capturePlausibleEvents(irregularPage);
-	await irregularPage.goto("/foobar");
-	const irregularBadge = irregularPage.getByRole("article").filter({
-		has: irregularPage.getByRole("heading", { name: "TXT Me Maybe", exact: true }),
-	});
+	await capturePlausibleEvents(page);
+	await page.goto("/foobar");
+	const irregularBadge = await openFieldEntry(page, "TXT Me Maybe");
 	const persistedFinalHint = irregularBadge.getByRole("listitem").filter({ hasText: hintText });
-	await expect(persistedFinalHint.getByText("Hint 4", { exact: true })).toBeVisible();
+	await expect(persistedFinalHint).toBeVisible();
 	await irregularBadge.getByRole("button", { name: "Reveal hint 3 of 4 for TXT Me Maybe" }).click();
-	expect(await readHintDevelopmentEvents(irregularPage)).toEqual([]);
-	await expect(persistedFinalHint.getByText("Hint 4", { exact: true })).toBeVisible();
+	expect(await readHintDevelopmentEvents(page)).toEqual([]);
+	await expect(persistedFinalHint).toBeVisible();
 	await expect(irregularBadge.getByText("Hint 4 · Developing", { exact: true })).toHaveCount(0);
-	await irregularPage.close();
+});
 
+test("reads and persists a developed hint", async ({ page }) => {
+	const hourMs = 60 * 60 * 1_000;
+	const hintText = "Run dig TXT sreetamdas.com and follow the Foobar value.";
 	await seedProgress(page, {
 		...legacyProgress,
 		clues_seen: [
@@ -223,9 +297,7 @@ test("reads and persists a developed hint", async ({ page }) => {
 	await capturePlausibleEvents(page);
 	await page.goto("/foobar");
 
-	const dnsTxtBadge = page.getByRole("article").filter({
-		has: page.getByRole("heading", { name: "TXT Me Maybe", exact: true }),
-	});
+	const dnsTxtBadge = await openFieldEntry(page, "TXT Me Maybe");
 	const fieldNotes = page.getByRole("region", { name: "Field notes" });
 	const readButton = dnsTxtBadge.getByRole("button", {
 		name: "Read developed hint 4 of 4 for TXT Me Maybe",
@@ -240,6 +312,7 @@ test("reads and persists a developed hint", async ({ page }) => {
 	await expect(dnsTxtBadge.getByText(hintText, { exact: true })).toBeVisible();
 	await expect(fieldNotes.getByText(hintText, { exact: true })).toBeVisible();
 	await page.reload();
+	await openFieldEntry(page, "TXT Me Maybe");
 	await expect(dnsTxtBadge.getByText(hintText, { exact: true })).toBeVisible();
 	await expect(fieldNotes.getByText(hintText, { exact: true })).toBeVisible();
 	await expect
@@ -255,8 +328,9 @@ test("reads and persists a developed hint", async ({ page }) => {
 test("keeps local progress as the default and offers optional cloud save", async ({ page }) => {
 	await seedProgress(page);
 	await page.goto("/foobar");
+	await openBasecamp(page);
 
-	await expect(page.getByRole("heading", { name: "Hunter registry" })).toBeVisible();
+	await expect(page.getByRole("heading", { name: "Cloud save" })).toBeVisible();
 	await expect(page.getByText("Sign in to save progress across devices.")).toBeVisible();
 	await expect(page.getByRole("link", { name: "Sign in with Cloudflare" })).toHaveAttribute(
 		"href",
@@ -274,6 +348,7 @@ test("deletes cloud progress durably and synchronizes the lifecycle across tabs"
 	await authenticateFoobarE2e(page);
 	await seedProgress(page);
 	await page.goto("/foobar");
+	await openBasecamp(page);
 	await expect(page.getByText("Signed in as Foobar E2E Hunter.")).toBeVisible();
 	await ensureCloudEnabled(page);
 
@@ -282,7 +357,7 @@ test("deletes cloud progress durably and synchronizes the lifecycle across tabs"
 	await second.goto("/foobar");
 	await ensureCloudEnabled(second);
 
-	const trigger = page.getByRole("button", { name: "Delete cloud save" });
+	const trigger = page.getByRole("button", { name: "Delete cloud save", exact: true });
 	await trigger.click();
 	const cancel = page.getByRole("button", { name: "Keep cloud save" });
 	await expect(cancel).toBeFocused();
@@ -295,6 +370,7 @@ test("deletes cloud progress durably and synchronizes the lifecycle across tabs"
 	await expect(enable).toBeVisible();
 
 	await Promise.all([page.reload(), second.reload()]);
+	await Promise.all([openBasecamp(page), openBasecamp(second)]);
 	await expect(
 		page.getByRole("button", { name: "Save this browser's progress to cloud" }),
 	).toBeVisible();
@@ -309,6 +385,7 @@ test("offers an operation-specific retry when cloud deletion fails", async ({ pa
 	await authenticateFoobarE2e(page);
 	await seedProgress(page);
 	await page.goto("/foobar");
+	await openBasecamp(page);
 	await ensureCloudEnabled(page);
 
 	await page.route("**/_serverFn/**", (route) => route.abort("failed"));
@@ -347,6 +424,7 @@ test("tier dashboard fits a mobile viewport", async ({ page }) => {
 
 	await expect(page.getByRole("heading", { name: "Warmup / Discovery" })).toBeVisible();
 	await expect(page.getByRole("heading", { name: "Field notes" })).toBeVisible();
+	await openFieldEntry(page, "TXT Me Maybe");
 	await expect(page.getByText("Hint 4 · Developing", { exact: true })).toBeVisible();
 	const hasHorizontalOverflow = await page
 		.locator("main")
@@ -487,10 +565,13 @@ test("unlocks campfire for two simultaneous hunters", async ({ browser }) => {
 	const secondContext = await browser.newContext();
 	const first = await firstContext.newPage();
 	const second = await secondContext.newPage();
+	await isolatePresencePerWorker(first);
+	await isolatePresencePerWorker(second);
 	await seedProgress(first);
 	await seedProgress(second);
 
 	await Promise.all([first.goto("/foobar"), second.goto("/foobar")]);
+	await openBasecamp(first);
 	await expect(first.getByRole("heading", { name: "Campfire", exact: true })).toBeVisible();
 
 	for (const hunter of [first, second]) {

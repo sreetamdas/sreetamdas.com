@@ -29,14 +29,16 @@ export const NavbarMobile = () => {
 	return (
 		<DrawerRoot open={open} onOpenChange={setOpen}>
 			<div className="contents md:hidden">
-				<DrawerTrigger asChild>
-					<button
-						className="text-2xl"
-						type="button"
-						aria-label={`${open ? "Close" : "Open"} mobile navigation drawer`}
-					>
-						<LuMenu />
-					</button>
+				<DrawerTrigger
+					render={
+						<button
+							className="text-2xl"
+							type="button"
+							aria-label={`${open ? "Close" : "Open"} mobile navigation drawer`}
+						/>
+					}
+				>
+					<LuMenu />
 				</DrawerTrigger>
 			</div>
 			<DrawerContent

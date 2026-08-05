@@ -4,7 +4,6 @@
  */
 import { type PageObjectResponse } from "@notionhq/client/build/src/api-endpoints";
 import { env } from "cloudflare:workers";
-import { isEmpty, isUndefined } from "lodash-es";
 
 import { ImgurClient, type KeebDetails } from "@/lib/domains/Imgur";
 import { NotionClient } from "@/lib/domains/Notion";
@@ -21,11 +20,11 @@ export async function getKeebsFromNotion(): Promise<Array<KeebDetails | KeebDeta
 	const imgurApiClientId = env.IMGUR_API_CLIENT_ID;
 	const imgurKeebsAlbumHash = env.IMGUR_KEEBS_ALBUM_HASH;
 
-	if (isUndefined(keebsDatabaseId) || isEmpty(keebsDatabaseId)) {
+	if (!keebsDatabaseId) {
 		return [];
 	}
 
-	if (isUndefined(notionToken) || isEmpty(notionToken)) {
+	if (!notionToken) {
 		return [];
 	}
 
@@ -74,12 +73,7 @@ export async function getKeebsFromNotion(): Promise<Array<KeebDetails | KeebDeta
 		})
 		.filter((entry): entry is KeebDetailsFromNotion => isKeebDetailsFromNotion(entry));
 
-	if (
-		isUndefined(imgurApiClientId) ||
-		isEmpty(imgurApiClientId) ||
-		isUndefined(imgurKeebsAlbumHash) ||
-		isEmpty(imgurKeebsAlbumHash)
-	) {
+	if (!imgurApiClientId || !imgurKeebsAlbumHash) {
 		return keebsDetailsFormatted;
 	}
 

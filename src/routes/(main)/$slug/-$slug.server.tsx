@@ -2,19 +2,14 @@ import { notFound } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
 import { renderServerComponent } from "@tanstack/react-start/rsc";
 import { allRootPages } from "content-collections";
-import { isNil } from "lodash-es";
 
 import { IS_DEV } from "@/config";
 import { RepoContributors } from "@/lib/components/GitHub/RepoContributors";
 import { MDXContent } from "@/lib/components/MDX";
 import { shouldServeRootPage } from "@/lib/content/visibility";
 import { fetchRepoContributors } from "@/lib/domains/GitHub/server";
-import { type RepoContributor } from "@/lib/domains/GitHub/types";
 
 const rootPages = allRootPages;
-
-export type RootPage = (typeof rootPages)[number];
-export type RootPageLoaderData = { post: RootPage; contributors: Array<RepoContributor> };
 
 function parseSlugPayload(data: unknown): { slug: string } {
 	if (typeof data !== "object" || data === null || !("slug" in data)) {
@@ -33,7 +28,7 @@ export const getRootPageRenderable = createServerFn({ method: "GET" })
 	.handler(async ({ data }) => {
 		const post = rootPages.find((page) => page.page_slug === data.slug);
 
-		if (isNil(post) || !shouldServeRootPage(post, { includeDrafts: IS_DEV })) {
+		if (!post || !shouldServeRootPage(post, { includeDrafts: IS_DEV })) {
 			throw notFound();
 		}
 
@@ -49,5 +44,13 @@ export const getRootPageRenderable = createServerFn({ method: "GET" })
 			/>,
 		);
 
-		return { post, contributors, Renderable };
+		return {
+			post: {
+				title: post.title,
+				description: post.description,
+				page_path: post.page_path,
+				page_slug: post.page_slug,
+			},
+			Renderable,
+		};
 	});

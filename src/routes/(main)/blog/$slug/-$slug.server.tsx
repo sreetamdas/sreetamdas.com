@@ -2,7 +2,6 @@ import { notFound } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
 import { renderServerComponent } from "@tanstack/react-start/rsc";
 import { allBlogPosts } from "content-collections";
-import { isNil } from "lodash-es";
 
 import { IS_DEV } from "@/config";
 import { MDXContent } from "@/lib/components/MDX";
@@ -19,15 +18,11 @@ import {
 const blogPosts = allBlogPosts;
 
 export type BlogPost = (typeof blogPosts)[number];
-export type BlogLoaderData = {
-	post: BlogPost;
-	Renderable: unknown;
-};
 
 async function getBlogContent(slug: string, includeDrafts: boolean): Promise<BlogPost> {
 	const post = blogPosts.find((page) => page.page_slug === slug);
 
-	if (isNil(post) || !shouldServeBlogPost(post, { includeDrafts })) {
+	if (!post || !shouldServeBlogPost(post, { includeDrafts })) {
 		throw notFound();
 	}
 
@@ -65,5 +60,17 @@ export const getBlogRenderable = createServerFn({ method: "GET" })
 			/>,
 		);
 
-		return { post, Renderable };
+		return {
+			post: {
+				title: post.title,
+				seo_title: post.seo_title,
+				description: post.description,
+				page_path: post.page_path,
+				page_slug: post.page_slug,
+				published_at: post.published_at,
+				reading_time: post.reading_time,
+				image: post.image,
+			},
+			Renderable,
+		};
 	});

@@ -1,17 +1,17 @@
 "use client";
 
-import { random } from "lodash-es";
 import { type PropsWithChildren, useEffect } from "react";
 
 import { ChameleonHighlight } from "@/lib/components/TypographyClient";
 import { useInterval } from "@/lib/helpers/hooks";
+import { randomIntegerInclusive } from "@/lib/helpers/utils";
 
 let root: HTMLElement;
 
 function getNewColor() {
-	const h = random(1, 360);
-	const s = random(80, 90);
-	const l = random(50, 60);
+	const h = randomIntegerInclusive(1, 360);
+	const s = randomIntegerInclusive(80, 90);
+	const l = randomIntegerInclusive(50, 60);
 
 	return `hsl(${h}, ${s}%, ${l}%)`;
 }

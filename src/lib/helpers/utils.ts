@@ -13,6 +13,10 @@ export function normalizePathname(pathname: string): string {
 	return pathname;
 }
 
+export function randomIntegerInclusive(minimum: number, maximum: number): number {
+	return Math.floor(Math.random() * (maximum - minimum + 1)) + minimum;
+}
+
 export async function handleFetch<T>(input: RequestInfo | URL, init?: RequestInit): Promise<T> {
 	const response = await fetch(input, init);
 

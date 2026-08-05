@@ -9,7 +9,10 @@
  * `theme.css` it pulls in themes the card via `data-theme` / `.dark` / `.light`
  * or `prefers-color-scheme`.
  *
- * Usage in MDX (available site-wide via customMDXComponents/slideMDXComponents):
+ * Import this component explicitly in the MDX deck that needs it so the tweet
+ * client and its SWR dependency stay out of unrelated MDX routes.
+ *
+ * Usage in MDX:
  *   <Tweet id="2071647669467201657" />
  *   <Tweet id="..." className="[zoom:1.5]" />
  */

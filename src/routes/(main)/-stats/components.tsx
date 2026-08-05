@@ -1,8 +1,6 @@
-import { ClientOnly } from "@tanstack/react-router";
 import { type ReactNode } from "react";
 
 import { LinkTo } from "@/lib/components/Anchor";
-import { StatsWorldMap } from "@/lib/components/StatsWorldMap.client";
 import { Code } from "@/lib/components/Typography";
 import {
 	PLAUSIBLE_DATE_RANGES,
@@ -526,55 +524,44 @@ function GeoPanel({ countries }: { countries: Array<StatsCountryRow> }) {
 				<div>
 					<h3 className="m-0 font-serif text-3xl font-bold">Countries</h3>
 					<p className="m-0 mt-1 text-sm text-foreground/70">
-						A compact atlas of where visits originate.
+						The places sending the most visitors.
 					</p>
 				</div>
 				<p className="m-0 font-mono text-sm text-primary">{topCountries.length} shown</p>
 			</div>
 			{countries.length > 0 ? (
-				<>
-					<div className="mt-4 overflow-hidden rounded-global bg-foreground/5 p-2 dark:bg-foreground/10">
-						<ClientOnly fallback={<WorldMapFallback />}>
-							<StatsWorldMap countries={countries} />
-						</ClientOnly>
-					</div>
-					<ol className="mt-4 grid gap-2 p-0">
-						{topCountries.map((country, index) => (
-							<li
-								key={`${country.code}-${country.name}`}
-								className="grid gap-2 rounded-global bg-foreground/5 p-3 dark:bg-foreground/10"
-							>
-								<div className="grid grid-cols-[auto_1fr_auto] items-center gap-3">
-									<span className="font-mono text-xs text-foreground/55">
-										{String(index + 1).padStart(2, "0")}
-									</span>
-									<div className="min-w-0">
-										<p className="m-0 truncate font-mono text-sm">{country.name}</p>
-										<p className="m-0 font-mono text-xs text-foreground/60">{country.code}</p>
-									</div>
-									<p className="m-0 text-right font-serif text-2xl leading-none font-bold">
-										{formatPercentage(country.percentage)}
-									</p>
+				<ol className="mt-4 grid gap-2 p-0">
+					{topCountries.map((country, index) => (
+						<li
+							key={`${country.code}-${country.name}`}
+							className="grid gap-2 rounded-global bg-foreground/5 p-3 dark:bg-foreground/10"
+						>
+							<div className="grid grid-cols-[auto_1fr_auto] items-center gap-3">
+								<span className="font-mono text-xs text-foreground/55">
+									{String(index + 1).padStart(2, "0")}
+								</span>
+								<div className="min-w-0">
+									<p className="m-0 truncate font-mono text-sm">{country.name}</p>
+									<p className="m-0 font-mono text-xs text-foreground/60">{country.code}</p>
 								</div>
-								<div className="h-2 overflow-hidden rounded-full bg-foreground/10">
-									<div
-										className="h-full rounded-full bg-secondary"
-										style={{ width: barWidth(country.percentage) }}
-									/>
-								</div>
-							</li>
-						))}
-					</ol>
-				</>
+								<p className="m-0 text-right font-serif text-2xl leading-none font-bold">
+									{formatPercentage(country.percentage)}
+								</p>
+							</div>
+							<div className="h-2 overflow-hidden rounded-full bg-foreground/10">
+								<div
+									className="h-full rounded-full bg-secondary"
+									style={{ width: barWidth(country.percentage) }}
+								/>
+							</div>
+						</li>
+					))}
+				</ol>
 			) : (
 				<p className="mt-4 text-sm text-foreground/60">No country data yet.</p>
 			)}
 		</section>
 	);
-}
-
-function WorldMapFallback() {
-	return <div className="h-40 w-full animate-pulse rounded-global bg-foreground/10" />;
 }
 
 function StatsPanel({

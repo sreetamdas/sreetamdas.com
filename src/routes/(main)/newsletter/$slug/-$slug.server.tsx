@@ -8,15 +8,9 @@ import {
 	getButtondownApiKey,
 	stripButtondownPlaintextMarker,
 } from "@/lib/domains/Buttondown";
+import { excerptFromMarkdown } from "@/lib/seo";
 
 import { NewsletterEmailDetail } from "../-components";
-
-export type NewsletterIssue = Awaited<ReturnType<typeof fetchNewsletterEmails>>["results"][number];
-export type NewsletterLoaderData = {
-	newsletter_email_data: NewsletterIssue & {
-		body: string;
-	};
-};
 
 export const getNewsletterEmailRenderable = createServerFn({
 	method: "GET",
@@ -58,5 +52,13 @@ export const getNewsletterEmailRenderable = createServerFn({
 			<NewsletterEmailDetail email={newsletter_email_data} />,
 		);
 
-		return { newsletter_email_data, Renderable };
+		return {
+			newsletter_email_metadata: {
+				subject: newsletter_email_data.subject,
+				description: excerptFromMarkdown(newsletter_email_data.body),
+				slug: newsletter_email_data.slug,
+				publish_date: newsletter_email_data.publish_date,
+			},
+			Renderable,
+		};
 	});
