@@ -47,3 +47,16 @@ export function parseRwcCodeSamples(value: unknown): RWCCodeSamples {
 
 	return value;
 }
+
+/**
+ * Chooses between a freshly refreshed payload and the build-time snapshot. A
+ * refresh that comes back empty means the runtime fetch fell back (cold cache,
+ * GitHub unreachable): keep the populated snapshot rather than replacing it
+ * with nothing.
+ */
+export function preferPopulatedRwcCodeSamples(
+	refresh: RWCCodeSamples,
+	snapshot: RWCCodeSamples,
+): RWCCodeSamples {
+	return refresh.all_solutions.length > 0 ? refresh : snapshot;
+}

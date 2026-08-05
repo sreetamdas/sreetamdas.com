@@ -9,7 +9,12 @@ import { StatsCounter } from "@/lib/domains/PageInteraction/StatsCounter";
 import { canonicalUrl, defaultOgImageUrl } from "@/lib/seo";
 import { STATIC_SERVER_FUNCTION_STALE_TIME } from "@/lib/static-server-functions";
 
-import { parseRwcCodeSamples, type RWCCodeSamples, type RWCSolution } from "./-data.shared";
+import {
+	parseRwcCodeSamples,
+	preferPopulatedRwcCodeSamples,
+	type RWCCodeSamples,
+	type RWCSolution,
+} from "./-data.shared";
 import { getHighlightedCode } from "./-rwc.server";
 
 export const Route = createFileRoute("/(main)/rwc")({
@@ -60,7 +65,7 @@ function RWCPage() {
 		queryFn: async () => {
 			const response = await fetchHighlightedCode();
 			const payload: unknown = await response.json();
-			return parseRwcCodeSamples(payload);
+			return preferPopulatedRwcCodeSamples(parseRwcCodeSamples(payload), loaderData);
 		},
 		staleTime: 0,
 		placeholderData: loaderData,

@@ -1,6 +1,10 @@
 import { describe, expect, test } from "vitest";
 
-import { RWC_BROWSER_CACHE_CONTROL, RWC_EDGE_CACHE_CONTROL } from "@/lib/cacheHeaders";
+import {
+	RWC_BROWSER_CACHE_CONTROL,
+	RWC_EDGE_CACHE_CONTROL,
+	RWC_EDGE_CACHE_TTL_SECONDS,
+} from "@/lib/cacheHeaders";
 
 import {
 	buildHighlightedCodeResponse,
@@ -9,7 +13,7 @@ import {
 	loadRwcCodeSamples,
 	resolveRwcEnv,
 } from "./-data";
-import { parseRwcCodeSamples } from "./-data.shared";
+import { parseRwcCodeSamples, preferPopulatedRwcCodeSamples } from "./-data.shared";
 
 describe("resolveRwcEnv", () => {
 	test("reads GitHub settings from Cloudflare env", () => {
@@ -232,7 +236,9 @@ describe("loadCachedHighlightedCodeResponse", () => {
 
 		await loadCachedHighlightedCodeResponse({ cache, load: async () => payload });
 		expect(writes).toHaveLength(1);
-		expect(writes[0]?.headers.get("cache-control")).toBe("public, max-age=3600");
+		expect(writes[0]?.headers.get("cache-control")).toBe(
+			`public, max-age=${RWC_EDGE_CACHE_TTL_SECONDS}`,
+		);
 
 		await loadCachedHighlightedCodeResponse({
 			cache,
@@ -270,5 +276,35 @@ describe("loadCachedHighlightedCodeResponse", () => {
 		});
 
 		await expect(response.json()).resolves.toEqual(payload);
+	});
+});
+
+describe("preferPopulatedRwcCodeSamples", () => {
+	const solution = {
+		html: "<code>sample</code>",
+		slug: "sample",
+		filename: "sample.ts",
+		lang: "typescript",
+	};
+	const populated = {
+		all_solutions: [solution],
+		background_color: "#17181c",
+	};
+	const empty = {
+		all_solutions: [],
+		background_color: "#17181c",
+	};
+
+	test("keeps the build-time snapshot when the refresh is empty", () => {
+		expect(preferPopulatedRwcCodeSamples(empty, populated)).toBe(populated);
+	});
+
+	test("keeps the snapshot when both payloads are empty", () => {
+		expect(preferPopulatedRwcCodeSamples(empty, empty)).toBe(empty);
+	});
+
+	test("prefers the refreshed payload when it has solutions", () => {
+		expect(preferPopulatedRwcCodeSamples(populated, empty)).toBe(populated);
+		expect(preferPopulatedRwcCodeSamples(populated, populated)).toBe(populated);
 	});
 });
