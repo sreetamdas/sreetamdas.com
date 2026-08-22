@@ -4,6 +4,7 @@
  * forwards the minimal headers Plausible needs upstream.
  */
 import { createFileRoute } from "@tanstack/react-router";
+import { env } from "cloudflare:workers";
 
 export function handlePlausibleEventGet(): Response {
 	return Response.json(
@@ -17,6 +18,12 @@ export function handlePlausibleEventGet(): Response {
 
 export async function handlePlausibleEventPost(request: Request): Promise<Response> {
 	try {
+		// Phase-1 tee (plan §19): keep the Plausible tracker stream untouched and
+		// mirror the exact payload + transient request facts to the native stats
+		// collector over a private Service Binding. Native failures never affect
+		// the primary Plausible response.
+		const bodyText = await request.clone().text();
+
 		const upstream = await fetch("https://plausible.io/api/event", {
 			method: "POST",
 			headers: {
@@ -26,6 +33,20 @@ export async function handlePlausibleEventPost(request: Request): Promise<Respon
 			},
 			body: request.body,
 		});
+
+		if (upstream.ok) {
+			try {
+				const cf = request.cf as { country?: unknown; city?: unknown } | undefined;
+				await env.STATS.collectForBinding(env.ANALYTICS_PROJECT_SLUG, bodyText, {
+					ip: request.headers.get("cf-connecting-ip"),
+					ua: request.headers.get("user-agent"),
+					country: typeof cf?.country === "string" ? cf.country : null,
+					city: typeof cf?.city === "string" ? cf.city : null,
+				});
+			} catch {
+				// Tee failures are intentionally swallowed; Plausible stays authoritative.
+			}
+		}
 
 		return new Response(upstream.body, {
 			status: upstream.status,

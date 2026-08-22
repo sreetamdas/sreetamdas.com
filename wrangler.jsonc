@@ -52,6 +52,15 @@
 			"migrations_dir": "drizzle/migrations"
 		}
 	],
+	"service_bindings": [
+		{
+			"name": "STATS",
+			"service": "stats"
+		}
+	],
+	"vars": {
+		"ANALYTICS_PROJECT_SLUG": "sreetamdas-com-prod"
+	},
 	"kv_namespaces": [
 		{
 			"binding": "KV",
@@ -61,6 +70,15 @@
 	],
 	"env": {
 		"staging": {
+			"vars": {
+				"ANALYTICS_PROJECT_SLUG": "sreetamdas-com-staging"
+			},
+			"service_bindings": [
+				{
+					"name": "STATS",
+					"service": "stats"
+				}
+			],
 			"routes": [
 				{
 					"custom_domain": true,
@@ -110,6 +128,15 @@
 			]
 		},
 		"production": {
+			"vars": {
+				"ANALYTICS_PROJECT_SLUG": "sreetamdas-com-prod"
+			},
+			"service_bindings": [
+				{
+					"name": "STATS",
+					"service": "stats"
+				}
+			],
 			"routes": [
 				{
 					"custom_domain": true,
