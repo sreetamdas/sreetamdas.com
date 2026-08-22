@@ -52,9 +52,9 @@
 			"migrations_dir": "drizzle/migrations"
 		}
 	],
-	"service_bindings": [
+	"services": [
 		{
-			"name": "STATS",
+			"binding": "STATS",
 			"service": "stats"
 		}
 	],
@@ -73,9 +73,9 @@
 			"vars": {
 				"ANALYTICS_PROJECT_SLUG": "sreetamdas-com-staging"
 			},
-			"service_bindings": [
+			"services": [
 				{
-					"name": "STATS",
+					"binding": "STATS",
 					"service": "stats"
 				}
 			],
@@ -131,9 +131,9 @@
 			"vars": {
 				"ANALYTICS_PROJECT_SLUG": "sreetamdas-com-prod"
 			},
-			"service_bindings": [
+			"services": [
 				{
-					"name": "STATS",
+					"binding": "STATS",
 					"service": "stats"
 				}
 			],
