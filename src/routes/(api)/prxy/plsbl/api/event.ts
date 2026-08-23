@@ -37,11 +37,17 @@ export async function handlePlausibleEventPost(request: Request): Promise<Respon
 		if (upstream.ok) {
 			try {
 				const cf = request.cf as { country?: unknown; city?: unknown } | undefined;
-				await env.STATS.collectForBinding(env.ANALYTICS_PROJECT_SLUG, bodyText, {
-					ip: request.headers.get("cf-connecting-ip"),
-					ua: request.headers.get("user-agent"),
-					country: typeof cf?.country === "string" ? cf.country : null,
-					city: typeof cf?.city === "string" ? cf.city : null,
+				await env.STATS.fetch(`https://stats.internal/v1/relay/${env.ANALYTICS_PROJECT_SLUG}`, {
+					method: "POST",
+					headers: {
+						"content-type": "text/plain;charset=UTF-8",
+						"x-relay-token": env.RELAY_TOKEN,
+						"x-relay-ip": request.headers.get("cf-connecting-ip") ?? "",
+						"x-relay-ua": request.headers.get("user-agent") ?? "",
+						"x-relay-country": typeof cf?.country === "string" ? cf.country : "",
+						"x-relay-city": typeof cf?.city === "string" ? cf.city : "",
+					},
+					body: bodyText,
 				});
 			} catch {
 				// Tee failures are intentionally swallowed; Plausible stays authoritative.

@@ -4,14 +4,9 @@
 interface __BaseEnv_CloudflareEnv {
 	KV: KVNamespace;
 	D1: D1Database;
-	STATS: {
-		collectForBinding(
-			slug: string,
-			payload: string,
-			facts: { ip: string | null; ua: string | null; country: string | null; city: string | null },
-		): Promise<unknown>;
-	};
+	STATS: Fetcher;
 	ANALYTICS_PROJECT_SLUG: string;
+	RELAY_TOKEN: string;
 	VITE_SITE_URL: string;
 	BETTER_AUTH_URL: string;
 	DEBUG_MODE: string;
