@@ -20,9 +20,26 @@ export async function handlePlausibleEventPost(request: Request): Promise<Respon
 	try {
 		// Phase-1 tee (plan §19): keep the Plausible tracker stream untouched and
 		// mirror the exact payload + transient request facts to the native stats
-		// collector over a private Service Binding. Native failures never affect
-		// the primary Plausible response.
+		// collector over a private Service Binding. The Plausible tracker payload
+		// lacks our envelope fields (event_id, schema_version), so synthesize
+		// them server-side — one native event per accepted Plausible event.
+		// Native failures never affect the primary Plausible response.
 		const bodyText = await request.clone().text();
+
+		let relayBody = bodyText;
+		try {
+			const parsed = JSON.parse(bodyText) as Record<string, unknown>;
+			if (parsed !== null && typeof parsed === "object" && !Array.isArray(parsed)) {
+				relayBody = JSON.stringify({
+					schema_version: 1,
+					event_id: crypto.randomUUID().replaceAll("-", ""),
+					wd: false,
+					...parsed,
+				});
+			}
+		} catch {
+			// Non-JSON body: relay rejects it; Plausible still gets the original.
+		}
 
 		const upstream = await fetch("https://plausible.io/api/event", {
 			method: "POST",
@@ -47,7 +64,7 @@ export async function handlePlausibleEventPost(request: Request): Promise<Respon
 						"x-relay-country": typeof cf?.country === "string" ? cf.country : "",
 						"x-relay-city": typeof cf?.city === "string" ? cf.city : "",
 					},
-					body: bodyText,
+					body: relayBody,
 				});
 			} catch {
 				// Tee failures are intentionally swallowed; Plausible stays authoritative.
