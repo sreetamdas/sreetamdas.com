@@ -4,6 +4,7 @@ import buildInfo from "@/build-info.json";
 
 import {
 	getLikeRuntimeStatus,
+	getStatsRelayStatus,
 	getStatsRpcStatus,
 	handleStagingSmokeGet,
 	isStagingSmokeHost,
@@ -40,6 +41,7 @@ describe("handleStagingSmokeGet", () => {
 				likeSchemaReady: false,
 				writeReady: false,
 			},
+			statsRelay: { ready: false },
 			statsRpc: { ready: false },
 			ok: true,
 			purpose: "staging-deploy-verification",
@@ -64,6 +66,7 @@ describe("handleStagingSmokeGet", () => {
 				likeSchemaReady: true,
 				writeReady: true,
 			},
+			statsRelay: { ready: false },
 			statsRpc: { ready: false },
 			ok: true,
 			purpose: "staging-deploy-verification",
@@ -78,6 +81,26 @@ describe("handleStagingSmokeGet", () => {
 		expect(response.status).toBe(404);
 		expect(response.headers.get("cache-control")).toBe("no-store");
 		expect(await response.text()).toBe("Not Found");
+	});
+});
+
+describe("getStatsRelayStatus", () => {
+	test("proves the rotated relay secret without accepting an event", async () => {
+		await expect(getStatsRelayStatus({})).resolves.toEqual({ ready: false });
+		await expect(
+			getStatsRelayStatus({
+				ANALYTICS_PROJECT_SLUG: "sreetamdas-com-staging",
+				RELAY_TOKEN: "secret",
+				STATS: { fetch: () => Promise.resolve(new Response(null, { status: 400 })) },
+			}),
+		).resolves.toEqual({ ready: true });
+		await expect(
+			getStatsRelayStatus({
+				ANALYTICS_PROJECT_SLUG: "sreetamdas-com-staging",
+				RELAY_TOKEN: "wrong",
+				STATS: { fetch: () => Promise.resolve(new Response(null, { status: 401 })) },
+			}),
+		).resolves.toEqual({ ready: false });
 	});
 });
 
