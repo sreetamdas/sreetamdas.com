@@ -9,10 +9,12 @@ type LikeRuntimeD1 = {
 	};
 };
 
-type LikeRuntimeEnv = {
+type SmokeRuntimeEnv = {
 	D1?: LikeRuntimeD1;
 	LIKES_COOKIE_SECRET?: string;
 	LIKES_IP_SALT?: string;
+	STATS_RPC?: unknown;
+	ANALYTICS_PROJECT_SLUG?: string;
 };
 
 /**
@@ -28,7 +30,7 @@ const STAGING_SMOKE_HOSTS = new Set([
 	"::1",
 ]);
 
-export async function getLikeRuntimeStatus(runtimeEnv: LikeRuntimeEnv) {
+export async function getLikeRuntimeStatus(runtimeEnv: SmokeRuntimeEnv) {
 	const cookieSecretConfigured = hasRuntimeValue(runtimeEnv.LIKES_COOKIE_SECRET);
 	const ipSaltConfigured = hasRuntimeValue(runtimeEnv.LIKES_IP_SALT);
 	const likeSchemaReady = await hasLikeSchema(runtimeEnv.D1);
@@ -41,7 +43,7 @@ export async function getLikeRuntimeStatus(runtimeEnv: LikeRuntimeEnv) {
 	};
 }
 
-export async function handleStagingSmokeGet(request: Request, runtimeEnv: LikeRuntimeEnv = env) {
+export async function handleStagingSmokeGet(request: Request, runtimeEnv: SmokeRuntimeEnv = env) {
 	const url = new URL(request.url);
 	if (!isStagingSmokeHost(url.hostname)) {
 		return new Response("Not Found", {
@@ -56,6 +58,7 @@ export async function handleStagingSmokeGet(request: Request, runtimeEnv: LikeRu
 		{
 			build: buildInfo,
 			likes: await getLikeRuntimeStatus(runtimeEnv),
+			statsRpc: await getStatsRpcStatus(runtimeEnv),
 			ok: true,
 			purpose: "staging-deploy-verification",
 		},
@@ -69,6 +72,35 @@ export async function handleStagingSmokeGet(request: Request, runtimeEnv: LikeRu
 
 export function isStagingSmokeHost(hostname: string) {
 	return STAGING_SMOKE_HOSTS.has(hostname.toLowerCase());
+}
+
+export async function getStatsRpcStatus(runtimeEnv: SmokeRuntimeEnv) {
+	if (!hasStatsRpc(runtimeEnv.STATS_RPC) || !runtimeEnv.ANALYTICS_PROJECT_SLUG) {
+		return { ready: false };
+	}
+	try {
+		const result: unknown = await runtimeEnv.STATS_RPC.getStats(
+			runtimeEnv.ANALYTICS_PROJECT_SLUG,
+			"7d",
+		);
+		if (typeof result !== "object" || result === null || !("status" in result)) {
+			return { ready: false };
+		}
+		return { ready: result.status === "ready" };
+	} catch {
+		return { ready: false };
+	}
+}
+
+function hasStatsRpc(value: unknown): value is {
+	getStats(projectSlug: string, period: string): Promise<unknown>;
+} {
+	return (
+		typeof value === "object" &&
+		value !== null &&
+		"getStats" in value &&
+		typeof value.getStats === "function"
+	);
 }
 
 function hasRuntimeValue(value?: string) {
