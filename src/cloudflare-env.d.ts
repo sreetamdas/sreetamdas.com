@@ -5,6 +5,7 @@ interface __BaseEnv_CloudflareEnv {
 	KV: KVNamespace;
 	D1: D1Database;
 	STATS: Fetcher;
+	STATS_RPC: Service;
 	ANALYTICS_PROJECT_SLUG: string;
 	RELAY_TOKEN: string;
 	VITE_SITE_URL: string;

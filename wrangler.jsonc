@@ -56,6 +56,11 @@
 		{
 			"binding": "STATS",
 			"service": "stats"
+		},
+		{
+			"binding": "STATS_RPC",
+			"service": "stats",
+			"entrypoint": "StatsRpc"
 		}
 	],
 	"vars": {
@@ -77,6 +82,11 @@
 				{
 					"binding": "STATS",
 					"service": "stats"
+				},
+				{
+					"binding": "STATS_RPC",
+					"service": "stats",
+					"entrypoint": "StatsRpc"
 				}
 			],
 			"routes": [
@@ -135,6 +145,11 @@
 				{
 					"binding": "STATS",
 					"service": "stats"
+				},
+				{
+					"binding": "STATS_RPC",
+					"service": "stats",
+					"entrypoint": "StatsRpc"
 				}
 			],
 			"routes": [
