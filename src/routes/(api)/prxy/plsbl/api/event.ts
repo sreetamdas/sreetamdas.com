@@ -16,25 +16,83 @@ export function handlePlausibleEventGet(): Response {
 	);
 }
 
+function isRecord(value: unknown): value is Record<string, unknown> {
+	return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+/** Plausible props allow primitives; the collector requires string values. */
+function stringProps(value: unknown): Record<string, string> | null {
+	if (!isRecord(value)) {
+		return null;
+	}
+	const out: Record<string, string> = {};
+	for (const [key, val] of Object.entries(value)) {
+		if (typeof val === "string" || typeof val === "number" || typeof val === "boolean") {
+			out[key] = String(val);
+		}
+	}
+	return Object.keys(out).length > 0 ? out : null;
+}
+
+/** Map the tracker's compact v36 payload (n/u/r/p/e/sd/i) onto the collector's
+ *  long-key format. The domain (d) is dropped — the collector derives the
+ *  hostname from the URL. Unknown event names become collector custom events. */
+function translateCompactPayload(parsed: Record<string, unknown>): Record<string, unknown> {
+	const out: Record<string, unknown> = {};
+	const name = typeof parsed.n === "string" ? parsed.n : "";
+	if (name === "pageview" || name === "engagement") {
+		out.name = name;
+	} else {
+		out.name = "custom";
+		out.event_name = name;
+	}
+	if (typeof parsed.u === "string") {
+		out.url = parsed.u;
+	}
+	if (typeof parsed.r === "string" || parsed.r === null) {
+		out.referrer = parsed.r;
+	}
+	const props = stringProps(parsed.p);
+	if (props !== null) {
+		out.props = props;
+	}
+	if (typeof parsed.e === "number") {
+		out.engagement_ms = parsed.e;
+	}
+	if (typeof parsed.sd === "number") {
+		out.scroll_depth = parsed.sd;
+	}
+	if (parsed.i === false) {
+		out.interactive = false;
+	}
+	return out;
+}
+
 export async function handlePlausibleEventPost(request: Request): Promise<Response> {
 	try {
 		// Phase-1 tee (plan §19): keep the Plausible tracker stream untouched and
-		// mirror the exact payload + transient request facts to the native stats
-		// collector over a private Service Binding. The Plausible tracker payload
-		// lacks our envelope fields (event_id, schema_version), so synthesize
-		// them server-side — one native event per accepted Plausible event.
-		// Native failures never affect the primary Plausible response.
+		// mirror each accepted event to the native stats collector over a private
+		// Service Binding. Two payload shapes arrive here: the tracker's compact
+		// v36 keys (n/u/d/r/p/e/sd) and our own long-key collector format. The
+		// compact shape is translated to the collector format server-side and the
+		// envelope fields (event_id, schema_version) are synthesized — the v36
+		// script never sends them. Native failures never affect the primary
+		// Plausible response.
 		const bodyText = await request.clone().text();
 
 		let relayBody = bodyText;
 		try {
-			const parsed = JSON.parse(bodyText) as Record<string, unknown>;
-			if (parsed !== null && typeof parsed === "object" && !Array.isArray(parsed)) {
+			const parsed: unknown = JSON.parse(bodyText);
+			if (isRecord(parsed)) {
+				const translated =
+					typeof parsed.n === "string" && parsed.url === undefined && parsed.name === undefined
+						? translateCompactPayload(parsed)
+						: parsed;
 				relayBody = JSON.stringify({
 					schema_version: 1,
 					event_id: crypto.randomUUID().replaceAll("-", ""),
 					wd: false,
-					...parsed,
+					...translated,
 				});
 			}
 		} catch {
