@@ -1,7 +1,7 @@
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
 	"name": "sreetamdas-com",
-	"compatibility_date": "2026-05-10",
+	"compatibility_date": "2026-06-16",
 	"compatibility_flags": ["nodejs_compat"],
 	"main": "./src/worker.ts",
 	"workers_dev": true,
