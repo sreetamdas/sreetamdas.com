@@ -36,15 +36,18 @@ function stringProps(value: unknown): Record<string, string> | null {
 
 /** Map the tracker's compact v36 payload (n/u/r/p/e/sd/i) onto the collector's
  *  long-key format. The domain (d) is dropped — the collector derives the
- *  hostname from the URL. Unknown event names become collector custom events. */
+ *  hostname from the URL. Unknown event names become collector custom events.
+ *  Props are only forwarded for custom events — pageview/engagement with props
+ *  would be rejected by the collector validator (properties_not_allowed). */
 function translateCompactPayload(parsed: Record<string, unknown>): Record<string, unknown> {
 	const out: Record<string, unknown> = {};
 	const name = typeof parsed.n === "string" ? parsed.n : "";
-	if (name === "pageview" || name === "engagement") {
-		out.name = name;
-	} else {
+	const isCustom = name !== "pageview" && name !== "engagement";
+	if (isCustom) {
 		out.name = "custom";
 		out.event_name = name;
+	} else {
+		out.name = name;
 	}
 	if (typeof parsed.u === "string") {
 		out.url = parsed.u;
@@ -52,9 +55,11 @@ function translateCompactPayload(parsed: Record<string, unknown>): Record<string
 	if (typeof parsed.r === "string" || parsed.r === null) {
 		out.referrer = parsed.r;
 	}
-	const props = stringProps(parsed.p);
-	if (props !== null) {
-		out.props = props;
+	if (isCustom) {
+		const props = stringProps(parsed.p);
+		if (props !== null) {
+			out.props = props;
+		}
 	}
 	if (typeof parsed.e === "number") {
 		out.engagement_ms = parsed.e;
@@ -112,18 +117,31 @@ export async function handlePlausibleEventPost(request: Request): Promise<Respon
 		if (upstream.ok) {
 			try {
 				const cf = request.cf as { country?: unknown; city?: unknown } | undefined;
-				await env.STATS.fetch(`https://stats.internal/v1/relay/${env.ANALYTICS_PROJECT_SLUG}`, {
-					method: "POST",
-					headers: {
-						"content-type": "text/plain;charset=UTF-8",
-						"x-relay-token": env.RELAY_TOKEN,
-						"x-relay-ip": request.headers.get("cf-connecting-ip") ?? "",
-						"x-relay-ua": request.headers.get("user-agent") ?? "",
-						"x-relay-country": typeof cf?.country === "string" ? cf.country : "",
-						"x-relay-city": typeof cf?.city === "string" ? cf.city : "",
+				// Capture relay result for privacy-safe counters (never attach payload/URL/IP/UA).
+				// Clone response so body consumption does not affect outer scope.
+				const relayResponse = await env.STATS.fetch(
+					`https://stats.internal/v1/relay/${env.ANALYTICS_PROJECT_SLUG}`,
+					{
+						method: "POST",
+						headers: {
+							"content-type": "text/plain;charset=UTF-8",
+							"x-relay-token": (env as unknown as Record<string, string>).RELAY_TOKEN ?? "",
+							"x-relay-ip": request.headers.get("cf-connecting-ip") ?? "",
+							"x-relay-ua": request.headers.get("user-agent") ?? "",
+							"x-relay-country": typeof cf?.country === "string" ? cf.country : "",
+							"x-relay-city": typeof cf?.city === "string" ? cf.city : "",
+						},
+						body: relayBody,
 					},
-					body: relayBody,
-				});
+				);
+				let relayReason: string | null = null;
+				try {
+					const data = (await relayResponse.clone().json()) as { reason?: unknown };
+					relayReason = typeof data.reason === "string" ? data.reason.slice(0, 80) : null;
+					void relayReason; // reserved for Sentry metrics once SDK is wired; kept privacy-safe
+				} catch {
+					void relayResponse.status;
+				}
 			} catch {
 				// Tee failures are intentionally swallowed; Plausible stays authoritative.
 			}
