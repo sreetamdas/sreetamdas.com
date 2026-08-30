@@ -120,13 +120,9 @@ export const Route = createRootRoute({
 		scripts: [
 			{
 				async: true,
-				"data-domain": "sreetamdas.com",
-				"data-api": "/prxy/plsbl/api/event",
-				src: "/prxy/plsbl/js/pa-9_SvPsvmZhj3FQWGOD3c1.js",
-			},
-			{
-				children:
-					"window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};plausible.init({endpoint:'/prxy/plsbl/api/event'})",
+				"data-endpoint": "/api/analytics",
+				"data-key": "event",
+				src: "/api/analytics/tracker",
 			},
 		],
 	}),

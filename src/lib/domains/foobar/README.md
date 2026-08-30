@@ -50,7 +50,7 @@ image). Static clue surfaces: `public/robots.txt`, `public/.well-known/security.
 1. Add the entry (tier, hints, completion note, teaser) to `catalog.ts`.
 2. Add its flag (slug, icon, description) to `FOOBAR_FLAGS` in `flags.tsx` — a `slug` makes
    `/foobar/<slug>` routable and auto-completes on visit; omit it for programmatic
-   achievements (complete those via `completeFoobarFlag` and emit the Plausible event).
+   achievements (complete those via `completeFoobarFlag` and emit the analytics event).
 3. Hide the actual clue in whatever surface the puzzle uses.
 4. Note: new achievements intentionally reopen the endgame for previous finishers; their
    `completed_at`/certificate in D1 are preserved.

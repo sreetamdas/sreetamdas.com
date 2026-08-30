@@ -13,6 +13,7 @@ import { useShallow } from "zustand/react/shallow";
 import { IS_DEV } from "@/config";
 import { NotFound404 } from "@/lib/components/Error";
 import { Code } from "@/lib/components/Typography";
+import { useTrackEvent } from "@/lib/domains/Analytics";
 import { ShowCompletedBadges } from "@/lib/domains/foobar/badges";
 import { isFoobarAchievement, type FoobarAchievement } from "@/lib/domains/foobar/catalog";
 import { CloudProgressPanel } from "@/lib/domains/foobar/CloudProgressPanel";
@@ -21,13 +22,12 @@ import { FOOBAR_FLAGS } from "@/lib/domains/foobar/flags";
 import { useSharedHunterPresence } from "@/lib/domains/foobar/sharedHunterPresence";
 import { type FoobarSchrodingerProps, initialFoobarData } from "@/lib/domains/foobar/store";
 import { useGlobalStore } from "@/lib/domains/global";
-import { useCustomPlausible } from "@/lib/domains/Plausible";
 import { useHasMounted } from "@/lib/helpers/hooks";
 
 export const FoobarDashboard = () => {
 	// const router = useRouter();
 	const navigate = useNavigate();
-	const plausibleEvent = useCustomPlausible();
+	const trackEvent = useTrackEvent();
 	const { foobar_data, setFoobarData } = useGlobalStore(
 		useShallow((state) => ({
 			foobar_data: state.foobar_data,
@@ -48,7 +48,7 @@ export const FoobarDashboard = () => {
 	}, [navigate]);
 
 	function handleClearFoobarData() {
-		plausibleEvent("foobar", { props: { achievement: "restart" } });
+		trackEvent("foobar", { props: { achievement: "restart" } });
 		// Local reset only: signed-in players delete their cloud save separately
 		// via the Cloud save panel, so a stray restart cannot erase remote progress.
 		setFoobarData(initialFoobarData);
@@ -271,7 +271,7 @@ export const FoobarSchrodinger = ({ completed_page }: FoobarSchrodingerProps) =>
 		})),
 	);
 	const has_mounted = useHasMounted();
-	const plausibleEvent = useCustomPlausible();
+	const trackEvent = useTrackEvent();
 
 	useEffect(() => {
 		if (completed_page) {
@@ -287,11 +287,11 @@ export const FoobarSchrodinger = ({ completed_page }: FoobarSchrodingerProps) =>
 				isFoobarAchievement(completed_flag) &&
 				!completed.includes(completed_flag)
 			) {
-				plausibleEvent("foobar", { props: { achievement: completed_flag } });
+				trackEvent("foobar", { props: { achievement: completed_flag } });
 				completeFoobarFlag(completed_flag);
 			}
 		}
-	}, [completeFoobarFlag, completed, completed_page, plausibleEvent]);
+	}, [completeFoobarFlag, completed, completed_page, trackEvent]);
 
 	if (!has_mounted) return null;
 	if (!unlocked) return <FoobarButLocked />;

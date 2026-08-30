@@ -7,8 +7,8 @@
  */
 import { useEffect, useState } from "react";
 
+import { useTrackEvent } from "../Analytics";
 import { useGlobalStore } from "../global";
-import { useCustomPlausible } from "../Plausible";
 import {
 	FOOBAR_ACHIEVEMENTS,
 	FOOBAR_TIERS,
@@ -251,7 +251,7 @@ type BadgeProps = {
 };
 
 const Badge = ({ achievement, isExpanded, cluesSeen, recordFoobarClue, onToggle }: BadgeProps) => {
-	const plausibleEvent = useCustomPlausible();
+	const trackEvent = useTrackEvent();
 	const [recordedHint, setRecordedHint] = useState<number | null>(null);
 	// The acknowledgment confirms the most recent reveal; clear it once the
 	// entry collapses so a later visit cannot show a stale confirmation.
@@ -274,7 +274,7 @@ const Badge = ({ achievement, isExpanded, cluesSeen, recordFoobarClue, onToggle 
 		recordFoobarClue(nextHint.id);
 		setRecordedHint(nextHintNumber);
 		if (nextHint.id === metadata.hints[2]?.id && finalHint && !clueIds.includes(finalHint.id)) {
-			plausibleEvent("foobar_hint_development_started", {
+			trackEvent("foobar_hint_development_started", {
 				props: {
 					achievement,
 					wait_hours: FOOBAR_HINT_DEVELOPMENT_MS / (60 * 60 * 1_000),
@@ -287,7 +287,7 @@ const Badge = ({ achievement, isExpanded, cluesSeen, recordFoobarClue, onToggle 
 
 		recordFoobarClue(nextHint.id);
 		setRecordedHint(nextHintNumber);
-		plausibleEvent("foobar_developed_hint_read", {
+		trackEvent("foobar_developed_hint_read", {
 			props: {
 				achievement,
 				elapsed_bucket: getFoobarHintElapsedBucket(hint3SeenAt, Date.now()),

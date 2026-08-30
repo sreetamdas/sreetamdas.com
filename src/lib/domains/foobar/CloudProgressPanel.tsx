@@ -9,8 +9,8 @@ import { AlertDialog } from "@base-ui/react/alert-dialog";
 import { useEffect, useRef, useState } from "react";
 import { useShallow } from "zustand/react/shallow";
 
+import { useTrackEvent } from "@/lib/domains/Analytics";
 import { useGlobalStore } from "@/lib/domains/global";
-import { useCustomPlausible } from "@/lib/domains/Plausible";
 import { captureException } from "@/lib/domains/Sentry";
 
 import { mergeFoobarProgress } from "./cloud-progress";
@@ -43,7 +43,7 @@ export function CloudProgressPanel() {
 	const [reloadKey, setReloadKey] = useState(0);
 	const lastSynced = useRef("");
 	const syncSession = useRef(createFoobarCloudSyncSession());
-	const plausible = useCustomPlausible();
+	const trackEvent = useTrackEvent();
 
 	useEffect(
 		() =>
@@ -197,7 +197,7 @@ export function CloudProgressPanel() {
 			await resetFoobarProgressServerFn();
 			lastSynced.current = JSON.stringify(useGlobalStore.getState().foobar_data);
 			publishFoobarCloudLifecycle("disabled");
-			plausible("foobar_cloud_lifecycle", { props: { operation: "disabled" } });
+			trackEvent("foobar_cloud_lifecycle", { props: { operation: "disabled" } });
 			setSyncState("disabled");
 		} catch (error) {
 			captureException(error);
@@ -227,7 +227,7 @@ export function CloudProgressPanel() {
 					: value,
 			);
 			publishFoobarCloudLifecycle("enabled");
-			plausible("foobar_cloud_lifecycle", { props: { operation: "enabled" } });
+			trackEvent("foobar_cloud_lifecycle", { props: { operation: "enabled" } });
 			setSyncState("saved");
 		} catch (error) {
 			if (syncSession.current.isCurrent(token)) {

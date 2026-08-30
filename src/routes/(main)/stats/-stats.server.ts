@@ -1,28 +1,28 @@
 import { createServerFn } from "@tanstack/react-start";
 
-import { PLAUSIBLE_DATE_RANGES, type PlausibleDateRange } from "@/lib/domains/Plausible/shared";
+import { ANALYTICS_DATE_RANGES, type AnalyticsDateRange } from "@/lib/domains/Analytics/shared";
 
 export type StatsSearch = {
-	period: PlausibleDateRange;
+	period: AnalyticsDateRange;
 };
 
 export const getStats = createServerFn({ method: "GET" })
 	.validator((data): StatsSearch => {
 		if (typeof data !== "object" || data === null || !("period" in data)) {
-			return { period: "30d" satisfies PlausibleDateRange };
+			return { period: "30d" satisfies AnalyticsDateRange };
 		}
 
 		return { period: parseDateRange(data.period) };
 	})
 	.handler(async ({ data }) => {
-		const { fetchPlausibleStats } = await import("@/lib/domains/Plausible/stats");
-		return fetchPlausibleStats(data.period);
+		const { fetchAnalyticsStats } = await import("@/lib/domains/Analytics/stats");
+		return fetchAnalyticsStats(data.period);
 	});
 
-export function parseDateRange(value: unknown): PlausibleDateRange {
-	return typeof value === "string" && isPlausibleDateRange(value) ? value : "30d";
+export function parseDateRange(value: unknown): AnalyticsDateRange {
+	return typeof value === "string" && isAnalyticsDateRange(value) ? value : "30d";
 }
 
-function isPlausibleDateRange(value: string): value is PlausibleDateRange {
-	return PLAUSIBLE_DATE_RANGES.some((range) => range === value);
+function isAnalyticsDateRange(value: string): value is AnalyticsDateRange {
+	return ANALYTICS_DATE_RANGES.some((range) => range === value);
 }

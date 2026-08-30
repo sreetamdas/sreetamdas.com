@@ -1,15 +1,15 @@
-export const DEFAULT_PLAUSIBLE_SITE_ID = "sreetamdas.com";
+export const DEFAULT_ANALYTICS_SITE_ID = "sreetamdas-com-prod";
 
-export type PlausibleDateRange = "7d" | "30d" | "91d" | "12mo" | "all";
+export type AnalyticsDateRange = "7d" | "30d" | "91d" | "12mo" | "all";
+export const ANALYTICS_DATE_RANGES: Array<AnalyticsDateRange> = ["7d", "30d", "91d", "12mo", "all"];
+export type AnalyticsStatsStatus = "ready" | "missing-config" | "unavailable";
 
-export const PLAUSIBLE_DATE_RANGES: Array<PlausibleDateRange> = ["7d", "30d", "91d", "12mo", "all"];
-
-export type PlausibleStatsStatus = "ready" | "missing-config" | "unavailable";
-
-export type PlausibleStats = {
-	status: PlausibleStatsStatus;
+export type StatsBreakdownRow = { name: string; visitors: number; percentage: number };
+export type StatsCountryRow = StatsBreakdownRow & { code: string };
+export type AnalyticsStats = {
+	status: AnalyticsStatsStatus;
 	siteId: string;
-	period: PlausibleDateRange;
+	period: AnalyticsDateRange;
 	updatedAt: string;
 	overview: {
 		visitors: number;
@@ -19,11 +19,7 @@ export type PlausibleStats = {
 		bounceRate: number;
 		visitDuration: number;
 	};
-	topPages: Array<{
-		path: string;
-		visitors: number;
-		pageviews: number;
-	}>;
+	topPages: Array<{ path: string; visitors: number; pageviews: number }>;
 	entryPages: Array<StatsBreakdownRow>;
 	exitPages: Array<StatsBreakdownRow>;
 	topSources: Array<StatsBreakdownRow>;
@@ -34,27 +30,14 @@ export type PlausibleStats = {
 	devices: Array<StatsBreakdownRow>;
 	browsers: Array<StatsBreakdownRow>;
 	operatingSystems: Array<StatsBreakdownRow>;
-	timeline: Array<{
-		date: string;
-		visitors: number;
-	}>;
-};
-
-export type StatsBreakdownRow = {
-	name: string;
-	visitors: number;
-	percentage: number;
-};
-
-export type StatsCountryRow = StatsBreakdownRow & {
-	code: string;
+	timeline: Array<{ date: string; visitors: number }>;
 };
 
 export function createEmptyStats(
-	status: PlausibleStatsStatus,
+	status: AnalyticsStatsStatus,
 	siteId: string,
-	period: PlausibleDateRange,
-): PlausibleStats {
+	period: AnalyticsDateRange,
+): AnalyticsStats {
 	return {
 		status,
 		siteId,

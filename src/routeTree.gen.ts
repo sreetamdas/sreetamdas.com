@@ -35,14 +35,14 @@ import { Route as mainBlogSlugRouteRouteImport } from './routes/(main)/blog/$slu
 import { Route as mainNewsletterIndexRouteImport } from './routes/(main)/newsletter/index'
 import { Route as mainNewsletterSlugRouteRouteImport } from './routes/(main)/newsletter/$slug/route'
 import { Route as SlidesTanstackStartDevLabRouteRouteImport } from './routes/slides/tanstack-start/dev-lab/route'
+import { Route as apiApiAnalyticsEventRouteImport } from './routes/(api)/api/analytics/event'
+import { Route as apiApiAnalyticsTrackerRouteImport } from './routes/(api)/api/analytics/tracker'
 import { Route as apiApiAuthSplatRouteImport } from './routes/(api)/api/auth/$'
 import { Route as apiApiFoobarCookieRouteImport } from './routes/(api)/api/foobar/cookie'
 import { Route as apiApiLoginProviderRouteImport } from './routes/(api)/api/login/$provider'
 import { Route as mainfoobarFoobarIndexRouteImport } from './routes/(main)/(foobar)/foobar/index'
 import { Route as mainfoobarFoobarSlugRouteRouteImport } from './routes/(main)/(foobar)/foobar/$slug/route'
 import { Route as apiApiSlidesSessionSessionIdRouteImport } from './routes/(api)/api/slides/session/$sessionId'
-import { Route as apiPrxyPlsblApiEventRouteImport } from './routes/(api)/prxy/plsbl/api/event'
-import { Route as apiPrxyPlsblJsScriptRouteImport } from './routes/(api)/prxy/plsbl/js/$script'
 import { Route as mainfoobarFoobarCertificateTokenRouteImport } from './routes/(main)/(foobar)/foobar/certificate/$token'
 import { Route as apiApiFoobarCertificateTokenOgDotpngRouteImport } from './routes/(api)/api/foobar/certificate/$token/og[.]png'
 
@@ -177,6 +177,16 @@ const SlidesTanstackStartDevLabRouteRoute =
     path: '/dev-lab',
     getParentRoute: () => SlidesTanstackStartRouteRoute,
   } as any)
+const apiApiAnalyticsEventRoute = apiApiAnalyticsEventRouteImport.update({
+  id: '/(api)/api/analytics/event',
+  path: '/api/analytics/event',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const apiApiAnalyticsTrackerRoute = apiApiAnalyticsTrackerRouteImport.update({
+  id: '/(api)/api/analytics/tracker',
+  path: '/api/analytics/tracker',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const apiApiAuthSplatRoute = apiApiAuthSplatRouteImport.update({
   id: '/(api)/api/auth/$',
   path: '/api/auth/$',
@@ -209,16 +219,6 @@ const apiApiSlidesSessionSessionIdRoute =
     path: '/api/slides/session/$sessionId',
     getParentRoute: () => rootRouteImport,
   } as any)
-const apiPrxyPlsblApiEventRoute = apiPrxyPlsblApiEventRouteImport.update({
-  id: '/(api)/prxy/plsbl/api/event',
-  path: '/prxy/plsbl/api/event',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const apiPrxyPlsblJsScriptRoute = apiPrxyPlsblJsScriptRouteImport.update({
-  id: '/(api)/prxy/plsbl/js/$script',
-  path: '/prxy/plsbl/js/$script',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const mainfoobarFoobarCertificateTokenRoute =
   mainfoobarFoobarCertificateTokenRouteImport.update({
     id: '/certificate/$token',
@@ -258,13 +258,13 @@ export interface FileRoutesByFullPath {
   '/blog/': typeof mainBlogIndexRoute
   '/newsletter/': typeof mainNewsletterIndexRoute
   '/foobar/$slug': typeof mainfoobarFoobarSlugRouteRoute
+  '/api/analytics/event': typeof apiApiAnalyticsEventRoute
+  '/api/analytics/tracker': typeof apiApiAnalyticsTrackerRoute
   '/api/auth/$': typeof apiApiAuthSplatRoute
   '/api/foobar/cookie': typeof apiApiFoobarCookieRoute
   '/api/login/$provider': typeof apiApiLoginProviderRoute
   '/foobar/': typeof mainfoobarFoobarIndexRoute
   '/api/slides/session/$sessionId': typeof apiApiSlidesSessionSessionIdRoute
-  '/prxy/plsbl/api/event': typeof apiPrxyPlsblApiEventRoute
-  '/prxy/plsbl/js/$script': typeof apiPrxyPlsblJsScriptRoute
   '/foobar/certificate/$token': typeof mainfoobarFoobarCertificateTokenRoute
   '/api/foobar/certificate/$token/og.png': typeof apiApiFoobarCertificateTokenOgDotpngRoute
 }
@@ -291,13 +291,13 @@ export interface FileRoutesByTo {
   '/blog': typeof mainBlogIndexRoute
   '/newsletter': typeof mainNewsletterIndexRoute
   '/foobar/$slug': typeof mainfoobarFoobarSlugRouteRoute
+  '/api/analytics/event': typeof apiApiAnalyticsEventRoute
+  '/api/analytics/tracker': typeof apiApiAnalyticsTrackerRoute
   '/api/auth/$': typeof apiApiAuthSplatRoute
   '/api/foobar/cookie': typeof apiApiFoobarCookieRoute
   '/api/login/$provider': typeof apiApiLoginProviderRoute
   '/foobar': typeof mainfoobarFoobarIndexRoute
   '/api/slides/session/$sessionId': typeof apiApiSlidesSessionSessionIdRoute
-  '/prxy/plsbl/api/event': typeof apiPrxyPlsblApiEventRoute
-  '/prxy/plsbl/js/$script': typeof apiPrxyPlsblJsScriptRoute
   '/foobar/certificate/$token': typeof mainfoobarFoobarCertificateTokenRoute
   '/api/foobar/certificate/$token/og.png': typeof apiApiFoobarCertificateTokenOgDotpngRoute
 }
@@ -330,13 +330,13 @@ export interface FileRoutesById {
   '/(main)/blog/': typeof mainBlogIndexRoute
   '/(main)/newsletter/': typeof mainNewsletterIndexRoute
   '/(main)/(foobar)/foobar/$slug': typeof mainfoobarFoobarSlugRouteRoute
+  '/(api)/api/analytics/event': typeof apiApiAnalyticsEventRoute
+  '/(api)/api/analytics/tracker': typeof apiApiAnalyticsTrackerRoute
   '/(api)/api/auth/$': typeof apiApiAuthSplatRoute
   '/(api)/api/foobar/cookie': typeof apiApiFoobarCookieRoute
   '/(api)/api/login/$provider': typeof apiApiLoginProviderRoute
   '/(main)/(foobar)/foobar/': typeof mainfoobarFoobarIndexRoute
   '/(api)/api/slides/session/$sessionId': typeof apiApiSlidesSessionSessionIdRoute
-  '/(api)/prxy/plsbl/api/event': typeof apiPrxyPlsblApiEventRoute
-  '/(api)/prxy/plsbl/js/$script': typeof apiPrxyPlsblJsScriptRoute
   '/(main)/(foobar)/foobar/certificate/$token': typeof mainfoobarFoobarCertificateTokenRoute
   '/(api)/api/foobar/certificate/$token/og.png': typeof apiApiFoobarCertificateTokenOgDotpngRoute
 }
@@ -368,13 +368,13 @@ export interface FileRouteTypes {
     | '/blog/'
     | '/newsletter/'
     | '/foobar/$slug'
+    | '/api/analytics/event'
+    | '/api/analytics/tracker'
     | '/api/auth/$'
     | '/api/foobar/cookie'
     | '/api/login/$provider'
     | '/foobar/'
     | '/api/slides/session/$sessionId'
-    | '/prxy/plsbl/api/event'
-    | '/prxy/plsbl/js/$script'
     | '/foobar/certificate/$token'
     | '/api/foobar/certificate/$token/og.png'
   fileRoutesByTo: FileRoutesByTo
@@ -401,13 +401,13 @@ export interface FileRouteTypes {
     | '/blog'
     | '/newsletter'
     | '/foobar/$slug'
+    | '/api/analytics/event'
+    | '/api/analytics/tracker'
     | '/api/auth/$'
     | '/api/foobar/cookie'
     | '/api/login/$provider'
     | '/foobar'
     | '/api/slides/session/$sessionId'
-    | '/prxy/plsbl/api/event'
-    | '/prxy/plsbl/js/$script'
     | '/foobar/certificate/$token'
     | '/api/foobar/certificate/$token/og.png'
   id:
@@ -439,13 +439,13 @@ export interface FileRouteTypes {
     | '/(main)/blog/'
     | '/(main)/newsletter/'
     | '/(main)/(foobar)/foobar/$slug'
+    | '/(api)/api/analytics/event'
+    | '/(api)/api/analytics/tracker'
     | '/(api)/api/auth/$'
     | '/(api)/api/foobar/cookie'
     | '/(api)/api/login/$provider'
     | '/(main)/(foobar)/foobar/'
     | '/(api)/api/slides/session/$sessionId'
-    | '/(api)/prxy/plsbl/api/event'
-    | '/(api)/prxy/plsbl/js/$script'
     | '/(main)/(foobar)/foobar/certificate/$token'
     | '/(api)/api/foobar/certificate/$token/og.png'
   fileRoutesById: FileRoutesById
@@ -457,12 +457,12 @@ export interface RootRouteChildren {
   apiApiCoffeeRoute: typeof apiApiCoffeeRoute
   apiApiPresenceRoute: typeof apiApiPresenceRoute
   apiApiStagingSmokeRoute: typeof apiApiStagingSmokeRoute
+  apiApiAnalyticsEventRoute: typeof apiApiAnalyticsEventRoute
+  apiApiAnalyticsTrackerRoute: typeof apiApiAnalyticsTrackerRoute
   apiApiAuthSplatRoute: typeof apiApiAuthSplatRoute
   apiApiFoobarCookieRoute: typeof apiApiFoobarCookieRoute
   apiApiLoginProviderRoute: typeof apiApiLoginProviderRoute
   apiApiSlidesSessionSessionIdRoute: typeof apiApiSlidesSessionSessionIdRoute
-  apiPrxyPlsblApiEventRoute: typeof apiPrxyPlsblApiEventRoute
-  apiPrxyPlsblJsScriptRoute: typeof apiPrxyPlsblJsScriptRoute
   apiApiFoobarCertificateTokenOgDotpngRoute: typeof apiApiFoobarCertificateTokenOgDotpngRoute
 }
 
@@ -650,6 +650,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SlidesTanstackStartDevLabRouteRouteImport
       parentRoute: typeof SlidesTanstackStartRouteRoute
     }
+    '/(api)/api/analytics/event': {
+      id: '/(api)/api/analytics/event'
+      path: '/api/analytics/event'
+      fullPath: '/api/analytics/event'
+      preLoaderRoute: typeof apiApiAnalyticsEventRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/(api)/api/analytics/tracker': {
+      id: '/(api)/api/analytics/tracker'
+      path: '/api/analytics/tracker'
+      fullPath: '/api/analytics/tracker'
+      preLoaderRoute: typeof apiApiAnalyticsTrackerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/(api)/api/auth/$': {
       id: '/(api)/api/auth/$'
       path: '/api/auth/$'
@@ -690,20 +704,6 @@ declare module '@tanstack/react-router' {
       path: '/api/slides/session/$sessionId'
       fullPath: '/api/slides/session/$sessionId'
       preLoaderRoute: typeof apiApiSlidesSessionSessionIdRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/(api)/prxy/plsbl/api/event': {
-      id: '/(api)/prxy/plsbl/api/event'
-      path: '/prxy/plsbl/api/event'
-      fullPath: '/prxy/plsbl/api/event'
-      preLoaderRoute: typeof apiPrxyPlsblApiEventRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/(api)/prxy/plsbl/js/$script': {
-      id: '/(api)/prxy/plsbl/js/$script'
-      path: '/prxy/plsbl/js/$script'
-      fullPath: '/prxy/plsbl/js/$script'
-      preLoaderRoute: typeof apiPrxyPlsblJsScriptRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/(main)/(foobar)/foobar/certificate/$token': {
@@ -848,12 +848,12 @@ const rootRouteChildren: RootRouteChildren = {
   apiApiCoffeeRoute: apiApiCoffeeRoute,
   apiApiPresenceRoute: apiApiPresenceRoute,
   apiApiStagingSmokeRoute: apiApiStagingSmokeRoute,
+  apiApiAnalyticsEventRoute: apiApiAnalyticsEventRoute,
+  apiApiAnalyticsTrackerRoute: apiApiAnalyticsTrackerRoute,
   apiApiAuthSplatRoute: apiApiAuthSplatRoute,
   apiApiFoobarCookieRoute: apiApiFoobarCookieRoute,
   apiApiLoginProviderRoute: apiApiLoginProviderRoute,
   apiApiSlidesSessionSessionIdRoute: apiApiSlidesSessionSessionIdRoute,
-  apiPrxyPlsblApiEventRoute: apiPrxyPlsblApiEventRoute,
-  apiPrxyPlsblJsScriptRoute: apiPrxyPlsblJsScriptRoute,
   apiApiFoobarCertificateTokenOgDotpngRoute:
     apiApiFoobarCertificateTokenOgDotpngRoute,
 }

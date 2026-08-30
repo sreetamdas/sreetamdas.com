@@ -26,8 +26,6 @@ interface __BaseEnv_CloudflareEnv {
 	GOOGLE_OAUTH_CLIENT_SECRET: string;
 	GITHUB_OAUTH_CLIENT_ID: string;
 	GITHUB_OAUTH_CLIENT_SECRET: string;
-	PLAUSIBLE_API_KEY: string;
-	PLAUSIBLE_SITE_ID: string;
 	SENTRY_ORG: string;
 	SENTRY_PROJECT: string;
 	SENTRY_AUTH_TOKEN: string;
@@ -66,8 +64,6 @@ declare namespace Cloudflare {
 		CLOUDFLARE_OAUTH_CLIENT_SECRET: string;
 		GOOGLE_OAUTH_CLIENT_ID: string;
 		GOOGLE_OAUTH_CLIENT_SECRET: string;
-		PLAUSIBLE_API_KEY: string;
-		PLAUSIBLE_SITE_ID: string;
 		SENTRY_ORG: string;
 		SENTRY_PROJECT: string;
 		SENTRY_AUTH_TOKEN: string;
@@ -100,8 +96,6 @@ declare namespace Cloudflare {
 		CLOUDFLARE_OAUTH_CLIENT_SECRET: string;
 		GOOGLE_OAUTH_CLIENT_ID: string;
 		GOOGLE_OAUTH_CLIENT_SECRET: string;
-		PLAUSIBLE_API_KEY: string;
-		PLAUSIBLE_SITE_ID: string;
 		SENTRY_ORG: string;
 		SENTRY_PROJECT: string;
 		SENTRY_AUTH_TOKEN: string;
@@ -143,8 +137,6 @@ declare namespace NodeJS {
 			| "GOOGLE_OAUTH_CLIENT_SECRET"
 			| "GITHUB_OAUTH_CLIENT_ID"
 			| "GITHUB_OAUTH_CLIENT_SECRET"
-			| "PLAUSIBLE_API_KEY"
-			| "PLAUSIBLE_SITE_ID"
 			| "SENTRY_ORG"
 			| "SENTRY_PROJECT"
 			| "SENTRY_AUTH_TOKEN"
