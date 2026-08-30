@@ -9,10 +9,14 @@ type LikeRuntimeD1 = {
 	};
 };
 
-type LikeRuntimeEnv = {
+type SmokeRuntimeEnv = {
 	D1?: LikeRuntimeD1;
 	LIKES_COOKIE_SECRET?: string;
 	LIKES_IP_SALT?: string;
+	STATS?: unknown;
+	STATS_RPC?: unknown;
+	ANALYTICS_PROJECT_SLUG?: string;
+	RELAY_TOKEN?: string;
 };
 
 /**
@@ -28,7 +32,7 @@ const STAGING_SMOKE_HOSTS = new Set([
 	"::1",
 ]);
 
-export async function getLikeRuntimeStatus(runtimeEnv: LikeRuntimeEnv) {
+export async function getLikeRuntimeStatus(runtimeEnv: SmokeRuntimeEnv) {
 	const cookieSecretConfigured = hasRuntimeValue(runtimeEnv.LIKES_COOKIE_SECRET);
 	const ipSaltConfigured = hasRuntimeValue(runtimeEnv.LIKES_IP_SALT);
 	const likeSchemaReady = await hasLikeSchema(runtimeEnv.D1);
@@ -41,7 +45,7 @@ export async function getLikeRuntimeStatus(runtimeEnv: LikeRuntimeEnv) {
 	};
 }
 
-export async function handleStagingSmokeGet(request: Request, runtimeEnv: LikeRuntimeEnv = env) {
+export async function handleStagingSmokeGet(request: Request, runtimeEnv: SmokeRuntimeEnv = env) {
 	const url = new URL(request.url);
 	if (!isStagingSmokeHost(url.hostname)) {
 		return new Response("Not Found", {
@@ -56,6 +60,8 @@ export async function handleStagingSmokeGet(request: Request, runtimeEnv: LikeRu
 		{
 			build: buildInfo,
 			likes: await getLikeRuntimeStatus(runtimeEnv),
+			statsRelay: await getStatsRelayStatus(runtimeEnv),
+			statsRpc: await getStatsRpcStatus(runtimeEnv),
 			ok: true,
 			purpose: "staging-deploy-verification",
 		},
@@ -71,7 +77,76 @@ export function isStagingSmokeHost(hostname: string) {
 	return STAGING_SMOKE_HOSTS.has(hostname.toLowerCase());
 }
 
-function hasRuntimeValue(value?: string) {
+export async function getStatsRelayStatus(runtimeEnv: SmokeRuntimeEnv) {
+	const relayToken = runtimeEnv.RELAY_TOKEN;
+	if (
+		!hasFetcher(runtimeEnv.STATS) ||
+		!runtimeEnv.ANALYTICS_PROJECT_SLUG ||
+		!hasRuntimeValue(relayToken)
+	) {
+		return { ready: false };
+	}
+	try {
+		const response = await runtimeEnv.STATS.fetch(
+			`https://stats.internal/v1/relay/${runtimeEnv.ANALYTICS_PROJECT_SLUG}`,
+			{
+				method: "POST",
+				headers: {
+					"content-type": "application/json",
+					"x-relay-token": relayToken,
+					"x-relay-ip": "192.0.2.1",
+					"x-relay-ua": "staging-smoke",
+				},
+				body: "{}",
+			},
+		);
+		return { ready: response.status === 400 };
+	} catch {
+		return { ready: false };
+	}
+}
+
+export async function getStatsRpcStatus(runtimeEnv: SmokeRuntimeEnv) {
+	if (!hasStatsRpc(runtimeEnv.STATS_RPC) || !runtimeEnv.ANALYTICS_PROJECT_SLUG) {
+		return { ready: false };
+	}
+	try {
+		const result: unknown = await runtimeEnv.STATS_RPC.getStats(
+			runtimeEnv.ANALYTICS_PROJECT_SLUG,
+			"7d",
+		);
+		if (typeof result !== "object" || result === null || !("status" in result)) {
+			return { ready: false };
+		}
+		return { ready: result.status === "ready" };
+	} catch {
+		return { ready: false };
+	}
+}
+
+function hasFetcher(value: unknown): value is {
+	fetch(input: RequestInfo | URL, init?: RequestInit): Promise<Response>;
+} {
+	return (
+		typeof value === "object" &&
+		value !== null &&
+		"fetch" in value &&
+		typeof value.fetch === "function"
+	);
+}
+
+function hasStatsRpc(value: unknown): value is {
+	getStats(projectSlug: string, period: string): Promise<unknown>;
+} {
+	return (
+		typeof value === "object" &&
+		value !== null &&
+		"getStats" in value &&
+		typeof value.getStats === "function"
+	);
+}
+
+function hasRuntimeValue(value?: string): value is string {
 	return Boolean(value?.trim());
 }
 

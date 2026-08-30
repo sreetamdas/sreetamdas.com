@@ -16,9 +16,9 @@ import {
 import { SiPeerlist } from "react-icons/si";
 import { useShallow } from "zustand/react/shallow";
 
+import { useTrackEvent } from "@/lib/domains/Analytics";
 import { FOOBAR_FLAGS } from "@/lib/domains/foobar/flags";
 import { useGlobalStore } from "@/lib/domains/global";
-import { useCustomPlausible } from "@/lib/domains/Plausible";
 
 type ExternalLinksArrayType = Array<{
 	link: string;
@@ -27,7 +27,7 @@ type ExternalLinksArrayType = Array<{
 	onClick?: () => void;
 }>;
 export const SocialLinks = () => {
-	const plausibleEvent = useCustomPlausible();
+	const trackEvent = useTrackEvent();
 	const { completed, completeFoobarFlag } = useGlobalStore(
 		useShallow((state) => ({
 			completed: state.foobar_data.completed,
@@ -38,7 +38,7 @@ export const SocialLinks = () => {
 	function completeEasterEgg() {
 		if (completed.includes(FOOBAR_FLAGS["easter-egg"].name)) return;
 
-		plausibleEvent("foobar", { props: { achievement: FOOBAR_FLAGS["easter-egg"].name } });
+		trackEvent("foobar", { props: { achievement: FOOBAR_FLAGS["easter-egg"].name } });
 		completeFoobarFlag(FOOBAR_FLAGS["easter-egg"].name);
 	}
 

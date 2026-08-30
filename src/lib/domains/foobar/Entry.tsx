@@ -7,12 +7,12 @@
 import { Link } from "@tanstack/react-router";
 import { useShallow } from "zustand/react/shallow";
 
+import { useTrackEvent } from "@/lib/domains/Analytics";
 import { FOOBAR_FLAGS } from "@/lib/domains/foobar/flags";
 import { useGlobalStore } from "@/lib/domains/global";
-import { useCustomPlausible } from "@/lib/domains/Plausible";
 
 export const FoobarEntry = () => {
-	const plausible = useCustomPlausible();
+	const trackEvent = useTrackEvent();
 	const { setFoobarData, unlocked } = useGlobalStore(
 		useShallow((state) => ({
 			unlocked: state.foobar_data.unlocked,
@@ -22,7 +22,7 @@ export const FoobarEntry = () => {
 
 	function handleXDiscovery() {
 		if (!unlocked) {
-			plausible("foobar", { props: { achievement: FOOBAR_FLAGS.unlocked.name } });
+			trackEvent("foobar", { props: { achievement: FOOBAR_FLAGS.unlocked.name } });
 			setFoobarData({ unlocked: true });
 		}
 	}

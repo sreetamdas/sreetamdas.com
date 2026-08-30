@@ -11,6 +11,7 @@ import { useShallow } from "zustand/react/shallow";
 
 import { IS_DEV } from "@/config";
 import { Code } from "@/lib/components/Typography";
+import { useTrackEvent } from "@/lib/domains/Analytics";
 import { FOOBAR_ACHIEVEMENTS } from "@/lib/domains/foobar/catalog";
 import {
 	addFoobarToLocalStorage,
@@ -19,7 +20,6 @@ import {
 } from "@/lib/domains/foobar/helpers";
 import { useSharedHunterPresence } from "@/lib/domains/foobar/sharedHunterPresence";
 import { useGlobalStore } from "@/lib/domains/global";
-import { useCustomPlausible } from "@/lib/domains/Plausible";
 import { captureException } from "@/lib/domains/Sentry";
 import { useHasMounted } from "@/lib/helpers/hooks";
 
@@ -43,7 +43,7 @@ type FoobarPixelProps = {
 export const FoobarPixel = ({ path }: FoobarPixelProps) => {
 	const { pathname } = useLocation();
 	const has_mounted = useHasMounted();
-	const plausibleEvent = useCustomPlausible();
+	const trackEvent = useTrackEvent();
 	const { foobar_data, setFoobarData, completeFoobarFlag, enqueueFoobarReveal, recordFoobarClue } =
 		useGlobalStore(useShallow(foobarDataSelector));
 	const { unlocked, visited_pages, completed, all_achievements } = foobar_data;
@@ -52,10 +52,10 @@ export const FoobarPixel = ({ path }: FoobarPixelProps) => {
 		unlocked && !completed.includes(FOOBAR_FLAGS.campfire.name),
 	);
 	const handleKonamiComplete = useCallback(() => {
-		plausibleEvent("foobar", { props: { achievement: FOOBAR_FLAGS.konami.name } });
+		trackEvent("foobar", { props: { achievement: FOOBAR_FLAGS.konami.name } });
 		setFoobarData({ konami: true });
 		completeFoobarFlag(FOOBAR_FLAGS.konami.name);
-	}, [completeFoobarFlag, plausibleEvent, setFoobarData]);
+	}, [completeFoobarFlag, trackEvent, setFoobarData]);
 
 	useKonamiAchievement(
 		unlocked && !completed.includes(FOOBAR_FLAGS.konami.name),
@@ -67,9 +67,9 @@ export const FoobarPixel = ({ path }: FoobarPixelProps) => {
 			return;
 		}
 
-		plausibleEvent("foobar", { props: { achievement: FOOBAR_FLAGS.campfire.name } });
+		trackEvent("foobar", { props: { achievement: FOOBAR_FLAGS.campfire.name } });
 		completeFoobarFlag(FOOBAR_FLAGS.campfire.name);
-	}, [completeFoobarFlag, completed, hunters, plausibleEvent]);
+	}, [completeFoobarFlag, completed, hunters, trackEvent]);
 
 	useEffect(() => {
 		// Add functions for Foobar badges
@@ -139,7 +139,7 @@ export const FoobarPixel = ({ path }: FoobarPixelProps) => {
 			page_name = `/${FOOBAR_FLAGS.error404.slug}`;
 
 			if (!completed.includes(FOOBAR_FLAGS.error404.name)) {
-				plausibleEvent("foobar", { props: { achievement: FOOBAR_FLAGS.error404.name } });
+				trackEvent("foobar", { props: { achievement: FOOBAR_FLAGS.error404.name } });
 				completeFoobarFlag(FOOBAR_FLAGS.error404.name);
 			}
 		}
@@ -153,15 +153,15 @@ export const FoobarPixel = ({ path }: FoobarPixelProps) => {
 
 		// for the `navigator` achievement
 		if (next_visited_pages.length >= 5 && !completed.includes(FOOBAR_FLAGS.navigator.name)) {
-			plausibleEvent("foobar", { props: { achievement: FOOBAR_FLAGS.navigator.name } });
+			trackEvent("foobar", { props: { achievement: FOOBAR_FLAGS.navigator.name } });
 			completeFoobarFlag(FOOBAR_FLAGS.navigator.name);
 		}
-	}, [completeFoobarFlag, completed, path, pathname, plausibleEvent, setFoobarData, visited_pages]);
+	}, [completeFoobarFlag, completed, path, pathname, trackEvent, setFoobarData, visited_pages]);
 
 	useEffect(() => {
 		// for the `completed` achievement
 		if (!all_achievements && checkIfAllAchievementsAreDone(completed)) {
-			plausibleEvent("foobar", { props: { achievement: "completed" } });
+			trackEvent("foobar", { props: { achievement: "completed" } });
 			recordFoobarClue(FOOBAR_ACHIEVEMENTS.completed.completion.id);
 			enqueueFoobarReveal("completed");
 			setFoobarData({
@@ -172,7 +172,7 @@ export const FoobarPixel = ({ path }: FoobarPixelProps) => {
 		all_achievements,
 		completed,
 		enqueueFoobarReveal,
-		plausibleEvent,
+		trackEvent,
 		recordFoobarClue,
 		setFoobarData,
 	]);

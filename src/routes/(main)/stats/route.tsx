@@ -3,13 +3,13 @@ import { Suspense } from "react";
 
 import { SITE_DESCRIPTION, SITE_TITLE_APPEND } from "@/config";
 import { STATS_CACHE_HEADERS } from "@/lib/cacheHeaders";
-import { StatsCounter } from "@/lib/domains/PageInteraction/StatsCounter";
 import {
 	createEmptyStats,
-	DEFAULT_PLAUSIBLE_SITE_ID,
-	type PlausibleDateRange,
-	type PlausibleStats,
-} from "@/lib/domains/Plausible/shared";
+	DEFAULT_ANALYTICS_SITE_ID,
+	type AnalyticsDateRange,
+	type AnalyticsStats,
+} from "@/lib/domains/Analytics/shared";
+import { StatsCounter } from "@/lib/domains/PageInteraction/StatsCounter";
 import { canonicalUrl, defaultOgImageUrl } from "@/lib/seo";
 
 import {
@@ -56,8 +56,8 @@ export const Route = createFileRoute("/(main)/stats")({
 	staleTime: 1000 * 60 * 5,
 });
 
-function createUnavailableStats(period: PlausibleDateRange): PlausibleStats {
-	return createEmptyStats("unavailable", DEFAULT_PLAUSIBLE_SITE_ID, period);
+function createUnavailableStats(period: AnalyticsDateRange): AnalyticsStats {
+	return createEmptyStats("unavailable", DEFAULT_ANALYTICS_SITE_ID, period);
 }
 
 function StatsPage() {
@@ -72,12 +72,12 @@ function StatsPage() {
 					Public analytics
 				</h1>
 				<p className="mt-6 max-w-[62ch] text-lg text-pretty text-foreground/80">
-					A Plausible-powered readout for this site: public enough to inspect, private enough to
-					avoid cookies and personal data.
+					A native analytics-powered readout for this site: public enough to inspect, private enough
+					to avoid cookies and personal data.
 				</p>
 				<dl className="mt-8 flex flex-wrap gap-3">
 					<HeroFact label="Window" value={dateRangeDescriptions[activePeriod]} />
-					<HeroFact label="Provider" value="Plausible" />
+					<HeroFact label="Provider" value="Native" />
 					<HeroFact label="Tracking" value="No cookies" />
 				</dl>
 			</section>

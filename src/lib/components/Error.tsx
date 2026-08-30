@@ -5,9 +5,9 @@ import { ReactNode } from "react";
 import { useShallow } from "zustand/react/shallow";
 
 import { Gradient } from "@/lib/components/Typography";
+import { useTrackEvent } from "@/lib/domains/Analytics";
 import { FOOBAR_FLAGS } from "@/lib/domains/foobar/flags";
 import { useGlobalStore } from "@/lib/domains/global";
-import { useCustomPlausible } from "@/lib/domains/Plausible";
 
 export const NotFound404 = ({ message }: { message?: ReactNode }) => {
 	return (
@@ -41,11 +41,11 @@ export const NotFoundDogsLink = () => {
 			completeFoobarFlag: state.completeFoobarFlag,
 		})),
 	);
-	const plausibleEvent = useCustomPlausible();
+	const trackEvent = useTrackEvent();
 
 	function handleDogsLinkClicked() {
 		if (!completed.includes(FOOBAR_FLAGS.dogs.name)) {
-			plausibleEvent("foobar", { props: { achievement: FOOBAR_FLAGS.dogs.name } });
+			trackEvent("foobar", { props: { achievement: FOOBAR_FLAGS.dogs.name } });
 			completeFoobarFlag(FOOBAR_FLAGS.dogs.name);
 		}
 	}

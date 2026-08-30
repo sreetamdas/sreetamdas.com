@@ -54,7 +54,7 @@ function getPlugins(): Array<unknown> {
 					files: [
 						"**/src/db/index.ts",
 						"**/src/lib/auth/index.ts",
-						"**/src/lib/domains/Plausible/stats.ts",
+						"**/src/lib/domains/Analytics/stats.ts",
 					],
 					specifiers: ["cloudflare:workers"],
 				},

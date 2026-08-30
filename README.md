@@ -10,7 +10,7 @@ Thanks for checking out my personal website and blog! Here's the source code for
 - [Tailwind CSS](https://tailwindcss.com)
 - Content: MDX processed via [Content Collections](https://github.com/sdorra/content-collections)
 - Hosting + data: [Cloudflare Workers](https://workers.cloudflare.com) and [D1](https://developers.cloudflare.com/d1/) (SQLite at the edge) via [Drizzle](https://orm.drizzle.team)
-- [Plausible](https://plausible.io)
+- Native analytics via [stats.sreetamdas.com](https://stats.sreetamdas.com)
 - [React Icons](https://react-icons.github.io/react-icons)
 
 ## Overview

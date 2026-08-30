@@ -3,14 +3,14 @@ import { type ReactNode } from "react";
 import { LinkTo } from "@/lib/components/Anchor";
 import { Code } from "@/lib/components/Typography";
 import {
-	PLAUSIBLE_DATE_RANGES,
-	type PlausibleDateRange,
-	type PlausibleStats,
+	ANALYTICS_DATE_RANGES,
+	type AnalyticsDateRange,
+	type AnalyticsStats,
 	type StatsBreakdownRow,
 	type StatsCountryRow,
-} from "@/lib/domains/Plausible/shared";
+} from "@/lib/domains/Analytics/shared";
 
-const dateRangeLabels: Record<PlausibleDateRange, string> = {
+const dateRangeLabels: Record<AnalyticsDateRange, string> = {
 	"7d": "7D",
 	"30d": "30D",
 	"91d": "Quarter",
@@ -18,7 +18,7 @@ const dateRangeLabels: Record<PlausibleDateRange, string> = {
 	all: "All",
 };
 
-export const dateRangeDescriptions: Record<PlausibleDateRange, string> = {
+export const dateRangeDescriptions: Record<AnalyticsDateRange, string> = {
 	"7d": "Last 7 days",
 	"30d": "Last 30 days",
 	"91d": "Last 91 days",
@@ -58,7 +58,7 @@ const DASHBOARD_SECTIONS = [
 		id: "technology",
 		title: "Tech",
 		description:
-			"Device, browser, and operating system breakdowns from visit-level Plausible dimensions.",
+			"Device, browser, and operating system breakdowns from visit-level native analytics dimensions.",
 		panelTitles: ["Devices", "Browsers", "Operating systems"],
 	},
 ] as const;
@@ -81,7 +81,7 @@ const shortDateFormatter = new Intl.DateTimeFormat("en-US", {
 	day: "numeric",
 });
 
-export function StatsContent({ stats }: { stats: PlausibleStats }) {
+export function StatsContent({ stats }: { stats: AnalyticsStats }) {
 	return (
 		<>
 			<StatsStatus stats={stats} />
@@ -240,14 +240,14 @@ function StatsPanelSkeleton({ title }: { title: string }) {
 	);
 }
 
-export function DashboardControls({ activePeriod }: { activePeriod: PlausibleDateRange }) {
+export function DashboardControls({ activePeriod }: { activePeriod: AnalyticsDateRange }) {
 	return (
 		<section className="col-[1/-1] mx-4 mb-6 max-w-5xl rounded-global border border-solid border-foreground/15 bg-foreground/5 p-3 sm:mx-auto sm:w-full dark:bg-foreground/10">
 			<div className="grid gap-4 sm:grid-cols-[1fr_auto] sm:items-center">
 				<div>
 					<p className="m-0 font-mono text-sm text-foreground/65">Window</p>
 					<nav className="mt-2 flex flex-wrap gap-2" aria-label="Stats time range">
-						{PLAUSIBLE_DATE_RANGES.map((range) => (
+						{ANALYTICS_DATE_RANGES.map((range) => (
 							<LinkTo
 								key={range}
 								href={`/stats?period=${range}`}
@@ -290,7 +290,7 @@ export function HeroFact({ label, value }: { label: string; value: string }) {
 	);
 }
 
-function StatsStatus({ stats }: { stats: PlausibleStats }) {
+function StatsStatus({ stats }: { stats: AnalyticsStats }) {
 	if (stats.status === "ready") {
 		return (
 			<p className="col-[1/-1] mx-4 max-w-5xl rounded-global border border-solid border-primary/25 bg-primary/10 px-4 py-3 text-sm text-foreground/80 sm:mx-auto sm:w-full">
@@ -302,8 +302,8 @@ function StatsStatus({ stats }: { stats: PlausibleStats }) {
 
 	const message =
 		stats.status === "missing-config"
-			? "Plausible credentials are not configured for this environment yet."
-			: "Plausible is not reachable right now.";
+			? "Native analytics is not configured for this environment yet."
+			: "Native analytics is not reachable right now.";
 
 	return (
 		<p className="col-[1/-1] mx-4 max-w-5xl rounded-global border border-solid border-secondary/25 bg-secondary/10 px-4 py-3 text-sm text-foreground/80 sm:mx-auto sm:w-full">
@@ -314,7 +314,7 @@ function StatsStatus({ stats }: { stats: PlausibleStats }) {
 
 const overviewMetrics: Array<{
 	label: string;
-	value: (stats: PlausibleStats) => string;
+	value: (stats: AnalyticsStats) => string;
 	tone?: "primary";
 }> = [
 	{ label: "Visitors", value: (stats) => formatNumber(stats.overview.visitors), tone: "primary" },
@@ -325,7 +325,7 @@ const overviewMetrics: Array<{
 	{ label: "Avg visit", value: (stats) => formatDuration(stats.overview.visitDuration) },
 ];
 
-function Overview({ stats }: { stats: PlausibleStats }) {
+function Overview({ stats }: { stats: AnalyticsStats }) {
 	return (
 		<section
 			className="col-[1/-1] mx-4 grid max-w-5xl gap-4 py-8 sm:mx-auto sm:w-full sm:grid-cols-2 lg:grid-cols-3"
@@ -360,7 +360,7 @@ function MetricCard({ label, value, tone }: { label: string; value: string; tone
 	);
 }
 
-function TopPages({ stats }: { stats: PlausibleStats }) {
+function TopPages({ stats }: { stats: AnalyticsStats }) {
 	return (
 		<StatsPanel
 			title="Top pages"
@@ -384,7 +384,7 @@ function TopPages({ stats }: { stats: PlausibleStats }) {
 	);
 }
 
-function PagesSection({ stats }: { stats: PlausibleStats }) {
+function PagesSection({ stats }: { stats: AnalyticsStats }) {
 	return (
 		<DashboardSection
 			id={pagesSection.id}
@@ -406,7 +406,7 @@ function PagesSection({ stats }: { stats: PlausibleStats }) {
 	);
 }
 
-function AcquisitionSection({ stats }: { stats: PlausibleStats }) {
+function AcquisitionSection({ stats }: { stats: AnalyticsStats }) {
 	return (
 		<DashboardSection
 			id={acquisitionSection.id}
@@ -424,7 +424,7 @@ function AcquisitionSection({ stats }: { stats: PlausibleStats }) {
 	);
 }
 
-function AudienceSection({ stats }: { stats: PlausibleStats }) {
+function AudienceSection({ stats }: { stats: AnalyticsStats }) {
 	return (
 		<DashboardSection
 			id={audienceSection.id}
@@ -437,7 +437,7 @@ function AudienceSection({ stats }: { stats: PlausibleStats }) {
 	);
 }
 
-function TechnologySection({ stats }: { stats: PlausibleStats }) {
+function TechnologySection({ stats }: { stats: AnalyticsStats }) {
 	return (
 		<DashboardSection
 			id={technologySection.id}
@@ -588,7 +588,7 @@ function StatsPanel({
 	);
 }
 
-function Timeline({ stats }: { stats: PlausibleStats }) {
+function Timeline({ stats }: { stats: AnalyticsStats }) {
 	const maxVisitors = Math.max(...stats.timeline.map((point) => point.visitors), 1);
 	const firstDay = stats.timeline.at(0)?.date;
 	const lastDay = stats.timeline.at(-1)?.date;

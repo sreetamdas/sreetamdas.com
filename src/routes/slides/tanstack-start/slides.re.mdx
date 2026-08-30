@@ -236,7 +236,7 @@ createFileRoute("/stats")({
 ```tsx
 const getLiveStats = createServerFn({ method: "GET" })
   .validator((data): StatsSearch => parseStatsSearch(data))
-  .handler(async ({ data }) => fetchPlausibleStats(data.period));
+  .handler(async ({ data }) => fetchAnalyticsStats(data.period));
 ```
 
 ---

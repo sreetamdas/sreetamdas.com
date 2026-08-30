@@ -8,7 +8,7 @@ const legacyProgress = {
 	all_achievements: false,
 };
 
-const plausibleEventsKey = "foobar-e2e-plausible-events";
+const trackEventsKey = "foobar-e2e-analytics-events";
 
 // TEST_PARALLEL_INDEX is the worker slot (0..workers-1), so it stays within
 // the two-digit bound enforced by the server's room pattern. TEST_WORKER_INDEX
@@ -120,20 +120,23 @@ async function hasPersistedAchievement(page: Page, achievement: string, requireK
 	);
 }
 
-async function capturePlausibleEvents(page: Page) {
+async function captureAnalyticsEvents(page: Page) {
 	await page.addInitScript((storageKey) => {
-		Object.defineProperty(window, "plausible", {
+		Object.defineProperty(window, "statsTracker", {
 			configurable: false,
 			writable: false,
-			value: (event: string, options?: unknown) => {
-				const rawEvents = window.localStorage.getItem(storageKey);
-				const parsedEvents: unknown = rawEvents ? JSON.parse(rawEvents) : [];
-				const events = Array.isArray(parsedEvents) ? parsedEvents : [];
-				events.push({ event, options });
-				window.localStorage.setItem(storageKey, JSON.stringify(events));
+			value: {
+				loaded: true,
+				event: (event: string, props?: unknown) => {
+					const rawEvents = window.localStorage.getItem(storageKey);
+					const parsedEvents: unknown = rawEvents ? JSON.parse(rawEvents) : [];
+					const events = Array.isArray(parsedEvents) ? parsedEvents : [];
+					events.push({ event, options: props === undefined ? undefined : { props } });
+					window.localStorage.setItem(storageKey, JSON.stringify(events));
+				},
 			},
 		});
-	}, plausibleEventsKey);
+	}, trackEventsKey);
 }
 
 async function readHintDevelopmentEvents(page: Page) {
@@ -150,7 +153,7 @@ async function readHintDevelopmentEvents(page: Page) {
 				(entry.event === "foobar_hint_development_started" ||
 					entry.event === "foobar_developed_hint_read"),
 		);
-	}, plausibleEventsKey);
+	}, trackEventsKey);
 }
 
 test.beforeEach(async ({ page }) => {
@@ -222,7 +225,7 @@ test("develops hint 4 without exposing its text", async ({ page }) => {
 			{ id: "dns-txt:hint:2", seen_at: Date.now() - 1_000 },
 		],
 	});
-	await capturePlausibleEvents(page);
+	await captureAnalyticsEvents(page);
 	await page.goto("/foobar");
 
 	const dnsTxtBadge = await openFieldEntry(page, "TXT Me Maybe");
@@ -256,7 +259,7 @@ test("develops hint 4 without exposing its text", async ({ page }) => {
 		.toEqual([
 			{
 				event: "foobar_hint_development_started",
-				options: { props: { achievement: "dns-txt", wait_hours: 24 } },
+				options: { props: { achievement: "dns-txt", wait_hours: "24" } },
 			},
 		]);
 });
@@ -272,7 +275,7 @@ test("keeps an out-of-order persisted final hint", async ({ page }) => {
 			{ id: "dns-txt:hint:4", seen_at: Date.now() - 25 * hourMs },
 		],
 	});
-	await capturePlausibleEvents(page);
+	await captureAnalyticsEvents(page);
 	await page.goto("/foobar");
 	const irregularBadge = await openFieldEntry(page, "TXT Me Maybe");
 	const persistedFinalHint = irregularBadge.getByRole("listitem").filter({ hasText: hintText });
@@ -294,7 +297,7 @@ test("reads and persists a developed hint", async ({ page }) => {
 			{ id: "dns-txt:hint:3", seen_at: Date.now() - 25 * hourMs },
 		],
 	});
-	await capturePlausibleEvents(page);
+	await captureAnalyticsEvents(page);
 	await page.goto("/foobar");
 
 	const dnsTxtBadge = await openFieldEntry(page, "TXT Me Maybe");
