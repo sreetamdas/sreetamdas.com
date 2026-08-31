@@ -120,9 +120,9 @@ export const Route = createRootRoute({
 		scripts: [
 			{
 				async: true,
-				"data-endpoint": "/api/analytics",
+				"data-endpoint": "/api/prxy/nltyx",
 				"data-key": "event",
-				src: "/api/analytics/tracker",
+				src: "/api/prxy/nltyx",
 			},
 		],
 	}),
