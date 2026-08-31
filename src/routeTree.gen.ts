@@ -42,6 +42,8 @@ import { Route as apiApiFoobarCookieRouteImport } from './routes/(api)/api/fooba
 import { Route as apiApiLoginProviderRouteImport } from './routes/(api)/api/login/$provider'
 import { Route as mainfoobarFoobarIndexRouteImport } from './routes/(main)/(foobar)/foobar/index'
 import { Route as mainfoobarFoobarSlugRouteRouteImport } from './routes/(main)/(foobar)/foobar/$slug/route'
+import { Route as apiApiPrxyNltyxIndexRouteImport } from './routes/(api)/api/prxy/nltyx/index'
+import { Route as apiApiPrxyNltyxEventRouteImport } from './routes/(api)/api/prxy/nltyx/event'
 import { Route as apiApiSlidesSessionSessionIdRouteImport } from './routes/(api)/api/slides/session/$sessionId'
 import { Route as mainfoobarFoobarCertificateTokenRouteImport } from './routes/(main)/(foobar)/foobar/certificate/$token'
 import { Route as apiApiFoobarCertificateTokenOgDotpngRouteImport } from './routes/(api)/api/foobar/certificate/$token/og[.]png'
@@ -213,6 +215,16 @@ const mainfoobarFoobarSlugRouteRoute =
     path: '/$slug',
     getParentRoute: () => mainfoobarFoobarRouteRoute,
   } as any)
+const apiApiPrxyNltyxIndexRoute = apiApiPrxyNltyxIndexRouteImport.update({
+  id: '/(api)/api/prxy/nltyx/',
+  path: '/api/prxy/nltyx/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const apiApiPrxyNltyxEventRoute = apiApiPrxyNltyxEventRouteImport.update({
+  id: '/(api)/api/prxy/nltyx/event',
+  path: '/api/prxy/nltyx/event',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const apiApiSlidesSessionSessionIdRoute =
   apiApiSlidesSessionSessionIdRouteImport.update({
     id: '/(api)/api/slides/session/$sessionId',
@@ -264,8 +276,10 @@ export interface FileRoutesByFullPath {
   '/api/foobar/cookie': typeof apiApiFoobarCookieRoute
   '/api/login/$provider': typeof apiApiLoginProviderRoute
   '/foobar/': typeof mainfoobarFoobarIndexRoute
+  '/api/prxy/nltyx/event': typeof apiApiPrxyNltyxEventRoute
   '/api/slides/session/$sessionId': typeof apiApiSlidesSessionSessionIdRoute
   '/foobar/certificate/$token': typeof mainfoobarFoobarCertificateTokenRoute
+  '/api/prxy/nltyx/': typeof apiApiPrxyNltyxIndexRoute
   '/api/foobar/certificate/$token/og.png': typeof apiApiFoobarCertificateTokenOgDotpngRoute
 }
 export interface FileRoutesByTo {
@@ -297,8 +311,10 @@ export interface FileRoutesByTo {
   '/api/foobar/cookie': typeof apiApiFoobarCookieRoute
   '/api/login/$provider': typeof apiApiLoginProviderRoute
   '/foobar': typeof mainfoobarFoobarIndexRoute
+  '/api/prxy/nltyx/event': typeof apiApiPrxyNltyxEventRoute
   '/api/slides/session/$sessionId': typeof apiApiSlidesSessionSessionIdRoute
   '/foobar/certificate/$token': typeof mainfoobarFoobarCertificateTokenRoute
+  '/api/prxy/nltyx': typeof apiApiPrxyNltyxIndexRoute
   '/api/foobar/certificate/$token/og.png': typeof apiApiFoobarCertificateTokenOgDotpngRoute
 }
 export interface FileRoutesById {
@@ -336,8 +352,10 @@ export interface FileRoutesById {
   '/(api)/api/foobar/cookie': typeof apiApiFoobarCookieRoute
   '/(api)/api/login/$provider': typeof apiApiLoginProviderRoute
   '/(main)/(foobar)/foobar/': typeof mainfoobarFoobarIndexRoute
+  '/(api)/api/prxy/nltyx/event': typeof apiApiPrxyNltyxEventRoute
   '/(api)/api/slides/session/$sessionId': typeof apiApiSlidesSessionSessionIdRoute
   '/(main)/(foobar)/foobar/certificate/$token': typeof mainfoobarFoobarCertificateTokenRoute
+  '/(api)/api/prxy/nltyx/': typeof apiApiPrxyNltyxIndexRoute
   '/(api)/api/foobar/certificate/$token/og.png': typeof apiApiFoobarCertificateTokenOgDotpngRoute
 }
 export interface FileRouteTypes {
@@ -374,8 +392,10 @@ export interface FileRouteTypes {
     | '/api/foobar/cookie'
     | '/api/login/$provider'
     | '/foobar/'
+    | '/api/prxy/nltyx/event'
     | '/api/slides/session/$sessionId'
     | '/foobar/certificate/$token'
+    | '/api/prxy/nltyx/'
     | '/api/foobar/certificate/$token/og.png'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -407,8 +427,10 @@ export interface FileRouteTypes {
     | '/api/foobar/cookie'
     | '/api/login/$provider'
     | '/foobar'
+    | '/api/prxy/nltyx/event'
     | '/api/slides/session/$sessionId'
     | '/foobar/certificate/$token'
+    | '/api/prxy/nltyx'
     | '/api/foobar/certificate/$token/og.png'
   id:
     | '__root__'
@@ -445,8 +467,10 @@ export interface FileRouteTypes {
     | '/(api)/api/foobar/cookie'
     | '/(api)/api/login/$provider'
     | '/(main)/(foobar)/foobar/'
+    | '/(api)/api/prxy/nltyx/event'
     | '/(api)/api/slides/session/$sessionId'
     | '/(main)/(foobar)/foobar/certificate/$token'
+    | '/(api)/api/prxy/nltyx/'
     | '/(api)/api/foobar/certificate/$token/og.png'
   fileRoutesById: FileRoutesById
 }
@@ -462,7 +486,9 @@ export interface RootRouteChildren {
   apiApiAuthSplatRoute: typeof apiApiAuthSplatRoute
   apiApiFoobarCookieRoute: typeof apiApiFoobarCookieRoute
   apiApiLoginProviderRoute: typeof apiApiLoginProviderRoute
+  apiApiPrxyNltyxEventRoute: typeof apiApiPrxyNltyxEventRoute
   apiApiSlidesSessionSessionIdRoute: typeof apiApiSlidesSessionSessionIdRoute
+  apiApiPrxyNltyxIndexRoute: typeof apiApiPrxyNltyxIndexRoute
   apiApiFoobarCertificateTokenOgDotpngRoute: typeof apiApiFoobarCertificateTokenOgDotpngRoute
 }
 
@@ -699,6 +725,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof mainfoobarFoobarSlugRouteRouteImport
       parentRoute: typeof mainfoobarFoobarRouteRoute
     }
+    '/(api)/api/prxy/nltyx/': {
+      id: '/(api)/api/prxy/nltyx/'
+      path: '/api/prxy/nltyx'
+      fullPath: '/api/prxy/nltyx/'
+      preLoaderRoute: typeof apiApiPrxyNltyxIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/(api)/api/prxy/nltyx/event': {
+      id: '/(api)/api/prxy/nltyx/event'
+      path: '/api/prxy/nltyx/event'
+      fullPath: '/api/prxy/nltyx/event'
+      preLoaderRoute: typeof apiApiPrxyNltyxEventRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/(api)/api/slides/session/$sessionId': {
       id: '/(api)/api/slides/session/$sessionId'
       path: '/api/slides/session/$sessionId'
@@ -853,7 +893,9 @@ const rootRouteChildren: RootRouteChildren = {
   apiApiAuthSplatRoute: apiApiAuthSplatRoute,
   apiApiFoobarCookieRoute: apiApiFoobarCookieRoute,
   apiApiLoginProviderRoute: apiApiLoginProviderRoute,
+  apiApiPrxyNltyxEventRoute: apiApiPrxyNltyxEventRoute,
   apiApiSlidesSessionSessionIdRoute: apiApiSlidesSessionSessionIdRoute,
+  apiApiPrxyNltyxIndexRoute: apiApiPrxyNltyxIndexRoute,
   apiApiFoobarCertificateTokenOgDotpngRoute:
     apiApiFoobarCertificateTokenOgDotpngRoute,
 }
