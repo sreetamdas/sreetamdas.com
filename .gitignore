@@ -70,3 +70,4 @@ dist/
 
 # Build info (generated at build time)
 src/build-info.json
+docs/superpowers/
