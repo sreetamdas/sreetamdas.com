@@ -64,6 +64,10 @@ function getPlugins(): Array<unknown> {
 			},
 			prerender: {
 				enabled: true,
+				// Crawl-discovered asset links (e.g. /resume.pdf) must not be
+				// prerendered: the prerenderer writes fetched responses as UTF-8
+				// text, which corrupts binary assets copied from public/.
+				filter: (page) => !/\.[a-z0-9]+$/i.test(page.path),
 				autoSubfolderIndex: false,
 				// Newsletter detail pages are now prerendered (for SEO) by crawling the
 				// newsletter index. Buttondown content is fetched at build time, so retry
