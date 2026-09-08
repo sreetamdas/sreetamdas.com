@@ -1,11 +1,8 @@
 /**
- * Client-readable page view count. Read-only by design: the increment must not
- * live on a client-callable server fn — that was replayable by any HTTP client
- * (`Origin` spoofing defeats the CSRF middleware) and inflated counters. The
- * view *write* now happens server-side on the Worker document-request path with
- * per-visitor dedup. Here `disabled` is accepted to preserve the shared
- * page-interaction payload/validator contract but is intentionally ignored on
- * the view path; it still gates the like path.
+ * Client-readable page view count, read-only by design. Hydrated pages write
+ * separately through ViewRecorder.server.ts: server origin/content/bot checks
+ * and approximate edge replay/rate budgets run before the D1 increment.
+ * `disabled` is intentionally ignored on this read-only path.
  */
 import "@tanstack/react-start/server-only";
 import { getDb } from "@/db";
