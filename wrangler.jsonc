@@ -64,7 +64,8 @@
 		}
 	],
 	"vars": {
-		"ANALYTICS_PROJECT_SLUG": "sreetamdas-com-prod"
+		"ANALYTICS_PROJECT_SLUG": "sreetamdas-com-prod",
+		"ANALYTICS_ALLOWED_ORIGINS": "https://sreetamdas.com,http://localhost:3000,http://localhost:5173"
 	},
 	"kv_namespaces": [
 		{
@@ -76,7 +77,8 @@
 	"env": {
 		"staging": {
 			"vars": {
-				"ANALYTICS_PROJECT_SLUG": "sreetamdas-com-staging"
+				"ANALYTICS_PROJECT_SLUG": "sreetamdas-com-staging",
+				"ANALYTICS_ALLOWED_ORIGINS": "https://dev.sreetamdas.com,https://staging.sreetamdas.com"
 			},
 			"services": [
 				{
@@ -135,11 +137,30 @@
 					"id": "2bc6cd0487714be58807514bc7c2003b",
 					"preview_id": "sreetamdas_com_kv_preview_staging"
 				}
+			],
+			"ratelimits": [
+				{
+					"name": "VIEW_RATE_LIMITER",
+					"namespace_id": "2103",
+					"simple": {
+						"limit": 30,
+						"period": 60
+					}
+				},
+				{
+					"name": "VIEW_REPLAY_LIMITER",
+					"namespace_id": "2104",
+					"simple": {
+						"limit": 1,
+						"period": 10
+					}
+				}
 			]
 		},
 		"production": {
 			"vars": {
-				"ANALYTICS_PROJECT_SLUG": "sreetamdas-com-prod"
+				"ANALYTICS_PROJECT_SLUG": "sreetamdas-com-prod",
+				"ANALYTICS_ALLOWED_ORIGINS": "https://sreetamdas.com"
 			},
 			"services": [
 				{
@@ -194,7 +215,43 @@
 					"id": "2bc6cd0487714be58807514bc7c2003b",
 					"preview_id": "sreetamdas_com_kv_preview_production"
 				}
+			],
+			"ratelimits": [
+				{
+					"name": "VIEW_RATE_LIMITER",
+					"namespace_id": "2105",
+					"simple": {
+						"limit": 30,
+						"period": 60
+					}
+				},
+				{
+					"name": "VIEW_REPLAY_LIMITER",
+					"namespace_id": "2106",
+					"simple": {
+						"limit": 1,
+						"period": 10
+					}
+				}
 			]
 		}
-	}
+	},
+	"ratelimits": [
+		{
+			"name": "VIEW_RATE_LIMITER",
+			"namespace_id": "2101",
+			"simple": {
+				"limit": 30,
+				"period": 60
+			}
+		},
+		{
+			"name": "VIEW_REPLAY_LIMITER",
+			"namespace_id": "2102",
+			"simple": {
+				"limit": 1,
+				"period": 10
+			}
+		}
+	]
 }

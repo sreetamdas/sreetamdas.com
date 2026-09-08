@@ -4,9 +4,15 @@
 interface __BaseEnv_CloudflareEnv {
 	KV: KVNamespace;
 	D1: D1Database;
+	VIEW_RATE_LIMITER: RateLimit;
+	VIEW_REPLAY_LIMITER: RateLimit;
 	STATS: Fetcher;
 	STATS_RPC: Service;
 	ANALYTICS_PROJECT_SLUG: string;
+	ANALYTICS_ALLOWED_ORIGINS:
+		| "https://dev.sreetamdas.com,https://staging.sreetamdas.com"
+		| "https://sreetamdas.com"
+		| "https://sreetamdas.com,http://localhost:3000,http://localhost:5173";
 	RELAY_TOKEN: string;
 	VITE_SITE_URL: string;
 	BETTER_AUTH_URL: string;
@@ -48,6 +54,8 @@ declare namespace Cloudflare {
 	interface StagingEnv {
 		KV: KVNamespace;
 		D1: D1Database;
+		VIEW_RATE_LIMITER: RateLimit;
+		VIEW_REPLAY_LIMITER: RateLimit;
 		VITE_SITE_URL: string;
 		BETTER_AUTH_URL: string;
 		DEBUG_MODE: string;
@@ -80,6 +88,8 @@ declare namespace Cloudflare {
 	interface ProductionEnv {
 		KV: KVNamespace;
 		D1: D1Database;
+		VIEW_RATE_LIMITER: RateLimit;
+		VIEW_REPLAY_LIMITER: RateLimit;
 		VITE_SITE_URL: string;
 		BETTER_AUTH_URL: string;
 		DEBUG_MODE: string;
