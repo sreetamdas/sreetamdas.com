@@ -121,7 +121,7 @@ const StatsSentence = ({
 		);
 	}
 
-	if (isError || (showViews && data?.view_count === undefined)) {
+	if (isError || data === undefined || (showViews && data.view_count === undefined)) {
 		return (
 			<p className="m-0 min-h-5 text-sm" role="status">
 				Stats unavailable right now

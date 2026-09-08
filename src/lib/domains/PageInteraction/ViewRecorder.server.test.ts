@@ -77,7 +77,7 @@ describe("recordPageView server guard", () => {
 		expect(budget.limit).not.toHaveBeenCalled();
 		expect(write).not.toHaveBeenCalled();
 	});
-	test.each([
+	const untrusted: Array<Record<string, string>> = [
 		{ origin: "" },
 		{ origin: "null" },
 		{ origin: "https://evil.test" },
@@ -89,7 +89,8 @@ describe("recordPageView server guard", () => {
 		{ "user-agent": "Googlebot/2.1" },
 		{ "user-agent": "HeadlessChrome/100" },
 		{ "cf-connecting-ip": "", "x-forwarded-for": "192.0.2.4", "x-relay-ip": "192.0.2.4" },
-	])("rejects untrusted facts %j before limiter or D1", async (headers) => {
+	];
+	test.each(untrusted)("rejects untrusted facts %j before limiter or D1", async (headers) => {
 		expect(await record("/", request(headers))).toEqual({ recorded: false });
 		expect(budget.limit).not.toHaveBeenCalled();
 		expect(write).not.toHaveBeenCalled();
