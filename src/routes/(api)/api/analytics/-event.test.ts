@@ -51,7 +51,7 @@ describe.each([handleAnalyticsEventPost, handleAliasPost])(
 			expect(headers.get("x-relay-country")).toBe("");
 			expect(headers.has("x-forwarded-for")).toBe(false);
 		});
-		test.each([
+		const foreign: Array<Record<string, string>> = [
 			{ origin: "" },
 			{ origin: "null" },
 			{ origin: "https://evil.test" },
@@ -60,7 +60,8 @@ describe.each([handleAnalyticsEventPost, handleAliasPost])(
 			{ "sec-fetch-site": "same-site" },
 			{ "sec-fetch-mode": "navigate" },
 			{ "sec-fetch-dest": "image" },
-		])("rejects %j before touching body or service", async (headers) => {
+		];
+		test.each(foreign)("rejects %j before touching body or service", async (headers) => {
 			const req = request(headers);
 			const body = vi.spyOn(req, "body", "get");
 			expect((await post(req)).status).toBe(403);
