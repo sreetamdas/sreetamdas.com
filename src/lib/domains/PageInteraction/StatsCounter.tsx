@@ -34,6 +34,8 @@ type StatsCounterProps = {
 	hidden?: boolean;
 	disabled?: boolean;
 	variant?: "views" | "engagement";
+	/** Homepage hides the eye counter; likes and live viewers stay. */
+	showViews?: boolean;
 };
 
 const statsListClassName = "m-0 flex min-h-5 flex-wrap items-center justify-center gap-4 text-sm";
@@ -48,6 +50,7 @@ export const StatsCounter = ({
 	hidden = false,
 	disabled = IS_CI,
 	variant = "engagement",
+	showViews = true,
 }: StatsCounterProps) => {
 	const { pathname } = useLocation();
 	const normalized_slug = slug ?? pathname;
@@ -66,6 +69,7 @@ export const StatsCounter = ({
 					normalizedPathname={normalizedPathname}
 					disabled={disabled}
 					page_type={page_type}
+					showViews={showViews}
 				/>
 			</div>
 		);
@@ -87,31 +91,37 @@ export const StatsCounter = ({
 	);
 };
 
-type StatsSentenceProps = {
+const StatsSentence = ({
+	normalizedPathname,
+	disabled,
+	page_type,
+	showViews,
+}: {
 	normalizedPathname: string;
 	disabled: boolean;
 	page_type: StatsCounterProps["page_type"];
-};
-
-const StatsSentence = ({ normalizedPathname, disabled, page_type }: StatsSentenceProps) => {
+	showViews: boolean;
+}) => {
 	const { data, isError, isLoading } = usePageMetrics(normalizedPathname, disabled);
 	const noun = page_type === "post" ? "post" : "page";
 
 	if (isLoading) {
 		return (
 			<StatsList noun={noun} isBusy statusLabel={`Getting stats for this ${noun}`}>
-				<MetricSkeleton
-					icon={<FaEye aria-hidden="true" focusable={false} className="size-5 text-primary" />}
-					label="Views"
-					valueWidthClassName="w-[5ch]"
-				/>
+				{showViews ? (
+					<MetricSkeleton
+						icon={<FaEye aria-hidden="true" focusable={false} className="size-5 text-primary" />}
+						label="Views"
+						valueWidthClassName="w-[5ch]"
+					/>
+				) : null}
 				<MetricSkeleton icon={<LoadingLikeHeart />} label="Likes" valueWidthClassName="w-[2ch]" />
 				<LiveStat />
 			</StatsList>
 		);
 	}
 
-	if (isError || data?.view_count === undefined) {
+	if (isError || data === undefined || (showViews && data.view_count === undefined)) {
 		return (
 			<p className="m-0 min-h-5 text-sm" role="status">
 				Stats unavailable right now
@@ -121,7 +131,7 @@ const StatsSentence = ({ normalizedPathname, disabled, page_type }: StatsSentenc
 
 	return (
 		<StatsList noun={noun}>
-			<ViewsStat value={data.view_count} noun={noun} />
+			{showViews ? <ViewsStat value={data.view_count} noun={noun} /> : null}
 			<LikeStat
 				normalizedPathname={normalizedPathname}
 				disabled={disabled}

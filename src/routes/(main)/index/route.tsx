@@ -45,7 +45,8 @@ function Home() {
 			</h1>
 			{Renderable}
 
-			<StatsCounter />
+			{/* View count intentionally hidden on the homepage; likes and live viewers stay. */}
+			<StatsCounter showViews={false} />
 		</>
 	);
 }
