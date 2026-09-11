@@ -42,7 +42,7 @@ describe("resolveCallbackURL", () => {
 });
 
 describe("startSocialSignIn", () => {
-	test("posts Cloudflare sign-in requests to Better Auth's generic OAuth endpoint", async () => {
+	test("posts Cloudflare sign-in requests to Better Auth's social endpoint", async () => {
 		const seen_requests: Array<Request> = [];
 		const result = await startSocialSignIn(
 			{ provider: "cloudflare", return_url: "https://sreetamdas.com/slides/demo?master=1" },
@@ -66,10 +66,10 @@ describe("startSocialSignIn", () => {
 		const sign_in_request = seen_requests.at(0);
 		if (!sign_in_request) throw new Error("expected Better Auth sign-in request");
 		expect(sign_in_request.method).toBe("POST");
-		expect(sign_in_request.url).toBe("https://sreetamdas.com/api/auth/sign-in/oauth2");
+		expect(sign_in_request.url).toBe("https://sreetamdas.com/api/auth/sign-in/social");
 		expect(sign_in_request.headers.get("Content-Type")).toBe("application/json");
 		expect(await sign_in_request.json()).toEqual({
-			providerId: "cloudflare",
+			provider: "cloudflare",
 			callbackURL: "https://sreetamdas.com/slides/demo",
 		});
 	});

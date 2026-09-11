@@ -580,9 +580,12 @@ const FOOBAR_CLUES_BY_ID: ReadonlyMap<string, FoobarClue> = new Map(
 					kind: "completion",
 					text: achievement.completion.note,
 				},
-				...achievement.hints.map(
-					(hint): FoobarClue => ({ id: hint.id, achievement: key, kind: "hint", text: hint.text }),
-				),
+				...achievement.hints.map((hint): FoobarClue => ({
+					id: hint.id,
+					achievement: key,
+					kind: "hint",
+					text: hint.text,
+				})),
 			];
 			return clues.map((clue): [string, FoobarClue] => [clue.id, clue]);
 		}),

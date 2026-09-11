@@ -1,7 +1,14 @@
 import bricolageGrotesqueFont from "@fontsource-variable/bricolage-grotesque/files/bricolage-grotesque-latin-standard-normal.woff2?url";
 import interFont from "@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { HeadContent, Link, Outlet, Scripts, createRootRoute } from "@tanstack/react-router";
+import {
+	HeadContent,
+	Link,
+	Outlet,
+	Scripts,
+	createRootRoute,
+	type ErrorComponentProps,
+} from "@tanstack/react-router";
 import { lazy, type ReactNode, Suspense, useEffect, useState } from "react";
 
 import { IS_DEV, SITE_TITLE_APPEND } from "@/config";
@@ -186,7 +193,7 @@ function RootComponent() {
 	);
 }
 
-function RootErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
+function RootErrorComponent({ error, reset }: ErrorComponentProps) {
 	useEffect(() => {
 		captureException(error);
 	}, [error]);

@@ -1,4 +1,6 @@
 import "@tanstack/react-start/server-only";
+import type { GithubProfile } from "better-auth/social-providers";
+
 import { drizzleAdapter } from "@better-auth/drizzle-adapter";
 import { betterAuth, type SocialProviders } from "better-auth";
 import { genericOAuth } from "better-auth/plugins";
@@ -199,15 +201,9 @@ function getGithubOAuthConfig() {
 					"User-Agent": "sreetamdas.com",
 				},
 			});
-			const profile: {
-				id: number;
-				login: string;
-				email: string | null;
-				avatar_url: string;
-			} = await response.json();
+			const profile: GithubProfile = await response.json();
 			return {
 				user: {
-					id: String(profile.id),
 					name: profile.login,
 					email: profile.email ?? `${profile.id}@github.local`,
 					image: profile.avatar_url,
