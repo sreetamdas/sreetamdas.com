@@ -40,9 +40,9 @@ type SocialSignInProviderConfig = {
 const SOCIAL_SIGN_IN_PROVIDER_CONFIGS = {
 	cloudflare: {
 		error_message: "Cloudflare OAuth is not configured",
-		path: "/api/auth/sign-in/oauth2",
+		path: "/api/auth/sign-in/social",
 		create_body: (callback_url: string) => ({
-			providerId: "cloudflare",
+			provider: "cloudflare",
 			callbackURL: callback_url,
 		}),
 	},
