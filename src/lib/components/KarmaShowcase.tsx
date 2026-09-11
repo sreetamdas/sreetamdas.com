@@ -7,9 +7,9 @@ import { Image } from "@/lib/components/Image";
 
 const KARMA_COLOR_PALETTE = [
 	"#FC618D",
-	"#51C7DA",
+	"#5AD4E6",
 	"#AF98E6",
-	"#E3CF65",
+	"#FCE566",
 	"#7BD88F",
 	"#FD9353",
 ] as const;
@@ -17,7 +17,7 @@ const KARMA_LIGHT_COLOR_PALETTE = [
 	"#FC618D",
 	"#5688C7",
 	"#6F42C1",
-	"#FFAA33",
+	"#EEAE11",
 	"#2D972F",
 	"#FA8D3E",
 ] as const;
