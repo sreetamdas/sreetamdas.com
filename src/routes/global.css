@@ -168,28 +168,28 @@
 
 @font-face {
 	font-family: "Iosevka";
-	src: url("/fonts/iosevka/iosevka-das-version-regular.subset.woff2") format("woff2");
+	src: url("/fonts/iosevka/iosevka-das-version-regular.12cc7f07.subset.woff2") format("woff2");
 	font-weight: normal;
 	font-style: normal;
 	font-display: swap;
 }
 @font-face {
 	font-family: "Iosevka";
-	src: url("/fonts/iosevka/iosevka-das-version-italic.subset.woff2") format("woff2");
+	src: url("/fonts/iosevka/iosevka-das-version-italic.7c367aec.subset.woff2") format("woff2");
 	font-weight: normal;
 	font-style: italic;
 	font-display: swap;
 }
 @font-face {
 	font-family: "Iosevka";
-	src: url("/fonts/iosevka/iosevka-das-version-bold.subset.woff2") format("woff2");
+	src: url("/fonts/iosevka/iosevka-das-version-bold.1c91cc51.subset.woff2") format("woff2");
 	font-weight: 700;
 	font-style: normal;
 	font-display: swap;
 }
 @font-face {
 	font-family: "Iosevka";
-	src: url("/fonts/iosevka/iosevka-das-version-bold-italic.subset.woff2") format("woff2");
+	src: url("/fonts/iosevka/iosevka-das-version-bold-italic.d162a455.subset.woff2") format("woff2");
 	font-weight: 700;
 	font-style: italic;
 	font-display: swap;
@@ -446,6 +446,12 @@
 strong > em {
 	/* color: theme(colors.primary); */
 	color: var(--color-primary);
+}
+
+/* Iosevka coding ligatures (calt): arrows, operators, comparisons */
+code,
+pre {
+	font-variant-ligatures: contextual;
 }
 
 /* Shiki code block: line numbers via CSS counters and highlight styling */
