@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, ErrorComponent } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
+import { useEffect } from "react";
 import { FiLink } from "react-icons/fi";
 
 import { SITE_DESCRIPTION, SITE_TITLE_APPEND } from "@/config";
@@ -78,6 +79,15 @@ function RWCPage() {
 	});
 
 	const { all_solutions, background_color } = freshData;
+
+	// Deep links (#p474_ex) target sections that only exist after the client
+	// refetch resolves, so the browser's initial fragment scroll finds nothing.
+	// Re-attempt the scroll once samples arrive.
+	useEffect(() => {
+		if (all_solutions.length > 0 && window.location.hash) {
+			document.querySelector(window.location.hash)?.scrollIntoView();
+		}
+	}, [all_solutions]);
 
 	return (
 		<>
