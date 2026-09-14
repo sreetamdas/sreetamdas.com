@@ -33,7 +33,7 @@ if (!css) {
 const fonts = [
 	findAsset(/^inter-latin-wght-normal-.*\.woff2$/),
 	findAsset(/^bricolage-grotesque-latin-standard-normal-.*\.woff2$/),
-	"/fonts/iosevka/iosevka-das-version-regular.subset.woff2",
+	"/fonts/iosevka/iosevka-das-version-regular.12cc7f07.subset.woff2",
 ].filter(Boolean);
 
 let headers;
