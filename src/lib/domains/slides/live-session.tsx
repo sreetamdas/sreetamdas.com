@@ -253,7 +253,7 @@ function MasterLiveControl({
 							</div>
 						</div>
 					) : null}
-					<form className="grid gap-2" onSubmit={handleCreatePoll}>
+					<form className="grid gap-2" method="post" onSubmit={handleCreatePoll}>
 						<input
 							aria-label="Custom poll question"
 							className="rounded-lg border border-white/15 bg-white/10 px-3 py-2 text-xs text-white placeholder:text-white/40"
