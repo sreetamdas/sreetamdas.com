@@ -16,6 +16,12 @@ permissions:
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
+# Every job generates what it needs with `pnpm prebuild` (two to three seconds)
+# instead of downloading an artifact. The old artifact plumbing made `lint` a
+# gate on `build`, `unit-tests` and `worker-tests`, which put a 45s job on the
+# critical path to save a 3s step. No job depends on another one now, so all
+# five start together.
+
 jobs:
   typecheck:
     name: Typecheck
@@ -28,11 +34,10 @@ jobs:
       - name: Setup pnpm
         uses: ./.github/actions/setup-pnpm
 
-      - name: Generate build info
-        run: node scripts/generate-build-info.mjs
-
-      - name: Build content
-        run: pnpm run build:content-collections
+      # tsc resolves `content-collections` and `@/build-info.json`, so it needs
+      # the generated files on disk before it runs.
+      - name: Generate content, feeds and build info
+        run: pnpm prebuild
 
       - name: Typecheck
         run: pnpm run typecheck:ci
@@ -48,27 +53,9 @@ jobs:
       - name: Setup pnpm
         uses: ./.github/actions/setup-pnpm
 
-      - name: Generate build info
-        run: node scripts/generate-build-info.mjs
-
-      - name: Build content
-        run: pnpm run build:content-collections
-
-      - name: Generate feeds
-        run: pnpm run generate-feeds
-
-      - name: Upload generated assets
-        uses: actions/upload-artifact@v7
-        with:
-          name: generated-assets
-          path: |
-            .content-collections/
-            public/rss/
-            src/build-info.json
-          if-no-files-found: error
-          include-hidden-files: true
-          retention-days: 1
-
+      # Lint needs no generation step: `vp` builds content collections on demand
+      # and neither oxfmt nor oxlint resolve imports. Verified against a tree
+      # with no .content-collections.
       - name: Lint
         run: pnpm lint
 
@@ -76,7 +63,6 @@ jobs:
     name: Unit/API Tests
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    needs: [typecheck, lint]
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -84,11 +70,8 @@ jobs:
       - name: Setup pnpm
         uses: ./.github/actions/setup-pnpm
 
-      - name: Download generated assets
-        uses: actions/download-artifact@v8
-        with:
-          name: generated-assets
-          path: .
+      - name: Generate content, feeds and build info
+        run: pnpm prebuild
 
       - name: Run unit/api tests
         run: pnpm test:unit
@@ -97,7 +80,6 @@ jobs:
     name: Worker Runtime Tests
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    needs: [typecheck, lint]
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -108,11 +90,13 @@ jobs:
       - name: Run worker runtime tests
         run: pnpm test:workers
 
-  build:
-    name: Build
+  # Build and E2E share a job. Splitting them meant paying `Setup pnpm` twice
+  # (about 24s) plus a job scheduling barrier, to hand one directory to the next
+  # job. The E2E suite runs against the `dist/` this job just produced.
+  build-and-e2e:
+    name: Build & E2E Tests
     runs-on: ubuntu-latest
-    timeout-minutes: 15
-    needs: [typecheck, lint]
+    timeout-minutes: 25
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -120,52 +104,33 @@ jobs:
       - name: Setup pnpm
         uses: ./.github/actions/setup-pnpm
 
-      - name: Download generated assets
-        uses: actions/download-artifact@v8
-        with:
-          name: generated-assets
-          path: .
+      - name: Generate content, feeds and build info
+        run: pnpm prebuild
 
       - name: Build
         run: pnpm run build:ci
         env:
           VITE_CI: "1"
 
-      - name: Upload build output
-        uses: actions/upload-artifact@v7
-        with:
-          name: build-output
-          path: |
-            dist/
-            .wrangler/deploy/
-          if-no-files-found: error
-          include-hidden-files: true
-          retention-days: 1
-
-      - name: Upload build artifacts on failure
+      - name: Upload build output on failure
         uses: actions/upload-artifact@v7
         if: failure()
         with:
           name: build-output-failed
           path: dist/
 
-  e2e:
-    name: E2E Tests
-    runs-on: ubuntu-latest
-    timeout-minutes: 20
-    needs: [build, unit-tests, worker-tests]
-    steps:
-      - name: Checkout
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Get Playwright version
+        id: playwright-version
+        run: echo "version=$(pnpm exec playwright --version | awk '{print $2}')" >> "$GITHUB_OUTPUT"
 
-      - name: Setup pnpm
-        uses: ./.github/actions/setup-pnpm
-
-      - name: Download build output
-        uses: actions/download-artifact@v8
+      # Without this, `playwright install` downloads Chromium on every run: 21s
+      # of the E2E job. The key holds no restore-keys on purpose, because an
+      # older browser revision must not satisfy a newer Playwright.
+      - name: Cache Playwright browsers
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
-          name: build-output
-          path: .
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-ms-playwright-${{ steps.playwright-version.outputs.version }}
 
       - name: Install Playwright
         run: pnpm exec playwright install --with-deps chromium

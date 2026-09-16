@@ -9,6 +9,20 @@ runs:
       with:
         node-version-file: .node-version
 
+    - name: Get pnpm version
+      id: pnpm-version
+      shell: bash
+      run: echo "version=$(node -p 'require("./package.json").packageManager')" >> "$GITHUB_OUTPUT"
+
+    # `corepack prepare` downloads a 37MB pnpm tarball when the cache is cold.
+    # The key tracks the pinned pnpm version only, so a hit lasts until the
+    # version changes and the save step is skipped on every hit.
+    - name: Cache Corepack
+      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+      with:
+        path: ~/.cache/node/corepack
+        key: ${{ runner.os }}-corepack-${{ steps.pnpm-version.outputs.version }}
+
     - name: Enable Corepack
       shell: bash
       run: |
