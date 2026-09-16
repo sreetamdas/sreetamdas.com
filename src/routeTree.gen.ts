@@ -40,6 +40,7 @@ import { Route as apiApiAnalyticsTrackerRouteImport } from './routes/(api)/api/a
 import { Route as apiApiAuthSplatRouteImport } from './routes/(api)/api/auth/$'
 import { Route as apiApiFoobarCookieRouteImport } from './routes/(api)/api/foobar/cookie'
 import { Route as apiApiLoginProviderRouteImport } from './routes/(api)/api/login/$provider'
+import { Route as apiApiPrxySntryRouteImport } from './routes/(api)/api/prxy/sntry'
 import { Route as mainfoobarFoobarIndexRouteImport } from './routes/(main)/(foobar)/foobar/index'
 import { Route as mainfoobarFoobarSlugRouteRouteImport } from './routes/(main)/(foobar)/foobar/$slug/route'
 import { Route as apiApiPrxyNltyxIndexRouteImport } from './routes/(api)/api/prxy/nltyx/index'
@@ -204,6 +205,11 @@ const apiApiLoginProviderRoute = apiApiLoginProviderRouteImport.update({
   path: '/api/login/$provider',
   getParentRoute: () => rootRouteImport,
 } as any)
+const apiApiPrxySntryRoute = apiApiPrxySntryRouteImport.update({
+  id: '/(api)/api/prxy/sntry',
+  path: '/api/prxy/sntry',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const mainfoobarFoobarIndexRoute = mainfoobarFoobarIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -275,6 +281,7 @@ export interface FileRoutesByFullPath {
   '/api/auth/$': typeof apiApiAuthSplatRoute
   '/api/foobar/cookie': typeof apiApiFoobarCookieRoute
   '/api/login/$provider': typeof apiApiLoginProviderRoute
+  '/api/prxy/sntry': typeof apiApiPrxySntryRoute
   '/foobar/': typeof mainfoobarFoobarIndexRoute
   '/api/prxy/nltyx/event': typeof apiApiPrxyNltyxEventRoute
   '/api/slides/session/$sessionId': typeof apiApiSlidesSessionSessionIdRoute
@@ -310,6 +317,7 @@ export interface FileRoutesByTo {
   '/api/auth/$': typeof apiApiAuthSplatRoute
   '/api/foobar/cookie': typeof apiApiFoobarCookieRoute
   '/api/login/$provider': typeof apiApiLoginProviderRoute
+  '/api/prxy/sntry': typeof apiApiPrxySntryRoute
   '/foobar': typeof mainfoobarFoobarIndexRoute
   '/api/prxy/nltyx/event': typeof apiApiPrxyNltyxEventRoute
   '/api/slides/session/$sessionId': typeof apiApiSlidesSessionSessionIdRoute
@@ -351,6 +359,7 @@ export interface FileRoutesById {
   '/(api)/api/auth/$': typeof apiApiAuthSplatRoute
   '/(api)/api/foobar/cookie': typeof apiApiFoobarCookieRoute
   '/(api)/api/login/$provider': typeof apiApiLoginProviderRoute
+  '/(api)/api/prxy/sntry': typeof apiApiPrxySntryRoute
   '/(main)/(foobar)/foobar/': typeof mainfoobarFoobarIndexRoute
   '/(api)/api/prxy/nltyx/event': typeof apiApiPrxyNltyxEventRoute
   '/(api)/api/slides/session/$sessionId': typeof apiApiSlidesSessionSessionIdRoute
@@ -391,6 +400,7 @@ export interface FileRouteTypes {
     | '/api/auth/$'
     | '/api/foobar/cookie'
     | '/api/login/$provider'
+    | '/api/prxy/sntry'
     | '/foobar/'
     | '/api/prxy/nltyx/event'
     | '/api/slides/session/$sessionId'
@@ -426,6 +436,7 @@ export interface FileRouteTypes {
     | '/api/auth/$'
     | '/api/foobar/cookie'
     | '/api/login/$provider'
+    | '/api/prxy/sntry'
     | '/foobar'
     | '/api/prxy/nltyx/event'
     | '/api/slides/session/$sessionId'
@@ -466,6 +477,7 @@ export interface FileRouteTypes {
     | '/(api)/api/auth/$'
     | '/(api)/api/foobar/cookie'
     | '/(api)/api/login/$provider'
+    | '/(api)/api/prxy/sntry'
     | '/(main)/(foobar)/foobar/'
     | '/(api)/api/prxy/nltyx/event'
     | '/(api)/api/slides/session/$sessionId'
@@ -486,6 +498,7 @@ export interface RootRouteChildren {
   apiApiAuthSplatRoute: typeof apiApiAuthSplatRoute
   apiApiFoobarCookieRoute: typeof apiApiFoobarCookieRoute
   apiApiLoginProviderRoute: typeof apiApiLoginProviderRoute
+  apiApiPrxySntryRoute: typeof apiApiPrxySntryRoute
   apiApiPrxyNltyxEventRoute: typeof apiApiPrxyNltyxEventRoute
   apiApiSlidesSessionSessionIdRoute: typeof apiApiSlidesSessionSessionIdRoute
   apiApiPrxyNltyxIndexRoute: typeof apiApiPrxyNltyxIndexRoute
@@ -711,6 +724,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof apiApiLoginProviderRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/(api)/api/prxy/sntry': {
+      id: '/(api)/api/prxy/sntry'
+      path: '/api/prxy/sntry'
+      fullPath: '/api/prxy/sntry'
+      preLoaderRoute: typeof apiApiPrxySntryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/(main)/(foobar)/foobar/': {
       id: '/(main)/(foobar)/foobar/'
       path: '/'
@@ -893,6 +913,7 @@ const rootRouteChildren: RootRouteChildren = {
   apiApiAuthSplatRoute: apiApiAuthSplatRoute,
   apiApiFoobarCookieRoute: apiApiFoobarCookieRoute,
   apiApiLoginProviderRoute: apiApiLoginProviderRoute,
+  apiApiPrxySntryRoute: apiApiPrxySntryRoute,
   apiApiPrxyNltyxEventRoute: apiApiPrxyNltyxEventRoute,
   apiApiSlidesSessionSessionIdRoute: apiApiSlidesSessionSessionIdRoute,
   apiApiPrxyNltyxIndexRoute: apiApiPrxyNltyxIndexRoute,

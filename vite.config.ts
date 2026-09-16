@@ -95,7 +95,6 @@ function getPlugins(): Array<unknown> {
 				autoInstrumentMiddleware: false,
 				org: process.env.SENTRY_ORG,
 				project: process.env.SENTRY_PROJECT,
-				tunnelRoute: "/api/prxy/sntry/",
 			}),
 		);
 	}

@@ -16,6 +16,10 @@ init({
 	environment: import.meta.env.MODE,
 	enableLogs: true,
 	sendDefaultPii: false,
+	// Send browser events through our own route (src/routes/(api)/api/prxy/sntry.ts)
+	// instead of straight to *.ingest.us.sentry.io, so content blockers don't drop
+	// them.
+	tunnel: "/api/prxy/sntry/",
 	tracesSampleRate: 0.1,
 	beforeSend(event) {
 		const serialized = event.extra?.__serialized__;
