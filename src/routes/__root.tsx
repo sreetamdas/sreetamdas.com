@@ -100,7 +100,7 @@ export const Route = createRootRoute({
 				rel: "preload",
 				as: "font",
 				type: "font/woff2",
-				href: "/fonts/iosevka/iosevka-das-version-regular.subset.woff2",
+				href: "/fonts/iosevka/iosevka-das-version-regular.8a8e4f33.subset.woff2",
 				crossOrigin: "anonymous",
 			},
 			{

@@ -19,6 +19,13 @@
   ! Cloudflare-CDN-Cache-Control
   Cache-Control: public, max-age=31536000, immutable
 
+# Iosevka subsets are content-hashed at build time (see font filenames), so
+# they are safe to cache forever; a new build mints new URLs.
+/fonts/iosevka/*
+  ! Cache-Control
+  ! Cloudflare-CDN-Cache-Control
+  Cache-Control: public, max-age=31536000, immutable
+
 /foobar-sw.js
   ! Cache-Control
   ! Cloudflare-CDN-Cache-Control
