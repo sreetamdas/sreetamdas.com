@@ -85,24 +85,38 @@ test("serves /rwc highlighted code through the server function with correct cach
  * stub delays its response to widen the window in which the fragment scroll has
  * already failed against the prerendered shell.
  */
-const STUBBED_SAMPLES = [
-	{ html: '<span class="line">first</span>', slug: "p001_ts", filename: "p001.ts", lang: "ts" },
-	{
-		html: '<span class="line">second</span>',
-		// Gist filenames become slugs, so `+` reaches the DOM as an element id. It
-		// is a legal id but an invalid CSS selector, which is why the route looks
-		// the fragment up by id instead of via `querySelector`.
-		slug: "c++_cpp",
-		filename: "C++.cpp",
-		lang: "cpp",
-	},
-	{
-		html: '<span class="line">third</span>',
-		slug: "p003_ts",
-		filename: "p003.ts",
-		lang: "ts",
-	},
-];
+/**
+ * Enough samples that both fragment targets below sit well outside the fold.
+ * The recovery only has work to do when the target is off screen, so a short
+ * payload would let these specs pass without scrolling anything.
+ */
+const FILLER_SAMPLES = Array.from({ length: 8 }, (_, index) => {
+	const n = String(index + 1).padStart(3, "0");
+	const html = Array.from(
+		{ length: 6 },
+		(_, line) => `<span class="line">sample ${n} line ${line + 1}</span>`,
+	).join("");
+	return { html, slug: `p${n}_ts`, filename: `p${n}.ts`, lang: "ts" };
+});
+
+const DEEP_LINK_SAMPLE = {
+	html: '<span class="line">deep link</span>',
+	slug: "p900_ts",
+	filename: "p900.ts",
+	lang: "ts",
+};
+
+// Gist filenames become slugs, so `+` reaches the DOM as an element id. It is a
+// legal id but an invalid CSS selector, which is why the route looks the fragment
+// up by id instead of via `querySelector`.
+const SELECTOR_UNSAFE_SAMPLE = {
+	html: '<span class="line">selector unsafe</span>',
+	slug: "c++_cpp",
+	filename: "C++.cpp",
+	lang: "cpp",
+};
+
+const STUBBED_SAMPLES = [...FILLER_SAMPLES, DEEP_LINK_SAMPLE, SELECTOR_UNSAFE_SAMPLE];
 
 async function stubRwcSamples(page: Page, { delayMs = 250 }: { delayMs?: number } = {}) {
 	await page.route("**/_serverFn/**", async (route) => {
@@ -134,25 +148,36 @@ async function stubRwcSamples(page: Page, { delayMs = 250 }: { delayMs?: number 
 	});
 }
 
-/** Scroll offset that clears the sticky site header (`Header` is `h-[60px]`). */
-const HEADER_HEIGHT = 60;
-
 test("scrolls to a deep-linked sample after the client-side refetch resolves", async ({ page }) => {
 	await stubRwcSamples(page);
 
-	await page.goto("/rwc#p003_ts");
+	await page.goto("/rwc#p900_ts");
 
-	await expect(page.locator("#p003_ts")).toBeAttached();
+	// The recovery only matters when prerender shipped no anchors. Assert that
+	// precondition so this spec cannot pass on a populated prerender, where the
+	// browser would resolve the fragment natively and exercise none of this.
+	await expect(page.locator("#p900_ts")).toHaveCount(0);
 
-	// The section renders well below the fold, so a recovered scroll must leave
-	// the page scrolled — and clear the sticky header rather than tucking the
-	// heading underneath it.
-	await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(0);
-	const targetTop = await page.evaluate(() => {
-		const target = document.getElementById("p003_ts");
-		return target?.getBoundingClientRect().top ?? -1;
-	});
-	expect(targetTop).toBeGreaterThanOrEqual(HEADER_HEIGHT);
+	await expect(page.locator("#p900_ts")).toBeAttached();
+
+	// `scroll-pt-16` on <html> is what clears the 60px sticky header for every
+	// scrollIntoView on the site, so the recovered heading must come to rest at
+	// or below the header rather than tucked behind it. `scroll-smooth` is also
+	// global, so poll for the settled position instead of sampling mid-animation.
+	await expect
+		.poll(
+			() =>
+				page.evaluate(() => {
+					const target = document.getElementById("p900_ts");
+					const header = document.querySelector("header");
+					if (!(target instanceof HTMLElement) || !(header instanceof HTMLElement)) return null;
+					return Math.round(
+						target.getBoundingClientRect().top - header.getBoundingClientRect().bottom,
+					);
+				}),
+			{ message: "the deep-linked heading should come to rest clear of the sticky header" },
+		)
+		.toBeGreaterThanOrEqual(0);
 });
 
 test("recovers a deep link whose slug is not a valid CSS selector", async ({ page }) => {
@@ -169,26 +194,25 @@ test("recovers a deep link whose slug is not a valid CSS selector", async ({ pag
 	expect(errors).toEqual([]);
 });
 
-test("leaves the reader's own scroll position alone once they have scrolled", async ({ page }) => {
-	// A short viewport makes even the empty prerendered shell scrollable, which is
-	// what lets the reader move the page *before* the samples arrive. On a tall
-	// viewport the shell is shorter than the fold and `scrollY` cannot leave 0,
-	// so the re-scroll this guards against would be invisible.
+test("recovers the deep link when the page is already scrolled", async ({ page }) => {
+	// TanStack Router skips restoring the window scroll when a navigation carries
+	// a hash, so arriving at /rwc#slug from another route leaves a stale non-zero
+	// `scrollY` with the real target still off screen. A short viewport makes even
+	// the empty prerendered shell scrollable, which is what lets that state be
+	// reproduced here.
 	await page.setViewportSize({ width: 500, height: 320 });
 	await stubRwcSamples(page, { delayMs: 1500 });
 
-	await page.goto("/rwc#p003_ts");
+	await page.goto("/rwc#p900_ts");
 
-	// Scroll away from the fragment target while the refetch is still in flight,
-	// which is exactly the production case: a populated prerender lets a reader
-	// start scrolling before the client-side refresh lands.
 	await expect.poll(() => page.evaluate(() => window.scrollY), { timeout: 10_000 }).toBe(0);
 	await page.evaluate(() => window.scrollTo(0, 40));
-	await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(40);
 
-	// The samples arrive afterwards; a re-scroll triggered by that arrival would
-	// move the reader off the position they chose.
-	await expect(page.locator("#p003_ts")).toBeAttached({ timeout: 10_000 });
-	await page.waitForTimeout(500);
-	expect(await page.evaluate(() => window.scrollY)).toBe(40);
+	// The samples arrive with the page already scrolled away from the top. The
+	// recovery has to notice that the target is not on screen rather than reading
+	// `scrollY` as "already handled".
+	await expect(page.locator("#p900_ts")).toBeAttached({ timeout: 10_000 });
+	await expect
+		.poll(() => page.evaluate(() => window.scrollY), { timeout: 10_000 })
+		.toBeGreaterThan(40);
 });

@@ -85,15 +85,22 @@ function RWCPage() {
 	// Re-attempt the scroll once samples arrive.
 	const deepLinkRecovered = useRef(false);
 	useEffect(() => {
-		// `all_solutions` is replaced by every refetch, but the deep link only
-		// needs recovering once. When prerender shipped the anchors the browser
-		// already scrolled (scrollY > 0), and a reader who has started scrolling
-		// must not be yanked back, so both cases leave the position alone.
+		// `all_solutions` is replaced by every refetch, so this must run once.
 		if (deepLinkRecovered.current || all_solutions.length === 0) return;
-		if (window.scrollY !== 0) return;
-
 		deepLinkRecovered.current = true;
-		decodeHashTarget()?.scrollIntoView();
+
+		// Only recover when the target is not already on screen. The browser
+		// resolves the fragment itself when prerender shipped the anchors, and
+		// TanStack Router's scroll restoration does the same on back/forward, so
+		// in both cases the target is in view and scrolling again would fight the
+		// reader. Testing `scrollY` instead would be wrong: the router skips
+		// restoring the window scroll when a hash is present, so a push
+		// navigation from another route arrives with a stale non-zero `scrollY`
+		// and the real target still off screen.
+		const target = decodeHashTarget();
+		if (target === null || isInViewport(target)) return;
+
+		target.scrollIntoView();
 	}, [all_solutions]);
 
 	return (
@@ -126,6 +133,11 @@ function decodeHashTarget(): HTMLElement | null {
 	return document.getElementById(id);
 }
 
+function isInViewport(element: HTMLElement): boolean {
+	const { top, bottom } = element.getBoundingClientRect();
+	return top < window.innerHeight && bottom > 0;
+}
+
 function RWCCodeSamples({
 	all_solutions,
 	backgroundColor,
@@ -146,7 +158,7 @@ function RWCCodeSamples({
 			{all_solutions.map(({ html, slug, filename, lang }) => (
 				<article className="my-20 flex flex-col" key={slug}>
 					<div className="flex justify-between">
-						<h2 className="group scroll-mt-24 font-mono text-xl text-primary" id={slug}>
+						<h2 className="group font-mono text-xl text-primary" id={slug}>
 							<a
 								href={`#${slug}`}
 								className="absolute translate-x-[-125%] translate-y-2 text-primary opacity-0 transition-opacity group-hover:opacity-75 focus-visible:opacity-75 focus-visible:[outline-width:2px] focus-visible:outline-offset-2 focus-visible:outline-secondary focus-visible:outline-dashed max-md:hidden"
