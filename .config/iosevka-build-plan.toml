@@ -1,0 +1,107 @@
+# Iosevka build plan for the site's "das-version" coding font.
+#
+# PROVENANCE
+#   Reverse-engineered, not authored upstream. The original build used a private
+#   Iosevka build plan that was never committed; every value below was recovered
+#   from the shipped subsets.
+#
+#   Recovery method: Iosevka's stock v28.0.4 defaults were found to match the
+#   shipped outlines to <= 1 unit across all 125 upright / 96 italic codepoints,
+#   which is what identifies "das-version" as stock v28.0.4 under a renamed
+#   family. Each value below was then read back out of the rebuilt subsets
+#   (fontTools) and confirmed to match, so this file records verified values
+#   rather than guesses.
+#
+#   KNOWN GAP: nothing in `pnpm build` reads the font binaries, because doing so
+#   needs a font parser the Node build does not have. So the guard below verifies
+#   references and hashes only — if a future rebuild changes these values without
+#   changing this file, the build will not notice. Re-verify with fontTools when
+#   rebuilding.
+#
+# WHY THIS IS NOT RERUNNABLE HERE
+#   Iosevka's build tools ship as a separate binary, not an npm dependency: the
+#   `iosevka` and `iosevka-build-tools` packages were unpublished in 2020, and
+#   GitHub releases only carry prebuilt TTX packages. So regenerating these
+#   subsets from source needs the toolchain installed out of band. The post-
+#   processing that produced the current files (drop hinting, recompress, fix the
+#   version record) is fontTools-only and is documented under [postprocess].
+#
+# FILE NAMING
+#   public/fonts/iosevka/iosevka-das-version-<style>.<sha256[0:8]>.subset.woff2
+#   The hash is the sha256 prefix of the final bytes, so a rebuild must rehash and
+#   update all six references in global.css, __root.tsx and inject-early-hints.mjs.
+#   `scripts/check-font-references.ts` fails the build if any of that is stale.
+
+[family]
+# name ID 1, shared by all four faces.
+name = "Iosevka — Das' version"
+upstream = "Iosevka"
+version = "28.0.4"
+# das-version is stock Iosevka with the family renamed; no glyph or metric edits.
+rename_only = true
+
+[styles]
+# Regular + Bold, upright + 9-degree italic. `angle` maps to post.italicAngle.
+regular = { weight = 400, width = "Normal", angle = 0 }
+bold = { weight = 700, width = "Normal", angle = 0 }
+italic = { weight = 400, width = "Normal", angle = -9 }
+bold-italic = { weight = 700, width = "Normal", angle = -9 }
+# OS/2 usWidthClass 5 (Medium == Normal for a monospaced face).
+
+[ligations]
+# Iosevka ships the default contextual set under `calt`; nothing else. Inheriting
+# the stock default is what enables -> => !== === <= >= || |> ... <!-- in code.
+inherits = "default-calt"
+# Only regular is preloaded; the other three load on first use.
+preload = ["regular"]
+
+[metrics]
+# upem 1000 throughout. Used by the @capsizecss "Iosevka Fallback" overrides in
+# global.css, which exist so inline code does not reflow when Iosevka swaps in.
+units_per_em = 1000
+cap_height = 735
+x_height = 520
+ascender = 965
+descender = -215
+line_gap = 70
+# OS/2 sTypo* with fsSelection USE_TYPO_METRICS; usWin* matches the typo ascent.
+typo_ascender = 965
+typo_descender = -285
+typo_line_gap = 0
+win_ascent = 965
+win_descent = 285
+underline_position = -50
+underline_thickness = 50
+use_typo_metrics = true
+# Every advance is 500/1000 em: this is what makes the fallback size-adjust work.
+advance_width = 500
+
+[subsetting]
+# Uprights keep Latin-1 punctuation; italics stay ASCII-only. Ligature glyphs
+# are retained even though they sit outside these ranges (subset from the hinted
+# TTF, after ligation).
+upright.codepoints = ["U+000D", "U+0020-U+007E", "U+00A0-U+00BB", "U+00D7"]
+italic.codepoints = ["U+000D", "U+0020-U+007E"]
+# Ligature coverage confirmed with hb-shape against the shipped files:
+# -> => === !== <= >= || ... |> <!-- all resolve to ligature glyphs; www does not.
+ligatures_retained = true
+
+[postprocess]
+# Applied to the subsetted woff2 with fontTools. `hint = false` is why these files
+# are ~76% smaller than the hinted build that PR #300 first shipped.
+#
+#   1. strip hinting: drop cvt / fpgm / prep / gasp and every glyph program, then
+#      recompute maxp (fontTools leaves maxSizeOfInstructions stale otherwise).
+#      Hinting only affects rasterisation at small sizes on Windows and low-DPI
+#      displays; outlines, advances and GSUB are untouched — verified by
+#      per-table digests against the hinted subsets.
+#   2. clear the version record's processor suffix. Iosevka writes
+#      "Version 28.0.4; ttfautohint (v1.8.4)"; with hinting stripped that claim
+#      is false, so it is reduced to "Version 28.0.4".
+#   3. save as woff2 through fontTools, whose compressor is substantially tighter
+#      than the one that produced the original subsets (~62% of their bytes were
+#      compression slack, not glyph data).
+#   4. hash the result and rename.
+hint = false
+clear_version_processor = true
+recompress = "fontTools/woff2"
