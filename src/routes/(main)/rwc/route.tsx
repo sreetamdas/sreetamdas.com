@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, ErrorComponent } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { FiLink } from "react-icons/fi";
 
 import { SITE_DESCRIPTION, SITE_TITLE_APPEND } from "@/config";
@@ -83,10 +83,17 @@ function RWCPage() {
 	// Deep links (#p474_ex) target sections that only exist after the client
 	// refetch resolves, so the browser's initial fragment scroll finds nothing.
 	// Re-attempt the scroll once samples arrive.
+	const deepLinkRecovered = useRef(false);
 	useEffect(() => {
-		if (all_solutions.length > 0 && window.location.hash) {
-			document.querySelector(window.location.hash)?.scrollIntoView();
-		}
+		// `all_solutions` is replaced by every refetch, but the deep link only
+		// needs recovering once. When prerender shipped the anchors the browser
+		// already scrolled (scrollY > 0), and a reader who has started scrolling
+		// must not be yanked back, so both cases leave the position alone.
+		if (deepLinkRecovered.current || all_solutions.length === 0) return;
+		if (window.scrollY !== 0) return;
+
+		deepLinkRecovered.current = true;
+		decodeHashTarget()?.scrollIntoView();
 	}, [all_solutions]);
 
 	return (
@@ -96,6 +103,27 @@ function RWCPage() {
 			<StatsCounter />
 		</>
 	);
+}
+
+/**
+ * Resolves `location.hash` to its element by id rather than as a CSS selector:
+ * slugs derive from gist filenames, so ids may contain characters that are legal
+ * in an id but make `querySelector("#...")` throw a SyntaxError.
+ */
+function decodeHashTarget(): HTMLElement | null {
+	if (!window.location.hash) {
+		return null;
+	}
+
+	let id: string;
+	try {
+		id = decodeURIComponent(window.location.hash.slice(1));
+	} catch {
+		// A hand-typed or malformed fragment (`#%`) is not decodable.
+		return null;
+	}
+
+	return document.getElementById(id);
 }
 
 function RWCCodeSamples({
@@ -118,7 +146,7 @@ function RWCCodeSamples({
 			{all_solutions.map(({ html, slug, filename, lang }) => (
 				<article className="my-20 flex flex-col" key={slug}>
 					<div className="flex justify-between">
-						<h2 className="group font-mono text-xl text-primary" id={slug}>
+						<h2 className="group scroll-mt-24 font-mono text-xl text-primary" id={slug}>
 							<a
 								href={`#${slug}`}
 								className="absolute translate-x-[-125%] translate-y-2 text-primary opacity-0 transition-opacity group-hover:opacity-75 focus-visible:opacity-75 focus-visible:[outline-width:2px] focus-visible:outline-offset-2 focus-visible:outline-secondary focus-visible:outline-dashed max-md:hidden"
