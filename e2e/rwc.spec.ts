@@ -81,14 +81,10 @@ test("serves /rwc highlighted code through the server function with correct cach
  * route re-attempts the scroll after the samples arrive.
  *
  * These specs stub the server function with a fixed payload so they assert that
- * recovery deterministically, independently of the live gist's contents. The
- * stub delays its response to widen the window in which the fragment scroll has
- * already failed against the prerendered shell.
- */
-/**
- * Enough samples that both fragment targets below sit well outside the fold.
- * The recovery only has work to do when the target is off screen, so a short
- * payload would let these specs pass without scrolling anything.
+ * recovery deterministically, independently of the live gist's contents, and so
+ * both fragment targets sit far enough below the fold that "the target is off
+ * screen" is unambiguous. Without that headroom the recovery would correctly do
+ * nothing and a spec could pass without scrolling anything.
  */
 const FILLER_SAMPLES = Array.from({ length: 8 }, (_, index) => {
 	const n = String(index + 1).padStart(3, "0");
@@ -151,14 +147,20 @@ async function stubRwcSamples(page: Page, { delayMs = 250 }: { delayMs?: number 
 test("scrolls to a deep-linked sample after the client-side refetch resolves", async ({ page }) => {
 	await stubRwcSamples(page);
 
+	// The recovery only matters when prerender shipped no anchors. Assert that
+	// against the served prerendered HTML rather than against the live DOM, which
+	// would just be inferring the precondition from a race with the stub delay.
+	const shell = await page.request.get("/rwc");
+	expect(await shell.text()).not.toContain(`id="${DEEP_LINK_SAMPLE.slug}"`);
+
 	await page.goto("/rwc#p900_ts");
 
-	// The recovery only matters when prerender shipped no anchors. Assert that
-	// precondition so this spec cannot pass on a populated prerender, where the
-	// browser would resolve the fragment natively and exercise none of this.
-	await expect(page.locator("#p900_ts")).toHaveCount(0);
-
 	await expect(page.locator("#p900_ts")).toBeAttached();
+
+	// The page must actually have moved: without recovery it is still at the top
+	// with the target thousands of pixels below, so a "target clears the header"
+	// assertion alone would pass vacuously.
+	await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(0);
 
 	// `scroll-pt-16` on <html> is what clears the 60px sticky header for every
 	// scrollIntoView on the site, so the recovered heading must come to rest at

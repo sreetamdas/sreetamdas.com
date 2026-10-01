@@ -93,8 +93,10 @@ ligatures_retained = true
 #   1. strip hinting: drop cvt / fpgm / prep / gasp and every glyph program, then
 #      recompute maxp (fontTools leaves maxSizeOfInstructions stale otherwise).
 #      Hinting only affects rasterisation at small sizes on Windows and low-DPI
-#      displays; outlines, advances and GSUB are untouched — verified by
-#      per-table digests against the hinted subsets.
+#      displays. Glyph coordinate streams, advance widths, cmap and GSUB/GPOS/
+#      GDEF compile to identical bytes against the hinted subsets; the stored
+#      per-glyph bounding boxes and the head/hhea/maxp maxima are recomputed and
+#      do differ (tighter, and still containing their outlines).
 #   2. clear the version record's processor suffix. Iosevka writes
 #      "Version 28.0.4; ttfautohint (v1.8.4)"; with hinting stripped that claim
 #      is false, so it is reduced to "Version 28.0.4".

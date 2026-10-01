@@ -85,21 +85,30 @@ function RWCPage() {
 	// Re-attempt the scroll once samples arrive.
 	const deepLinkRecovered = useRef(false);
 	useEffect(() => {
-		// `all_solutions` is replaced by every refetch, so this must run once.
 		if (deepLinkRecovered.current || all_solutions.length === 0) return;
+
+		// Only recover when the target is not already on screen. Testing
+		// `scrollY` instead cannot work, because a non-zero scroll does not mean
+		// the fragment was resolved:
+		//   - push navigation with a hash sets `skipWindowRestore` and calls
+		//     `getElementById(hash)?.scrollIntoView()`, which no-ops while the
+		//     anchors are still missing, leaving the previous page's scroll.
+		//   - back/forward (POP) restores the saved window scroll and skips the
+		//     hash scroll entirely, because `_scroll.hash` is only set for
+		//     PUSH/REPLACE.
+		// Either way the target can be off screen with `scrollY` non-zero. When
+		// prerender *did* ship the anchors the browser resolves the fragment
+		// itself and the target is on screen, so this skips and leaves the
+		// reader's position alone.
+		const target = decodeHashTarget();
+
+		// Do not consume the attempt while the slug is absent from this snapshot:
+		// a gist edited after the build means the target first appears in the
+		// refetch, by which point the fragment scroll has already been missed.
+		if (target === null) return;
 		deepLinkRecovered.current = true;
 
-		// Only recover when the target is not already on screen. The browser
-		// resolves the fragment itself when prerender shipped the anchors, and
-		// TanStack Router's scroll restoration does the same on back/forward, so
-		// in both cases the target is in view and scrolling again would fight the
-		// reader. Testing `scrollY` instead would be wrong: the router skips
-		// restoring the window scroll when a hash is present, so a push
-		// navigation from another route arrives with a stale non-zero `scrollY`
-		// and the real target still off screen.
-		const target = decodeHashTarget();
-		if (target === null || isInViewport(target)) return;
-
+		if (isInViewport(target)) return;
 		target.scrollIntoView();
 	}, [all_solutions]);
 
