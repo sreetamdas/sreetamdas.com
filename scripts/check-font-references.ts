@@ -9,10 +9,19 @@
  * wastes a request — with no build or test failure. This script makes that a
  * build failure instead.
  *
- * Two invariants, both cheap:
+ * Four checks, all cheap:
  *   1. Every referenced path exists in `public/fonts/iosevka/`.
  *   2. Its sha256 prefix equals the hash in its filename, so a copied-but-
  *      modified file cannot masquerade as a cache-busted one.
+ *   3. Every referenced name is content-hashed, since `_headers` only serves it
+ *      immutable on that promise.
+ *   4. No shipped font is unreferenced, which would deploy dead weight that
+ *      immutable caching can never reclaim.
+ *
+ * Known limits: it validates each reference independently, so a reference
+ * *dropped* from one source while still cited elsewhere goes unnoticed, and it
+ * cannot read the font binaries — `.config/iosevka-build-plan.toml` records the
+ * font's identity parameters and is not machine-checked against them.
  *
  * Runs as part of `pnpm build` / `build:ci`.
  */
@@ -48,7 +57,9 @@ async function collectReferences(): Promise<Map<string, Array<string>>> {
 }
 
 const references = await collectReferences();
-const available = new Set(await readdir(FONT_DIR));
+// Only fonts are inventoried here; unrelated files (a stray .DS_Store, a README)
+// must not be reported as orphans.
+const available = new Set((await readdir(FONT_DIR)).filter((name) => name.endsWith(".woff2")));
 const problems: Array<string> = [];
 
 for (const [filename, sources] of references) {
