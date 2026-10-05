@@ -41,6 +41,8 @@ describe.each([handleAnalyticsEventPost, handleAliasPost])(
 				"x-relay-ip": "forged",
 				"x-forwarded-for": "forged",
 				"x-relay-country": "forged",
+				"x-relay-region": "forged",
+				"x-relay-asn": "forged",
 			});
 			expect((await post(req)).status).toBe(202);
 			const init = fetch.mock.calls[0]?.[1];
@@ -49,6 +51,8 @@ describe.each([handleAnalyticsEventPost, handleAliasPost])(
 			expect(headers.get("x-relay-token")).toBe("secret");
 			expect(headers.get("x-relay-ip")).toBe("192.0.2.1");
 			expect(headers.get("x-relay-country")).toBe("");
+			expect(headers.get("x-relay-region")).toBe("");
+			expect(headers.get("x-relay-asn")).toBe("");
 			expect(headers.has("x-forwarded-for")).toBe(false);
 		});
 		const foreign: Array<Record<string, string>> = [

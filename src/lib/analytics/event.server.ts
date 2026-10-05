@@ -37,6 +37,8 @@ export async function handleAnalyticsEventPost(request: Request): Promise<Respon
 					"x-relay-ua": request.headers.get("user-agent") ?? "",
 					"x-relay-country": typeof cf?.country === "string" ? cf.country : "",
 					"x-relay-city": typeof cf?.city === "string" ? cf.city : "",
+					"x-relay-region": typeof cf?.region === "string" ? cf.region : "",
+					"x-relay-asn": typeof cf?.asn === "number" ? String(cf.asn) : "",
 					...(ip === null ? {} : { "x-relay-ip": ip }),
 				},
 				body: request.body,
