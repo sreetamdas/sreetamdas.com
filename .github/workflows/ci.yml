@@ -130,10 +130,6 @@ jobs:
         run: pnpm run build:ci
         env:
           VITE_CI: "1"
-          # The prerender bakes the gist's code samples into /rwc, so CI must
-          # see the same env as Workers Builds: without it CI's rwc.html is the
-          # fallback payload and the prerender-check's anchor assertion fails.
-          GITHUB_RWC_GIST_ID: ${{ secrets.RWC_GIST_ID }}
 
       - name: Upload build output
         uses: actions/upload-artifact@v7

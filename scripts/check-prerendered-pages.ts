@@ -114,7 +114,7 @@ if (expected.has("rwc.html")) {
 			`[prerender-check] ${RWC_OUTPUT} contains no gist anchor elements, so the ` +
 				`prerender likely rendered the fallback payload instead of the gist and ` +
 				`#pNNN_ex deep links would not scroll. Check the "[prerender]" output ` +
-				`above and the GITHUB_RWC_GIST_ID/GITHUB_TOKEN secrets.`,
+				`above — a failed or rate-limited gist fetch is the usual cause.`,
 		);
 	}
 
