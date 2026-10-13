@@ -8,6 +8,7 @@ import {
 
 import {
 	buildHighlightedCodeResponse,
+	DEFAULT_RWC_GIST_ID,
 	FALLBACK_RWC_BACKGROUND,
 	loadCachedHighlightedCodeResponse,
 	loadRwcCodeSamples,
@@ -28,9 +29,9 @@ describe("resolveRwcEnv", () => {
 		});
 	});
 
-	test("returns undefined gist id when env is missing", () => {
+	test("falls back to the hardcoded gist id when env is missing", () => {
 		expect(resolveRwcEnv(undefined)).toEqual({
-			githubGistId: undefined,
+			githubGistId: DEFAULT_RWC_GIST_ID,
 			githubToken: undefined,
 		});
 	});

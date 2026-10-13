@@ -47,11 +47,21 @@ const fallbackRwcCodeSamples: RWCCodeSamples = {
 	background_color: FALLBACK_RWC_BACKGROUND,
 };
 
+/**
+ * The gist is public, so its id is loaded everywhere: builds without the
+ * runtime binding (fresh CI checkouts, or any local build without a `.env`)
+ * still default to it and prerender /rwc with the real solutions, keeping the
+ * `#pNNN_ex` deep-link anchors working. `GITHUB_RWC_GIST_ID` can still point
+ * elsewhere if the gist is ever replaced; `GITHUB_TOKEN` is optional and only
+ * lifts GitHub's unauthenticated rate limits.
+ */
+export const DEFAULT_RWC_GIST_ID = "5c6d921605493f5e0a8877aa716b02d4";
+
 type RwcEnv = Pick<CloudflareEnv, "GITHUB_RWC_GIST_ID" | "GITHUB_TOKEN">;
 
 export function resolveRwcEnv(runtimeEnv: RwcEnv | undefined = env) {
 	return {
-		githubGistId: runtimeEnv?.GITHUB_RWC_GIST_ID || undefined,
+		githubGistId: runtimeEnv?.GITHUB_RWC_GIST_ID || DEFAULT_RWC_GIST_ID,
 		githubToken: runtimeEnv?.GITHUB_TOKEN || undefined,
 	};
 }
