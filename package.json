@@ -53,7 +53,8 @@
 		"deploy:staging": "pnpm db:migrate:deploy && CLOUDFLARE_ENV=staging pnpm build && CLOUDFLARE_ENV=staging wrangler deploy -e staging",
 		"deploy:preview": "node scripts/deploy-preview.mjs",
 		"prepare": "vp config",
-		"lint-staged": "vp staged"
+		"lint-staged": "vp staged",
+		"fonts:mint": "tsx scripts/update-font-hashes.ts"
 	},
 	"dependencies": {
 		"@base-ui/react": "^1.8.0",
