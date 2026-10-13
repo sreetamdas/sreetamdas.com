@@ -1,0 +1,74 @@
+name: RWC gist refresh
+
+# `/rwc` is prerendered, so the gist's code samples (and the `#pNNN_ex`
+# deep-link anchors they carry) are only as fresh as the last build. There is
+# no on-demand regeneration in TanStack Start's prerendering, and its ISR guide
+# is Cache-Control headers only — which cannot rewrite a Workers Assets build
+# artifact. So the trigger has to come from here: poll the gist cheaply, and
+# only when it actually changed, commit the new revision and let the normal
+# push-to-main pipeline (CI + Workers Builds) bake the new anchors.
+#
+# The poll itself is one unauthenticated-rate-limit-friendly API call, so it
+# can run frequently; the expensive part (build + deploy) happens at most once
+# per gist edit.
+
+on:
+  schedule:
+    - cron: "*/30 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: rwc-refresh
+  cancel-in-progress: false
+
+env:
+  GIST_ID: 5c6d921605493f5e0a8877aa716b02d4
+  REVISION_FILE: .rwc-gist-revision
+
+jobs:
+  refresh:
+    name: Poll gist, rebuild on change
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: main
+
+      - name: Poll gist revision
+        id: poll
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          gh api "gists/${GIST_ID}" --jq .updated_at > gist-updated-at.txt
+          latest="$(cat gist-updated-at.txt)"
+          stored="$(cat "${REVISION_FILE}" 2>/dev/null || true)"
+          echo "gist updated_at: ${latest}"
+          echo "stored revision: ${stored:-<none>}"
+          if [ "${latest}" = "${stored}" ]; then
+            echo "changed=false" >> "${GITHUB_OUTPUT}"
+          else
+            echo "changed=true" >> "${GITHUB_OUTPUT}"
+          fi
+
+      - name: Commit and push new revision
+        if: steps.poll.outputs.changed == 'true'
+        run: |
+          set -euo pipefail
+          mv gist-updated-at.txt "${REVISION_FILE}"
+          rev="$(cat "${REVISION_FILE}")"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "${REVISION_FILE}"
+          git commit -m "chore(rwc): bake gist anchors from ${rev}"
+          git push origin main
+          echo "Pushed rebuild trigger for gist revision ${rev}" >> "${GITHUB_STEP_SUMMARY}"
+
+      - name: No change
+        if: steps.poll.outputs.changed != 'true'
+        run: echo "Gist unchanged since revision $(cat "${REVISION_FILE}")" >> "${GITHUB_STEP_SUMMARY}"
