@@ -96,4 +96,29 @@ if (missing.length > 0) {
 	);
 }
 
+/**
+ * /rwc bakes the gist's solutions — and therefore the `#pNNN_ex` deep-link
+ * anchors — into rwc.html at build time. A prerender that rendered the fallback
+ * payload (missing GITHUB_RWC_GIST_ID/GITHUB_TOKEN, or a GitHub failure) still
+ * writes a non-empty rwc.html, just without any solutions, and every deep link
+ * would silently stop scrolling. Require the anchors instead of trusting a
+ * byte count.
+ */
+const RWC_OUTPUT = join(CLIENT_DIR, "rwc.html");
+
+if (expected.has("rwc.html")) {
+	const html = await readFile(RWC_OUTPUT, "utf-8");
+	const anchors = html.match(/\bid="p\d+_[a-z0-9]+"/g)?.length ?? 0;
+	if (anchors === 0) {
+		throw new Error(
+			`[prerender-check] ${RWC_OUTPUT} contains no gist anchor elements, so the ` +
+				`prerender likely rendered the fallback payload instead of the gist and ` +
+				`#pNNN_ex deep links would not scroll. Check the "[prerender]" output ` +
+				`above and the GITHUB_RWC_GIST_ID/GITHUB_TOKEN secrets.`,
+		);
+	}
+
+	process.stdout.write(`[prerender-check] rwc.html carries ${anchors} gist anchors\n`);
+}
+
 process.stdout.write(`[prerender-check] all ${expected.size} prerendered pages have HTML output\n`);
