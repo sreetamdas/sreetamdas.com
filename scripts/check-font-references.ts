@@ -30,6 +30,7 @@ import { readFile, readdir } from "node:fs/promises";
 import { join } from "node:path";
 
 const FONT_DIR = "public/fonts/iosevka";
+const ROOT_ROUTE = "src/routes/__root.tsx";
 const FONT_URL_PATTERN = /\/fonts\/iosevka\/([A-Za-z0-9._-]+\.woff2)/g;
 const HASHED_NAME_PATTERN = /^(?<stem>.+)\.(?<hash>[0-9a-f]{8})\.subset\.woff2$/;
 const REFERENCE_SOURCES = [
@@ -54,6 +55,25 @@ async function collectReferences(): Promise<Map<string, Array<string>>> {
 	}
 
 	return references;
+}
+
+/**
+ * A font preload without `crossorigin` is fetched in the "no-cors" mode, while
+ * the CSS-initiated font fetch uses CORS — so the browser cannot reuse the
+ * preloaded response and downloads the file twice. __root.tsx's link objects
+ * are small and flat, so a ±window around each href is a safe membership test
+ * for `crossOrigin: "anonymous"`.
+ */
+const preloadLinkMissingCrossOrigin: Array<string> = [];
+const rootContents = await readFile(ROOT_ROUTE, "utf-8");
+for (const match of rootContents.matchAll(/href:\s*"(\/fonts\/iosevka\/[^"]+)"/g)) {
+	const href = match[1];
+	if (href === undefined) continue;
+	const start = Math.max(0, (match.index ?? 0) - 40);
+	const context = rootContents.slice(start, (match.index ?? 0) + 260);
+	if (!context.includes('crossOrigin: "anonymous"')) {
+		preloadLinkMissingCrossOrigin.push(href);
+	}
 }
 
 const references = await collectReferences();
@@ -97,6 +117,14 @@ for (const filename of available) {
 	if (!references.has(filename)) {
 		problems.push(`${FONT_DIR}/${filename} is not referenced by any source; delete it`);
 	}
+}
+
+for (const href of preloadLinkMissingCrossOrigin) {
+	problems.push(
+		`${href} is preloaded from ${ROOT_ROUTE} without crossOrigin: "anonymous"; ` +
+			"without it the preload is fetched in a different mode than the CSS font " +
+			"request and the file is downloaded twice",
+	);
 }
 
 if (problems.length > 0) {
