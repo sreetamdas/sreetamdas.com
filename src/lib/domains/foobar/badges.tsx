@@ -45,7 +45,11 @@ export const ShowCompletedBadges = ({
 	onCollapseAchievement,
 }: ShowCompletedBadgesProps) => {
 	const recordFoobarClue = useGlobalStore((state) => state.recordFoobarClue);
-	const achievements = Object.keys(FOOBAR_ACHIEVEMENTS).filter(isFoobarAchievement);
+	const achievements = FOOBAR_TIER_ORDER.flatMap((tier) =>
+		Object.keys(FOOBAR_ACHIEVEMENTS)
+			.filter(isFoobarAchievement)
+			.filter((achievement) => FOOBAR_ACHIEVEMENTS[achievement].tier === tier),
+	);
 	const isComplete = (achievement: FoobarAchievement) =>
 		achievement === "completed" ? all_achievements : completed.includes(achievement);
 	const completedCount = achievements.filter(isComplete).length;
