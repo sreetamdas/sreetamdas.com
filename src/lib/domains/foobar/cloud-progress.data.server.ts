@@ -83,7 +83,7 @@ export async function syncFoobarProgress(
 	userId: string,
 	incoming: unknown,
 	now = Date.now(),
-	createCertificateId: () => string = crypto.randomUUID,
+	createCertificateId: () => string = () => crypto.randomUUID(),
 ): Promise<FoobarCloudProgress> {
 	return writeFoobarProgress(db, userId, incoming, false, now, createCertificateId);
 }
@@ -93,7 +93,7 @@ export async function enableFoobarProgress(
 	userId: string,
 	incoming: unknown,
 	now = Date.now(),
-	createCertificateId: () => string = crypto.randomUUID,
+	createCertificateId: () => string = () => crypto.randomUUID(),
 ): Promise<FoobarCloudProgress> {
 	return writeFoobarProgress(db, userId, incoming, true, now, createCertificateId);
 }
