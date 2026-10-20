@@ -143,7 +143,7 @@ export const FOOBAR_ACHIEVEMENTS = {
 			{ id: "teapot:hint:3", text: "Ask /api/coffee to brew something." },
 			{
 				id: "teapot:hint:4",
-				text: "Visit /api/coffee, then follow its Foobar clue.",
+				text: "Send a POST request to /api/coffee, then follow its Foobar clue.",
 			},
 		],
 	},

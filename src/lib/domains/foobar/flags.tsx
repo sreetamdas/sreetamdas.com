@@ -139,7 +139,7 @@ export const FOOBAR_FLAGS = {
 		name: "devtools",
 		slug: "devtools",
 		icon: (props: IconBaseProps) => <VscDebug {...props} />,
-		description: "Explore React devtools",
+		description: "Inspect the dashboard with devtools",
 	},
 	konami: {
 		...FOOBAR_ACHIEVEMENTS.konami,
