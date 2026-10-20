@@ -1,7 +1,7 @@
 /**
  * Canonical achievement catalogue for /foobar. Slugged entries become routable
- * challenge pages, while non-slugged entries such as restart/completed are
- * dashboard-only achievements that still render as badges.
+ * challenge pages. Entries the game completes itself (navigator, konami, 404,
+ * dogs, campfire, completed) have no slug, so a guessed URL cannot skip them.
  */
 import { type IconBaseProps } from "react-icons";
 import { BsEgg } from "react-icons/bs";
@@ -144,7 +144,6 @@ export const FOOBAR_FLAGS = {
 	konami: {
 		...FOOBAR_ACHIEVEMENTS.konami,
 		name: "konami",
-		slug: "konami",
 		icon: (props: IconBaseProps) => <FaGamepad {...props} />,
 		description: "Use the Konami code",
 	},
@@ -172,21 +171,18 @@ export const FOOBAR_FLAGS = {
 	error404: {
 		...FOOBAR_ACHIEVEMENTS.error404,
 		name: "error404",
-		slug: "404",
 		icon: (props: IconBaseProps) => <VscTelescope {...props} />,
 		description: "Hit a 404 error page",
 	},
 	dogs: {
 		...FOOBAR_ACHIEVEMENTS.dogs,
 		name: "dogs",
-		slug: "dogs",
 		icon: (props: IconBaseProps) => <FaDog {...props} />,
 		description: "Explore the 404 page",
 	},
 	navigator: {
 		...FOOBAR_ACHIEVEMENTS.navigator,
 		name: "navigator",
-		slug: "navigator",
 		icon: (props: IconBaseProps) => <FaCompass {...props} />,
 		description: "Visit 5 unique pages",
 	},

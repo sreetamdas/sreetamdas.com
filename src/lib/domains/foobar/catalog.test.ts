@@ -79,6 +79,19 @@ describe("Foobar catalogue", () => {
 		expect(isFoobarAchievement(null)).toBe(false);
 	});
 
+	test("keeps self-completing achievements off guessable routes", () => {
+		for (const name of [
+			"navigator",
+			"konami",
+			"error404",
+			"dogs",
+			"campfire",
+			"completed",
+		] as const) {
+			expect(FOOBAR_FLAGS[name]).not.toHaveProperty("slug");
+		}
+	});
+
 	test("attaches catalogue metadata to every navigable flag", () => {
 		const navigableFlagMetadata: Record<FoobarNavigableFlag, { tier: keyof typeof FOOBAR_TIERS }> =
 			FOOBAR_ACHIEVEMENTS;

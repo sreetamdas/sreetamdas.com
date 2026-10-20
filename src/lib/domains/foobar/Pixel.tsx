@@ -24,7 +24,7 @@ import { captureException } from "@/lib/domains/Sentry";
 import { useHasMounted } from "@/lib/helpers/hooks";
 
 import { FoobarAchievementReveal } from "./AchievementReveal";
-import { type FoobaFlagPageSlug, FOOBAR_FLAGS } from "./flags";
+import { FOOBAR_FLAGS } from "./flags";
 import { type FoobarSliceType } from "./store";
 import { useKonamiAchievement } from "./useKonamiAchievement";
 
@@ -39,7 +39,7 @@ const foobarDataSelector = (state: FoobarSliceType) => ({
 });
 
 type FoobarPixelProps = {
-	path?: `/${Extract<FoobaFlagPageSlug, "404">}`;
+	path?: "/404";
 };
 
 export const FoobarPixel = ({ path }: FoobarPixelProps) => {
