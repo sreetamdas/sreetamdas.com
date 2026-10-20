@@ -6,7 +6,7 @@
  * any visited achievement slug as completed and renders the progress dashboard.
  */
 import { AlertDialog } from "@base-ui/react/alert-dialog";
-import { Link, useNavigate } from "@tanstack/react-router";
+import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useShallow } from "zustand/react/shallow";
 
@@ -25,18 +25,23 @@ import { useGlobalStore } from "@/lib/domains/global";
 import { useHasMounted } from "@/lib/helpers/hooks";
 
 export const FoobarDashboard = () => {
-	const navigate = useNavigate();
 	const trackEvent = useTrackEvent();
-	const { foobar_data, setFoobarData } = useGlobalStore(
+	const { foobar_data, setFoobarData, completeFoobarFlag } = useGlobalStore(
 		useShallow((state) => ({
 			foobar_data: state.foobar_data,
 			setFoobarData: state.setFoobarData,
+			completeFoobarFlag: state.completeFoobarFlag,
 		})),
 	);
 	const [activeAchievement, setActiveAchievement] = useState<FoobarAchievement>();
 	useEffect(() => {
+		// Awarded in place: navigating would need a route chunk the network can no longer fetch.
 		function handleUserIsOffline() {
-			navigate({ to: "/foobar/$slug", params: { slug: "offline" } });
+			if (useGlobalStore.getState().foobar_data.completed.includes(FOOBAR_FLAGS.offline.name)) {
+				return;
+			}
+			trackEvent("foobar", { props: { achievement: FOOBAR_FLAGS.offline.name } });
+			completeFoobarFlag(FOOBAR_FLAGS.offline.name);
 		}
 
 		window.addEventListener("offline", handleUserIsOffline);
@@ -44,7 +49,7 @@ export const FoobarDashboard = () => {
 		return () => {
 			window.removeEventListener("offline", handleUserIsOffline);
 		};
-	}, [navigate]);
+	}, [completeFoobarFlag, trackEvent]);
 
 	function handleClearFoobarData() {
 		trackEvent("foobar", { props: { achievement: "restart" } });

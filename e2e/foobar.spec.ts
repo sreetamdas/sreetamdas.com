@@ -515,6 +515,21 @@ test("claims the well-known notice and announces it with its display title", asy
 	await expect.poll(() => hasPersistedAchievement(page, "well-known")).toBe(true);
 });
 
+test("awards the offline achievement in place when the network drops", async ({ page }) => {
+	await seedProgress(page);
+	await page.goto("/foobar");
+	await expect(page.getByRole("heading", { name: "/foobar", level: 1 })).toBeVisible();
+
+	await page.context().setOffline(true);
+
+	await expect(page.getByTestId("foobar-achievement-reveal")).toContainText(
+		"Connection Lost, Clue Found",
+	);
+	await expect(page).toHaveURL(/\/foobar$/);
+	await expect.poll(() => hasPersistedAchievement(page, "offline")).toBe(true);
+	await page.context().setOffline(false);
+});
+
 test("whispers the tab-visibility clue only while Foobar is hidden", async ({ page }) => {
 	await seedProgress(page);
 	await page.goto("/foobar");

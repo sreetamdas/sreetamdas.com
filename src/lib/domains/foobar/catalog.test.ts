@@ -85,6 +85,7 @@ describe("Foobar catalogue", () => {
 			"konami",
 			"error404",
 			"dogs",
+			"offline",
 			"campfire",
 			"completed",
 		] as const) {

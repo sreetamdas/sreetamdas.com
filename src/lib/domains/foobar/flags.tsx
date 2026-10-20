@@ -1,7 +1,7 @@
 /**
  * Canonical achievement catalogue for /foobar. Slugged entries become routable
  * challenge pages. Entries the game completes itself (navigator, konami, 404,
- * dogs, campfire, completed) have no slug, so a guessed URL cannot skip them.
+ * dogs, offline, campfire, completed) have no slug, so a guessed URL cannot skip them.
  */
 import { type IconBaseProps } from "react-icons";
 import { BsEgg } from "react-icons/bs";
@@ -150,7 +150,6 @@ export const FOOBAR_FLAGS = {
 	offline: {
 		...FOOBAR_ACHIEVEMENTS.offline,
 		name: "offline",
-		slug: "offline",
 		icon: (props: IconBaseProps) => <RiWifiOffLine {...props} />,
 		description: "Go offline while viewing a /foobar page",
 	},
