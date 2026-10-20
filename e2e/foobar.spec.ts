@@ -592,3 +592,55 @@ test("unlocks campfire for two simultaneous hunters", async ({ browser }) => {
 	await firstContext.close();
 	await secondContext.close();
 });
+
+/** One trail per persisted key: seedProgress writes both the dev and production keys. */
+async function readVisitedTrails(page: Page) {
+	return page.evaluate(() => {
+		const trails: Array<Array<unknown>> = [];
+		for (const key of ["foobar-zustand-dev", "foobar-zustand"]) {
+			const raw = window.localStorage.getItem(key);
+			if (!raw) continue;
+			const persisted: unknown = JSON.parse(raw);
+			if (
+				typeof persisted === "object" &&
+				persisted !== null &&
+				"state" in persisted &&
+				typeof persisted.state === "object" &&
+				persisted.state !== null &&
+				"foobar_data" in persisted.state &&
+				typeof persisted.state.foobar_data === "object" &&
+				persisted.state.foobar_data !== null &&
+				"visited_pages" in persisted.state.foobar_data &&
+				Array.isArray(persisted.state.foobar_data.visited_pages)
+			) {
+				trails.push(persisted.state.foobar_data.visited_pages);
+			}
+		}
+		return trails;
+	});
+}
+
+test("keeps the visited trail across full page loads", async ({ page }) => {
+	await seedProgress(page);
+	await page.goto("/blog");
+
+	await expect.poll(() => readVisitedTrails(page)).toContainEqual(["/", "/about", "/blog"]);
+});
+
+test("does not award slug achievements while Foobar is locked", async ({ page }) => {
+	await page.goto("/foobar/headers");
+
+	await expect(page.getByRole("heading", { name: "404!" })).toBeVisible();
+	await expect
+		.poll(async () => (await readVisitedTrails(page)).flat())
+		.toContain("/foobar/headers");
+	expect(await hasPersistedAchievement(page, "headers")).toBe(false);
+	await expect(page.getByTestId("foobar-achievement-reveal")).toHaveCount(0);
+});
+
+test("claims the scenic route from a real 404 page", async ({ page }) => {
+	await page.goto("/this-path-does-not-exist");
+
+	await expect(page.getByRole("heading", { name: "404!" })).toBeVisible();
+	await expect.poll(() => hasPersistedAchievement(page, "error404")).toBe(true);
+});
