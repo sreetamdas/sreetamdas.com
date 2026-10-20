@@ -30,6 +30,10 @@
   ! Cloudflare-CDN-Cache-Control
   Cache-Control: public, max-age=31536000, immutable
 
+# The extensionless clue file would otherwise be served without a Content-Type.
+/.well-known/foobar
+  Content-Type: text/plain; charset=utf-8
+
 /foobar-sw.js
   ! Cache-Control
   ! Cloudflare-CDN-Cache-Control

@@ -494,6 +494,7 @@ test("publishes machine-facing and print-only clues", async ({ page, request }) 
 	]) {
 		const response = await request.get(path);
 		expect(response.status()).toBe(200);
+		expect(response.headers()["content-type"]).toMatch(/^(text\/plain|application\/xml)/);
 		expect(await response.text()).toContain(clue);
 	}
 
