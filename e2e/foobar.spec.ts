@@ -527,6 +527,7 @@ test("awards the offline achievement in place when the network drops", async ({ 
 	await expect(page.getByTestId("foobar-achievement-reveal")).toContainText(
 		"Connection Lost, Clue Found",
 	);
+	await expect(page.getByTestId("foobar-achievement-reveal")).toHaveCSS("text-align", "left");
 	await expect(page).toHaveURL(/\/foobar$/);
 	await expect.poll(() => hasPersistedAchievement(page, "offline")).toBe(true);
 	await page.context().setOffline(false);

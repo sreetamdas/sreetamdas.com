@@ -50,7 +50,7 @@ export const FoobarAchievementReveal = () => {
 
 	return (
 		<aside
-			className="fixed right-4 bottom-4 z-50 w-[min(20rem,calc(100vw-2rem))] overflow-hidden rounded-global border border-primary/35 bg-background shadow-[0_8px_24px_rgb(0_0_0/0.12)]"
+			className="fixed right-4 bottom-4 z-50 w-[min(20rem,calc(100vw-2rem))] overflow-hidden rounded-global border border-primary/35 bg-background text-left shadow-[0_8px_24px_rgb(0_0_0/0.12)]"
 			data-testid="foobar-achievement-reveal"
 		>
 			<p className="sr-only" aria-live="polite">
