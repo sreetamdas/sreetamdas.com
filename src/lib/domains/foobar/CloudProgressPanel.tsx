@@ -418,8 +418,8 @@ function CloudResetDialog({ onReset }: { onReset: () => void }) {
 				Delete cloud save
 			</AlertDialog.Trigger>
 			<AlertDialog.Portal>
-				<AlertDialog.Backdrop className="fixed inset-0 bg-slate-950/40 data-open:animate-overlayShow" />
-				<AlertDialog.Popup className="fixed top-1/2 left-1/2 max-h-[85vh] w-[90vw] max-w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-global border border-foreground/15 bg-background p-6 text-foreground shadow-lg focus:outline-none data-open:animate-contentShow">
+				<AlertDialog.Backdrop className="fixed inset-0 z-30 bg-slate-950/40 data-open:animate-overlayShow" />
+				<AlertDialog.Popup className="fixed top-1/2 left-1/2 z-40 max-h-[85vh] w-[90vw] max-w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-global border border-foreground/15 bg-background p-6 text-foreground shadow-lg focus:outline-none data-open:animate-contentShow">
 					<AlertDialog.Title className="text-lg font-medium">
 						Delete your cloud save?
 					</AlertDialog.Title>

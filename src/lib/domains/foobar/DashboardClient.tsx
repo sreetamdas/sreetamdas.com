@@ -218,8 +218,8 @@ const ResetFoobar = ({ handleClearFoobarData }: { handleClearFoobarData: () => v
 			Reset this browser's progress
 		</AlertDialog.Trigger>
 		<AlertDialog.Portal>
-			<AlertDialog.Backdrop className="fixed inset-0 bg-slate-950/40 data-open:animate-overlayShow" />
-			<AlertDialog.Popup className="fixed top-[50%] left-[50%] max-h-[85vh] w-[90vw] max-w-[500px] translate-x-[-50%] translate-y-[-50%] rounded-global border border-foreground/15 bg-background p-[25px] text-foreground shadow-[hsl(206_22%_7%/35%)_0px_10px_38px_-10px,hsl(206_22%_7%/20%)_0px_10px_20px_-15px] focus:outline-none data-open:animate-contentShow">
+			<AlertDialog.Backdrop className="fixed inset-0 z-30 bg-slate-950/40 data-open:animate-overlayShow" />
+			<AlertDialog.Popup className="fixed top-[50%] left-[50%] z-40 max-h-[85vh] w-[90vw] max-w-[500px] translate-x-[-50%] translate-y-[-50%] rounded-global border border-foreground/15 bg-background p-[25px] text-foreground shadow-[hsl(206_22%_7%/35%)_0px_10px_38px_-10px,hsl(206_22%_7%/20%)_0px_10px_20px_-15px] focus:outline-none data-open:animate-contentShow">
 				<AlertDialog.Title className="m-0 text-[17px] font-medium">
 					Reset this browser's progress?
 				</AlertDialog.Title>

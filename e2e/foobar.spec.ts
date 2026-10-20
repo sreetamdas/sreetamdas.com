@@ -690,3 +690,27 @@ test("keeps the reset controls readable in dark mode", async ({ page }) => {
 		"rgb(252, 165, 165)",
 	);
 });
+
+test("dims the sticky header behind the reset dialog", async ({ page }) => {
+	await seedProgress(page);
+	await page.goto("/foobar");
+	await openBasecamp(page);
+	await page
+		.locator("summary")
+		.filter({ hasText: /Manage progress/ })
+		.click();
+	await page.getByRole("button", { name: "Reset this browser's progress" }).click();
+	await expect(page.getByRole("alertdialog")).toBeVisible();
+
+	const headerCovered = await page.evaluate(() => {
+		const header = document.querySelector("header");
+		if (!header) return false;
+		const rect = header.getBoundingClientRect();
+		const topmost = document.elementFromPoint(
+			rect.left + rect.width / 2,
+			rect.top + rect.height / 2,
+		);
+		return topmost !== null && !header.contains(topmost);
+	});
+	expect(headerCovered).toBe(true);
+});
