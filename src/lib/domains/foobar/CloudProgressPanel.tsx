@@ -251,8 +251,28 @@ export function CloudProgressPanel() {
 		}
 	}
 
+	async function handleSignOut() {
+		setFailedOperation(null);
+		syncSession.current.invalidate();
+		try {
+			const response = await fetch("/api/auth/sign-out", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: "{}",
+			});
+			if (!response.ok) throw new Error(`Foobar sign-out failed with ${response.status}`);
+			setSyncState("loading");
+			setReloadKey((value) => value + 1);
+		} catch (error) {
+			captureException(error);
+			setFailedOperation("signOut");
+			setSyncState("error");
+		}
+	}
+
 	function retryFailedOperation() {
 		if (failedOperation === "delete") return void handleCloudReset();
+		if (failedOperation === "signOut") return void handleSignOut();
 		if (failedOperation === "enable") return void handleCloudEnable();
 		if (failedOperation === "profile") return void handlePublicProfile(failedProfileValue);
 		setSyncState("loading");
@@ -286,9 +306,18 @@ export function CloudProgressPanel() {
 
 			{bootstrap?.user ? (
 				<div className="mt-3 space-y-3 text-sm">
-					<p>
-						Signed in as <strong>{bootstrap.user.name}</strong>. {syncLabel(syncState)}
-					</p>
+					<div className="flex flex-wrap items-center gap-x-3">
+						<p>
+							Signed in as <strong>{bootstrap.user.name}</strong>. {syncLabel(syncState)}
+						</p>
+						<button
+							className="inline-flex min-h-11 items-center link-base text-primary"
+							onClick={() => void handleSignOut()}
+							type="button"
+						>
+							Sign out
+						</button>
+					</div>
 					<label className="flex min-h-11 max-w-md items-start gap-2 py-2 text-foreground/75">
 						<input
 							checked={bootstrap.cloud?.publicProfile ?? false}
