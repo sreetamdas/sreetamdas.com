@@ -671,3 +671,22 @@ test("claims the scenic route from a real 404 page", async ({ page }) => {
 		"Something on this site is keeping score.",
 	);
 });
+
+test("keeps the reset controls readable in dark mode", async ({ page }) => {
+	await page.emulateMedia({ colorScheme: "dark" });
+	await seedProgress(page);
+	await page.goto("/foobar");
+	await openBasecamp(page);
+	await page
+		.locator("summary")
+		.filter({ hasText: /Manage progress/ })
+		.click();
+
+	const trigger = page.getByRole("button", { name: "Reset this browser's progress" });
+	await expect(trigger).toHaveCSS("color", "rgb(252, 165, 165)");
+	await trigger.click();
+	await expect(page.getByRole("button", { name: "Yes, reset progress" })).toHaveCSS(
+		"color",
+		"rgb(252, 165, 165)",
+	);
+});

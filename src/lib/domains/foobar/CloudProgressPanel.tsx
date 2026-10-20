@@ -410,7 +410,7 @@ function CloudResetDialog({ onReset }: { onReset: () => void }) {
 			<AlertDialog.Trigger
 				render={
 					<button
-						className="inline-flex min-h-11 items-center rounded-global border border-foreground/25 px-3 py-2 text-foreground/75 hover:border-red-300 hover:text-red-700"
+						className="inline-flex min-h-11 items-center rounded-global border border-foreground/25 px-3 py-2 text-foreground/75 hover:border-red-300 hover:text-red-700 dark:hover:border-red-400/60 dark:hover:text-red-300"
 						type="button"
 					/>
 				}
@@ -441,7 +441,7 @@ function CloudResetDialog({ onReset }: { onReset: () => void }) {
 						<AlertDialog.Close
 							render={
 								<button
-									className="inline-flex min-h-11 items-center rounded-global bg-red-100 px-3 py-2 text-sm text-red-700"
+									className="inline-flex min-h-11 items-center rounded-global bg-red-100 px-3 py-2 text-sm text-red-700 dark:bg-red-950/60 dark:text-red-300 dark:hover:bg-red-900/60"
 									onClick={onReset}
 									type="button"
 								/>
