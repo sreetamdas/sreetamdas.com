@@ -318,16 +318,17 @@ export function CloudProgressPanel() {
 							Sign out
 						</button>
 					</div>
-					<label className="flex min-h-11 max-w-md items-start gap-2 py-2 text-foreground/75">
-						<input
-							checked={bootstrap.cloud?.publicProfile ?? false}
-							className="mt-1"
-							disabled={!bootstrap.cloud}
-							onChange={(event) => void handlePublicProfile(event.currentTarget.checked)}
-							type="checkbox"
-						/>
-						<span>List my name and completion time on the public leaderboard.</span>
-					</label>
+					{bootstrap.cloud && bootstrap.cloud.completedAt !== null ? (
+						<label className="flex min-h-11 max-w-md items-start gap-2 py-2 text-foreground/75">
+							<input
+								checked={bootstrap.cloud.publicProfile}
+								className="mt-1"
+								onChange={(event) => void handlePublicProfile(event.currentTarget.checked)}
+								type="checkbox"
+							/>
+							<span>List my name and completion time on the public leaderboard.</span>
+						</label>
+					) : null}
 					{bootstrap.cloud?.certificateId ? (
 						<a
 							className="inline-flex font-medium text-secondary underline decoration-secondary/40 underline-offset-4"
@@ -423,8 +424,8 @@ function CloudResetDialog({ onReset }: { onReset: () => void }) {
 						Delete your cloud save?
 					</AlertDialog.Title>
 					<AlertDialog.Description className="mt-3 text-sm leading-normal text-foreground/70">
-						Your progress will remain in this browser. Cloud saving stays off until you explicitly
-						enable it again.
+						Your progress will remain in this browser. Your certificate link stops working and you
+						leave the leaderboard. Cloud saving stays off until you explicitly enable it again.
 					</AlertDialog.Description>
 					<div className="mt-5 flex justify-end gap-3">
 						<AlertDialog.Close
