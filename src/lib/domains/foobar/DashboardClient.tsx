@@ -215,14 +215,12 @@ const ResetFoobar = ({ handleClearFoobarData }: { handleClearFoobarData: () => v
 			<AlertDialog.Backdrop className="fixed inset-0 bg-slate-950/40 data-open:animate-overlayShow" />
 			<AlertDialog.Popup className="fixed top-[50%] left-[50%] max-h-[85vh] w-[90vw] max-w-[500px] translate-x-[-50%] translate-y-[-50%] rounded-global border border-foreground/15 bg-background p-[25px] text-foreground shadow-[hsl(206_22%_7%/35%)_0px_10px_38px_-10px,hsl(206_22%_7%/20%)_0px_10px_20px_-15px] focus:outline-none data-open:animate-contentShow">
 				<AlertDialog.Title className="m-0 text-[17px] font-medium">
-					Are you absolutely sure?
+					Reset this browser's progress?
 				</AlertDialog.Title>
 				<AlertDialog.Description className="mt-4 mb-5 text-[15px] leading-normal text-foreground/70">
-					This action cannot be undone.
-					<br />
-					This will reset your <Code>/foobar</Code> progress in this browser. A cloud save is not
-					deleted here — it will restore your progress on the next sync unless you delete it via the
-					Cloud save panel.
+					Everything <Code>/foobar</Code> remembers in this browser is cleared, including the
+					unlock. If you use Cloud save, your progress there is kept: unlock <Code>/foobar</Code>{" "}
+					again and it comes back.
 				</AlertDialog.Description>
 				<div className="flex flex-wrap justify-end gap-3">
 					<AlertDialog.Close
