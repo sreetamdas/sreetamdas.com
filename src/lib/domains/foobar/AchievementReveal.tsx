@@ -14,6 +14,8 @@ import { FOOBAR_FLAGS } from "./flags";
 
 const TITLE_DELAY_MS = 400;
 const DISMISS_DELAY_MS = 5_000;
+// Shown only before /foobar is unlocked, so early discoveries hint that the game exists.
+const LOCKED_NUDGE = "Something on this site is keeping score.";
 
 function prefersReducedMotion() {
 	return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -22,6 +24,7 @@ function prefersReducedMotion() {
 export const FoobarAchievementReveal = () => {
 	const achievement = useGlobalStore((state) => state.foobar_reveal_queue[0]);
 	const dismissFoobarReveal = useGlobalStore((state) => state.dismissFoobarReveal);
+	const unlocked = useGlobalStore((state) => state.foobar_data.unlocked);
 	const [showTitle, setShowTitle] = useState(false);
 
 	useEffect(() => {
@@ -52,6 +55,7 @@ export const FoobarAchievementReveal = () => {
 		>
 			<p className="sr-only" aria-live="polite">
 				Discovery collected: {title}. {completion.note}
+				{unlocked ? null : ` ${LOCKED_NUDGE}`}
 			</p>
 			<div className="h-1 bg-primary" />
 			<div className="flex items-start gap-3 p-4">
@@ -69,6 +73,9 @@ export const FoobarAchievementReveal = () => {
 						</p>
 						<p className="mt-0.5 font-serif text-xl leading-tight">{title}</p>
 						<p className="mt-2 text-sm leading-relaxed text-foreground/70">{completion.note}</p>
+						{unlocked ? null : (
+							<p className="mt-2 font-mono text-xs text-primary">{LOCKED_NUDGE}</p>
+						)}
 					</div>
 				</div>
 				<button

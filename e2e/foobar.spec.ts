@@ -512,6 +512,7 @@ test("claims the well-known notice and announces it with its display title", asy
 	const reveal = page.getByTestId("foobar-achievement-reveal");
 	await expect(reveal).toContainText("You found the notice everyone forgot to read.");
 	await expect(reveal).toContainText("A Well-Known Nobody");
+	await expect(reveal).not.toContainText("keeping score");
 	await expect.poll(() => hasPersistedAchievement(page, "well-known")).toBe(true);
 });
 
@@ -655,4 +656,7 @@ test("claims the scenic route from a real 404 page", async ({ page }) => {
 
 	await expect(page.getByRole("heading", { name: "404!" })).toBeVisible();
 	await expect.poll(() => hasPersistedAchievement(page, "error404")).toBe(true);
+	await expect(page.getByTestId("foobar-achievement-reveal")).toContainText(
+		"Something on this site is keeping score.",
+	);
 });
