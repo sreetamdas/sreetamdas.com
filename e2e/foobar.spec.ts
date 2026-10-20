@@ -688,11 +688,11 @@ test("keeps the reset controls readable in dark mode", async ({ page }) => {
 		.click();
 
 	const trigger = page.getByRole("button", { name: "Reset this browser's progress" });
-	await expect(trigger).toHaveCSS("color", "rgb(252, 165, 165)");
+	await expect(trigger).toHaveCSS("color", "oklch(0.808 0.114 19.571)");
 	await trigger.click();
 	await expect(page.getByRole("button", { name: "Yes, reset progress" })).toHaveCSS(
 		"color",
-		"rgb(252, 165, 165)",
+		"oklch(0.808 0.114 19.571)",
 	);
 });
 
