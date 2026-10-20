@@ -24,7 +24,7 @@ describe("Foobar certificate image", () => {
 
 		const response = await handleFoobarCertificateImage("cert-a", resolve, render);
 		expect(response.headers.get("Content-Type")).toBe("image/png");
-		expect(response.headers.get("Cache-Control")).toBe("public, max-age=86400, immutable");
+		expect(response.headers.get("Cache-Control")).toBe("public, max-age=3600");
 		expect(render).toHaveBeenCalledWith(expect.stringContaining("Ada &lt;script&gt;"));
 	});
 });

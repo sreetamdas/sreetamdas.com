@@ -31,7 +31,7 @@ export async function handleFoobarCertificateImage(
 	</div>`;
 	const response = await render(html);
 	response.headers.set("Content-Type", "image/png");
-	response.headers.set("Cache-Control", "public, max-age=86400, immutable");
+	response.headers.set("Cache-Control", "public, max-age=3600");
 	return response;
 }
 
