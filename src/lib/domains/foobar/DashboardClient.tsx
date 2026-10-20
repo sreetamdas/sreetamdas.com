@@ -274,7 +274,7 @@ export const FoobarSchrodinger = ({ completed_page }: FoobarSchrodingerProps) =>
 	const trackEvent = useTrackEvent();
 
 	useEffect(() => {
-		if (completed_page) {
+		if (unlocked && completed_page) {
 			const completed_flag = Object.values(FOOBAR_FLAGS).find((flag_props) => {
 				if ("slug" in flag_props) {
 					return flag_props.slug === completed_page;
@@ -291,7 +291,7 @@ export const FoobarSchrodinger = ({ completed_page }: FoobarSchrodingerProps) =>
 				completeFoobarFlag(completed_flag);
 			}
 		}
-	}, [completeFoobarFlag, completed, completed_page, trackEvent]);
+	}, [completeFoobarFlag, completed, completed_page, trackEvent, unlocked]);
 
 	if (!has_mounted) return null;
 	if (!unlocked) return <FoobarButLocked />;
