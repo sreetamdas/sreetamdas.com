@@ -6,9 +6,13 @@
 # pattern matches a request; a more specific rule does NOT override a broader
 # one. Rules that need different values must first detach the broader rule's
 # header with `! Header-Name` before setting their own.
+#
+# X-Foobar is the Foobar "headers" clue. The root route's headers() only reaches
+# Worker-rendered pages, so prerendered pages such as /foobar need it here.
 /*
   Cache-Control: public, max-age=0, stale-while-revalidate=3600
   Cloudflare-CDN-Cache-Control: public, max-age=300, stale-while-revalidate=3600
+  X-Foobar: /foobar/headers
 
 /stats
   ! Cloudflare-CDN-Cache-Control
