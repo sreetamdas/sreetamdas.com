@@ -535,7 +535,7 @@ test("whispers the tab-visibility clue only while Foobar is hidden", async ({ pa
 	await seedProgress(page);
 	await page.goto("/foobar");
 	const originalTitle = await page.title();
-	await expect(page.getByRole("link", { name: "resume /foobar" })).toBeVisible();
+	await expect(page.getByRole("heading", { name: "/foobar", level: 1 })).toBeVisible();
 
 	await page.evaluate(() => {
 		Object.defineProperty(document, "hidden", { configurable: true, value: true });
@@ -560,7 +560,7 @@ test("plants the tab-visibility clue when Foobar mounts in a hidden tab", async 
 	await seedProgress(page);
 	await page.goto("/foobar");
 
-	await expect(page.getByRole("link", { name: "resume /foobar" })).toBeVisible();
+	await expect(page.getByRole("heading", { name: "/foobar", level: 1 })).toBeVisible();
 	await expect(page).toHaveTitle("/foobar/now-you-see-me");
 });
 
@@ -632,6 +632,16 @@ async function readVisitedTrails(page: Page) {
 		return trails;
 	});
 }
+
+test("offers the resume link everywhere except on Foobar itself", async ({ page }) => {
+	await seedProgress(page);
+	await page.goto("/blog");
+	await expect(page.getByRole("link", { name: "resume /foobar" })).toBeVisible();
+
+	await page.goto("/foobar");
+	await expect(page.getByRole("heading", { name: "/foobar", level: 1 })).toBeVisible();
+	await expect(page.getByRole("link", { name: "resume /foobar" })).toHaveCount(0);
+});
 
 test("keeps the visited trail across full page loads", async ({ page }) => {
 	await seedProgress(page);

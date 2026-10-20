@@ -57,6 +57,7 @@ export const FoobarPixel = ({ path }: FoobarPixelProps) => {
 	} = useGlobalStore(useShallow(foobarDataSelector));
 	const { unlocked, visited_pages, completed, all_achievements } = foobar_data;
 	const titleBeforeVisibilityClue = useRef<string | null>(null);
+	const isFoobarPath = pathname === "/foobar" || pathname.startsWith("/foobar/");
 	const { hunters } = useSharedHunterPresence(
 		unlocked && !completed.includes(FOOBAR_FLAGS.campfire.name),
 	);
@@ -109,11 +110,7 @@ export const FoobarPixel = ({ path }: FoobarPixelProps) => {
 	}, [unlocked]);
 
 	useEffect(() => {
-		if (
-			!unlocked ||
-			completed.includes(FOOBAR_FLAGS["tab-visibility"].name) ||
-			(pathname !== "/foobar" && !pathname.startsWith("/foobar/"))
-		) {
+		if (!unlocked || completed.includes(FOOBAR_FLAGS["tab-visibility"].name) || !isFoobarPath) {
 			return;
 		}
 
@@ -140,7 +137,7 @@ export const FoobarPixel = ({ path }: FoobarPixelProps) => {
 			}
 			titleBeforeVisibilityClue.current = null;
 		};
-	}, [completed, pathname, unlocked]);
+	}, [completed, isFoobarPath, unlocked]);
 
 	useEffect(() => {
 		if (!hasHydrated) return;
@@ -187,7 +184,7 @@ export const FoobarPixel = ({ path }: FoobarPixelProps) => {
 	return (
 		<>
 			<FoobarAchievementReveal />
-			{has_mounted && unlocked ? (
+			{has_mounted && unlocked && !isFoobarPath ? (
 				<span className="col-start-2 col-end-3">
 					<Link to="/foobar" className="link-base" style={{ border: "none" }}>
 						<Code>resume /foobar</Code>
