@@ -13,8 +13,11 @@ export type FoobarCommunityView = {
 	leaderboard: Array<{ name: string; completedAt: number; certificateId: string }>;
 };
 
+export type FoobarSignInProvider = "cloudflare" | "github";
+
 export type FoobarBootstrap = {
 	user: { name: string } | null;
+	signInProviders: Array<FoobarSignInProvider>;
 	cloud: {
 		progress: FoobarDataType;
 		completedAt: number | null;
@@ -32,7 +35,13 @@ export const fetchFoobarBootstrapServerFn = createServerFn({ method: "GET" }).ha
 		try {
 			return await fetchFoobarBootstrapFromDb();
 		} catch {
-			return { user: null, cloud: null, cloudSyncEnabled: false, community: EMPTY_COMMUNITY };
+			return {
+				user: null,
+				signInProviders: [],
+				cloud: null,
+				cloudSyncEnabled: false,
+				community: EMPTY_COMMUNITY,
+			};
 		}
 	},
 );
@@ -63,15 +72,23 @@ const fetchFoobarBootstrapFromDb = createServerOnlyFn(async (): Promise<FoobarBo
 	// The community query does not depend on the user, so it runs alongside the
 	// auth lookup instead of after it.
 	const communityPromise = data.getFoobarCommunity(db).catch(() => EMPTY_COMMUNITY);
+	const signInProviders = await request.getFoobarSignInProviders();
 	const user = await request.getFoobarAuthUser();
 	if (!user) {
-		return { user: null, cloud: null, cloudSyncEnabled: false, community: await communityPromise };
+		return {
+			user: null,
+			signInProviders,
+			cloud: null,
+			cloudSyncEnabled: false,
+			community: await communityPromise,
+		};
 	}
 
 	try {
 		const state = await data.loadFoobarProgressState(db, user.id);
 		return {
 			user: { name: user.name },
+			signInProviders,
 			cloud: state.cloud,
 			cloudSyncEnabled: state.syncEnabled,
 			community: await communityPromise,
@@ -79,6 +96,7 @@ const fetchFoobarBootstrapFromDb = createServerOnlyFn(async (): Promise<FoobarBo
 	} catch {
 		return {
 			user: { name: user.name },
+			signInProviders,
 			cloud: null,
 			cloudSyncEnabled: null,
 			community: await communityPromise,

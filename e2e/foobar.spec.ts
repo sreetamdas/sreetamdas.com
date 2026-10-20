@@ -334,15 +334,23 @@ test("keeps local progress as the default and offers optional cloud save", async
 	await openBasecamp(page);
 
 	await expect(page.getByRole("heading", { name: "Cloud save" })).toBeVisible();
-	await expect(page.getByText("Sign in to save progress across devices.")).toBeVisible();
-	await expect(page.getByRole("link", { name: "Sign in with Cloudflare" })).toHaveAttribute(
-		"href",
-		"/api/login/cloudflare?returnTo=/foobar",
-	);
-	await expect(page.getByRole("link", { name: "Sign in with GitHub" })).toHaveAttribute(
-		"href",
-		"/api/login/github?returnTo=/foobar",
-	);
+	await expect(
+		page.getByText(
+			/Your progress stays in this browser\. (Sign in to save progress across devices\.|Cloud save isn't available right now\.)/,
+		),
+	).toBeVisible();
+
+	// Only providers configured on this server are offered, so the set depends on its secrets.
+	const signInLinks = await page.getByRole("link", { name: /^Sign in with / }).all();
+	if (signInLinks.length === 0) {
+		await expect(page.getByText("Cloud save isn't available right now.")).toBeVisible();
+	}
+	for (const link of signInLinks) {
+		await expect(link).toHaveAttribute(
+			"href",
+			/^\/api\/login\/(cloudflare|github)\?returnTo=\/foobar$/,
+		);
+	}
 });
 
 test("deletes cloud progress durably and synchronizes the lifecycle across tabs", async ({

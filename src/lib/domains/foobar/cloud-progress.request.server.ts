@@ -5,6 +5,8 @@
 import "@tanstack/react-start/server-only";
 import { getRequestHeader } from "@tanstack/react-start/server";
 
+import type { FoobarSignInProvider } from "./cloud-progress.server";
+
 export type FoobarAuthUser = { id: string; name: string };
 
 export async function getFoobarAuthUser(): Promise<FoobarAuthUser | null> {
@@ -18,4 +20,12 @@ export async function getFoobarAuthUser(): Promise<FoobarAuthUser | null> {
 	const { getAuth } = await import("@/lib/auth");
 	const session = await getAuth().api.getSession({ headers });
 	return session?.user ? { id: session.user.id, name: session.user.name } : null;
+}
+
+export async function getFoobarSignInProviders(): Promise<Array<FoobarSignInProvider>> {
+	const { getConfiguredSignInProviders } = await import("@/lib/auth");
+	return getConfiguredSignInProviders().filter(
+		(provider): provider is FoobarSignInProvider =>
+			provider === "cloudflare" || provider === "github",
+	);
 }

@@ -21,6 +21,7 @@ import {
 	setFoobarPublicProfileServerFn,
 	syncFoobarProgressServerFn,
 	type FoobarBootstrap,
+	type FoobarSignInProvider,
 } from "./cloud-progress.server";
 import { foobarCloudFailureLabel, type FoobarCloudFailedOperation } from "./cloud-sync-errors";
 import { publishFoobarCloudLifecycle, subscribeFoobarCloudLifecycle } from "./cloud-sync-lifecycle";
@@ -28,6 +29,11 @@ import { createFoobarCloudSyncSession } from "./cloud-sync-session";
 import { type FoobarDataType } from "./store";
 
 type SyncState = "loading" | "local" | "saving" | "saved" | "deleting" | "disabled" | "error";
+
+const SIGN_IN_LABELS: Record<FoobarSignInProvider, string> = {
+	cloudflare: "Sign in with Cloudflare",
+	github: "Sign in with GitHub",
+};
 
 // Discoveries made while a save was in flight are missing from the server's
 // reply; merging keeps them, and lastSynced (the server copy) then differs from
@@ -318,22 +324,26 @@ export function CloudProgressPanel() {
 			) : (
 				<div className="mt-3 text-sm">
 					<p className="text-foreground/75">
-						Your progress stays in this browser. Sign in to save progress across devices.
+						Your progress stays in this browser.{" "}
+						{bootstrap === null
+							? null
+							: bootstrap.signInProviders.length > 0
+								? "Sign in to save progress across devices."
+								: "Cloud save isn't available right now."}
 					</p>
-					<div className="mt-3 flex flex-wrap gap-2">
-						<a
-							className="inline-flex min-h-11 items-center rounded-global border border-foreground/25 px-3 py-2"
-							href="/api/login/cloudflare?returnTo=/foobar"
-						>
-							Sign in with Cloudflare
-						</a>
-						<a
-							className="inline-flex min-h-11 items-center rounded-global border border-foreground/25 px-3 py-2"
-							href="/api/login/github?returnTo=/foobar"
-						>
-							Sign in with GitHub
-						</a>
-					</div>
+					{bootstrap && bootstrap.signInProviders.length > 0 ? (
+						<div className="mt-3 flex flex-wrap gap-2">
+							{bootstrap.signInProviders.map((provider) => (
+								<a
+									className="inline-flex min-h-11 items-center rounded-global border border-foreground/25 px-3 py-2"
+									href={`/api/login/${provider}?returnTo=/foobar`}
+									key={provider}
+								>
+									{SIGN_IN_LABELS[provider]}
+								</a>
+							))}
+						</div>
+					) : null}
 				</div>
 			)}
 

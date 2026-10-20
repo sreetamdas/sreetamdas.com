@@ -3,6 +3,7 @@ import { describe, expect, test, vi } from "vitest";
 import {
 	getAuthSecret,
 	getCloudflareUserInfo,
+	getConfiguredSignInProviders,
 	getSiteUrl,
 	isAllowedPresenterEmail,
 	isCloudflareUserResponse,
@@ -105,6 +106,35 @@ describe("auth environment helpers", () => {
 
 	test("throws when BETTER_AUTH_SECRET is missing in production", () => {
 		expect(() => getAuthSecret({}, false)).toThrow("BETTER_AUTH_SECRET must be set in production");
+	});
+
+	test("offers only providers with both OAuth credentials", () => {
+		expect(
+			getConfiguredSignInProviders(
+				{
+					BETTER_AUTH_SECRET: "secret",
+					CLOUDFLARE_OAUTH_CLIENT_ID: "cf-id",
+					CLOUDFLARE_OAUTH_CLIENT_SECRET: "cf-secret",
+					GITHUB_OAUTH_CLIENT_ID: "gh-id",
+				},
+				false,
+			),
+		).toEqual(["cloudflare"]);
+	});
+
+	test("offers no providers in production without BETTER_AUTH_SECRET", () => {
+		expect(
+			getConfiguredSignInProviders(
+				{ GITHUB_OAUTH_CLIENT_ID: "gh-id", GITHUB_OAUTH_CLIENT_SECRET: "gh-secret" },
+				false,
+			),
+		).toEqual([]);
+		expect(
+			getConfiguredSignInProviders(
+				{ GITHUB_OAUTH_CLIENT_ID: "gh-id", GITHUB_OAUTH_CLIENT_SECRET: "gh-secret" },
+				true,
+			),
+		).toEqual(["github"]);
 	});
 });
 

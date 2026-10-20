@@ -73,6 +73,41 @@ export function getAuth() {
 	});
 }
 
+export type ConfiguredSignInProvider = "cloudflare" | "google" | "github";
+
+type SignInProviderEnv = Partial<
+	Pick<
+		CloudflareEnv,
+		| "BETTER_AUTH_SECRET"
+		| "CLOUDFLARE_OAUTH_CLIENT_ID"
+		| "CLOUDFLARE_OAUTH_CLIENT_SECRET"
+		| "GOOGLE_OAUTH_CLIENT_ID"
+		| "GOOGLE_OAUTH_CLIENT_SECRET"
+		| "GITHUB_OAUTH_CLIENT_ID"
+		| "GITHUB_OAUTH_CLIENT_SECRET"
+	>
+>;
+
+/** Providers whose login would succeed: Better Auth has a secret and the provider has both credentials. */
+export function getConfiguredSignInProviders(
+	authEnv: SignInProviderEnv = env,
+	isDev = IS_DEV,
+): Array<ConfiguredSignInProvider> {
+	if (!authEnv.BETTER_AUTH_SECRET && !isDev) return [];
+
+	const providers: Array<ConfiguredSignInProvider> = [];
+	if (authEnv.CLOUDFLARE_OAUTH_CLIENT_ID && authEnv.CLOUDFLARE_OAUTH_CLIENT_SECRET) {
+		providers.push("cloudflare");
+	}
+	if (authEnv.GOOGLE_OAUTH_CLIENT_ID && authEnv.GOOGLE_OAUTH_CLIENT_SECRET) {
+		providers.push("google");
+	}
+	if (authEnv.GITHUB_OAUTH_CLIENT_ID && authEnv.GITHUB_OAUTH_CLIENT_SECRET) {
+		providers.push("github");
+	}
+	return providers;
+}
+
 export async function getAuthSession(request: Request): Promise<AuthSession> {
 	return getAuth().api.getSession({ headers: request.headers });
 }
