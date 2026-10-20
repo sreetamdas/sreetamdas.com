@@ -25,7 +25,6 @@ export async function getFoobarAuthUser(): Promise<FoobarAuthUser | null> {
 export async function getFoobarSignInProviders(): Promise<Array<FoobarSignInProvider>> {
 	const { getConfiguredSignInProviders } = await import("@/lib/auth");
 	return getConfiguredSignInProviders().filter(
-		(provider): provider is FoobarSignInProvider =>
-			provider === "cloudflare" || provider === "github",
+		(provider): provider is FoobarSignInProvider => provider === "github",
 	);
 }

@@ -31,7 +31,6 @@ import { type FoobarDataType } from "./store";
 type SyncState = "loading" | "local" | "saving" | "saved" | "deleting" | "disabled" | "error";
 
 const SIGN_IN_LABELS: Record<FoobarSignInProvider, string> = {
-	cloudflare: "Sign in with Cloudflare",
 	github: "Sign in with GitHub",
 };
 

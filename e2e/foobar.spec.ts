@@ -346,10 +346,7 @@ test("keeps local progress as the default and offers optional cloud save", async
 		await expect(page.getByText("Cloud save isn't available right now.")).toBeVisible();
 	}
 	for (const link of signInLinks) {
-		await expect(link).toHaveAttribute(
-			"href",
-			/^\/api\/login\/(cloudflare|github)\?returnTo=\/foobar$/,
-		);
+		await expect(link).toHaveAttribute("href", /^\/api\/login\/github\?returnTo=\/foobar$/);
 	}
 });
 

@@ -13,7 +13,7 @@ export type FoobarCommunityView = {
 	leaderboard: Array<{ name: string; completedAt: number; certificateId: string }>;
 };
 
-export type FoobarSignInProvider = "cloudflare" | "github";
+export type FoobarSignInProvider = "github";
 
 export type FoobarBootstrap = {
 	user: { name: string } | null;

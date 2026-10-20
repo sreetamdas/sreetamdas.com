@@ -3,6 +3,7 @@ import { describe, expect, test } from "vitest";
 import {
 	handleSocialLoginRequestWithAuth,
 	isOAuthRedirectPayload,
+	isSocialSignInProvider,
 	resolveCallbackURL,
 	startSocialSignIn,
 	validateSocialSignInRequest,
@@ -42,16 +43,16 @@ describe("resolveCallbackURL", () => {
 });
 
 describe("startSocialSignIn", () => {
-	test("posts Cloudflare sign-in requests to Better Auth's social endpoint", async () => {
+	test("posts GitHub sign-in requests to Better Auth's social endpoint", async () => {
 		const seen_requests: Array<Request> = [];
 		const result = await startSocialSignIn(
-			{ provider: "cloudflare", return_url: "https://sreetamdas.com/slides/demo?master=1" },
+			{ provider: "github", return_url: "https://sreetamdas.com/slides/demo?master=1" },
 			{
 				site_url: "https://sreetamdas.com",
 				auth_handler: (request) => {
 					seen_requests.push(request);
 					return Response.json(
-						{ url: "https://dash.cloudflare.com/oauth2/auth?state=abc" },
+						{ url: "https://github.com/login/oauth/authorize?state=abc" },
 						{ headers: { "Set-Cookie": "better-auth-state=abc; Path=/; HttpOnly" } },
 					);
 				},
@@ -59,7 +60,7 @@ describe("startSocialSignIn", () => {
 		);
 
 		expect(result).toEqual({
-			url: "https://dash.cloudflare.com/oauth2/auth?state=abc",
+			url: "https://github.com/login/oauth/authorize?state=abc",
 			cookies: ["better-auth-state=abc; Path=/; HttpOnly"],
 		});
 
@@ -69,7 +70,7 @@ describe("startSocialSignIn", () => {
 		expect(sign_in_request.url).toBe("https://sreetamdas.com/api/auth/sign-in/social");
 		expect(sign_in_request.headers.get("Content-Type")).toBe("application/json");
 		expect(await sign_in_request.json()).toEqual({
-			provider: "cloudflare",
+			provider: "github",
 			callbackURL: "https://sreetamdas.com/slides/demo",
 		});
 	});
@@ -119,13 +120,13 @@ describe("startSocialSignIn", () => {
 describe("handleSocialLoginRequestWithAuth", () => {
 	test("redirects to the provider URL and preserves OAuth state cookies", async () => {
 		const response = await handleSocialLoginRequestWithAuth(
-			new Request("https://sreetamdas.com/api/login/cloudflare?returnTo=/slides/demo?master=1"),
-			"cloudflare",
+			new Request("https://sreetamdas.com/api/login/github?returnTo=/slides/demo?master=1"),
+			"github",
 			{
 				site_url: "https://sreetamdas.com",
 				auth_handler: () =>
 					Response.json(
-						{ url: "https://dash.cloudflare.com/oauth2/auth?state=abc" },
+						{ url: "https://github.com/login/oauth/authorize?state=abc" },
 						{ headers: { "Set-Cookie": "better-auth-state=abc; Path=/; HttpOnly" } },
 					),
 			},
@@ -133,15 +134,15 @@ describe("handleSocialLoginRequestWithAuth", () => {
 
 		expect(response.status).toBe(302);
 		expect(response.headers.get("Location")).toBe(
-			"https://dash.cloudflare.com/oauth2/auth?state=abc",
+			"https://github.com/login/oauth/authorize?state=abc",
 		);
 		expect(response.headers.get("Set-Cookie")).toContain("better-auth-state=abc");
 	});
 
 	test("returns a safe 500 when Better Auth does not return an OAuth URL", async () => {
 		const response = await handleSocialLoginRequestWithAuth(
-			new Request("https://sreetamdas.com/api/login/cloudflare"),
-			"cloudflare",
+			new Request("https://sreetamdas.com/api/login/github"),
+			"github",
 			{
 				site_url: "https://sreetamdas.com",
 				auth_handler: () => Response.json({ error: "provider missing" }),
@@ -167,9 +168,24 @@ describe("validateSocialSignInRequest", () => {
 		expect(() =>
 			validateSocialSignInRequest({ provider: "microsoft", return_url: "/slides/demo" }),
 		).toThrow("Invalid social sign-in payload");
+		expect(() =>
+			validateSocialSignInRequest({ provider: "cloudflare", return_url: "/slides/demo" }),
+		).toThrow("Invalid social sign-in payload");
 		expect(() => validateSocialSignInRequest({ provider: "google" })).toThrow(
 			"Invalid social sign-in payload",
 		);
+	});
+});
+
+describe("isSocialSignInProvider", () => {
+	test("accepts the remaining providers", () => {
+		expect(isSocialSignInProvider("github")).toBe(true);
+		expect(isSocialSignInProvider("google")).toBe(true);
+	});
+
+	test("rejects the removed Cloudflare provider like any unknown provider", () => {
+		expect(isSocialSignInProvider("cloudflare")).toBe(false);
+		expect(isSocialSignInProvider("microsoft")).toBe(false);
 	});
 });
 
