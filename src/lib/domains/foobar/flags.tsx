@@ -48,7 +48,7 @@ export type FoobarNavigableFlag = {
 	[K in keyof FoobarFlags]: "slug" extends keyof FoobarFlags[K] ? K : never;
 }[keyof FoobarFlags];
 
-export type FoobaFlagPageSlug = FoobarFlags[FoobarNavigableFlag]["slug"];
+export type FoobarFlagPageSlug = FoobarFlags[FoobarNavigableFlag]["slug"];
 
 export const FOOBAR_FLAGS = {
 	unlocked: {

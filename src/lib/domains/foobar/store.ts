@@ -13,7 +13,7 @@ import {
 	isFoobarAchievement,
 	isFoobarClueId,
 } from "./catalog";
-import { type FoobaFlagPageSlug } from "./flags";
+import { type FoobarFlagPageSlug } from "./flags";
 
 export type FoobarClueSeen = {
 	id: FoobarClueId;
@@ -103,7 +103,7 @@ export function normalizeFoobarData(value: unknown): FoobarDataType {
 }
 
 export type FoobarSchrodingerProps = {
-	completed_page: FoobaFlagPageSlug;
+	completed_page: FoobarFlagPageSlug;
 };
 
 export type FoobarSliceType = {

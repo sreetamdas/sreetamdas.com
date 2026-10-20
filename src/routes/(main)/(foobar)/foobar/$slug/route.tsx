@@ -6,7 +6,7 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
 
 import { FoobarSchrodinger } from "@/lib/domains/foobar/DashboardClient";
-import { type FoobaFlagPageSlug, FOOBAR_FLAGS } from "@/lib/domains/foobar/flags";
+import { type FoobarFlagPageSlug, FOOBAR_FLAGS } from "@/lib/domains/foobar/flags";
 
 export const Route = createFileRoute("/(main)/(foobar)/foobar/$slug")({
 	component: FoobarCompletedPage,
@@ -31,12 +31,12 @@ function FoobarCompletedPage() {
 	return <FoobarSchrodinger completed_page={slug} />;
 }
 
-function isFoobarPageSlug(slug: string): slug is Exclude<FoobaFlagPageSlug, "/"> {
+function isFoobarPageSlug(slug: string): slug is Exclude<FoobarFlagPageSlug, "/"> {
 	const all_foobar_pages_slugs: readonly string[] = getAllFoobarPagesSlugs();
 	return all_foobar_pages_slugs.includes(slug);
 }
 
-function getAllFoobarPagesSlugs(): Array<Exclude<FoobaFlagPageSlug, "/">> {
+function getAllFoobarPagesSlugs(): Array<Exclude<FoobarFlagPageSlug, "/">> {
 	return Object.values(FOOBAR_FLAGS).flatMap((challenge_obj) => {
 		if ("slug" in challenge_obj) {
 			if (challenge_obj.slug === "/") {
