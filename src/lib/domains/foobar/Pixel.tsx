@@ -30,7 +30,9 @@ import { useKonamiAchievement } from "./useKonamiAchievement";
 
 const foobarDataSelector = (state: FoobarSliceType) => ({
 	foobar_data: state.foobar_data,
+	hasHydrated: state._hasHydrated,
 	setFoobarData: state.setFoobarData,
+	recordFoobarVisit: state.recordFoobarVisit,
 	completeFoobarFlag: state.completeFoobarFlag,
 	enqueueFoobarReveal: state.enqueueFoobarReveal,
 	recordFoobarClue: state.recordFoobarClue,
@@ -44,8 +46,15 @@ export const FoobarPixel = ({ path }: FoobarPixelProps) => {
 	const { pathname } = useLocation();
 	const has_mounted = useHasMounted();
 	const trackEvent = useTrackEvent();
-	const { foobar_data, setFoobarData, completeFoobarFlag, enqueueFoobarReveal, recordFoobarClue } =
-		useGlobalStore(useShallow(foobarDataSelector));
+	const {
+		foobar_data,
+		hasHydrated,
+		setFoobarData,
+		recordFoobarVisit,
+		completeFoobarFlag,
+		enqueueFoobarReveal,
+		recordFoobarClue,
+	} = useGlobalStore(useShallow(foobarDataSelector));
 	const { unlocked, visited_pages, completed, all_achievements } = foobar_data;
 	const titleBeforeVisibilityClue = useRef<string | null>(null);
 	const { hunters } = useSharedHunterPresence(
@@ -134,29 +143,27 @@ export const FoobarPixel = ({ path }: FoobarPixelProps) => {
 	}, [completed, pathname, unlocked]);
 
 	useEffect(() => {
-		let page_name = pathname;
-		if (path === `/${FOOBAR_FLAGS.error404.slug}`) {
-			page_name = `/${FOOBAR_FLAGS.error404.slug}`;
+		if (!hasHydrated) return;
 
+		if (path === "/404") {
+			recordFoobarVisit(path);
 			if (!completed.includes(FOOBAR_FLAGS.error404.name)) {
 				trackEvent("foobar", { props: { achievement: FOOBAR_FLAGS.error404.name } });
 				completeFoobarFlag(FOOBAR_FLAGS.error404.name);
 			}
+			return;
 		}
 
-		const next_visited_pages = visited_pages.includes(page_name)
-			? visited_pages
-			: visited_pages.concat([page_name]);
-		if (next_visited_pages !== visited_pages) {
-			setFoobarData({ visited_pages: next_visited_pages });
-		}
+		recordFoobarVisit(pathname);
+	}, [completeFoobarFlag, completed, hasHydrated, path, pathname, recordFoobarVisit, trackEvent]);
 
+	useEffect(() => {
 		// for the `navigator` achievement
-		if (next_visited_pages.length >= 5 && !completed.includes(FOOBAR_FLAGS.navigator.name)) {
+		if (visited_pages.length >= 5 && !completed.includes(FOOBAR_FLAGS.navigator.name)) {
 			trackEvent("foobar", { props: { achievement: FOOBAR_FLAGS.navigator.name } });
 			completeFoobarFlag(FOOBAR_FLAGS.navigator.name);
 		}
-	}, [completeFoobarFlag, completed, path, pathname, trackEvent, setFoobarData, visited_pages]);
+	}, [completeFoobarFlag, completed, trackEvent, visited_pages]);
 
 	useEffect(() => {
 		// for the `completed` achievement

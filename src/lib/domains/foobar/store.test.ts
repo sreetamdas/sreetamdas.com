@@ -52,6 +52,14 @@ describe("Foobar progress", () => {
 		expect(store.getState().foobar_data.visited_pages).toEqual(["/new"]);
 	});
 
+	test("appends visits to the current trail once", () => {
+		const store = create(createFoobarSlice);
+		store.getState().setFoobarData({ visited_pages: ["/foobar"] });
+		store.getState().recordFoobarVisit("/about");
+		store.getState().recordFoobarVisit("/about");
+		expect(store.getState().foobar_data.visited_pages).toEqual(["/foobar", "/about"]);
+	});
+
 	test("records clues and completions once", () => {
 		vi.spyOn(Date, "now").mockReturnValue(1234);
 		const store = create(createFoobarSlice);

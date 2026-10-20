@@ -110,6 +110,7 @@ export type FoobarSliceType = {
 	foobar_data: FoobarDataType;
 	foobar_reveal_queue: Array<FoobarAchievement>;
 	setFoobarData: (data: Partial<FoobarDataType>) => void;
+	recordFoobarVisit: (page: string) => void;
 	recordFoobarClue: (id: FoobarClueId) => void;
 	completeFoobarFlag: (flag: FoobarAchievement) => void;
 	enqueueFoobarReveal: (achievement: FoobarAchievement) => void;
@@ -121,6 +122,17 @@ export const createFoobarSlice: StateCreator<FoobarSliceType> = (set, _get) => (
 	foobar_data: initialFoobarData,
 	foobar_reveal_queue: [],
 	setFoobarData: (data) => set((state) => ({ foobar_data: { ...state.foobar_data, ...data } })),
+	recordFoobarVisit: (page) =>
+		set((state) =>
+			state.foobar_data.visited_pages.includes(page)
+				? state
+				: {
+						foobar_data: {
+							...state.foobar_data,
+							visited_pages: [...state.foobar_data.visited_pages, page],
+						},
+					},
+		),
 	recordFoobarClue: (id) =>
 		set((state) => {
 			if (state.foobar_data.clues_seen.some((clue) => clue.id === id)) {
