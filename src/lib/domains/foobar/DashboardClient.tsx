@@ -213,15 +213,15 @@ const ResetFoobar = ({ handleClearFoobarData }: { handleClearFoobarData: () => v
 				/>
 			}
 		>
-			Clear everything and restart
+			Reset this browser's progress
 		</AlertDialog.Trigger>
 		<AlertDialog.Portal>
 			<AlertDialog.Backdrop className="fixed inset-0 bg-slate-950/40 data-open:animate-overlayShow" />
-			<AlertDialog.Popup className="fixed top-[50%] left-[50%] max-h-[85vh] w-[90vw] max-w-[500px] translate-x-[-50%] translate-y-[-50%] rounded-global bg-white p-[25px] shadow-[hsl(206_22%_7%/35%)_0px_10px_38px_-10px,hsl(206_22%_7%/20%)_0px_10px_20px_-15px] focus:outline-none data-open:animate-contentShow">
-				<AlertDialog.Title className="m-0 text-[17px] font-medium text-slate-950">
+			<AlertDialog.Popup className="fixed top-[50%] left-[50%] max-h-[85vh] w-[90vw] max-w-[500px] translate-x-[-50%] translate-y-[-50%] rounded-global border border-foreground/15 bg-background p-[25px] text-foreground shadow-[hsl(206_22%_7%/35%)_0px_10px_38px_-10px,hsl(206_22%_7%/20%)_0px_10px_20px_-15px] focus:outline-none data-open:animate-contentShow">
+				<AlertDialog.Title className="m-0 text-[17px] font-medium">
 					Are you absolutely sure?
 				</AlertDialog.Title>
-				<AlertDialog.Description className="mt-4 mb-5 text-[15px] leading-normal text-zinc-500">
+				<AlertDialog.Description className="mt-4 mb-5 text-[15px] leading-normal text-foreground/70">
 					This action cannot be undone.
 					<br />
 					This will reset your <Code>/foobar</Code> progress in this browser. A cloud save is not
@@ -232,7 +232,7 @@ const ResetFoobar = ({ handleClearFoobarData }: { handleClearFoobarData: () => v
 					<AlertDialog.Close
 						render={
 							<button
-								className="inline-flex min-h-11 items-center justify-center rounded-global bg-zinc-100 px-4 py-2 leading-none font-medium text-zinc-600 outline-none hover:bg-zinc-200 focus:shadow-[0_0_0_2px] focus:shadow-zinc-300"
+								className="inline-flex min-h-11 items-center justify-center rounded-global bg-foreground/10 px-4 py-2 leading-none font-medium text-foreground outline-none hover:bg-foreground/15 focus:shadow-[0_0_0_2px] focus:shadow-foreground/30"
 								type="button"
 							/>
 						}
