@@ -24,7 +24,7 @@ export async function handleFoobarCertificateImage(
 	if (!certificate) return new Response("Not found", { status: 404 });
 
 	const date = formatFoobarCertificateDate(certificate.completedAt);
-	const html = `<div style="display:flex;flex-direction:column;justify-content:space-between;width:100%;height:100%;padding:72px;background:#17131f;color:#f3edf7;font-family:Bitter">
+	const html = `<div style="display:flex;flex-direction:column;justify-content:space-between;width:1200px;height:630px;padding:72px;background:#17131f;color:#f3edf7;font-family:Bitter">
 		<div style="display:flex;justify-content:space-between;align-items:center;font-size:24px;color:#c8b8d8"><span>SREETAMDAS.COM</span><span>FOOBAR FIELD CERTIFICATE</span></div>
 		<div style="display:flex;flex-direction:column;gap:18px"><div style="display:flex;font-size:30px;color:#a999b8">CERTIFIES THAT</div><div style="display:flex;font-size:76px;font-weight:600">${escapeHtml(certificate.name)}</div><div style="display:flex;font-size:34px;line-height:1.35;max-width:900px">mapped every hidden corner and completed the Foobar hunt.</div></div>
 		<div style="display:flex;justify-content:space-between;align-items:flex-end"><div style="display:flex;font-size:24px;color:#c8b8d8">COMPLETED ${escapeHtml(date).toUpperCase()}</div><div style="display:flex;width:84px;height:84px;border:3px solid #c99be8;border-radius:999px;align-items:center;justify-content:center;font-size:40px">F</div></div>

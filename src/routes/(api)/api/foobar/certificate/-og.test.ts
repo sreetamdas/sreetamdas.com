@@ -26,5 +26,6 @@ describe("Foobar certificate image", () => {
 		expect(response.headers.get("Content-Type")).toBe("image/png");
 		expect(response.headers.get("Cache-Control")).toBe("public, max-age=3600");
 		expect(render).toHaveBeenCalledWith(expect.stringContaining("Ada &lt;script&gt;"));
+		expect(render).toHaveBeenCalledWith(expect.stringContaining("width:1200px;height:630px"));
 	});
 });
