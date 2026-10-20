@@ -6,6 +6,13 @@
  */
 import { normalizeFoobarData, type FoobarClueSeen, type FoobarDataType } from "./store";
 
+// Every real trail fits comfortably; the cap only stops oversized writes into D1.
+export const FOOBAR_PROGRESS_MAX_JSON_LENGTH = 64 * 1024;
+
+export function isFoobarProgressWithinLimit(value: unknown): boolean {
+	return (JSON.stringify(value) ?? "").length <= FOOBAR_PROGRESS_MAX_JSON_LENGTH;
+}
+
 function stableUnion<T>(left: ReadonlyArray<T>, right: ReadonlyArray<T>): Array<T> {
 	return [...new Set([...left, ...right])];
 }

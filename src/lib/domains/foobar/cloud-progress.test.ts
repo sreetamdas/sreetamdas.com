@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vitest";
 
-import { mergeFoobarProgress } from "./cloud-progress";
+import { isFoobarProgressWithinLimit, mergeFoobarProgress } from "./cloud-progress";
 import { initialFoobarData, normalizeFoobarData } from "./store";
 
 describe("Foobar cloud progress merge", () => {
@@ -108,5 +108,17 @@ describe("Foobar cloud progress merge", () => {
 		const normalizedRemote = normalizeFoobarData(remote);
 
 		expect(JSON.stringify(merged)).not.toBe(JSON.stringify(normalizedRemote));
+	});
+});
+
+describe("Foobar cloud progress size limit", () => {
+	test("accepts a long real trail and rejects an oversized payload", () => {
+		const longTrail = Array.from({ length: 500 }, (_, index) => `/blog/post-${index}`);
+		expect(isFoobarProgressWithinLimit({ ...initialFoobarData, visited_pages: longTrail })).toBe(
+			true,
+		);
+		expect(
+			isFoobarProgressWithinLimit({ ...initialFoobarData, visited_pages: ["/".repeat(70_000)] }),
+		).toBe(false);
 	});
 });

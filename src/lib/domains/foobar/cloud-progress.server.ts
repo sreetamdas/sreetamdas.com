@@ -5,6 +5,7 @@
  */
 import { createServerFn, createServerOnlyFn } from "@tanstack/react-start";
 
+import { isFoobarProgressWithinLimit } from "./cloud-progress";
 import { normalizeFoobarData, type FoobarDataType } from "./store";
 
 export type FoobarCommunityView = {
@@ -134,6 +135,9 @@ const resetFoobarProgressInDb = createServerOnlyFn(async () => {
 function readProgress(value: unknown): unknown {
 	if (typeof value !== "object" || value === null || !("progress" in value)) {
 		throw new Error("Invalid Foobar sync payload");
+	}
+	if (!isFoobarProgressWithinLimit(value.progress)) {
+		throw new Error("Foobar sync payload is too large");
 	}
 	return value.progress;
 }
