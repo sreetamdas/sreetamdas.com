@@ -25,7 +25,6 @@ import { useGlobalStore } from "@/lib/domains/global";
 import { useHasMounted } from "@/lib/helpers/hooks";
 
 export const FoobarDashboard = () => {
-	// const router = useRouter();
 	const navigate = useNavigate();
 	const trackEvent = useTrackEvent();
 	const { foobar_data, setFoobarData } = useGlobalStore(
@@ -68,9 +67,6 @@ export const FoobarDashboard = () => {
 					// SW APIs are unavailable; reset succeeds regardless.
 				});
 		}
-
-		// eslint-disable-next-line no-console
-		console.log("cleared");
 	}
 
 	function handleSelectAchievement(achievement: FoobarAchievement) {
@@ -119,11 +115,6 @@ export const FoobarDashboard = () => {
 			<p aria-hidden="true" data-foobar-print-clue>
 				The paper remembers a path the screen will not: /foobar/print-preview
 			</p>
-			{/* <Center>
-				<SupportSreetamDas />
-			</Center> */}
-			{/* <Terminal {...{ visible: terminalVisible, toggleTerminal }} /> */}
-			{/* {!terminalVisible && <KonamiWrapper />} */}
 			<XMarksTheSpot foobar="/foobar/devtools" />
 		</div>
 	);
