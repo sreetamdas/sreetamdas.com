@@ -25,10 +25,7 @@ export const FieldNotes = ({ clues_seen, onSelectAchievement }: FieldNotesProps)
 		});
 
 	return (
-		<section
-			aria-labelledby="foobar-field-notes"
-			className="mt-20 border-t border-foreground/25 pt-8"
-		>
+		<section aria-labelledby="foobar-field-notes" className="mt-20 pt-8">
 			<h2 id="foobar-field-notes" className="font-serif text-3xl font-bold">
 				Field notes
 			</h2>

@@ -151,7 +151,7 @@ const CampfireStatus = () => {
 };
 
 const Basecamp = ({ handleClearFoobarData }: { handleClearFoobarData: () => void }) => (
-	<section aria-labelledby="foobar-basecamp" className="mt-20 border-t border-foreground/25 pt-8">
+	<section aria-labelledby="foobar-basecamp" className="mt-20 pt-8">
 		<h2 id="foobar-basecamp" className="font-serif text-3xl font-bold">
 			Basecamp
 		</h2>
@@ -185,8 +185,14 @@ const Basecamp = ({ handleClearFoobarData }: { handleClearFoobarData: () => void
 						View public site stats
 					</Link>
 				</div>
-				<details className="border-t border-foreground/15 pt-5">
-					<summary className="flex min-h-11 cursor-pointer items-center text-sm font-medium text-foreground/70">
+				<details className="group/manage border-t border-foreground/15 pt-5">
+					<summary className="flex min-h-11 cursor-pointer list-none items-center text-sm font-medium text-foreground/70 marker:hidden focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary">
+						<span aria-hidden="true" className="mr-2 group-open/manage:hidden">
+							→
+						</span>
+						<span aria-hidden="true" className="mr-2 hidden group-open/manage:inline">
+							↓
+						</span>
 						Manage progress
 					</summary>
 					<p className="mb-3 text-xs leading-relaxed text-foreground/60">

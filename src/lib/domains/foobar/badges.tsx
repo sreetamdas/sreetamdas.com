@@ -221,7 +221,7 @@ const CompletedAchievement = ({
 				</div>
 
 				{isExpanded ? (
-					<div className="mr-4 pb-5 pl-[2.05rem]" id={`foobar-achievement-details-${achievement}`}>
+					<div className="mr-4 pb-5 pl-7" id={`foobar-achievement-details-${achievement}`}>
 						{revealedHints.length > 0 ? (
 							<ol className="grid gap-3 text-sm text-foreground/80">
 								{revealedHints.map(({ hint, number }) => (
@@ -324,7 +324,7 @@ const Badge = ({ achievement, isExpanded, cluesSeen, recordFoobarClue, onToggle 
 				</div>
 
 				{isExpanded ? (
-					<div className="mr-4 pb-5 pl-[2.05rem]" id={`foobar-achievement-details-${achievement}`}>
+					<div className="mr-4 pb-5 pl-7" id={`foobar-achievement-details-${achievement}`}>
 						{revealedHints.length > 0 ? (
 							<ol className="grid gap-3 text-sm text-foreground/80">
 								{revealedHints.map(({ hint, number }) => (
