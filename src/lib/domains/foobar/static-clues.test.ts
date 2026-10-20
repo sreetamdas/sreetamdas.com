@@ -31,6 +31,22 @@ describe("Foobar static clues", () => {
 		expect(read("src/lib/domains/foobar/DashboardClient.tsx")).toContain("/foobar/print-preview");
 	});
 
+	test("sends the headers clue from prerendered pages too", () => {
+		expect(read("public/_headers")).toMatch(
+			/^\/\*\n(?: {2}.+\n)*? {2}X-Foobar: \/foobar\/headers$/m,
+		);
+	});
+
+	test("claims the 404 achievement from the not-found page", () => {
+		expect(read("src/routes/(main)/route.tsx")).toContain('<FoobarPixel path="/404" />');
+	});
+
+	test("keeps robots-disallowed Foobar paths out of the shipped sitemap", () => {
+		const { scripts } = JSON.parse(read("package.json"));
+		expect(scripts.build).toContain("tsx scripts/normalize-sitemap.ts");
+		expect(scripts["build:ci"]).toContain("tsx scripts/normalize-sitemap.ts");
+	});
+
 	test("ships the service-worker clue and unlocked registration", () => {
 		const worker = read("public/foobar-sw.js");
 		expect(worker).toContain("/foobar/service-worker-clue");

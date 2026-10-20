@@ -14,7 +14,14 @@ export const Route = createFileRoute("/(main)")({
 	// Route headers merge root->leaf across all matches, so every (main) page
 	// inherits this cache policy; /stats overrides it with STATS_CACHE_HEADERS.
 	headers: () => HTML_CACHE_HEADERS,
-	notFoundComponent: () => <NotFound404 />,
+	// A not-found match renders this instead of RouteComponent, so the layout's
+	// FoobarPixel is absent; this one claims the error404 achievement.
+	notFoundComponent: () => (
+		<>
+			<NotFound404 />
+			<FoobarPixel path="/404" />
+		</>
+	),
 });
 
 function RouteComponent() {
