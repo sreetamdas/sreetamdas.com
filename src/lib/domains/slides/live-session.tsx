@@ -7,7 +7,7 @@
  * The underlying WebSocket transport lives in `./use-slide-session`.
  */
 import { type FormEvent, useState } from "react";
-import { FaCloudflare, FaGoogle, FaRegCircleCheck } from "react-icons/fa6";
+import { FaGithub, FaGoogle, FaRegCircleCheck } from "react-icons/fa6";
 
 import { SLIDE_REACTION_EMOJIS } from "@/lib/domains/slides/reactions";
 import { cn } from "@/lib/helpers/utils";
@@ -32,7 +32,7 @@ export type SlideSessionPollDefinition = {
 	question: string;
 	options: Array<string>;
 };
-type SocialSignInProvider = "cloudflare" | "google";
+type SocialSignInProvider = "github" | "google";
 
 const EMPTY_POLL_DEFINITIONS: Array<SlideSessionPollDefinition> = [];
 
@@ -196,13 +196,13 @@ function MasterLiveControl({
 					<p className="m-0 flex items-center gap-2 pt-5 text-xs text-amber-50/85">
 						Sign in with:
 						<button
-							aria-label="Sign in with Cloudflare"
-							className="cursor-pointer border-0 bg-transparent p-0 text-2xl text-orange-400 disabled:cursor-not-allowed disabled:opacity-50"
+							aria-label="Sign in with GitHub"
+							className="cursor-pointer border-0 bg-transparent p-0 text-lg text-white disabled:cursor-not-allowed disabled:opacity-50"
 							disabled={signInDisabled}
-							onClick={() => handleSocialSignin("cloudflare")}
+							onClick={() => handleSocialSignin("github")}
 							type="button"
 						>
-							<FaCloudflare />
+							<FaGithub />
 						</button>
 						<button
 							aria-label="Sign in with Google"
