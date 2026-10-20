@@ -5,6 +5,7 @@
  */
 import { createFileRoute, notFound } from "@tanstack/react-router";
 
+import { SITE_TITLE_APPEND } from "@/config";
 import { FoobarSchrodinger } from "@/lib/domains/foobar/DashboardClient";
 import { type FoobarFlagPageSlug, FOOBAR_FLAGS } from "@/lib/domains/foobar/flags";
 
@@ -23,6 +24,7 @@ export const Route = createFileRoute("/(main)/(foobar)/foobar/$slug")({
 	loader: ({ params: { slug } }) => {
 		return { slug };
 	},
+	head: () => ({ meta: [{ title: `/foobar ${SITE_TITLE_APPEND}` }] }),
 });
 
 function FoobarCompletedPage() {
