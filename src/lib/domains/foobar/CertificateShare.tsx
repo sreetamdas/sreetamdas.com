@@ -4,15 +4,21 @@
 import { useState } from "react";
 
 export function CertificateShare({ title, url }: { title: string; url: string }) {
-	const [copied, setCopied] = useState(false);
+	const [status, setStatus] = useState<"idle" | "copied" | "failed">("idle");
 
 	async function handleShare() {
-		if (navigator.share) {
-			await navigator.share({ title, url });
-			return;
+		try {
+			if (navigator.share) {
+				await navigator.share({ title, url });
+				return;
+			}
+			await navigator.clipboard.writeText(url);
+			setStatus("copied");
+		} catch (error) {
+			// Closing the share sheet rejects with AbortError; that is not a failure.
+			if (error instanceof DOMException && error.name === "AbortError") return;
+			setStatus("failed");
 		}
-		await navigator.clipboard.writeText(url);
-		setCopied(true);
 	}
 
 	return (
@@ -21,7 +27,11 @@ export function CertificateShare({ title, url }: { title: string; url: string })
 			onClick={() => void handleShare()}
 			type="button"
 		>
-			{copied ? "Link copied" : "Share certificate"}
+			{status === "copied"
+				? "Link copied"
+				: status === "failed"
+					? "Couldn't share. Copy the address bar link."
+					: "Share certificate"}
 		</button>
 	);
 }
