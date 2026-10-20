@@ -49,12 +49,21 @@ export async function loadFoobarProgressState(
 	db: FoobarProgressDb,
 	userId: string,
 ): Promise<FoobarCloudProgressState> {
+	return toProgressState(await loadFoobarProgressRow(db, userId));
+}
+
+async function loadFoobarProgressRow(db: FoobarProgressDb, userId: string) {
 	const rows = await db
 		.select()
 		.from(foobarProgress)
 		.where(eq(foobarProgress.userId, userId))
 		.limit(1);
-	const row = rows[0];
+	return rows[0];
+}
+
+function toProgressState(
+	row: typeof foobarProgress.$inferSelect | undefined,
+): FoobarCloudProgressState {
 	if (!row) return { cloud: null, syncEnabled: true };
 	if (!row.syncEnabled) return { cloud: null, syncEnabled: false };
 
@@ -89,6 +98,8 @@ export async function enableFoobarProgress(
 	return writeFoobarProgress(db, userId, incoming, true, now, createCertificateId);
 }
 
+const FOOBAR_WRITE_ATTEMPTS = 5;
+
 async function writeFoobarProgress(
 	db: FoobarProgressDb,
 	userId: string,
@@ -97,55 +108,62 @@ async function writeFoobarProgress(
 	now: number,
 	createCertificateId: () => string,
 ): Promise<FoobarCloudProgress> {
-	const storedState = await loadFoobarProgressState(db, userId);
-	if (!enableDisabled && !storedState.syncEnabled) {
-		recordFoobarCloudOperation("rejected_disabled_write");
-		throw new Error("Foobar cloud sync is disabled");
-	}
+	for (let attempt = 0; attempt < FOOBAR_WRITE_ATTEMPTS; attempt += 1) {
+		const storedRow = await loadFoobarProgressRow(db, userId);
+		const storedState = toProgressState(storedRow);
+		if (!enableDisabled && !storedState.syncEnabled) {
+			await recordFoobarCloudOperation("rejected_disabled_write");
+			throw new Error("Foobar cloud sync is disabled");
+		}
 
-	const stored = storedState.cloud;
-	const progress = mergeFoobarProgress(incoming, stored?.progress);
-	const completedAt = stored?.completedAt ?? (progress.all_achievements ? now : null);
-	const certificateId =
-		stored?.certificateId ?? (progress.all_achievements ? createCertificateId() : null);
-	const progressJson = JSON.stringify(progress);
+		const stored = storedState.cloud;
+		const progress = mergeFoobarProgress(incoming, stored?.progress);
+		const completedAt = stored?.completedAt ?? (progress.all_achievements ? now : null);
+		const certificateId =
+			stored?.certificateId ?? (progress.all_achievements ? createCertificateId() : null);
+		const progressJson = JSON.stringify(progress);
 
-	const rows = await db
-		.insert(foobarProgress)
-		.values({
-			userId,
-			progressJson,
-			completedAt,
-			certificateId,
-			syncEnabled: true,
-			createdAt: now,
-			updatedAt: now,
-		})
-		.onConflictDoUpdate({
-			target: foobarProgress.userId,
-			setWhere: enableDisabled ? undefined : eq(foobarProgress.syncEnabled, true),
-			set: {
+		const rows = await db
+			.insert(foobarProgress)
+			.values({
+				userId,
 				progressJson,
-				completedAt: sql`coalesce(${foobarProgress.completedAt}, excluded.completed_at)`,
-				certificateId: sql`coalesce(${foobarProgress.certificateId}, excluded.certificate_id)`,
+				completedAt,
+				certificateId,
 				syncEnabled: true,
+				createdAt: now,
 				updatedAt: now,
-			},
-		})
-		.returning();
-	const row = rows[0];
-	if (!row) {
-		recordFoobarCloudOperation("rejected_disabled_write");
-		throw new Error("Foobar cloud sync is disabled");
-	}
-	if (enableDisabled) recordFoobarCloudOperation("enabled");
+			})
+			.onConflictDoUpdate({
+				target: foobarProgress.userId,
+				// Compare-and-swap: only replace the row this merge was computed from.
+				// A row inserted after an empty read never matches.
+				setWhere: and(
+					enableDisabled ? undefined : eq(foobarProgress.syncEnabled, true),
+					storedRow ? eq(foobarProgress.progressJson, storedRow.progressJson) : sql`0`,
+				),
+				set: {
+					progressJson,
+					completedAt: sql`coalesce(${foobarProgress.completedAt}, excluded.completed_at)`,
+					certificateId: sql`coalesce(${foobarProgress.certificateId}, excluded.certificate_id)`,
+					syncEnabled: true,
+					updatedAt: now,
+				},
+			})
+			.returning();
+		const row = rows[0];
+		if (!row) continue;
+		if (enableDisabled) await recordFoobarCloudOperation("enabled");
 
-	return {
-		progress: parseProgress(row.progressJson),
-		completedAt: row.completedAt,
-		publicProfile: row.publicProfile,
-		certificateId: row.certificateId,
-	};
+		return {
+			progress: parseProgress(row.progressJson),
+			completedAt: row.completedAt,
+			publicProfile: row.publicProfile,
+			certificateId: row.certificateId,
+		};
+	}
+
+	throw new Error("Foobar cloud save kept changing; try again");
 }
 
 export async function setFoobarPublicProfile(

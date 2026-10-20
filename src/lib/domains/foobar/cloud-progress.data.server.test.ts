@@ -77,6 +77,21 @@ describe("Foobar cloud progress data", () => {
 		expect((await loadFoobarProgress(db, "a"))?.progress).toEqual(result.progress);
 	});
 
+	test("keeps both discoveries when two devices sync at the same time", async () => {
+		await addUser("a", "Ada");
+		await syncFoobarProgress(db, "a", { ...initialFoobarData, completed: ["unlocked"] }, 100);
+
+		// Both calls load the stored row before either writes.
+		await Promise.all([
+			syncFoobarProgress(db, "a", { ...initialFoobarData, completed: ["headers"] }, 200),
+			syncFoobarProgress(db, "a", { ...initialFoobarData, completed: ["teapot"] }, 200),
+		]);
+
+		expect((await loadFoobarProgress(db, "a"))?.progress.completed).toEqual(
+			expect.arrayContaining(["unlocked", "headers", "teapot"]),
+		);
+	});
+
 	test("creates one stable certificate and completion timestamp", async () => {
 		await addUser("a", "Ada");
 		const complete = {
