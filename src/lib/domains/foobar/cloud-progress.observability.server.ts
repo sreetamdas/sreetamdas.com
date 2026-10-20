@@ -19,9 +19,10 @@ export function getFoobarCloudOperationEvent(
 	};
 }
 
-export function recordFoobarCloudOperation(operation: FoobarCloudOperation) {
-	void import("@sentry/cloudflare").then((Sentry) => {
-		const event = getFoobarCloudOperationEvent(operation);
-		Sentry.captureMessage(event.message, { level: event.level, tags: event.tags });
-	});
+// Awaited by callers so the message is queued before the response returns and
+// withSentry's end-of-request flush picks it up.
+export async function recordFoobarCloudOperation(operation: FoobarCloudOperation) {
+	const Sentry = await import("@sentry/cloudflare");
+	const event = getFoobarCloudOperationEvent(operation);
+	Sentry.captureMessage(event.message, { level: event.level, tags: event.tags });
 }

@@ -186,7 +186,7 @@ export async function resetFoobarProgress(db: FoobarProgressDb, userId: string):
 				updatedAt: now,
 			},
 		});
-	recordFoobarCloudOperation("disabled");
+	await recordFoobarCloudOperation("disabled");
 }
 
 export async function getFoobarCommunity(db: FoobarProgressDb): Promise<FoobarCommunity> {
