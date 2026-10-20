@@ -98,9 +98,17 @@ function deployStaging() {
 }
 
 if (branch === "dev") {
-	runRequiredWrangler(["d1", "execute", "sreetamdas_com", "--remote", "--command", "SELECT 1"]);
+	runRequiredWrangler([
+		"d1",
+		"execute",
+		"sreetamdas_com_staging",
+		"--remote",
+		"--command",
+		"SELECT 1",
+	]);
 	const migration = spawnSync("node", ["scripts/migrate-d1.mjs"], {
 		encoding: "utf-8",
+		env: { ...process.env, CLOUDFLARE_ENV: "staging" },
 		stdio: "inherit",
 	});
 	if (migration.status !== 0) process.exit(migration.status ?? 1);

@@ -8,7 +8,8 @@ import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { spawnSync } from "node:child_process";
 
-const database = "sreetamdas_com";
+const database =
+	process.env.CLOUDFLARE_ENV === "staging" ? "sreetamdas_com_staging" : "sreetamdas_com";
 const migrationsRoot = join(process.cwd(), "drizzle/migrations");
 
 function runWrangler(args) {

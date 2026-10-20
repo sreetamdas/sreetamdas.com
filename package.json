@@ -50,7 +50,7 @@
 		"format": "vp run oxfmt:write",
 		"deploy": "pnpm db:migrate:deploy && CLOUDFLARE_ENV=production pnpm build && CLOUDFLARE_ENV=production wrangler deploy -e production",
 		"deploy:production": "pnpm db:migrate:deploy && CLOUDFLARE_ENV=production pnpm build && CLOUDFLARE_ENV=production wrangler deploy -e production",
-		"deploy:staging": "pnpm db:migrate:deploy && CLOUDFLARE_ENV=staging pnpm build && CLOUDFLARE_ENV=staging wrangler deploy -e staging",
+		"deploy:staging": "CLOUDFLARE_ENV=staging pnpm db:migrate:deploy && CLOUDFLARE_ENV=staging pnpm build && CLOUDFLARE_ENV=staging wrangler deploy -e staging",
 		"deploy:preview": "node scripts/deploy-preview.mjs",
 		"prepare": "vp config",
 		"lint-staged": "vp staged",

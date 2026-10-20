@@ -125,8 +125,8 @@
 			],
 			"d1_databases": [
 				{
-					"database_name": "sreetamdas_com",
-					"database_id": "94e03c24-095b-47e2-bdba-a53027348100",
+					"database_name": "sreetamdas_com_staging",
+					"database_id": "2a971144-1009-4ee7-9f8f-651cd722402b",
 					"binding": "D1",
 					"preview_database_id": "sreetamdas_com_preview_staging"
 				}
