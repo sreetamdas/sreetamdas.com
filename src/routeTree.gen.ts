@@ -13,6 +13,7 @@ import { Route as mainRouteRouteImport } from './routes/(main)/route'
 import { Route as pureRouteRouteImport } from './routes/(pure)/route'
 import { Route as SlidesRouteRouteImport } from './routes/slides/route'
 import { Route as mainIndexRouteRouteImport } from './routes/(main)/index/route'
+import { Route as mainSplatRouteImport } from './routes/(main)/$'
 import { Route as mainSlugRouteRouteImport } from './routes/(main)/$slug/route'
 import { Route as mainAboutRouteRouteImport } from './routes/(main)/about/route'
 import { Route as mainBlogRouteRouteImport } from './routes/(main)/blog/route'
@@ -65,6 +66,11 @@ const SlidesRouteRoute = SlidesRouteRouteImport.update({
 const mainIndexRouteRoute = mainIndexRouteRouteImport.update({
   id: '/',
   path: '',
+  getParentRoute: () => mainRouteRoute,
+} as any)
+const mainSplatRoute = mainSplatRouteImport.update({
+  id: '/$',
+  path: '/$',
   getParentRoute: () => mainRouteRoute,
 } as any)
 const mainSlugRouteRoute = mainSlugRouteRouteImport.update({
@@ -266,6 +272,7 @@ export interface FileRoutesByFullPath {
   '/version': typeof pureVersionRouteRoute
   '/slides/json-schema-form': typeof SlidesJsonSchemaFormRouteRoute
   '/slides/tanstack-start': typeof SlidesTanstackStartRouteRouteWithChildren
+  '/$': typeof mainSplatRoute
   '/foobar': typeof mainfoobarFoobarRouteRouteWithChildren
   '/blog/$slug': typeof mainBlogSlugRouteRoute
   '/newsletter/$slug': typeof mainNewsletterSlugRouteRoute
@@ -303,6 +310,7 @@ export interface FileRoutesByTo {
   '/version': typeof pureVersionRouteRoute
   '/slides/json-schema-form': typeof SlidesJsonSchemaFormRouteRoute
   '/slides/tanstack-start': typeof SlidesTanstackStartRouteRouteWithChildren
+  '/$': typeof mainSplatRoute
   '/blog/$slug': typeof mainBlogSlugRouteRoute
   '/newsletter/$slug': typeof mainNewsletterSlugRouteRoute
   '/slides/tanstack-start/dev-lab': typeof SlidesTanstackStartDevLabRouteRoute
@@ -344,6 +352,7 @@ export interface FileRoutesById {
   '/(pure)/version': typeof pureVersionRouteRoute
   '/slides/json-schema-form': typeof SlidesJsonSchemaFormRouteRoute
   '/slides/tanstack-start': typeof SlidesTanstackStartRouteRouteWithChildren
+  '/(main)/$': typeof mainSplatRoute
   '/(main)/(foobar)/foobar': typeof mainfoobarFoobarRouteRouteWithChildren
   '/(main)/blog/$slug': typeof mainBlogSlugRouteRoute
   '/(main)/newsletter/$slug': typeof mainNewsletterSlugRouteRoute
@@ -385,6 +394,7 @@ export interface FileRouteTypes {
     | '/version'
     | '/slides/json-schema-form'
     | '/slides/tanstack-start'
+    | '/$'
     | '/foobar'
     | '/blog/$slug'
     | '/newsletter/$slug'
@@ -422,6 +432,7 @@ export interface FileRouteTypes {
     | '/version'
     | '/slides/json-schema-form'
     | '/slides/tanstack-start'
+    | '/$'
     | '/blog/$slug'
     | '/newsletter/$slug'
     | '/slides/tanstack-start/dev-lab'
@@ -462,6 +473,7 @@ export interface FileRouteTypes {
     | '/(pure)/version'
     | '/slides/json-schema-form'
     | '/slides/tanstack-start'
+    | '/(main)/$'
     | '/(main)/(foobar)/foobar'
     | '/(main)/blog/$slug'
     | '/(main)/newsletter/$slug'
@@ -533,6 +545,13 @@ declare module '@tanstack/react-router' {
       path: ''
       fullPath: '/'
       preLoaderRoute: typeof mainIndexRouteRouteImport
+      parentRoute: typeof mainRouteRoute
+    }
+    '/(main)/$': {
+      id: '/(main)/$'
+      path: '/$'
+      fullPath: '/$'
+      preLoaderRoute: typeof mainSplatRouteImport
       parentRoute: typeof mainRouteRoute
     }
     '/(main)/$slug': {
@@ -837,6 +856,7 @@ interface mainRouteRouteChildren {
   mainNewsletterRouteRoute: typeof mainNewsletterRouteRouteWithChildren
   mainRwcRouteRoute: typeof mainRwcRouteRoute
   mainStatsRouteRoute: typeof mainStatsRouteRoute
+  mainSplatRoute: typeof mainSplatRoute
   mainfoobarFoobarRouteRoute: typeof mainfoobarFoobarRouteRouteWithChildren
 }
 
@@ -850,6 +870,7 @@ const mainRouteRouteChildren: mainRouteRouteChildren = {
   mainNewsletterRouteRoute: mainNewsletterRouteRouteWithChildren,
   mainRwcRouteRoute: mainRwcRouteRoute,
   mainStatsRouteRoute: mainStatsRouteRoute,
+  mainSplatRoute: mainSplatRoute,
   mainfoobarFoobarRouteRoute: mainfoobarFoobarRouteRouteWithChildren,
 }
 

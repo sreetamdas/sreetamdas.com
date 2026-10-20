@@ -666,6 +666,10 @@ test("does not award slug achievements while Foobar is locked", async ({ page })
 test("claims the scenic route from a real 404 page", async ({ page }) => {
 	await page.goto("/this-path-does-not-exist");
 
+	await expect(page).toHaveTitle("Page not found | Sreetam Das");
+	const banner = page.getByRole("banner");
+	await expect(banner).toBeVisible();
+	await expect(banner.getByRole("link", { name: "about" }).first()).toBeVisible();
 	await expect(page.getByRole("heading", { name: "404!" })).toBeVisible();
 	await expect.poll(() => hasPersistedAchievement(page, "error404")).toBe(true);
 	await expect(page.getByTestId("foobar-achievement-reveal")).toContainText(
