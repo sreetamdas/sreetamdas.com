@@ -5,14 +5,17 @@ A web-native scavenger hunt hidden across the site. The `/foobar` dashboard beha
 complete achievements by poking at genuine browser and web-platform surfaces (headers, DNS
 TXT records, service workers, print styles, the RSS feed, …).
 
-Design history lives in `docs/superpowers/specs/2026-07-16-foobar-first-slice-design.md` and
-`docs/superpowers/specs/2026-07-16-foobar-complete-follow-up-design.md`.
+The original design docs were removed from the repo in `963f204a`; read them with
+`git show 963f204a^:docs/superpowers/specs/2026-07-16-foobar-first-slice-design.md` (and
+`…-foobar-complete-follow-up-design.md`).
 
 ## Principles
 
 - Anonymous localStorage play is the default; sign-in is optional and additive.
 - Merges are lossless and forward-only: neither the browser nor D1 can erase the other's
   discoveries. `all_achievements` is always recomputed server-side, never trusted.
+- Individual discoveries are still self-reported by the browser, so certificates and the
+  leaderboard are an honour system; nothing here should gate anything valuable.
 - Deleting a cloud save leaves a disabled server tombstone. Background writes cannot recreate
   it; the player must explicitly enable cloud saving again from the retained browser progress.
 - Cloud lifecycle changes propagate between open tabs through a storage event; retryable failures
