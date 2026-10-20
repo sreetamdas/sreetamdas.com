@@ -25,8 +25,16 @@ import {
 import { foobarCloudFailureLabel, type FoobarCloudFailedOperation } from "./cloud-sync-errors";
 import { publishFoobarCloudLifecycle, subscribeFoobarCloudLifecycle } from "./cloud-sync-lifecycle";
 import { createFoobarCloudSyncSession } from "./cloud-sync-session";
+import { type FoobarDataType } from "./store";
 
 type SyncState = "loading" | "local" | "saving" | "saved" | "deleting" | "disabled" | "error";
+
+// Discoveries made while a save was in flight are missing from the server's
+// reply; merging keeps them, and lastSynced (the server copy) then differs from
+// local state, so the debounce sends them in a follow-up save.
+function withLatestLocalProgress(synced: FoobarDataType): FoobarDataType {
+	return mergeFoobarProgress(useGlobalStore.getState().foobar_data, synced);
+}
 
 export function CloudProgressPanel() {
 	const { foobarData, setFoobarData, hasHydrated } = useGlobalStore(
@@ -118,7 +126,7 @@ export function CloudProgressPanel() {
 				}
 				if (!active || !syncSession.current.isCurrent(token)) return;
 				lastSynced.current = JSON.stringify(synced.cloud.progress);
-				setFoobarData(synced.cloud.progress);
+				setFoobarData(withLatestLocalProgress(synced.cloud.progress));
 				setBootstrap((value) =>
 					value ? { ...value, cloud: synced.cloud, community: synced.community } : value,
 				);
@@ -149,7 +157,7 @@ export function CloudProgressPanel() {
 				.then((synced) => {
 					if (!syncSession.current.isCurrent(token)) return;
 					lastSynced.current = JSON.stringify(synced.cloud.progress);
-					setFoobarData(synced.cloud.progress);
+					setFoobarData(withLatestLocalProgress(synced.cloud.progress));
 					setBootstrap((value) =>
 						value ? { ...value, cloud: synced.cloud, community: synced.community } : value,
 					);
@@ -215,7 +223,7 @@ export function CloudProgressPanel() {
 			const synced = await enableFoobarProgressServerFn({ data: { progress } });
 			if (!syncSession.current.isCurrent(token)) return;
 			lastSynced.current = JSON.stringify(synced.cloud.progress);
-			setFoobarData(synced.cloud.progress);
+			setFoobarData(withLatestLocalProgress(synced.cloud.progress));
 			setBootstrap((value) =>
 				value
 					? {
