@@ -25,6 +25,8 @@ type ExternalLinksArrayType = Array<{
 	title: string;
 	Icon: (props: IconBaseProps) => ReactElement;
 	onClick?: () => void;
+	// Opens beside the site so the Foobar toast stays visible.
+	opensInNewTab?: boolean;
 }>;
 export const SocialLinks = () => {
 	const trackEvent = useTrackEvent();
@@ -83,6 +85,7 @@ export const SocialLinks = () => {
 			title: "Sreetam Das' Reddit",
 			Icon: (props) => <FaRedditAlien {...props} />,
 			onClick: completeEasterEgg,
+			opensInNewTab: true,
 		},
 		{
 			link: "https://open.spotify.com/user/22nkuerb2tgjpqwhy4tp4aecq",
@@ -98,9 +101,15 @@ export const SocialLinks = () => {
 
 	return (
 		<ul className="flex flex-wrap place-items-center justify-center gap-4 px-12 py-4 sm:p-4">
-			{external_links.map(({ link, onClick, Icon, title }) => (
+			{external_links.map(({ link, onClick, opensInNewTab, Icon, title }) => (
 				<li key={title} className="text-2xl">
-					<a className="link-base" href={link} onClick={onClick}>
+					<a
+						className="link-base"
+						href={link}
+						onClick={onClick}
+						rel={opensInNewTab ? "noreferrer" : undefined}
+						target={opensInNewTab ? "_blank" : undefined}
+					>
 						<Icon title={title} />
 					</a>
 				</li>
