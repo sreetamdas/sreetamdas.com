@@ -9,6 +9,7 @@ import {
 	PropsWithChildren,
 	type ReactElement,
 	type ReactNode,
+	useId,
 	useState,
 } from "react";
 import { FaChevronDown } from "react-icons/fa";
@@ -102,7 +103,7 @@ function parseShikiMeta(html: string) {
 	const langMatch = html.match(/data-language="([^"]*)"/);
 	const language = langMatch?.[1] ?? "plain";
 
-	const lineCount = (html.match(/class="line"/g) || []).length;
+	const lineCount = (html.match(/class="line"/g) ?? []).length;
 
 	return { style, language, lineCount };
 }
@@ -264,9 +265,14 @@ const CodeBlockChildren = ({
 	children,
 	hide_line_numbers,
 }: PropsWithChildren<CodeBlockChildrenProps>) => {
+	const lineIdPrefix = useId();
+	const lineCount =
+		typeof children === "string" ? children.split("\n").length : Children.toArray(children).length;
+	const lineIds = Array.from({ length: lineCount }, (_, index) => `${lineIdPrefix}-line-${index}`);
+
 	if (typeof children === "string") {
 		return children.split("\n").map((line, index) => (
-			<span key={index} className="block">
+			<span key={lineIds[index]} className="block">
 				{line}
 			</span>
 		));
@@ -279,7 +285,7 @@ const CodeBlockChildren = ({
 
 		return (
 			<span
-				key={i}
+				key={lineIds[i]}
 				className={cn(
 					"block",
 					should_line_highlight && "-mx-5 border-l-4 border-[#a86efd] bg-[#d0b2ff1a] px-4",
