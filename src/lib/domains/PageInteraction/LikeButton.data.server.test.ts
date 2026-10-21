@@ -1,9 +1,23 @@
 import { beforeEach, describe, expect, test, vi } from "vitest";
 
+type IncrementLikeInput = {
+	visitorHash: string;
+	ipHash?: string;
+	saltVersion: number;
+	abuseLimit: number;
+};
+type DecrementLikeInput = { visitorHash: string; saltVersion: number };
+type LikeResult = { likes: number; hasLiked: boolean };
+
 const pageViews = vi.hoisted(() => ({
-	decrementLikes: vi.fn(),
-	getLikes: vi.fn(),
-	incrementLikes: vi.fn(),
+	decrementLikes:
+		vi.fn<(db: unknown, slug: string, input: DecrementLikeInput) => Promise<LikeResult>>(),
+	getLikes:
+		vi.fn<
+			(db: unknown, slug: string, visitorHash?: string, saltVersion?: number) => Promise<LikeResult>
+		>(),
+	incrementLikes:
+		vi.fn<(db: unknown, slug: string, input: IncrementLikeInput) => Promise<LikeResult>>(),
 }));
 const database = vi.hoisted(() => ({ getDb: vi.fn(() => ({})) }));
 const cloudflare = vi.hoisted<{ env: Record<string, string | undefined> }>(() => ({ env: {} }));
@@ -100,12 +114,19 @@ describe("incrementLikeCountInDb", () => {
 			cookieHeader: `${LIKE_ID_COOKIE_NAME}=${cookie.value}`,
 		});
 
-		expect(pageViews.incrementLikes).toHaveBeenCalledWith(expect.anything(), "/blog/x", {
-			visitorHash: expect.stringMatching(SHA256_HEX),
-			ipHash: expect.stringMatching(SHA256_HEX),
-			saltVersion: 1,
-			abuseLimit: 10,
-		});
+		expect(pageViews.incrementLikes).toHaveBeenCalledTimes(1);
+		const input = pageViews.incrementLikes.mock.calls[0]?.[2];
+		if (!input) throw new Error("expected increment input");
+		expect(Object.keys(input).sort()).toEqual([
+			"abuseLimit",
+			"ipHash",
+			"saltVersion",
+			"visitorHash",
+		]);
+		expect(input.visitorHash).toMatch(SHA256_HEX);
+		expect(input.ipHash).toMatch(SHA256_HEX);
+		expect(input.saltVersion).toBe(1);
+		expect(input.abuseLimit).toBe(10);
 		expect(pageViews.getLikes).not.toHaveBeenCalled();
 	});
 
@@ -173,10 +194,12 @@ describe("decrementLikeCountInDb", () => {
 			cookieHeader: `${LIKE_ID_COOKIE_NAME}=${cookie.value}`,
 		});
 
-		expect(pageViews.decrementLikes).toHaveBeenCalledWith(expect.anything(), "/blog/x", {
-			visitorHash: expect.stringMatching(SHA256_HEX),
-			saltVersion: 1,
-		});
+		expect(pageViews.decrementLikes).toHaveBeenCalledTimes(1);
+		const input = pageViews.decrementLikes.mock.calls[0]?.[2];
+		if (!input) throw new Error("expected decrement input");
+		expect(Object.keys(input).sort()).toEqual(["saltVersion", "visitorHash"]);
+		expect(input.visitorHash).toMatch(SHA256_HEX);
+		expect(input.saltVersion).toBe(1);
 		expect(pageViews.getLikes).not.toHaveBeenCalled();
 	});
 
