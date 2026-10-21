@@ -31,10 +31,10 @@ async function isolatePresencePerWorker(page: Page) {
 }
 
 async function seedProgress(page: Page, progress: Record<string, unknown> = legacyProgress) {
-	await page.addInitScript((progress) => {
+	await page.addInitScript((seededProgress) => {
 		if (window.sessionStorage.getItem("foobar-e2e-seeded")) return;
 
-		const value = JSON.stringify({ state: { foobar_data: progress }, version: 0 });
+		const value = JSON.stringify({ state: { foobar_data: seededProgress }, version: 0 });
 		window.localStorage.setItem("foobar-zustand", value);
 		window.localStorage.setItem("foobar-zustand-dev", value);
 		window.sessionStorage.setItem("foobar-e2e-seeded", "true");
@@ -80,7 +80,7 @@ async function openFieldEntry(page: Page, title: string) {
 
 async function hasPersistedAchievement(page: Page, achievement: string, requireKonami = false) {
 	return page.evaluate(
-		({ achievement, requireKonami }) => {
+		({ achievement: targetAchievement, requireKonami: requireKonamiFlag }) => {
 			for (const key of ["foobar-zustand-dev", "foobar-zustand"]) {
 				const raw = window.localStorage.getItem(key);
 				if (!raw) continue;
@@ -109,8 +109,8 @@ async function hasPersistedAchievement(page: Page, achievement: string, requireK
 				}
 
 				if (
-					foobarData.completed.includes(achievement) &&
-					(!requireKonami || ("konami" in foobarData && foobarData.konami === true))
+					foobarData.completed.includes(targetAchievement) &&
+					(!requireKonamiFlag || ("konami" in foobarData && foobarData.konami === true))
 				) {
 					return true;
 				}

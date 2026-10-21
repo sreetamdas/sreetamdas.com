@@ -77,7 +77,7 @@ function calculateLinesToHighlight(meta = "") {
 	}
 	const lineNumbers = reg_exp_exec_array[1]
 		.split(",")
-		.map((v) => v.split("-").map((v) => Number.parseInt(v, 10)));
+		.map((line) => line.split("-").map((part) => Number.parseInt(part, 10)));
 
 	return lineNumbers.reduce(
 		(result, [start, end = start]) =>
