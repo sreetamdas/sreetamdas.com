@@ -22,7 +22,12 @@
 @source "../../content";
 
 @custom-variant dark {
-	&:where([data-color-scheme="dark"], [data-color-scheme="dark"] *) {
+	&:where(
+		[data-color-scheme="dark"],
+		[data-color-scheme="dark"] *,
+		[data-foobar-karma],
+		[data-foobar-karma] *
+	) {
 		@slot;
 	}
 
@@ -40,6 +45,17 @@
 	--dark-blue: rgb(97 218 251);
 	--not-white: rgb(247 241 255);
 	--karma-background: rgb(10 14 20);
+	--karma-pink: rgb(252 97 141);
+	--karma-cyan: rgb(90 212 230);
+	--karma-lavender: rgb(175 152 230);
+	--karma-yellow: rgb(252 229 102);
+	--karma-green: rgb(123 216 143);
+	--karma-orange: rgb(253 147 83);
+	--karma-silver: rgb(169 169 200);
+	--karma-comment: rgb(141 138 150);
+	--karma-gutter: rgb(68 68 68);
+	--karma-line: rgb(28 32 37);
+	--karma-rule: rgb(42 47 55);
 	--black: rgb(0 0 0);
 
 	--color-primary: var(--light-purple);
@@ -47,6 +63,17 @@
 	--color-foreground: var(--black);
 	--color-background: var(--not-white);
 	--color-karma-background: var(--karma-background);
+	--color-karma-pink: var(--karma-pink);
+	--color-karma-cyan: var(--karma-cyan);
+	--color-karma-lavender: var(--karma-lavender);
+	--color-karma-yellow: var(--karma-yellow);
+	--color-karma-green: var(--karma-green);
+	--color-karma-orange: var(--karma-orange);
+	--color-karma-silver: var(--karma-silver);
+	--color-karma-comment: var(--karma-comment);
+	--color-karma-gutter: var(--karma-gutter);
+	--color-karma-line: var(--karma-line);
+	--color-karma-rule: var(--karma-rule);
 
 	--font-sans: "Inter Variable", "Inter Fallback", sans-serif;
 	--font-serif: "Bricolage Grotesque Variable", "Bricolage Fallback", serif;
@@ -269,6 +296,18 @@
 	}
 }
 
+/*
+ * /foobar is dark-only. A separate attribute (instead of data-color-scheme)
+ * keeps the header toggle's saved preference intact for the rest of the site.
+ */
+:root[data-foobar-karma] {
+	--color-primary: var(--dark-purple);
+	--color-secondary: var(--dark-blue);
+	--color-foreground: var(--not-white);
+	--color-background: var(--karma-background);
+	color-scheme: dark;
+}
+
 [data-foobar-print-clue] {
 	display: none;
 }
@@ -284,6 +323,14 @@
 		--color-secondary: var(--light-blue);
 		--color-foreground: var(--black);
 		--color-background: var(--not-white);
+	}
+
+	:root[data-foobar-karma] {
+		--color-primary: var(--light-purple);
+		--color-secondary: var(--light-blue);
+		--color-foreground: var(--black);
+		--color-background: var(--not-white);
+		color-scheme: light;
 	}
 
 	[data-foobar-print-clue] {
