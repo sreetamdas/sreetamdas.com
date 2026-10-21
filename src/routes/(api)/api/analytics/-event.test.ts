@@ -7,8 +7,8 @@ import { handleAnalyticsEventPost as handleAliasPost } from "../prxy/nltyx/event
 import { handleAnalyticsEventGet, handleAnalyticsEventPost } from "./event";
 
 const origin = "https://sreetamdas.com";
-const fetch = vi.fn(
-	async (_url: string, _init?: RequestInit) => new Response(null, { status: 202 }),
+const fetch = vi.fn((_url: string, _init?: RequestInit) =>
+	Promise.resolve(new Response(null, { status: 202 })),
 );
 function request(headers: Record<string, string> = {}) {
 	return new Request(`${origin}/api/analytics/event`, {

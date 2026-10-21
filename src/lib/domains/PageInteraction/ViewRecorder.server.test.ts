@@ -20,21 +20,21 @@ function request(headers: Record<string, string> = {}) {
 function limiter(limit: number, duration: number) {
 	const buckets = new Map<string, { start: number; count: number }>();
 	return {
-		limit: vi.fn(async ({ key }: { key: string }) => {
+		limit: vi.fn(({ key }: { key: string }) => {
 			let bucket = buckets.get(key);
 			if (!bucket || now - bucket.start >= duration) {
 				bucket = { start: now, count: 0 };
 				buckets.set(key, bucket);
 			}
 			bucket.count++;
-			return { success: bucket.count <= limit };
+			return Promise.resolve({ success: bucket.count <= limit });
 		}),
 	};
 }
 let budget = limiter(30, 60_000);
 let replay = limiter(1, 10_000);
 let env: ViewGuardEnv;
-const write = vi.fn(async (_slug: string) => {});
+const write = vi.fn((_slug: string) => Promise.resolve());
 const known = (slug: string) => ["/", "/about", "/blog/real-post"].includes(slug);
 const record = (slug = "/", req = request(), disabled = false) =>
 	recordPageView({ slug, disabled }, req, env, known, write, now);

@@ -8,17 +8,17 @@ vi.mock("cloudflare:workers", () => cloudflare);
 
 function createCacheMock() {
 	const store = new Map<string, Response>();
-	const match = vi.fn(async (key: Request) => store.get(key.url) ?? undefined);
-	const put = vi.fn(async (key: Request, response: Response) => {
+	const match = vi.fn((key: Request) => store.get(key.url) ?? undefined);
+	const put = vi.fn((key: Request, response: Response) => {
 		store.set(key.url, response.clone());
 	});
-	const cache = { match, put, delete: vi.fn(async () => true) };
+	const cache = { match, put, delete: vi.fn(() => true) };
 	return {
 		store,
 		match,
 		put,
 		reset: () => store.clear(),
-		open: vi.fn(async () => cache),
+		open: vi.fn(() => cache),
 	};
 }
 
@@ -53,7 +53,7 @@ describe("readGitHubStats", () => {
 	});
 
 	test("fetches from GitHub API on cache miss and stores the result", async () => {
-		const fetchMock = vi.fn(async () =>
+		const fetchMock = vi.fn(() =>
 			Response.json({
 				stargazers_count: 100,
 				forks_count: 23,
@@ -72,7 +72,7 @@ describe("readGitHubStats", () => {
 	});
 
 	test("serves cached stats on the second call without hitting GitHub", async () => {
-		const fetchMock = vi.fn(async () =>
+		const fetchMock = vi.fn(() =>
 			Response.json({
 				stargazers_count: 50,
 				forks_count: 5,
@@ -96,7 +96,7 @@ describe("readGitHubStats", () => {
 			}),
 		);
 
-		const fetchMock = vi.fn(async () =>
+		const fetchMock = vi.fn(() =>
 			Response.json({
 				stargazers_count: 9,
 				forks_count: 1,
@@ -112,7 +112,7 @@ describe("readGitHubStats", () => {
 	});
 
 	test("returns zeros when the GitHub API fails", async () => {
-		const fetchMock = vi.fn(async () => new Response("rate limited", { status: 403 }));
+		const fetchMock = vi.fn(() => new Response("rate limited", { status: 403 }));
 		vi.stubGlobal("fetch", fetchMock);
 
 		const stats = await readGitHubStats();

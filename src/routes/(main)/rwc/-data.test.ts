@@ -44,11 +44,11 @@ describe("loadRwcCodeSamples", () => {
 		const result = await loadRwcCodeSamples({
 			githubGistId: undefined,
 			githubToken: undefined,
-			fetchGist: async () => {
+			fetchGist: () => {
 				fetched = true;
-				return { files: {} };
+				return Promise.resolve({ files: {} });
 			},
-			getHighlighter: async () => createHighlighter(),
+			getHighlighter: () => Promise.resolve(createHighlighter()),
 		});
 
 		expect(fetched).toBe(false);
@@ -62,10 +62,8 @@ describe("loadRwcCodeSamples", () => {
 		const result = await loadRwcCodeSamples({
 			githubGistId: "gist_123",
 			githubToken: undefined,
-			fetchGist: async () => {
-				throw new Error("GitHub unavailable");
-			},
-			getHighlighter: async () => createHighlighter(),
+			fetchGist: () => Promise.reject(new Error("GitHub unavailable")),
+			getHighlighter: () => Promise.resolve(createHighlighter()),
 		});
 
 		expect(result).toEqual({
@@ -78,11 +76,11 @@ describe("loadRwcCodeSamples", () => {
 		const result = await loadRwcCodeSamples({
 			githubGistId: "gist_123",
 			githubToken: "token_123",
-			fetchGist: async (gistId, token) => {
+			fetchGist: (gistId, token) => {
 				expect(gistId).toBe("gist_123");
 				expect(token).toBe("token_123");
 
-				return {
+				return Promise.resolve({
 					files: {
 						"Day 01.ts": {
 							content: "const answer = 42;",
@@ -100,9 +98,9 @@ describe("loadRwcCodeSamples", () => {
 							language: undefined,
 						},
 					},
-				};
+				});
 			},
-			getHighlighter: async () => createHighlighter(),
+			getHighlighter: () => Promise.resolve(createHighlighter()),
 		});
 
 		expect(result.background_color).toBe("#123456");
@@ -154,7 +152,7 @@ describe("buildHighlightedCodeResponse", () => {
 		await expect(response.json()).resolves.toEqual(payload);
 	});
 
-	test("does not cache fallback payloads", async () => {
+	test("does not cache fallback payloads", () => {
 		const response = buildHighlightedCodeResponse({
 			all_solutions: [],
 			background_color: FALLBACK_RWC_BACKGROUND,
@@ -202,12 +200,12 @@ describe("loadCachedHighlightedCodeResponse", () => {
 
 		const response = await loadCachedHighlightedCodeResponse({
 			cache: {
-				match: async () => new Response(JSON.stringify(payload)),
-				put: async (_request: Request, _response: Response) => undefined,
+				match: () => Promise.resolve(new Response(JSON.stringify(payload))),
+				put: (_request: Request, _response: Response) => Promise.resolve(),
 			},
-			load: async () => {
+			load: () => {
 				loaded = true;
-				return payload;
+				return Promise.resolve(payload);
 			},
 		});
 
@@ -218,9 +216,10 @@ describe("loadCachedHighlightedCodeResponse", () => {
 	test("stores successful payloads but not fallback payloads", async () => {
 		const writes: Array<Response> = [];
 		const cache = {
-			match: async () => undefined,
-			put: async (_request: Request, response: Response) => {
+			match: () => Promise.resolve(undefined),
+			put: (_request: Request, response: Response) => {
 				writes.push(response);
+				return Promise.resolve();
 			},
 		};
 		const payload = {
@@ -235,7 +234,7 @@ describe("loadCachedHighlightedCodeResponse", () => {
 			background_color: "#123456",
 		};
 
-		await loadCachedHighlightedCodeResponse({ cache, load: async () => payload });
+		await loadCachedHighlightedCodeResponse({ cache, load: () => Promise.resolve(payload) });
 		expect(writes).toHaveLength(1);
 		expect(writes[0]?.headers.get("cache-control")).toBe(
 			`public, max-age=${RWC_EDGE_CACHE_TTL_SECONDS}`,
@@ -243,10 +242,11 @@ describe("loadCachedHighlightedCodeResponse", () => {
 
 		await loadCachedHighlightedCodeResponse({
 			cache,
-			load: async () => ({
-				all_solutions: [],
-				background_color: FALLBACK_RWC_BACKGROUND,
-			}),
+			load: () =>
+				Promise.resolve({
+					all_solutions: [],
+					background_color: FALLBACK_RWC_BACKGROUND,
+				}),
 		});
 		expect(writes).toHaveLength(1);
 	});
@@ -266,14 +266,10 @@ describe("loadCachedHighlightedCodeResponse", () => {
 
 		const response = await loadCachedHighlightedCodeResponse({
 			cache: {
-				match: async () => {
-					throw new Error("Cache unavailable");
-				},
-				put: async () => {
-					throw new Error("Cache unavailable");
-				},
+				match: () => Promise.reject(new Error("Cache unavailable")),
+				put: () => Promise.reject(new Error("Cache unavailable")),
 			},
-			load: async () => payload,
+			load: () => Promise.resolve(payload),
 		});
 
 		await expect(response.json()).resolves.toEqual(payload);

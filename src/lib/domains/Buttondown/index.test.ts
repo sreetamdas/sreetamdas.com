@@ -19,7 +19,7 @@ const SAMPLE_EMAIL = {
 
 describe("fetchNewsletterEmails", () => {
 	test("prefers the committed snapshot over fetching", async () => {
-		const fetchMock = stubFetch(async () => new Response(null, { status: 500 }));
+		const fetchMock = stubFetch(() => new Response(null, { status: 500 }));
 		const snapshot = {
 			count: 1,
 			next: null,
@@ -34,7 +34,7 @@ describe("fetchNewsletterEmails", () => {
 	});
 
 	test("falls through an empty snapshot to the live API", async () => {
-		const fetchMock = stubFetch(async () =>
+		const fetchMock = stubFetch(() =>
 			Response.json({ count: 1, next: null, previous: null, results: [SAMPLE_EMAIL] }),
 		);
 
@@ -50,7 +50,7 @@ describe("fetchNewsletterEmails", () => {
 	});
 
 	test("uses checked-in mocks without fetching when the API key is missing", async () => {
-		const fetchMock = stubFetch(async () => {
+		const fetchMock = stubFetch(() => {
 			return new Response(null, { status: 500 });
 		});
 
@@ -62,7 +62,7 @@ describe("fetchNewsletterEmails", () => {
 
 	test("sends the Buttondown token when fetching remote emails", async () => {
 		let authorization = "";
-		stubFetch(async (_url, init) => {
+		stubFetch((_url, init) => {
 			const headers = new Headers(init?.headers);
 			authorization = headers.get("Authorization") ?? "";
 
@@ -81,7 +81,7 @@ describe("fetchNewsletterEmails", () => {
 	});
 
 	test("falls back to mocks when Buttondown returns an unexpected payload", async () => {
-		stubFetch(async () => Response.json({ results: [{ slug: 123 }] }));
+		stubFetch(() => Response.json({ results: [{ slug: 123 }] }));
 
 		const result = await fetchNewsletterEmails("buttondown_token", null);
 
@@ -98,7 +98,9 @@ describe("getNewsletterSnapshot", () => {
 	});
 });
 
-function stubFetch(implementation: typeof fetch) {
+function stubFetch(
+	implementation: (input: RequestInfo | URL, init?: RequestInit) => Response | Promise<Response>,
+) {
 	const fetchMock = vi.fn(implementation);
 	vi.stubGlobal("fetch", fetchMock);
 	return fetchMock;

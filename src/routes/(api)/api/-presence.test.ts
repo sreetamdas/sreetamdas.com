@@ -65,17 +65,17 @@ describe("handlePresenceGetForNamespace", () => {
 		expect(getPresenceRoom(request)).toBe("e2e-worker-0");
 	});
 
-	test("falls back to the global room for malformed room names", async () => {
+	test("falls back to the global room for malformed room names", () => {
 		const request = new Request("https://example.com/api/presence?room=bad/../name");
 		expect(getPresenceRoom(request)).toBe("global");
 	});
 
-	test("falls back to the global room for well-formed but unauthorized rooms", async () => {
+	test("falls back to the global room for well-formed but unauthorized rooms", () => {
 		const request = new Request("https://example.com/api/presence?room=worker-7");
 		expect(getPresenceRoom(request)).toBe("global");
 	});
 
-	test("rejects oversized worker indexes", async () => {
+	test("rejects oversized worker indexes", () => {
 		const request = new Request("https://example.com/api/presence?room=e2e-worker-100");
 		expect(getPresenceRoom(request)).toBe("global");
 	});
@@ -107,7 +107,7 @@ describe("handlePresenceGetForNamespace", () => {
 		const presence = {
 			getByName: () => {
 				return {
-					fetch: async () => {
+					fetch: () => {
 						return new Response("async-ok", { status: 200 });
 					},
 				};
@@ -120,7 +120,7 @@ describe("handlePresenceGetForNamespace", () => {
 		expect(await response.text()).toBe("async-ok");
 	});
 
-	test("bubbles durable object lookup failures", async () => {
+	test("bubbles durable object lookup failures", () => {
 		const request = new Request("https://example.com/api/presence");
 		const presence = {
 			getByName: () => {

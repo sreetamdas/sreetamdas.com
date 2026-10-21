@@ -107,7 +107,7 @@ describe("handleSlideSessionRequest", () => {
 				}),
 			},
 			"keynote",
-			async () => "sreetam@example.com",
+			() => Promise.resolve("sreetam@example.com"),
 		);
 
 		expect(response.status).toBe(200);
