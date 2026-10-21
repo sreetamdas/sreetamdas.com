@@ -15,7 +15,15 @@ The original design docs were removed from the repo in `963f204a`; read them wit
 - Merges are lossless and forward-only: neither the browser nor D1 can erase the other's
   discoveries. `all_achievements` is always recomputed server-side, never trusted.
 - Individual discoveries are still self-reported by the browser, so certificates and the
-  leaderboard are an honour system; nothing here should gate anything valuable.
+  Finishers list are an honour system; nothing here should gate anything valuable.
+- The hunt ends with a final puzzle. Finishing every required achievement in a tier reveals that
+  tier's word (`FOOBAR_PUZZLE_TIER_WORDS`); in tier order the words spell the reward address for
+  `completed`. That address only awards once every puzzle tier is finished, and
+  `normalizeFoobarData` drops a `completed` claim that skips a tier.
+- `completed_at` is when the player actually finished: the latest required completion clue,
+  clamped to the server's clock. The Finishers list has no ranks and only includes saves that
+  solved the final puzzle; earlier finishers keep their certificate but drop off the list until
+  they solve it.
 - Deleting a cloud save leaves a disabled server tombstone. Background writes cannot recreate
   it; the player must explicitly enable cloud saving again from the retained browser progress.
 - Cloud lifecycle changes propagate between open tabs through a storage event; retryable failures
