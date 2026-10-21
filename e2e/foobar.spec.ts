@@ -663,6 +663,13 @@ test("does not award slug achievements while Foobar is locked", async ({ page })
 	await expect(page.getByTestId("foobar-achievement-reveal")).toHaveCount(0);
 });
 
+test("does not award the scenic route from the locked Foobar gate", async ({ page }) => {
+	await page.goto("/foobar");
+
+	await expect(page.getByRole("heading", { name: "404!" })).toBeVisible();
+	expect(await hasPersistedAchievement(page, "error404")).toBe(false);
+});
+
 test("claims the scenic route from a real 404 page", async ({ page }) => {
 	await page.goto("/this-path-does-not-exist");
 

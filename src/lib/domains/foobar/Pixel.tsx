@@ -194,3 +194,28 @@ export const FoobarPixel = ({ path }: FoobarPixelProps) => {
 		</>
 	);
 };
+
+/**
+ * Route-level not-found boundaries render inside the normal layout, so the
+ * footer's FoobarPixel only sees the requested path. This awards the 404
+ * achievement without mounting the site-wide instrumentation a second time.
+ */
+export const FoobarNotFoundAward = () => {
+	const hasHydrated = useGlobalStore((state) => state._hasHydrated);
+	const completed = useGlobalStore((state) => state.foobar_data.completed);
+	const completeFoobarFlag = useGlobalStore((state) => state.completeFoobarFlag);
+	const trackEvent = useTrackEvent();
+	const has_awarded = useRef(false);
+
+	useEffect(() => {
+		if (!hasHydrated) return;
+
+		if (has_awarded.current || completed.includes(FOOBAR_FLAGS.error404.name)) return;
+
+		has_awarded.current = true;
+		trackEvent("foobar", { props: { achievement: FOOBAR_FLAGS.error404.name } });
+		completeFoobarFlag(FOOBAR_FLAGS.error404.name);
+	}, [completeFoobarFlag, completed, hasHydrated, trackEvent]);
+
+	return null;
+};

@@ -1,6 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 
 import { SITE_DESCRIPTION, SITE_TITLE_APPEND } from "@/config";
+import { NotFound404 } from "@/lib/components/Error";
+import { FoobarNotFoundAward } from "@/lib/domains/foobar/Pixel";
 import { canonicalUrl, defaultOgImageUrl } from "@/lib/seo";
 import { STATIC_SERVER_FUNCTION_STALE_TIME } from "@/lib/static-server-functions";
 
@@ -40,8 +42,8 @@ export const Route = createFileRoute("/(main)/newsletter/$slug")({
 	},
 	notFoundComponent: () => (
 		<>
-			<h1>Not Found</h1>
-			<p>The newsletter issue/email you&apos;re trying to find doesn&apos;t exist :/</p>
+			<NotFound404 message="The newsletter issue/email you're trying to find doesn't exist :/" />
+			<FoobarNotFoundAward />
 		</>
 	),
 });

@@ -1,12 +1,15 @@
 /** Public, bearer-token completion certificate and social-sharing surface. */
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 
+import { SITE_TITLE_APPEND } from "@/config";
+import { NotFound404 } from "@/lib/components/Error";
 import {
 	createFoobarCertificateHead,
 	formatFoobarCertificateDate,
 } from "@/lib/domains/foobar/certificate";
 import { fetchFoobarCertificateServerFn } from "@/lib/domains/foobar/certificate.server";
 import { CertificateShare } from "@/lib/domains/foobar/CertificateShare";
+import { FoobarNotFoundAward } from "@/lib/domains/foobar/Pixel";
 import { absoluteUrl } from "@/lib/seo";
 
 export const Route = createFileRoute("/(main)/(foobar)/foobar/certificate/$token")({
@@ -16,12 +19,15 @@ export const Route = createFileRoute("/(main)/(foobar)/foobar/certificate/$token
 		if (!certificate) throw notFound();
 		return certificate;
 	},
-	head: ({ loaderData }) => (loaderData ? createFoobarCertificateHead(loaderData) : {}),
+	head: ({ loaderData }) =>
+		loaderData
+			? createFoobarCertificateHead(loaderData)
+			: { meta: [{ title: `Page not found ${SITE_TITLE_APPEND}` }] },
 	notFoundComponent: () => (
-		<section className="py-20 text-center">
-			<h1 className="font-serif text-5xl font-bold">Certificate not found</h1>
-			<p className="mt-4 text-foreground/70">This field record does not exist.</p>
-		</section>
+		<>
+			<NotFound404 message="This field record does not exist." />
+			<FoobarNotFoundAward />
+		</>
 	),
 });
 

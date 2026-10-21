@@ -4,6 +4,7 @@ import { SITE_DESCRIPTION, SITE_TITLE_APPEND } from "@/config";
 import { NotFound404 } from "@/lib/components/Error";
 import { ReadingProgress } from "@/lib/components/ProgressBar";
 import { Gradient } from "@/lib/components/Typography";
+import { FoobarNotFoundAward } from "@/lib/domains/foobar/Pixel";
 import { StatsCounter } from "@/lib/domains/PageInteraction/StatsCounter";
 import { cn } from "@/lib/helpers/utils";
 import { absoluteUrl, canonicalUrl, defaultOgImageUrl } from "@/lib/seo";
@@ -40,7 +41,10 @@ export const Route = createFileRoute("/(main)/blog/$slug")({
 		};
 	},
 	notFoundComponent: () => (
-		<NotFound404 message="The blog post you're looking for doesn't exist :/" />
+		<>
+			<NotFound404 message="The blog post you're looking for doesn't exist :/" />
+			<FoobarNotFoundAward />
+		</>
 	),
 });
 
