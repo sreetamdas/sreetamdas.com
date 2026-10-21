@@ -64,17 +64,12 @@ export function useSharedHunterPresence(enabled: boolean): HunterPresence {
 		enabledRef.current = enabled;
 		_enabledRefs.add(enabledRef);
 
-		if (!_clientId) {
-			_clientId = getOrCreatePresenceClientId(window.sessionStorage);
-		}
-		if (!_hunterId) {
-			_hunterId = getOrCreatePresenceClientId(
-				window.localStorage,
-				undefined,
-				PRESENCE_HUNTER_ID_STORAGE_KEY,
-			);
-		}
-
+		_clientId ??= getOrCreatePresenceClientId(window.sessionStorage);
+		_hunterId ??= getOrCreatePresenceClientId(
+			window.localStorage,
+			undefined,
+			PRESENCE_HUNTER_ID_STORAGE_KEY,
+		);
 		if (enabled && !_socket.hasLiveSocket()) {
 			_socket.connect();
 		}

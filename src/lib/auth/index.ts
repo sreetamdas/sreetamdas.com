@@ -103,7 +103,10 @@ export function parseAllowedPresenterEmails(value: string | undefined): Set<stri
 }
 
 export function getSiteUrl(authEnv: AuthHelperEnv = env): string {
-	return authEnv.SITE_URL || authEnv.VITE_SITE_URL || DEFAULT_SITE_URL;
+	const configuredSiteUrl = [authEnv.SITE_URL, authEnv.VITE_SITE_URL].find(
+		(value) => value !== undefined && value !== "",
+	);
+	return configuredSiteUrl ?? DEFAULT_SITE_URL;
 }
 
 export function getAuthSecret(authEnv: AuthHelperEnv = env, isDev = IS_DEV): string {

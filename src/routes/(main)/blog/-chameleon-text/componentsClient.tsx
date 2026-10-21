@@ -18,7 +18,7 @@ function getNewColor() {
 function changeColor() {
 	const newColor = getNewColor();
 
-	if (root === undefined) root = document?.documentElement;
+	root ??= document?.documentElement;
 	root.style.setProperty("--color-fancy-pants", newColor);
 }
 

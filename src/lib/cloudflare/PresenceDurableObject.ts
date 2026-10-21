@@ -83,7 +83,8 @@ function isHunter(request: Request) {
 }
 
 function getHunterId(request: Request) {
-	return new URL(request.url).searchParams.get(PRESENCE_HUNTER_ID_PARAM) || undefined;
+	const hunterId = new URL(request.url).searchParams.get(PRESENCE_HUNTER_ID_PARAM);
+	return hunterId === null || hunterId === "" ? undefined : hunterId;
 }
 
 export class PresenceDurableObject extends DurableObject<CloudflareEnv> {

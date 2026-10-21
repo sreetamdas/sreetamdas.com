@@ -9,18 +9,24 @@ function safe(cmd) {
 	}
 }
 
-const branch =
-	process.env.WORKERS_CI_BRANCH ||
-	process.env.CF_PAGES_BRANCH ||
-	process.env.GITHUB_HEAD_REF ||
-	process.env.GITHUB_REF_NAME ||
-	safe("git rev-parse --abbrev-ref HEAD");
+function firstNonEmpty(...values) {
+	return values.find((value) => value !== undefined && value !== "");
+}
 
-const commitSha =
-	process.env.WORKERS_CI_COMMIT_SHA ||
-	process.env.CF_PAGES_COMMIT_SHA ||
-	process.env.GITHUB_SHA ||
-	safe("git rev-parse HEAD");
+const branch = firstNonEmpty(
+	process.env.WORKERS_CI_BRANCH,
+	process.env.CF_PAGES_BRANCH,
+	process.env.GITHUB_HEAD_REF,
+	process.env.GITHUB_REF_NAME,
+	safe("git rev-parse --abbrev-ref HEAD"),
+);
+
+const commitSha = firstNonEmpty(
+	process.env.WORKERS_CI_COMMIT_SHA,
+	process.env.CF_PAGES_COMMIT_SHA,
+	process.env.GITHUB_SHA,
+	safe("git rev-parse HEAD"),
+);
 
 const info = {
 	branch,
