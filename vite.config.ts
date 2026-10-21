@@ -7,7 +7,7 @@ import viteReact from "@vitejs/plugin-react";
 import rsc from "@vitejs/plugin-rsc";
 import { dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { defineConfig, type UserConfig } from "vite-plus";
+import { defineConfig, type PluginOption, type UserConfig } from "vite-plus";
 
 import { slideDeckPlugin } from "./src/lib/domains/slides/vite-plugin.ts";
 
@@ -19,7 +19,7 @@ const repoRoot = dirname(fileURLToPath(import.meta.url));
 // dedicated project configs via `test.projects` below.
 const isVitest = Boolean(process.env.VITEST);
 
-function getPlugins(): Array<unknown> {
+function getPlugins(): Array<PluginOption> {
 	if (isVitest) {
 		return [];
 	}
@@ -30,7 +30,7 @@ function getPlugins(): Array<unknown> {
 
 	const sitemapHost = (process.env.VITE_SITE_URL ?? "https://sreetamdas.com").replace(/\/$/, "");
 
-	const plugins: Array<unknown> = [];
+	const plugins: Array<PluginOption> = [];
 
 	plugins.push(
 		cloudflare({
@@ -311,6 +311,5 @@ export default defineConfig({
 		],
 		passWithNoTests: true,
 	},
-	// @ts-expect-error type depth
 	plugins: getPlugins(),
 });

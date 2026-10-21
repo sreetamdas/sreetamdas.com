@@ -64,7 +64,10 @@ const getHeading = (
 		return createElement(el, propsWithoutChildren, children);
 	}
 	// Prefer an id from rehype-slug (build-time), fall back to runtime slugification.
-	const id = propsWithoutChildren.id || slugify(children);
+	let id = propsWithoutChildren.id;
+	if (id === undefined || id === "") {
+		id = slugify(children);
+	}
 
 	const ActualHeading = createElement(
 		el,
@@ -95,7 +98,7 @@ export const UnorderedList = ({
 }) => (
 	<ul className={cn("mx-0 my-3 pl-0", className)} {...props}>
 		{Children.map(props.children, (child) => {
-			if (isValidElement<{ className?: string }>(child)) {
+			if (isValidElement<{ className?: string; children?: ReactNode }>(child)) {
 				// Destructure className from child.props so we can merge it instead of
 				// letting the spread override the base classes.
 				const { className: childClassName, ...restChildProps } = child.props;
@@ -113,7 +116,6 @@ export const UnorderedList = ({
 							className={cn("mt-1 mr-2.5 text-primary", markClasses)}
 						/>
 						<span className="shrink grow basis-0 [&>ul]:my-0 [&>ul>li]:m-0">
-							{/* @ts-expect-error child props is not unknown */}
 							{child.props.children}
 						</span>
 					</li>

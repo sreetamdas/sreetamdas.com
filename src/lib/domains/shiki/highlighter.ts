@@ -74,8 +74,12 @@ function convertToThemeRegistration(theme: typeof defaultTheme): ThemeRegistrati
 		name: theme.name.toLowerCase(),
 		displayName: theme.name,
 		semanticHighlighting: theme.semanticHighlighting,
-		// @ts-expect-error possibly wrong type
-		semanticTokenColors: theme.semanticTokenColors,
+		semanticTokenColors: Object.fromEntries(
+			Object.entries(theme.semanticTokenColors).map(([scope, color]) => [
+				scope,
+				typeof color === "string" ? color : color.foreground,
+			]),
+		),
 		colors: theme.colors,
 		type: themeType,
 		tokenColors: toTokenColorRules(theme.tokenColors),
