@@ -86,7 +86,8 @@ export const FOOBAR_ACHIEVEMENTS = {
 	},
 	headers: {
 		title: "Heads Up!",
-		tier: "discovery",
+		tier: "browser",
+		device: "laptop",
 		completion: {
 			id: "headers:completed",
 			note: "The server spoke before the page did.",
@@ -109,7 +110,8 @@ export const FOOBAR_ACHIEVEMENTS = {
 	},
 	localforage: {
 		title: "Forage Locally",
-		tier: "discovery",
+		tier: "browser",
+		device: "laptop",
 		completion: {
 			id: "localforage:completed",
 			note: "The browser opened its small box of secrets.",
@@ -241,7 +243,7 @@ export const FOOBAR_ACHIEVEMENTS = {
 	},
 	navigator: {
 		title: "Site Seeing",
-		tier: "browser",
+		tier: "discovery",
 		completion: {
 			id: "navigator:completed",
 			note: "You drew enough of the map to be recognized.",
@@ -307,7 +309,7 @@ export const FOOBAR_ACHIEVEMENTS = {
 	},
 	error404: {
 		title: "The Scenic Route",
-		tier: "archaeology",
+		tier: "discovery",
 		completion: { id: "error404:completed", note: "A wrong turn was still a turn." },
 		hints: [
 			{
@@ -327,7 +329,7 @@ export const FOOBAR_ACHIEVEMENTS = {
 	},
 	dogs: {
 		title: "Who Let the Dogs Out?",
-		tier: "archaeology",
+		tier: "discovery",
 		completion: {
 			id: "dogs:completed",
 			note: "The guard dogs were friendlier than they looked.",

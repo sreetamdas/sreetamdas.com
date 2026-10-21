@@ -196,7 +196,7 @@ test("groups achievements and persists revealed field notes", async ({ page }) =
 	await page.goto("/foobar");
 
 	await expect(page.getByRole("heading", { name: "Warmup / Discovery" })).toBeVisible();
-	await expect(page.getByText("2 of 5", { exact: true })).toBeVisible();
+	await expect(page.getByText("1 of 6", { exact: true })).toBeVisible();
 	await expect(page.getByRole("heading", { name: "Field notes" })).toBeVisible();
 	await expect(page.getByText("Earlier", { exact: true })).toHaveCount(2);
 	await expect(page.getByText("Even crawlers are handed house rules.")).toBeVisible();
