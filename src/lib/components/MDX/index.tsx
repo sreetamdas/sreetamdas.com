@@ -1,5 +1,5 @@
 import { type MDXComponents } from "mdx/types";
-import { SafeMdxRenderer } from "safe-mdx";
+import { SafeMdxRenderer, type MyRootContent } from "safe-mdx";
 import { mdxParse } from "safe-mdx/parse";
 
 import { ShikiCodeBlock } from "@/lib/domains/shiki/CodeBlock";
@@ -19,6 +19,12 @@ type CodeNode = {
 	value: string;
 	position?: { start: { line: number; column: number } };
 };
+
+function isMdast(value: unknown): value is MyRootContent {
+	return (
+		typeof value === "object" && value !== null && "type" in value && typeof value.type === "string"
+	);
+}
 
 function isCodeNode(value: unknown): value is CodeNode {
 	if (typeof value !== "object" || value === null || !("type" in value)) {
@@ -54,7 +60,8 @@ export const MDXContent = ({
 		return null;
 	}
 
-	const tree = mdast ? JSON.parse(mdast) : mdxParse(source);
+	const parsed: unknown = mdast ? JSON.parse(mdast) : null;
+	const tree = isMdast(parsed) ? parsed : mdxParse(source);
 
 	return (
 		<SafeMdxRenderer

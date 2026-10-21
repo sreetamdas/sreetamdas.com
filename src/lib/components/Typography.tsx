@@ -35,8 +35,8 @@ function extractText(node: ReactNode): string {
 		return node.map(extractText).join("");
 	}
 
-	if (isValidElement(node) && node.props) {
-		return extractText((node.props as { children?: ReactNode }).children);
+	if (isValidElement<{ children?: ReactNode }>(node)) {
+		return extractText(node.props.children);
 	}
 
 	return "";
@@ -95,10 +95,9 @@ export const UnorderedList = ({
 }) => (
 	<ul className={cn("mx-0 my-3 pl-0", className)} {...props}>
 		{Children.map(props.children, (child) => {
-			if (isValidElement(child)) {
+			if (isValidElement<{ className?: string }>(child)) {
 				// Destructure className from child.props so we can merge it instead of
 				// letting the spread override the base classes.
-				// @ts-expect-error child props is not unknown
 				const { className: childClassName, ...restChildProps } = child.props;
 				return (
 					<li

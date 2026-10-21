@@ -250,7 +250,7 @@ function extractComponentBindings(modules: string[]): Record<string, string> {
 
 function extractNotes(text: string): { content: string; notes: string | null } {
 	const notes: string[] = [];
-	const content = text.replaceAll(NOTES_REGEXP, (_match, noteContent) => {
+	const content = text.replaceAll(NOTES_REGEXP, (_match: string, noteContent: string) => {
 		notes.push(noteContent.trim());
 		return "";
 	});

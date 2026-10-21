@@ -31,7 +31,8 @@ function parsePrerenderedPagePaths(value: unknown): Array<string> {
 	}
 
 	const paths: Array<string> = [];
-	for (const page of pages) {
+	const pageEntries: Array<unknown> = pages;
+	for (const page of pageEntries) {
 		if (typeof page !== "object" || page === null || !("path" in page)) {
 			continue;
 		}

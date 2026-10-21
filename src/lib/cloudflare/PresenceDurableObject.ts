@@ -61,7 +61,7 @@ function clampHeartbeatInterval(value: number) {
 }
 
 function getPresenceTimings(platformEnv: CloudflareEnv): PresenceTimings {
-	const configured = Reflect.get(platformEnv, PRESENCE_HEARTBEAT_INTERVAL_ENV);
+	const configured: unknown = Reflect.get(platformEnv, PRESENCE_HEARTBEAT_INTERVAL_ENV);
 	const parsed = typeof configured === "string" ? Number(configured) : Number.NaN;
 	const heartbeatIntervalMs = Number.isFinite(parsed)
 		? clampHeartbeatInterval(parsed)

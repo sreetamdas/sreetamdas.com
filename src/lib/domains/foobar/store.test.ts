@@ -81,9 +81,10 @@ describe("Foobar progress", () => {
 		store.getState().setFoobarData({ completed: ["headers"] });
 		store.getState().completeFoobarFlag("headers");
 
-		expect(store.getState().foobar_data.clues_seen).toEqual([
-			{ id: "headers:completed", seen_at: expect.any(Number) },
-		]);
+		const clues = store.getState().foobar_data.clues_seen;
+		expect(clues).toHaveLength(1);
+		expect(clues[0]?.id).toBe("headers:completed");
+		expect(typeof clues[0]?.seen_at).toBe("number");
 		expect(store.getState().foobar_reveal_queue).toEqual([]);
 	});
 

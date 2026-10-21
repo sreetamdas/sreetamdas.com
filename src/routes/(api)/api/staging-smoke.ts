@@ -5,7 +5,7 @@ import buildInfo from "@/build-info.json";
 
 type LikeRuntimeD1 = {
 	prepare: (query: string) => {
-		run: () => Promise<unknown> | unknown;
+		run: () => Promise<unknown> | void;
 	};
 };
 

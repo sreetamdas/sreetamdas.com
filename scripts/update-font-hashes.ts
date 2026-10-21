@@ -44,8 +44,9 @@ for (const input of process.argv.slice(2)) {
 		);
 	}
 
-	minted.set(style, `iosevka-das-version-${style}.${sha8}.subset.woff2`);
-	await copyFile(input, join(FONT_DIR, minted.get(style) as string));
+	const filename = `iosevka-das-version-${style}.${sha8}.subset.woff2`;
+	minted.set(style, filename);
+	await copyFile(input, join(FONT_DIR, filename));
 }
 
 if (minted.size === 0) {

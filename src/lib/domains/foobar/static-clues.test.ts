@@ -53,7 +53,24 @@ describe("Foobar static clues", () => {
 	});
 
 	test("keeps robots-disallowed Foobar paths out of the shipped sitemap", () => {
-		const { scripts } = JSON.parse(read("package.json"));
+		const parsed: unknown = JSON.parse(read("package.json"));
+		if (typeof parsed !== "object" || parsed === null || !("scripts" in parsed)) {
+			throw new Error("package.json has no scripts");
+		}
+		const { scripts } = parsed;
+		if (typeof scripts !== "object" || scripts === null) {
+			throw new Error("package.json scripts are not an object");
+		}
+
+		if (
+			!("build" in scripts) ||
+			typeof scripts.build !== "string" ||
+			!("build:ci" in scripts) ||
+			typeof scripts["build:ci"] !== "string"
+		) {
+			throw new Error("package.json build scripts are missing");
+		}
+
 		expect(scripts.build).toContain("tsx scripts/normalize-sitemap.ts");
 		expect(scripts["build:ci"]).toContain("tsx scripts/normalize-sitemap.ts");
 	});

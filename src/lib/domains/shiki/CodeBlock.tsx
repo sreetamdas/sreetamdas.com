@@ -7,6 +7,7 @@ import {
 	type HTMLAttributes,
 	isValidElement,
 	PropsWithChildren,
+	type ReactElement,
 	type ReactNode,
 	useState,
 } from "react";
@@ -87,13 +88,13 @@ function CodeBlockFrame({
 
 function parseShikiMeta(html: string) {
 	const styleMatch = html.match(/style="([^"]*)"/);
-	const style: Record<string, string | undefined> = {};
+	const style: CSSProperties = {};
 	if (styleMatch) {
 		for (const decl of styleMatch[1].split(";")) {
 			const [prop, val] = decl.split(":");
 			if (prop && val) {
 				const camelProp = prop.trim().replace(/-([a-z])/g, (_, c: string) => c.toUpperCase());
-				style[camelProp] = val.trim();
+				Object.assign(style, { [camelProp]: val.trim() });
 			}
 		}
 	}
@@ -103,7 +104,7 @@ function parseShikiMeta(html: string) {
 
 	const lineCount = (html.match(/class="line"/g) || []).length;
 
-	return { style: style as CSSProperties, language, lineCount };
+	return { style, language, lineCount };
 }
 
 function extractCodeInner(html: string): string {
@@ -138,6 +139,16 @@ type ShikiCodeBlockProps = {
 	preClassName?: string;
 	className?: string;
 };
+
+type CodeElementProps = {
+	children?: ReactNode;
+	className?: string;
+	"data-language"?: string;
+};
+
+function isValidCodeElement(value: ReactNode): value is ReactElement<CodeElementProps> {
+	return isValidElement<CodeElementProps>(value);
+}
 
 export const ShikiCodeBlock = ({
 	html,
@@ -206,12 +217,11 @@ export const CodeBlock = (props: CodeBlockProps) => {
 	} = props;
 	const [is_block_expanded, setBlockExpanded] = useState(false);
 
-	if (!isValidElement(code)) {
+	if (!isValidCodeElement(code)) {
 		return null;
 	}
 
 	const {
-		// @ts-expect-error child props is not unknown
 		props: { children: code_children_raw, className: _, "data-language": code_lang },
 	} = code;
 	const code_children = Children.toArray(code_children_raw).filter((line) => line !== "\n");

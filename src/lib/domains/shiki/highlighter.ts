@@ -30,7 +30,8 @@ function toTokenColorRules(value: unknown): Array<TokenColorRule> {
 		return [];
 	}
 
-	return value.flatMap((entry) => {
+	const entries: Array<unknown> = value;
+	return entries.flatMap((entry) => {
 		if (typeof entry !== "object" || entry === null) {
 			return [];
 		}
