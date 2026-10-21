@@ -83,7 +83,7 @@ const available = new Set((await readdir(FONT_DIR)).filter((name) => name.endsWi
 const problems: Array<string> = [];
 
 for (const [filename, sources] of references) {
-	const citedBy = [...new Set(sources)].sort().join(", ");
+	const citedBy = [...new Set(sources)].toSorted().join(", ");
 
 	// Naming is checked first: a filename that is not content-hashed would
 	// otherwise be reported as merely "missing", which hides the real cause.

@@ -117,7 +117,7 @@ describe("incrementLikeCountInDb", () => {
 		expect(pageViews.incrementLikes).toHaveBeenCalledTimes(1);
 		const input = pageViews.incrementLikes.mock.calls[0]?.[2];
 		if (!input) throw new Error("expected increment input");
-		expect(Object.keys(input).sort()).toEqual([
+		expect(Object.keys(input).toSorted()).toEqual([
 			"abuseLimit",
 			"ipHash",
 			"saltVersion",
@@ -197,7 +197,7 @@ describe("decrementLikeCountInDb", () => {
 		expect(pageViews.decrementLikes).toHaveBeenCalledTimes(1);
 		const input = pageViews.decrementLikes.mock.calls[0]?.[2];
 		if (!input) throw new Error("expected decrement input");
-		expect(Object.keys(input).sort()).toEqual(["saltVersion", "visitorHash"]);
+		expect(Object.keys(input).toSorted()).toEqual(["saltVersion", "visitorHash"]);
 		expect(input.visitorHash).toMatch(SHA256_HEX);
 		expect(input.saltVersion).toBe(1);
 		expect(pageViews.getLikes).not.toHaveBeenCalled();

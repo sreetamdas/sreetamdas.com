@@ -36,7 +36,7 @@ describe("parseRobotsDisallow", () => {
 			"Allow: /",
 			"Disallow: /",
 		].join("\n");
-		expect(parseRobotsDisallow(robots).sort()).toEqual(["/aoc", "/foobar"]);
+		expect(parseRobotsDisallow(robots).toSorted()).toEqual(["/aoc", "/foobar"]);
 	});
 });
 

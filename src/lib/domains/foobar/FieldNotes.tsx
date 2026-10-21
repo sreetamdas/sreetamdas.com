@@ -18,7 +18,7 @@ export const FieldNotes = ({ clues_seen, onSelectAchievement }: FieldNotesProps)
 			const clue = getFoobarClue(entry.id);
 			return clue ? [{ clue, seen_at: entry.seen_at }] : [];
 		})
-		.sort((left, right) => {
+		.toSorted((left, right) => {
 			if (left.seen_at === null) return right.seen_at === null ? 0 : 1;
 			if (right.seen_at === null) return -1;
 			return right.seen_at - left.seen_at;

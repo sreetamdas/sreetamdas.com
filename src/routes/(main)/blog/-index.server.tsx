@@ -35,7 +35,7 @@ export const getBlogArchiveRenderable = createServerFn({ method: "GET" }).handle
 				};
 			},
 		)
-		.sort((a, b) => new Date(b.published_at).getTime() - new Date(a.published_at).getTime());
+		.toSorted((a, b) => new Date(b.published_at).getTime() - new Date(a.published_at).getTime());
 
 	const Renderable = await renderServerComponent(
 		<section className="grid gap-20">
