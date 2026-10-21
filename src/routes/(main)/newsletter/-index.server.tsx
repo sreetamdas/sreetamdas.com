@@ -37,16 +37,14 @@ function getEmailPreviewContent(content: string) {
 async function getNewsletterEmailsPreviewsData(apiKey?: string) {
 	const buttondown_api_emails_response = await fetchNewsletterEmails(apiKey);
 
-	return await Promise.all(
-		[...buttondown_api_emails_response.results]
-			.reverse()
-			.map(async ({ body, subject, publish_date, id, secondary_id, slug }) => ({
-				slug,
-				subject,
-				publish_date,
-				id,
-				secondary_id,
-				body: getEmailPreviewContent(body),
-			})),
-	);
+	return [...buttondown_api_emails_response.results]
+		.toReversed()
+		.map(({ body, subject, publish_date, id, secondary_id, slug }) => ({
+			slug,
+			subject,
+			publish_date,
+			id,
+			secondary_id,
+			body: getEmailPreviewContent(body),
+		}));
 }
