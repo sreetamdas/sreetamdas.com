@@ -283,7 +283,11 @@ test("awards the final puzzle once every tier is done", async ({ page }) => {
 	await page.goto(getFoobarRewardPath("completed"));
 
 	await expect(page.getByTestId("foobar-achievement-reveal")).toContainText("Foo Bar None");
-	await expect(page.getByText("You found everything. Somehow.")).toBeVisible();
+	await expect(
+		page.getByText(`${FOOBAR_PUZZLE_PREREQUISITES.length + 1} of 24 weird things found.`, {
+			exact: true,
+		}),
+	).toBeVisible();
 	await expect(page.getByText("Finish every tier first.")).toHaveCount(0);
 });
 
