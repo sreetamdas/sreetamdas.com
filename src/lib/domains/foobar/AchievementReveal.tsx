@@ -5,40 +5,28 @@
  * Progress is already durable before an achievement enters this queue, so
  * closing, refreshing, or reducing motion can never lose an unlock.
  */
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 import { useGlobalStore } from "@/lib/domains/global";
 
 import { FOOBAR_ACHIEVEMENTS } from "./catalog";
 import { FOOBAR_FLAGS } from "./flags";
 
-const TITLE_DELAY_MS = 400;
 const DISMISS_DELAY_MS = 5_000;
 // Shown only before /foobar is unlocked, so early discoveries hint that the game exists.
 const LOCKED_NUDGE = "Something on this site is keeping score.";
-
-function prefersReducedMotion() {
-	return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-}
 
 export const FoobarAchievementReveal = () => {
 	const achievement = useGlobalStore((state) => state.foobar_reveal_queue[0]);
 	const dismissFoobarReveal = useGlobalStore((state) => state.dismissFoobarReveal);
 	const unlocked = useGlobalStore((state) => state.foobar_data.unlocked);
-	const [showTitle, setShowTitle] = useState(false);
 
 	useEffect(() => {
 		if (!achievement) return;
 
-		setShowTitle(false);
-		const titleTimer = window.setTimeout(
-			() => setShowTitle(true),
-			prefersReducedMotion() ? 0 : TITLE_DELAY_MS,
-		);
 		const dismissTimer = window.setTimeout(dismissFoobarReveal, DISMISS_DELAY_MS);
 
 		return () => {
-			window.clearTimeout(titleTimer);
 			window.clearTimeout(dismissTimer);
 		};
 	}, [achievement, dismissFoobarReveal]);
@@ -63,11 +51,7 @@ export const FoobarAchievementReveal = () => {
 					<Icon aria-hidden="true" className="text-2xl" />
 				</div>
 				<div className="min-w-0 flex-1 pt-0.5">
-					<div
-						className={`transition-all duration-300 motion-reduce:transition-none ${
-							showTitle ? "translate-y-0 opacity-100" : "translate-y-2 opacity-0"
-						}`}
-					>
+					<div className="animate-reveal-title motion-reduce:animate-none" key={achievement}>
 						<p className="font-mono text-[0.65rem] font-semibold tracking-[0.16em] text-primary uppercase">
 							Discovery collected
 						</p>

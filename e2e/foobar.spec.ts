@@ -147,7 +147,8 @@ async function readHintDevelopmentEvents(page: Page) {
 		const parsedEvents: unknown = rawEvents ? JSON.parse(rawEvents) : [];
 		if (!Array.isArray(parsedEvents)) return [];
 
-		return parsedEvents.filter(
+		const events: Array<unknown> = parsedEvents;
+		return events.filter(
 			(entry) =>
 				typeof entry === "object" &&
 				entry !== null &&
@@ -557,6 +558,9 @@ test("claims the well-known notice and announces it with its display title", asy
 	await expect(reveal).toContainText("You found the notice everyone forgot to read.");
 	await expect(reveal).toContainText("A Well-Known Nobody");
 	await expect(reveal).not.toContainText("keeping score");
+	const title = reveal.locator(".animate-reveal-title");
+	await expect(title).toHaveCount(1);
+	await expect(title).toHaveCSS("animation-name", "reveal-title");
 	await expect.poll(() => hasPersistedAchievement(page, "well-known")).toBe(true);
 });
 
