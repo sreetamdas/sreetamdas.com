@@ -108,7 +108,31 @@ describe("Foobar cloud progress data", () => {
 			name: "Ada",
 			completedAt: 100,
 			certificateId: "cert-a",
+			stars: Object.fromEntries(
+				FOOBAR_REQUIRED_ACHIEVEMENTS.map((achievement) => [achievement, "gold"]),
+			),
 		});
+	});
+
+	test("tells gold from silver on a certificate without exposing hint times", async () => {
+		await addUser("a", "Ada");
+		await syncFoobarProgress(
+			db,
+			"a",
+			{
+				...initialFoobarData,
+				unlocked: true,
+				completed: [...FOOBAR_REQUIRED_ACHIEVEMENTS],
+				clues_seen: [{ id: "headers:hint:1", seen_at: 42 }],
+			},
+			100,
+			() => "cert-a",
+		);
+
+		const certificate = await getFoobarCertificate(db, "cert-a");
+		expect(certificate?.stars.headers).toBe("silver");
+		expect(certificate?.stars.teapot).toBe("gold");
+		expect(JSON.stringify(certificate)).not.toContain("42");
 	});
 
 	test("gives no certificate for every flag except the final puzzle", async () => {

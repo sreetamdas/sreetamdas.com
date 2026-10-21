@@ -701,3 +701,14 @@ export function getFoobarStar(
 	);
 	return progress.clues_seen.some((clue) => hintIds.includes(clue.id)) ? "silver" : "gold";
 }
+
+export type FoobarStars = Partial<Record<FoobarAchievement, FoobarStar>>;
+
+export function getFoobarStars(progress: Parameters<typeof getFoobarStar>[1]): FoobarStars {
+	const stars: FoobarStars = {};
+	for (const achievement of FOOBAR_ACHIEVEMENT_ORDER) {
+		const star = getFoobarStar(achievement, progress);
+		if (star) stars[achievement] = star;
+	}
+	return stars;
+}

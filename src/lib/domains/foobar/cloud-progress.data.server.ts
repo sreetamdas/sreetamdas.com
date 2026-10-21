@@ -14,7 +14,7 @@ import { and, asc, count, eq, isNotNull, sql } from "drizzle-orm";
 import * as schema from "@/db/schema";
 import { authUser, foobarProgress } from "@/db/schema";
 
-import { FOOBAR_ACHIEVEMENTS, FOOBAR_REQUIRED_ACHIEVEMENTS } from "./catalog";
+import { FOOBAR_ACHIEVEMENTS, FOOBAR_REQUIRED_ACHIEVEMENTS, getFoobarStars } from "./catalog";
 import { mergeFoobarProgress } from "./cloud-progress";
 import { recordFoobarCloudOperation } from "./cloud-progress.observability.server";
 import { initialFoobarData, normalizeFoobarData, type FoobarDataType } from "./store";
@@ -269,6 +269,7 @@ export async function getFoobarCertificate(db: FoobarProgressDb, certificateId: 
 			name: authUser.name,
 			completedAt: foobarProgress.completedAt,
 			certificateId: foobarProgress.certificateId,
+			progressJson: foobarProgress.progressJson,
 		})
 		.from(foobarProgress)
 		.innerJoin(authUser, eq(authUser.id, foobarProgress.userId))
@@ -276,7 +277,12 @@ export async function getFoobarCertificate(db: FoobarProgressDb, certificateId: 
 		.limit(1);
 	const row = rows[0];
 	if (!row || row.completedAt === null || row.certificateId === null) return null;
-	return { name: row.name, completedAt: row.completedAt, certificateId: row.certificateId };
+	return {
+		name: row.name,
+		completedAt: row.completedAt,
+		certificateId: row.certificateId,
+		stars: getFoobarStars(parseProgress(row.progressJson)),
+	};
 }
 
 function parseProgress(value: string): FoobarDataType {

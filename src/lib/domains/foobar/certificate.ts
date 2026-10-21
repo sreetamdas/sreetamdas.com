@@ -1,10 +1,14 @@
 /** Pure URL, date, and metadata presentation for public Foobar certificates. */
 import { absoluteUrl } from "@/lib/seo";
 
+import { type FoobarStars } from "./catalog";
+
 export type FoobarCertificate = {
 	name: string;
 	completedAt: number;
 	certificateId: string;
+	/** Star per discovery only; the hint log and its timestamps stay private. */
+	stars: FoobarStars;
 };
 
 export function formatFoobarCertificateDate(timestamp: number): string {

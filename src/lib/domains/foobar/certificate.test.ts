@@ -13,6 +13,7 @@ describe("Foobar certificate presentation", () => {
 			name: "Ada",
 			completedAt: Date.UTC(2026, 6, 16),
 			certificateId: "cert-a",
+			stars: {},
 		});
 
 		expect(head.links).toEqual([
