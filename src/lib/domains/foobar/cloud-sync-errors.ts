@@ -14,5 +14,5 @@ export function foobarCloudFailureLabel(operation: FoobarCloudFailedOperation): 
 	if (operation === "delete") return "Could not delete your cloud save.";
 	if (operation === "enable") return "Could not turn cloud saving back on.";
 	if (operation === "signOut") return "Could not sign you out.";
-	return "Could not update your leaderboard preference.";
+	return "Could not update your Finishers list preference.";
 }

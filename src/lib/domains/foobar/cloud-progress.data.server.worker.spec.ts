@@ -1,7 +1,8 @@
 /*
-Real-workerd coverage for certificate minting. The unit tests inject a fake
-certificate ID factory and run in Node, which tolerates an unbound
-`crypto.randomUUID`; workerd throws "Illegal invocation" for the same call.
+Real-workerd coverage for certificate minting and the Finishers query. The unit
+tests inject a fake certificate ID factory and run in Node, which tolerates an
+unbound `crypto.randomUUID`; workerd throws "Illegal invocation" for the same
+call. The Finishers count relies on D1's json_each, so it is checked here too.
 */
 
 import { env } from "cloudflare:workers";
@@ -11,7 +12,7 @@ import { beforeEach, describe, expect, it } from "vitest";
 import * as schema from "@/db/schema";
 
 import { FOOBAR_REQUIRED_ACHIEVEMENTS } from "./catalog";
-import { syncFoobarProgress } from "./cloud-progress.data.server";
+import { getFoobarCommunity, syncFoobarProgress } from "./cloud-progress.data.server";
 import { initialFoobarData } from "./store";
 
 const SCHEMA_STATEMENTS = [
@@ -40,5 +41,6 @@ describe("Foobar certificates on workerd", () => {
 		expect(cloud.certificateId).toMatch(
 			/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/,
 		);
+		expect((await getFoobarCommunity(db)).finisherCount).toBe(1);
 	});
 });

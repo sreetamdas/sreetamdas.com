@@ -8,7 +8,7 @@ describe("Foobar cloud recovery copy", () => {
 		["sync", "Could not save your latest progress."],
 		["delete", "Could not delete your cloud save."],
 		["enable", "Could not turn cloud saving back on."],
-		["profile", "Could not update your leaderboard preference."],
+		["profile", "Could not update your Finishers list preference."],
 		["signOut", "Could not sign you out."],
 	])("distinguishes %s failures", (operation, expected) => {
 		expect(foobarCloudFailureLabel(operation)).toBe(expected);

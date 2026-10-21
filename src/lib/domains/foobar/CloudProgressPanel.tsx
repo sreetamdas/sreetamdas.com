@@ -319,7 +319,7 @@ export function CloudProgressPanel() {
 							Sign out
 						</button>
 					</div>
-					{bootstrap.cloud && bootstrap.cloud.completedAt !== null ? (
+					{bootstrap.cloud?.progress.all_achievements && bootstrap.cloud.completedAt !== null ? (
 						<label className="flex min-h-11 max-w-md items-start gap-2 py-2 text-foreground/75">
 							<input
 								checked={bootstrap.cloud.publicProfile}
@@ -327,7 +327,7 @@ export function CloudProgressPanel() {
 								onChange={(event) => void handlePublicProfile(event.currentTarget.checked)}
 								type="checkbox"
 							/>
-							<span>List my name and completion time on the public leaderboard.</span>
+							<span>Add my name and finish date to the public Finishers list.</span>
 						</label>
 					) : null}
 					{bootstrap.cloud?.certificateId ? (
@@ -378,18 +378,21 @@ export function CloudProgressPanel() {
 			)}
 
 			{community.leaderboard.length > 0 ? (
-				<ol aria-label="Foobar finishers" className="mt-5 space-y-1 text-sm">
-					{community.leaderboard.map((entry, index) => (
-						<li className="flex max-w-md justify-between gap-4" key={entry.certificateId}>
-							<span>
-								{index + 1}. {entry.name}
-							</span>
-							<time dateTime={new Date(entry.completedAt).toISOString()}>
-								{new Date(entry.completedAt).toLocaleDateString()}
-							</time>
-						</li>
-					))}
-				</ol>
+				<div className="mt-5">
+					<h4 id="foobar-finishers-title" className="font-mono text-xs text-foreground/60">
+						Finishers
+					</h4>
+					<ul aria-labelledby="foobar-finishers-title" className="mt-2 space-y-1 text-sm">
+						{community.leaderboard.map((entry) => (
+							<li className="flex max-w-md justify-between gap-4" key={entry.certificateId}>
+								<span>{entry.name}</span>
+								<time dateTime={new Date(entry.completedAt).toISOString()}>
+									{new Date(entry.completedAt).toLocaleDateString()}
+								</time>
+							</li>
+						))}
+					</ul>
+				</div>
 			) : null}
 		</section>
 	);
@@ -427,7 +430,7 @@ function CloudResetDialog({ onReset }: { onReset: () => void }) {
 					</AlertDialog.Title>
 					<AlertDialog.Description className="mt-3 text-sm leading-normal text-foreground/70">
 						Your progress will remain in this browser. Your certificate link stops working and you
-						leave the leaderboard. Cloud saving stays off until you explicitly enable it again.
+						leave the Finishers list. Cloud saving stays off until you explicitly enable it again.
 					</AlertDialog.Description>
 					<div className="mt-5 flex justify-end gap-3">
 						<AlertDialog.Close

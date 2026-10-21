@@ -1,6 +1,11 @@
 /**
  * D1 persistence for optional authenticated Foobar progress. All writes merge
  * with the stored copy, so late tabs and devices cannot erase discoveries.
+ *
+ * completed_at is set once, on the first save that finishes the hunt, from when
+ * the player actually finished (the latest required completion clue, never in
+ * the future). The Finishers list only counts saves that include the final
+ * puzzle, so runs finished before it existed drop off until they solve it.
  */
 import type { BaseSQLiteDatabase } from "drizzle-orm/sqlite-core";
 
@@ -9,6 +14,7 @@ import { and, asc, count, eq, isNotNull, sql } from "drizzle-orm";
 import * as schema from "@/db/schema";
 import { authUser, foobarProgress } from "@/db/schema";
 
+import { FOOBAR_ACHIEVEMENTS, FOOBAR_REQUIRED_ACHIEVEMENTS } from "./catalog";
 import { mergeFoobarProgress } from "./cloud-progress";
 import { recordFoobarCloudOperation } from "./cloud-progress.observability.server";
 import { initialFoobarData, normalizeFoobarData, type FoobarDataType } from "./store";
@@ -118,7 +124,9 @@ async function writeFoobarProgress(
 
 		const stored = storedState.cloud;
 		const progress = mergeFoobarProgress(incoming, stored?.progress);
-		const completedAt = stored?.completedAt ?? (progress.all_achievements ? now : null);
+		const completedAt =
+			stored?.completedAt ??
+			(progress.all_achievements ? getFoobarFinishTime(progress, now) : null);
 		const certificateId =
 			stored?.certificateId ?? (progress.all_achievements ? createCertificateId() : null);
 		const progressJson = JSON.stringify(progress);
@@ -207,9 +215,25 @@ export async function resetFoobarProgress(db: FoobarProgressDb, userId: string):
 	await recordFoobarCloudOperation("disabled");
 }
 
+const REQUIRED_COMPLETION_CLUE_IDS: ReadonlySet<string> = new Set(
+	FOOBAR_REQUIRED_ACHIEVEMENTS.map((achievement) => FOOBAR_ACHIEVEMENTS[achievement].completion.id),
+);
+
+function getFoobarFinishTime(progress: FoobarDataType, now: number): number {
+	const seenAt = progress.clues_seen.flatMap((clue) =>
+		REQUIRED_COMPLETION_CLUE_IDS.has(clue.id) && clue.seen_at !== null ? [clue.seen_at] : [],
+	);
+	return seenAt.length === 0 ? now : Math.min(now, Math.max(...seenAt));
+}
+
+const solvedFinalPuzzle = sql`exists (select 1 from json_each(${foobarProgress.progressJson}, '$.completed') where json_each.value = 'completed')`;
+
 export async function getFoobarCommunity(db: FoobarProgressDb): Promise<FoobarCommunity> {
 	const [countRows, leaderboardRows] = await Promise.all([
-		db.select({ value: count() }).from(foobarProgress).where(isNotNull(foobarProgress.completedAt)),
+		db
+			.select({ value: count() })
+			.from(foobarProgress)
+			.where(and(isNotNull(foobarProgress.completedAt), solvedFinalPuzzle)),
 		db
 			.select({
 				name: authUser.name,
@@ -223,6 +247,7 @@ export async function getFoobarCommunity(db: FoobarProgressDb): Promise<FoobarCo
 					eq(foobarProgress.publicProfile, true),
 					isNotNull(foobarProgress.completedAt),
 					isNotNull(foobarProgress.certificateId),
+					solvedFinalPuzzle,
 				),
 			)
 			.orderBy(asc(foobarProgress.completedAt))
