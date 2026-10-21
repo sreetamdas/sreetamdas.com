@@ -17,6 +17,7 @@ describe("Foobar certificate image", () => {
 			name: "Ada <script>",
 			completedAt: Date.UTC(2026, 6, 16),
 			certificateId: "cert-a",
+			stars: { headers: "silver", teapot: "gold" },
 		});
 		const render = vi.fn(
 			(html: string) => new Response(html, { headers: { "Content-Type": "image/png" } }),
@@ -25,7 +26,8 @@ describe("Foobar certificate image", () => {
 		const response = await handleFoobarCertificateImage("cert-a", resolve, render);
 		expect(response.headers.get("Content-Type")).toBe("image/png");
 		expect(response.headers.get("Cache-Control")).toBe("public, max-age=3600");
-		expect(render).toHaveBeenCalledWith(expect.stringContaining("Ada &lt;script&gt;"));
+		expect(render).toHaveBeenCalledWith(expect.stringContaining("Ada &lt;script>"));
 		expect(render).toHaveBeenCalledWith(expect.stringContaining("width:1200px;height:630px"));
+		expect(render).toHaveBeenCalledWith(expect.stringContaining("1 silver"));
 	});
 });

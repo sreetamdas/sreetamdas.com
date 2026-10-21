@@ -1,17 +1,20 @@
 /**
  * Public, cacheable PNG card for a completed hunter. Certificate IDs are
- * unguessable bearer tokens; no account details beyond the chosen display name
- * and completion date are rendered.
+ * unguessable bearer tokens; no account details beyond the chosen display name,
+ * completion date and per-discovery stars are rendered. The layout lives in
+ * certificate-card.ts; this route only resolves the record and loads fonts.
  */
 import { createFileRoute } from "@tanstack/react-router";
 
+import { type FoobarCertificate } from "@/lib/domains/foobar/certificate";
 import {
-	type FoobarCertificate,
-	formatFoobarCertificateDate,
-} from "@/lib/domains/foobar/certificate";
+	FOOBAR_CARD_SUBSET_CHAR,
+	renderFoobarCertificateCard,
+} from "@/lib/domains/foobar/certificate-card";
 
 type CertificateResolver = (token: string) => Promise<FoobarCertificate | null>;
 type CertificateRenderer = (html: string) => Promise<Response> | Response;
+type CardFont = { name: string; data: ArrayBuffer; weight: 400 | 700; style: "normal" };
 
 export async function handleFoobarCertificateImage(
 	token: string,
@@ -23,12 +26,7 @@ export async function handleFoobarCertificateImage(
 	const certificate = await resolve(token);
 	if (!certificate) return new Response("Not found", { status: 404 });
 
-	const date = formatFoobarCertificateDate(certificate.completedAt);
-	const html = `<div style="display:flex;flex-direction:column;justify-content:space-between;width:1200px;height:630px;padding:72px;background:#17131f;color:#f3edf7;font-family:Bitter">
-		<div style="display:flex;justify-content:space-between;align-items:center;font-size:24px;color:#c8b8d8"><span>SREETAMDAS.COM</span><span>FOOBAR FIELD CERTIFICATE</span></div>
-		<div style="display:flex;flex-direction:column;gap:18px"><div style="display:flex;font-size:30px;color:#a999b8">CERTIFIES THAT</div><div style="display:flex;font-size:76px;font-weight:600">${escapeHtml(certificate.name)}</div><div style="display:flex;font-size:34px;line-height:1.35;max-width:900px">mapped every hidden corner and completed the Foobar hunt.</div></div>
-		<div style="display:flex;justify-content:space-between;align-items:flex-end"><div style="display:flex;font-size:24px;color:#c8b8d8">COMPLETED ${escapeHtml(date).toUpperCase()}</div><div style="display:flex;width:84px;height:84px;border:3px solid #c99be8;border-radius:999px;align-items:center;justify-content:center;font-size:40px">F</div></div>
-	</div>`;
+	const html = renderFoobarCertificateCard(certificate);
 	const response = await render(html);
 	response.headers.set("Content-Type", "image/png");
 	response.headers.set("Cache-Control", "public, max-age=3600");
@@ -48,17 +46,32 @@ async function resolveCertificate(token: string): Promise<FoobarCertificate | nu
 }
 
 async function renderCertificate(html: string): Promise<Response> {
-	const { ImageResponse } = await import("workers-og");
-	return new ImageResponse(html, { width: 1200, height: 630 });
+	const [{ ImageResponse, loadGoogleFont }, regular, bold] = await Promise.all([
+		import("workers-og"),
+		import("@/lib/domains/foobar/fonts/iosevka-das-version-regular.ttf?inline"),
+		import("@/lib/domains/foobar/fonts/iosevka-das-version-bold.ttf?inline"),
+	]);
+	const fonts: Array<CardFont> = [
+		{ name: "Iosevka", data: decodeDataUrl(regular.default), weight: 400, style: "normal" },
+		{ name: "Iosevka", data: decodeDataUrl(bold.default), weight: 700, style: "normal" },
+	];
+	// Only a hunter name can reach outside the Iosevka subset; satori would
+	// silently drop those glyphs, so fetch just them from a fallback face.
+	const missing = [...new Set(html.replaceAll(FOOBAR_CARD_SUBSET_CHAR, ""))].join("");
+	if (missing) {
+		try {
+			const data = await loadGoogleFont({ family: "Noto Sans", weight: 700, text: missing });
+			fonts.push({ name: "Noto Sans", data, weight: 700, style: "normal" });
+		} catch {
+			// Render without the fallback rather than failing the card.
+		}
+	}
+	return new ImageResponse(html, { width: 1200, height: 630, fonts });
 }
 
-function escapeHtml(value: string): string {
-	return value
-		.replaceAll("&", "&amp;")
-		.replaceAll("<", "&lt;")
-		.replaceAll(">", "&gt;")
-		.replaceAll('"', "&quot;")
-		.replaceAll("'", "&#39;");
+function decodeDataUrl(dataUrl: string): ArrayBuffer {
+	const base64 = dataUrl.slice(dataUrl.indexOf(",") + 1);
+	return Uint8Array.from(atob(base64), (char) => char.charCodeAt(0)).buffer;
 }
 
 export const Route = createFileRoute("/(api)/api/foobar/certificate/$token/og.png")({
