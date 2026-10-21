@@ -104,6 +104,9 @@ export const FoobarDashboard = () => {
 			<h1 className="pt-12 font-serif text-6xl leading-none font-bold sm:pt-20 sm:text-7xl">
 				/foobar
 			</h1>
+			<p className="mt-3 font-mono text-xs text-foreground/60">
+				Best on a laptop. Some clues need real browser tools.
+			</p>
 			<ShowCompletedBadges
 				completed={foobar_data.completed}
 				all_achievements={foobar_data.all_achievements}

@@ -217,6 +217,23 @@ test("groups achievements and persists revealed field notes", async ({ page }) =
 	).toHaveText("Reveal hint 2 of 4");
 });
 
+test("labels bonus achievements and laptop-only clues", async ({ page }) => {
+	await seedProgress(page);
+	await page.goto("/foobar");
+
+	await expect(page.getByText(/Best on a laptop\./)).toBeVisible();
+
+	const campfire = page.getByRole("article").filter({
+		has: page.getByRole("heading", { name: "Stranger by the Fire", exact: true }),
+	});
+	await expect(campfire.getByText("bonus", { exact: true })).toBeVisible();
+
+	const consoleBadge = page.getByRole("article").filter({
+		has: page.getByRole("heading", { name: "Console Yourself", exact: true }),
+	});
+	await expect(consoleBadge.getByText("laptop", { exact: true })).toBeVisible();
+});
+
 test("develops hint 4 without exposing its text", async ({ page }) => {
 	await seedProgress(page, {
 		...legacyProgress,

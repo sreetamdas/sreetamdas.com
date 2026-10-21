@@ -152,6 +152,7 @@ export const FOOBAR_ACHIEVEMENTS = {
 	devtools: {
 		title: "Inspect Gadget",
 		tier: "browser",
+		device: "laptop",
 		completion: {
 			id: "devtools:completed",
 			note: "You looked behind the stage curtain.",
@@ -178,6 +179,7 @@ export const FOOBAR_ACHIEVEMENTS = {
 	hack: {
 		title: "Console Yourself",
 		tier: "browser",
+		device: "laptop",
 		completion: { id: "hack:completed", note: "The console opened its trapdoor." },
 		hints: [
 			{
@@ -290,6 +292,7 @@ export const FOOBAR_ACHIEVEMENTS = {
 	konami: {
 		title: "Up, Up and Away",
 		tier: "browser",
+		device: "laptop",
 		completion: { id: "konami:completed", note: "An old cheat code still worked here." },
 		hints: [
 			{ id: "konami:hint:1", text: "Old games taught players a famous sequence." },
@@ -479,6 +482,7 @@ export const FOOBAR_ACHIEVEMENTS = {
 	"cookie-jar": {
 		title: "Open Sesame",
 		tier: "protocol",
+		device: "laptop",
 		completion: { id: "cookie-jar:completed", note: "You changed the label on the jar." },
 		hints: [
 			{ id: "cookie-jar:hint:1", text: "A sealed jar arrives with the response." },
@@ -493,6 +497,7 @@ export const FOOBAR_ACHIEVEMENTS = {
 	"service-worker": {
 		title: "Employee of the Month",
 		tier: "protocol",
+		device: "laptop",
 		completion: { id: "service-worker:completed", note: "A worker replied without the network." },
 		hints: [
 			{ id: "service-worker:hint:1", text: "An invisible worker watches one unusual request." },
