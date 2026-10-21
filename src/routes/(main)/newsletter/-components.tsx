@@ -64,8 +64,8 @@ type NewsletterEmailsPreviewsProps = {
 };
 export const NewsletterEmailsPreviews = ({ emails }: NewsletterEmailsPreviewsProps) => (
 	<section className="grid gap-20">
-		{emails.map((email, index) => (
-			<NewsletterEmailPreview key={index} email={email} />
+		{emails.map((email) => (
+			<NewsletterEmailPreview key={email.id} email={email} />
 		))}
 	</section>
 );

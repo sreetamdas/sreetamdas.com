@@ -153,8 +153,8 @@ function TimelineSkeleton() {
 				<span className="h-5 w-32 animate-pulse rounded-full bg-foreground/15 sm:justify-self-end" />
 			</div>
 			<ol className="mt-6 flex h-44 items-end gap-1 p-0" aria-label="Loading daily visitors chart">
-				{[42, 56, 38, 72, 64, 88, 52, 60, 46, 78, 68, 54].map((height, index) => (
-					<li className="flex h-full min-w-1 flex-1 list-none items-end" key={`${height}-${index}`}>
+				{[42, 56, 38, 72, 64, 88, 52, 60, 46, 78, 68, 54].map((height) => (
+					<li className="flex h-full min-w-1 flex-1 list-none items-end" key={height}>
 						<span
 							className="w-full animate-pulse rounded-t-global bg-foreground/15"
 							style={{ height: `${height}%` }}
