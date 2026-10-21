@@ -42,7 +42,7 @@ export const DEV_LAB_AUDIENCES: ReadonlyArray<DevLabAudience> = ["react", "fulls
 
 export const getDevLabServerSnapshot = createServerFn({ method: "GET" })
 	.validator(parseDevLabSearch)
-	.handler(async ({ data }): Promise<DevLabServerSnapshot> => {
+	.handler(({ data }): DevLabServerSnapshot => {
 		const cfRay = getRequestHeader("cf-ray");
 		return {
 			search: data,
