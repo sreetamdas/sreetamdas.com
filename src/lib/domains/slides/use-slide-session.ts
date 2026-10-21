@@ -6,7 +6,7 @@
  * mirrors the presenter's position to viewers, and falls back to HTTP snapshot
  * polling as a best-effort safety net.
  */
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 
 import {
 	isSlideSessionReaction,
@@ -47,7 +47,9 @@ export function useSlideSession({
 	const pingTimerRef = useRef<ReturnType<typeof setInterval>>(undefined);
 	const lastSentPositionRef = useRef("");
 	const onRemoteNavigateRef = useRef(onRemoteNavigate);
-	onRemoteNavigateRef.current = onRemoteNavigate;
+	useEffect(() => {
+		onRemoteNavigateRef.current = onRemoteNavigate;
+	}, [onRemoteNavigate]);
 
 	const send = useCallback((message: SlideSessionOutgoingMessage) => {
 		const ws = wsRef.current;
@@ -264,11 +266,9 @@ function getClientId() {
 }
 
 export function useBrowserHref() {
-	const [browserHref, setBrowserHref] = useState<string>();
-
-	useEffect(() => {
-		setBrowserHref(globalThis.location.href);
-	}, []);
-
-	return browserHref;
+	return useSyncExternalStore(
+		() => () => {},
+		() => globalThis.location.href,
+		() => undefined,
+	);
 }

@@ -14,6 +14,7 @@ import {
 	useCallback,
 	useEffect,
 	useLayoutEffect,
+	useMemo,
 	useRef,
 	useState,
 	type CSSProperties,
@@ -104,34 +105,30 @@ export function SlideDeck({
 	const timerRef = useRef<ReturnType<typeof setInterval>>(undefined);
 	const touchStartX = useRef<number>(0);
 	const stepRegistrations = useRef<StepEntry[]>([]);
-	const [_stepVersion, setStepVersion] = useState(0);
+	const [maxStep, setMaxStep] = useState(0);
 	const [fitContainerStyle, fitCanvasStyle] = aspectRatioFittingStyles(aspectRatio);
 
 	const registerSteps = useCallback((id: string, count: number) => {
 		stepRegistrations.current = stepRegistrations.current.filter((entry) => entry.id !== id);
 		stepRegistrations.current.push({ id, count });
-		setStepVersion((v) => v + 1);
+		setMaxStep(stepRegistrations.current.reduce((sum, entry) => sum + entry.count, 0) - 1);
 	}, []);
 
 	const unregisterSteps = useCallback((id: string) => {
-		stepRegistrations.current = stepRegistrations.current.filter((e) => e.id !== id);
-		setStepVersion((v) => v + 1);
+		stepRegistrations.current = stepRegistrations.current.filter((entry) => entry.id !== id);
+		setMaxStep(stepRegistrations.current.reduce((sum, entry) => sum + entry.count, 0) - 1);
 	}, []);
 
 	useLayoutEffect(() => {
 		stepRegistrations.current = [];
-		setStepVersion((v) => v + 1);
+		// oxlint-disable-next-line react/set-state-in-effect -- the per-slide step registry must reset when navigation changes
+		setMaxStep(0);
 	}, [currentIndex]);
 
-	const dynamicMaxStep = stepRegistrations.current.reduce((sum, e) => sum + e.count, 0) - 1;
-	const maxStep = dynamicMaxStep;
-
-	const stepContextValue = useRef<StepContextValue>({
-		currentStep: 0,
-		registerSteps,
-		unregisterSteps,
-	});
-	stepContextValue.current = { currentStep, registerSteps, unregisterSteps };
+	const stepContextValue = useMemo<StepContextValue>(
+		() => ({ currentStep, registerSteps, unregisterSteps }),
+		[currentStep, registerSteps, unregisterSteps],
+	);
 
 	const goTo = useCallback(
 		(index: number, step = 0) => {
@@ -176,16 +173,6 @@ export function SlideDeck({
 		setTransitionsEnabled((prev) => !prev);
 	}, []);
 
-	const goNextRef = useRef(stepForward);
-	const goPrevRef = useRef(stepBackward);
-	const togglePresenterRef = useRef(togglePresenterMode);
-	const toggleTransitionsRef = useRef(toggleTransitions);
-
-	goNextRef.current = stepForward;
-	goPrevRef.current = stepBackward;
-	togglePresenterRef.current = togglePresenterMode;
-	toggleTransitionsRef.current = toggleTransitions;
-
 	useEffect(() => {
 		const requestedSlide = controlledSlide ?? initialSlide;
 		const requestedStep = controlledSlide === undefined ? initialStep : controlledStep;
@@ -194,6 +181,7 @@ export function SlideDeck({
 			requestedStep === undefined || requestedStep < 0 || !Number.isFinite(requestedStep)
 				? 0
 				: requestedStep;
+		// oxlint-disable-next-line react/set-state-in-effect -- controlled slide position is external URL state
 		setCurrentIndex(nextIndex);
 		setCurrentStep(nextStep);
 	}, [controlledSlide, controlledStep, initialSlide, initialStep, slides.length]);
@@ -202,19 +190,19 @@ export function SlideDeck({
 		const manager = getHotkeyManager();
 
 		const handles = [
-			manager.register("ArrowLeft", () => goPrevRef.current(), { preventDefault: true }),
-			manager.register("ArrowRight", () => goNextRef.current(), { preventDefault: true }),
-			manager.register("PageUp", () => goPrevRef.current(), { preventDefault: true }),
-			manager.register("PageDown", () => goNextRef.current(), { preventDefault: true }),
-			manager.register("Space", () => goNextRef.current(), { preventDefault: true }),
-			manager.register("Alt+B", () => togglePresenterRef.current(), { preventDefault: true }),
-			manager.register("Alt+T", () => toggleTransitionsRef.current(), { preventDefault: true }),
+			manager.register("ArrowLeft", () => stepBackward(), { preventDefault: true }),
+			manager.register("ArrowRight", () => stepForward(), { preventDefault: true }),
+			manager.register("PageUp", () => stepBackward(), { preventDefault: true }),
+			manager.register("PageDown", () => stepForward(), { preventDefault: true }),
+			manager.register("Space", () => stepForward(), { preventDefault: true }),
+			manager.register("Alt+B", () => togglePresenterMode(), { preventDefault: true }),
+			manager.register("Alt+T", () => toggleTransitions(), { preventDefault: true }),
 		];
 
 		return () => {
 			handles.forEach((h) => h.unregister());
 		};
-	}, []);
+	}, [stepBackward, stepForward, togglePresenterMode, toggleTransitions]);
 
 	const handleTouchStart = useCallback((event: React.TouchEvent) => {
 		touchStartX.current = event.touches[0].clientX;
@@ -226,12 +214,12 @@ export function SlideDeck({
 			const deltaX = event.changedTouches[0].clientX - touchStartX.current;
 			const threshold = 50;
 			if (deltaX > threshold) {
-				goPrevRef.current();
+				stepBackward();
 			} else if (deltaX < -threshold) {
-				goNextRef.current();
+				stepForward();
 			}
 		},
-		[swipeEnabled],
+		[stepBackward, stepForward, swipeEnabled],
 	);
 
 	useEffect(() => {
@@ -264,7 +252,7 @@ export function SlideDeck({
 	}
 
 	return (
-		<StepContext value={stepContextValue.current}>
+		<StepContext value={stepContextValue}>
 			<section
 				className={cn("relative h-full w-full overflow-hidden outline-none", className)}
 				style={style}
@@ -289,7 +277,7 @@ export function SlideDeck({
 
 						{!hide_step_index && maxStep > 0 ? (
 							<div className="absolute right-4 bottom-4 z-20 text-sm text-gray-500 dark:text-gray-400">
-								{stepContextValue.current.currentStep} / {maxStep}
+								{currentStep} / {maxStep}
 							</div>
 						) : null}
 						{!hide_slide_index ? (

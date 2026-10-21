@@ -1,17 +1,15 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
 
 import { randomIntegerInclusive } from "./utils";
 
 export function useHasMounted() {
-	const [hasMounted, setHasMounted] = useState(false);
-
-	useEffect(() => {
-		setHasMounted(true);
-	}, []);
-
-	return hasMounted;
+	return useSyncExternalStore(
+		() => () => {},
+		() => true,
+		() => false,
+	);
 }
 
 type Delay = number | null;

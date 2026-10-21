@@ -424,6 +424,7 @@ function PollPanel({
 					const percent = totalVotes > 0 ? Math.round((option.votes / totalVotes) * 100) : 0;
 					return (
 						<button
+							aria-label={`Vote for ${option.label}`}
 							className={cn(
 								"relative overflow-hidden rounded-lg border border-white/15 px-3 py-2 text-left text-xs",
 								poll.open && sessionRole === "viewer" ? "hover:border-white/60" : "cursor-default",

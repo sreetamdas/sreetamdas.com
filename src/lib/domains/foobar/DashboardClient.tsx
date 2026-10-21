@@ -214,6 +214,7 @@ const ResetFoobar = ({ handleClearFoobarData }: { handleClearFoobarData: () => v
 		<AlertDialog.Trigger
 			render={
 				<button
+					aria-label="Reset this browser's progress"
 					className="inline-flex min-h-11 items-center rounded-global border border-red-300 bg-background px-4 py-2 text-sm text-red-700 transition-colors hover:bg-red-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600 dark:border-red-400/60 dark:text-red-300 dark:hover:bg-red-950/40 dark:focus-visible:outline-red-400"
 					type="button"
 				/>
@@ -236,6 +237,7 @@ const ResetFoobar = ({ handleClearFoobarData }: { handleClearFoobarData: () => v
 					<AlertDialog.Close
 						render={
 							<button
+								aria-label="Cancel resetting progress"
 								className="inline-flex min-h-11 items-center justify-center rounded-global bg-foreground/10 px-4 py-2 leading-none font-medium text-foreground outline-none hover:bg-foreground/15 focus:shadow-[0_0_0_2px] focus:shadow-foreground/30"
 								type="button"
 							/>
@@ -246,6 +248,7 @@ const ResetFoobar = ({ handleClearFoobarData }: { handleClearFoobarData: () => v
 					<AlertDialog.Close
 						render={
 							<button
+								aria-label="Yes, reset progress"
 								className="inline-flex min-h-11 items-center justify-center rounded-global bg-red-100 px-4 py-2 leading-none font-medium text-red-700 outline-none hover:bg-red-200 focus:shadow-[0_0_0_2px] focus:shadow-red-300 dark:bg-red-950/60 dark:text-red-300 dark:hover:bg-red-900/60 dark:focus:shadow-red-400/60"
 								onClick={handleClearFoobarData}
 								type="button"

@@ -122,11 +122,7 @@ const StatsSentence = ({
 	}
 
 	if (isError || data === undefined || (showViews && data.view_count === undefined)) {
-		return (
-			<p className="m-0 min-h-5 text-sm" role="status">
-				Stats unavailable right now
-			</p>
-		);
+		return <output className="m-0 block min-h-5 text-sm">Stats unavailable right now</output>;
 	}
 
 	return (
@@ -451,13 +447,12 @@ const ViewsCopy = ({
 }) => {
 	if (isLoading) {
 		return (
-			<p
+			<output
 				className="m-0 inline-flex min-h-7 items-center gap-2 text-sm"
 				aria-label={`Getting view count for this ${page_type}`}
-				role="status"
 			>
 				<span aria-hidden="true" className="h-5 w-48 animate-pulse rounded-full bg-foreground/15" />
-			</p>
+			</output>
 		);
 	}
 

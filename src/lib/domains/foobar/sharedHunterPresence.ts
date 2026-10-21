@@ -59,9 +59,9 @@ function _subscribe(listener: () => void) {
  */
 export function useSharedHunterPresence(enabled: boolean): HunterPresence {
 	const enabledRef = useRef(enabled);
-	enabledRef.current = enabled;
 
 	useEffect(() => {
+		enabledRef.current = enabled;
 		_enabledRefs.add(enabledRef);
 
 		if (!_clientId) {

@@ -45,6 +45,7 @@ export function SlideDeckRouteShell({
 	}));
 
 	useEffect(() => {
+		// oxlint-disable-next-line react/set-state-in-effect -- slide position is external URL state
 		setLocalPosition({ slide: search.slide ?? 0, step: search.step ?? 0 });
 	}, [search.slide, search.step]);
 
