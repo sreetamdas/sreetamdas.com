@@ -87,7 +87,7 @@ function escapeXml(str: string): string {
 }
 
 async function main() {
-	const blogPosts = allBlogPosts as Array<BlogPost>;
+	const blogPosts: Array<BlogPost> = allBlogPosts;
 
 	// RSS
 	const rssDir = resolve(PUBLIC, "rss");
@@ -101,4 +101,4 @@ async function main() {
 	);
 }
 
-main();
+await main();

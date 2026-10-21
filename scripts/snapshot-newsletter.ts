@@ -51,4 +51,4 @@ async function main() {
 	process.stdout.write(`  Wrote ${SNAPSHOT_PATH} (${data.results.length} issues)\n`);
 }
 
-main();
+await main();

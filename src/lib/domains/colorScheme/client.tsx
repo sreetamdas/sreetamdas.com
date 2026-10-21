@@ -90,6 +90,7 @@ const ToggleIcon = ({ colorScheme }: Pick<ColorSchemeSliceType, "colorScheme">) 
 					title="Currently using system preference"
 				/>
 			);
+		case undefined:
 		default:
 			return <span className="inline-block" />;
 	}

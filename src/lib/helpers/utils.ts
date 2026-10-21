@@ -24,7 +24,7 @@ export async function handleFetch<T>(input: RequestInfo | URL, init?: RequestIni
 		return await response.json();
 	}
 
-	return Promise.reject(await response.json());
+	throw new Error(`Request failed with ${response.status}`, { cause: await response.json() });
 }
 
 export type PromiseSettled<T> = Promise<
@@ -38,9 +38,9 @@ export type PromiseSettled<T> = Promise<
 	  }
 >;
 export async function wrapPromise<T>(promise: Promise<T>): PromiseSettled<T> {
-	// @ts-expect-error TS complains but this is correct
-	return Promise.allSettled([promise]).then(([{ value, reason }]) => ({
-		data: value,
-		error: reason,
-	}));
+	const [settled] = await Promise.allSettled([promise]);
+	if (settled.status === "fulfilled") {
+		return { data: settled.value, error: undefined };
+	}
+	return { data: undefined, error: String(settled.reason) };
 }

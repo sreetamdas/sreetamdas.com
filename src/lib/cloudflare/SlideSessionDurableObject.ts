@@ -135,7 +135,7 @@ export class SlideSessionDurableObject extends DurableObject<CloudflareEnv> {
 		}
 
 		if (isReactionMessage(parsed)) {
-			await this.broadcastReaction(parsed.emoji);
+			this.broadcastReaction(parsed.emoji);
 		}
 	}
 
