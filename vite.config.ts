@@ -343,7 +343,7 @@ export default defineConfig({
 		// down to nothing and fail with "Expected at least one target file".
 		// Keep generated output out of the matcher instead.
 		"!(*.gen).{ts,tsx,js,jsx}": ["vp fmt", "vp lint"],
-		"*.{json,jsonc}": ["vp fmt"],
+		"*.{json,jsonc,css,md,mdx,toml,yaml,yml}": ["vp fmt"],
 	},
 	server: {
 		port: 5045,
