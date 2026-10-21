@@ -275,11 +275,11 @@ type BadgeProps = {
 const Badge = ({ achievement, isExpanded, cluesSeen, recordFoobarClue, onToggle }: BadgeProps) => {
 	const trackEvent = useTrackEvent();
 	const [recordedHint, setRecordedHint] = useState<number | null>(null);
-	// The acknowledgment confirms the most recent reveal; clear it once the
-	// entry collapses so a later visit cannot show a stale confirmation.
-	useEffect(() => {
+	const [wasExpanded, setWasExpanded] = useState(isExpanded);
+	if (wasExpanded !== isExpanded) {
+		setWasExpanded(isExpanded);
 		if (!isExpanded) setRecordedHint(null);
-	}, [isExpanded]);
+	}
 	const metadata = FOOBAR_ACHIEVEMENTS[achievement];
 	const clueIds = cluesSeen.map(({ id }) => id);
 	const revealedHints = metadata.hints.flatMap((hint, index) =>
@@ -316,7 +316,6 @@ const Badge = ({ achievement, isExpanded, cluesSeen, recordFoobarClue, onToggle 
 			},
 		});
 	};
-
 	return (
 		<li className="border-b border-foreground/20">
 			<article className="scroll-mt-24" id={`foobar-achievement-${achievement}`}>
@@ -363,7 +362,7 @@ const Badge = ({ achievement, isExpanded, cluesSeen, recordFoobarClue, onToggle 
 						)}
 
 						{recordedHint !== null ? (
-							<p className="mt-4 text-sm text-foreground/70" role="status">
+							<output className="mt-4 block text-sm text-foreground/70">
 								Hint {recordedHint} remembered.{" "}
 								<a
 									className="font-medium text-primary underline underline-offset-4"
@@ -372,7 +371,7 @@ const Badge = ({ achievement, isExpanded, cluesSeen, recordFoobarClue, onToggle 
 									See all notes
 								</a>
 								.
-							</p>
+							</output>
 						) : null}
 
 						{nextHint && nextHintNumber <= 3 ? (
@@ -413,12 +412,16 @@ const DevelopingHint = ({ achievement, hint3SeenAt, onRead }: DevelopingHintProp
 	useEffect(() => {
 		if (hint3SeenAt === undefined || hint3SeenAt === null) return;
 
+		const timer = window.setTimeout(() => setNow(Date.now()), 0);
+		return () => window.clearTimeout(timer);
+	}, [hint3SeenAt]);
+
+	useEffect(() => {
+		if (hint3SeenAt === undefined || hint3SeenAt === null) return;
+
 		const currentNow = Date.now();
 		const initialDevelopment = getFoobarHintDevelopment(hint3SeenAt, currentNow);
-		if (initialDevelopment.status !== "developing") {
-			setNow(currentNow);
-			return;
-		}
+		if (initialDevelopment.status !== "developing") return;
 
 		const updateDevelopment = () => setNow(Date.now());
 		const interval = window.setInterval(updateDevelopment, 60 * 1_000);
@@ -439,10 +442,7 @@ const DevelopingHint = ({ achievement, hint3SeenAt, onRead }: DevelopingHintProp
 	}, [development.status, hint3SeenAt]);
 
 	useEffect(() => {
-		if (development.status === "not-started") {
-			setAnnouncement("");
-			return;
-		}
+		if (development.status === "not-started") return;
 
 		const announcementTimer = window.setTimeout(() => {
 			setAnnouncement(

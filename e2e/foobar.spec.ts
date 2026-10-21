@@ -220,6 +220,19 @@ test("groups achievements and persists revealed field notes", async ({ page }) =
 	).toHaveText("Reveal hint 2 of 4");
 });
 
+test("clears a hint acknowledgment when another badge collapses it", async ({ page }) => {
+	await seedProgress(page);
+	await page.goto("/foobar");
+
+	const first = await openFieldEntry(page, "TXT Me Maybe");
+	await first.getByRole("button", { name: "Reveal hint 1 of 4 for TXT Me Maybe" }).click();
+	await expect(first.getByText("Hint 1 remembered.")).toBeVisible();
+
+	await openFieldEntry(page, "Behind the Screens");
+	const reopened = await openFieldEntry(page, "TXT Me Maybe");
+	await expect(reopened.getByText("Hint 1 remembered.")).toHaveCount(0);
+});
+
 test("labels bonus achievements and laptop-only clues", async ({ page }) => {
 	await seedProgress(page);
 	await page.goto("/foobar");
