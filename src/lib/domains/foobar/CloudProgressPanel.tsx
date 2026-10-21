@@ -13,6 +13,7 @@ import { useTrackEvent } from "@/lib/domains/Analytics";
 import { useGlobalStore } from "@/lib/domains/global";
 import { captureException } from "@/lib/domains/Sentry";
 
+import { Bracketed } from "./Bracketed";
 import { mergeFoobarProgress } from "./cloud-progress";
 import {
 	enableFoobarProgressServerFn,
@@ -41,7 +42,11 @@ function withLatestLocalProgress(synced: FoobarDataType): FoobarDataType {
 	return mergeFoobarProgress(useGlobalStore.getState().foobar_data, synced);
 }
 
-export function CloudProgressPanel() {
+export function CloudProgressPanel({
+	onUserNameChange,
+}: {
+	onUserNameChange?: (name: string | null) => void;
+}) {
 	const { foobarData, setFoobarData, hasHydrated } = useGlobalStore(
 		useShallow((state) => ({
 			foobarData: state.foobar_data,
@@ -281,14 +286,16 @@ export function CloudProgressPanel() {
 	}
 
 	const community = bootstrap?.community ?? { finisherCount: 0, leaderboard: [] };
+	const userName = bootstrap?.user?.name ?? null;
+	useEffect(() => onUserNameChange?.(userName), [onUserNameChange, userName]);
 
 	return (
-		<section aria-labelledby="foobar-cloud-title" className="border-t border-foreground/15 pt-5">
+		<section aria-labelledby="foobar-cloud-title" className="border-t border-karma-rule pt-4">
 			<div className="flex flex-wrap items-baseline justify-between gap-2">
-				<h3 id="foobar-cloud-title" className="font-serif text-xl leading-normal">
+				<h3 id="foobar-cloud-title" className="font-bold text-foreground">
 					Cloud save
 				</h3>
-				<p className="font-mono text-xs text-foreground/55">
+				<p className="text-xs text-karma-comment">
 					{community.finisherCount} {community.finisherCount === 1 ? "finisher" : "finishers"}
 				</p>
 			</div>
@@ -296,34 +303,36 @@ export function CloudProgressPanel() {
 				<div className="mt-3 flex flex-wrap items-center gap-2 text-sm" role="alert">
 					<span>{foobarCloudFailureLabel(failedOperation)}</span>
 					<button
-						className="inline-flex min-h-11 items-center rounded-global border border-foreground/25 px-3 py-2 font-medium"
+						className="inline-flex min-h-11 items-center text-karma-green hover:[text-shadow:0_0_6px_currentColor] focus-visible:outline-2 focus-visible:outline-karma-yellow"
 						onClick={retryFailedOperation}
 						type="button"
 					>
-						Retry
+						<Bracketed>Retry</Bracketed>
 					</button>
 				</div>
 			) : null}
 
 			{bootstrap?.user ? (
-				<div className="mt-3 space-y-3 text-sm">
+				<div className="mt-2 space-y-2">
 					<div className="flex flex-wrap items-center gap-x-3">
 						<p>
-							Signed in as <strong>{bootstrap.user.name}</strong>. {syncLabel(syncState)}
+							Signed in as{" "}
+							<strong className="font-normal text-foreground">{bootstrap.user.name}</strong>.{" "}
+							{syncLabel(syncState)}
 						</p>
 						<button
-							className="inline-flex min-h-11 items-center link-base text-primary"
+							className="inline-flex min-h-11 items-center text-karma-green hover:[text-shadow:0_0_6px_currentColor] focus-visible:outline-2 focus-visible:outline-karma-yellow"
 							onClick={() => void handleSignOut()}
 							type="button"
 						>
-							Sign out
+							<Bracketed>Sign out</Bracketed>
 						</button>
 					</div>
 					{bootstrap.cloud?.progress.all_achievements && bootstrap.cloud.completedAt !== null ? (
-						<label className="flex min-h-11 max-w-md items-start gap-2 py-2 text-foreground/75">
+						<label className="flex min-h-11 max-w-md items-start gap-2 py-2">
 							<input
 								checked={bootstrap.cloud.publicProfile}
-								className="mt-1"
+								className="mt-1 accent-karma-green"
 								onChange={(event) => void handlePublicProfile(event.currentTarget.checked)}
 								type="checkbox"
 							/>
@@ -332,28 +341,28 @@ export function CloudProgressPanel() {
 					) : null}
 					{bootstrap.cloud?.certificateId ? (
 						<a
-							className="inline-flex font-medium text-secondary underline decoration-secondary/40 underline-offset-4"
+							className="inline-flex min-h-11 items-center text-karma-yellow hover:[text-shadow:0_0_6px_currentColor] focus-visible:outline-2 focus-visible:outline-karma-yellow"
 							href={`/foobar/certificate/${bootstrap.cloud.certificateId}`}
 						>
-							Open completion certificate
+							<Bracketed>Open completion certificate</Bracketed>
 						</a>
 					) : null}
 					{bootstrap.cloud ? (
 						<CloudResetDialog onReset={() => void handleCloudReset()} />
 					) : bootstrap.cloudSyncEnabled === false ? (
 						<button
-							className="inline-flex min-h-11 items-center rounded-global border border-foreground/25 px-3 py-2"
+							className="inline-flex min-h-11 items-center text-karma-green hover:[text-shadow:0_0_6px_currentColor] focus-visible:outline-2 focus-visible:outline-karma-yellow disabled:opacity-50"
 							disabled={syncState === "saving"}
 							onClick={() => void handleCloudEnable()}
 							type="button"
 						>
-							Save this browser's progress to cloud
+							<Bracketed>Save this browser's progress to cloud</Bracketed>
 						</button>
 					) : null}
 				</div>
 			) : (
-				<div className="mt-3 text-sm">
-					<p className="text-foreground/75">
+				<div className="mt-2">
+					<p>
 						Your progress stays in this browser.{" "}
 						{bootstrap === null
 							? null
@@ -362,14 +371,14 @@ export function CloudProgressPanel() {
 								: "Cloud save isn't available right now."}
 					</p>
 					{bootstrap && bootstrap.signInProviders.length > 0 ? (
-						<div className="mt-3 flex flex-wrap gap-2">
+						<div className="mt-1 flex flex-wrap gap-x-[1ch]">
 							{bootstrap.signInProviders.map((provider) => (
 								<a
-									className="inline-flex min-h-11 items-center rounded-global border border-foreground/25 px-3 py-2"
+									className="inline-flex min-h-11 items-center text-karma-green hover:[text-shadow:0_0_6px_currentColor] focus-visible:outline-2 focus-visible:outline-karma-yellow"
 									href={`/api/login/${provider}?returnTo=/foobar`}
 									key={provider}
 								>
-									{SIGN_IN_LABELS[provider]}
+									<Bracketed>{SIGN_IN_LABELS[provider]}</Bracketed>
 								</a>
 							))}
 						</div>
@@ -379,14 +388,17 @@ export function CloudProgressPanel() {
 
 			{community.leaderboard.length > 0 ? (
 				<div className="mt-5">
-					<h4 id="foobar-finishers-title" className="font-mono text-xs text-foreground/60">
+					<h4 id="foobar-finishers-title" className="text-xs text-karma-comment">
 						Finishers
 					</h4>
-					<ul aria-labelledby="foobar-finishers-title" className="mt-2 space-y-1 text-sm">
+					<ul aria-labelledby="foobar-finishers-title" className="mt-1 space-y-0.5">
 						{community.leaderboard.map((entry) => (
 							<li className="flex max-w-md justify-between gap-4" key={entry.certificateId}>
-								<span>{entry.name}</span>
-								<time dateTime={new Date(entry.completedAt).toISOString()}>
+								<span className="text-foreground">{entry.name}</span>
+								<time
+									className="text-karma-comment"
+									dateTime={new Date(entry.completedAt).toISOString()}
+								>
 									{new Date(entry.completedAt).toLocaleDateString()}
 								</time>
 							</li>
@@ -415,20 +427,20 @@ function CloudResetDialog({ onReset }: { onReset: () => void }) {
 				render={
 					<button
 						aria-label="Delete cloud save"
-						className="inline-flex min-h-11 items-center rounded-global border border-foreground/25 px-3 py-2 text-foreground/75 hover:border-red-300 hover:text-red-700 dark:hover:border-red-400/60 dark:hover:text-red-300"
+						className="inline-flex min-h-11 items-center border border-karma-pink/60 px-3 py-2 text-karma-pink hover:bg-karma-pink/10 focus-visible:outline-2 focus-visible:outline-karma-pink"
 						type="button"
 					/>
 				}
 			>
-				Delete cloud save
+				<Bracketed>Delete cloud save</Bracketed>
 			</AlertDialog.Trigger>
 			<AlertDialog.Portal>
-				<AlertDialog.Backdrop className="fixed inset-0 z-30 bg-slate-950/40 data-open:animate-overlayShow" />
-				<AlertDialog.Popup className="fixed top-1/2 left-1/2 z-40 max-h-[85vh] w-[90vw] max-w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-global border border-foreground/15 bg-background p-6 text-foreground shadow-lg focus:outline-none data-open:animate-contentShow">
-					<AlertDialog.Title className="text-lg font-medium">
-						Delete your cloud save?
+				<AlertDialog.Backdrop className="fixed inset-0 z-30 bg-black/60 data-open:animate-overlayShow" />
+				<AlertDialog.Popup className="fixed top-1/2 left-1/2 z-40 max-h-[85vh] w-[90vw] max-w-[500px] -translate-x-1/2 -translate-y-1/2 border border-karma-rule bg-karma-background p-6 font-mono text-sm text-foreground shadow-[0_10px_38px_-10px_rgb(0_0_0/0.8)] focus:outline-none data-open:animate-contentShow">
+					<AlertDialog.Title className="font-bold text-karma-pink">
+						--- Delete your cloud save? ---
 					</AlertDialog.Title>
-					<AlertDialog.Description className="mt-3 text-sm leading-normal text-foreground/70">
+					<AlertDialog.Description className="mt-3 leading-relaxed text-foreground/75">
 						Your progress will remain in this browser. Your certificate link stops working and you
 						leave the Finishers list. Cloud saving stays off until you explicitly enable it again.
 					</AlertDialog.Description>
@@ -437,24 +449,24 @@ function CloudResetDialog({ onReset }: { onReset: () => void }) {
 							render={
 								<button
 									aria-label="Keep cloud save"
-									className="inline-flex min-h-11 items-center rounded-global bg-foreground/10 px-3 py-2 text-sm"
+									className="inline-flex min-h-11 items-center text-karma-green hover:[text-shadow:0_0_6px_currentColor] focus-visible:outline-2 focus-visible:outline-karma-yellow"
 									type="button"
 								/>
 							}
 						>
-							Keep cloud save
+							<Bracketed>Keep cloud save</Bracketed>
 						</AlertDialog.Close>
 						<AlertDialog.Close
 							render={
 								<button
 									aria-label="Yes, delete cloud save"
-									className="inline-flex min-h-11 items-center rounded-global bg-red-100 px-3 py-2 text-sm text-red-700 dark:bg-red-950/60 dark:text-red-300 dark:hover:bg-red-900/60"
+									className="inline-flex min-h-11 items-center border border-karma-pink/60 px-3 py-2 text-karma-pink hover:bg-karma-pink/10 focus-visible:outline-2 focus-visible:outline-karma-pink"
 									onClick={onReset}
 									type="button"
 								/>
 							}
 						>
-							Yes, delete cloud save
+							<Bracketed>Yes, delete cloud save</Bracketed>
 						</AlertDialog.Close>
 					</div>
 				</AlertDialog.Popup>
