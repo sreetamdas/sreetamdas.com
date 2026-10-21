@@ -261,6 +261,7 @@ export function CloudProgressPanel() {
 				body: "{}",
 			});
 			if (!response.ok) throw new Error(`Foobar sign-out failed with ${response.status}`);
+			publishFoobarCloudLifecycle("signed-out");
 			setSyncState("loading");
 			setReloadKey((value) => value + 1);
 		} catch (error) {

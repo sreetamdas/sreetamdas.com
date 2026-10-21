@@ -1,8 +1,12 @@
-/** Cross-tab notification channel for cloud-save enable and disable operations. */
+/** Cross-tab notification channel for cloud-save and auth lifecycle operations. */
 
 const STORAGE_KEY = "foobar-cloud-sync-lifecycle";
 
-export type FoobarCloudLifecycle = "disabled" | "enabled";
+export type FoobarCloudLifecycle = "disabled" | "enabled" | "signed-out";
+
+export function isFoobarCloudLifecycle(value: unknown): value is FoobarCloudLifecycle {
+	return value === "disabled" || value === "enabled" || value === "signed-out";
+}
 
 export function publishFoobarCloudLifecycle(lifecycle: FoobarCloudLifecycle) {
 	window.localStorage.setItem(
@@ -22,7 +26,7 @@ export function subscribeFoobarCloudLifecycle(
 				typeof value === "object" &&
 				value !== null &&
 				"lifecycle" in value &&
-				(value.lifecycle === "disabled" || value.lifecycle === "enabled")
+				isFoobarCloudLifecycle(value.lifecycle)
 			) {
 				onLifecycle(value.lifecycle);
 			}
