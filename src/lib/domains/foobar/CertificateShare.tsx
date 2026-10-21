@@ -3,6 +3,8 @@
 /** Browser-only share controls for the otherwise server-rendered certificate. */
 import { useState } from "react";
 
+import { Bracketed } from "./Bracketed";
+
 export function CertificateShare({ title, url }: { title: string; url: string }) {
 	const [status, setStatus] = useState<"idle" | "copied" | "failed">("idle");
 
@@ -23,15 +25,17 @@ export function CertificateShare({ title, url }: { title: string; url: string })
 
 	return (
 		<button
-			className="rounded-global border border-foreground/30 px-4 py-2 text-sm font-medium hover:border-secondary hover:text-secondary"
+			className="inline-flex min-h-11 items-center text-karma-yellow hover:[text-shadow:0_0_6px_currentColor] focus-visible:outline-2 focus-visible:outline-karma-yellow"
 			onClick={() => void handleShare()}
 			type="button"
 		>
-			{status === "copied"
-				? "Link copied"
-				: status === "failed"
-					? "Couldn't share. Copy the address bar link."
-					: "Share certificate"}
+			<Bracketed>
+				{status === "copied"
+					? "Link copied"
+					: status === "failed"
+						? "Couldn't share. Copy the address bar link."
+						: "Share certificate"}
+			</Bracketed>
 		</button>
 	);
 }

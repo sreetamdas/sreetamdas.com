@@ -1,15 +1,23 @@
-/** Public, bearer-token completion certificate and social-sharing surface. */
+/**
+ * Public, bearer-token completion certificate and social-sharing surface, drawn
+ * like the dashboard: the fully lit mountain with each discovery's real star.
+ */
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 
 import { SITE_TITLE_APPEND } from "@/config";
 import { NotFound404 } from "@/lib/components/Error";
+import { Bracketed } from "@/lib/domains/foobar/Bracketed";
+import { FOOBAR_ACHIEVEMENT_ORDER } from "@/lib/domains/foobar/catalog";
 import {
 	createFoobarCertificateHead,
 	formatFoobarCertificateDate,
 } from "@/lib/domains/foobar/certificate";
 import { fetchFoobarCertificateServerFn } from "@/lib/domains/foobar/certificate.server";
 import { CertificateShare } from "@/lib/domains/foobar/CertificateShare";
+import { FOOBAR_GLOW_CLASS } from "@/lib/domains/foobar/karma";
+import { FoobarMountainArt, FoobarTierWords } from "@/lib/domains/foobar/MountainArt";
 import { FoobarNotFoundAward } from "@/lib/domains/foobar/Pixel";
+import { useFoobarKarma } from "@/lib/domains/foobar/useFoobarKarma";
 import { absoluteUrl } from "@/lib/seo";
 
 export const Route = createFileRoute("/(main)/(foobar)/foobar/certificate/$token")({
@@ -23,60 +31,71 @@ export const Route = createFileRoute("/(main)/(foobar)/foobar/certificate/$token
 		loaderData
 			? createFoobarCertificateHead(loaderData)
 			: { meta: [{ title: `Page not found ${SITE_TITLE_APPEND}` }] },
-	notFoundComponent: () => (
+	notFoundComponent: FoobarCertificateNotFound,
+});
+
+function FoobarCertificatePage() {
+	useFoobarKarma();
+	const certificate = Route.useLoaderData();
+	const date = formatFoobarCertificateDate(certificate.completedAt);
+	const url = absoluteUrl(`/foobar/certificate/${certificate.certificateId}`);
+	const completed = FOOBAR_ACHIEVEMENT_ORDER.filter(
+		(achievement) => achievement in certificate.stars,
+	);
+	const starValues = Object.values(certificate.stars);
+	const gold = starValues.filter((star) => star === "gold").length;
+	const silver = starValues.filter((star) => star === "silver").length;
+
+	return (
+		<section className="py-12 font-mono text-sm leading-relaxed text-foreground/75 [font-variant-ligatures:none] sm:py-16">
+			<p className="text-karma-comment">--- Foobar field certificate ---</p>
+			<p className="mt-8">Certifies that</p>
+			<h1 className="mt-1 text-4xl font-bold break-words text-karma-green [text-shadow:0_0_2px_currentColor,0_0_12px_rgb(123_216_143/0.55)] sm:text-5xl">
+				{certificate.name}
+			</h1>
+			<p className="mt-3 max-w-[56ch] text-foreground">
+				mapped every hidden corner and completed the Foobar hunt.
+			</p>
+			<FoobarTierWords className="mt-3" completed={completed} />
+			<p className="mt-4">
+				<span className={`text-karma-yellow ${FOOBAR_GLOW_CLASS}`}>{completed.length}*</span>
+				<span className="text-karma-comment"> · </span>
+				<span className="text-karma-yellow">{gold} gold</span>
+				<span className="text-karma-comment"> · </span>
+				<span className="text-karma-silver">{silver} silver</span>
+			</p>
+			<div className="mt-6">
+				<FoobarMountainArt completed={completed} stars={certificate.stars} />
+			</div>
+			<p className="mt-4">
+				Completed{" "}
+				<time
+					className="text-foreground"
+					dateTime={new Date(certificate.completedAt).toISOString()}
+				>
+					{date}
+				</time>
+			</p>
+
+			<div className="mt-8 flex flex-wrap items-center gap-x-[2ch] gap-y-2">
+				<CertificateShare title={`${certificate.name} completed Foobar`} url={url} />
+				<Link
+					className="inline-flex min-h-11 items-center text-karma-green hover:[text-shadow:0_0_6px_currentColor] focus-visible:outline-2 focus-visible:outline-karma-yellow"
+					to="/foobar"
+				>
+					<Bracketed>Return to the hunt</Bracketed>
+				</Link>
+			</div>
+		</section>
+	);
+}
+
+function FoobarCertificateNotFound() {
+	useFoobarKarma();
+	return (
 		<>
 			<NotFound404 message="This field record does not exist." />
 			<FoobarNotFoundAward />
 		</>
-	),
-});
-
-function FoobarCertificatePage() {
-	const certificate = Route.useLoaderData();
-	const date = formatFoobarCertificateDate(certificate.completedAt);
-	const url = absoluteUrl(`/foobar/certificate/${certificate.certificateId}`);
-
-	return (
-		<section className="mx-auto max-w-4xl py-14 sm:py-20">
-			<div className="relative overflow-hidden rounded-global border border-secondary/35 bg-foreground px-6 py-10 text-background shadow-2xl sm:px-12 sm:py-14">
-				<p className="font-mono text-xs tracking-[0.2em] text-background/60 uppercase">
-					Foobar field certificate
-				</p>
-				<p className="mt-16 text-sm tracking-widest text-background/60 uppercase">Certifies that</p>
-				<h1 className="mt-3 font-serif text-5xl leading-none font-bold text-balance sm:text-7xl">
-					{certificate.name}
-				</h1>
-				<p className="mt-6 max-w-2xl text-lg text-background/80 sm:text-2xl">
-					mapped every hidden corner and completed the Foobar hunt.
-				</p>
-				<div className="mt-16 flex flex-wrap items-end justify-between gap-6 border-t border-background/20 pt-6">
-					<div>
-						<p className="font-mono text-xs text-background/50 uppercase">Completed</p>
-						<time
-							className="mt-1 block font-serif text-xl"
-							dateTime={new Date(certificate.completedAt).toISOString()}
-						>
-							{date}
-						</time>
-					</div>
-					<span
-						aria-hidden="true"
-						className="grid size-16 place-items-center rounded-full border-2 border-secondary font-serif text-3xl text-secondary"
-					>
-						F
-					</span>
-				</div>
-			</div>
-
-			<div className="mt-6 flex flex-wrap items-center gap-3">
-				<CertificateShare title={`${certificate.name} completed Foobar`} url={url} />
-				<Link
-					className="text-sm underline decoration-foreground/30 underline-offset-4"
-					to="/foobar"
-				>
-					Return to the hunt
-				</Link>
-			</div>
-		</section>
 	);
 }

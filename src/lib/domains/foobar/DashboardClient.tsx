@@ -9,7 +9,7 @@
  */
 import { AlertDialog } from "@base-ui/react/alert-dialog";
 import { Link } from "@tanstack/react-router";
-import { Fragment, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useShallow } from "zustand/react/shallow";
 
 import { IS_DEV } from "@/config";
@@ -20,26 +20,19 @@ import { Bracketed } from "@/lib/domains/foobar/Bracketed";
 import {
 	FOOBAR_ACHIEVEMENT_ORDER,
 	FOOBAR_ACHIEVEMENTS,
-	FOOBAR_PUZZLE_TIER_WORDS,
+	getFoobarStars,
 	hasFinishedFoobarPuzzleTiers,
-	hasFinishedFoobarTier,
 	isFoobarAchievement,
 	type FoobarAchievement,
-	type FoobarPuzzleTier,
 } from "@/lib/domains/foobar/catalog";
 import { CloudProgressPanel } from "@/lib/domains/foobar/CloudProgressPanel";
 import { getFoobarRewardPath } from "@/lib/domains/foobar/codes";
 import { EntryArticle } from "@/lib/domains/foobar/EntryArticle";
 import { FieldNotes } from "@/lib/domains/foobar/FieldNotes";
 import { FOOBAR_FLAGS } from "@/lib/domains/foobar/flags";
-import { FOOBAR_GLOW_CLASS, FOOBAR_TIER_TEXT_CLASS } from "@/lib/domains/foobar/karma";
-import { FoobarMountainArt } from "@/lib/domains/foobar/MountainArt";
+import { FoobarMountainArt, FoobarTierWords } from "@/lib/domains/foobar/MountainArt";
 import { useSharedHunterPresence } from "@/lib/domains/foobar/sharedHunterPresence";
-import {
-	type FoobarDataType,
-	type FoobarSchrodingerProps,
-	initialFoobarData,
-} from "@/lib/domains/foobar/store";
+import { type FoobarSchrodingerProps, initialFoobarData } from "@/lib/domains/foobar/store";
 import { useFoobarKarma } from "@/lib/domains/foobar/useFoobarKarma";
 import { useGlobalStore } from "@/lib/domains/global";
 import { useHasMounted } from "@/lib/helpers/hooks";
@@ -159,7 +152,7 @@ export const FoobarDashboard = ({ notice }: { notice?: string }) => {
 						</span>
 					</p>
 				</div>
-				<TierWordsLine completed={completed} />
+				<FoobarTierWords className="pl-[2ch]" completed={completed} />
 			</header>
 			<p className="mt-6 max-w-[62ch] text-pretty">
 				There are strange things hiding around this website. Some are obvious. Some are decidedly
@@ -206,10 +199,10 @@ export const FoobarDashboard = ({ notice }: { notice?: string }) => {
 				</h2>
 				<FoobarMountainArt
 					activeAchievement={activeAchievement}
-					clues_seen={clues_seen}
 					completed={completed}
 					nextAchievement={nextAchievement}
 					onToggleAchievement={handleToggleAchievement}
+					stars={getFoobarStars(foobar_data)}
 				/>
 				<p className="mt-2 flex flex-wrap gap-x-4 text-xs text-karma-comment">
 					<span>
@@ -243,39 +236,6 @@ export const FoobarDashboard = ({ notice }: { notice?: string }) => {
 			</p>
 			<XMarksTheSpot foobar={getFoobarRewardPath("devtools")} />
 		</div>
-	);
-};
-
-const TierWordsLine = ({ completed }: Pick<FoobarDataType, "completed">) => {
-	const tiers = Object.keys(FOOBAR_PUZZLE_TIER_WORDS).filter((tier): tier is FoobarPuzzleTier =>
-		Object.hasOwn(FOOBAR_PUZZLE_TIER_WORDS, tier),
-	);
-	const found = tiers.filter((tier) => hasFinishedFoobarTier(tier, completed));
-
-	return (
-		<p
-			aria-label={
-				found.length === 0
-					? "No tier words yet"
-					: `Tier words so far: ${found.map((tier) => FOOBAR_PUZZLE_TIER_WORDS[tier]).join(", ")}`
-			}
-			className="pl-[2ch] text-karma-green/90"
-		>
-			{"{"}
-			{tiers.map((tier, index) => (
-				<Fragment key={tier}>
-					{index > 0 ? ", " : null}
-					{found.includes(tier) ? (
-						<span className={`${FOOBAR_TIER_TEXT_CLASS[tier]} ${FOOBAR_GLOW_CLASS}`}>
-							{FOOBAR_PUZZLE_TIER_WORDS[tier]}
-						</span>
-					) : (
-						<span className="text-karma-gutter">?</span>
-					)}
-				</Fragment>
-			))}
-			{"}"}
-		</p>
 	);
 };
 

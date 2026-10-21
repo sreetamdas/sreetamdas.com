@@ -5,15 +5,18 @@
  * `onToggleAchievement` every row is a button that opens its field entry;
  * without it (the certificate) the picture is static.
  */
+import { Fragment } from "react";
+
 import {
 	FOOBAR_ACHIEVEMENT_ORDER,
 	FOOBAR_ACHIEVEMENTS,
 	FOOBAR_PUZZLE_TIER_WORDS,
 	FOOBAR_TIERS,
-	getFoobarStar,
 	hasFinishedFoobarTier,
 	isFoobarPuzzleTier,
 	type FoobarAchievement,
+	type FoobarPuzzleTier,
+	type FoobarStars,
 	type FoobarTier,
 } from "./catalog";
 import { FOOBAR_GLOW_CLASS, FOOBAR_STAR_TEXT_CLASS, FOOBAR_TIER_TEXT_CLASS } from "./karma";
@@ -30,7 +33,8 @@ const TIER_SHORT_LABEL: Record<FoobarTier, string> = {
 
 const ROW_GRID = "grid grid-cols-[44ch_5ch] sm:grid-cols-[44ch_5ch_16ch]";
 
-type FoobarMountainArtProps = Pick<FoobarDataType, "completed" | "clues_seen"> & {
+type FoobarMountainArtProps = Pick<FoobarDataType, "completed"> & {
+	stars: FoobarStars;
 	nextAchievement?: FoobarAchievement;
 	activeAchievement?: FoobarAchievement;
 	onToggleAchievement?: (achievement: FoobarAchievement) => void;
@@ -38,7 +42,7 @@ type FoobarMountainArtProps = Pick<FoobarDataType, "completed" | "clues_seen"> &
 
 export function FoobarMountainArt({
 	completed,
-	clues_seen,
+	stars,
 	nextAchievement,
 	activeAchievement,
 	onToggleAchievement,
@@ -71,7 +75,7 @@ export function FoobarMountainArt({
 				{FOOBAR_MOUNTAIN.rows.map(({ achievement, cells }) => {
 					const metadata = FOOBAR_ACHIEVEMENTS[achievement];
 					const found = completed.includes(achievement);
-					const star = getFoobarStar(achievement, { completed, clues_seen });
+					const star = stars[achievement];
 					const isNext = achievement === nextAchievement;
 					const isActive = achievement === activeAchievement;
 					const number = FOOBAR_ACHIEVEMENT_ORDER.indexOf(achievement) + 1;
@@ -225,3 +229,39 @@ function Cells({
 		),
 	);
 }
+
+export const FoobarTierWords = ({
+	completed,
+	className = "",
+}: Pick<FoobarDataType, "completed"> & { className?: string }) => {
+	const tiers = Object.keys(FOOBAR_PUZZLE_TIER_WORDS).filter((tier): tier is FoobarPuzzleTier =>
+		Object.hasOwn(FOOBAR_PUZZLE_TIER_WORDS, tier),
+	);
+	const found = tiers.filter((tier) => hasFinishedFoobarTier(tier, completed));
+
+	return (
+		<p
+			aria-label={
+				found.length === 0
+					? "No tier words yet"
+					: `Tier words so far: ${found.map((tier) => FOOBAR_PUZZLE_TIER_WORDS[tier]).join(", ")}`
+			}
+			className={`text-karma-green/90 ${className}`}
+		>
+			{"{"}
+			{tiers.map((tier, index) => (
+				<Fragment key={tier}>
+					{index > 0 ? ", " : null}
+					{found.includes(tier) ? (
+						<span className={`${FOOBAR_TIER_TEXT_CLASS[tier]} ${FOOBAR_GLOW_CLASS}`}>
+							{FOOBAR_PUZZLE_TIER_WORDS[tier]}
+						</span>
+					) : (
+						<span className="text-karma-gutter">?</span>
+					)}
+				</Fragment>
+			))}
+			{"}"}
+		</p>
+	);
+};
