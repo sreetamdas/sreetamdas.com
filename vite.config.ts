@@ -161,8 +161,9 @@ const oxfmt_config: UserConfig["fmt"] = {
 const oxlint_config: UserConfig["lint"] = {
 	plugins: ["typescript", "oxc", "unicorn", "import", "react", "jsx-a11y"],
 	jsPlugins: ["eslint-plugin-better-tailwindcss"],
+	ignorePatterns: ["src/cloudflare-env.d.ts", "src/routeTree.gen.ts"],
 	categories: {
-		correctness: "off",
+		correctness: "error",
 	},
 	env: {
 		builtin: true,
@@ -172,8 +173,8 @@ const oxlint_config: UserConfig["lint"] = {
 		"shared-node-browser": true,
 	},
 	options: {
-		typeAware: false,
-		typeCheck: false,
+		typeAware: true,
+		typeCheck: true,
 	},
 	settings: {
 		"better-tailwindcss": {
@@ -249,13 +250,11 @@ const oxlint_config: UserConfig["lint"] = {
 		"@typescript-eslint/no-empty-object-type": "error",
 		"@typescript-eslint/no-explicit-any": "error",
 		"@typescript-eslint/no-unnecessary-type-assertion": "error",
-		"@typescript-eslint/no-unsafe-type-assertion": "error",
 		"@typescript-eslint/non-nullable-type-assertion-style": "error",
 		"@typescript-eslint/consistent-type-assertions": [
 			"error",
 			{
-				assertionStyle: "as",
-				objectLiteralTypeAssertions: "never",
+				assertionStyle: "never",
 			},
 		],
 		"@typescript-eslint/no-extra-non-null-assertion": "error",
@@ -273,14 +272,41 @@ const oxlint_config: UserConfig["lint"] = {
 		"@typescript-eslint/prefer-namespace-keyword": "error",
 		"@typescript-eslint/triple-slash-reference": "error",
 		"no-console": "error",
+		"@typescript-eslint/no-floating-promises": "error",
+		"@typescript-eslint/no-misused-promises": "error",
+		"@typescript-eslint/await-thenable": "error",
+		"@typescript-eslint/switch-exhaustiveness-check": "error",
+		"@typescript-eslint/prefer-promise-reject-errors": "error",
+		"@typescript-eslint/no-unsafe-assignment": "error",
+		"@typescript-eslint/no-unsafe-member-access": "error",
+		"@typescript-eslint/no-unsafe-call": "error",
+		"@typescript-eslint/no-unsafe-return": "error",
+		"@typescript-eslint/no-unsafe-argument": "error",
+		"@typescript-eslint/no-unsafe-type-assertion": "error",
+		"import/no-cycle": "error",
 		"better-tailwindcss/no-unknown-classes": "warn",
 		"better-tailwindcss/no-duplicate-classes": "error",
 		"better-tailwindcss/no-conflicting-classes": "warn",
 		"better-tailwindcss/no-deprecated-classes": "warn",
 		"better-tailwindcss/no-unnecessary-whitespace": "error",
-		"better-tailwindcss/enforce-consistent-class-order": "warn",
 	},
 	overrides: [
+		{
+			files: ["scripts/**"],
+			rules: {
+				"no-console": "off",
+			},
+		},
+		{
+			files: ["scripts/**/*.mjs"],
+			rules: {
+				"@typescript-eslint/no-unsafe-assignment": "off",
+				"@typescript-eslint/no-unsafe-member-access": "off",
+				"@typescript-eslint/no-unsafe-call": "off",
+				"@typescript-eslint/no-unsafe-return": "off",
+				"@typescript-eslint/no-unsafe-argument": "off",
+			},
+		},
 		{
 			files: ["**/*.ts", "**/*.tsx", "**/*.mts", "**/*.cts"],
 			rules: {
