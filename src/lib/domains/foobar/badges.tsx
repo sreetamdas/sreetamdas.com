@@ -11,10 +11,13 @@ import { useTrackEvent } from "../Analytics";
 import { useGlobalStore } from "../global";
 import {
 	FOOBAR_ACHIEVEMENTS,
+	FOOBAR_PUZZLE_TIER_WORDS,
 	FOOBAR_TIERS,
 	FOOBAR_TIER_ORDER,
 	FOOBAR_TEASERS,
+	hasFinishedFoobarTier,
 	isFoobarAchievement,
+	isFoobarPuzzleTier,
 	type FoobarAchievement,
 	type FoobarClueId,
 	type FoobarTier,
@@ -27,10 +30,7 @@ import {
 } from "./hint-development";
 import { type FoobarDataType } from "./store";
 
-type ShowCompletedBadgesProps = Pick<
-	FoobarDataType,
-	"completed" | "all_achievements" | "clues_seen"
-> & {
+type ShowCompletedBadgesProps = Pick<FoobarDataType, "completed" | "clues_seen"> & {
 	activeAchievement: FoobarAchievement | undefined;
 	onSelectAchievement: (achievement: FoobarAchievement) => void;
 	onCollapseAchievement: () => void;
@@ -38,7 +38,6 @@ type ShowCompletedBadgesProps = Pick<
 
 export const ShowCompletedBadges = ({
 	completed,
-	all_achievements,
 	clues_seen,
 	activeAchievement,
 	onSelectAchievement,
@@ -50,8 +49,7 @@ export const ShowCompletedBadges = ({
 			.filter(isFoobarAchievement)
 			.filter((achievement) => FOOBAR_ACHIEVEMENTS[achievement].tier === tier),
 	);
-	const isComplete = (achievement: FoobarAchievement) =>
-		achievement === "completed" ? all_achievements : completed.includes(achievement);
+	const isComplete = (achievement: FoobarAchievement) => completed.includes(achievement);
 	const completedCount = achievements.filter(isComplete).length;
 	const nextAchievement = achievements.find((achievement) => !isComplete(achievement));
 
@@ -98,7 +96,6 @@ export const ShowCompletedBadges = ({
 							(achievement) => FOOBAR_ACHIEVEMENTS[achievement].tier === tier,
 						)}
 						completed={completed}
-						all_achievements={all_achievements}
 						cluesSeen={clues_seen}
 						recordFoobarClue={recordFoobarClue}
 						activeAchievement={activeAchievement}
@@ -119,13 +116,12 @@ type TierSectionProps = {
 	activeAchievement: FoobarAchievement | undefined;
 	onSelectAchievement: (achievement: FoobarAchievement) => void;
 	onCollapseAchievement: () => void;
-} & Pick<FoobarDataType, "completed" | "all_achievements">;
+} & Pick<FoobarDataType, "completed">;
 
 const TierSection = ({
 	tier,
 	achievements,
 	completed,
-	all_achievements,
 	cluesSeen,
 	recordFoobarClue,
 	activeAchievement,
@@ -134,8 +130,12 @@ const TierSection = ({
 }: TierSectionProps) => {
 	const metadata = FOOBAR_TIERS[tier];
 	const completedAchievements = achievements.filter((achievement) =>
-		achievement === "completed" ? all_achievements : completed.includes(achievement),
+		completed.includes(achievement),
 	);
+	const tierWord =
+		isFoobarPuzzleTier(tier) && hasFinishedFoobarTier(tier, completed)
+			? FOOBAR_PUZZLE_TIER_WORDS[tier]
+			: undefined;
 	const toggleAchievement = (achievement: FoobarAchievement) => () =>
 		activeAchievement === achievement ? onCollapseAchievement() : onSelectAchievement(achievement);
 
@@ -147,6 +147,11 @@ const TierSection = ({
 						{metadata.label}
 					</h2>
 					<p className="mt-1 text-sm text-foreground/70">{metadata.description}</p>
+					{tierWord ? (
+						<p className="mt-2 font-mono text-xs text-foreground/70" data-foobar-tier-word={tier}>
+							Tier word: <strong className="text-primary">{tierWord}</strong>
+						</p>
+					) : null}
 				</div>
 				<p className="font-mono text-xs text-foreground/60">
 					{completedAchievements.length} of {achievements.length}

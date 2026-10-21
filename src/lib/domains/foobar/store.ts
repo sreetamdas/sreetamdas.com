@@ -8,6 +8,7 @@ import { type StateCreator } from "zustand";
 import {
 	FOOBAR_ACHIEVEMENTS,
 	hasCompletedFoobar,
+	hasFinishedFoobarPuzzleTiers,
 	type FoobarAchievement,
 	type FoobarClueId,
 	isFoobarAchievement,
@@ -64,7 +65,10 @@ export function normalizeFoobarData(value: unknown): FoobarDataType {
 		return { ...initialFoobarData };
 	}
 
-	const completed = uniqueStrings(value.completed).filter(isFoobarAchievement);
+	const claimed = uniqueStrings(value.completed).filter(isFoobarAchievement);
+	const completed = hasFinishedFoobarPuzzleTiers(claimed)
+		? claimed
+		: claimed.filter((achievement) => achievement !== "completed");
 	const cluesSeen: Array<FoobarClueSeen> = [];
 	const clueIds = new Set<FoobarClueId>();
 
@@ -148,6 +152,10 @@ export const createFoobarSlice: StateCreator<FoobarSliceType> = (set, _get) => (
 		}),
 	completeFoobarFlag: (flag) =>
 		set((state) => {
+			if (flag === "completed" && !hasFinishedFoobarPuzzleTiers(state.foobar_data.completed)) {
+				return state;
+			}
+
 			const completionId = FOOBAR_ACHIEVEMENTS[flag].completion.id;
 			const hasFlag = state.foobar_data.completed.includes(flag);
 			const hasClue = state.foobar_data.clues_seen.some((clue) => clue.id === completionId);
@@ -156,10 +164,15 @@ export const createFoobarSlice: StateCreator<FoobarSliceType> = (set, _get) => (
 				return state;
 			}
 
+			const completed = hasFlag
+				? state.foobar_data.completed
+				: [...state.foobar_data.completed, flag];
+
 			return {
 				foobar_data: {
 					...state.foobar_data,
-					completed: hasFlag ? state.foobar_data.completed : [...state.foobar_data.completed, flag],
+					completed,
+					all_achievements: hasCompletedFoobar(completed),
 					clues_seen: hasClue
 						? state.foobar_data.clues_seen
 						: [...state.foobar_data.clues_seen, { id: completionId, seen_at: Date.now() }],

@@ -1,5 +1,6 @@
 import { expect, test, type Page } from "@playwright/test";
 
+import { FOOBAR_PUZZLE_PREREQUISITES } from "../src/lib/domains/foobar/catalog";
 import { getFoobarRewardPath } from "../src/lib/domains/foobar/codes";
 
 const legacyProgress = {
@@ -248,6 +249,42 @@ test("labels bonus achievements and laptop-only clues", async ({ page }) => {
 		has: page.getByRole("heading", { name: "Console Yourself", exact: true }),
 	});
 	await expect(consoleBadge.getByText("laptop", { exact: true })).toBeVisible();
+});
+
+test("reveals tier words and holds the final address until every tier is done", async ({
+	page,
+}) => {
+	await seedProgress(page, {
+		...legacyProgress,
+		completed: FOOBAR_PUZZLE_PREREQUISITES.filter((achievement) => achievement !== "og-qr"),
+	});
+	await page.goto("/foobar");
+
+	await expect(page.locator('[data-foobar-tier-word="discovery"]')).toHaveText("Tier word: draco");
+	await expect(page.locator('[data-foobar-tier-word="protocol"]')).toHaveText(
+		"Tier word: titillandus",
+	);
+	await expect(page.locator('[data-foobar-tier-word="archaeology"]')).toHaveCount(0);
+
+	await page.goto(getFoobarRewardPath("completed"));
+	await expect(
+		page.getByRole("status").filter({ hasText: "Finish every tier first." }),
+	).toBeVisible();
+	await expect(page.getByTestId("foobar-achievement-reveal")).toHaveCount(0);
+	await expect(
+		page.getByText(`${FOOBAR_PUZZLE_PREREQUISITES.length - 1} of 24 weird things found.`, {
+			exact: true,
+		}),
+	).toBeVisible();
+});
+
+test("awards the final puzzle once every tier is done", async ({ page }) => {
+	await seedProgress(page, { ...legacyProgress, completed: [...FOOBAR_PUZZLE_PREREQUISITES] });
+	await page.goto(getFoobarRewardPath("completed"));
+
+	await expect(page.getByTestId("foobar-achievement-reveal")).toContainText("Foo Bar None");
+	await expect(page.getByText("You found everything. Somehow.")).toBeVisible();
+	await expect(page.getByText("Finish every tier first.")).toHaveCount(0);
 });
 
 test("develops hint 4 without exposing its text", async ({ page }) => {

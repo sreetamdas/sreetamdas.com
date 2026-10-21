@@ -1,17 +1,8 @@
 /**
- * Browser-only helpers for /foobar clues and completion checks. These functions
- * intentionally touch localStorage and the console, so keep callers inside
- * client components/effects.
+ * Browser-only helpers for /foobar clues. These functions intentionally touch
+ * localStorage and the console, so keep callers inside client components/effects.
  */
-import { hasCompletedFoobar } from "./catalog";
 import { getFoobarRewardPath } from "./codes";
-import { type FoobarSliceType } from "./store";
-
-export function checkIfAllAchievementsAreDone(
-	completed: FoobarSliceType["foobar_data"]["completed"],
-) {
-	return hasCompletedFoobar(completed);
-}
 
 export function addFoobarToLocalStorage() {
 	localStorage.setItem("foobar", getFoobarRewardPath("localforage"));

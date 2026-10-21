@@ -18,6 +18,7 @@ export const FOOBAR_REWARD_ADDRESSES = {
 	hack: "there-there",
 	localforage: "farmers-market",
 	teapot: "milk-no-sugar",
+	completed: "draco-dormiens-nunquam-titillandus",
 } as const;
 
 export type FoobarRewardFlag = keyof typeof FOOBAR_REWARD_ADDRESSES;

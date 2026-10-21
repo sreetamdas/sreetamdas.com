@@ -2,13 +2,18 @@ import { describe, expect, test } from "vitest";
 
 import {
 	FOOBAR_ACHIEVEMENTS,
+	FOOBAR_PUZZLE_PREREQUISITES,
+	FOOBAR_PUZZLE_TIER_WORDS,
 	FOOBAR_REQUIRED_ACHIEVEMENTS,
 	FOOBAR_TEASERS,
 	FOOBAR_TIER_ORDER,
 	FOOBAR_TIERS,
 	getFoobarClue,
 	hasCompletedFoobar,
+	hasFinishedFoobarPuzzleTiers,
+	hasFinishedFoobarTier,
 	isFoobarAchievement,
+	isFoobarPuzzleTier,
 	isFoobarClueId,
 } from "./catalog";
 import { FOOBAR_REWARD_ADDRESSES } from "./codes";
@@ -24,9 +29,7 @@ describe("Foobar catalogue", () => {
 		const hintable = Object.values(FOOBAR_ACHIEVEMENTS).filter(
 			(achievement) => achievement.hints.length > 0,
 		);
-		const playable = Object.keys(FOOBAR_ACHIEVEMENTS)
-			.filter(isFoobarAchievement)
-			.filter((achievement) => achievement !== "completed");
+		const playable = Object.keys(FOOBAR_ACHIEVEMENTS).filter(isFoobarAchievement);
 
 		expect(hintable).toHaveLength(playable.length);
 		for (const achievement of hintable) {
@@ -54,14 +57,12 @@ describe("Foobar catalogue", () => {
 			]),
 		);
 		expect(FOOBAR_REQUIRED_ACHIEVEMENTS).not.toContain("campfire");
-		expect(FOOBAR_REQUIRED_ACHIEVEMENTS).not.toContain("completed");
+		expect(FOOBAR_REQUIRED_ACHIEVEMENTS).toContain("completed");
 	});
 
 	test("keeps optional bonuses out of completion requirements", () => {
 		const all = Object.keys(FOOBAR_ACHIEVEMENTS).filter(isFoobarAchievement);
-		const withoutCampfire = all.filter(
-			(achievement) => achievement !== "completed" && achievement !== "campfire",
-		);
+		const withoutCampfire = all.filter((achievement) => achievement !== "campfire");
 
 		expect(FOOBAR_ACHIEVEMENTS.campfire.optional).toBe(true);
 		expect(hasCompletedFoobar(withoutCampfire)).toBe(true);
@@ -127,7 +128,6 @@ describe("Foobar catalogue", () => {
 			"offline",
 			"easter-egg",
 			"campfire",
-			"completed",
 		] as const) {
 			expect(FOOBAR_FLAGS[name]).not.toHaveProperty("slug");
 		}
@@ -139,7 +139,7 @@ describe("Foobar catalogue", () => {
 			if ("slug" in flag && flag.slug !== "/") slugs.push(flag.slug);
 		}
 
-		expect(slugs).toHaveLength(15);
+		expect(slugs).toHaveLength(16);
 		for (const slug of slugs) {
 			expect(slug).toMatch(/^[a-z]+(-[a-z]+)*$/);
 		}
@@ -169,6 +169,45 @@ describe("Foobar catalogue", () => {
 		}
 
 		expect(clashes).toEqual([]);
+	});
+
+	test("spells the final address from the tier words in tier order", () => {
+		const words = FOOBAR_TIER_ORDER.filter(isFoobarPuzzleTier).map(
+			(tier) => FOOBAR_PUZZLE_TIER_WORDS[tier],
+		);
+
+		expect(words).toHaveLength(4);
+		expect(words.join("-")).toBe(FOOBAR_REWARD_ADDRESSES.completed);
+		expect(FOOBAR_FLAGS.completed.slug).toBe(FOOBAR_REWARD_ADDRESSES.completed);
+	});
+
+	test("requires every non-meta required achievement before the final puzzle", () => {
+		expect(FOOBAR_PUZZLE_PREREQUISITES).not.toContain("completed");
+		expect(FOOBAR_PUZZLE_PREREQUISITES).not.toContain("campfire");
+		expect(hasFinishedFoobarPuzzleTiers(FOOBAR_PUZZLE_PREREQUISITES)).toBe(true);
+		expect(hasCompletedFoobar(FOOBAR_PUZZLE_PREREQUISITES)).toBe(false);
+		expect(
+			hasFinishedFoobarPuzzleTiers(
+				FOOBAR_PUZZLE_PREREQUISITES.filter((achievement) => achievement !== "og-qr"),
+			),
+		).toBe(false);
+	});
+
+	test("finishes a tier only when its required achievements are all found", () => {
+		const discovery = FOOBAR_REQUIRED_ACHIEVEMENTS.filter(
+			(achievement) => FOOBAR_ACHIEVEMENTS[achievement].tier === "discovery",
+		);
+
+		expect(hasFinishedFoobarTier("discovery", discovery)).toBe(true);
+		expect(hasFinishedFoobarTier("discovery", discovery.slice(1))).toBe(false);
+		expect(
+			hasFinishedFoobarTier(
+				"browser",
+				FOOBAR_REQUIRED_ACHIEVEMENTS.filter(
+					(achievement) => FOOBAR_ACHIEVEMENTS[achievement].tier === "browser",
+				),
+			),
+		).toBe(true);
 	});
 
 	test("attaches catalogue metadata to every navigable flag", () => {

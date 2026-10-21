@@ -15,7 +15,11 @@ import { NotFound404 } from "@/lib/components/Error";
 import { Code } from "@/lib/components/Typography";
 import { useTrackEvent } from "@/lib/domains/Analytics";
 import { ShowCompletedBadges } from "@/lib/domains/foobar/badges";
-import { isFoobarAchievement, type FoobarAchievement } from "@/lib/domains/foobar/catalog";
+import {
+	hasFinishedFoobarPuzzleTiers,
+	isFoobarAchievement,
+	type FoobarAchievement,
+} from "@/lib/domains/foobar/catalog";
 import { CloudProgressPanel } from "@/lib/domains/foobar/CloudProgressPanel";
 import { getFoobarRewardPath } from "@/lib/domains/foobar/codes";
 import { FieldNotes } from "@/lib/domains/foobar/FieldNotes";
@@ -25,7 +29,7 @@ import { type FoobarSchrodingerProps, initialFoobarData } from "@/lib/domains/fo
 import { useGlobalStore } from "@/lib/domains/global";
 import { useHasMounted } from "@/lib/helpers/hooks";
 
-export const FoobarDashboard = () => {
+export const FoobarDashboard = ({ notice }: { notice?: string }) => {
 	const trackEvent = useTrackEvent();
 	const { foobar_data, setFoobarData, completeFoobarFlag } = useGlobalStore(
 		useShallow((state) => ({
@@ -108,9 +112,11 @@ export const FoobarDashboard = () => {
 			<p className="mt-3 font-mono text-xs text-foreground/60">
 				Best on a laptop. Some clues need real browser tools.
 			</p>
+			{notice ? (
+				<output className="mt-6 block border-l-2 border-primary pl-3 text-sm">{notice}</output>
+			) : null}
 			<ShowCompletedBadges
 				completed={foobar_data.completed}
-				all_achievements={foobar_data.all_achievements}
 				clues_seen={foobar_data.clues_seen}
 				activeAchievement={activeAchievement}
 				onSelectAchievement={handleSelectAchievement}
@@ -279,9 +285,11 @@ export const FoobarSchrodinger = ({ completed_page }: FoobarSchrodingerProps) =>
 	);
 	const has_mounted = useHasMounted();
 	const trackEvent = useTrackEvent();
+	const isEarlyFinalVisit =
+		completed_page === FOOBAR_FLAGS.completed.slug && !hasFinishedFoobarPuzzleTiers(completed);
 
 	useEffect(() => {
-		if (unlocked && completed_page) {
+		if (unlocked && completed_page && !isEarlyFinalVisit) {
 			const completed_flag = Object.values(FOOBAR_FLAGS).find((flag_props) => {
 				if ("slug" in flag_props) {
 					return flag_props.slug === completed_page;
@@ -298,10 +306,18 @@ export const FoobarSchrodinger = ({ completed_page }: FoobarSchrodingerProps) =>
 				completeFoobarFlag(completed_flag);
 			}
 		}
-	}, [completeFoobarFlag, completed, completed_page, trackEvent, unlocked]);
+	}, [completeFoobarFlag, completed, completed_page, isEarlyFinalVisit, trackEvent, unlocked]);
 
 	if (!has_mounted) return null;
 	if (!unlocked) return <FoobarButLocked />;
 
-	return <FoobarDashboard />;
+	return (
+		<FoobarDashboard
+			notice={
+				isEarlyFinalVisit
+					? "The words are right, but the dragon isn't asleep yet. Finish every tier first."
+					: undefined
+			}
+		/>
+	);
 };

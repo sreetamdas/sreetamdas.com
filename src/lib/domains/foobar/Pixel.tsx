@@ -12,13 +12,8 @@ import { useShallow } from "zustand/react/shallow";
 import { IS_DEV } from "@/config";
 import { Code } from "@/lib/components/Typography";
 import { useTrackEvent } from "@/lib/domains/Analytics";
-import { FOOBAR_ACHIEVEMENTS } from "@/lib/domains/foobar/catalog";
 import { getFoobarRewardPath } from "@/lib/domains/foobar/codes";
-import {
-	addFoobarToLocalStorage,
-	checkIfAllAchievementsAreDone,
-	logConsoleMessages,
-} from "@/lib/domains/foobar/helpers";
+import { addFoobarToLocalStorage, logConsoleMessages } from "@/lib/domains/foobar/helpers";
 import { useSharedHunterPresence } from "@/lib/domains/foobar/sharedHunterPresence";
 import { useGlobalStore } from "@/lib/domains/global";
 import { captureException } from "@/lib/domains/Sentry";
@@ -35,8 +30,6 @@ const foobarDataSelector = (state: FoobarSliceType) => ({
 	setFoobarData: state.setFoobarData,
 	recordFoobarVisit: state.recordFoobarVisit,
 	completeFoobarFlag: state.completeFoobarFlag,
-	enqueueFoobarReveal: state.enqueueFoobarReveal,
-	recordFoobarClue: state.recordFoobarClue,
 });
 
 type FoobarPixelProps = {
@@ -47,16 +40,9 @@ export const FoobarPixel = ({ path }: FoobarPixelProps) => {
 	const { pathname } = useLocation();
 	const has_mounted = useHasMounted();
 	const trackEvent = useTrackEvent();
-	const {
-		foobar_data,
-		hasHydrated,
-		setFoobarData,
-		recordFoobarVisit,
-		completeFoobarFlag,
-		enqueueFoobarReveal,
-		recordFoobarClue,
-	} = useGlobalStore(useShallow(foobarDataSelector));
-	const { unlocked, visited_pages, completed, all_achievements } = foobar_data;
+	const { foobar_data, hasHydrated, setFoobarData, recordFoobarVisit, completeFoobarFlag } =
+		useGlobalStore(useShallow(foobarDataSelector));
+	const { unlocked, visited_pages, completed } = foobar_data;
 	const titleBeforeVisibilityClue = useRef<string | null>(null);
 	const isFoobarPath = pathname === "/foobar" || pathname.startsWith("/foobar/");
 	const { hunters } = useSharedHunterPresence(
@@ -162,25 +148,6 @@ export const FoobarPixel = ({ path }: FoobarPixelProps) => {
 			completeFoobarFlag(FOOBAR_FLAGS.navigator.name);
 		}
 	}, [completeFoobarFlag, completed, trackEvent, visited_pages]);
-
-	useEffect(() => {
-		// for the `completed` achievement
-		if (!all_achievements && checkIfAllAchievementsAreDone(completed)) {
-			trackEvent("foobar", { props: { achievement: "completed" } });
-			recordFoobarClue(FOOBAR_ACHIEVEMENTS.completed.completion.id);
-			enqueueFoobarReveal("completed");
-			setFoobarData({
-				all_achievements: true,
-			});
-		}
-	}, [
-		all_achievements,
-		completed,
-		enqueueFoobarReveal,
-		trackEvent,
-		recordFoobarClue,
-		setFoobarData,
-	]);
 
 	return (
 		<>
