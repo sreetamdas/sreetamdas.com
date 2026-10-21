@@ -1,7 +1,7 @@
 /**
  * Canonical achievement catalogue for /foobar. Slugged entries become routable
  * challenge pages. Entries the game completes itself (navigator, konami, 404,
- * dogs, offline, campfire, completed) have no slug, so a guessed URL cannot skip them.
+ * dogs, offline, easter-egg, campfire, completed) have no slug, so a guessed URL cannot skip them.
  */
 import { type IconBaseProps } from "react-icons";
 import { BsEgg } from "react-icons/bs";
@@ -33,6 +33,7 @@ import { VscDebug, VscDebugRestart, VscTelescope } from "react-icons/vsc";
 import { Code } from "@/lib/components/Typography";
 
 import { FOOBAR_ACHIEVEMENTS } from "./catalog";
+import { FOOBAR_REWARD_ADDRESSES } from "./codes";
 
 type FoobarFlags = typeof FOOBAR_FLAGS;
 
@@ -42,7 +43,7 @@ type FoobarFlags = typeof FOOBAR_FLAGS;
 export type FoobarFlag = FoobarFlags[keyof FoobarFlags]["name"];
 
 /**
- * Navigable challenge pages, so _excluding_ "completed"
+ * Navigable challenge pages, so _excluding_ programmatic achievements
  */
 export type FoobarNavigableFlag = {
 	[K in keyof FoobarFlags]: "slug" extends keyof FoobarFlags[K] ? K : never;
@@ -61,28 +62,28 @@ export const FOOBAR_FLAGS = {
 	"source-code": {
 		...FOOBAR_ACHIEVEMENTS["source-code"],
 		name: "source-code",
-		slug: "source-code",
+		slug: FOOBAR_REWARD_ADDRESSES["source-code"],
 		icon: (props: IconBaseProps) => <FaCode {...props} />,
 		description: "View the source code",
 	},
 	headers: {
 		...FOOBAR_ACHIEVEMENTS.headers,
 		name: "headers",
-		slug: "headers",
+		slug: FOOBAR_REWARD_ADDRESSES.headers,
 		icon: (props: IconBaseProps) => <FaHeading {...props} />,
 		description: "Check out the headers of a /foobar page",
 	},
 	"dns-txt": {
 		...FOOBAR_ACHIEVEMENTS["dns-txt"],
 		name: "dns-txt",
-		slug: "dns-txt",
+		slug: FOOBAR_REWARD_ADDRESSES["dns-txt"],
 		icon: (props: IconBaseProps) => <MdDns {...props} />,
 		description: "Lookup TXT records",
 	},
 	"well-known": {
 		...FOOBAR_ACHIEVEMENTS["well-known"],
 		name: "well-known",
-		slug: "well-known",
+		slug: FOOBAR_REWARD_ADDRESSES["well-known"],
 		icon: (props: IconBaseProps) => <FaGlobe {...props} />,
 		description: "Read the notice in a well-known place",
 	},
@@ -95,49 +96,49 @@ export const FOOBAR_FLAGS = {
 	"print-preview": {
 		...FOOBAR_ACHIEVEMENTS["print-preview"],
 		name: "print-preview",
-		slug: "print-preview",
+		slug: FOOBAR_REWARD_ADDRESSES["print-preview"],
 		icon: (props: IconBaseProps) => <FaPrint {...props} />,
 		description: "Find the note meant for paper",
 	},
 	"paper-trail": {
 		...FOOBAR_ACHIEVEMENTS["paper-trail"],
 		name: "paper-trail",
-		slug: "paper-trail",
+		slug: FOOBAR_REWARD_ADDRESSES["paper-trail"],
 		icon: (props: IconBaseProps) => <FaFileAlt {...props} />,
 		description: "Read the site's machine-facing rules",
 	},
 	"feed-reader": {
 		...FOOBAR_ACHIEVEMENTS["feed-reader"],
 		name: "feed-reader",
-		slug: "feed-reader",
+		slug: FOOBAR_REWARD_ADDRESSES["feed-reader"],
 		icon: (props: IconBaseProps) => <FaRss {...props} />,
 		description: "Inspect the RSS feed",
 	},
 	"og-qr": {
 		...FOOBAR_ACHIEVEMENTS["og-qr"],
 		name: "og-qr",
-		slug: "og-qr",
+		slug: FOOBAR_REWARD_ADDRESSES["og-qr"],
 		icon: (props: IconBaseProps) => <FaQrcode {...props} />,
 		description: "Scan the site's social card",
 	},
 	"cookie-jar": {
 		...FOOBAR_ACHIEVEMENTS["cookie-jar"],
 		name: "cookie-jar",
-		slug: "cookie-jar",
+		slug: FOOBAR_REWARD_ADDRESSES["cookie-jar"],
 		icon: (props: IconBaseProps) => <FaCookieBite {...props} />,
 		description: "Open the server's sealed cookie",
 	},
 	"service-worker": {
 		...FOOBAR_ACHIEVEMENTS["service-worker"],
 		name: "service-worker",
-		slug: "service-worker",
+		slug: FOOBAR_REWARD_ADDRESSES["service-worker"],
 		icon: (props: IconBaseProps) => <FaRobot {...props} />,
 		description: "Ask the invisible worker for its clue",
 	},
 	devtools: {
 		...FOOBAR_ACHIEVEMENTS.devtools,
 		name: "devtools",
-		slug: "devtools",
+		slug: FOOBAR_REWARD_ADDRESSES.devtools,
 		icon: (props: IconBaseProps) => <VscDebug {...props} />,
 		description: "Inspect the dashboard with devtools",
 	},
@@ -156,14 +157,14 @@ export const FOOBAR_FLAGS = {
 	"tab-visibility": {
 		...FOOBAR_ACHIEVEMENTS["tab-visibility"],
 		name: "tab-visibility",
-		slug: "now-you-see-me",
+		slug: FOOBAR_REWARD_ADDRESSES["tab-visibility"],
 		icon: (props: IconBaseProps) => <FaRegEye {...props} />,
 		description: "Look away while Foobar is open",
 	},
 	hack: {
 		...FOOBAR_ACHIEVEMENTS.hack,
 		name: "hack",
-		slug: "hack",
+		slug: FOOBAR_REWARD_ADDRESSES.hack,
 		icon: (props: IconBaseProps) => <FaSkull {...props} />,
 		description: "Hack the console",
 	},
@@ -188,21 +189,20 @@ export const FOOBAR_FLAGS = {
 	"easter-egg": {
 		...FOOBAR_ACHIEVEMENTS["easter-egg"],
 		name: "easter-egg",
-		slug: "easter-egg",
 		icon: (props: IconBaseProps) => <BsEgg {...props} />,
 		description: "Hmm, what could this one be?",
 	},
 	localforage: {
 		...FOOBAR_ACHIEVEMENTS.localforage,
 		name: "localforage",
-		slug: "localforage",
+		slug: FOOBAR_REWARD_ADDRESSES.localforage,
 		icon: (props: IconBaseProps) => <FaDatabase {...props} />,
 		description: "Check storage",
 	},
 	teapot: {
 		...FOOBAR_ACHIEVEMENTS.teapot,
 		name: "teapot",
-		slug: "teapot",
+		slug: FOOBAR_REWARD_ADDRESSES.teapot,
 		icon: (props: IconBaseProps) => <GiTeapot {...props} />,
 		description: (
 			<>

@@ -22,6 +22,8 @@ The original design docs were removed from the repo in `963f204a`; read them wit
   identify the failed operation instead of collapsing every error into a generic status.
 - Operational telemetry records lifecycle operation names only—never user IDs or progress.
 - Every achievement has a four-step hint ladder, so devtools-centric puzzles stay accessible.
+- Reward pages use meaningful word addresses. The catalogue is still public, so this stops
+  guessing rather than verifying a player.
 - Clues stay out of normal navigation and search indexing (`/foobar` is disallowed in
   `robots.txt`).
 
@@ -30,7 +32,8 @@ The original design docs were removed from the repo in `963f204a`; read them wit
 | File                                                         | Owns                                                                                                                                                        |
 | ------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `catalog.ts`                                                 | Canonical achievement title/tier/hint/teaser metadata and clue-ID resolution. Pure data — everything else derives from it.                                  |
-| `flags.tsx`                                                  | Routable slugs, icons, and dashboard descriptions per achievement.                                                                                          |
+| `codes.ts`                                                   | Reward addresses and path construction, kept free of React for scripts and tests.                                                                           |
+| `flags.tsx`                                                  | Routable slugs (derived from `codes.ts`), icons, and dashboard descriptions per achievement.                                                                |
 | `store.ts`                                                   | Zustand slice + `normalizeFoobarData`, which makes stale/malformed persisted state inert.                                                                   |
 | `Pixel.tsx`                                                  | Site-wide instrumentation: visit tracking (`navigator`), Konami, 404, campfire completion, tab-visibility clue, service-worker registration, console clues. |
 | `DashboardClient.tsx`                                        | The `/foobar` gate (`FoobarSchrodinger`), dashboard layout, local-only reset.                                                                               |
@@ -51,9 +54,10 @@ image). Static clue surfaces: `public/robots.txt`, `public/.well-known/security.
 ## Adding an achievement
 
 1. Add the entry (tier, hints, completion note, teaser) to `catalog.ts`.
-2. Add its flag (slug, icon, description) to `FOOBAR_FLAGS` in `flags.tsx` — a `slug` makes
-   `/foobar/<slug>` routable and auto-completes on visit; omit it for programmatic
-   achievements (complete those via `completeFoobarFlag` and emit the analytics event).
+2. If the achievement has a reward page, add its address to `codes.ts`, then add its flag to
+   `FOOBAR_FLAGS` in `flags.tsx` — a `slug` makes `/foobar/<address>` routable and
+   auto-completes on visit; omit it for programmatic achievements (complete those via
+   `completeFoobarFlag` and emit the analytics event).
 3. Hide the actual clue in whatever surface the puzzle uses.
 4. Note: new achievements intentionally reopen the endgame for previous finishers; their
    `completed_at`/certificate in D1 are preserved.

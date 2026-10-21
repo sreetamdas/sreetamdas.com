@@ -1,5 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 
+import { getFoobarRewardPath } from "@/lib/domains/foobar/codes";
+
 export const Route = createFileRoute("/(api)/api/coffee")({
 	server: {
 		handlers: {
@@ -11,7 +13,7 @@ export const Route = createFileRoute("/(api)/api/coffee")({
 			},
 			POST: () => {
 				return Response.json(
-					{ message: "Cannot brew coffee, I'm a teapot", foobar: "/foobar/teapot" },
+					{ message: "Cannot brew coffee, I'm a teapot", foobar: getFoobarRewardPath("teapot") },
 					{ status: 418 },
 				);
 			},

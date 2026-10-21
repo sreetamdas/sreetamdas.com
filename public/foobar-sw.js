@@ -14,7 +14,7 @@ self.addEventListener("fetch", (event) => {
 		Response.json(
 			{
 				message: "The worker heard you without asking the network.",
-				foobar: "/foobar/service-worker",
+				foobar: "/foobar/works-from-home",
 			},
 			{ headers: { "Cache-Control": "no-store" } },
 		),

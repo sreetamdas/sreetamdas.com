@@ -1,5 +1,7 @@
 import { expect, test, type Page } from "@playwright/test";
 
+import { getFoobarRewardPath } from "../src/lib/domains/foobar/codes";
+
 const legacyProgress = {
 	visited_pages: ["/", "/about"],
 	konami: false,
@@ -461,7 +463,7 @@ test("completes browser-only achievements and plants the devtools clue", async (
 	await seedProgress(page);
 	await page.goto("/foobar");
 
-	await expect(page.locator('[data-foobar="/foobar/devtools"]')).toHaveCount(1);
+	await expect(page.locator(`[data-foobar="${getFoobarRewardPath("devtools")}"]`)).toHaveCount(1);
 
 	for (const key of [
 		"ArrowUp",
@@ -504,10 +506,10 @@ test("completes browser-only achievements and plants the devtools clue", async (
 
 test("publishes machine-facing and print-only clues", async ({ page, request }) => {
 	for (const [path, clue] of [
-		["/robots.txt", "/foobar/paper-trail"],
-		["/.well-known/security.txt", "/foobar/paper-trail"],
-		["/.well-known/foobar", "/foobar/well-known"],
-		["/rss/feed.xml", "/foobar/feed-reader"],
+		["/robots.txt", getFoobarRewardPath("paper-trail")],
+		["/.well-known/security.txt", getFoobarRewardPath("paper-trail")],
+		["/.well-known/foobar", getFoobarRewardPath("well-known")],
+		["/rss/feed.xml", getFoobarRewardPath("feed-reader")],
 	]) {
 		const response = await request.get(path);
 		expect(response.status()).toBe(200);
@@ -517,7 +519,9 @@ test("publishes machine-facing and print-only clues", async ({ page, request }) 
 
 	await seedProgress(page);
 	await page.goto("/foobar");
-	const printClue = page.getByText(/paper remembers.*\/foobar\/print-preview/i);
+	const printClue = page.getByText(
+		`The paper remembers a path the screen will not: ${getFoobarRewardPath("print-preview")}`,
+	);
 	await expect(printClue).toBeHidden();
 	await page.emulateMedia({ media: "print" });
 	await expect(printClue).toBeVisible();
@@ -525,7 +529,7 @@ test("publishes machine-facing and print-only clues", async ({ page, request }) 
 
 test("claims the well-known notice and announces it with its display title", async ({ page }) => {
 	await seedProgress(page);
-	await page.goto("/foobar/well-known");
+	await page.goto(getFoobarRewardPath("well-known"));
 
 	const reveal = page.getByTestId("foobar-achievement-reveal");
 	await expect(reveal).toContainText("You found the notice everyone forgot to read.");
@@ -560,14 +564,14 @@ test("whispers the tab-visibility clue only while Foobar is hidden", async ({ pa
 		Object.defineProperty(document, "hidden", { configurable: true, value: true });
 		document.dispatchEvent(new Event("visibilitychange"));
 	});
-	await expect(page).toHaveTitle("/foobar/now-you-see-me");
+	await expect(page).toHaveTitle(getFoobarRewardPath("tab-visibility"));
 
 	await page.evaluate(() => {
 		Object.defineProperty(document, "hidden", { configurable: true, value: false });
 		document.dispatchEvent(new Event("visibilitychange"));
 	});
 	await expect(page).toHaveTitle(originalTitle);
-	await page.goto("/foobar/now-you-see-me");
+	await page.goto(getFoobarRewardPath("tab-visibility"));
 	await expect(page.getByTestId("foobar-achievement-reveal")).toContainText("Now You See Me");
 	await expect.poll(() => hasPersistedAchievement(page, "tab-visibility")).toBe(true);
 });
@@ -580,7 +584,7 @@ test("plants the tab-visibility clue when Foobar mounts in a hidden tab", async 
 	await page.goto("/foobar");
 
 	await expect(page.getByRole("heading", { name: "/foobar", level: 1 })).toBeVisible();
-	await expect(page).toHaveTitle("/foobar/now-you-see-me");
+	await expect(page).toHaveTitle(getFoobarRewardPath("tab-visibility"));
 });
 
 test("reveals the service-worker clue without touching normal traffic", async ({ page }) => {
@@ -596,7 +600,7 @@ test("reveals the service-worker clue without touching normal traffic", async ({
 	});
 	expect(clue).toEqual({
 		message: "The worker heard you without asking the network.",
-		foobar: "/foobar/service-worker",
+		foobar: getFoobarRewardPath("service-worker"),
 	});
 
 	const aboutResponse = await page.request.get("/about");
@@ -670,14 +674,20 @@ test("keeps the visited trail across full page loads", async ({ page }) => {
 });
 
 test("does not award slug achievements while Foobar is locked", async ({ page }) => {
+	const headersPath = getFoobarRewardPath("headers");
+	await page.goto(headersPath);
+
+	await expect(page.getByRole("heading", { name: "404!" })).toBeVisible();
+	await expect.poll(async () => (await readVisitedTrails(page)).flat()).toContain(headersPath);
+	expect(await hasPersistedAchievement(page, "headers")).toBe(false);
+	await expect(page.getByTestId("foobar-achievement-reveal")).toHaveCount(0);
+});
+
+test("does not award achievements from old reward slugs", async ({ page }) => {
 	await page.goto("/foobar/headers");
 
 	await expect(page.getByRole("heading", { name: "404!" })).toBeVisible();
-	await expect
-		.poll(async () => (await readVisitedTrails(page)).flat())
-		.toContain("/foobar/headers");
 	expect(await hasPersistedAchievement(page, "headers")).toBe(false);
-	await expect(page.getByTestId("foobar-achievement-reveal")).toHaveCount(0);
 });
 
 test("does not award the scenic route from the locked Foobar gate", async ({ page }) => {

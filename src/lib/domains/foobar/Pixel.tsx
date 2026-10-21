@@ -13,6 +13,7 @@ import { IS_DEV } from "@/config";
 import { Code } from "@/lib/components/Typography";
 import { useTrackEvent } from "@/lib/domains/Analytics";
 import { FOOBAR_ACHIEVEMENTS } from "@/lib/domains/foobar/catalog";
+import { getFoobarRewardPath } from "@/lib/domains/foobar/codes";
 import {
 	addFoobarToLocalStorage,
 	checkIfAllAchievementsAreDone,
@@ -88,7 +89,7 @@ export const FoobarPixel = ({ path }: FoobarPixelProps) => {
 		// @ts-expect-error add custom function
 		window.hack = () => {
 			// eslint-disable-next-line no-console
-			console.warn("/foobar/hack");
+			console.warn(getFoobarRewardPath("hack"));
 		};
 
 		if (!IS_DEV) {
@@ -114,7 +115,7 @@ export const FoobarPixel = ({ path }: FoobarPixelProps) => {
 			return;
 		}
 
-		const clueTitle = "/foobar/now-you-see-me";
+		const clueTitle = getFoobarRewardPath("tab-visibility");
 		function handleVisibilityChange() {
 			if (document.hidden) {
 				titleBeforeVisibilityClue.current = document.title;

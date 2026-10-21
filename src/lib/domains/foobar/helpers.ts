@@ -4,6 +4,7 @@
  * client components/effects.
  */
 import { hasCompletedFoobar } from "./catalog";
+import { getFoobarRewardPath } from "./codes";
 import { type FoobarSliceType } from "./store";
 
 export function checkIfAllAchievementsAreDone(
@@ -13,7 +14,7 @@ export function checkIfAllAchievementsAreDone(
 }
 
 export function addFoobarToLocalStorage() {
-	localStorage.setItem("foobar", "/foobar/localforage");
+	localStorage.setItem("foobar", getFoobarRewardPath("localforage"));
 }
 
 export function logConsoleMessages() {
@@ -116,6 +117,8 @@ const CONSOLE_X3 = `
 Go to /about and look around for the hidden Ⅹ 😉
 `;
 
+const SOURCE_CODE_REWARD_PATH = getFoobarRewardPath("source-code");
+
 export const FOOBAR_SOURCE_CODE = `
 
 /**
@@ -162,7 +165,7 @@ export const FOOBAR_SOURCE_CODE = `
 ████  Welcome to my corner of the internet!        █████████████████████████
 ████                                               █████████████████████████
 ████  Here's what you might be looking for:        █████████████████████████
-████  /foobar/source-code                          █████████████████████████
+████  ${SOURCE_CODE_REWARD_PATH}${" ".repeat(45 - SOURCE_CODE_REWARD_PATH.length)}█████████████████████████
 ████                                               █████████████████████████
 ████                                               █████████████████████████
 ████  psst. you might wanna check the console ;)   █████████████████████████

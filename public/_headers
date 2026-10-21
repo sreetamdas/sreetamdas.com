@@ -12,7 +12,7 @@
 /*
   Cache-Control: public, max-age=0, stale-while-revalidate=3600
   Cloudflare-CDN-Cache-Control: public, max-age=300, stale-while-revalidate=3600
-  X-Foobar: /foobar/headers
+  X-Foobar: /foobar/duck-and-cover
 
 /stats
   ! Cloudflare-CDN-Cache-Control

@@ -11,6 +11,7 @@ import {
 	isFoobarAchievement,
 	isFoobarClueId,
 } from "./catalog";
+import { FOOBAR_REWARD_ADDRESSES } from "./codes";
 import { FOOBAR_FLAGS, type FoobarNavigableFlag } from "./flags";
 
 describe("Foobar catalogue", () => {
@@ -124,11 +125,50 @@ describe("Foobar catalogue", () => {
 			"error404",
 			"dogs",
 			"offline",
+			"easter-egg",
 			"campfire",
 			"completed",
 		] as const) {
 			expect(FOOBAR_FLAGS[name]).not.toHaveProperty("slug");
 		}
+	});
+
+	test("uses unique word reward addresses", () => {
+		const slugs: Array<string> = [];
+		for (const flag of Object.values(FOOBAR_FLAGS)) {
+			if ("slug" in flag && flag.slug !== "/") slugs.push(flag.slug);
+		}
+
+		expect(slugs).toHaveLength(15);
+		for (const slug of slugs) {
+			expect(slug).toMatch(/^[a-z]+(-[a-z]+)*$/);
+		}
+		expect(new Set(slugs).size).toBe(slugs.length);
+	});
+
+	test("keeps reward words out of each achievement's own copy", () => {
+		const ignored = new Set(["and", "the", "from", "no"]);
+		const clashes: Array<string> = [];
+
+		for (const [achievement, address] of Object.entries(FOOBAR_REWARD_ADDRESSES)) {
+			if (!isFoobarAchievement(achievement)) continue;
+
+			const texts = [
+				FOOBAR_ACHIEVEMENTS[achievement].title,
+				FOOBAR_TEASERS[achievement],
+				...FOOBAR_ACHIEVEMENTS[achievement].hints.map((hint) => hint.text),
+			];
+			const words = address.split("-").filter((word) => word.length >= 3 && !ignored.has(word));
+
+			for (const word of words) {
+				const pattern = new RegExp(`\\b${word}\\b`, "i");
+				for (const text of texts) {
+					if (pattern.test(text)) clashes.push(`${word} in "${text}"`);
+				}
+			}
+		}
+
+		expect(clashes).toEqual([]);
 	});
 
 	test("attaches catalogue metadata to every navigable flag", () => {

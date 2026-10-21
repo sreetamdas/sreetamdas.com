@@ -5,7 +5,7 @@ Disallow: /foobar/
 Disallow: /aoc
 Disallow: /aoc/
 
-# The crawlers were here first: /foobar/paper-trail
+# The crawlers were here first: /foobar/disallowed
 
 # Host
 Host: https://sreetamdas.com

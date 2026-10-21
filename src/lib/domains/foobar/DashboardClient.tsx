@@ -17,6 +17,7 @@ import { useTrackEvent } from "@/lib/domains/Analytics";
 import { ShowCompletedBadges } from "@/lib/domains/foobar/badges";
 import { isFoobarAchievement, type FoobarAchievement } from "@/lib/domains/foobar/catalog";
 import { CloudProgressPanel } from "@/lib/domains/foobar/CloudProgressPanel";
+import { getFoobarRewardPath } from "@/lib/domains/foobar/codes";
 import { FieldNotes } from "@/lib/domains/foobar/FieldNotes";
 import { FOOBAR_FLAGS } from "@/lib/domains/foobar/flags";
 import { useSharedHunterPresence } from "@/lib/domains/foobar/sharedHunterPresence";
@@ -121,9 +122,9 @@ export const FoobarDashboard = () => {
 			/>
 			<Basecamp handleClearFoobarData={handleClearFoobarData} />
 			<p aria-hidden="true" data-foobar-print-clue>
-				The paper remembers a path the screen will not: /foobar/print-preview
+				{`The paper remembers a path the screen will not: ${getFoobarRewardPath("print-preview")}`}
 			</p>
-			<XMarksTheSpot foobar="/foobar/devtools" />
+			<XMarksTheSpot foobar={getFoobarRewardPath("devtools")} />
 		</div>
 	);
 };

@@ -2,6 +2,7 @@ import { describe, expect, test } from "vitest";
 
 import { MOCK_NEWSLETTER_SLUGS } from "@/lib/domains/Buttondown/mocks";
 
+import { getFoobarRewardPath } from "./domains/foobar/codes";
 import { normalizeLoc, normalizeSitemapXml, parseRobotsDisallow } from "./sitemap";
 
 describe("normalizeLoc", () => {
@@ -53,7 +54,7 @@ const SITEMAP = `<?xml version="1.0" encoding="UTF-8"?>
     <loc>https://sreetamdas.com/foobar</loc>
   </url>
   <url>
-    <loc>https://sreetamdas.com/foobar/teapot</loc>
+    <loc>https://sreetamdas.com${getFoobarRewardPath("teapot")}</loc>
   </url>
   <url>
     <loc>https://sreetamdas.com/about</loc>

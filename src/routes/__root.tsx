@@ -12,6 +12,7 @@ import {
 import { lazy, type ReactNode, Suspense, useEffect, useState } from "react";
 
 import { IS_DEV, SITE_TITLE_APPEND } from "@/config";
+import { getFoobarRewardPath } from "@/lib/domains/foobar/codes";
 import { FOOBAR_SOURCE_CODE } from "@/lib/domains/foobar/helpers";
 import { captureException } from "@/lib/domains/Sentry";
 
@@ -142,7 +143,7 @@ export const Route = createRootRoute({
 		},
 	],
 	headers: () => ({
-		"x-foobar": "/foobar/headers",
+		"x-foobar": getFoobarRewardPath("headers"),
 	}),
 });
 

@@ -1,5 +1,7 @@
 import { describe, expect, test } from "vitest";
 
+import { getFoobarRewardPath } from "@/lib/domains/foobar/codes";
+
 import { handleFoobarCookie } from "./cookie";
 
 describe("Foobar cookie clue", () => {
@@ -23,7 +25,7 @@ describe("Foobar cookie clue", () => {
 		expect(response.headers.get("set-cookie")).toBeNull();
 		expect(await response.json()).toEqual({
 			message: "The jar opened.",
-			foobar: "/foobar/cookie-jar",
+			foobar: getFoobarRewardPath("cookie-jar"),
 		});
 	});
 });

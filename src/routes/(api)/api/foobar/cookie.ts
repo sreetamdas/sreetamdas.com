@@ -4,6 +4,7 @@
  */
 import { createFileRoute } from "@tanstack/react-router";
 
+import { getFoobarRewardPath } from "@/lib/domains/foobar/codes";
 import { getCookieValue } from "@/lib/domains/PageInteraction/LikeIdentity";
 
 const FOOBAR_COOKIE_NAME = "foobar-cookie";
@@ -12,7 +13,10 @@ const FOOBAR_COOKIE_OPEN_VALUE = "open-sesame";
 export function handleFoobarCookie(request: Request): Response {
 	const cookieHeader = request.headers.get("cookie") ?? undefined;
 	if (getCookieValue(cookieHeader, FOOBAR_COOKIE_NAME) === FOOBAR_COOKIE_OPEN_VALUE) {
-		return Response.json({ message: "The jar opened.", foobar: "/foobar/cookie-jar" });
+		return Response.json({
+			message: "The jar opened.",
+			foobar: getFoobarRewardPath("cookie-jar"),
+		});
 	}
 
 	const attributes = [
