@@ -6,9 +6,10 @@
  * the presenter's slide, vote in slide polls, and send lightweight reactions.
  * The underlying WebSocket transport lives in `./use-slide-session`.
  */
-import { type FormEvent, useState } from "react";
+import { type FormEvent, useEffect, useState } from "react";
 import { FaGithub, FaGoogle, FaRegCircleCheck } from "react-icons/fa6";
 
+import { fetchConfiguredSignInProvidersServerFn } from "@/lib/domains/auth/providers.server";
 import { SLIDE_REACTION_EMOJIS } from "@/lib/domains/slides/reactions";
 import { cn } from "@/lib/helpers/utils";
 
@@ -32,7 +33,7 @@ export type SlideSessionPollDefinition = {
 	question: string;
 	options: Array<string>;
 };
-type SocialSignInProvider = "github" | "google";
+type SlideSignInProvider = "github" | "google";
 
 const EMPTY_POLL_DEFINITIONS: Array<SlideSessionPollDefinition> = [];
 
@@ -134,12 +135,28 @@ function MasterLiveControl({
 }) {
 	const [question, setQuestion] = useState("");
 	const [options, setOptions] = useState("Yes,No");
-	const [signInProvider, setSignInProvider] = useState<SocialSignInProvider | null>(null);
+	const [signInProvider, setSignInProvider] = useState<SlideSignInProvider | null>(null);
+	const [signInProviders, setSignInProviders] = useState<Array<SlideSignInProvider> | null>(null);
 	const browserHref = useBrowserHref();
 	const viewerLink = browserHref ? getViewerLink(sessionId, browserHref) : "";
 	const signInDisabled = !browserHref || signInProvider !== null;
 
-	function handleSocialSignin(provider: SocialSignInProvider) {
+	useEffect(() => {
+		let active = true;
+		void fetchConfiguredSignInProvidersServerFn()
+			.then((providers) => {
+				if (active) setSignInProviders(providers);
+			})
+			.catch(() => {
+				if (active) setSignInProviders([]);
+			});
+
+		return () => {
+			active = false;
+		};
+	}, []);
+
+	function handleSocialSignin(provider: SlideSignInProvider) {
 		if (!browserHref || signInProvider) return;
 
 		setSignInProvider(provider);
@@ -193,27 +210,29 @@ function MasterLiveControl({
 					<p className="m-0 text-xs text-amber-50/85">
 						Presenter control requires an allowlisted login.
 					</p>
-					<p className="m-0 flex items-center gap-2 pt-5 text-xs text-amber-50/85">
-						Sign in with:
-						<button
-							aria-label="Sign in with GitHub"
-							className="cursor-pointer border-0 bg-transparent p-0 text-lg text-white disabled:cursor-not-allowed disabled:opacity-50"
-							disabled={signInDisabled}
-							onClick={() => handleSocialSignin("github")}
-							type="button"
-						>
-							<FaGithub />
-						</button>
-						<button
-							aria-label="Sign in with Google"
-							className="cursor-pointer border-0 bg-transparent p-0 text-lg text-white disabled:cursor-not-allowed disabled:opacity-50"
-							disabled={signInDisabled}
-							onClick={() => handleSocialSignin("google")}
-							type="button"
-						>
-							<FaGoogle />
-						</button>
-					</p>
+					{signInProviders === null ? (
+						<p className="m-0 pt-5 text-xs text-amber-50/85">Checking sign-in…</p>
+					) : signInProviders.length > 0 ? (
+						<p className="m-0 flex items-center gap-2 pt-5 text-xs text-amber-50/85">
+							Sign in with:
+							{signInProviders.map((provider) => (
+								<button
+									aria-label={`Sign in with ${provider === "github" ? "GitHub" : "Google"}`}
+									className="cursor-pointer border-0 bg-transparent p-0 text-lg text-white disabled:cursor-not-allowed disabled:opacity-50"
+									disabled={signInDisabled}
+									key={provider}
+									onClick={() => handleSocialSignin(provider)}
+									type="button"
+								>
+									<SocialSignInIcon provider={provider} />
+								</button>
+							))}
+						</p>
+					) : (
+						<p className="m-0 pt-5 text-xs text-amber-50/85">
+							Sign-in isn&apos;t configured for this deployment.
+						</p>
+					)}
 				</div>
 			)}
 
@@ -480,7 +499,11 @@ function getViewerLink(sessionId: string, url: string) {
 	return updated_url.toString();
 }
 
-function getSocialSignInUrl(provider: SocialSignInProvider, returnTo: string) {
+function SocialSignInIcon({ provider }: { provider: SlideSignInProvider }) {
+	return provider === "github" ? <FaGithub /> : <FaGoogle />;
+}
+
+function getSocialSignInUrl(provider: SlideSignInProvider, returnTo: string) {
 	const loginUrl = new URL(`/api/login/${provider}`, returnTo);
 	loginUrl.searchParams.set("returnTo", returnTo);
 	return loginUrl.toString();
