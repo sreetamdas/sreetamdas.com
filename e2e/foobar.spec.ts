@@ -1,6 +1,9 @@
 import { expect, test, type Page } from "@playwright/test";
 
-import { FOOBAR_PUZZLE_PREREQUISITES } from "../src/lib/domains/foobar/catalog";
+import {
+	FOOBAR_PUZZLE_PREREQUISITES,
+	FOOBAR_REQUIRED_ACHIEVEMENTS,
+} from "../src/lib/domains/foobar/catalog";
 import { getFoobarRewardPath } from "../src/lib/domains/foobar/codes";
 
 const legacyProgress = {
@@ -67,16 +70,18 @@ async function openBasecamp(page: Page) {
 }
 
 async function openFieldEntry(page: Page, title: string) {
-	const article = page.getByRole("article").filter({
-		has: page.getByRole("heading", { name: title, exact: true }),
+	const trigger = page.getByRole("button", { name: `Open field entry for ${title}`, exact: true });
+	const closeTrigger = page.getByRole("button", {
+		name: `Close field entry for ${title}`,
+		exact: true,
 	});
-	const trigger = article.getByRole("button", { name: `Open field entry for ${title}` });
-	const closeTrigger = article.getByRole("button", { name: `Close field entry for ${title}` });
 	if (!(await closeTrigger.isVisible())) {
 		await trigger.click();
 		await expect(closeTrigger).toBeVisible();
 	}
-	return article;
+	return page.getByRole("article").filter({
+		has: page.getByRole("heading", { name: title, exact: true }),
+	});
 }
 
 async function hasPersistedAchievement(page: Page, achievement: string, requireKonami = false) {
@@ -192,18 +197,18 @@ test("orients hunters and keeps one field entry open", async ({ page }) => {
 	await expect(
 		page.getByRole("button", { name: "Close field entry for X Marks the Spot" }),
 	).toBeVisible();
-	await expect(page.getByText("Nothing written down yet.")).toBeVisible();
+	await expect(page.getByRole("article").getByText("gold star")).toBeVisible();
 });
 
 test("groups achievements and persists revealed field notes", async ({ page }) => {
 	await seedProgress(page);
 	await page.goto("/foobar");
 
-	await expect(page.getByRole("heading", { name: "Warmup / Discovery" })).toBeVisible();
-	await expect(page.getByText("1 of 6", { exact: true })).toBeVisible();
+	await expect(page.getByText("warmup 1/6", { exact: true })).toBeVisible();
 	await expect(page.getByRole("heading", { name: "Field notes" })).toBeVisible();
 	await expect(page.getByText("Earlier", { exact: true })).toHaveCount(2);
-	await expect(page.getByText("Even crawlers are handed house rules.")).toBeVisible();
+	const paperTrail = await openFieldEntry(page, "Paper Trail");
+	await expect(paperTrail.getByText("Even crawlers are handed house rules.")).toBeVisible();
 	const fieldNotes = page.getByRole("region", { name: "Field notes" });
 
 	const dnsTxtBadge = await openFieldEntry(page, "TXT Me Maybe");
@@ -240,15 +245,11 @@ test("labels bonus achievements and laptop-only clues", async ({ page }) => {
 
 	await expect(page.getByText(/Best on a laptop\./)).toBeVisible();
 
-	const campfire = page.getByRole("article").filter({
-		has: page.getByRole("heading", { name: "Stranger by the Fire", exact: true }),
-	});
+	const campfire = await openFieldEntry(page, "Stranger by the Fire");
 	await expect(campfire.getByText("bonus", { exact: true })).toBeVisible();
 
-	const consoleBadge = page.getByRole("article").filter({
-		has: page.getByRole("heading", { name: "Console Yourself", exact: true }),
-	});
-	await expect(consoleBadge.getByText("laptop", { exact: true })).toBeVisible();
+	const consoleEntry = await openFieldEntry(page, "Console Yourself");
+	await expect(consoleEntry.getByText("laptop", { exact: true })).toBeVisible();
 });
 
 test("reveals tier words and holds the final address until every tier is done", async ({
@@ -260,10 +261,9 @@ test("reveals tier words and holds the final address until every tier is done", 
 	});
 	await page.goto("/foobar");
 
-	await expect(page.locator('[data-foobar-tier-word="discovery"]')).toHaveText("Tier word: draco");
-	await expect(page.locator('[data-foobar-tier-word="protocol"]')).toHaveText(
-		"Tier word: titillandus",
-	);
+	await expect(page.locator('[data-foobar-tier-word="discovery"]')).toHaveText("draco");
+	await expect(page.locator('[data-foobar-tier-word="protocol"]')).toHaveText("titillandus");
+	await expect(page.getByLabel("Tier words so far: draco, dormiens, titillandus")).toBeVisible();
 	await expect(page.locator('[data-foobar-tier-word="archaeology"]')).toHaveCount(0);
 
 	await page.goto(getFoobarRewardPath("completed"));
@@ -383,7 +383,7 @@ test("reads and persists a developed hint", async ({ page }) => {
 		"aria-live",
 		"polite",
 	);
-	await expect(readButton).toHaveText("Read developed hint");
+	await expect(readButton).toHaveText("[Read developed hint]");
 	await readButton.click();
 
 	await expect(dnsTxtBadge.getByText(hintText, { exact: true })).toBeVisible();
@@ -424,63 +424,153 @@ test("keeps local progress as the default and offers optional cloud save", async
 	}
 });
 
-test("deletes cloud progress durably and synchronizes the lifecycle across tabs", async ({
-	page,
-}) => {
-	await authenticateFoobarE2e(page);
-	await seedProgress(page);
-	await page.goto("/foobar");
-	await openBasecamp(page);
-	await expect(page.getByText("Signed in as Foobar E2E Hunter.")).toBeVisible();
-	await ensureCloudEnabled(page);
+// Every test here signs in as the one e2e user, so they must not overlap.
+test.describe("cloud save with the shared e2e user", () => {
+	test.describe.configure({ mode: "serial" });
 
-	const second = await page.context().newPage();
-	await seedProgress(second);
-	await second.goto("/foobar");
-	await ensureCloudEnabled(second);
+	test("deletes cloud progress durably and synchronizes the lifecycle across tabs", async ({
+		page,
+	}) => {
+		await authenticateFoobarE2e(page);
+		await seedProgress(page);
+		await page.goto("/foobar");
+		await openBasecamp(page);
+		await expect(page.getByText("Signed in as Foobar E2E Hunter.")).toBeVisible();
+		await ensureCloudEnabled(page);
 
-	const trigger = page.getByRole("button", { name: "Delete cloud save", exact: true });
-	await trigger.click();
-	const cancel = page.getByRole("button", { name: "Keep cloud save" });
-	await expect(cancel).toBeFocused();
-	await cancel.click();
-	await expect(trigger).toBeFocused();
+		const second = await page.context().newPage();
+		await seedProgress(second);
+		await second.goto("/foobar");
+		await ensureCloudEnabled(second);
 
-	await trigger.click();
-	await page.getByRole("button", { name: "Yes, delete cloud save" }).click();
-	const enable = second.getByRole("button", { name: "Save this browser's progress to cloud" });
-	await expect(enable).toBeVisible();
+		const trigger = page.getByRole("button", { name: "Delete cloud save", exact: true });
+		await trigger.click();
+		const cancel = page.getByRole("button", { name: "Keep cloud save" });
+		await expect(cancel).toBeFocused();
+		await cancel.click();
+		await expect(trigger).toBeFocused();
 
-	await Promise.all([page.reload(), second.reload()]);
-	await Promise.all([openBasecamp(page), openBasecamp(second)]);
-	await expect(
-		page.getByRole("button", { name: "Save this browser's progress to cloud" }),
-	).toBeVisible();
-	await expect(enable).toBeVisible();
+		await trigger.click();
+		await page.getByRole("button", { name: "Yes, delete cloud save" }).click();
+		const enable = second.getByRole("button", { name: "Save this browser's progress to cloud" });
+		await expect(enable).toBeVisible();
 
-	await enable.click();
-	await expect(page.getByRole("button", { name: "Delete cloud save" })).toBeVisible();
-	await second.close();
+		await Promise.all([page.reload(), second.reload()]);
+		await Promise.all([openBasecamp(page), openBasecamp(second)]);
+		await expect(
+			page.getByRole("button", { name: "Save this browser's progress to cloud" }),
+		).toBeVisible();
+		await expect(enable).toBeVisible();
+
+		await enable.click();
+		await expect(page.getByRole("button", { name: "Delete cloud save" })).toBeVisible();
+		await second.close();
+	});
+
+	test("offers an operation-specific retry when cloud deletion fails", async ({ page }) => {
+		await authenticateFoobarE2e(page);
+		await seedProgress(page);
+		await page.goto("/foobar");
+		await openBasecamp(page);
+		await ensureCloudEnabled(page);
+
+		await page.route("**/_serverFn/**", (route) => route.abort("failed"));
+		await page.getByRole("button", { name: "Delete cloud save" }).click();
+		await page.getByRole("button", { name: "Yes, delete cloud save" }).click();
+		await expect(page.getByRole("alert")).toContainText("Could not delete your cloud save.");
+		const retry = page.getByRole("button", { name: "Retry" });
+		await expect(retry).toBeVisible();
+
+		await page.unroute("**/_serverFn/**");
+		await retry.click();
+		await expect(
+			page.getByText("Cloud saving is off. Progress stays in this browser."),
+		).toBeVisible();
+	});
+
+	test("shows the cloud name and a starred certificate for a finished hunt", async ({ page }) => {
+		await authenticateFoobarE2e(page);
+		await seedProgress(page, {
+			...legacyProgress,
+			completed: [...FOOBAR_REQUIRED_ACHIEVEMENTS],
+			clues_seen: [{ id: "headers:hint:1", seen_at: Date.now() - 1_000 }],
+		});
+		await page.goto("/foobar");
+		await ensureCloudEnabled(page);
+		await expect(
+			page.getByText(`Foobar E2E Hunter ${FOOBAR_REQUIRED_ACHIEVEMENTS.length}*`),
+		).toBeVisible();
+
+		await page.getByRole("link", { name: "Open completion certificate" }).click();
+		await expect(page.getByRole("heading", { level: 1, name: "Foobar E2E Hunter" })).toBeVisible();
+		await expect(
+			page.getByText(`${FOOBAR_REQUIRED_ACHIEVEMENTS.length - 1} gold`, { exact: true }),
+		).toBeVisible();
+		await expect(page.getByText("1 silver", { exact: true })).toBeVisible();
+		await expect(page.locator('[data-foobar-tier-word="protocol"]')).toHaveText("titillandus");
+		await expect(page.locator("html")).toHaveAttribute("data-foobar-karma", "");
+
+		await openBasecampAfterReturn(page);
+		await page.getByRole("button", { name: "Delete cloud save", exact: true }).click();
+		await page.getByRole("button", { name: "Yes, delete cloud save" }).click();
+		await expect(
+			page.getByRole("button", { name: "Save this browser's progress to cloud" }),
+		).toBeVisible();
+	});
 });
 
-test("offers an operation-specific retry when cloud deletion fails", async ({ page }) => {
-	await authenticateFoobarE2e(page);
+async function openBasecampAfterReturn(page: Page) {
+	await page.getByRole("link", { name: "Return to the hunt" }).click();
+	await expect(page).toHaveURL(/\/foobar$/);
+	await openBasecamp(page);
+}
+
+test("keeps an unlocked Foobar dark and restores the visitor's theme on the way out", async ({
+	page,
+}) => {
+	await page.emulateMedia({ colorScheme: "light" });
 	await seedProgress(page);
 	await page.goto("/foobar");
-	await openBasecamp(page);
-	await ensureCloudEnabled(page);
 
-	await page.route("**/_serverFn/**", (route) => route.abort("failed"));
-	await page.getByRole("button", { name: "Delete cloud save" }).click();
-	await page.getByRole("button", { name: "Yes, delete cloud save" }).click();
-	await expect(page.getByRole("alert")).toContainText("Could not delete your cloud save.");
-	const retry = page.getByRole("button", { name: "Retry" });
-	await expect(retry).toBeVisible();
+	const root = page.locator("html");
+	await expect(root).toHaveAttribute("data-foobar-karma", "");
+	await expect(page.locator("body")).toHaveCSS("background-color", "rgb(10, 14, 20)");
 
-	await page.unroute("**/_serverFn/**");
-	await retry.click();
+	await page.getByRole("link", { name: "about" }).click();
+	await expect(page).toHaveURL(/\/about$/);
+	await expect(root).not.toHaveAttribute("data-foobar-karma");
+	await expect(page.locator("body")).toHaveCSS("background-color", "rgb(247, 241, 255)");
+});
+
+test("leaves a locked Foobar looking like any other 404", async ({ page }) => {
+	await page.emulateMedia({ colorScheme: "light" });
+	await page.goto("/foobar");
+
+	await expect(page.getByRole("heading", { name: "404!" })).toBeVisible();
+	await expect(page.locator("html")).not.toHaveAttribute("data-foobar-karma");
+});
+
+test("stars a discovery gold without hints and silver with them", async ({ page }) => {
+	await seedProgress(page, {
+		...legacyProgress,
+		clues_seen: [{ id: "headers:hint:1", seen_at: Date.now() - 1_000 }],
+	});
+	await page.goto("/foobar");
+
 	await expect(
-		page.getByText("Cloud saving is off. Progress stays in this browser."),
+		page.getByRole("button", { name: "Open field entry for X Marks the Spot", exact: true }),
+	).toHaveAccessibleDescription(/gold star/);
+	await expect(
+		page.getByRole("button", { name: "Open field entry for Heads Up!", exact: true }),
+	).toHaveAccessibleDescription(/silver star/);
+	await expect(
+		page.getByRole("button", { name: "Open field entry for TXT Me Maybe", exact: true }),
+	).toHaveAccessibleDescription(/not found yet/);
+
+	const headers = await openFieldEntry(page, "Heads Up!");
+	await expect(headers.getByText("silver star")).toBeVisible();
+	await expect(
+		headers.getByText("The server may be saying more than the page does."),
 	).toBeVisible();
 });
 
@@ -504,13 +594,17 @@ test("tier dashboard fits a mobile viewport", async ({ page }) => {
 	});
 	await page.goto("/foobar");
 
-	await expect(page.getByRole("heading", { name: "Warmup / Discovery" })).toBeVisible();
+	await expect(page.getByRole("list", { name: "Discoveries, summit first" })).toBeVisible();
 	await expect(page.getByRole("heading", { name: "Field notes" })).toBeVisible();
 	await openFieldEntry(page, "TXT Me Maybe");
 	await expect(page.getByText("Hint 4 · Developing", { exact: true })).toBeVisible();
-	const hasHorizontalOverflow = await page
-		.locator("main")
-		.evaluate((element) => element.scrollWidth > element.clientWidth);
+	const hasHorizontalOverflow = await page.evaluate(
+		() =>
+			document.documentElement.scrollWidth > window.innerWidth ||
+			[...document.querySelectorAll("main, main ol")].some(
+				(element) => element.scrollWidth > element.clientWidth,
+			),
+	);
 	expect(hasHorizontalOverflow).toBe(false);
 });
 
@@ -813,11 +907,11 @@ test("keeps the reset controls readable in dark mode", async ({ page }) => {
 		.click();
 
 	const trigger = page.getByRole("button", { name: "Reset this browser's progress" });
-	await expect(trigger).toHaveCSS("color", "oklch(0.808 0.114 19.571)");
+	await expect(trigger).toHaveCSS("color", "rgb(252, 97, 141)");
 	await trigger.click();
 	await expect(page.getByRole("button", { name: "Yes, reset progress" })).toHaveCSS(
 		"color",
-		"oklch(0.808 0.114 19.571)",
+		"rgb(252, 97, 141)",
 	);
 });
 
