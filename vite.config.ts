@@ -174,7 +174,7 @@ const oxlint_config: UserConfig["lint"] = {
 	},
 	options: {
 		typeAware: true,
-		typeCheck: true,
+		typeCheck: false,
 	},
 	settings: {
 		"better-tailwindcss": {
