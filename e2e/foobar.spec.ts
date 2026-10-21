@@ -684,6 +684,17 @@ test("claims the scenic route from a real 404 page", async ({ page }) => {
 	);
 });
 
+for (const path of ["/blog/nope", "/newsletter/nope", "/foobar/certificate/missing"]) {
+	test(`claims the scenic route from ${path}`, async ({ page }) => {
+		await page.goto(path);
+
+		await expect(page).toHaveTitle("Page not found | Sreetam Das");
+		await expect(page.locator('link[rel="canonical"]')).toHaveCount(0);
+		await expect(page.getByRole("heading", { name: "404!" })).toBeVisible();
+		await expect.poll(() => hasPersistedAchievement(page, "error404")).toBe(true);
+	});
+}
+
 test("keeps the reset controls readable in dark mode", async ({ page }) => {
 	await page.emulateMedia({ colorScheme: "dark" });
 	await seedProgress(page);

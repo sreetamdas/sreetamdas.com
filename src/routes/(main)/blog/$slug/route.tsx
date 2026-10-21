@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 
-import { SITE_DESCRIPTION, SITE_TITLE_APPEND } from "@/config";
+import { SITE_TITLE_APPEND } from "@/config";
 import { NotFound404 } from "@/lib/components/Error";
 import { ReadingProgress } from "@/lib/components/ProgressBar";
 import { Gradient } from "@/lib/components/Typography";
@@ -19,10 +19,14 @@ export const Route = createFileRoute("/(main)/blog/$slug")({
 	},
 	head: ({ loaderData }) => {
 		const post = loaderData?.post;
-		const title = `${post?.seo_title ?? post?.title ?? "Blog"} ${SITE_TITLE_APPEND}`;
-		const description = post?.description ?? SITE_DESCRIPTION;
-		const canonical = canonicalUrl(post?.page_path ?? "/blog");
-		const ogImage = post?.image ? absoluteUrl(post.image) : defaultOgImageUrl();
+		if (!post) {
+			return { meta: [{ title: `Page not found ${SITE_TITLE_APPEND}` }] };
+		}
+
+		const title = `${post.seo_title ?? post.title} ${SITE_TITLE_APPEND}`;
+		const description = post.description;
+		const canonical = canonicalUrl(post.page_path);
+		const ogImage = post.image ? absoluteUrl(post.image) : defaultOgImageUrl();
 
 		return {
 			links: [{ rel: "canonical", href: canonical }],

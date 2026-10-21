@@ -16,9 +16,13 @@ export const Route = createFileRoute("/(main)/newsletter/$slug")({
 	},
 	head: ({ loaderData }) => {
 		const email = loaderData?.newsletter_email_metadata;
-		const title = `${email?.subject ?? "Newsletter"} ${SITE_TITLE_APPEND}`;
-		const description = email?.description || SITE_DESCRIPTION;
-		const canonical = canonicalUrl(`/newsletter/${email?.slug ?? ""}`);
+		if (!email) {
+			return { meta: [{ title: `Page not found ${SITE_TITLE_APPEND}` }] };
+		}
+
+		const title = `${email.subject} ${SITE_TITLE_APPEND}`;
+		const description = email.description || SITE_DESCRIPTION;
+		const canonical = canonicalUrl(`/newsletter/${email.slug}`);
 		const ogImage = defaultOgImageUrl();
 
 		return {
