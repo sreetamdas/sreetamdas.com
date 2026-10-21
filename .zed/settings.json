@@ -6,7 +6,11 @@
 	"tab_size": 2,
 	"hard_tabs": true,
 	"lsp": {
-		"oxfmt": {
+		"vite-plus-fmt": {
+			"command": {
+				"path": "node_modules/.bin/vp",
+				"arguments": ["fmt", "--lsp"]
+			},
 			"initialization_options": {
 				"settings": {
 					"fmt.configPath": "./vite.config.ts",
@@ -14,7 +18,11 @@
 				}
 			}
 		},
-		"oxlint": {
+		"vite-plus-lint": {
+			"command": {
+				"path": "node_modules/.bin/vp",
+				"arguments": ["lint", "--lsp"]
+			},
 			"initialization_options": {
 				"settings": {
 					"configPath": "./vite.config.ts",
@@ -42,21 +50,21 @@
 			"language_servers": ["tailwindcss-intellisense-css", "!vscode-css-language-server", "..."],
 			"format_on_save": "on",
 			"prettier": { "allowed": false },
-			"formatter": [{ "language_server": { "name": "oxfmt" } }]
+			"formatter": [{ "language_server": { "name": "vite-plus-fmt" } }]
 		},
 		"JavaScript": {
 			"language_servers": [
 				"typescript-ls",
 				"tailwindcss-language-server",
-				"oxfmt",
-				"oxlint",
+				"vite-plus-fmt",
+				"vite-plus-lint",
 				"!vtsls",
 				"..."
 			],
 			"format_on_save": "on",
 			"prettier": { "allowed": false },
 			"formatter": [
-				{ "language_server": { "name": "oxfmt" } },
+				{ "language_server": { "name": "vite-plus-fmt" } },
 				{ "code_action": "source.fixAll.oxc" }
 			]
 		},
@@ -64,8 +72,8 @@
 			"language_servers": [
 				"typescript-ls",
 				"tailwindcss-language-server",
-				"oxfmt",
-				"oxlint",
+				"vite-plus-fmt",
+				"vite-plus-lint",
 				"!vtsls",
 				"!typescript-language-server",
 				"..."
@@ -73,7 +81,7 @@
 			"format_on_save": "on",
 			"prettier": { "allowed": false },
 			"formatter": [
-				{ "language_server": { "name": "oxfmt" } },
+				{ "language_server": { "name": "vite-plus-fmt" } },
 				{ "code_action": "source.fixAll.oxc" }
 			]
 		},
@@ -81,8 +89,8 @@
 			"language_servers": [
 				"typescript-ls",
 				"tailwindcss-language-server",
-				"oxfmt",
-				"oxlint",
+				"vite-plus-fmt",
+				"vite-plus-lint",
 				"!vtsls",
 				"!typescript-language-server",
 				"..."
@@ -90,25 +98,25 @@
 			"format_on_save": "on",
 			"prettier": { "allowed": false },
 			"formatter": [
-				{ "language_server": { "name": "oxfmt" } },
+				{ "language_server": { "name": "vite-plus-fmt" } },
 				{ "code_action": "source.fixAll.oxc" }
 			]
 		},
 		"JSON": {
 			"format_on_save": "on",
 			"prettier": { "allowed": false },
-			"formatter": [{ "language_server": { "name": "oxfmt" } }]
+			"formatter": [{ "language_server": { "name": "vite-plus-fmt" } }]
 		},
 		"JSONC": {
 			"format_on_save": "on",
 			"prettier": { "allowed": false },
-			"formatter": [{ "language_server": { "name": "oxfmt" } }]
+			"formatter": [{ "language_server": { "name": "vite-plus-fmt" } }]
 		},
 		"MDX": {
-			"language_servers": ["mdx-analyzer", "tailwindcss-language-server", "oxfmt", "..."],
+			"language_servers": ["mdx-analyzer", "tailwindcss-language-server", "vite-plus-fmt", "..."],
 			"format_on_save": "on",
 			"prettier": { "allowed": false },
-			"formatter": [{ "language_server": { "name": "oxfmt" } }]
+			"formatter": [{ "language_server": { "name": "vite-plus-fmt" } }]
 		}
 	}
 }
