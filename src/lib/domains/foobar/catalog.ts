@@ -281,11 +281,11 @@ export const FOOBAR_ACHIEVEMENTS = {
 			},
 			{
 				id: "easter-egg:hint:3",
-				text: "Try the link whose icon suggests an egg-shaped surprise.",
+				text: "Read the social links' destinations, not just their icons.",
 			},
 			{
 				id: "easter-egg:hint:4",
-				text: "Find the hidden social interaction that leads to /foobar/easter-egg.",
+				text: "Click the Reddit link on /about and see where it actually goes.",
 			},
 		],
 	},

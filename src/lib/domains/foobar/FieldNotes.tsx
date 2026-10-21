@@ -29,7 +29,9 @@ export const FieldNotes = ({ clues_seen, onSelectAchievement }: FieldNotesProps)
 			<h2 id="foobar-field-notes" className="font-serif text-3xl font-bold">
 				Field notes
 			</h2>
-			<p className="mt-2 text-sm text-foreground/70">The bits you chose to write down.</p>
+			<p className="mt-2 text-sm text-foreground/70">
+				A running record of the hints you opened and the things you found.
+			</p>
 			{notes.length === 0 ? (
 				<p className="mt-3 text-sm text-foreground/70">
 					Nothing here yet. Revealed hints and completed oddities will turn up here.
