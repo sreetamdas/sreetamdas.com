@@ -1,6 +1,7 @@
 import { describe, expect, test } from "vitest";
 
 import {
+	FOOBAR_ACHIEVEMENT_ORDER,
 	FOOBAR_ACHIEVEMENTS,
 	FOOBAR_PUZZLE_PREREQUISITES,
 	FOOBAR_PUZZLE_TIER_WORDS,
@@ -9,6 +10,7 @@ import {
 	FOOBAR_TIER_ORDER,
 	FOOBAR_TIERS,
 	getFoobarClue,
+	getFoobarStar,
 	hasCompletedFoobar,
 	hasFinishedFoobarPuzzleTiers,
 	hasFinishedFoobarTier,
@@ -219,5 +221,52 @@ describe("Foobar catalogue", () => {
 				expect(flag).toMatchObject(navigableFlagMetadata[flag.name]);
 			}
 		}
+	});
+
+	test("orders achievements by tier, then catalogue order", () => {
+		expect(FOOBAR_ACHIEVEMENT_ORDER).toHaveLength(Object.keys(FOOBAR_ACHIEVEMENTS).length);
+		expect(FOOBAR_ACHIEVEMENT_ORDER[0]).toBe("unlocked");
+		expect(FOOBAR_ACHIEVEMENT_ORDER.at(-1)).toBe("completed");
+
+		const tierIndexes = FOOBAR_ACHIEVEMENT_ORDER.map((achievement) =>
+			FOOBAR_TIER_ORDER.indexOf(FOOBAR_ACHIEVEMENTS[achievement].tier),
+		);
+		expect(tierIndexes).toEqual(tierIndexes.toSorted((left, right) => left - right));
+	});
+
+	describe("getFoobarStar", () => {
+		test("gives no star before the achievement is found", () => {
+			expect(getFoobarStar("headers", { completed: [], clues_seen: [] })).toBeNull();
+		});
+
+		test("gives gold when it was found without opening a hint", () => {
+			expect(
+				getFoobarStar("headers", {
+					completed: ["headers"],
+					clues_seen: [{ id: "headers:completed", seen_at: 1 }],
+				}),
+			).toBe("gold");
+		});
+
+		test("gives silver when any of its hints was opened", () => {
+			expect(
+				getFoobarStar("headers", {
+					completed: ["headers"],
+					clues_seen: [
+						{ id: "headers:hint:2", seen_at: null },
+						{ id: "headers:completed", seen_at: 2 },
+					],
+				}),
+			).toBe("silver");
+		});
+
+		test("ignores hints opened for other achievements", () => {
+			expect(
+				getFoobarStar("headers", {
+					completed: ["headers"],
+					clues_seen: [{ id: "localforage:hint:1", seen_at: 1 }],
+				}),
+			).toBe("gold");
+		});
 	});
 });

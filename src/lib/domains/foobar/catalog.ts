@@ -589,6 +589,14 @@ export function isFoobarAchievement(value: unknown): value is FoobarAchievement 
 	return typeof value === "string" && Object.hasOwn(FOOBAR_ACHIEVEMENTS, value);
 }
 
+/** Tier order, then catalogue order: the numbering players see ("No.07"). */
+export const FOOBAR_ACHIEVEMENT_ORDER: ReadonlyArray<FoobarAchievement> = FOOBAR_TIER_ORDER.flatMap(
+	(tier) =>
+		Object.keys(FOOBAR_ACHIEVEMENTS)
+			.filter(isFoobarAchievement)
+			.filter((achievement) => FOOBAR_ACHIEVEMENTS[achievement].tier === tier),
+);
+
 export const FOOBAR_REQUIRED_ACHIEVEMENTS: ReadonlyArray<FoobarAchievement> = Object.keys(
 	FOOBAR_ACHIEVEMENTS,
 )
@@ -670,4 +678,26 @@ export function getFoobarClue(value: unknown): FoobarClue | undefined {
 
 export function isFoobarClueId(value: unknown): value is FoobarClueId {
 	return getFoobarClue(value) !== undefined;
+}
+
+export type FoobarStar = "gold" | "silver";
+
+/**
+ * Gold for a discovery found without opening any of its hints, silver once a
+ * hint was opened. Hints can only be revealed before completion, so the order
+ * of the clues does not matter.
+ */
+export function getFoobarStar(
+	achievement: FoobarAchievement,
+	progress: {
+		completed: ReadonlyArray<FoobarAchievement>;
+		clues_seen: ReadonlyArray<{ id: string }>;
+	},
+): FoobarStar | null {
+	if (!progress.completed.includes(achievement)) return null;
+
+	const hintIds: ReadonlyArray<string> = FOOBAR_ACHIEVEMENTS[achievement].hints.map(
+		(hint) => hint.id,
+	);
+	return progress.clues_seen.some((clue) => hintIds.includes(clue.id)) ? "silver" : "gold";
 }
