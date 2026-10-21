@@ -48,6 +48,11 @@ export const FoobarPixel = ({ path }: FoobarPixelProps) => {
 	const { hunters } = useSharedHunterPresence(
 		unlocked && !completed.includes(FOOBAR_FLAGS.campfire.name),
 	);
+	useEffect(() => {
+		// The early script can mark a /foobar page that then 404s outside the
+		// dashboard; leaving /foobar always restores the visitor's own theme.
+		if (!isFoobarPath) document.documentElement.removeAttribute("data-foobar-karma");
+	}, [isFoobarPath]);
 	const handleKonamiComplete = useCallback(() => {
 		trackEvent("foobar", { props: { achievement: FOOBAR_FLAGS.konami.name } });
 		setFoobarData({ konami: true });
