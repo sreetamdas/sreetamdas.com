@@ -18,7 +18,7 @@ This file documents project conventions for humans and coding agents.
 - Dev: `pnpm dev` (runs Vite dev server with Content Collections plugin)
 - Typecheck: `pnpm typecheck`
 - Build: `pnpm build` (includes content build via `prebuild`)
-- Lint/format check: `pnpm lint` (oxfmt check + oxlint)
+- Lint/format check: `pnpm lint` (oxfmt check + type-aware oxlint)
 - Auto-fix (when safe): `pnpm lint:fix`
 - Deploy (production): `pnpm deploy` or `pnpm deploy:production`
 - Deploy (staging): `pnpm deploy:staging`
@@ -35,9 +35,10 @@ This file documents project conventions for humans and coding agents.
 - Node: see `.node-version` (currently `24.15.0`).
 - Formatting: `oxfmt`.
   - Default indentation uses tabs; print width 100.
+  - Covers `src/`, `scripts/`, `e2e/`, `.config/`, root config files and `content/`.
   - `src/**/routeTree.gen.ts` is excluded from formatting.
-- Linting: `oxlint`.
-  - `no-console` is an error.
+- Linting: type-aware `oxlint`.
+  - `no-console` is an error, except in `scripts/`.
   - `@typescript-eslint/no-explicit-any` is an error (prefer `unknown` + narrowing).
   - Unused vars are allowed only if prefixed with `_`.
 
