@@ -52,6 +52,27 @@ describe("Foobar catalogue", () => {
 		expect(FOOBAR_REQUIRED_ACHIEVEMENTS).not.toContain("completed");
 	});
 
+	test("keeps reward paths out of achievement hints", () => {
+		// A reward path can prefix a legitimate clue path (service-worker-clue),
+		// so only count a match when the path ends at a segment boundary.
+		const mentionsPath = (text: string, path: string) => {
+			for (let index = text.indexOf(path); index !== -1; index = text.indexOf(path, index + 1)) {
+				const next = text[index + path.length];
+				if (next === undefined || !/[a-z0-9-]/.test(next)) return true;
+			}
+
+			return false;
+		};
+
+		for (const flag of Object.values(FOOBAR_FLAGS)) {
+			if (!("slug" in flag) || flag.slug === "/") continue;
+
+			const rewardPath = `/foobar/${flag.slug}`;
+			const hints = FOOBAR_ACHIEVEMENTS[flag.name].hints;
+			expect(hints.every((hint) => !mentionsPath(hint.text, rewardPath))).toBe(true);
+		}
+	});
+
 	test("gives every achievement a locked teaser", () => {
 		for (const achievement of Object.keys(FOOBAR_ACHIEVEMENTS)) {
 			if (!isFoobarAchievement(achievement)) continue;

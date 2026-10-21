@@ -80,7 +80,7 @@ export const FOOBAR_ACHIEVEMENTS = {
 			},
 			{
 				id: "source-code:hint:4",
-				text: "Follow the /foobar/source-code path embedded in the page source.",
+				text: "View the page source and follow the path printed inside the ASCII comment.",
 			},
 		],
 	},
@@ -103,7 +103,7 @@ export const FOOBAR_ACHIEVEMENTS = {
 			{ id: "headers:hint:3", text: "Look for the x-foobar response header." },
 			{
 				id: "headers:hint:4",
-				text: "Follow the /foobar/headers value exposed by x-foobar.",
+				text: "Inspect the `x-foobar` response header on a /foobar page and visit the path it names.",
 			},
 		],
 	},
@@ -126,7 +126,7 @@ export const FOOBAR_ACHIEVEMENTS = {
 			{ id: "localforage:hint:3", text: "Look for a key named foobar." },
 			{
 				id: "localforage:hint:4",
-				text: "Open the /foobar/localforage path stored under foobar.",
+				text: "Read the value stored under the foobar localStorage key and open the path it holds.",
 			},
 		],
 	},
@@ -169,7 +169,7 @@ export const FOOBAR_ACHIEVEMENTS = {
 			},
 			{
 				id: "devtools:hint:4",
-				text: "Find the clue that points to /foobar/devtools.",
+				text: "Inspect the /foobar dashboard for a hidden data-foobar attribute and visit its path.",
 			},
 		],
 	},
@@ -189,7 +189,7 @@ export const FOOBAR_ACHIEVEMENTS = {
 			{ id: "hack:hint:3", text: "Call the function named hack." },
 			{
 				id: "hack:hint:4",
-				text: "Run window.hack() and follow /foobar/hack.",
+				text: "Run window.hack() in the console and open the path it logs.",
 			},
 		],
 	},
@@ -235,7 +235,7 @@ export const FOOBAR_ACHIEVEMENTS = {
 			},
 			{
 				id: "tab-visibility:hint:4",
-				text: "Follow /foobar/now-you-see-me from the changed tab title.",
+				text: "Switch away from the Foobar tab and open the path shown in its title.",
 			},
 		],
 	},
@@ -390,7 +390,7 @@ export const FOOBAR_ACHIEVEMENTS = {
 			},
 			{
 				id: "well-known:hint:4",
-				text: "Read the notice and follow /foobar/well-known.",
+				text: "Read the notice at /.well-known/foobar and open the path it names.",
 			},
 		],
 	},
@@ -427,7 +427,7 @@ export const FOOBAR_ACHIEVEMENTS = {
 			{ id: "print-preview:hint:3", text: "Look for a note that is hidden on screen." },
 			{
 				id: "print-preview:hint:4",
-				text: "Open print preview on /foobar and follow /foobar/print-preview.",
+				text: "Open print preview on /foobar and read the path in the print-only note.",
 			},
 		],
 	},
@@ -444,7 +444,7 @@ export const FOOBAR_ACHIEVEMENTS = {
 			{ id: "paper-trail:hint:3", text: "Read /robots.txt or /.well-known/security.txt." },
 			{
 				id: "paper-trail:hint:4",
-				text: "Follow the note pointing to /foobar/paper-trail.",
+				text: "Follow the Foobar path written in /robots.txt or /.well-known/security.txt.",
 			},
 		],
 	},
@@ -456,7 +456,10 @@ export const FOOBAR_ACHIEVEMENTS = {
 			{ id: "feed-reader:hint:1", text: "The blog speaks to machines as well as people." },
 			{ id: "feed-reader:hint:2", text: "Find the site's RSS feed and inspect its XML." },
 			{ id: "feed-reader:hint:3", text: "Search /rss/feed.xml for a Foobar comment." },
-			{ id: "feed-reader:hint:4", text: "Follow /foobar/feed-reader from the RSS source." },
+			{
+				id: "feed-reader:hint:4",
+				text: "Open the RSS feed's XML and follow the path in its Foobar comment.",
+			},
 		],
 	},
 	"og-qr": {
