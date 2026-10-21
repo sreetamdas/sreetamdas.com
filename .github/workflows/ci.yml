@@ -130,6 +130,7 @@ jobs:
         run: pnpm run build:ci
         env:
           VITE_CI: "1"
+          VITE_SITE_URL: "http://127.0.0.1:5045"
 
       - name: Upload build output
         uses: actions/upload-artifact@v7
