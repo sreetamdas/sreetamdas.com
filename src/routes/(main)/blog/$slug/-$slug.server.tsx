@@ -19,7 +19,7 @@ const blogPosts = allBlogPosts;
 
 export type BlogPost = (typeof blogPosts)[number];
 
-async function getBlogContent(slug: string, includeDrafts: boolean): Promise<BlogPost> {
+function getBlogContent(slug: string, includeDrafts: boolean): BlogPost {
 	const post = blogPosts.find((page) => page.page_slug === slug);
 
 	if (!post || !shouldServeBlogPost(post, { includeDrafts })) {
@@ -42,7 +42,7 @@ export const getBlogRenderable = createServerFn({ method: "GET" })
 		return { slug: data.slug };
 	})
 	.handler(async ({ data }) => {
-		const post = await getBlogContent(data.slug, IS_DEV);
+		const post = getBlogContent(data.slug, IS_DEV);
 		const Renderable = await renderServerComponent(
 			<MDXContent
 				source={post.raw}
