@@ -193,8 +193,13 @@ function TierLabel({
 		);
 	}
 
+	const finished = found === tierAchievements.length;
 	return (
-		<span className="text-karma-gutter">
+		<span
+			className={
+				finished ? `${FOOBAR_TIER_TEXT_CLASS[tier]} ${FOOBAR_GLOW_CLASS}` : "text-karma-gutter"
+			}
+		>
 			{TIER_SHORT_LABEL[tier]} {found}/{tierAchievements.length}
 		</span>
 	);
