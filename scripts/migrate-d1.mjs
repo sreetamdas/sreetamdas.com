@@ -1,3 +1,4 @@
+import { spawnSync } from "node:child_process";
 /**
  * Applies nested Drizzle SQL migrations through Wrangler before deployment.
  * Wrangler supplies Cloudflare authentication in Workers Builds, while the
@@ -6,7 +7,6 @@
 import { createHash } from "node:crypto";
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
-import { spawnSync } from "node:child_process";
 
 const database =
 	process.env.CLOUDFLARE_ENV === "staging" ? "sreetamdas_com_staging" : "sreetamdas_com";
