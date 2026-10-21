@@ -1,5 +1,5 @@
 /*
-Test-only Worker entrypoint used by @cloudflare/vitest-pool-workers.
+Test-only Worker entrypoint used by @cloudflare/vitest-plugin.
 Keeps runtime tests independent from TanStack Start virtual module resolution.
 */
 import { env } from "cloudflare:workers";
