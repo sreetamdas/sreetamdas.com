@@ -43,7 +43,7 @@ export const FoobarAchievementReveal = () => {
 
 	return (
 		<aside
-			className={`fixed right-4 bottom-4 z-50 w-[min(22rem,calc(100vw-2rem))] overflow-hidden border border-karma-rule bg-karma-background text-left font-mono text-sm text-[var(--not-white)] shadow-[0_8px_28px_rgb(0_0_0/0.45)] ${FOOBAR_TIER_TEXT_CLASS[tier]}`}
+			className={`fixed right-4 bottom-4 z-50 w-[min(22rem,calc(100vw-2rem))] overflow-hidden border border-karma-rule bg-karma-background text-left font-mono text-sm text-[var(--not-white)] shadow-[0_8px_28px_rgb(0_0_0/0.45)] [font-variant-ligatures:none] ${FOOBAR_TIER_TEXT_CLASS[tier]}`}
 			data-testid="foobar-achievement-reveal"
 		>
 			<p className="sr-only" aria-live="polite">
