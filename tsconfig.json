@@ -16,7 +16,7 @@
 		"skipLibCheck": true,
 		"strict": true,
 		"strictNullChecks": true,
-		"target": "ES2022",
+		"target": "ES2023",
 		"types": ["node", "@cloudflare/vitest-plugin/types"],
 		"paths": {
 			"content-collections": ["./.content-collections/generated"],
