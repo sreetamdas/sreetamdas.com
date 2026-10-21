@@ -1,7 +1,6 @@
 "use client";
 
-import { type ReactElement } from "react";
-import { IconBaseProps } from "react-icons";
+import { type IconType } from "react-icons";
 import {
 	FaDiscord,
 	FaEnvelope,
@@ -23,7 +22,7 @@ import { useGlobalStore } from "@/lib/domains/global";
 type ExternalLinksArrayType = Array<{
 	link: string;
 	title: string;
-	Icon: (props: IconBaseProps) => ReactElement;
+	Icon: IconType;
 	onClick?: () => void;
 	// Opens beside the site so the Foobar toast stays visible.
 	opensInNewTab?: boolean;
@@ -48,54 +47,54 @@ export const SocialLinks = () => {
 		{
 			link: "https://github.com/sreetamdas",
 			title: "Sreetam Das' GitHub",
-			Icon: (props) => <FaGithub {...props} />,
+			Icon: FaGithub,
 		},
 		{
 			link: "https://twitter.com/_SreetamDas",
 			title: "Sreetam Das' Twitter",
-			Icon: (props) => <FaTwitter {...props} />,
+			Icon: FaTwitter,
 		},
 		{
 			link: "https://stackoverflow.com/users/5283213",
 			title: "Sreetam Das' StackOverflow",
-			Icon: (props) => <FaStackOverflow {...props} />,
+			Icon: FaStackOverflow,
 		},
 		{
 			link: "https://peerlist.io/sreetamdas",
 			title: "Sreetam Das' Peerlist",
-			Icon: (props) => <SiPeerlist {...props} />,
+			Icon: SiPeerlist,
 		},
 		{
 			link: "https://www.linkedin.com/in/sreetamdas",
 			title: "Sreetam Das' LinkedIn",
-			Icon: (props) => <FaLinkedin {...props} />,
+			Icon: FaLinkedin,
 		},
 		{
 			link: "mailto:sreetam@sreetamdas.com",
 			title: "Send email to Sreetam Das",
-			Icon: (props) => <FaEnvelope {...props} />,
+			Icon: FaEnvelope,
 		},
 		{
 			link: "https://steamcommunity.com/id/karmanaut007",
 			title: "Sreetam Das' Steam",
-			Icon: (props) => <FaSteam {...props} />,
+			Icon: FaSteam,
 		},
 		{
 			link: "https://giphy.com/gifs/LrmU6jXIjwziE/tile",
 			title: "Sreetam Das' Reddit",
-			Icon: (props) => <FaRedditAlien {...props} />,
+			Icon: FaRedditAlien,
 			onClick: completeEasterEgg,
 			opensInNewTab: true,
 		},
 		{
 			link: "https://open.spotify.com/user/22nkuerb2tgjpqwhy4tp4aecq",
 			title: "Sreetam Das' Spotify",
-			Icon: (props) => <FaSpotify {...props} />,
+			Icon: FaSpotify,
 		},
 		{
 			link: "https://srtm.fyi/ds",
 			title: "Join Sreetam Das' Discord server",
-			Icon: (props) => <FaDiscord {...props} />,
+			Icon: FaDiscord,
 		},
 	];
 
