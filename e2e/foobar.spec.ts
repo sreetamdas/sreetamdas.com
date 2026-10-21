@@ -509,6 +509,12 @@ test.describe("cloud save with the shared e2e user", () => {
 		await expect(page.getByText("1 silver", { exact: true })).toBeVisible();
 		await expect(page.locator('[data-foobar-tier-word="protocol"]')).toHaveText("titillandus");
 		await expect(page.locator("html")).toHaveAttribute("data-foobar-karma", "");
+		const card = await page.request.get(
+			`${new URL(page.url()).pathname.replace("/foobar/", "/api/foobar/")}/og.png`,
+		);
+		expect(card.status()).toBe(200);
+		expect(card.headers()["content-type"]).toBe("image/png");
+		expect((await card.body()).byteLength).toBeGreaterThan(10_000);
 
 		await openBasecampAfterReturn(page);
 		await page.getByRole("button", { name: "Delete cloud save", exact: true }).click();
