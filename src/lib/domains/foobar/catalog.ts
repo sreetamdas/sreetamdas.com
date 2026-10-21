@@ -691,7 +691,7 @@ export function getFoobarStar(
 	achievement: FoobarAchievement,
 	progress: {
 		completed: ReadonlyArray<FoobarAchievement>;
-		clues_seen: ReadonlyArray<{ id: string }>;
+		clues_seen: ReadonlyArray<{ id: string; seen_at: number | null }>;
 	},
 ): FoobarStar | null {
 	if (!progress.completed.includes(achievement)) return null;

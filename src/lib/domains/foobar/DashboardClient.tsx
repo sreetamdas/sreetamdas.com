@@ -3,42 +3,63 @@
 /**
  * Client-side dashboard and access gate for the /foobar game. The page behaves
  * like a 404 until the hidden entry point flips persisted state, then records
- * any visited achievement slug as completed and renders the progress dashboard.
+ * any visited achievement slug as completed and renders the progress dashboard:
+ * an Advent of Code style page in the Karma palette around the ASCII mountain,
+ * dark-only while it is mounted (see useFoobarKarma).
  */
 import { AlertDialog } from "@base-ui/react/alert-dialog";
 import { Link } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { useShallow } from "zustand/react/shallow";
 
 import { IS_DEV } from "@/config";
 import { NotFound404 } from "@/lib/components/Error";
 import { Code } from "@/lib/components/Typography";
 import { useTrackEvent } from "@/lib/domains/Analytics";
-import { ShowCompletedBadges } from "@/lib/domains/foobar/badges";
+import { Bracketed } from "@/lib/domains/foobar/Bracketed";
 import {
+	FOOBAR_ACHIEVEMENT_ORDER,
+	FOOBAR_ACHIEVEMENTS,
+	FOOBAR_PUZZLE_TIER_WORDS,
 	hasFinishedFoobarPuzzleTiers,
+	hasFinishedFoobarTier,
 	isFoobarAchievement,
 	type FoobarAchievement,
+	type FoobarPuzzleTier,
 } from "@/lib/domains/foobar/catalog";
 import { CloudProgressPanel } from "@/lib/domains/foobar/CloudProgressPanel";
 import { getFoobarRewardPath } from "@/lib/domains/foobar/codes";
+import { EntryArticle } from "@/lib/domains/foobar/EntryArticle";
 import { FieldNotes } from "@/lib/domains/foobar/FieldNotes";
 import { FOOBAR_FLAGS } from "@/lib/domains/foobar/flags";
+import { FOOBAR_GLOW_CLASS, FOOBAR_TIER_TEXT_CLASS } from "@/lib/domains/foobar/karma";
+import { FoobarMountainArt } from "@/lib/domains/foobar/MountainArt";
 import { useSharedHunterPresence } from "@/lib/domains/foobar/sharedHunterPresence";
-import { type FoobarSchrodingerProps, initialFoobarData } from "@/lib/domains/foobar/store";
+import {
+	type FoobarDataType,
+	type FoobarSchrodingerProps,
+	initialFoobarData,
+} from "@/lib/domains/foobar/store";
+import { useFoobarKarma } from "@/lib/domains/foobar/useFoobarKarma";
 import { useGlobalStore } from "@/lib/domains/global";
 import { useHasMounted } from "@/lib/helpers/hooks";
 
+const LINK_CLASS =
+	"inline-flex min-h-11 items-center text-karma-green hover:[text-shadow:0_0_6px_currentColor] focus-visible:outline-2 focus-visible:outline-karma-yellow";
+
 export const FoobarDashboard = ({ notice }: { notice?: string }) => {
+	useFoobarKarma();
 	const trackEvent = useTrackEvent();
-	const { foobar_data, setFoobarData, completeFoobarFlag } = useGlobalStore(
+	const { foobar_data, setFoobarData, completeFoobarFlag, recordFoobarClue } = useGlobalStore(
 		useShallow((state) => ({
 			foobar_data: state.foobar_data,
 			setFoobarData: state.setFoobarData,
 			completeFoobarFlag: state.completeFoobarFlag,
+			recordFoobarClue: state.recordFoobarClue,
 		})),
 	);
 	const [activeAchievement, setActiveAchievement] = useState<FoobarAchievement>();
+	const [cloudName, setCloudName] = useState<string | null>(null);
 	useEffect(() => {
 		// Awarded in place: navigating would need a route chunk the network can no longer fetch.
 		function handleUserIsOffline() {
@@ -82,56 +103,179 @@ export const FoobarDashboard = ({ notice }: { notice?: string }) => {
 	function handleSelectAchievement(achievement: FoobarAchievement) {
 		setActiveAchievement(achievement);
 		window.requestAnimationFrame(() => {
-			const target = document.getElementById(`foobar-achievement-${achievement}`);
 			const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-			target?.scrollIntoView({
+			document.getElementById("foobar-entry")?.scrollIntoView({
 				behavior: prefersReducedMotion ? "auto" : "smooth",
-				block: "center",
+				block: "nearest",
 			});
-			// Every entry has a trigger after completion; focusing it keeps
-			// keyboard users on a visible, operable control.
+			// Every mountain row is a button; focusing it keeps keyboard users on
+			// a visible, operable control.
 			document.getElementById(`foobar-achievement-trigger-${achievement}`)?.focus();
 		});
 	}
 
+	function handleToggleAchievement(achievement: FoobarAchievement) {
+		if (activeAchievement === achievement) setActiveAchievement(undefined);
+		else handleSelectAchievement(achievement);
+	}
+
+	const { completed, clues_seen } = foobar_data;
+	const nextAchievement = FOOBAR_ACHIEVEMENT_ORDER.find(
+		(achievement) => !completed.includes(achievement),
+	);
+
 	return (
-		<div className="pb-16">
+		<div className="pb-16 font-mono text-sm leading-relaxed text-foreground/75 [font-variant-ligatures:none]">
 			{IS_DEV && (
-				<details className="mt-5 rounded-global border border-foreground/15 bg-foreground/5 p-3 font-mono text-xs dark:bg-foreground/10">
+				<details className="mt-5 border border-karma-rule bg-karma-line/50 p-3 text-xs">
 					<summary className="flex min-h-11 cursor-pointer items-center font-semibold">
 						DEV progress data
 					</summary>
-					<pre className="mt-3 overflow-x-auto border-t border-foreground/15 pt-3">
+					<pre className="mt-3 overflow-x-auto border-t border-karma-rule pt-3">
 						{JSON.stringify(foobar_data, null, 2)}
 					</pre>
 				</details>
 			)}
-			<h1 className="pt-12 font-serif text-6xl leading-none font-bold sm:pt-20 sm:text-7xl">
-				/foobar
-			</h1>
-			<p className="mt-3 font-mono text-xs text-foreground/60">
+			<header className="pt-12 sm:pt-16">
+				<div className="flex flex-wrap items-baseline gap-x-5 gap-y-1">
+					<h1 className="text-4xl font-bold text-karma-green [text-shadow:0_0_2px_currentColor,0_0_12px_rgb(123_216_143/0.55)]">
+						/foobar
+					</h1>
+					<nav aria-label="Foobar sections" className="flex flex-wrap gap-x-[1ch]">
+						<a className={LINK_CLASS} href="#foobar-journal">
+							<Bracketed>Journal</Bracketed>
+						</a>
+						<a className={LINK_CLASS} href="#foobar-field-notes">
+							<Bracketed>Field notes</Bracketed>
+						</a>
+						<a className={LINK_CLASS} href="#foobar-basecamp">
+							<Bracketed>Basecamp</Bracketed>
+						</a>
+					</nav>
+					<p className="ml-auto text-foreground">
+						{cloudName ?? "hunter"}{" "}
+						<span className="text-karma-yellow [text-shadow:0_0_5px_currentColor]">
+							{completed.length}*
+						</span>
+					</p>
+				</div>
+				<TierWordsLine completed={completed} />
+			</header>
+			<p className="mt-6 max-w-[62ch] text-pretty">
+				There are strange things hiding around this website. Some are obvious. Some are decidedly
+				not. This page remembers the ones you find.
+			</p>
+			<p className="mt-2 text-karma-comment">
 				Best on a laptop. Some clues need real browser tools.
 			</p>
 			{notice ? (
-				<output className="mt-6 block border-l-2 border-primary pl-3 text-sm">{notice}</output>
+				<output className="mt-6 block border-l-2 border-karma-yellow pl-3 text-foreground">
+					{notice}
+				</output>
 			) : null}
-			<ShowCompletedBadges
-				completed={foobar_data.completed}
-				clues_seen={foobar_data.clues_seen}
-				activeAchievement={activeAchievement}
-				onSelectAchievement={handleSelectAchievement}
-				onCollapseAchievement={() => setActiveAchievement(undefined)}
-			/>
+			<div className="mt-6 flex flex-wrap items-center gap-x-[1ch]">
+				<p>
+					<strong className="font-normal text-foreground">{completed.length}</strong> of{" "}
+					{FOOBAR_ACHIEVEMENT_ORDER.length} weird things found.
+				</p>
+				{nextAchievement ? (
+					<>
+						<button
+							className={LINK_CLASS}
+							onClick={() => handleSelectAchievement(nextAchievement)}
+							type="button"
+						>
+							<Bracketed>Continue hunting</Bracketed>
+						</button>
+						<span className="text-karma-comment">
+							Next: {FOOBAR_ACHIEVEMENTS[nextAchievement].title}
+						</span>
+					</>
+				) : (
+					<span className="text-karma-yellow">You found everything. Somehow.</span>
+				)}
+			</div>
+
+			<section
+				aria-labelledby="foobar-journal-title"
+				className="mt-6 scroll-mt-24"
+				id="foobar-journal"
+			>
+				<h2 className="sr-only" id="foobar-journal-title">
+					Journal
+				</h2>
+				<FoobarMountainArt
+					activeAchievement={activeAchievement}
+					clues_seen={clues_seen}
+					completed={completed}
+					nextAchievement={nextAchievement}
+					onToggleAchievement={handleToggleAchievement}
+				/>
+				<p className="mt-2 flex flex-wrap gap-x-4 text-xs text-karma-comment">
+					<span>
+						<span className="text-karma-yellow">@</span> next up
+					</span>
+					<span>
+						<span className="text-karma-yellow">*</span> found, no hints
+					</span>
+					<span>
+						<span className="text-karma-silver">*</span> found with hints
+					</span>
+				</p>
+				{activeAchievement ? (
+					<EntryArticle
+						achievement={activeAchievement}
+						clues_seen={clues_seen}
+						completed={completed}
+						key={activeAchievement}
+						recordFoobarClue={recordFoobarClue}
+					/>
+				) : null}
+			</section>
 			<FieldNotes
-				clues_seen={foobar_data.clues_seen}
+				clues_seen={clues_seen}
+				completed={completed}
 				onSelectAchievement={handleSelectAchievement}
 			/>
-			<Basecamp handleClearFoobarData={handleClearFoobarData} />
+			<Basecamp handleClearFoobarData={handleClearFoobarData} onUserNameChange={setCloudName} />
 			<p aria-hidden="true" data-foobar-print-clue>
 				{`The paper remembers a path the screen will not: ${getFoobarRewardPath("print-preview")}`}
 			</p>
 			<XMarksTheSpot foobar={getFoobarRewardPath("devtools")} />
 		</div>
+	);
+};
+
+const TierWordsLine = ({ completed }: Pick<FoobarDataType, "completed">) => {
+	const tiers = Object.keys(FOOBAR_PUZZLE_TIER_WORDS).filter((tier): tier is FoobarPuzzleTier =>
+		Object.hasOwn(FOOBAR_PUZZLE_TIER_WORDS, tier),
+	);
+	const found = tiers.filter((tier) => hasFinishedFoobarTier(tier, completed));
+
+	return (
+		<p
+			aria-label={
+				found.length === 0
+					? "No tier words yet"
+					: `Tier words so far: ${found.map((tier) => FOOBAR_PUZZLE_TIER_WORDS[tier]).join(", ")}`
+			}
+			className="pl-[2ch] text-karma-green/90"
+		>
+			{"{"}
+			{tiers.map((tier, index) => (
+				<Fragment key={tier}>
+					{index > 0 ? ", " : null}
+					{found.includes(tier) ? (
+						<span className={`${FOOBAR_TIER_TEXT_CLASS[tier]} ${FOOBAR_GLOW_CLASS}`}>
+							{FOOBAR_PUZZLE_TIER_WORDS[tier]}
+						</span>
+					) : (
+						<span className="text-karma-gutter">?</span>
+					)}
+				</Fragment>
+			))}
+			{"}"}
+		</p>
 	);
 };
 
@@ -144,68 +288,65 @@ const CampfireStatus = () => {
 	const count = hunters ?? 0;
 
 	return (
-		<section
-			aria-labelledby="foobar-campfire-status"
-			className="border-t border-foreground/15 pt-5"
-		>
-			<h3 id="foobar-campfire-status" className="font-serif text-xl leading-normal">
+		<section aria-labelledby="foobar-campfire-status" className="border-t border-karma-rule pt-4">
+			<h3 id="foobar-campfire-status" className="font-bold text-foreground">
 				Campfire
 			</h3>
-			<p className="mt-2 text-sm text-foreground/70" aria-live="polite">
-				{connected
-					? `${count} ${count === 1 ? "hunter" : "hunters"} online. ${count > 1 ? "The fire is lively." : "There is room beside the fire."}`
-					: "Listening for other hunters…"}
+			<p className="mt-1" aria-live="polite">
+				{connected ? (
+					<>
+						<span className="text-karma-orange [text-shadow:0_0_6px_currentColor]">{count}</span>{" "}
+						{count === 1 ? "hunter" : "hunters"} online.{" "}
+						{count > 1 ? "The fire is lively." : "There is room beside the fire."}
+					</>
+				) : (
+					"Listening for other hunters…"
+				)}
 			</p>
 		</section>
 	);
 };
 
-const Basecamp = ({ handleClearFoobarData }: { handleClearFoobarData: () => void }) => (
-	<section aria-labelledby="foobar-basecamp" className="mt-20 pt-8">
-		<h2 id="foobar-basecamp" className="font-serif text-3xl font-bold">
+const Basecamp = ({
+	handleClearFoobarData,
+	onUserNameChange,
+}: {
+	handleClearFoobarData: () => void;
+	onUserNameChange: (name: string | null) => void;
+}) => (
+	<section aria-labelledby="foobar-basecamp" className="mt-14 scroll-mt-24" id="foobar-basecamp">
+		<h2 id="foobar-basecamp" className="text-base font-bold text-foreground">
 			Basecamp
 		</h2>
-		<p className="mt-2 text-sm text-foreground/70">
+		<p className="mt-1">
 			The practical stuff: other visitors, saved progress, stats, and the big reset button.
 		</p>
-		<details className="group mt-4">
-			<summary className="flex min-h-11 cursor-pointer list-none items-center link-base font-medium text-primary marker:hidden focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary">
-				<span aria-hidden="true" className="mr-2 group-open:hidden">
-					→
-				</span>
-				<span aria-hidden="true" className="mr-2 hidden group-open:inline">
-					↓
-				</span>
+		<details className="group mt-2">
+			<summary className={`${LINK_CLASS} cursor-pointer list-none marker:hidden`}>
+				<span aria-hidden="true">[</span>
 				<span className="group-open:hidden">Open Basecamp</span>
 				<span className="hidden group-open:inline">Close Basecamp</span>
+				<span aria-hidden="true">]</span>
 			</summary>
 			<div className="mt-3 grid gap-5">
 				<CampfireStatus />
-				<CloudProgressPanel />
-				<div className="border-t border-foreground/15 pt-5">
-					<h3 className="font-serif text-xl">Logbook</h3>
-					<Link
-						to="/stats"
-						search={{ period: "30d" }}
-						className="mt-2 inline-flex min-h-11 items-center link-base text-sm text-primary"
-					>
-						<span aria-hidden="true" className="mr-2">
-							→
-						</span>
-						View public site stats
+				<CloudProgressPanel onUserNameChange={onUserNameChange} />
+				<div className="border-t border-karma-rule pt-4">
+					<h3 className="font-bold text-foreground">Logbook</h3>
+					<Link className={LINK_CLASS} search={{ period: "30d" }} to="/stats">
+						<Bracketed>View public site stats</Bracketed>
 					</Link>
 				</div>
-				<details className="group/manage border-t border-foreground/15 pt-5">
-					<summary className="flex min-h-11 cursor-pointer list-none items-center text-sm font-medium text-foreground/70 marker:hidden focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary">
-						<span aria-hidden="true" className="mr-2 group-open/manage:hidden">
-							→
-						</span>
-						<span aria-hidden="true" className="mr-2 hidden group-open/manage:inline">
-							↓
-						</span>
-						Manage progress
+				<details className="group/manage border-t border-karma-rule pt-4">
+					<summary
+						className={`${LINK_CLASS} cursor-pointer list-none text-karma-comment marker:hidden`}
+					>
+						<span aria-hidden="true">[</span>
+						<span className="group-open/manage:hidden">Manage progress</span>
+						<span className="hidden group-open/manage:inline">Hide progress tools</span>
+						<span aria-hidden="true">]</span>
 					</summary>
-					<p className="mb-3 text-xs leading-relaxed text-foreground/60">
+					<p className="mb-3 text-xs text-karma-comment">
 						Reset only this browser. Cloud progress is managed separately in Cloud save.
 					</p>
 					<ResetFoobar handleClearFoobarData={handleClearFoobarData} />
@@ -221,20 +362,20 @@ const ResetFoobar = ({ handleClearFoobarData }: { handleClearFoobarData: () => v
 			render={
 				<button
 					aria-label="Reset this browser's progress"
-					className="inline-flex min-h-11 items-center rounded-global border border-red-300 bg-background px-4 py-2 text-sm text-red-700 transition-colors hover:bg-red-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600 dark:border-red-400/60 dark:text-red-300 dark:hover:bg-red-950/40 dark:focus-visible:outline-red-400"
+					className="inline-flex min-h-11 items-center border border-karma-pink/60 px-4 py-2 text-karma-pink transition-colors hover:bg-karma-pink/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-karma-pink"
 					type="button"
 				/>
 			}
 		>
-			Reset this browser's progress
+			<Bracketed>Reset this browser's progress</Bracketed>
 		</AlertDialog.Trigger>
 		<AlertDialog.Portal>
-			<AlertDialog.Backdrop className="fixed inset-0 z-30 bg-slate-950/40 data-open:animate-overlayShow" />
-			<AlertDialog.Popup className="fixed top-[50%] left-[50%] z-40 max-h-[85vh] w-[90vw] max-w-[500px] translate-x-[-50%] translate-y-[-50%] rounded-global border border-foreground/15 bg-background p-[25px] text-foreground shadow-[hsl(206_22%_7%/35%)_0px_10px_38px_-10px,hsl(206_22%_7%/20%)_0px_10px_20px_-15px] focus:outline-none data-open:animate-contentShow">
-				<AlertDialog.Title className="m-0 text-[17px] font-medium">
-					Reset this browser's progress?
+			<AlertDialog.Backdrop className="fixed inset-0 z-30 bg-black/60 data-open:animate-overlayShow" />
+			<AlertDialog.Popup className="fixed top-[50%] left-[50%] z-40 max-h-[85vh] w-[90vw] max-w-[500px] translate-x-[-50%] translate-y-[-50%] border border-karma-rule bg-karma-background p-6 font-mono text-sm text-foreground shadow-[0_10px_38px_-10px_rgb(0_0_0/0.8)] focus:outline-none data-open:animate-contentShow">
+				<AlertDialog.Title className="m-0 font-bold text-karma-pink">
+					--- Reset this browser's progress? ---
 				</AlertDialog.Title>
-				<AlertDialog.Description className="mt-4 mb-5 text-[15px] leading-normal text-foreground/70">
+				<AlertDialog.Description className="mt-4 mb-5 leading-relaxed text-foreground/75">
 					Everything <Code>/foobar</Code> remembers in this browser is cleared, including the
 					unlock. If you use Cloud save, your progress there is kept: unlock <Code>/foobar</Code>{" "}
 					again and it comes back.
@@ -242,26 +383,22 @@ const ResetFoobar = ({ handleClearFoobarData }: { handleClearFoobarData: () => v
 				<div className="flex flex-wrap justify-end gap-3">
 					<AlertDialog.Close
 						render={
-							<button
-								aria-label="Cancel resetting progress"
-								className="inline-flex min-h-11 items-center justify-center rounded-global bg-foreground/10 px-4 py-2 leading-none font-medium text-foreground outline-none hover:bg-foreground/15 focus:shadow-[0_0_0_2px] focus:shadow-foreground/30"
-								type="button"
-							/>
+							<button aria-label="Cancel resetting progress" className={LINK_CLASS} type="button" />
 						}
 					>
-						Cancel
+						<Bracketed>Cancel</Bracketed>
 					</AlertDialog.Close>
 					<AlertDialog.Close
 						render={
 							<button
 								aria-label="Yes, reset progress"
-								className="inline-flex min-h-11 items-center justify-center rounded-global bg-red-100 px-4 py-2 leading-none font-medium text-red-700 outline-none hover:bg-red-200 focus:shadow-[0_0_0_2px] focus:shadow-red-300 dark:bg-red-950/60 dark:text-red-300 dark:hover:bg-red-900/60 dark:focus:shadow-red-400/60"
+								className="inline-flex min-h-11 items-center border border-karma-pink/60 px-4 text-karma-pink hover:bg-karma-pink/10 focus-visible:outline-2 focus-visible:outline-karma-pink"
 								onClick={handleClearFoobarData}
 								type="button"
 							/>
 						}
 					>
-						Yes, reset progress
+						<Bracketed>Yes, reset progress</Bracketed>
 					</AlertDialog.Close>
 				</div>
 			</AlertDialog.Popup>
