@@ -527,6 +527,28 @@ test("publishes machine-facing and print-only clues", async ({ page, request }) 
 	await expect(printClue).toBeVisible();
 });
 
+test("uses the Foobar social card only on the Foobar page", async ({ page }) => {
+	await page.goto("/foobar");
+	await expect(page.locator('meta[property="og:image"]')).toHaveCount(1);
+	await expect(page.locator('meta[property="og:image"]')).toHaveAttribute(
+		"content",
+		/\/og-foobar\.png$/,
+	);
+	await expect(page.locator('meta[name="twitter:image"]')).toHaveCount(1);
+	await expect(page.locator('meta[name="twitter:image"]')).toHaveAttribute(
+		"content",
+		/\/og-foobar\.png$/,
+	);
+
+	await page.goto("/about");
+	await expect(page.locator('meta[property="og:image"]')).toHaveCount(1);
+	await expect(page.locator('meta[property="og:image"]')).toHaveAttribute(
+		"content",
+		/\/og-image\.png$/,
+	);
+	await expect(page.locator('meta[name="twitter:image"]')).toHaveCount(1);
+});
+
 test("claims the well-known notice and announces it with its display title", async ({ page }) => {
 	await seedProgress(page);
 	await page.goto(getFoobarRewardPath("well-known"));

@@ -49,7 +49,8 @@ The original design docs were removed from the repo in `963f204a`; read them wit
 Routes: `src/routes/(main)/(foobar)/foobar/` (dashboard, `$slug` achievement pages,
 `certificate/$token`) and `src/routes/(api)/api/foobar/` (cookie challenge, certificate OG
 image). Static clue surfaces: `public/robots.txt`, `public/.well-known/security.txt`,
-`public/foobar-sw.js`, `public/.well-known/foobar`, the generated RSS feed, and the site OG image's QR code.
+`public/foobar-sw.js`, `public/.well-known/foobar`, the generated RSS feed, and the
+Foobar-only social card (`public/og-foobar.png`).
 
 ## Adding an achievement
 

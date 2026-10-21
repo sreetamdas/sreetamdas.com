@@ -474,9 +474,12 @@ export const FOOBAR_ACHIEVEMENTS = {
 		completion: { id: "og-qr:completed", note: "The social card answered a scanner." },
 		hints: [
 			{ id: "og-qr:hint:1", text: "Shared pages carry a picture most visitors never open." },
-			{ id: "og-qr:hint:2", text: "Inspect the site's Open Graph image." },
-			{ id: "og-qr:hint:3", text: "Look closely for a small square code in /og-image.png." },
-			{ id: "og-qr:hint:4", text: "Scan the QR code and follow /foobar/og-qr." },
+			{ id: "og-qr:hint:2", text: "Inspect the social card shared for the /foobar page." },
+			{ id: "og-qr:hint:3", text: "Look closely for a small square code on that card." },
+			{
+				id: "og-qr:hint:4",
+				text: "Scan the QR code on the /foobar social card and open the path it decodes to.",
+			},
 		],
 	},
 	"cookie-jar": {

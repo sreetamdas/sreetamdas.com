@@ -2,7 +2,7 @@
  * Contract coverage for Foobar clues that live outside the React catalogue.
  * These assertions protect generated/static surfaces from quiet cleanup.
  */
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { describe, expect, test } from "vitest";
 
@@ -27,6 +27,11 @@ describe("Foobar static clues", () => {
 
 	test("keeps the feed-reader clue in the generated RSS feed", () => {
 		expect(read("public/rss/feed.xml")).toContain(getFoobarRewardPath("feed-reader"));
+	});
+
+	test("ships the QR clue on the Foobar-only social card", () => {
+		expect(existsSync(resolve(root, "public/og-foobar.png"))).toBe(true);
+		expect(read("src/routes/(main)/(foobar)/foobar/index.tsx")).toContain("/og-foobar.png");
 	});
 
 	test("defines a print-only clue", () => {
