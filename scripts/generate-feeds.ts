@@ -54,7 +54,7 @@ type BlogPost = {
 function generateRssFeed(blogPosts: Array<BlogPost>): string {
 	const published = blogPosts
 		.filter((p) => p.published)
-		.sort((a, b) => new Date(b.published_at).getTime() - new Date(a.published_at).getTime());
+		.toSorted((a, b) => new Date(b.published_at).getTime() - new Date(a.published_at).getTime());
 
 	const lastUpdated =
 		published.length > 0
@@ -86,7 +86,7 @@ function escapeXml(str: string): string {
 		.replace(/'/g, "&apos;");
 }
 
-async function main() {
+function main() {
 	const blogPosts: Array<BlogPost> = allBlogPosts;
 
 	// RSS
@@ -101,4 +101,4 @@ async function main() {
 	);
 }
 
-await main();
+main();
