@@ -34,6 +34,23 @@ The original design docs were removed from the repo in `963f204a`; read them wit
   guessing rather than verifying a player.
 - Clues stay out of normal navigation and search indexing (`/foobar` is disallowed in
   `robots.txt`).
+- Stars follow Advent of Code: gold for a discovery found without opening any of its hints,
+  silver once a hint was opened (`getFoobarStar`). Certificates expose only the per-discovery
+  star, never the hint log or its timestamps.
+
+## Look
+
+An unlocked `/foobar` is an Advent of Code style page in the Karma palette, all Iosevka, and
+dark-only. `data-foobar-karma` on `<html>` forces the palette (global.css); an early head
+script sets it before first paint when stored progress is unlocked or the page is a
+certificate, `useFoobarKarma` owns it while a Foobar surface is mounted, and `Pixel.tsx`
+clears it on any route outside `/foobar`. A locked `/foobar` keeps the visitor's theme, since it
+must look like a normal 404.
+
+The centrepiece is the ASCII mountain (`mountain.ts`): one row per achievement, generated from
+the catalogue with a fixed seed, summit first and Basecamp at the foot, so difficulty reads as
+altitude. Progress only colours it: a found row lights in its tier's Karma colour with its star,
+and `@` marks the next unfound discovery. Adding an achievement makes the mountain taller.
 
 ## File map
 
@@ -51,8 +68,11 @@ The original design docs were removed from the repo in `963f204a`; read them wit
 | `certificate*.ts(x)`                                         | Public completion certificates keyed by unguessable token, plus OG image data.                                                                              |
 | `sharedHunterPresence.ts`                                    | One hunter-flagged presence socket shared across components (campfire achievement).                                                                         |
 | `helpers.ts`                                                 | Browser-only clue plumbing: console art, localStorage clue.                                                                                                 |
-| `AchievementReveal.tsx`                                      | Transient visual acknowledgement queue for newly earned achievements; never persisted or replayed after hydration.                                          |
-| `badges.tsx` / `FieldNotes.tsx` / `Entry.tsx`                | Dashboard presentation.                                                                                                                                     |
+| `AchievementReveal.tsx`                                      | Transient visual acknowledgement queue for newly earned achievements; never persisted or replayed after hydration. Always drawn in Karma.                   |
+| `mountain.ts` / `MountainArt.tsx`                            | The generated ASCII mountain and its progress-coloured rendering (dashboard rows are the field-entry buttons; the certificate draws it static).             |
+| `EntryArticle.tsx` / `FieldNotes.tsx` / `Entry.tsx`          | Dashboard presentation: the open field entry (hints, developing hint 4, star) and the `tail foobar.log` field notes.                                        |
+| `karma.ts` / `useFoobarKarma.ts` / `Bracketed.tsx`           | Tier colours, the dark-only document flag and its early script, and AoC style `[links]` with the brackets kept out of accessible names.                     |
+| `certificate-card.ts` / `fonts/`                             | The share card HTML for workers-og and the Iosevka TTFs it needs (satori cannot read woff2; provenance in `.config/iosevka-build-plan.toml`).               |
 
 Routes: `src/routes/(main)/(foobar)/foobar/` (dashboard, `$slug` achievement pages,
 `certificate/$token`) and `src/routes/(api)/api/foobar/` (cookie challenge, certificate OG
