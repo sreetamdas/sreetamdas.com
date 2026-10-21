@@ -14,8 +14,7 @@ init({
 	dsn: import.meta.env.VITE_SENTRY_DSN,
 	enabled: !IS_DEV,
 	environment: import.meta.env.MODE,
-	enableLogs: true,
-	sendDefaultPii: false,
+	dataCollection: { userInfo: false },
 	// Send browser events through our own route (src/routes/(api)/api/prxy/sntry.ts)
 	// instead of straight to *.ingest.us.sentry.io, so content blockers don't drop
 	// them.

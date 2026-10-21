@@ -17,8 +17,7 @@ export function getSentryRuntimeOptions(config: SentryRuntimeConfig | undefined)
 
 	return {
 		dsn,
-		enableLogs: true,
-		sendDefaultPii: false,
+		dataCollection: { userInfo: false },
 		tracesSampleRate: 0.1,
 		beforeSend(event: ErrorEvent, _hint?: EventHint) {
 			const serialized = event.extra?.__serialized__;

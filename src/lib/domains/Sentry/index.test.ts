@@ -11,8 +11,7 @@ describe("Sentry runtime helpers", () => {
 		const options = getSentryRuntimeOptions({ VITE_SENTRY_DSN: "https://example@sentry.io/1" });
 		expect(options).toMatchObject({
 			dsn: "https://example@sentry.io/1",
-			enableLogs: true,
-			sendDefaultPii: false,
+			dataCollection: { userInfo: false },
 			tracesSampleRate: 0.1,
 		});
 		expect(typeof options?.beforeSend).toBe("function");
