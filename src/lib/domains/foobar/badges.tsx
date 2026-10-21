@@ -179,6 +179,23 @@ const TierSection = ({
 	);
 };
 
+const AchievementLabels = ({ achievement }: { achievement: FoobarAchievement }) => {
+	const metadata = FOOBAR_ACHIEVEMENTS[achievement];
+	const labels: Array<string> = [];
+	if ("optional" in metadata && metadata.optional) labels.push("bonus");
+	if ("device" in metadata) labels.push(metadata.device);
+
+	if (labels.length === 0) return null;
+
+	return (
+		<p className="mt-1 flex flex-wrap gap-x-2 font-mono text-xs text-foreground/60">
+			{labels.map((label) => (
+				<span key={label}>{label}</span>
+			))}
+		</p>
+	);
+};
+
 const CompletedAchievement = ({
 	achievement,
 	cluesSeen,
@@ -205,6 +222,7 @@ const CompletedAchievement = ({
 					</span>
 					<div className="min-w-0">
 						<h3 className="font-serif text-lg font-semibold text-primary">{metadata.title}</h3>
+						<AchievementLabels achievement={achievement} />
 						<p className="mt-1 text-sm text-foreground/70">{metadata.completion.note}</p>
 					</div>
 					<button
@@ -308,6 +326,7 @@ const Badge = ({ achievement, isExpanded, cluesSeen, recordFoobarClue, onToggle 
 					</span>
 					<div className="min-w-0">
 						<h3 className="font-serif text-lg font-semibold break-words">{metadata.title}</h3>
+						<AchievementLabels achievement={achievement} />
 						<p className="mt-1 text-sm text-foreground/65">{FOOBAR_TEASERS[achievement]}</p>
 					</div>
 					<button

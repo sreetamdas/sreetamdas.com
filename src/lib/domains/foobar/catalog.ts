@@ -399,6 +399,7 @@ export const FOOBAR_ACHIEVEMENTS = {
 	campfire: {
 		title: "Stranger by the Fire",
 		tier: "browser",
+		optional: true,
 		completion: {
 			id: "campfire:completed",
 			note: "Another hunter stepped into the firelight.",
@@ -567,7 +568,10 @@ export const FOOBAR_REQUIRED_ACHIEVEMENTS: ReadonlyArray<FoobarAchievement> = Ob
 	FOOBAR_ACHIEVEMENTS,
 )
 	.filter(isFoobarAchievement)
-	.filter((achievement) => achievement !== "completed");
+	.filter((achievement) => {
+		const metadata = FOOBAR_ACHIEVEMENTS[achievement];
+		return achievement !== "completed" && !("optional" in metadata && metadata.optional);
+	});
 
 export function hasCompletedFoobar(completed: ReadonlyArray<FoobarAchievement>) {
 	return FOOBAR_REQUIRED_ACHIEVEMENTS.every((achievement) => completed.includes(achievement));

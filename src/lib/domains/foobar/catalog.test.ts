@@ -7,6 +7,7 @@ import {
 	FOOBAR_TIER_ORDER,
 	FOOBAR_TIERS,
 	getFoobarClue,
+	hasCompletedFoobar,
 	isFoobarAchievement,
 	isFoobarClueId,
 } from "./catalog";
@@ -18,12 +19,15 @@ describe("Foobar catalogue", () => {
 		expect(FOOBAR_TIER_ORDER.map((tier) => FOOBAR_TIERS[tier].difficulty)).toEqual([1, 2, 3, 4, 5]);
 	});
 
-	test("gives every navigable achievement four ordered hints", () => {
+	test("gives every playable achievement four ordered hints", () => {
 		const hintable = Object.values(FOOBAR_ACHIEVEMENTS).filter(
 			(achievement) => achievement.hints.length > 0,
 		);
+		const playable = Object.keys(FOOBAR_ACHIEVEMENTS)
+			.filter(isFoobarAchievement)
+			.filter((achievement) => achievement !== "completed");
 
-		expect(hintable).toHaveLength(FOOBAR_REQUIRED_ACHIEVEMENTS.length);
+		expect(hintable).toHaveLength(playable.length);
 		for (const achievement of hintable) {
 			expect(achievement.hints).toHaveLength(4);
 			expect(achievement.hints.every((hint) => hint.text.trim().length > 0)).toBe(true);
@@ -48,8 +52,21 @@ describe("Foobar catalogue", () => {
 				"og-qr",
 			]),
 		);
-		expect(FOOBAR_REQUIRED_ACHIEVEMENTS).toContain("campfire");
+		expect(FOOBAR_REQUIRED_ACHIEVEMENTS).not.toContain("campfire");
 		expect(FOOBAR_REQUIRED_ACHIEVEMENTS).not.toContain("completed");
+	});
+
+	test("keeps optional bonuses out of completion requirements", () => {
+		const all = Object.keys(FOOBAR_ACHIEVEMENTS).filter(isFoobarAchievement);
+		const withoutCampfire = all.filter(
+			(achievement) => achievement !== "completed" && achievement !== "campfire",
+		);
+
+		expect(FOOBAR_ACHIEVEMENTS.campfire.optional).toBe(true);
+		expect(hasCompletedFoobar(withoutCampfire)).toBe(true);
+		expect(
+			hasCompletedFoobar(withoutCampfire.filter((achievement) => achievement !== "headers")),
+		).toBe(false);
 	});
 
 	test("keeps reward paths out of achievement hints", () => {

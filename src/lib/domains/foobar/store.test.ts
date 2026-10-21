@@ -1,6 +1,7 @@
 import { describe, expect, test, vi } from "vitest";
 import { create } from "zustand";
 
+import { FOOBAR_ACHIEVEMENTS, isFoobarAchievement } from "./catalog";
 import { createFoobarSlice, initialFoobarData, normalizeFoobarData } from "./store";
 
 describe("Foobar progress", () => {
@@ -102,6 +103,15 @@ describe("Foobar progress", () => {
 		store.getState().completeFoobarFlag("headers");
 		store.getState().setFoobarData(initialFoobarData);
 		expect(store.getState().foobar_data).toEqual(initialFoobarData);
+	});
+
+	test("counts a completed run without the campfire bonus as finished", () => {
+		const completed = Object.keys(FOOBAR_ACHIEVEMENTS)
+			.filter(isFoobarAchievement)
+			.filter((achievement) => achievement !== "completed" && achievement !== "campfire");
+		const result = normalizeFoobarData({ ...initialFoobarData, completed });
+
+		expect(result.all_achievements).toBe(true);
 	});
 
 	test("recomputes stale endgame state against the current catalogue", () => {
