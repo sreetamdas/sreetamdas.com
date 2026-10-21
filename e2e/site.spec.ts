@@ -233,3 +233,16 @@ test("missing routes render the site 404 page", async ({ page }) => {
 		page.getByRole("link", { name: /Dog Photographer of the Year 2018/i }),
 	).toBeVisible();
 });
+
+test("follows the slide position from the URL", async ({ page }) => {
+	await page.goto("/slides/tanstack-start?presenter=1");
+	await expect(page.getByRole("heading", { name: "TanStack Start" })).toBeVisible();
+
+	await page.evaluate(() => {
+		history.pushState({}, "", "/slides/tanstack-start?presenter=1&slide=7");
+		window.dispatchEvent(new PopStateEvent("popstate"));
+	});
+
+	await expect(page).toHaveURL(/slide=7/);
+	await expect(page.getByRole("heading", { name: "sreetamdas.com" })).toBeVisible();
+});

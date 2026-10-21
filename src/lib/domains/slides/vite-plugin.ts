@@ -292,6 +292,7 @@ export function slideDeckPlugin(): Plugin {
 						const { content: noNotesContent, notes } = extractNotes(slideContent.trim());
 
 						return {
+							id: `${id}#${index}`,
 							...(await mdxParseWithShiki(noNotesContent)),
 							content: noNotesContent,
 							data,

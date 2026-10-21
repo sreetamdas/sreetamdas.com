@@ -13,7 +13,6 @@ import { type MDXComponents } from "mdx/types";
 import {
 	useCallback,
 	useEffect,
-	useLayoutEffect,
 	useMemo,
 	useRef,
 	useState,
@@ -37,6 +36,7 @@ export interface SlideData {
 }
 
 export interface Slide {
+	id: string;
 	content: string;
 	mdast: string;
 	shikiHighlights: Record<string, string>;
@@ -47,6 +47,7 @@ export interface Slide {
 interface StepEntry {
 	id: string;
 	count: number;
+	slideIndex: number;
 }
 
 interface SlideDeckProps {
@@ -99,31 +100,57 @@ export function SlideDeck({
 		Math.max(0, Math.min(initialSlide, slides.length - 1)),
 	);
 	const [currentStep, setCurrentStep] = useState(initialStep);
+	const requestedSlide = controlledSlide ?? initialSlide;
+	const requestedStep = controlledSlide === undefined ? initialStep : controlledStep;
+	const requestedKey = `${controlledSlide ?? "none"}:${controlledStep ?? "none"}:${initialSlide}:${
+		initialStep
+	}:${slides.length}`;
+	const [syncedPositionKey, setSyncedPositionKey] = useState(requestedKey);
 	const [presenterMode, setPresenterMode] = useState(initialPresenterMode);
 	const [transitionsEnabled, setTransitionsEnabled] = useState(initialTransitions);
 	const [elapsedTime, setElapsedTime] = useState(0);
 	const timerRef = useRef<ReturnType<typeof setInterval>>(undefined);
 	const touchStartX = useRef<number>(0);
 	const stepRegistrations = useRef<StepEntry[]>([]);
-	const [maxStep, setMaxStep] = useState(0);
+	const [stepState, setStepState] = useState({ slideIndex: currentIndex, maxStep: 0 });
 	const [fitContainerStyle, fitCanvasStyle] = aspectRatioFittingStyles(aspectRatio);
 
-	const registerSteps = useCallback((id: string, count: number) => {
-		stepRegistrations.current = stepRegistrations.current.filter((entry) => entry.id !== id);
-		stepRegistrations.current.push({ id, count });
-		setMaxStep(stepRegistrations.current.reduce((sum, entry) => sum + entry.count, 0) - 1);
-	}, []);
+	if (syncedPositionKey !== requestedKey) {
+		const nextIndex = Math.max(0, Math.min(requestedSlide, slides.length - 1));
+		const nextStep =
+			requestedStep === undefined || requestedStep < 0 || !Number.isFinite(requestedStep)
+				? 0
+				: requestedStep;
+		setSyncedPositionKey(requestedKey);
+		setCurrentIndex(nextIndex);
+		setCurrentStep(nextStep);
+	}
 
-	const unregisterSteps = useCallback((id: string) => {
-		stepRegistrations.current = stepRegistrations.current.filter((entry) => entry.id !== id);
-		setMaxStep(stepRegistrations.current.reduce((sum, entry) => sum + entry.count, 0) - 1);
-	}, []);
+	const maxStep = stepState.slideIndex === currentIndex ? stepState.maxStep : 0;
 
-	useLayoutEffect(() => {
-		stepRegistrations.current = [];
-		// oxlint-disable-next-line react/set-state-in-effect -- the per-slide step registry must reset when navigation changes
-		setMaxStep(0);
+	const syncStepCount = useCallback(() => {
+		const max = stepRegistrations.current
+			.filter((entry) => entry.slideIndex === currentIndex)
+			.reduce((sum, entry) => sum + entry.count, 0);
+		setStepState({ slideIndex: currentIndex, maxStep: max - 1 });
 	}, [currentIndex]);
+
+	const registerSteps = useCallback(
+		(id: string, count: number) => {
+			stepRegistrations.current = stepRegistrations.current.filter((entry) => entry.id !== id);
+			stepRegistrations.current.push({ id, count, slideIndex: currentIndex });
+			syncStepCount();
+		},
+		[currentIndex, syncStepCount],
+	);
+
+	const unregisterSteps = useCallback(
+		(id: string) => {
+			stepRegistrations.current = stepRegistrations.current.filter((entry) => entry.id !== id);
+			syncStepCount();
+		},
+		[syncStepCount],
+	);
 
 	const stepContextValue = useMemo<StepContextValue>(
 		() => ({ currentStep, registerSteps, unregisterSteps }),
@@ -172,19 +199,6 @@ export function SlideDeck({
 	const toggleTransitions = useCallback(() => {
 		setTransitionsEnabled((prev) => !prev);
 	}, []);
-
-	useEffect(() => {
-		const requestedSlide = controlledSlide ?? initialSlide;
-		const requestedStep = controlledSlide === undefined ? initialStep : controlledStep;
-		const nextIndex = Math.max(0, Math.min(requestedSlide, slides.length - 1));
-		const nextStep =
-			requestedStep === undefined || requestedStep < 0 || !Number.isFinite(requestedStep)
-				? 0
-				: requestedStep;
-		// oxlint-disable-next-line react/set-state-in-effect -- controlled slide position is external URL state
-		setCurrentIndex(nextIndex);
-		setCurrentStep(nextStep);
-	}, [controlledSlide, controlledStep, initialSlide, initialStep, slides.length]);
 
 	useEffect(() => {
 		const manager = getHotkeyManager();
@@ -263,7 +277,7 @@ export function SlideDeck({
 				<div className="h-full w-full" style={fitContainerStyle}>
 					<div style={fitCanvasStyle}>
 						{slides.map((slide, index) => (
-							<SlideActiveContext key={index} value={index === currentIndex}>
+							<SlideActiveContext key={slide.id} value={index === currentIndex}>
 								<SlideWrapper
 									isActive={index === currentIndex}
 									isBefore={index < currentIndex}
@@ -456,10 +470,10 @@ function PresenterMode({
 				</button>
 
 				<div className="flex max-w-md gap-1 overflow-x-auto">
-					{slides.map((_slide, index) => (
+					{slides.map((slide, index) => (
 						<button
 							type="button"
-							key={index}
+							key={slide.id}
 							onClick={() => goTo(index, 0)}
 							className={`h-8 w-8 rounded-global text-xs transition-colors ${
 								index === currentIndex

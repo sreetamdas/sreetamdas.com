@@ -76,6 +76,10 @@ export function Steps({ children }: { children: ReactNode }) {
 	const hasListContent = liContent.length > 0;
 	const stepItems = hasListContent ? liContent : array;
 	const count = stepItems.length;
+	const stepIds = useMemo(
+		() => stepItems.map((_, index) => `${id}-step-${index}`),
+		[id, stepItems],
+	);
 
 	useEffect(() => {
 		if (active) {
@@ -88,7 +92,7 @@ export function Steps({ children }: { children: ReactNode }) {
 		return (
 			<UnorderedList listClasses="mb-4 only:mt-4" markClasses="mt-1.5 text-2xl">
 				{liContent.map((content, i) => (
-					<div key={i} className={cn(i > currentStep && "hidden")}>
+					<div key={stepIds[i]} className={cn(i > currentStep && "hidden")}>
 						{content}
 					</div>
 				))}
@@ -99,7 +103,7 @@ export function Steps({ children }: { children: ReactNode }) {
 	return (
 		<>
 			{array.map((child, i) => (
-				<div key={i} className={cn(i > currentStep && "hidden")}>
+				<div key={stepIds[i]} className={cn(i > currentStep && "hidden")}>
 					{child}
 				</div>
 			))}

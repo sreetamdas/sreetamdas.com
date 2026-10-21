@@ -6,7 +6,7 @@
  * parsing, slide loading, and live-session coordination.
  */
 import { type MDXComponents } from "mdx/types";
-import { Suspense, use, useCallback, useEffect, useState } from "react";
+import { Suspense, use, useCallback, useState } from "react";
 
 import { SlideDeck, type Slide } from "@/lib/domains/slides";
 import {
@@ -39,15 +39,15 @@ export function SlideDeckRouteShell({
 	const presenterMode = search.presenter === true;
 	const liveSessionId = search.live;
 	const role: SlideSessionRole = search.master === true ? "master" : "viewer";
-	const [localPosition, setLocalPosition] = useState(() => ({
-		slide: search.slide ?? 0,
-		step: search.step ?? 0,
-	}));
+	const urlSlide = search.slide ?? 0;
+	const urlStep = search.step ?? 0;
+	const [localPosition, setLocalPosition] = useState({ slide: urlSlide, step: urlStep });
+	const [syncedUrl, setSyncedUrl] = useState({ slide: urlSlide, step: urlStep });
 
-	useEffect(() => {
-		// oxlint-disable-next-line react/set-state-in-effect -- slide position is external URL state
-		setLocalPosition({ slide: search.slide ?? 0, step: search.step ?? 0 });
-	}, [search.slide, search.step]);
+	if (syncedUrl.slide !== urlSlide || syncedUrl.step !== urlStep) {
+		setSyncedUrl({ slide: urlSlide, step: urlStep });
+		setLocalPosition({ slide: urlSlide, step: urlStep });
+	}
 
 	const handleRemoteNavigate = useCallback(
 		(slide: number, step: number) => {
