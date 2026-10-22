@@ -15,11 +15,11 @@ Subcommands
         "Version 28.0.4; ttfautohint (v1.8.4)", which is a false claim once the
         hinting is gone. No-op when the record is already clean.
 
-    stamp-head <font> <mac-epoch-seconds>
-        Pin head.created and head.modified. Iosevka stamps them from
-        SOURCE_DATE_EPOCH or its own default, so without this every build of the
-        same sources produces different bytes; the plan records the epoch the
-        committed TTFs carry.
+    head-epoch <font> [<mac-epoch-seconds>]
+        Print head.created/modified, or exit 1 unless both equal the pinned
+        epoch. Iosevka stamps them from SOURCE_DATE_EPOCH or its own default, so
+        a build cached before the epoch was pinned cannot be reused: every build
+        of the same sources would otherwise produce different bytes.
 
     compare <a> <b>
         Content equivalence between two font files (woff2 or ttf), used by
@@ -87,18 +87,21 @@ def clear_version(path: str, version: str) -> int:
     return 0
 
 
-def stamp_head(path: str, epoch: int) -> int:
+def head_epoch(path: str, expected: str | None) -> int:
     font = TTFont(path)
-    if font["head"].created == epoch and font["head"].modified == epoch:
-        print(f"{path}: head timestamps already {epoch}")
+    created, modified = font["head"].created, font["head"].modified
+    if expected is None:
+        print(f"{path}: created {created} modified {modified}")
         return 0
-    font["head"].created = epoch
-    font["head"].modified = epoch
-    # Without this the head compiler rewrites `modified` to "now" on save.
-    font.recalcTimestamp = False
-    font.save(path)
-    print(f"{path}: head.created/modified pinned to {epoch}")
-    return 0
+    if created == int(expected) and modified == int(expected):
+        return 0
+    # Patching the file afterwards would change its table layout, and with it the
+    # subset bytes; the only deterministic fix is a rebuild from the pinned env.
+    print(
+        f"{path}: head timestamps {created}/{modified}, expected {expected}",
+        file=sys.stderr,
+    )
+    return 1
 
 
 def outline(font: TTFont, glyph_name: str) -> list:
@@ -204,8 +207,8 @@ def main(argv: list[str]) -> int:
     command, arguments = argv[1], argv[2:]
     if command == "clear-version" and len(arguments) == 2:
         return clear_version(arguments[0], arguments[1])
-    if command == "stamp-head" and len(arguments) == 2:
-        return stamp_head(arguments[0], int(arguments[1]))
+    if command == "head-epoch" and len(arguments) in (1, 2):
+        return head_epoch(arguments[0], arguments[1] if len(arguments) == 2 else None)
     if command == "compare" and len(arguments) == 2:
         return compare(arguments[0], arguments[1])
     print(__doc__)

@@ -52,6 +52,19 @@ const TTF_DIR = "src/lib/domains/foobar/fonts";
 const UPSTREAM = "https://github.com/be5invis/Iosevka";
 const PLAN_NAME = "DasVersion";
 const CACHE_ENV = "SREETAMDAS_IOSEVKA_CACHE";
+/**
+ * `head.created` is Mac epoch seconds (1904-01-01); SOURCE_DATE_EPOCH is Unix
+ * seconds, and Iosevka does `new Date(epoch * 1000)`.
+ */
+const MAC_EPOCH_OFFSET = 2_082_844_800;
+/**
+ * ot-builder serialises those dates from `Date.UTC(1904, 1, 1)` — February 1st,
+ * a month after the Mac epoch — so every timestamp it writes is 31 days early.
+ * Compensate here rather than patching the built font afterwards: a re-save
+ * re-encodes glyf and changes the subset bytes (and therefore the woff2 hashes).
+ */
+const OT_BUILDER_EPOCH_SKEW = 31 * 86_400;
+
 /** Pinned so a rebuild cannot silently pick up a different fontTools encoding. */
 const PYTHON_TOOLS = ["--with", "fonttools==4.67.0", "--with", "brotli==1.2.0"];
 const FONT_HELPER = "scripts/iosevka-fonts.py";
@@ -578,25 +591,37 @@ function buildFonts(cloneDir: string, jobs: number, headEpoch: number): void {
 		["run", "build", "--", `ttf-unhinted::${PLAN_NAME}`, `--jCmd=${jobs}`],
 		{
 			cwd: cloneDir,
-			// Iosevka stamps head.created/modified from this; pinning it is half of
-			// why the share-card TTFs reproduce byte for byte.
-			env: { ...process.env, SOURCE_DATE_EPOCH: String(headEpoch) },
+			// Iosevka stamps head.created/modified from this, and those bytes end
+			// up in the share-card TTFs.
+			env: {
+				...process.env,
+				SOURCE_DATE_EPOCH: String(headEpoch + OT_BUILDER_EPOCH_SKEW - MAC_EPOCH_OFFSET),
+			},
 		},
 	);
 }
 
 /**
- * Iosevka only honours SOURCE_DATE_EPOCH when it actually rebuilds, and its
- * build cache is keyed on inputs rather than the environment. Stamp the built
- * sources afterwards so a cached build from before this was set cannot leak a
- * different timestamp into the committed TTFs.
+ * Iosevka's build cache is keyed on inputs rather than the environment, so a
+ * build made before SOURCE_DATE_EPOCH was pinned carries a different timestamp.
+ * That timestamp ends up in the committed bytes, so such outputs are rebuilt
+ * rather than patched — patching would change their table layout, and with it
+ * the subset bytes and therefore the content hashes.
  */
-function pinSourceTimestamps(plan: Plan, cloneDir: string): void {
+function sourcesCarryPinnedEpoch(plan: Plan, cloneDir: string): boolean {
 	for (const face of plan.faces) {
-		if (!plan.shareCardFiles.includes(`iosevka-das-version-${face.style}.ttf`)) continue;
 		const source = join(cloneDir, buildPath(face.iosevkaStem));
-		uvRun([FONT_HELPER, "stamp-head", source, String(plan.headEpoch)]);
+		const probe = spawnSync(
+			"uv",
+			["run", ...PYTHON_TOOLS, "python", FONT_HELPER, "head-epoch", source, String(plan.headEpoch)],
+			{ encoding: "utf8" },
+		);
+		if (probe.status !== 0) {
+			log(`${(probe.stderr ?? "").trim() || source} — rebuilding`);
+			return false;
+		}
 	}
+	return true;
 }
 
 function buildPath(stem: string): string {
@@ -769,7 +794,16 @@ function main(): void {
 	ensureDependencies(cloneDir);
 	writeBuildPlan(cloneDir, plan);
 	buildFonts(cloneDir, options.jobs, plan.headEpoch);
-	pinSourceTimestamps(plan, cloneDir);
+	if (!sourcesCarryPinnedEpoch(plan, cloneDir)) {
+		rmSync(join(cloneDir, "dist"), { recursive: true, force: true });
+		buildFonts(cloneDir, options.jobs, plan.headEpoch);
+		if (!sourcesCarryPinnedEpoch(plan, cloneDir)) {
+			throw new Error(
+				"[iosevka] the rebuilt fonts still carry a different head timestamp; " +
+					`delete ${cloneDir} and rerun`,
+			);
+		}
+	}
 
 	const outDir = join(cacheDir, options.checkOnly ? "check-out" : "out");
 	craft(plan, cloneDir, outDir);
