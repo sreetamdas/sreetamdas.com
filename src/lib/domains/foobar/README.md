@@ -73,12 +73,15 @@ and `@` marks the next unfound discovery. Adding an achievement makes the mounta
 | `EntryArticle.tsx` / `FieldNotes.tsx` / `Entry.tsx`          | Dashboard presentation: the open field entry (hints, developing hint 4, star) and the `tail foobar.log` field notes.                                                           |
 | `karma.ts` / `useFoobarKarma.ts` / `Bracketed.tsx`           | Tier colours, the dark-only document flag and its early script, and AoC style `[links]` with the brackets kept out of accessible names.                                        |
 | `certificate-card.ts` / `fonts/`                             | The share card HTML for workers-og and the Iosevka TTFs it needs (satori cannot read woff2; provenance in `.config/iosevka-build-plan.toml`, rebuild with `pnpm fonts:build`). |
+| `certificate-text.ts` / `certificate-text.server.ts`         | The certificate as ANSI text for `curl` (same runs as the share card), and the terminal detection the certificate route's GET handler uses.                                    |
+| `certificate-lookup.server.ts`                               | Token check and D1 lookup shared by the share card and the terminal text.                                                                                                      |
 
 Routes: `src/routes/(main)/(foobar)/foobar/` (dashboard, `$slug` achievement pages,
-`certificate/$token`) and `src/routes/(api)/api/foobar/` (cookie challenge, certificate OG
-image). Static clue surfaces: `public/robots.txt`, `public/.well-known/security.txt`,
-`public/foobar-sw.js`, `public/.well-known/foobar`, the generated RSS feed, and the
-Foobar-only social card (`public/og-foobar.png`).
+`certificate/$token`, which answers curl, Wget, HTTPie and xh with text) and
+`src/routes/(api)/api/foobar/` (cookie challenge, certificate OG image). Static clue
+surfaces: `public/robots.txt`, `public/.well-known/security.txt`, `public/foobar-sw.js`,
+`public/.well-known/foobar`, the generated RSS feed, and the Foobar-only social card
+(`public/og-foobar.png`).
 
 ## Adding an achievement
 
