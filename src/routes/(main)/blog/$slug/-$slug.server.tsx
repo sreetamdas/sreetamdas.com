@@ -70,6 +70,8 @@ export const getBlogRenderable = createServerFn({ method: "GET" })
 				published_at: post.published_at,
 				reading_time: post.reading_time,
 				image: post.image,
+				tags: post.tags,
+				tagSlugs: post.tagSlugs,
 			},
 			Renderable,
 		};

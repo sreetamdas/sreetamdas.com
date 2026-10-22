@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 
 import { SITE_DESCRIPTION, SITE_TITLE_APPEND } from "@/config";
+import { LinkTo } from "@/lib/components/Anchor";
 import { canonicalUrl, defaultOgImageUrl } from "@/lib/seo";
 
 import { getBlogArchiveRenderable } from "./-index.server";
@@ -38,7 +39,10 @@ function BlogArchivePage() {
 
 	return (
 		<>
-			<h1 className="pt-10 pb-20 font-serif text-8xl font-bold">/blog</h1>
+			<h1 className="pt-10 pb-6 font-serif text-8xl font-bold">/blog</h1>
+			<p className="pb-20">
+				<LinkTo href="/blog/tag">Browse by tag →</LinkTo>
+			</p>
 			{Renderable}
 		</>
 	);

@@ -33,6 +33,7 @@ import { Route as apiApiStagingSmokeRouteImport } from './routes/(api)/api/stagi
 import { Route as mainfoobarFoobarRouteRouteImport } from './routes/(main)/(foobar)/foobar/route'
 import { Route as mainBlogIndexRouteImport } from './routes/(main)/blog/index'
 import { Route as mainBlogSlugRouteRouteImport } from './routes/(main)/blog/$slug/route'
+import { Route as mainBlogTagRouteRouteImport } from './routes/(main)/blog/tag/route'
 import { Route as mainNewsletterIndexRouteImport } from './routes/(main)/newsletter/index'
 import { Route as mainNewsletterSlugRouteRouteImport } from './routes/(main)/newsletter/$slug/route'
 import { Route as SlidesTanstackStartDevLabRouteRouteImport } from './routes/slides/tanstack-start/dev-lab/route'
@@ -44,6 +45,8 @@ import { Route as apiApiLoginProviderRouteImport } from './routes/(api)/api/logi
 import { Route as apiApiPrxySntryRouteImport } from './routes/(api)/api/prxy/sntry'
 import { Route as mainfoobarFoobarIndexRouteImport } from './routes/(main)/(foobar)/foobar/index'
 import { Route as mainfoobarFoobarSlugRouteRouteImport } from './routes/(main)/(foobar)/foobar/$slug/route'
+import { Route as mainBlogTagIndexRouteImport } from './routes/(main)/blog/tag/index'
+import { Route as mainBlogTagTagSlugRouteRouteImport } from './routes/(main)/blog/tag/$tagSlug/route'
 import { Route as apiApiPrxyNltyxIndexRouteImport } from './routes/(api)/api/prxy/nltyx/index'
 import { Route as apiApiPrxyNltyxEventRouteImport } from './routes/(api)/api/prxy/nltyx/event'
 import { Route as apiApiSlidesSessionSessionIdRouteImport } from './routes/(api)/api/slides/session/$sessionId'
@@ -170,6 +173,11 @@ const mainBlogSlugRouteRoute = mainBlogSlugRouteRouteImport.update({
   path: '/$slug',
   getParentRoute: () => mainBlogRouteRoute,
 } as any)
+const mainBlogTagRouteRoute = mainBlogTagRouteRouteImport.update({
+  id: '/tag',
+  path: '/tag',
+  getParentRoute: () => mainBlogRouteRoute,
+} as any)
 const mainNewsletterIndexRoute = mainNewsletterIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -227,6 +235,16 @@ const mainfoobarFoobarSlugRouteRoute =
     path: '/$slug',
     getParentRoute: () => mainfoobarFoobarRouteRoute,
   } as any)
+const mainBlogTagIndexRoute = mainBlogTagIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => mainBlogTagRouteRoute,
+} as any)
+const mainBlogTagTagSlugRouteRoute = mainBlogTagTagSlugRouteRouteImport.update({
+  id: '/$tagSlug',
+  path: '/$tagSlug',
+  getParentRoute: () => mainBlogTagRouteRoute,
+} as any)
 const apiApiPrxyNltyxIndexRoute = apiApiPrxyNltyxIndexRouteImport.update({
   id: '/(api)/api/prxy/nltyx/',
   path: '/api/prxy/nltyx/',
@@ -275,6 +293,7 @@ export interface FileRoutesByFullPath {
   '/$': typeof mainSplatRoute
   '/foobar': typeof mainfoobarFoobarRouteRouteWithChildren
   '/blog/$slug': typeof mainBlogSlugRouteRoute
+  '/blog/tag': typeof mainBlogTagRouteRouteWithChildren
   '/newsletter/$slug': typeof mainNewsletterSlugRouteRoute
   '/slides/tanstack-start/dev-lab': typeof SlidesTanstackStartDevLabRouteRoute
   '/api/coffee': typeof apiApiCoffeeRoute
@@ -283,6 +302,7 @@ export interface FileRoutesByFullPath {
   '/blog/': typeof mainBlogIndexRoute
   '/newsletter/': typeof mainNewsletterIndexRoute
   '/foobar/$slug': typeof mainfoobarFoobarSlugRouteRoute
+  '/blog/tag/$tagSlug': typeof mainBlogTagTagSlugRouteRoute
   '/api/analytics/event': typeof apiApiAnalyticsEventRoute
   '/api/analytics/tracker': typeof apiApiAnalyticsTrackerRoute
   '/api/auth/$': typeof apiApiAuthSplatRoute
@@ -290,6 +310,7 @@ export interface FileRoutesByFullPath {
   '/api/login/$provider': typeof apiApiLoginProviderRoute
   '/api/prxy/sntry': typeof apiApiPrxySntryRoute
   '/foobar/': typeof mainfoobarFoobarIndexRoute
+  '/blog/tag/': typeof mainBlogTagIndexRoute
   '/api/prxy/nltyx/event': typeof apiApiPrxyNltyxEventRoute
   '/api/slides/session/$sessionId': typeof apiApiSlidesSessionSessionIdRoute
   '/foobar/certificate/$token': typeof mainfoobarFoobarCertificateTokenRoute
@@ -320,6 +341,7 @@ export interface FileRoutesByTo {
   '/blog': typeof mainBlogIndexRoute
   '/newsletter': typeof mainNewsletterIndexRoute
   '/foobar/$slug': typeof mainfoobarFoobarSlugRouteRoute
+  '/blog/tag/$tagSlug': typeof mainBlogTagTagSlugRouteRoute
   '/api/analytics/event': typeof apiApiAnalyticsEventRoute
   '/api/analytics/tracker': typeof apiApiAnalyticsTrackerRoute
   '/api/auth/$': typeof apiApiAuthSplatRoute
@@ -327,6 +349,7 @@ export interface FileRoutesByTo {
   '/api/login/$provider': typeof apiApiLoginProviderRoute
   '/api/prxy/sntry': typeof apiApiPrxySntryRoute
   '/foobar': typeof mainfoobarFoobarIndexRoute
+  '/blog/tag': typeof mainBlogTagIndexRoute
   '/api/prxy/nltyx/event': typeof apiApiPrxyNltyxEventRoute
   '/api/slides/session/$sessionId': typeof apiApiSlidesSessionSessionIdRoute
   '/foobar/certificate/$token': typeof mainfoobarFoobarCertificateTokenRoute
@@ -355,6 +378,7 @@ export interface FileRoutesById {
   '/(main)/$': typeof mainSplatRoute
   '/(main)/(foobar)/foobar': typeof mainfoobarFoobarRouteRouteWithChildren
   '/(main)/blog/$slug': typeof mainBlogSlugRouteRoute
+  '/(main)/blog/tag': typeof mainBlogTagRouteRouteWithChildren
   '/(main)/newsletter/$slug': typeof mainNewsletterSlugRouteRoute
   '/slides/tanstack-start/dev-lab': typeof SlidesTanstackStartDevLabRouteRoute
   '/(api)/api/coffee': typeof apiApiCoffeeRoute
@@ -363,6 +387,7 @@ export interface FileRoutesById {
   '/(main)/blog/': typeof mainBlogIndexRoute
   '/(main)/newsletter/': typeof mainNewsletterIndexRoute
   '/(main)/(foobar)/foobar/$slug': typeof mainfoobarFoobarSlugRouteRoute
+  '/(main)/blog/tag/$tagSlug': typeof mainBlogTagTagSlugRouteRoute
   '/(api)/api/analytics/event': typeof apiApiAnalyticsEventRoute
   '/(api)/api/analytics/tracker': typeof apiApiAnalyticsTrackerRoute
   '/(api)/api/auth/$': typeof apiApiAuthSplatRoute
@@ -370,6 +395,7 @@ export interface FileRoutesById {
   '/(api)/api/login/$provider': typeof apiApiLoginProviderRoute
   '/(api)/api/prxy/sntry': typeof apiApiPrxySntryRoute
   '/(main)/(foobar)/foobar/': typeof mainfoobarFoobarIndexRoute
+  '/(main)/blog/tag/': typeof mainBlogTagIndexRoute
   '/(api)/api/prxy/nltyx/event': typeof apiApiPrxyNltyxEventRoute
   '/(api)/api/slides/session/$sessionId': typeof apiApiSlidesSessionSessionIdRoute
   '/(main)/(foobar)/foobar/certificate/$token': typeof mainfoobarFoobarCertificateTokenRoute
@@ -397,6 +423,7 @@ export interface FileRouteTypes {
     | '/$'
     | '/foobar'
     | '/blog/$slug'
+    | '/blog/tag'
     | '/newsletter/$slug'
     | '/slides/tanstack-start/dev-lab'
     | '/api/coffee'
@@ -405,6 +432,7 @@ export interface FileRouteTypes {
     | '/blog/'
     | '/newsletter/'
     | '/foobar/$slug'
+    | '/blog/tag/$tagSlug'
     | '/api/analytics/event'
     | '/api/analytics/tracker'
     | '/api/auth/$'
@@ -412,6 +440,7 @@ export interface FileRouteTypes {
     | '/api/login/$provider'
     | '/api/prxy/sntry'
     | '/foobar/'
+    | '/blog/tag/'
     | '/api/prxy/nltyx/event'
     | '/api/slides/session/$sessionId'
     | '/foobar/certificate/$token'
@@ -442,6 +471,7 @@ export interface FileRouteTypes {
     | '/blog'
     | '/newsletter'
     | '/foobar/$slug'
+    | '/blog/tag/$tagSlug'
     | '/api/analytics/event'
     | '/api/analytics/tracker'
     | '/api/auth/$'
@@ -449,6 +479,7 @@ export interface FileRouteTypes {
     | '/api/login/$provider'
     | '/api/prxy/sntry'
     | '/foobar'
+    | '/blog/tag'
     | '/api/prxy/nltyx/event'
     | '/api/slides/session/$sessionId'
     | '/foobar/certificate/$token'
@@ -476,6 +507,7 @@ export interface FileRouteTypes {
     | '/(main)/$'
     | '/(main)/(foobar)/foobar'
     | '/(main)/blog/$slug'
+    | '/(main)/blog/tag'
     | '/(main)/newsletter/$slug'
     | '/slides/tanstack-start/dev-lab'
     | '/(api)/api/coffee'
@@ -484,6 +516,7 @@ export interface FileRouteTypes {
     | '/(main)/blog/'
     | '/(main)/newsletter/'
     | '/(main)/(foobar)/foobar/$slug'
+    | '/(main)/blog/tag/$tagSlug'
     | '/(api)/api/analytics/event'
     | '/(api)/api/analytics/tracker'
     | '/(api)/api/auth/$'
@@ -491,6 +524,7 @@ export interface FileRouteTypes {
     | '/(api)/api/login/$provider'
     | '/(api)/api/prxy/sntry'
     | '/(main)/(foobar)/foobar/'
+    | '/(main)/blog/tag/'
     | '/(api)/api/prxy/nltyx/event'
     | '/(api)/api/slides/session/$sessionId'
     | '/(main)/(foobar)/foobar/certificate/$token'
@@ -687,6 +721,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof mainBlogSlugRouteRouteImport
       parentRoute: typeof mainBlogRouteRoute
     }
+    '/(main)/blog/tag': {
+      id: '/(main)/blog/tag'
+      path: '/tag'
+      fullPath: '/blog/tag'
+      preLoaderRoute: typeof mainBlogTagRouteRouteImport
+      parentRoute: typeof mainBlogRouteRoute
+    }
     '/(main)/newsletter/': {
       id: '/(main)/newsletter/'
       path: '/'
@@ -764,6 +805,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof mainfoobarFoobarSlugRouteRouteImport
       parentRoute: typeof mainfoobarFoobarRouteRoute
     }
+    '/(main)/blog/tag/': {
+      id: '/(main)/blog/tag/'
+      path: '/'
+      fullPath: '/blog/tag/'
+      preLoaderRoute: typeof mainBlogTagIndexRouteImport
+      parentRoute: typeof mainBlogTagRouteRoute
+    }
+    '/(main)/blog/tag/$tagSlug': {
+      id: '/(main)/blog/tag/$tagSlug'
+      path: '/$tagSlug'
+      fullPath: '/blog/tag/$tagSlug'
+      preLoaderRoute: typeof mainBlogTagTagSlugRouteRouteImport
+      parentRoute: typeof mainBlogTagRouteRoute
+    }
     '/(api)/api/prxy/nltyx/': {
       id: '/(api)/api/prxy/nltyx/'
       path: '/api/prxy/nltyx'
@@ -802,13 +857,28 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface mainBlogTagRouteRouteChildren {
+  mainBlogTagTagSlugRouteRoute: typeof mainBlogTagTagSlugRouteRoute
+  mainBlogTagIndexRoute: typeof mainBlogTagIndexRoute
+}
+
+const mainBlogTagRouteRouteChildren: mainBlogTagRouteRouteChildren = {
+  mainBlogTagTagSlugRouteRoute: mainBlogTagTagSlugRouteRoute,
+  mainBlogTagIndexRoute: mainBlogTagIndexRoute,
+}
+
+const mainBlogTagRouteRouteWithChildren =
+  mainBlogTagRouteRoute._addFileChildren(mainBlogTagRouteRouteChildren)
+
 interface mainBlogRouteRouteChildren {
   mainBlogSlugRouteRoute: typeof mainBlogSlugRouteRoute
+  mainBlogTagRouteRoute: typeof mainBlogTagRouteRouteWithChildren
   mainBlogIndexRoute: typeof mainBlogIndexRoute
 }
 
 const mainBlogRouteRouteChildren: mainBlogRouteRouteChildren = {
   mainBlogSlugRouteRoute: mainBlogSlugRouteRoute,
+  mainBlogTagRouteRoute: mainBlogTagRouteRouteWithChildren,
   mainBlogIndexRoute: mainBlogIndexRoute,
 }
 

@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 
 import { SITE_TITLE_APPEND } from "@/config";
+import { LinkTo } from "@/lib/components/Anchor";
 import { NotFound404 } from "@/lib/components/Error";
 import { ReadingProgress } from "@/lib/components/ProgressBar";
 import { Gradient } from "@/lib/components/Typography";
@@ -68,6 +69,21 @@ function RouteComponent() {
 			>
 				<Gradient>{post.title}</Gradient>
 			</h1>
+			{post.tagSlugs.length > 0 ? (
+				<ul className="flex flex-wrap gap-2 pb-4">
+					{post.tagSlugs.map((tagSlug, index) => (
+						<li key={tagSlug}>
+							<LinkTo
+								href={`/blog/tag/${tagSlug}`}
+								replaceClasses
+								className="inline-flex items-center rounded-global border border-solid border-foreground/15 px-2 py-0.5 text-sm text-foreground/70 transition-colors hover:border-primary hover:text-primary focus-visible:outline-2 focus-visible:outline-secondary focus-visible:outline-dashed"
+							>
+								{post.tags[index]}
+							</LinkTo>
+						</li>
+					))}
+				</ul>
+			) : null}
 			<p className="pb-20 text-sm text-foreground/60">
 				{new Date(post.published_at).toLocaleDateString("en-US", {
 					year: "numeric",
