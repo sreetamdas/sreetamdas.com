@@ -6,6 +6,9 @@
  * Satori does no shaping and never falls back by itself, so every fixed string
  * here stays inside the Iosevka subset (see FOOBAR_CARD_SUBSET); a hunter name
  * outside it gets a fallback font from the route.
+ *
+ * The tier words, star split and mountain are shaped as coloured runs, which
+ * certificate-text.ts paints again as ANSI for terminals.
  */
 import {
 	FOOBAR_ACHIEVEMENTS,
@@ -20,7 +23,7 @@ import { FOOBAR_MOUNTAIN, type FoobarMountainCell } from "./mountain";
 export const FOOBAR_CARD_SUBSET = /^[\r\x20-\x7e\xa0-\xbb\xd7]*$/u;
 export const FOOBAR_CARD_SUBSET_CHAR = /[\r\x20-\x7e\xa0-\xbb\xd7]/gu;
 
-const KARMA = {
+export const KARMA = {
 	background: "#0a0e14",
 	foreground: "#f7f1ff",
 	comment: "#8d8a96",
@@ -31,7 +34,7 @@ const KARMA = {
 	lavender: "#af98e6",
 } as const;
 
-const TIER_COLOR: Record<FoobarTier, string> = {
+export const TIER_COLOR: Record<FoobarTier, string> = {
 	discovery: "#7bd88f",
 	browser: "#5ad4e6",
 	archaeology: "#fce566",
@@ -46,15 +49,36 @@ const PUZZLE_TIERS: ReadonlyArray<FoobarPuzzleTier> = [
 	"protocol",
 ];
 
-export function renderFoobarCertificateCard(certificate: FoobarCertificate): string {
+/** Text drawn in one colour; an undefined colour inherits the surrounding text's. */
+export type FoobarCardRun = { text: string; color: string | undefined };
+
+export function getFoobarCertificateSummary(certificate: FoobarCertificate) {
 	const stars = Object.values(certificate.stars);
 	const gold = stars.filter((star) => star === "gold").length;
 	const silver = stars.filter((star) => star === "silver").length;
-	const date = formatFoobarCertificateDate(certificate.completedAt);
-	const words = PUZZLE_TIERS.map(
-		(tier, index) =>
-			`${index > 0 ? span(", ", KARMA.comment) : ""}${span(FOOBAR_PUZZLE_TIER_WORDS[tier], TIER_COLOR[tier])}`,
-	).join("");
+	const words: Array<FoobarCardRun> = [
+		{ text: "{", color: KARMA.comment },
+		...PUZZLE_TIERS.flatMap((tier, index) => [
+			...(index > 0 ? [{ text: ", ", color: KARMA.comment }] : []),
+			{ text: FOOBAR_PUZZLE_TIER_WORDS[tier], color: TIER_COLOR[tier] },
+		]),
+		{ text: "}", color: KARMA.comment },
+	];
+	const split: Array<FoobarCardRun> = [
+		{ text: `${stars.length}*`, color: KARMA.yellow },
+		{ text: " · ", color: KARMA.comment },
+		{ text: `${gold} gold`, color: KARMA.yellow },
+		{ text: " · ", color: KARMA.comment },
+		{ text: `${silver} silver`, color: KARMA.silver },
+	];
+	return { words, split, date: formatFoobarCertificateDate(certificate.completedAt) };
+}
+
+export function renderFoobarCertificateCard(certificate: FoobarCertificate): string {
+	const { words, split, date } = getFoobarCertificateSummary(certificate);
+	const mountain = getFoobarCertificateMountain(certificate)
+		.map((line) => `<div style="display:flex;white-space:pre">${spans(line)}</div>`)
+		.join("");
 
 	return `<div style="display:flex;flex-direction:column;width:1200px;height:630px;padding:52px 64px;background:${KARMA.background};color:${KARMA.foreground};font-family:Iosevka">
 		<div style="display:flex;justify-content:space-between;font-size:22px;color:${KARMA.comment}">${span("sreetamdas.com/foobar", TIER_COLOR.discovery)}<span>--- field certificate ---</span></div>
@@ -63,16 +87,19 @@ export function renderFoobarCertificateCard(certificate: FoobarCertificate): str
 				<div style="display:flex;font-size:24px;color:${KARMA.comment}">Certifies that</div>
 				<div style="display:flex;margin-top:8px;font-size:64px;font-weight:700;line-height:1.1;color:${TIER_COLOR.discovery}">${escapeHtml(certificate.name)}</div>
 				<div style="display:flex;margin-top:18px;font-size:26px;line-height:1.4">mapped every hidden corner and completed the Foobar hunt.</div>
-				<div style="display:flex;margin-top:24px;font-size:24px;white-space:pre">${span("{", KARMA.comment)}${words}${span("}", KARMA.comment)}</div>
-				<div style="display:flex;margin-top:18px;font-size:26px;white-space:pre">${span(`${stars.length}*`, KARMA.yellow)}${span(" · ", KARMA.comment)}${span(`${gold} gold`, KARMA.yellow)}${span(" · ", KARMA.comment)}${span(`${silver} silver`, KARMA.silver)}</div>
+				<div style="display:flex;margin-top:24px;font-size:24px;white-space:pre">${spans(words)}</div>
+				<div style="display:flex;margin-top:18px;font-size:26px;white-space:pre">${spans(split)}</div>
 				<div style="display:flex;margin-top:18px;font-size:22px;color:${KARMA.comment}">Completed ${escapeHtml(date)}</div>
 			</div>
-			<div style="display:flex;flex-direction:column;font-size:13px;line-height:1.2">${mountainRows(certificate)}</div>
+			<div style="display:flex;flex-direction:column;font-size:13px;line-height:1.2">${mountain}</div>
 		</div>
 	</div>`.replaceAll(/>\s*\n\s*</g, "><");
 }
 
-function mountainRows({ stars }: FoobarCertificate): string {
+/** The flag, one line per discovery with its real star, then Basecamp. */
+export function getFoobarCertificateMountain({
+	stars,
+}: Pick<FoobarCertificate, "stars">): Array<Array<FoobarCardRun>> {
 	const campfireLit = "campfire" in stars;
 	const flag = row(FOOBAR_MOUNTAIN.flag, (cell) =>
 		cell.kind === "flag" ? KARMA.lavender : undefined,
@@ -80,16 +107,14 @@ function mountainRows({ stars }: FoobarCertificate): string {
 	const rows = FOOBAR_MOUNTAIN.rows.map(({ achievement, cells }) => {
 		const star = stars[achievement];
 		const color = TIER_COLOR[FOOBAR_ACHIEVEMENTS[achievement].tier];
-		const art = row(
-			cells,
-			(cell) => {
-				if (!star) return cell.kind === "waypoint" ? KARMA.gutter : "#2a2f37";
-				if (cell.kind === "waypoint") return KARMA.foreground;
-				return cell.kind === "trail" ? KARMA.comment : color;
-			},
-			star ? span(" *", star === "gold" ? KARMA.yellow : KARMA.silver) : "",
-		);
-		return art;
+		const art = row(cells, (cell) => {
+			if (!star) return cell.kind === "waypoint" ? KARMA.gutter : "#2a2f37";
+			if (cell.kind === "waypoint") return KARMA.foreground;
+			return cell.kind === "trail" ? KARMA.comment : color;
+		});
+		return star
+			? [...art, { text: " *", color: star === "gold" ? KARMA.yellow : KARMA.silver }]
+			: art;
 	});
 	const basecamp = FOOBAR_MOUNTAIN.basecamp.map((cells) =>
 		row(cells, (cell) => {
@@ -97,19 +122,18 @@ function mountainRows({ stars }: FoobarCertificate): string {
 			return cell.kind === "tent" ? KARMA.comment : "#2a2f37";
 		}),
 	);
-	return [flag, ...rows, ...basecamp].join("");
+	return [flag, ...rows, ...basecamp];
 }
 
 function row(
 	cells: ReadonlyArray<FoobarMountainCell>,
 	colorFor: (cell: FoobarMountainCell) => string | undefined,
-	suffix = "",
-): string {
-	let html = "";
+): Array<FoobarCardRun> {
+	const runs: Array<FoobarCardRun> = [];
 	let color: string | undefined;
 	let text = "";
 	const flush = () => {
-		if (text) html += span(text, color);
+		if (text) runs.push({ text, color });
 		text = "";
 	};
 	for (const cell of cells) {
@@ -121,7 +145,11 @@ function row(
 		text += cell.char;
 	}
 	flush();
-	return `<div style="display:flex;white-space:pre">${html}${suffix}</div>`;
+	return runs;
+}
+
+function spans(runs: ReadonlyArray<FoobarCardRun>): string {
+	return runs.map(({ text, color }) => span(text, color)).join("");
 }
 
 function span(text: string, color: string | undefined): string {
