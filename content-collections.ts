@@ -3,6 +3,7 @@ import { z } from "zod";
 
 import { OWNER_NAME, SITE_OG_IMAGE, SITE_URL } from "./src/config";
 import { mdxParseWithShiki } from "./src/lib/components/MDX/parse";
+import { slugifyTag } from "./src/lib/content/blog-tags";
 
 type StructuredDataInput = {
 	title: string;
@@ -61,6 +62,7 @@ const blogPosts = defineCollection({
 		url: z.string().optional(),
 		image: z.string().optional(),
 		use_client: z.boolean().optional(),
+		tags: z.array(z.string()).optional().default([]),
 		content: z.string(),
 	}),
 	transform: async (doc) => {
@@ -70,6 +72,13 @@ const blogPosts = defineCollection({
 		const rawPath = `blog/${doc._meta.path}`;
 		const pagePath = `/${rawPath}`;
 		const pageSlug = rawPath.split("/").at(-1) ?? doc._meta.path;
+		const tagSlugs = doc.tags.map((tag) => {
+			const slug = slugifyTag(tag);
+			if (!slug) {
+				throw new Error(`Invalid tag value: ${tag}`);
+			}
+			return slug;
+		});
 		const { mdast, shikiHighlights } = await mdxParseWithShiki(raw);
 		const wordCount = raw.split(/\s+/g).filter(Boolean).length;
 		const readingTime = Math.max(1, Math.round(wordCount / 238));
@@ -86,6 +95,7 @@ const blogPosts = defineCollection({
 			reading_time: readingTime,
 			page_path: pagePath,
 			page_slug: pageSlug,
+			tagSlugs,
 			structured_data: toStructuredData({
 				...doc,
 				published_at: publishedAt,
