@@ -123,11 +123,11 @@ hint = false
 clear_version_processor = true
 recompress = "fontTools/woff2"
 # Iosevka stamps head.created/modified from SOURCE_DATE_EPOCH, or its own build
-# date when that is unset, so two builds of identical sources differ in four
-# bytes. Pinning the epoch — the value the committed TTFs carry, 2026-09-20
-# 15:49:42Z — is what makes both TTFs reproduce byte for byte. The woff2 subsets
-# descend from an older hinted build and carry its timestamps, so they are only
-# compared for content.
+# date when that is unset, so two builds of identical sources differ in those
+# timestamps (and the checksum that covers them). Pinning the epoch — the value
+# the committed TTFs carry, 2026-09-20 15:49:42Z — is what makes both TTFs
+# reproduce byte for byte. The woff2 subsets descend from an older hinted build
+# and carry its timestamps, so they are only compared for content.
 head_epoch = 3872764182
 
 [share_card_ttf]
