@@ -22,12 +22,13 @@ Subcommands
         of the same sources would otherwise produce different bytes.
 
     compare <a> <b>
-        Content equivalence between two font files (woff2 or ttf), used by
-        --check when a rebuild cannot be byte-identical. Compares cmap, every
-        glyph outline and advance, and every table a shaper or rasteriser reads;
-        tolerates only differences that cannot change rendering: glyf coordinate
-        encoding, the inert maxp hint counters, and head timestamps/flags/
-        checksum. Exits 2 on a real difference.
+        Content equivalence between two font files (woff2 or ttf). --check runs
+        this only after a byte mismatch, to say whether the glyphs changed or
+        just their encoding. Compares cmap, every glyph outline and advance, and
+        every table a shaper or rasteriser reads; tolerates only differences that
+        cannot change rendering: glyf coordinate encoding, the inert maxp hint
+        counters, and head timestamps/flags/checksum. Exits 2 on a real
+        difference.
 """
 
 import sys

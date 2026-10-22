@@ -32,10 +32,10 @@
 #   (override with --cache-dir or SREETAMDAS_IOSEVKA_CACHE) and runs its own
 #   `npm install` and unhinted build there.
 #
-#   The TTFs reproduce byte for byte. The woff2 do not: the committed ones were
-#   recompressed by an older toolchain from a hinted build, so the same glyphs
-#   are stored in a different coordinate encoding. `--check` compares every
-#   table, outline and advance, and reports those as content-equivalent.
+#   Every committed byte reproduces. All six files come out of this pipeline, and
+#   `--check` requires them byte for byte; on a mismatch it also compares every
+#   table, outline and advance so the failure says whether the glyphs changed or
+#   only their encoding.
 #
 # FILE NAMING
 #   public/fonts/iosevka/iosevka-das-version-<style>.<sha256[0:8]>.subset.woff2
@@ -125,9 +125,8 @@ recompress = "fontTools/woff2"
 # Iosevka stamps head.created/modified from SOURCE_DATE_EPOCH, or its own build
 # date when that is unset, so two builds of identical sources differ in those
 # timestamps (and the checksum that covers them). Pinning the epoch — the value
-# the committed TTFs carry, 2026-09-20 15:49:42Z — is what makes both TTFs
-# reproduce byte for byte. The woff2 subsets descend from an older hinted build
-# and carry its timestamps, so they are only compared for content.
+# every committed file carries, 2026-09-20 15:49:42Z — is what makes a rebuild
+# byte-identical instead of merely content-identical.
 head_epoch = 3872764182
 
 [share_card_ttf]
