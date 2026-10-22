@@ -719,7 +719,12 @@ test("claims the well-known notice and announces it with its display title", asy
 });
 
 test("awards the offline achievement in place when the network drops", async ({ page }) => {
-	await seedProgress(page);
+	// A socket from an earlier test in this worker's presence room stays counted until
+	// it goes stale, and the campfire toast it unlocks would cover the one under test.
+	await seedProgress(page, {
+		...legacyProgress,
+		completed: [...legacyProgress.completed, "campfire"],
+	});
 	await page.goto("/foobar");
 	await expect(page.getByRole("heading", { name: "/foobar", level: 1 })).toBeVisible();
 
