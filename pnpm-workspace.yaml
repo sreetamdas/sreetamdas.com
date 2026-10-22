@@ -19,6 +19,10 @@ overrides:
   sharp: ^0.35.5
   source-map-js: ^1.2.2
   undici: ^7.29.1
+  # Only SQL Server uses these, and the site speaks SQLite through D1. Dropping the
+  # auto-installed peers also drops tedious and its advisory-laden sprintf-js.
+  "drizzle-orm>mssql": "-"
+  "drizzle-orm>@types/mssql": "-"
 peerDependencyRules:
   allowAny:
     - vite
