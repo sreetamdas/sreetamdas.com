@@ -6,22 +6,25 @@
  */
 import { createFileRoute } from "@tanstack/react-router";
 
-import { type FoobarCertificate } from "@/lib/domains/foobar/certificate";
 import {
 	FOOBAR_CARD_SUBSET_CHAR,
 	renderFoobarCertificateCard,
 } from "@/lib/domains/foobar/certificate-card";
+import {
+	FOOBAR_CERTIFICATE_TOKEN,
+	type FoobarCertificateResolver,
+	resolveFoobarCertificate,
+} from "@/lib/domains/foobar/certificate-lookup.server";
 
-type CertificateResolver = (token: string) => Promise<FoobarCertificate | null>;
 type CertificateRenderer = (html: string) => Promise<Response> | Response;
 type CardFont = { name: string; data: ArrayBuffer; weight: 400 | 700; style: "normal" };
 
 export async function handleFoobarCertificateImage(
 	token: string,
-	resolve: CertificateResolver = resolveCertificate,
+	resolve: FoobarCertificateResolver = resolveFoobarCertificate,
 	render: CertificateRenderer = renderCertificate,
 ): Promise<Response> {
-	if (!/^[a-zA-Z0-9_-]{1,80}$/.test(token)) return new Response("Not found", { status: 404 });
+	if (!FOOBAR_CERTIFICATE_TOKEN.test(token)) return new Response("Not found", { status: 404 });
 
 	const certificate = await resolve(token);
 	if (!certificate) return new Response("Not found", { status: 404 });
@@ -31,18 +34,6 @@ export async function handleFoobarCertificateImage(
 	response.headers.set("Content-Type", "image/png");
 	response.headers.set("Cache-Control", "public, max-age=3600");
 	return response;
-}
-
-async function resolveCertificate(token: string): Promise<FoobarCertificate | null> {
-	try {
-		const [{ getDb }, { getFoobarCertificate }] = await Promise.all([
-			import("@/db"),
-			import("@/lib/domains/foobar/cloud-progress.data.server"),
-		]);
-		return await getFoobarCertificate(getDb(), token);
-	} catch {
-		return null;
-	}
 }
 
 async function renderCertificate(html: string): Promise<Response> {
