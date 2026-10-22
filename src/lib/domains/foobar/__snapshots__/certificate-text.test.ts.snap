@@ -1,0 +1,46 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Foobar certificate text > prints the certificate without colour 1`] = `
+"sreetamdas.com/foobar                  --- field certificate ---
+
+Certifies that
+  Ada Lovelace
+mapped every hidden corner and completed the Foobar hunt.
+
+{draco, dormiens, nunquam, titillandus}
+23* · 22 gold · 1 silver
+
+                     |>~                    
+                    /o\\                      *
+                   / o \\                     *
+                  /\`\`.o\\                     *
+                /~  \` o\\                     *
+                /\` \`''o \\                    *
+                /[] o..  \\                   *
+               / o...]    \\                  *
+               / ...o|  []= \\                *
+             /  ^ ^^...o  ^^^ \\              *
+           /     ^ ' ^ ...o^^ \\             
+           / ' ' ^   ^ o...^'  \\             *
+           /^ ^    o....^^ ^ ^^ \\            *
+           /^ o.....   ^ ^      \\            *
+          /^^ .....o ^  ' '^^   \\            *
+        /   ^^^    .....o^^^   ^\\            *
+       /''  '^^ '      ^.....o^  \\           *
+     /' ^     ^        ^o.....^   \\          *
+     / ^  ^   '   o...... ^^    ^^' \\        *
+     /   ';o.......,;,     '  , ,     \\      *
+     / ,  ,......o,  ;  , ' ,, ;    , \\      *
+    / '   ;,  '',........o '';  '  '   \\     *
+   / '    ,'            ,........o ,  ,'\\    *
+ /      ' '         ''   o........  ,,, \\    *
+/' ;  ' '       ,o........       ,    ' \\    *
+         /\\          ) (                    
+        /__\\   ~~   (   )   ~~              
+____________________________________________
+
+Completed July 16, 2026
+
+https://sreetamdas.com/foobar/certificate/0f8fad5b-d9cb-469f-a165-70867728950e
+"
+`;
