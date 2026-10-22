@@ -13,30 +13,45 @@
 #   rather than guesses.
 #
 #   KNOWN GAP: nothing in `pnpm build` reads the font binaries, because doing so
-#   needs a font parser the Node build does not have. So the guard below verifies
-#   references and hashes only — if a future rebuild changes these values without
-#   changing this file, the build will not notice. Re-verify with fontTools when
-#   rebuilding.
+#   needs a font parser the Node build does not have. So `pnpm build` verifies
+#   references and hashes only. `pnpm fonts:build --check` is the guard that does
+#   read them: it rebuilds from source and compares tables, outlines and advances.
 #
-# WHY THIS IS NOT RERUNNABLE HERE
-#   Iosevka's build tools ship as a separate binary, not an npm dependency: the
-#   `iosevka` and `iosevka-build-tools` packages were unpublished in 2020, and
-#   GitHub releases only carry prebuilt TTX packages. So regenerating these
-#   subsets from source needs the toolchain installed out of band. The post-
-#   processing that produced the current files (drop hinting, recompress, fix the
-#   version record) is fontTools-only and is documented under [postprocess].
+# HOW TO REBUILD
+#   `pnpm fonts:build` rebuilds every committed file from Iosevka source;
+#   `pnpm fonts:build --check` rebuilds into the cache dir and diffs without
+#   writing anything. Both go through scripts/build-iosevka-fonts.ts, which reads
+#   this file: the family, version, commit, styles, ligation set, codepoint ranges
+#   and width are all taken from here, so editing a value is what changes the
+#   build. Font parsing lives in scripts/iosevka-fonts.py and runs through
+#   `uv run --with fonttools --with brotli`; nothing is added to node_modules.
+#
+#   Iosevka's build tools are not npm dependencies (the `iosevka` and
+#   `iosevka-build-tools` packages were unpublished in 2020), so the script
+#   shallow-clones the pinned tag into ${XDG_CACHE_HOME:-~/.cache}/sreetamdas-iosevka
+#   (override with --cache-dir or SREETAMDAS_IOSEVKA_CACHE) and runs its own
+#   `npm install` and unhinted build there.
+#
+#   The TTFs reproduce byte for byte. The woff2 do not: the committed ones were
+#   recompressed by an older toolchain from a hinted build, so the same glyphs
+#   are stored in a different coordinate encoding. `--check` compares every
+#   table, outline and advance, and reports those as content-equivalent.
 #
 # FILE NAMING
 #   public/fonts/iosevka/iosevka-das-version-<style>.<sha256[0:8]>.subset.woff2
 #   The hash is the sha256 prefix of the final bytes, so a rebuild must rehash and
 #   update all six references in global.css, __root.tsx and inject-early-hints.mjs.
-#   `scripts/check-font-references.ts` fails the build if any of that is stale.
+#   `pnpm fonts:build` does that by calling scripts/update-font-hashes.ts;
+#   `scripts/check-font-references.ts` fails the build if any of it is stale.
 
 [family]
 # name ID 1, shared by all four faces.
 name = "Iosevka — Das' version"
 upstream = "Iosevka"
 version = "28.0.4"
+# The commit tag v28.0.4 pointed at when this plan was written. The rebuild
+# refuses to run against a different one, so a moved tag cannot change the fonts.
+commit = "75e8e0529c3ddb795f41c7279a21bc7526eda7cc"
 # das-version is stock Iosevka with the family renamed; no glyph or metric edits.
 rename_only = true
 
@@ -101,17 +116,26 @@ ligatures_retained = true
 #   3. save as woff2 through fontTools, whose compressor is substantially tighter
 #      than the one that produced the original subsets (~62% of their bytes were
 #      compression slack, not glyph data).
-#   4. hash the result and rename.
+#   4. hash the result and rename (scripts/update-font-hashes.ts, which the build
+#      script calls and which also rewrites the references in global.css,
+#      __root.tsx and inject-early-hints.mjs).
 hint = false
 clear_version_processor = true
 recompress = "fontTools/woff2"
+# Iosevka stamps head.created/modified from SOURCE_DATE_EPOCH, or its own build
+# date when that is unset, so two builds of identical sources differ in four
+# bytes. Pinning the epoch — the value the committed TTFs carry, 2026-09-20
+# 15:49:42Z — is what makes both TTFs reproduce byte for byte. The woff2 subsets
+# descend from an older hinted build and carry its timestamps, so they are only
+# compared for content.
+head_epoch = 3872764182
 
 [share_card_ttf]
 # src/lib/domains/foobar/fonts/iosevka-das-version-{regular,bold}.ttf feed the
 # certificate share card: satori (workers-og) reads TTF/OTF/WOFF but not woff2.
-# They were built from source, Iosevka tag v28.0.4 with this plan (family,
-# default-calt ligations, normal width, weights 400 and 700, upright only),
-# target `ttf-unhinted`, then cut to the upright codepoints above:
+# They come from the same source build as the woff2 (Iosevka tag v28.0.4 with this
+# plan, target `ttf-unhinted`), cut to the upright codepoints above. That is
+# exactly what `pnpm fonts:build` does:
 #
 #   pyftsubset DasVersion-<Style>.ttf \
 #     --unicodes="U+000D,U+0020-007E,U+00A0-00BB,U+00D7" \

@@ -1,0 +1,790 @@
+/**
+ * Rebuilds every committed Iosevka "das-version" file from Iosevka source, and
+ * with `--check` proves the result still matches what is committed.
+ *
+ * Why this exists: the site ships six font binaries — four content-hashed woff2
+ * subsets in `public/fonts/iosevka/` and the two TTFs the certificate share card
+ * gives satori — whose only description used to be prose in
+ * `.config/iosevka-build-plan.toml`. That file is the input here: the private
+ * Iosevka build plan is generated from its family, styles, ligation set,
+ * codepoints and subset metrics, so a change to one is a change to the build.
+ *
+ * Shape of a run:
+ *   1. shallow-clone Iosevka at the pinned tag into the cache dir (reused),
+ *   2. `npm install` inside that clone when needed,
+ *   3. write the generated `private-build-plans.toml`,
+ *   4. `ttf-unhinted::DasVersion` → four TTFs,
+ *   5. pyftsubset each face to its codepoints, clear the version record, and
+ *      recompress the woff2 through fontTools,
+ *   6. in `--check`, diff against the committed files and write nothing; in
+ *      write mode, mint the hashed woff2 names and rewrite their references.
+ *
+ * The TTFs reproduce byte for byte; the woff2 cannot, because the committed ones
+ * were recompressed from a hinted build by an older toolchain, which leaves the
+ * same glyphs in a different coordinate encoding. `--check` therefore falls back
+ * to comparing every table, outline and advance (scripts/iosevka-fonts.py) and
+ * reports bytes as "content-equivalent" instead of failing on encoding noise.
+ *
+ * Usage:
+ *   pnpm fonts:build            # rebuild and write the committed paths
+ *   pnpm fonts:build --check    # rebuild into the cache and diff only
+ *   pnpm fonts:build --cache-dir /tmp/iosevka --jobs 4
+ */
+
+import { execFileSync, spawnSync } from "node:child_process";
+import { createHash } from "node:crypto";
+import {
+	copyFileSync,
+	existsSync,
+	mkdirSync,
+	readFileSync,
+	readdirSync,
+	rmSync,
+	statSync,
+	writeFileSync,
+} from "node:fs";
+import { availableParallelism, homedir } from "node:os";
+import { basename, join, resolve } from "node:path";
+
+const PLAN_FILE = ".config/iosevka-build-plan.toml";
+const WOFF2_DIR = "public/fonts/iosevka";
+const TTF_DIR = "src/lib/domains/foobar/fonts";
+const UPSTREAM = "https://github.com/be5invis/Iosevka";
+const PLAN_NAME = "DasVersion";
+const CACHE_ENV = "SREETAMDAS_IOSEVKA_CACHE";
+/** Pinned so a rebuild cannot silently pick up a different fontTools encoding. */
+const PYTHON_TOOLS = ["--with", "fonttools==4.67.0", "--with", "brotli==1.2.0"];
+const FONT_HELPER = "scripts/iosevka-fonts.py";
+
+const WEIGHT_NAMES = new Map([
+	[100, "Thin"],
+	[200, "ExtraLight"],
+	[300, "Light"],
+	[400, "Regular"],
+	[500, "Medium"],
+	[600, "SemiBold"],
+	[700, "Bold"],
+	[800, "ExtraBold"],
+	[900, "Heavy"],
+]);
+
+///////////////////////////////////////////////////////////
+// Minimal TOML reader: enough for the plan file's strings, numbers, booleans,
+// string arrays, inline tables and dotted keys. Anything else throws instead of
+// being silently dropped, so the build plan cannot decay into decoration.
+
+type Toml = string | number | boolean | Toml[] | { [key: string]: Toml };
+
+function stripComment(line: string): string {
+	let inString = false;
+	for (let index = 0; index < line.length; index++) {
+		const char = line[index];
+		if (inString) {
+			if (char === "\\") {
+				index++;
+			} else if (char === '"') {
+				inString = false;
+			}
+			continue;
+		}
+		if (char === '"') {
+			inString = true;
+		} else if (char === "#") {
+			return line.slice(0, index);
+		}
+	}
+	return line;
+}
+
+function splitTopLevel(text: string, separator: string): string[] {
+	const parts: string[] = [];
+	let depth = 0;
+	let inString = false;
+	let start = 0;
+	for (let index = 0; index < text.length; index++) {
+		const char = text[index];
+		if (inString) {
+			if (char === "\\") {
+				index++;
+			} else if (char === '"') {
+				inString = false;
+			}
+			continue;
+		}
+		if (char === '"') {
+			inString = true;
+		} else if (char === "[" || char === "{") {
+			depth++;
+		} else if (char === "]" || char === "}") {
+			depth--;
+		} else if (char === separator && depth === 0) {
+			parts.push(text.slice(start, index));
+			start = index + 1;
+		}
+	}
+	parts.push(text.slice(start));
+	return parts;
+}
+
+function parseTomlValue(raw: string): Toml {
+	const value = raw.trim();
+	if (value === "") throw new Error(`[iosevka] ${PLAN_FILE}: empty value`);
+	if (value.startsWith('"')) {
+		if (value.length < 2 || !value.endsWith('"')) {
+			throw new Error(`[iosevka] ${PLAN_FILE}: unterminated string ${value}`);
+		}
+		return value.slice(1, -1).replaceAll('\\"', '"').replaceAll("\\\\", "\\");
+	}
+	if (value === "true") return true;
+	if (value === "false") return false;
+	if (value.startsWith("[")) {
+		const inner = value.slice(1, -1);
+		return splitTopLevel(inner, ",")
+			.map((part) => part.trim())
+			.filter((part) => part !== "")
+			.map((part) => parseTomlValue(part));
+	}
+	if (value.startsWith("{")) {
+		const table: { [key: string]: Toml } = {};
+		for (const entry of splitTopLevel(value.slice(1, -1), ",")) {
+			if (entry.trim() === "") continue;
+			const [key, ...rest] = splitTopLevel(entry, "=");
+			if (key === undefined || rest.length === 0) {
+				throw new Error(`[iosevka] ${PLAN_FILE}: bad inline table entry ${entry}`);
+			}
+			table[key.trim()] = parseTomlValue(rest.join("="));
+		}
+		return table;
+	}
+	const numeric = Number(value);
+	if (!Number.isFinite(numeric)) throw new Error(`[iosevka] ${PLAN_FILE}: bad value ${value}`);
+	return numeric;
+}
+
+function tableAt(root: { [key: string]: Toml }, path: string): { [key: string]: Toml } {
+	let node = root;
+	if (path === "") return node;
+	for (const part of path.split(".")) {
+		const existing = node[part];
+		if (existing === undefined) {
+			const created: { [key: string]: Toml } = {};
+			node[part] = created;
+			node = created;
+			continue;
+		}
+		if (typeof existing !== "object" || Array.isArray(existing)) {
+			throw new Error(`[iosevka] ${PLAN_FILE}: ${path} is not a table`);
+		}
+		node = existing;
+	}
+	return node;
+}
+
+function readToml(path: string): { [key: string]: Toml } {
+	const root: { [key: string]: Toml } = {};
+	let current = root;
+	for (const rawLine of readFileSync(path, "utf8").split("\n")) {
+		const line = stripComment(rawLine).trim();
+		if (line === "") continue;
+		const header = /^\[([^\]]+)\]$/.exec(line);
+		if (header?.[1] !== undefined) {
+			current = tableAt(root, header[1]);
+			continue;
+		}
+		const separator = splitTopLevel(line, "=");
+		if (separator.length < 2) throw new Error(`[iosevka] ${PLAN_FILE}: bad line ${line}`);
+		const key = separator[0]?.trim();
+		if (key === undefined) throw new Error(`[iosevka] ${PLAN_FILE}: bad line ${line}`);
+		const segments = key.split(".");
+		const leaf = segments.pop();
+		if (leaf === undefined) throw new Error(`[iosevka] ${PLAN_FILE}: bad key ${key}`);
+		tableAt(current, segments.join("."))[leaf] = parseTomlValue(separator.slice(1).join("="));
+	}
+	return root;
+}
+
+function lookup(root: Toml, path: string): Toml {
+	let node: Toml = root;
+	for (const part of path.split(".")) {
+		if (typeof node !== "object" || Array.isArray(node) || node === null) {
+			throw new Error(`[iosevka] ${PLAN_FILE}: ${path} is not a table`);
+		}
+		const next = node[part];
+		if (next === undefined) throw new Error(`[iosevka] ${PLAN_FILE}: missing ${path}`);
+		node = next;
+	}
+	return node;
+}
+
+function asText(root: Toml, path: string): string {
+	const value = lookup(root, path);
+	if (typeof value !== "string") throw new Error(`[iosevka] ${PLAN_FILE}: ${path} is not text`);
+	return value;
+}
+
+function asNumber(root: Toml, path: string): number {
+	const value = lookup(root, path);
+	if (typeof value !== "number") throw new Error(`[iosevka] ${PLAN_FILE}: ${path} is not a number`);
+	return value;
+}
+
+function asBoolean(root: Toml, path: string): boolean {
+	const value = lookup(root, path);
+	if (typeof value !== "boolean")
+		throw new Error(`[iosevka] ${PLAN_FILE}: ${path} is not a boolean`);
+	return value;
+}
+
+function asTextArray(root: Toml, path: string): string[] {
+	const value = lookup(root, path);
+	if (!Array.isArray(value)) throw new Error(`[iosevka] ${PLAN_FILE}: ${path} is not an array`);
+	return value.map((entry) => {
+		if (typeof entry !== "string")
+			throw new Error(`[iosevka] ${PLAN_FILE}: ${path} holds non-text`);
+		return entry;
+	});
+}
+
+function asTable(root: Toml, path: string): { [key: string]: Toml } {
+	const value = lookup(root, path);
+	if (typeof value !== "object" || Array.isArray(value) || value === null) {
+		throw new Error(`[iosevka] ${PLAN_FILE}: ${path} is not a table`);
+	}
+	return value;
+}
+
+///////////////////////////////////////////////////////////
+// The plan this script builds from.
+
+type Face = {
+	/** Site-side name, also the committed filename stem: regular, bold, … */
+	style: string;
+	weight: number;
+	angle: number;
+	/** Iosevka's own file stem, e.g. "BoldItalic". */
+	iosevkaStem: string;
+};
+
+type Plan = {
+	family: string;
+	version: string;
+	commit: string;
+	ligations: string;
+	advanceWidth: number;
+	uprightCodepoints: string;
+	italicCodepoints: string;
+	/** Mac-epoch seconds pinned into head.created/modified of the TTF faces. */
+	headEpoch: number;
+	faces: Face[];
+	shareCardFiles: string[];
+};
+
+/**
+ * The plan writes codepoint ranges in CSS `unicode-range` style (U+0020-U+007E),
+ * while pyftsubset wants one prefix per range (U+0020-007E); translate here so
+ * the recorded value stays copy-pasteable into CSS.
+ */
+function subsetUnicodes(entries: string[]): string {
+	return entries
+		.map((entry) => {
+			const range = /^U\+([0-9A-Fa-f]+)-U\+([0-9A-Fa-f]+)$/.exec(entry);
+			if (range?.[1] !== undefined && range[2] !== undefined) return `U+${range[1]}-${range[2]}`;
+			if (/^U\+[0-9A-Fa-f]+$/.test(entry)) return entry;
+			throw new Error(`[iosevka] codepoint ${entry} is not U+XXXX or U+XXXX-U+YYYY`);
+		})
+		.join(",");
+}
+
+function readPlan(): Plan {
+	const root = readToml(PLAN_FILE);
+	const version = asText(root, "family.version");
+	const family = asText(root, "family.name");
+
+	if (asBoolean(root, "postprocess.hint")) {
+		throw new Error(
+			"[iosevka] postprocess.hint = true needs ttfautohint, which is not part of this " +
+				"toolchain; the committed files are unhinted",
+		);
+	}
+	const recompress = asText(root, "postprocess.recompress");
+	if (recompress !== "fontTools/woff2") {
+		throw new Error(`[iosevka] postprocess.recompress = ${recompress} is not implemented`);
+	}
+
+	const faces: Face[] = [];
+	for (const [style, value] of Object.entries(asTable(root, "styles"))) {
+		const weight = asNumber(value, "weight");
+		const angle = asNumber(value, "angle");
+		const width = asText(value, "width");
+		if (width !== "Normal") {
+			throw new Error(`[iosevka] styles.${style}.width = ${width}; only Normal is built`);
+		}
+		const weightName = WEIGHT_NAMES.get(weight);
+		if (weightName === undefined) {
+			throw new Error(`[iosevka] styles.${style}.weight = ${weight} has no Iosevka name`);
+		}
+		// Iosevka names a sloped face "<weight>Italic", except that the default
+		// weight's name is dropped: Regular + italic is just "Italic".
+		const sloped = angle !== 0;
+		const prefix = sloped && weightName === "Regular" ? "" : weightName;
+		faces.push({
+			style,
+			weight,
+			angle,
+			iosevkaStem: `${prefix}${sloped ? "Italic" : ""}`,
+		});
+	}
+	if (faces.length === 0) throw new Error(`[iosevka] ${PLAN_FILE}: no styles`);
+
+	const weights = new Set(faces.map((face) => face.weight));
+	const angles = new Set(faces.map((face) => face.angle));
+	if (weights.size * angles.size !== faces.length) {
+		throw new Error(
+			`[iosevka] ${PLAN_FILE}: styles must be the full weight × slope grid, ` +
+				`got ${faces.map((face) => face.style).join(", ")}`,
+		);
+	}
+
+	return {
+		family,
+		version,
+		commit: asText(root, "family.commit"),
+		ligations: asText(root, "ligations.inherits"),
+		advanceWidth: asNumber(root, "metrics.advance_width"),
+		uprightCodepoints: subsetUnicodes(asTextArray(root, "subsetting.upright.codepoints")),
+		italicCodepoints: subsetUnicodes(asTextArray(root, "subsetting.italic.codepoints")),
+		headEpoch: asNumber(root, "postprocess.head_epoch"),
+		faces: faces.toSorted((left, right) => left.weight - right.weight || left.angle - right.angle),
+		shareCardFiles: asTextArray(root, "share_card_ttf.files"),
+	};
+}
+
+///////////////////////////////////////////////////////////
+// The private build plan handed to Iosevka.
+
+const QUOTE = '"';
+
+function generatedBuildPlan(plan: Plan): string {
+	const weights = [...new Set(plan.faces.map((face) => face.weight))].toSorted(
+		(left, right) => left - right,
+	);
+	const angles = [...new Set(plan.faces.map((face) => face.angle))];
+
+	const lines = [
+		"### Generated by scripts/build-iosevka-fonts.ts from .config/iosevka-build-plan.toml.",
+		"### Do not edit: change the plan file and rerun the script.",
+		"",
+		`[buildPlans.${PLAN_NAME}]`,
+		`family = ${QUOTE}${plan.family}${QUOTE}`,
+		`spacing = ${QUOTE}normal${QUOTE}`,
+		`serifs = ${QUOTE}sans${QUOTE}`,
+		"exportGlyphNames = false",
+		"",
+		`[buildPlans.${PLAN_NAME}.ligations]`,
+		`inherits = ${QUOTE}${plan.ligations}${QUOTE}`,
+		"",
+	];
+
+	for (const weight of weights) {
+		const name = WEIGHT_NAMES.get(weight);
+		if (name === undefined) throw new Error(`[iosevka] weight ${weight} has no name`);
+		lines.push(
+			`[buildPlans.${PLAN_NAME}.weights.${name}]`,
+			`shape = ${weight}`,
+			`menu = ${weight}`,
+			`css = ${weight}`,
+			"",
+		);
+	}
+
+	for (const angle of angles) {
+		// Iosevka takes the slope as a positive degree count and writes
+		// post.italicAngle = -angle; the plan records the negative value the
+		// committed fonts carry.
+		lines.push(
+			angle === 0
+				? `[buildPlans.${PLAN_NAME}.slopes.Upright]`
+				: `[buildPlans.${PLAN_NAME}.slopes.Italic]`,
+			`angle = ${Math.abs(angle)}`,
+			`shape = ${QUOTE}${angle === 0 ? "upright" : "italic"}${QUOTE}`,
+			`menu = ${QUOTE}${angle === 0 ? "upright" : "italic"}${QUOTE}`,
+			`css = ${QUOTE}${angle === 0 ? "normal" : "italic"}${QUOTE}`,
+			"",
+		);
+	}
+
+	lines.push(
+		`[buildPlans.${PLAN_NAME}.widths.Normal]`,
+		`shape = ${plan.advanceWidth}`,
+		// usWidthClass 5 — the "Medium" width grade, which is Normal for a
+		// monospaced face.
+		"menu = 5",
+		`css = ${QUOTE}normal${QUOTE}`,
+		"",
+	);
+
+	return lines.join("\n");
+}
+
+///////////////////////////////////////////////////////////
+// Process helpers.
+
+function log(message: string): void {
+	process.stdout.write(`[iosevka] ${message}\n`);
+}
+
+function runStep(
+	label: string,
+	command: string,
+	args: string[],
+	options: { cwd?: string; env?: NodeJS.ProcessEnv } = {},
+): void {
+	const started = performance.now();
+	execFileSync(command, args, { ...options, stdio: "inherit" });
+	log(`${label} (${((performance.now() - started) / 1000).toFixed(1)}s)`);
+}
+
+function capture(command: string, args: string[], cwd?: string): string {
+	return execFileSync(command, args, { cwd, encoding: "utf8" }).trim();
+}
+
+function toolAvailable(command: string): boolean {
+	const probe = spawnSync(command, ["--version"], { stdio: "ignore" });
+	return probe.error === undefined;
+}
+
+function uvRun(args: string[]): void {
+	runStep(args.join(" "), "uv", ["run", ...PYTHON_TOOLS, ...args]);
+}
+
+type Options = { checkOnly: boolean; cacheDir: string | undefined; jobs: number };
+
+function parseOptions(argv: string[]): Options {
+	let checkOnly = false;
+	let cacheDir: string | undefined;
+	let jobs = Math.min(availableParallelism(), 8);
+	for (let index = 0; index < argv.length; index++) {
+		const argument = argv[index];
+		if (argument === "--check") {
+			checkOnly = true;
+		} else if (argument === "--cache-dir") {
+			cacheDir = argv[++index];
+		} else if (argument?.startsWith("--cache-dir=")) {
+			cacheDir = argument.slice("--cache-dir=".length);
+		} else if (argument === "--jobs") {
+			const value = Number(argv[++index]);
+			if (!Number.isInteger(value) || value < 1) throw new Error("--jobs needs a positive integer");
+			jobs = value;
+		} else if (argument !== undefined) {
+			throw new Error(`unknown argument ${argument}`);
+		}
+	}
+	return { checkOnly, cacheDir, jobs };
+}
+
+function resolveCacheDir(flag: string | undefined): string {
+	const configured = flag ?? process.env[CACHE_ENV];
+	if (configured !== undefined && configured !== "") {
+		return resolve(configured.replace(/^~(?=$|\/)/, homedir()));
+	}
+	const xdg = process.env.XDG_CACHE_HOME;
+	return join(
+		xdg !== undefined && xdg !== "" ? xdg : join(homedir(), ".cache"),
+		"sreetamdas-iosevka",
+	);
+}
+
+///////////////////////////////////////////////////////////
+// Steps.
+
+function ensureClone(cacheDir: string, plan: Plan): string {
+	const cloneDir = join(cacheDir, "Iosevka");
+	const tag = `v${plan.version}`;
+	const cached = existsSync(join(cloneDir, ".git"));
+
+	if (cached) {
+		const head = capture("git", ["-C", cloneDir, "rev-parse", "HEAD"]);
+		if (head === plan.commit) {
+			log(`reusing clone at ${cloneDir} (${tag}, ${head.slice(0, 7)})`);
+			return cloneDir;
+		}
+		log(
+			`cache clone is at ${head.slice(0, 7)}, expected ${plan.commit.slice(0, 7)}; re-pointing it`,
+		);
+		runStep(`git fetch ${tag}`, "git", [
+			"-C",
+			cloneDir,
+			"fetch",
+			"--depth",
+			"1",
+			"origin",
+			`tag`,
+			tag,
+		]);
+		runStep("git checkout", "git", ["-C", cloneDir, "checkout", "--detach", "FETCH_HEAD"]);
+		const checkedOut = capture("git", ["-C", cloneDir, "rev-parse", "HEAD"]);
+		if (checkedOut !== plan.commit) {
+			throw new Error(
+				`[iosevka] ${tag} resolves to ${checkedOut}, but ${PLAN_FILE} pins ${plan.commit}; ` +
+					`delete ${cloneDir} to start over`,
+			);
+		}
+		return cloneDir;
+	}
+
+	mkdirSync(cacheDir, { recursive: true });
+	runStep(`git clone ${tag}`, "git", [
+		"clone",
+		"--depth",
+		"1",
+		"--branch",
+		tag,
+		UPSTREAM,
+		cloneDir,
+	]);
+	const head = capture("git", ["-C", cloneDir, "rev-parse", "HEAD"]);
+	if (head !== plan.commit) {
+		throw new Error(
+			`[iosevka] ${tag} resolved to ${head}, but ${PLAN_FILE} pins ${plan.commit}; ` +
+				"update the plan if upstream moved the tag",
+		);
+	}
+	return cloneDir;
+}
+
+function ensureDependencies(cloneDir: string): void {
+	if (existsSync(join(cloneDir, "node_modules", ".package-lock.json"))) {
+		log("node_modules present; skipping npm install");
+		return;
+	}
+	runStep("npm install", "npm", ["install", "--no-audit", "--no-fund"], { cwd: cloneDir });
+}
+
+function writeBuildPlan(cloneDir: string, plan: Plan): void {
+	const target = join(cloneDir, "private-build-plans.toml");
+	const contents = generatedBuildPlan(plan);
+	if (existsSync(target) && readFileSync(target, "utf8") === contents) {
+		log("private-build-plans.toml already up to date");
+		return;
+	}
+	writeFileSync(target, contents);
+	log(`wrote private-build-plans.toml (${PLAN_NAME})`);
+}
+
+function buildFonts(cloneDir: string, jobs: number, headEpoch: number): void {
+	runStep(
+		`npm run build (ttf-unhinted::${PLAN_NAME})`,
+		"npm",
+		["run", "build", "--", `ttf-unhinted::${PLAN_NAME}`, `--jCmd=${jobs}`],
+		{
+			cwd: cloneDir,
+			// Iosevka stamps head.created/modified from this; pinning it is half of
+			// why the share-card TTFs reproduce byte for byte.
+			env: { ...process.env, SOURCE_DATE_EPOCH: String(headEpoch) },
+		},
+	);
+}
+
+/**
+ * Iosevka only honours SOURCE_DATE_EPOCH when it actually rebuilds, and its
+ * build cache is keyed on inputs rather than the environment. Stamp the built
+ * sources afterwards so a cached build from before this was set cannot leak a
+ * different timestamp into the committed TTFs.
+ */
+function pinSourceTimestamps(plan: Plan, cloneDir: string): void {
+	for (const face of plan.faces) {
+		if (!plan.shareCardFiles.includes(`iosevka-das-version-${face.style}.ttf`)) continue;
+		const source = join(cloneDir, buildPath(face.iosevkaStem));
+		uvRun([FONT_HELPER, "stamp-head", source, String(plan.headEpoch)]);
+	}
+}
+
+function buildPath(stem: string): string {
+	return join("dist", PLAN_NAME, "TTF-Unhinted", `${PLAN_NAME}-${stem}.ttf`);
+}
+
+function subset(source: string, codepoints: string, target: string, flavor?: string): void {
+	const args = [
+		"run",
+		...PYTHON_TOOLS,
+		"pyftsubset",
+		source,
+		`--unicodes=${codepoints}`,
+		"--layout-features=calt",
+		"--no-hinting",
+		"--recalc-bounds",
+		`--output-file=${target}`,
+	];
+	if (flavor !== undefined) args.push(`--flavor=${flavor}`);
+	runStep(`subset ${basename(target)}`, "uv", args);
+}
+
+function craft(plan: Plan, cloneDir: string, outDir: string): void {
+	rmSync(outDir, { recursive: true, force: true });
+	mkdirSync(outDir, { recursive: true });
+
+	for (const face of plan.faces) {
+		const source = join(cloneDir, buildPath(face.iosevkaStem));
+		if (!existsSync(source)) {
+			const built = readdirSync(join(cloneDir, "dist", PLAN_NAME, "TTF-Unhinted")).join(", ");
+			throw new Error(`[iosevka] expected ${basename(source)}; the build produced: ${built}`);
+		}
+		const codepoints = face.angle === 0 ? plan.uprightCodepoints : plan.italicCodepoints;
+		const ttfName = `iosevka-das-version-${face.style}.ttf`;
+		if (plan.shareCardFiles.includes(ttfName)) {
+			subset(source, codepoints, join(outDir, ttfName));
+		}
+		const woff2Name = `iosevka-das-version-${face.style}.woff2`;
+		const woff2Path = join(outDir, woff2Name);
+		subset(source, codepoints, woff2Path, "woff2");
+		uvRun([FONT_HELPER, "clear-version", woff2Path, plan.version]);
+	}
+}
+
+function sha8(path: string): string {
+	return createHash("sha256").update(readFileSync(path)).digest("hex").slice(0, 8);
+}
+
+function sameBytes(left: string, right: string): boolean {
+	return readFileSync(left).equals(readFileSync(right));
+}
+
+function size(path: string): number {
+	return statSync(path).size;
+}
+
+function committedWoff2(style: string): string | undefined {
+	const prefix = `iosevka-das-version-${style}.`;
+	const match = readdirSync(WOFF2_DIR).find(
+		(name) => name.startsWith(prefix) && name.endsWith(".subset.woff2"),
+	);
+	return match === undefined ? undefined : join(WOFF2_DIR, match);
+}
+
+/** Content comparison through fontTools; returns null when equivalent. */
+function contentDifference(committed: string, rebuilt: string): string | null {
+	const result = spawnSync(
+		"uv",
+		["run", ...PYTHON_TOOLS, "python", FONT_HELPER, "compare", committed, rebuilt],
+		{ encoding: "utf8" },
+	);
+	const output = `${result.stdout ?? ""}${result.stderr ?? ""}`;
+	if (result.status === 0) {
+		for (const line of output.split("\n")) {
+			if (line.trimStart().startsWith("note ")) log(line.trim());
+		}
+		return null;
+	}
+	return output.trim();
+}
+
+function check(plan: Plan, outDir: string): void {
+	const failures: Array<string> = [];
+	const rows: Array<string> = [];
+
+	for (const face of plan.faces) {
+		const rebuiltWoff2 = join(outDir, `iosevka-das-version-${face.style}.woff2`);
+		const committed = committedWoff2(face.style);
+		if (committed === undefined) {
+			failures.push(`no committed woff2 for ${face.style} in ${WOFF2_DIR}`);
+		} else if (sameBytes(committed, rebuiltWoff2)) {
+			rows.push(`${face.style.padEnd(12)} woff2  byte-identical (${size(committed)} B)`);
+		} else {
+			const difference = contentDifference(committed, rebuiltWoff2);
+			if (difference === null) {
+				rows.push(
+					`${face.style.padEnd(12)} woff2  content-equivalent ` +
+						`(${size(committed)} -> ${size(rebuiltWoff2)} B, encoding only)`,
+				);
+			} else {
+				rows.push(`${face.style.padEnd(12)} woff2  DIFFERENT`);
+				failures.push(`${committed} differs from the rebuild:\n${difference}`);
+			}
+		}
+	}
+
+	for (const file of plan.shareCardFiles) {
+		const committed = join(TTF_DIR, file);
+		const rebuilt = join(outDir, file);
+		if (!existsSync(rebuilt)) {
+			failures.push(`the build did not produce ${file}`);
+			continue;
+		}
+		if (!existsSync(committed)) {
+			failures.push(`${committed} is missing`);
+			continue;
+		}
+		if (sameBytes(committed, rebuilt)) {
+			rows.push(`${file.padEnd(38)} ttf    byte-identical (${size(committed)} B)`);
+			continue;
+		}
+		const difference = contentDifference(committed, rebuilt);
+		rows.push(`${file.padEnd(38)} ttf    DIFFERENT`);
+		failures.push(
+			`${committed} is not byte-identical to the rebuild:\n${difference ?? "content differs"}`,
+		);
+	}
+
+	process.stdout.write(`\n${rows.join("\n")}\n`);
+	if (failures.length > 0) {
+		throw new Error(
+			`[iosevka] --check failed:\n${failures.map((failure) => `  - ${failure}`).join("\n")}`,
+		);
+	}
+	log(`--check passed: ${plan.faces.length} woff2 + ${plan.shareCardFiles.length} ttf verified`);
+}
+
+function write(plan: Plan, outDir: string): void {
+	for (const file of plan.shareCardFiles) {
+		const rebuilt = join(outDir, file);
+		if (!existsSync(rebuilt)) throw new Error(`[iosevka] the build did not produce ${file}`);
+		copyFileSync(rebuilt, join(TTF_DIR, file));
+		log(`wrote ${join(TTF_DIR, file)}`);
+	}
+
+	const woff2 = plan.faces.map((face) => join(outDir, `iosevka-das-version-${face.style}.woff2`));
+	for (const path of woff2) log(`minting ${basename(path)} (${sha8(path)})`);
+	runStep("mint content-hashed names", join("node_modules", ".bin", "tsx"), [
+		"scripts/update-font-hashes.ts",
+		...woff2,
+	]);
+	log("done; run `pnpm build` to re-verify the font references");
+}
+
+///////////////////////////////////////////////////////////
+
+function main(): void {
+	for (const tool of ["git", "npm", "uv"]) {
+		if (!toolAvailable(tool)) {
+			throw new Error(`[iosevka] ${tool} is required but was not found on PATH`);
+		}
+	}
+
+	const options = parseOptions(process.argv.slice(2));
+	const plan = readPlan();
+	const cacheDir = resolveCacheDir(options.cacheDir);
+	log(`${PLAN_NAME} v${plan.version} from ${plan.family} (cache: ${cacheDir})`);
+
+	const cloneDir = ensureClone(cacheDir, plan);
+	ensureDependencies(cloneDir);
+	writeBuildPlan(cloneDir, plan);
+	buildFonts(cloneDir, options.jobs, plan.headEpoch);
+	pinSourceTimestamps(plan, cloneDir);
+
+	const outDir = join(cacheDir, options.checkOnly ? "check-out" : "out");
+	craft(plan, cloneDir, outDir);
+
+	if (options.checkOnly) {
+		check(plan, outDir);
+	} else {
+		write(plan, outDir);
+	}
+}
+
+try {
+	main();
+} catch (error) {
+	const message = error instanceof Error ? error.message : String(error);
+	process.stderr.write(`${message}\n`);
+	process.exitCode = 1;
+}

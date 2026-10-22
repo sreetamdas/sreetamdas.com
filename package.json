@@ -54,7 +54,8 @@
 		"deploy:preview": "node scripts/deploy-preview.mjs",
 		"prepare": "vp config",
 		"lint-staged": "vp staged",
-		"fonts:mint": "tsx scripts/update-font-hashes.ts"
+		"fonts:mint": "tsx scripts/update-font-hashes.ts",
+		"fonts:build": "tsx scripts/build-iosevka-fonts.ts"
 	},
 	"dependencies": {
 		"@base-ui/react": "^1.9.0",
