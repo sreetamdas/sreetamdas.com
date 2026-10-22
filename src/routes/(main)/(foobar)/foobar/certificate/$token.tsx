@@ -1,8 +1,11 @@
 /**
  * Public, bearer-token completion certificate and social-sharing surface, drawn
  * like the dashboard: the fully lit mountain with each discovery's real star.
+ * Terminal clients (curl and friends) get the same certificate as ANSI text
+ * from the server GET handler; everything else falls through to this page.
  */
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { setResponseHeader } from "@tanstack/react-start/server";
 
 import { SITE_TITLE_APPEND } from "@/config";
 import { NotFound404 } from "@/lib/components/Error";
@@ -12,6 +15,10 @@ import {
 	createFoobarCertificateHead,
 	formatFoobarCertificateDate,
 } from "@/lib/domains/foobar/certificate";
+import {
+	FOOBAR_CERTIFICATE_VARY,
+	handleFoobarCertificateText,
+} from "@/lib/domains/foobar/certificate-text.server";
 import { fetchFoobarCertificateServerFn } from "@/lib/domains/foobar/certificate.server";
 import { CertificateShare } from "@/lib/domains/foobar/CertificateShare";
 import { FOOBAR_GLOW_CLASS } from "@/lib/domains/foobar/karma";
@@ -32,6 +39,16 @@ export const Route = createFileRoute("/(main)/(foobar)/foobar/certificate/$token
 			? createFoobarCertificateHead(loaderData)
 			: { meta: [{ title: `Page not found ${SITE_TITLE_APPEND}` }] },
 	notFoundComponent: FoobarCertificateNotFound,
+	server: {
+		handlers: {
+			GET: async ({ request, params, next }) => {
+				const text = await handleFoobarCertificateText(request, params.token);
+				if (text) return text;
+				setResponseHeader("Vary", FOOBAR_CERTIFICATE_VARY);
+				return next();
+			},
+		},
+	},
 });
 
 function FoobarCertificatePage() {
@@ -86,6 +103,9 @@ function FoobarCertificatePage() {
 					<Bracketed>Return to the hunt</Bracketed>
 				</Link>
 			</div>
+			<p className="mt-6 break-all text-karma-comment">
+				also works from a terminal: <code>$ curl {url}</code>
+			</p>
 		</section>
 	);
 }
