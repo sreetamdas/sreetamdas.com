@@ -90,7 +90,7 @@
 	},
 	"devDependencies": {
 		"@cloudflare/vite-plugin": "1.64.0",
-		"@cloudflare/vitest-plugin": "1.4.5",
+		"@cloudflare/vitest-plugin": "1.4.6",
 		"@content-collections/cli": "^0.1.9",
 		"@content-collections/core": "^0.15.3",
 		"@content-collections/vite": "^0.3.1",
