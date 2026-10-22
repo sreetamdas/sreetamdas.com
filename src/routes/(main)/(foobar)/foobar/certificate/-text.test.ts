@@ -59,6 +59,21 @@ describe("Foobar certificate for terminals", () => {
 		},
 	);
 
+	test.each(["text/html", "text/html,*/*"])(
+		"gives curl the HTML page when it asks for %s",
+		async (accept) => {
+			const resolve = vi.fn().mockResolvedValue(certificate);
+			const response = await handleFoobarCertificateText(
+				get("/foobar/certificate/cert-a", { "User-Agent": "curl/8.7.1", Accept: accept }),
+				"cert-a",
+				resolve,
+			);
+
+			expect(response).toBeNull();
+			expect(resolve).not.toHaveBeenCalled();
+		},
+	);
+
 	test("leaves browsers to the HTML page", async () => {
 		const resolve = vi.fn().mockResolvedValue(certificate);
 		const browser = get("/foobar/certificate/cert-a", {

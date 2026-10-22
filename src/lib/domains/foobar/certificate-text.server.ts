@@ -1,7 +1,9 @@
 /**
  * Terminal clients asking for a certificate page get it as text instead of
  * HTML. A request is terminal-like when its User-Agent is curl, Wget, HTTPie or
- * xh, or when it accepts text/plain but not text/html.
+ * xh, or when it accepts text/plain. Either way, an Accept that names text/html
+ * itself (a bare wildcard does not count) gets the HTML page, so
+ * `curl -H 'Accept: text/html'` still works and curl's default Accept gets text.
  *
  * Colour is on unless the query has `?plain` or `?no-color` (standing in for
  * NO_COLOR, which cannot reach a server), or the request is terminal-like only
@@ -26,11 +28,11 @@ export async function handleFoobarCertificateText(
 	token: string,
 	resolve: FoobarCertificateResolver = resolveFoobarCertificate,
 ): Promise<Response | null> {
-	const terminalAgent = TERMINAL_AGENT.test(request.headers.get("User-Agent") ?? "");
 	const accepted = parseAccept(request.headers.get("Accept"));
+	if (accepted.some(({ type }) => type === "text/html")) return null;
+	const terminalAgent = TERMINAL_AGENT.test(request.headers.get("User-Agent") ?? "");
 	const plainText = accepted.find(({ type }) => type === "text/plain");
-	const wantsText = plainText !== undefined && !accepted.some(({ type }) => type === "text/html");
-	if (!terminalAgent && !wantsText) return null;
+	if (!terminalAgent && plainText === undefined) return null;
 
 	const headers = {
 		"Content-Type": "text/plain; charset=utf-8",
