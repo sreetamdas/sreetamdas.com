@@ -166,6 +166,15 @@ test("blog archive and blog detail route render content-heavy pages correctly", 
 	await expect(page.locator("main a[href='#changing-colors']")).toBeVisible();
 });
 
+test("serves the newsletter index at its canonical URL without a redirect", async ({ request }) => {
+	const response = await request.get("/newsletter", { maxRedirects: 0 });
+
+	expect(response.status()).toBe(200);
+	const html = await response.text();
+	expect(html).toContain('<meta property="og:title" content="Newsletter');
+	expect(html).toMatch(/<link rel="canonical" href="[^"]*\/newsletter"/);
+});
+
 test("root content routes render MDX and embedded route-specific components", async ({ page }) => {
 	await page.goto("/credits");
 

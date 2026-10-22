@@ -62,6 +62,10 @@ function getPlugins(): Array<PluginOption> {
 			rsc: {
 				enabled: true,
 			},
+			// Static-path discovery only yields "/newsletter/" (the index route's id), so
+			// nothing wrote newsletter.html and assets redirected the canonical URL to
+			// "/newsletter/". Seed the slashless path; listing pages replaces the "/" default.
+			pages: [{ path: "/" }, { path: "/newsletter" }],
 			prerender: {
 				enabled: true,
 				// Crawl-discovered asset links (e.g. /resume.pdf) must not be
