@@ -13,6 +13,8 @@ interface ImportMetaEnv {
 	readonly BASE_URL: string;
 	readonly SSR: boolean;
 	readonly VITE_SENTRY_DSN: string;
+	readonly VITE_SENTRY_ENVIRONMENT?: string;
+	readonly VITE_SENTRY_TRACES_SAMPLE_RATE?: string;
 	readonly VITE_SITE_URL: string;
 	readonly VITE_CI?: string;
 	readonly VITE_DEBUG_MODE?: string;
