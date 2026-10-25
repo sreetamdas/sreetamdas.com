@@ -44,7 +44,7 @@ beforeEach(() => {
 			updated_at integer NOT NULL
 		);
 	`);
-	db = drizzle({ client: sqlite, schema });
+	db = drizzle({ client: sqlite });
 });
 
 describe("Foobar cloud progress data", () => {

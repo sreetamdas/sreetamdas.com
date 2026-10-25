@@ -3,7 +3,6 @@ import { eq } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/better-sqlite3";
 import { describe, expect, test } from "vitest";
 
-import * as schema from "@/db/schema";
 import { pageDetails, postLikes } from "@/db/schema";
 
 import type { DecrementLikeInput, IncrementLikeInput, PageLikesDb, PageViewsDb } from "./index";
@@ -283,7 +282,7 @@ function createPageViewsDb(): PageViewsDb {
 		);
 	`);
 
-	return drizzle({ client: sqlite, schema });
+	return drizzle({ client: sqlite });
 }
 
 function createLikesDb(): PageLikesDb {
@@ -315,7 +314,7 @@ function createLikesDb(): PageLikesDb {
 		ON post_likes (slug, ip_hash, salt_version);
 	`);
 
-	return drizzle({ client: sqlite, schema });
+	return drizzle({ client: sqlite });
 }
 
 async function getPostLikesCount(db: PageViewsDb, slug: string): Promise<number> {

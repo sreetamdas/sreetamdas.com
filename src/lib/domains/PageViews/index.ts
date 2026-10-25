@@ -4,11 +4,10 @@
  * identity is deduped by visitor and abuse-capped by IP in the database.
  */
 import type { DrizzleD1Database } from "drizzle-orm/d1";
-import type { BaseSQLiteDatabase } from "drizzle-orm/sqlite-core";
+import type { SQLiteAsyncDatabase } from "drizzle-orm/sqlite-core";
 
 import { and, eq, sql } from "drizzle-orm";
 
-import * as schema from "@/db/schema";
 import { pageDetails, postLikes } from "@/db/schema";
 import { normalizePathname } from "@/lib/helpers/utils";
 
@@ -34,8 +33,8 @@ export type DecrementLikeInput = {
 	saltVersion: number;
 };
 
-export type PageViewsDb = BaseSQLiteDatabase<"sync" | "async", unknown, typeof schema>;
-export type PageLikesDb = DrizzleD1Database<typeof schema> | PageViewsDb;
+export type PageViewsDb = SQLiteAsyncDatabase<"sync" | "async", unknown>;
+export type PageLikesDb = DrizzleD1Database | PageViewsDb;
 
 export async function getPageViews(db: PageViewsDb, slug: string): Promise<PageViewCount> {
 	const normalizedSlug = normalizePathname(slug);

@@ -9,7 +9,6 @@ import { eq } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/d1";
 import { beforeEach, describe, expect, it } from "vitest";
 
-import * as schema from "@/db/schema";
 import { pageDetails } from "@/db/schema";
 
 import type { IncrementLikeInput } from "./index";
@@ -26,7 +25,7 @@ const SCHEMA_STATEMENTS = [
 	"CREATE INDEX post_likes_slug_ip_hash_salt_version_idx ON post_likes (slug, ip_hash, salt_version)",
 ];
 
-const db = drizzle(env.D1, { schema });
+const db = drizzle(env.D1);
 
 async function storedLikes(slug: string): Promise<number | null> {
 	const rows = await db
