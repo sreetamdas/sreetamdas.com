@@ -9,8 +9,6 @@ import { env } from "cloudflare:workers";
 import { drizzle } from "drizzle-orm/d1";
 import { beforeEach, describe, expect, it } from "vitest";
 
-import * as schema from "@/db/schema";
-
 import { FOOBAR_REQUIRED_ACHIEVEMENTS } from "./catalog";
 import { getFoobarCommunity, syncFoobarProgress } from "./cloud-progress.data.server";
 import { initialFoobarData } from "./store";
@@ -23,7 +21,7 @@ const SCHEMA_STATEMENTS = [
 	"INSERT INTO user (id, name, email, email_verified, created_at, updated_at) VALUES ('hunter', 'Hunter', 'hunter@example.invalid', 1, 0, 0)",
 ];
 
-const db = drizzle(env.D1, { schema });
+const db = drizzle(env.D1);
 
 describe("Foobar certificates on workerd", () => {
 	beforeEach(async () => {

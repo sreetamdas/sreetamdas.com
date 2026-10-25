@@ -7,11 +7,10 @@
  * the future). The Finishers list only counts saves that include the final
  * puzzle, so runs finished before it existed drop off until they solve it.
  */
-import type { BaseSQLiteDatabase } from "drizzle-orm/sqlite-core";
+import type { SQLiteAsyncDatabase } from "drizzle-orm/sqlite-core";
 
 import { and, asc, count, eq, isNotNull, sql } from "drizzle-orm";
 
-import * as schema from "@/db/schema";
 import { authUser, foobarProgress } from "@/db/schema";
 
 import { FOOBAR_ACHIEVEMENTS, FOOBAR_REQUIRED_ACHIEVEMENTS, getFoobarStars } from "./catalog";
@@ -19,7 +18,7 @@ import { mergeFoobarProgress } from "./cloud-progress";
 import { recordFoobarCloudOperation } from "./cloud-progress.observability.server";
 import { initialFoobarData, normalizeFoobarData, type FoobarDataType } from "./store";
 
-export type FoobarProgressDb = BaseSQLiteDatabase<"sync" | "async", unknown, typeof schema>;
+export type FoobarProgressDb = SQLiteAsyncDatabase<"sync" | "async", unknown>;
 
 export type FoobarCloudProgress = {
 	progress: FoobarDataType;
