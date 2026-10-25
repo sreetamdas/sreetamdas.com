@@ -9,17 +9,22 @@
 import { init } from "@sentry/tanstackstart-react";
 
 import { IS_DEV } from "./config";
+import { resolveSentryEnvironment, SENTRY_DATA_COLLECTION } from "./lib/domains/Sentry";
+
+const parsedTracesSampleRate = Number.parseFloat(
+	import.meta.env.VITE_SENTRY_TRACES_SAMPLE_RATE ?? "",
+);
 
 init({
 	dsn: import.meta.env.VITE_SENTRY_DSN,
 	enabled: !IS_DEV,
-	environment: import.meta.env.MODE,
-	dataCollection: { userInfo: false },
+	environment: resolveSentryEnvironment(),
+	dataCollection: SENTRY_DATA_COLLECTION,
 	// Send browser events through our own route (src/routes/(api)/api/prxy/sntry.ts)
 	// instead of straight to *.ingest.us.sentry.io, so content blockers don't drop
 	// them.
 	tunnel: "/api/prxy/sntry/",
-	tracesSampleRate: 0.1,
+	tracesSampleRate: Number.isFinite(parsedTracesSampleRate) ? parsedTracesSampleRate : 0.1,
 	beforeSend(event) {
 		const serialized = event.extra?.__serialized__;
 		if (serialized && typeof serialized === "object" && "isNotFound" in serialized) {
