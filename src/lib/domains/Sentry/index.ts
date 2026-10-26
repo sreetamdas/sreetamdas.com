@@ -27,13 +27,28 @@ type SentryRuntimeConfig = Partial<
 const DEFAULT_TRACES_SAMPLE_RATE = 0.1;
 
 // Shared with the browser init. SDK v11 defaults every one of these to on.
+// The IP/forwarding snippets are the ones v10's `sendDefaultPii: false` denied;
+// v11 dropped that list, and a deny list is substring-matched, so `-ip` covers
+// cf-connecting-ip, x-real-ip and true-client-ip.
 export const SENTRY_DATA_COLLECTION = {
 	userInfo: false,
 	cookies: false,
 	httpBodies: [],
 	urlQueryParams: false,
 	httpHeaders: {
-		request: { deny: ["cookie", "authorization", "x-api-key", "cf-connecting-ip"] },
+		request: {
+			deny: [
+				"cookie",
+				"authorization",
+				"x-api-key",
+				"cf-connecting-ip",
+				"forwarded",
+				"-ip",
+				"remote-",
+				"via",
+				"-user",
+			],
+		},
 		response: { deny: ["set-cookie"] },
 	},
 	databaseQueryData: false,
@@ -42,7 +57,7 @@ export const SENTRY_DATA_COLLECTION = {
 	genAI: { inputs: false, outputs: false },
 	mcp: { inputs: false, outputs: false },
 	stackFrameVariables: false,
-};
+} satisfies NonNullable<CloudflareOptions["dataCollection"]>;
 
 function getTracesSampleRate(value: string | undefined) {
 	if (value === undefined || value === "") return DEFAULT_TRACES_SAMPLE_RATE;
@@ -85,8 +100,9 @@ export function getSentryRuntimeOptions(
 		beforeBreadcrumb: scrubBreadcrumb,
 		beforeSend(event: ErrorEvent, hint?: EventHint) {
 			// `redirect()` signals by throwing a Response, and the Start function
-			// middleware that wraps loaders captures every throw, so navigating would
-			// otherwise be reported as an "[object Response]" crash.
+			// middleware that wraps server functions captures every throw, so a
+			// server function that redirects would otherwise be reported as an
+			// "[object Response]" crash.
 			if (isRedirect(hint?.originalException)) return null;
 			const serialized = event.extra?.__serialized__;
 			if (serialized && typeof serialized === "object" && "isNotFound" in serialized) {
