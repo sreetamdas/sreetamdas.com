@@ -24,18 +24,29 @@ describe("Sentry privacy helpers", () => {
 		expect(data).toEqual({ "http.request.method": "GET" });
 	});
 
-	test("scrubLogAttributes also drops anything ip-shaped", () => {
+	test("scrubLogAttributes drops ip-shaped keys without eating words that contain ip", () => {
 		const attributes: Record<string, unknown> = {
 			"url.query": "?x=1",
 			"cf.connecting.ip": "203.0.113.1",
+			"client.ipv4": "203.0.113.1",
 			user_agent: "Mozilla",
 			"http.request.header.authorization": "Bearer x",
 			route: "/blog",
+			description: "kept",
+			recipient: "kept",
+			zip: "kept",
+			pipeline: "kept",
 		};
 
 		scrubLogAttributes(attributes);
 
-		expect(attributes).toEqual({ route: "/blog" });
+		expect(attributes).toEqual({
+			route: "/blog",
+			description: "kept",
+			recipient: "kept",
+			zip: "kept",
+			pipeline: "kept",
+		});
 	});
 
 	test("normalizeHighCardinalityName keeps the path and drops query and fragment", () => {

@@ -3,6 +3,11 @@
  * `src/lib/telemetry/privacy.ts`; the collector and relay path rewrites are
  * dropped because this site serves neither.
  */
+
+// Segment match, not a substring: `description`, `recipient`, `zip`,
+// `pipeline`, `script` and `tip` all contain "ip" and must survive.
+const IP_KEY = /(^|[._-])ip(v[46])?($|[._-])/;
+
 export function scrubSpanData(data: Record<string, unknown> | undefined): void {
 	if (!data) return;
 	delete data["url.query"];
@@ -42,7 +47,7 @@ export function scrubLogAttributes(attrs: Record<string, unknown> | undefined): 
 		) {
 			delete attrs[key];
 		}
-		if (key.toLowerCase().includes("ip") || key.toLowerCase() === "user_agent") {
+		if (IP_KEY.test(key.toLowerCase()) || key.toLowerCase() === "user_agent") {
 			delete attrs[key];
 		}
 	}

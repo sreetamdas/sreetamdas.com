@@ -78,7 +78,8 @@
 		"staging": {
 			"vars": {
 				"ANALYTICS_PROJECT_SLUG": "sreetamdas-com-staging",
-				"ANALYTICS_ALLOWED_ORIGINS": "https://dev.sreetamdas.com,https://staging.sreetamdas.com"
+				"ANALYTICS_ALLOWED_ORIGINS": "https://dev.sreetamdas.com,https://staging.sreetamdas.com",
+				"SENTRY_ENVIRONMENT": "staging"
 			},
 			"services": [
 				{

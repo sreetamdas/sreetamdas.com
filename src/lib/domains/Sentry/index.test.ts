@@ -23,7 +23,19 @@ describe("Sentry runtime helpers", () => {
 			httpBodies: [],
 			urlQueryParams: false,
 			httpHeaders: {
-				request: { deny: ["cookie", "authorization", "x-api-key", "cf-connecting-ip"] },
+				request: {
+					deny: [
+						"cookie",
+						"authorization",
+						"x-api-key",
+						"cf-connecting-ip",
+						"forwarded",
+						"-ip",
+						"remote-",
+						"via",
+						"-user",
+					],
+				},
 				response: { deny: ["set-cookie"] },
 			},
 			databaseQueryData: false,
