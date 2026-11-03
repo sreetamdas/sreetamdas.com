@@ -6,7 +6,9 @@ export default defineConfig({
 	fullyParallel: true,
 	forbidOnly: Boolean(process.env.CI),
 	retries: process.env.CI ? 2 : 0,
-	workers: process.env.CI ? 2 : undefined,
+	// A ubuntu-latest runner has 4 cores. Two workers left half of them idle,
+	// and retries stay at 2 to absorb any contention the extra workers add.
+	workers: process.env.CI ? 4 : undefined,
 	reporter: process.env.CI ? [["github"], ["html", { open: "never" }]] : "list",
 	use: {
 		baseURL: "http://127.0.0.1:5045",
