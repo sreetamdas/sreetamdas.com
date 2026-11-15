@@ -36,6 +36,7 @@ import { Route as mainBlogSlugRouteRouteImport } from './routes/(main)/blog/$slu
 import { Route as mainBlogTagRouteRouteImport } from './routes/(main)/blog/tag/route'
 import { Route as mainNewsletterIndexRouteImport } from './routes/(main)/newsletter/index'
 import { Route as mainNewsletterSlugRouteRouteImport } from './routes/(main)/newsletter/$slug/route'
+import { Route as purePrivacyBudgetStatementReaderRouteRouteImport } from './routes/(pure)/privacy/budget-statement-reader/route'
 import { Route as SlidesTanstackStartDevLabRouteRouteImport } from './routes/slides/tanstack-start/dev-lab/route'
 import { Route as apiApiAnalyticsEventRouteImport } from './routes/(api)/api/analytics/event'
 import { Route as apiApiAnalyticsTrackerRouteImport } from './routes/(api)/api/analytics/tracker'
@@ -188,6 +189,12 @@ const mainNewsletterSlugRouteRoute = mainNewsletterSlugRouteRouteImport.update({
   path: '/$slug',
   getParentRoute: () => mainNewsletterRouteRoute,
 } as any)
+const purePrivacyBudgetStatementReaderRouteRoute =
+  purePrivacyBudgetStatementReaderRouteRouteImport.update({
+    id: '/privacy/budget-statement-reader',
+    path: '/privacy/budget-statement-reader',
+    getParentRoute: () => pureRouteRoute,
+  } as any)
 const SlidesTanstackStartDevLabRouteRoute =
   SlidesTanstackStartDevLabRouteRouteImport.update({
     id: '/dev-lab',
@@ -295,6 +302,7 @@ export interface FileRoutesByFullPath {
   '/blog/$slug': typeof mainBlogSlugRouteRoute
   '/blog/tag': typeof mainBlogTagRouteRouteWithChildren
   '/newsletter/$slug': typeof mainNewsletterSlugRouteRoute
+  '/privacy/budget-statement-reader': typeof purePrivacyBudgetStatementReaderRouteRoute
   '/slides/tanstack-start/dev-lab': typeof SlidesTanstackStartDevLabRouteRoute
   '/api/coffee': typeof apiApiCoffeeRoute
   '/api/presence': typeof apiApiPresenceRoute
@@ -334,6 +342,7 @@ export interface FileRoutesByTo {
   '/$': typeof mainSplatRoute
   '/blog/$slug': typeof mainBlogSlugRouteRoute
   '/newsletter/$slug': typeof mainNewsletterSlugRouteRoute
+  '/privacy/budget-statement-reader': typeof purePrivacyBudgetStatementReaderRouteRoute
   '/slides/tanstack-start/dev-lab': typeof SlidesTanstackStartDevLabRouteRoute
   '/api/coffee': typeof apiApiCoffeeRoute
   '/api/presence': typeof apiApiPresenceRoute
@@ -380,6 +389,7 @@ export interface FileRoutesById {
   '/(main)/blog/$slug': typeof mainBlogSlugRouteRoute
   '/(main)/blog/tag': typeof mainBlogTagRouteRouteWithChildren
   '/(main)/newsletter/$slug': typeof mainNewsletterSlugRouteRoute
+  '/(pure)/privacy/budget-statement-reader': typeof purePrivacyBudgetStatementReaderRouteRoute
   '/slides/tanstack-start/dev-lab': typeof SlidesTanstackStartDevLabRouteRoute
   '/(api)/api/coffee': typeof apiApiCoffeeRoute
   '/(api)/api/presence': typeof apiApiPresenceRoute
@@ -425,6 +435,7 @@ export interface FileRouteTypes {
     | '/blog/$slug'
     | '/blog/tag'
     | '/newsletter/$slug'
+    | '/privacy/budget-statement-reader'
     | '/slides/tanstack-start/dev-lab'
     | '/api/coffee'
     | '/api/presence'
@@ -464,6 +475,7 @@ export interface FileRouteTypes {
     | '/$'
     | '/blog/$slug'
     | '/newsletter/$slug'
+    | '/privacy/budget-statement-reader'
     | '/slides/tanstack-start/dev-lab'
     | '/api/coffee'
     | '/api/presence'
@@ -509,6 +521,7 @@ export interface FileRouteTypes {
     | '/(main)/blog/$slug'
     | '/(main)/blog/tag'
     | '/(main)/newsletter/$slug'
+    | '/(pure)/privacy/budget-statement-reader'
     | '/slides/tanstack-start/dev-lab'
     | '/(api)/api/coffee'
     | '/(api)/api/presence'
@@ -742,6 +755,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof mainNewsletterSlugRouteRouteImport
       parentRoute: typeof mainNewsletterRouteRoute
     }
+    '/(pure)/privacy/budget-statement-reader': {
+      id: '/(pure)/privacy/budget-statement-reader'
+      path: '/privacy/budget-statement-reader'
+      fullPath: '/privacy/budget-statement-reader'
+      preLoaderRoute: typeof purePrivacyBudgetStatementReaderRouteRouteImport
+      parentRoute: typeof pureRouteRoute
+    }
     '/slides/tanstack-start/dev-lab': {
       id: '/slides/tanstack-start/dev-lab'
       path: '/dev-lab'
@@ -952,12 +972,15 @@ interface pureRouteRouteChildren {
   pureFancyPantsRouteRoute: typeof pureFancyPantsRouteRoute
   pureResumeRouteRoute: typeof pureResumeRouteRoute
   pureVersionRouteRoute: typeof pureVersionRouteRoute
+  purePrivacyBudgetStatementReaderRouteRoute: typeof purePrivacyBudgetStatementReaderRouteRoute
 }
 
 const pureRouteRouteChildren: pureRouteRouteChildren = {
   pureFancyPantsRouteRoute: pureFancyPantsRouteRoute,
   pureResumeRouteRoute: pureResumeRouteRoute,
   pureVersionRouteRoute: pureVersionRouteRoute,
+  purePrivacyBudgetStatementReaderRouteRoute:
+    purePrivacyBudgetStatementReaderRouteRoute,
 }
 
 const pureRouteRouteWithChildren = pureRouteRoute._addFileChildren(
