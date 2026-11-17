@@ -134,7 +134,7 @@ export const FOOBAR_ACHIEVEMENTS = {
 	},
 	teapot: {
 		title: "418 and Over It",
-		tier: "discovery",
+		tier: "protocol",
 		completion: { id: "teapot:completed", note: "The server refused, but politely." },
 		hints: [
 			{ id: "teapot:hint:1", text: "Not every machine agrees to make coffee." },
@@ -265,7 +265,7 @@ export const FOOBAR_ACHIEVEMENTS = {
 	},
 	"easter-egg": {
 		title: "Hard-Boiled Link",
-		tier: "browser",
+		tier: "discovery",
 		completion: {
 			id: "easter-egg:completed",
 			note: "A decoration turned out to be a switch.",
