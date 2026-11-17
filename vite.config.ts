@@ -165,7 +165,7 @@ const oxfmt_config: UserConfig["fmt"] = {
 const oxlint_config: UserConfig["lint"] = {
 	plugins: ["typescript", "oxc", "unicorn", "import", "react", "jsx-a11y"],
 	jsPlugins: ["eslint-plugin-better-tailwindcss"],
-	ignorePatterns: ["src/cloudflare-env.d.ts", "src/routeTree.gen.ts"],
+	ignorePatterns: ["src/cloudflare-env.d.ts", "src/routeTree.gen.ts", "public/**"],
 	categories: {
 		correctness: "error",
 	},
