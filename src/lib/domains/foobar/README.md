@@ -16,14 +16,11 @@ The original design docs were removed from the repo in `963f204a`; read them wit
   discoveries. `all_achievements` is always recomputed server-side, never trusted.
 - Individual discoveries are still self-reported by the browser, so certificates and the
   Finishers list are an honour system; nothing here should gate anything valuable.
-- The hunt ends with a final puzzle. Finishing every required achievement in a tier reveals that
-  tier's word (`FOOBAR_PUZZLE_TIER_WORDS`); in tier order the words spell the reward address for
-  `completed`. That address only awards once every puzzle tier is finished, and
-  `normalizeFoobarData` drops a `completed` claim that skips a tier.
+- The hunt ends when every required discovery is found. `completed` is awarded automatically at
+  that moment; `normalizeFoobarData` drops a `completed` claim that skips a prerequisite and adds
+  it to a save that has them all, on the client and on the server.
 - `completed_at` is when the player actually finished: the latest required completion clue,
-  clamped to the server's clock. The Finishers list has no ranks and only includes saves that
-  solved the final puzzle; earlier finishers keep their certificate but drop off the list until
-  they solve it.
+  clamped to the server's clock. The Finishers list has no ranks and includes every finished save.
 - Deleting a cloud save leaves a disabled server tombstone. Background writes cannot recreate
   it; the player must explicitly enable cloud saving again from the retained browser progress.
 - Cloud lifecycle changes propagate between open tabs through a storage event; retryable failures
@@ -58,7 +55,7 @@ and `@` marks the next unfound discovery. Adding an achievement makes the mounta
 | ------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `catalog.ts`                                                 | Canonical achievement title/tier/hint/teaser metadata and clue-ID resolution. Pure data — everything else derives from it.                                                     |
 | `codes.ts`                                                   | Reward addresses and path construction, kept free of React for scripts and tests.                                                                                              |
-| `flags.tsx`                                                  | Routable slugs (derived from `codes.ts`), icons, and dashboard descriptions per achievement.                                                                                   |
+| `flags.tsx`                                                  | Routable slugs (derived from `codes.ts`) and icons per achievement.                                                                                                            |
 | `store.ts`                                                   | Zustand slice + `normalizeFoobarData`, which makes stale/malformed persisted state inert.                                                                                      |
 | `Pixel.tsx`                                                  | Site-wide instrumentation: visit tracking (`navigator`), Konami, 404, campfire completion, tab-visibility clue, service-worker registration, console clues.                    |
 | `DashboardClient.tsx`                                        | The `/foobar` gate (`FoobarSchrodinger`), dashboard layout, local-only reset.                                                                                                  |
@@ -81,7 +78,8 @@ Routes: `src/routes/(main)/(foobar)/foobar/` (dashboard, `$slug` achievement pag
 `src/routes/(api)/api/foobar/` (cookie challenge, certificate OG image). Static clue
 surfaces: `public/robots.txt`, `public/.well-known/security.txt`, `public/foobar-sw.js`,
 `public/.well-known/foobar`, the generated RSS feed, and the Foobar-only social card
-(`public/og-foobar.png`).
+(`public/og-foobar.png`). The `curl` clue lives outside this repo, in the srtm.fyi project's
+`functions/index.js`; its address is duplicated there by hand, like the DNS TXT record.
 
 ## Adding an achievement
 
@@ -93,6 +91,8 @@ surfaces: `public/robots.txt`, `public/.well-known/security.txt`, `public/foobar
 3. Hide the actual clue in whatever surface the puzzle uses.
 4. Note: new achievements intentionally reopen the endgame for previous finishers; their
    `completed_at`/certificate in D1 are preserved.
+5. Regenerate the `certificate-text` snapshot (`pnpm test:unit -u`) — the mountain grows a row.
+6. Bump the `of N` counts in `e2e/foobar.spec.ts` and the slug count in `catalog.test.ts`.
 
 ## Tests
 
