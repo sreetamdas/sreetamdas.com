@@ -3,6 +3,7 @@
  * traffic; it answers one synthetic clue request after the browser is controlled.
  */
 const FOOBAR_CLUE_PATH = "/foobar/service-worker-clue";
+const FOOBAR_REWARD_PATH = "L2Zvb2Jhci93b3Jrcy1mcm9tLWhvbWU=";
 
 self.addEventListener("install", () => self.skipWaiting());
 self.addEventListener("activate", (event) => event.waitUntil(self.clients.claim()));
@@ -14,7 +15,7 @@ self.addEventListener("fetch", (event) => {
 		Response.json(
 			{
 				message: "The worker heard you without asking the network.",
-				foobar: "/foobar/works-from-home",
+				foobar: atob(FOOBAR_REWARD_PATH),
 			},
 			{ headers: { "Cache-Control": "no-store" } },
 		),

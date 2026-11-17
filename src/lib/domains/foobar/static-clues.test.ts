@@ -75,10 +75,16 @@ describe("Foobar static clues", () => {
 		expect(scripts["build:ci"]).toContain("tsx scripts/normalize-sitemap.ts");
 	});
 
-	test("ships the service-worker clue and unlocked registration", () => {
+	test("ships the service-worker clue without the reward address in plain text", () => {
 		const worker = read("public/foobar-sw.js");
+		const rewardPath = getFoobarRewardPath("service-worker");
 		expect(worker).toContain("/foobar/service-worker-clue");
-		expect(worker).toContain(getFoobarRewardPath("service-worker"));
+		expect(worker).not.toContain(rewardPath);
+
+		const encoded = worker.match(/const FOOBAR_REWARD_PATH = "([A-Za-z0-9+/=]+)"/)?.[1];
+		if (encoded === undefined) throw new Error("service worker has no encoded reward path");
+		expect(Buffer.from(encoded, "base64").toString("utf8")).toBe(rewardPath);
+
 		expect(read("src/lib/domains/foobar/Pixel.tsx")).toContain(
 			'navigator.serviceWorker.register("/foobar-sw.js")',
 		);
