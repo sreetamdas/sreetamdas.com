@@ -8,7 +8,7 @@ import { type StateCreator } from "zustand";
 import {
 	FOOBAR_ACHIEVEMENTS,
 	hasCompletedFoobar,
-	hasFinishedFoobarPuzzleTiers,
+	hasFoundFoobarPrerequisites,
 	type FoobarAchievement,
 	type FoobarClueId,
 	isFoobarAchievement,
@@ -66,9 +66,10 @@ export function normalizeFoobarData(value: unknown): FoobarDataType {
 	}
 
 	const claimed = uniqueStrings(value.completed).filter(isFoobarAchievement);
-	const completed = hasFinishedFoobarPuzzleTiers(claimed)
-		? claimed
-		: claimed.filter((achievement) => achievement !== "completed");
+	const withoutSummit = claimed.filter((achievement) => achievement !== "completed");
+	const completed: Array<FoobarAchievement> = hasFoundFoobarPrerequisites(claimed)
+		? [...withoutSummit, "completed"]
+		: withoutSummit;
 	const cluesSeen: Array<FoobarClueSeen> = [];
 	const clueIds = new Set<FoobarClueId>();
 
@@ -152,10 +153,11 @@ export const createFoobarSlice: StateCreator<FoobarSliceType> = (set, _get) => (
 		}),
 	completeFoobarFlag: (flag) =>
 		set((state) => {
-			if (flag === "completed" && !hasFinishedFoobarPuzzleTiers(state.foobar_data.completed)) {
+			if (flag === "completed" && !hasFoundFoobarPrerequisites(state.foobar_data.completed)) {
 				return state;
 			}
 
+			const now = Date.now();
 			const completionId = FOOBAR_ACHIEVEMENTS[flag].completion.id;
 			const hasFlag = state.foobar_data.completed.includes(flag);
 			const hasClue = state.foobar_data.clues_seen.some((clue) => clue.id === completionId);
@@ -164,22 +166,34 @@ export const createFoobarSlice: StateCreator<FoobarSliceType> = (set, _get) => (
 				return state;
 			}
 
-			const completed = hasFlag
+			const withFlag = hasFlag
 				? state.foobar_data.completed
 				: [...state.foobar_data.completed, flag];
+			const clues = [...state.foobar_data.clues_seen];
+			if (!hasClue) {
+				clues.push({ id: completionId, seen_at: now });
+			}
+			const completedClueId = FOOBAR_ACHIEVEMENTS.completed.completion.id;
+			if (
+				!withFlag.includes("completed") &&
+				hasFoundFoobarPrerequisites(withFlag) &&
+				!clues.some((clue) => clue.id === completedClueId)
+			) {
+				clues.push({ id: completedClueId, seen_at: now });
+			}
+
+			const next = normalizeFoobarData({
+				...state.foobar_data,
+				completed: withFlag,
+				clues_seen: clues,
+			});
+			const revealed = next.completed.filter(
+				(achievement) => !state.foobar_data.completed.includes(achievement),
+			);
 
 			return {
-				foobar_data: {
-					...state.foobar_data,
-					completed,
-					all_achievements: hasCompletedFoobar(completed),
-					clues_seen: hasClue
-						? state.foobar_data.clues_seen
-						: [...state.foobar_data.clues_seen, { id: completionId, seen_at: Date.now() }],
-				},
-				foobar_reveal_queue: hasFlag
-					? state.foobar_reveal_queue
-					: [...state.foobar_reveal_queue, flag],
+				foobar_data: next,
+				foobar_reveal_queue: [...state.foobar_reveal_queue, ...revealed],
 			};
 		}),
 	enqueueFoobarReveal: (achievement) =>

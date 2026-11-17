@@ -1,8 +1,7 @@
 /**
  * Canonical achievement catalogue for /foobar. Slugged entries become routable
  * challenge pages. Entries the game completes itself (navigator, konami, 404,
- * dogs, offline, easter-egg, campfire) have no slug, so a guessed URL cannot skip them.
- * "completed" has a slug, but only awards once every puzzle tier is finished.
+ * dogs, offline, easter-egg, campfire, completed) have no slug, so a guessed URL cannot skip them.
  */
 import { type IconBaseProps } from "react-icons";
 import { BsEgg } from "react-icons/bs";
@@ -185,7 +184,6 @@ export const FOOBAR_FLAGS = {
 	completed: {
 		...FOOBAR_ACHIEVEMENTS.completed,
 		name: "completed",
-		slug: FOOBAR_REWARD_ADDRESSES.completed,
 		icon: (props: IconBaseProps) => <IoIosRocket {...props} />,
 	},
 } as const;

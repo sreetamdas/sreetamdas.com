@@ -5,17 +5,10 @@
  * `onToggleAchievement` every row is a button that opens its field entry;
  * without it (the certificate) the picture is static.
  */
-import { Fragment } from "react";
-
 import {
 	FOOBAR_ACHIEVEMENT_ORDER,
 	FOOBAR_ACHIEVEMENTS,
-	FOOBAR_PUZZLE_TIER_WORDS,
-	FOOBAR_TIERS,
-	hasFinishedFoobarTier,
-	isFoobarPuzzleTier,
 	type FoobarAchievement,
-	type FoobarPuzzleTier,
 	type FoobarStars,
 	type FoobarTier,
 } from "./catalog";
@@ -180,19 +173,6 @@ function TierLabel({
 		(achievement) => FOOBAR_ACHIEVEMENTS[achievement].tier === tier,
 	);
 	const found = tierAchievements.filter((achievement) => completed.includes(achievement)).length;
-
-	if (isFoobarPuzzleTier(tier) && hasFinishedFoobarTier(tier, completed)) {
-		return (
-			<span
-				aria-label={`${FOOBAR_TIERS[tier].label} word: ${FOOBAR_PUZZLE_TIER_WORDS[tier]}`}
-				className={`${FOOBAR_TIER_TEXT_CLASS[tier]} ${FOOBAR_GLOW_CLASS}`}
-				data-foobar-tier-word={tier}
-			>
-				{FOOBAR_PUZZLE_TIER_WORDS[tier]}
-			</span>
-		);
-	}
-
 	const finished = found === tierAchievements.length;
 	return (
 		<span
@@ -234,39 +214,3 @@ function Cells({
 		),
 	);
 }
-
-export const FoobarTierWords = ({
-	completed,
-	className = "",
-}: Pick<FoobarDataType, "completed"> & { className?: string }) => {
-	const tiers = Object.keys(FOOBAR_PUZZLE_TIER_WORDS).filter((tier): tier is FoobarPuzzleTier =>
-		Object.hasOwn(FOOBAR_PUZZLE_TIER_WORDS, tier),
-	);
-	const found = tiers.filter((tier) => hasFinishedFoobarTier(tier, completed));
-
-	return (
-		<p
-			aria-label={
-				found.length === 0
-					? "No tier words yet"
-					: `Tier words so far: ${found.map((tier) => FOOBAR_PUZZLE_TIER_WORDS[tier]).join(", ")}`
-			}
-			className={`text-karma-green/90 ${className}`}
-		>
-			{"{"}
-			{tiers.map((tier, index) => (
-				<Fragment key={tier}>
-					{index > 0 ? ", " : null}
-					{found.includes(tier) ? (
-						<span className={`${FOOBAR_TIER_TEXT_CLASS[tier]} ${FOOBAR_GLOW_CLASS}`}>
-							{FOOBAR_PUZZLE_TIER_WORDS[tier]}
-						</span>
-					) : (
-						<span className="text-karma-gutter">?</span>
-					)}
-				</Fragment>
-			))}
-			{"}"}
-		</p>
-	);
-};

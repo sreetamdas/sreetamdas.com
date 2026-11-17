@@ -35,7 +35,7 @@ export function renderFoobarCertificateText(
 		runs
 			.map((run) => (color && run.color ? `${sgr(run.color)}${run.text}\x1b[39m` : run.text))
 			.join("");
-	const { words, split, date } = getFoobarCertificateSummary(certificate);
+	const { split, date } = getFoobarCertificateSummary(certificate);
 	const site = "sreetamdas.com/foobar";
 	const title = "--- field certificate ---";
 	const name = fitName(sanitizeFoobarName(certificate.name));
@@ -52,7 +52,6 @@ export function renderFoobarCertificateText(
 		`${NAME_INDENT}${color ? `\x1b[1m${sgr(TIER_COLOR.discovery)}${name}\x1b[22;39m` : name}`,
 		"mapped every hidden corner and completed the Foobar hunt.",
 		"",
-		paint(words),
 		paint(split),
 		"",
 		...getFoobarCertificateMountain(certificate).map(paint),

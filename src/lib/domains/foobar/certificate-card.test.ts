@@ -42,7 +42,6 @@ describe("Foobar certificate card", () => {
 		expect(text).toContain(`${FOOBAR_REQUIRED_ACHIEVEMENTS.length}*`);
 		expect(text).toContain(`${FOOBAR_REQUIRED_ACHIEVEMENTS.length - 1} gold`);
 		expect(text).toContain("1 silver");
-		expect(text).toContain("draco, dormiens, nunquam, titillandus");
 		expect(text).toContain("Completed July 16, 2026");
 	});
 

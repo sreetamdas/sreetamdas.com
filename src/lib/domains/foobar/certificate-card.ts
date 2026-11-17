@@ -7,15 +7,10 @@
  * here stays inside the Iosevka subset (see FOOBAR_CARD_SUBSET); a hunter name
  * outside it gets a fallback font from the route.
  *
- * The tier words, star split and mountain are shaped as coloured runs, which
+ * The star split and mountain are shaped as coloured runs, which
  * certificate-text.ts paints again as ANSI for terminals.
  */
-import {
-	FOOBAR_ACHIEVEMENTS,
-	FOOBAR_PUZZLE_TIER_WORDS,
-	type FoobarPuzzleTier,
-	type FoobarTier,
-} from "./catalog";
+import { FOOBAR_ACHIEVEMENTS, type FoobarTier } from "./catalog";
 import { formatFoobarCertificateDate, type FoobarCertificate } from "./certificate";
 import { FOOBAR_MOUNTAIN, type FoobarMountainCell } from "./mountain";
 
@@ -42,13 +37,6 @@ export const TIER_COLOR: Record<FoobarTier, string> = {
 	meta: KARMA.lavender,
 };
 
-const PUZZLE_TIERS: ReadonlyArray<FoobarPuzzleTier> = [
-	"discovery",
-	"browser",
-	"archaeology",
-	"protocol",
-];
-
 /** Text drawn in one colour; an undefined colour inherits the surrounding text's. */
 export type FoobarCardRun = { text: string; color: string | undefined };
 
@@ -56,14 +44,6 @@ export function getFoobarCertificateSummary(certificate: FoobarCertificate) {
 	const stars = Object.values(certificate.stars);
 	const gold = stars.filter((star) => star === "gold").length;
 	const silver = stars.filter((star) => star === "silver").length;
-	const words: Array<FoobarCardRun> = [
-		{ text: "{", color: KARMA.comment },
-		...PUZZLE_TIERS.flatMap((tier, index) => [
-			...(index > 0 ? [{ text: ", ", color: KARMA.comment }] : []),
-			{ text: FOOBAR_PUZZLE_TIER_WORDS[tier], color: TIER_COLOR[tier] },
-		]),
-		{ text: "}", color: KARMA.comment },
-	];
 	const split: Array<FoobarCardRun> = [
 		{ text: `${stars.length}*`, color: KARMA.yellow },
 		{ text: " · ", color: KARMA.comment },
@@ -71,11 +51,11 @@ export function getFoobarCertificateSummary(certificate: FoobarCertificate) {
 		{ text: " · ", color: KARMA.comment },
 		{ text: `${silver} silver`, color: KARMA.silver },
 	];
-	return { words, split, date: formatFoobarCertificateDate(certificate.completedAt) };
+	return { split, date: formatFoobarCertificateDate(certificate.completedAt) };
 }
 
 export function renderFoobarCertificateCard(certificate: FoobarCertificate): string {
-	const { words, split, date } = getFoobarCertificateSummary(certificate);
+	const { split, date } = getFoobarCertificateSummary(certificate);
 	const mountain = getFoobarCertificateMountain(certificate)
 		.map((line) => `<div style="display:flex;white-space:pre">${spans(line)}</div>`)
 		.join("");
@@ -87,7 +67,6 @@ export function renderFoobarCertificateCard(certificate: FoobarCertificate): str
 				<div style="display:flex;font-size:24px;color:${KARMA.comment}">Certifies that</div>
 				<div style="display:flex;margin-top:8px;font-size:64px;font-weight:700;line-height:1.1;color:${TIER_COLOR.discovery}">${escapeHtml(certificate.name)}</div>
 				<div style="display:flex;margin-top:18px;font-size:26px;line-height:1.4">mapped every hidden corner and completed the Foobar hunt.</div>
-				<div style="display:flex;margin-top:24px;font-size:24px;white-space:pre">${spans(words)}</div>
 				<div style="display:flex;margin-top:18px;font-size:26px;white-space:pre">${spans(split)}</div>
 				<div style="display:flex;margin-top:18px;font-size:22px;color:${KARMA.comment}">Completed ${escapeHtml(date)}</div>
 			</div>

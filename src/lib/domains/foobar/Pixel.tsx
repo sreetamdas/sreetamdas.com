@@ -44,6 +44,7 @@ export const FoobarPixel = ({ path }: FoobarPixelProps) => {
 		useGlobalStore(useShallow(foobarDataSelector));
 	const { unlocked, visited_pages, completed } = foobar_data;
 	const titleBeforeVisibilityClue = useRef<string | null>(null);
+	const wasCompleted = useRef<boolean | null>(null);
 	const isFoobarPath = pathname === "/foobar" || pathname.startsWith("/foobar/");
 	const { hunters } = useSharedHunterPresence(
 		unlocked && !completed.includes(FOOBAR_FLAGS.campfire.name),
@@ -72,6 +73,17 @@ export const FoobarPixel = ({ path }: FoobarPixelProps) => {
 		trackEvent("foobar", { props: { achievement: FOOBAR_FLAGS.campfire.name } });
 		completeFoobarFlag(FOOBAR_FLAGS.campfire.name);
 	}, [completeFoobarFlag, completed, hunters, trackEvent]);
+
+	useEffect(() => {
+		if (!hasHydrated) return;
+
+		const isCompleted = completed.includes(FOOBAR_FLAGS.completed.name);
+		const was = wasCompleted.current;
+		wasCompleted.current = isCompleted;
+		if (isCompleted && was === false) {
+			trackEvent("foobar", { props: { achievement: FOOBAR_FLAGS.completed.name } });
+		}
+	}, [completed, hasHydrated, trackEvent]);
 
 	useEffect(() => {
 		// Add functions for Foobar badges

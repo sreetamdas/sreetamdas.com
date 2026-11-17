@@ -42,7 +42,6 @@ describe("Foobar certificate text", () => {
 		const text = renderFoobarCertificateText(certificate, { color: false });
 
 		expect(text).toContain("  Ada Lovelace\n");
-		expect(text).toContain("{draco, dormiens, nunquam, titillandus}");
 		expect(text).toContain(
 			`${FOOBAR_REQUIRED_ACHIEVEMENTS.length}* · ${FOOBAR_REQUIRED_ACHIEVEMENTS.length - 1} gold · 1 silver`,
 		);

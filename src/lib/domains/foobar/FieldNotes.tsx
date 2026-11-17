@@ -2,69 +2,40 @@
 
 /**
  * Field notes as the tail of a log file: the latest hints and finds, newest
- * first, plus a "word" line for every finished puzzle tier. Five lines by
- * default; the rest stay one click away.
+ * first. Five lines by default; the rest stay one click away.
  */
 import { useState } from "react";
 
 import { Bracketed } from "./Bracketed";
 import {
 	FOOBAR_ACHIEVEMENTS,
-	FOOBAR_PUZZLE_TIER_WORDS,
-	FOOBAR_REQUIRED_ACHIEVEMENTS,
-	FOOBAR_TIERS,
 	getFoobarClue,
-	hasFinishedFoobarTier,
 	type FoobarAchievement,
 	type FoobarClue,
-	type FoobarPuzzleTier,
 } from "./catalog";
-import { FOOBAR_GLOW_CLASS, FOOBAR_TIER_TEXT_CLASS } from "./karma";
+import { FOOBAR_TIER_TEXT_CLASS } from "./karma";
 import { type FoobarDataType } from "./store";
 
 const TAIL_LENGTH = 5;
 
-type FieldNotesProps = Pick<FoobarDataType, "clues_seen" | "completed"> & {
+type FieldNotesProps = Pick<FoobarDataType, "clues_seen"> & {
 	onSelectAchievement: (achievement: FoobarAchievement) => void;
 };
 
-type LogLine =
-	| { kind: "clue"; clue: FoobarClue; seen_at: number | null }
-	| { kind: "word"; tier: FoobarPuzzleTier; seen_at: number | null };
+type LogLine = { kind: "clue"; clue: FoobarClue; seen_at: number | null };
 
-function tierFinishedAt(
-	tier: FoobarPuzzleTier,
-	clues_seen: FoobarDataType["clues_seen"],
-): number | null {
-	const times = FOOBAR_REQUIRED_ACHIEVEMENTS.filter(
-		(achievement) => FOOBAR_ACHIEVEMENTS[achievement].tier === tier,
-	).map(
-		(achievement) =>
-			clues_seen.find(({ id }) => id === FOOBAR_ACHIEVEMENTS[achievement].completion.id)?.seen_at ??
-			null,
-	);
-	return times.some((time) => time === null)
-		? null
-		: Math.max(...times.filter((time) => time !== null));
-}
-
-export const FieldNotes = ({ clues_seen, completed, onSelectAchievement }: FieldNotesProps) => {
+export const FieldNotes = ({ clues_seen, onSelectAchievement }: FieldNotesProps) => {
 	const [showAll, setShowAll] = useState(false);
-	const lines: Array<LogLine> = [
-		...clues_seen.flatMap((entry): Array<LogLine> => {
+	const lines: Array<LogLine> = clues_seen
+		.flatMap((entry): Array<LogLine> => {
 			const clue = getFoobarClue(entry.id);
 			return clue ? [{ kind: "clue", clue, seen_at: entry.seen_at }] : [];
-		}),
-		...Object.keys(FOOBAR_PUZZLE_TIER_WORDS)
-			.filter((tier): tier is FoobarPuzzleTier => Object.hasOwn(FOOBAR_PUZZLE_TIER_WORDS, tier))
-			.filter((tier) => hasFinishedFoobarTier(tier, completed))
-			.map((tier): LogLine => ({ kind: "word", tier, seen_at: tierFinishedAt(tier, clues_seen) })),
-	].toSorted((left, right) => {
-		if (left.seen_at === null) return right.seen_at === null ? 0 : 1;
-		if (right.seen_at === null) return -1;
-		if (left.seen_at === right.seen_at) return left.kind === "word" ? -1 : 1;
-		return right.seen_at - left.seen_at;
-	});
+		})
+		.toSorted((left, right) => {
+			if (left.seen_at === null) return right.seen_at === null ? 0 : 1;
+			if (right.seen_at === null) return -1;
+			return right.seen_at - left.seen_at;
+		});
 	const visible = showAll ? lines : lines.slice(0, TAIL_LENGTH);
 
 	return (
@@ -88,43 +59,30 @@ export const FieldNotes = ({ clues_seen, completed, onSelectAchievement }: Field
 				) : (
 					<ol id="foobar-field-notes-list">
 						{visible.map((line) => (
-							<li key={line.kind === "word" ? `word:${line.tier}` : line.clue.id}>
-								{line.kind === "word" ? (
-									<p className="grid grid-cols-[auto_auto_minmax(0,1fr)] gap-x-[1ch] py-1">
-										<LogTime seen_at={line.seen_at} />
-										<span className="text-karma-comment">word </span>
-										<span className={`${FOOBAR_TIER_TEXT_CLASS[line.tier]} ${FOOBAR_GLOW_CLASS}`}>
-											{FOOBAR_TIERS[line.tier].label} finished. It left "
-											{FOOBAR_PUZZLE_TIER_WORDS[line.tier]}".
-										</span>
-									</p>
-								) : (
-									<button
-										aria-label={`Open ${FOOBAR_ACHIEVEMENTS[line.clue.achievement].title} from Field Notes`}
-										className="group grid min-h-11 w-full grid-cols-[auto_auto_minmax(0,1fr)] items-start gap-x-[1ch] py-1 text-left focus-visible:outline-2 focus-visible:outline-karma-yellow"
-										onClick={() => onSelectAchievement(line.clue.achievement)}
-										type="button"
-									>
-										<LogTime seen_at={line.seen_at} />
-										<span className="text-karma-comment">
-											{line.clue.kind === "hint" ? "hint " : "found"}
-										</span>
-										<span className="min-w-0 break-words">
-											<strong
-												className={`font-normal group-hover:[text-shadow:0_0_6px_currentColor] ${
-													line.clue.kind === "hint"
-														? "text-foreground"
-														: FOOBAR_TIER_TEXT_CLASS[
-																FOOBAR_ACHIEVEMENTS[line.clue.achievement].tier
-															]
-												}`}
-											>
-												{FOOBAR_ACHIEVEMENTS[line.clue.achievement].title}
-											</strong>{" "}
-											<span>{line.clue.text}</span>
-										</span>
-									</button>
-								)}
+							<li key={line.clue.id}>
+								<button
+									aria-label={`Open ${FOOBAR_ACHIEVEMENTS[line.clue.achievement].title} from Field Notes`}
+									className="group grid min-h-11 w-full grid-cols-[auto_auto_minmax(0,1fr)] items-start gap-x-[1ch] py-1 text-left focus-visible:outline-2 focus-visible:outline-karma-yellow"
+									onClick={() => onSelectAchievement(line.clue.achievement)}
+									type="button"
+								>
+									<LogTime seen_at={line.seen_at} />
+									<span className="text-karma-comment">
+										{line.clue.kind === "hint" ? "hint " : "found"}
+									</span>
+									<span className="min-w-0 break-words">
+										<strong
+											className={`font-normal group-hover:[text-shadow:0_0_6px_currentColor] ${
+												line.clue.kind === "hint"
+													? "text-foreground"
+													: FOOBAR_TIER_TEXT_CLASS[FOOBAR_ACHIEVEMENTS[line.clue.achievement].tier]
+											}`}
+										>
+											{FOOBAR_ACHIEVEMENTS[line.clue.achievement].title}
+										</strong>{" "}
+										<span>{line.clue.text}</span>
+									</span>
+								</button>
 							</li>
 						))}
 					</ol>
