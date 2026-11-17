@@ -11,7 +11,9 @@ const sleep = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve,
  * cannot call this endpoint ("Resource not accessible by integration"), so
  * there is no auth workaround. A 403/429/5xx or a dropped request therefore
  * gets retried with backoff instead of silently degrading /rwc's prerender to
- * the fallback payload (which strips every #pNNN_ex anchor).
+ * the fallback payload (which strips every #pNNN_ex anchor). The gist is
+ * public, so a token GitHub rejects (401: expired or revoked) is dropped and the
+ * request repeated without it rather than failing the build.
  */
 export async function fetchGist(gist_id: string, githubToken?: string) {
 	for (let attempt = 0; ; attempt += 1) {
@@ -23,6 +25,12 @@ export async function fetchGist(gist_id: string, githubToken?: string) {
 			const data: Endpoints["GET /gists/{gist_id}"]["response"]["data"] = await request.json();
 
 			return data;
+		}
+
+		if (request.status === 401 && githubToken) {
+			// oxlint-disable-next-line no-console
+			console.error("[gist] GitHub rejected the token (401), retrying without it");
+			return fetchGist(gist_id);
 		}
 
 		const retryable = [403, 429, 500, 502, 503, 504].includes(request.status);
