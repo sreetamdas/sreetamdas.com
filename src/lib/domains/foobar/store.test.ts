@@ -1,7 +1,11 @@
 import { describe, expect, test, vi } from "vitest";
 import { create } from "zustand";
 
-import { FOOBAR_ACHIEVEMENTS, FOOBAR_PUZZLE_PREREQUISITES, isFoobarAchievement } from "./catalog";
+import {
+	FOOBAR_ACHIEVEMENTS,
+	FOOBAR_COMPLETION_PREREQUISITES,
+	isFoobarAchievement,
+} from "./catalog";
 import { createFoobarSlice, initialFoobarData, normalizeFoobarData } from "./store";
 
 describe("Foobar progress", () => {
@@ -115,22 +119,23 @@ describe("Foobar progress", () => {
 		expect(result.all_achievements).toBe(true);
 	});
 
-	test("does not finish a run that has every flag except the final puzzle", () => {
+	test("awards completion to a save that has every prerequisite", () => {
 		const result = normalizeFoobarData({
 			...initialFoobarData,
-			completed: [...FOOBAR_PUZZLE_PREREQUISITES],
-			all_achievements: true,
+			completed: [...FOOBAR_COMPLETION_PREREQUISITES],
+			all_achievements: false,
 		});
 
-		expect(result.completed).not.toContain("completed");
-		expect(result.all_achievements).toBe(false);
+		expect(result.completed).toContain("completed");
+		expect(result.clues_seen.map((clue) => clue.id)).toContain("completed:completed");
+		expect(result.all_achievements).toBe(true);
 	});
 
-	test("drops a final puzzle claim while a tier is unfinished", () => {
+	test("drops a completion claim while a discovery is missing", () => {
 		const result = normalizeFoobarData({
 			...initialFoobarData,
 			completed: [
-				...FOOBAR_PUZZLE_PREREQUISITES.filter((achievement) => achievement !== "headers"),
+				...FOOBAR_COMPLETION_PREREQUISITES.filter((achievement) => achievement !== "headers"),
 				"completed",
 			],
 		});
@@ -140,19 +145,44 @@ describe("Foobar progress", () => {
 		expect(result.all_achievements).toBe(false);
 	});
 
-	test("awards the final puzzle only after every puzzle tier is finished", () => {
+	test("ignores a completion claim while a discovery is missing", () => {
+		const store = create(createFoobarSlice);
+		store.getState().setFoobarData({ completed: ["headers"] });
+		store.getState().completeFoobarFlag("completed");
+
+		expect(store.getState().foobar_data.completed).not.toContain("completed");
+		expect(store.getState().foobar_reveal_queue).toEqual([]);
+		expect(store.getState().foobar_data.clues_seen.map((clue) => clue.id)).not.toContain(
+			"completed:completed",
+		);
+	});
+
+	test("awards completion the moment the last prerequisite is found", () => {
 		const store = create(createFoobarSlice);
 		store
 			.getState()
-			.setFoobarData({ completed: FOOBAR_PUZZLE_PREREQUISITES.filter((a) => a !== "headers") });
-		store.getState().completeFoobarFlag("completed");
-		expect(store.getState().foobar_data.completed).not.toContain("completed");
-		expect(store.getState().foobar_reveal_queue).toEqual([]);
-
+			.setFoobarData({ completed: FOOBAR_COMPLETION_PREREQUISITES.filter((a) => a !== "headers") });
 		store.getState().completeFoobarFlag("headers");
-		store.getState().completeFoobarFlag("completed");
+
 		expect(store.getState().foobar_data.completed).toContain("completed");
+		expect(store.getState().foobar_data.clues_seen.map((clue) => clue.id)).toContain(
+			"completed:completed",
+		);
 		expect(store.getState().foobar_reveal_queue).toEqual(["headers", "completed"]);
+	});
+
+	test("timestamps the live summit clue with the triggering flag", () => {
+		const store = create(createFoobarSlice);
+		store
+			.getState()
+			.setFoobarData({ completed: FOOBAR_COMPLETION_PREREQUISITES.filter((a) => a !== "headers") });
+		store.getState().completeFoobarFlag("headers");
+
+		const clues = store.getState().foobar_data.clues_seen;
+		const triggerSeenAt = clues.find((clue) => clue.id === "headers:completed")?.seen_at;
+		const summitSeenAt = clues.find((clue) => clue.id === "completed:completed")?.seen_at;
+		expect(typeof triggerSeenAt).toBe("number");
+		expect(summitSeenAt).toBe(triggerSeenAt);
 	});
 
 	test("recomputes stale endgame state against the current catalogue", () => {

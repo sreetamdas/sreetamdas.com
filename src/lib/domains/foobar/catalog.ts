@@ -520,24 +520,24 @@ export const FOOBAR_ACHIEVEMENTS = {
 		tier: "meta",
 		completion: {
 			id: "completed:completed",
-			note: "You let the sleeping dragon lie.",
+			note: "You reached the summit. The whole map is yours.",
 		},
 		hints: [
 			{
 				id: "completed:hint:1",
-				text: "Finish every tier above this one. Each finished tier leaves a word behind.",
+				text: "There is no trick to the last one.",
 			},
 			{
 				id: "completed:hint:2",
-				text: "A tier's word appears under its heading once everything required in it is found.",
+				text: "It is not hidden anywhere on the site.",
 			},
 			{
 				id: "completed:hint:3",
-				text: "Read in tier order, the four words are an old school motto about a beast at rest.",
+				text: "It is awarded the moment every required discovery is found.",
 			},
 			{
 				id: "completed:hint:4",
-				text: "Join the four words with hyphens, in tier order, and visit that address under /foobar.",
+				text: "Find every discovery that is not marked bonus and the summit lights itself.",
 			},
 		],
 	},
@@ -569,7 +569,7 @@ export const FOOBAR_TEASERS = {
 	"og-qr": "A social card contains more than a picture.",
 	"cookie-jar": "A sealed jar arrives with the response.",
 	"service-worker": "An invisible worker knows one private path.",
-	completed: "Every finished tier leaves a word behind.",
+	completed: "The summit lights itself when nothing else is left.",
 } satisfies Record<FoobarAchievement, string>;
 
 type FoobarAchievementMetadata = (typeof FOOBAR_ACHIEVEMENTS)[FoobarAchievement];
@@ -606,39 +606,14 @@ export const FOOBAR_REQUIRED_ACHIEVEMENTS: ReadonlyArray<FoobarAchievement> = Ob
 		return !("optional" in metadata && metadata.optional);
 	});
 
-/**
- * Finishing every required achievement in a tier reveals its word. In tier
- * order the words spell the reward address for "completed" (see codes.ts).
- */
-export const FOOBAR_PUZZLE_TIER_WORDS = {
-	discovery: "draco",
-	browser: "dormiens",
-	archaeology: "nunquam",
-	protocol: "titillandus",
-} as const satisfies Record<Exclude<FoobarTier, "meta">, string>;
-
-export type FoobarPuzzleTier = keyof typeof FOOBAR_PUZZLE_TIER_WORDS;
-
-export function isFoobarPuzzleTier(tier: FoobarTier): tier is FoobarPuzzleTier {
-	return Object.hasOwn(FOOBAR_PUZZLE_TIER_WORDS, tier);
-}
-
-export const FOOBAR_PUZZLE_PREREQUISITES: ReadonlyArray<FoobarAchievement> =
+/** Every non-bonus discovery except the summit itself. Find them all to finish. */
+export const FOOBAR_COMPLETION_PREREQUISITES: ReadonlyArray<FoobarAchievement> =
 	FOOBAR_REQUIRED_ACHIEVEMENTS.filter(
 		(achievement) => FOOBAR_ACHIEVEMENTS[achievement].tier !== "meta",
 	);
 
-export function hasFinishedFoobarTier(
-	tier: FoobarTier,
-	completed: ReadonlyArray<FoobarAchievement>,
-) {
-	return FOOBAR_REQUIRED_ACHIEVEMENTS.filter(
-		(achievement) => FOOBAR_ACHIEVEMENTS[achievement].tier === tier,
-	).every((achievement) => completed.includes(achievement));
-}
-
-export function hasFinishedFoobarPuzzleTiers(completed: ReadonlyArray<FoobarAchievement>) {
-	return FOOBAR_PUZZLE_PREREQUISITES.every((achievement) => completed.includes(achievement));
+export function hasFoundFoobarPrerequisites(completed: ReadonlyArray<FoobarAchievement>) {
+	return FOOBAR_COMPLETION_PREREQUISITES.every((achievement) => completed.includes(achievement));
 }
 
 export function hasCompletedFoobar(completed: ReadonlyArray<FoobarAchievement>) {

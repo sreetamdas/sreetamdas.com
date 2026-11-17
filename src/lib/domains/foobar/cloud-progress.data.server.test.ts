@@ -4,7 +4,7 @@ import { beforeEach, describe, expect, test } from "vitest";
 
 import * as schema from "@/db/schema";
 
-import { FOOBAR_PUZZLE_PREREQUISITES, FOOBAR_REQUIRED_ACHIEVEMENTS } from "./catalog";
+import { FOOBAR_COMPLETION_PREREQUISITES, FOOBAR_REQUIRED_ACHIEVEMENTS } from "./catalog";
 import {
 	getFoobarCommunity,
 	getFoobarCertificate,
@@ -135,19 +135,20 @@ describe("Foobar cloud progress data", () => {
 		expect(JSON.stringify(certificate)).not.toContain("42");
 	});
 
-	test("gives no certificate for every flag except the final puzzle", async () => {
+	test("gives a certificate as soon as every required discovery is present", async () => {
 		await addUser("a", "Ada");
 		const result = await syncFoobarProgress(
 			db,
 			"a",
-			{ ...initialFoobarData, unlocked: true, completed: [...FOOBAR_PUZZLE_PREREQUISITES] },
+			{ ...initialFoobarData, unlocked: true, completed: [...FOOBAR_COMPLETION_PREREQUISITES] },
 			100,
 			() => "cert-a",
 		);
 
-		expect(result).toMatchObject({ completedAt: null, certificateId: null });
-		expect(result.progress.all_achievements).toBe(false);
-		expect(await getFoobarCertificate(db, "cert-a")).toBeNull();
+		expect(result.progress.completed).toContain("completed");
+		expect(result.progress.all_achievements).toBe(true);
+		expect(result).toMatchObject({ completedAt: 100, certificateId: "cert-a" });
+		expect(await getFoobarCertificate(db, "cert-a")).not.toBeNull();
 	});
 
 	test("dates a finish from the last required discovery, never the future", async () => {
@@ -169,14 +170,14 @@ describe("Foobar cloud progress data", () => {
 		expect(future.completedAt).toBe(100);
 	});
 
-	test("leaves finishes from before the final puzzle off the Finishers list", async () => {
+	test("counts every finished save in the Finishers list, without ranks", async () => {
 		await addUser("a", "Ada");
 		await addUser("b", "Bea");
 		await db.insert(schema.foobarProgress).values({
 			userId: "a",
 			progressJson: JSON.stringify({
 				...initialFoobarData,
-				completed: [...FOOBAR_PUZZLE_PREREQUISITES],
+				completed: [...FOOBAR_COMPLETION_PREREQUISITES],
 			}),
 			completedAt: 50,
 			certificateId: "cert-legacy",
@@ -195,8 +196,11 @@ describe("Foobar cloud progress data", () => {
 		await setFoobarPublicProfile(db, "b", true);
 
 		expect(await getFoobarCommunity(db)).toEqual({
-			finisherCount: 1,
-			leaderboard: [{ name: "Bea", completedAt: 200, certificateId: "cert-b" }],
+			finisherCount: 2,
+			leaderboard: [
+				{ name: "Ada", completedAt: 50, certificateId: "cert-legacy" },
+				{ name: "Bea", completedAt: 200, certificateId: "cert-b" },
+			],
 		});
 		expect(await getFoobarCertificate(db, "cert-legacy")).toMatchObject({ completedAt: 50 });
 	});

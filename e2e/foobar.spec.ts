@@ -1,7 +1,7 @@
 import { expect, test, type Page } from "@playwright/test";
 
 import {
-	FOOBAR_PUZZLE_PREREQUISITES,
+	FOOBAR_COMPLETION_PREREQUISITES,
 	FOOBAR_REQUIRED_ACHIEVEMENTS,
 } from "../src/lib/domains/foobar/catalog";
 import { getFoobarRewardPath } from "../src/lib/domains/foobar/codes";
@@ -252,43 +252,27 @@ test("labels bonus achievements and laptop-only clues", async ({ page }) => {
 	await expect(consoleEntry.getByText("laptop", { exact: true })).toBeVisible();
 });
 
-test("reveals tier words and holds the final address until every tier is done", async ({
-	page,
-}) => {
+test("awards completion as soon as the last prerequisite is found", async ({ page }) => {
 	await seedProgress(page, {
 		...legacyProgress,
-		completed: FOOBAR_PUZZLE_PREREQUISITES.filter((achievement) => achievement !== "og-qr"),
+		completed: FOOBAR_COMPLETION_PREREQUISITES.filter((achievement) => achievement !== "og-qr"),
 	});
-	await page.goto("/foobar");
+	await page.goto(getFoobarRewardPath("og-qr"));
 
-	await expect(page.locator('[data-foobar-tier-word="discovery"]')).toHaveText("draco");
-	await expect(page.locator('[data-foobar-tier-word="protocol"]')).toHaveText("titillandus");
-	await expect(page.getByLabel("Tier words so far: draco, dormiens, titillandus")).toBeVisible();
-	await expect(page.locator('[data-foobar-tier-word="archaeology"]')).toHaveCount(0);
-
-	await page.goto(getFoobarRewardPath("completed"));
+	await expect.poll(() => hasPersistedAchievement(page, "completed")).toBe(true);
 	await expect(
-		page.getByRole("status").filter({ hasText: "Finish every tier first." }),
-	).toBeVisible();
-	await expect(page.getByTestId("foobar-achievement-reveal")).toHaveCount(0);
-	await expect(
-		page.getByText(`${FOOBAR_PUZZLE_PREREQUISITES.length - 1} of 24 weird things found.`, {
+		page.getByText(`${FOOBAR_COMPLETION_PREREQUISITES.length + 1} of 24 weird things found.`, {
 			exact: true,
 		}),
 	).toBeVisible();
-});
+	await expect(page.locator("[data-foobar-tier-word]")).toHaveCount(0);
+	const reveal = page.getByTestId("foobar-achievement-reveal");
+	await expect(reveal).toContainText("Card Trick");
+	await page.getByRole("button", { name: "Dismiss Card Trick achievement notification" }).click();
+	await expect(reveal).toContainText("Foo Bar None");
 
-test("awards the final puzzle once every tier is done", async ({ page }) => {
-	await seedProgress(page, { ...legacyProgress, completed: [...FOOBAR_PUZZLE_PREREQUISITES] });
-	await page.goto(getFoobarRewardPath("completed"));
-
-	await expect(page.getByTestId("foobar-achievement-reveal")).toContainText("Foo Bar None");
-	await expect(
-		page.getByText(`${FOOBAR_PUZZLE_PREREQUISITES.length + 1} of 24 weird things found.`, {
-			exact: true,
-		}),
-	).toBeVisible();
-	await expect(page.getByText("Finish every tier first.")).toHaveCount(0);
+	const oldFinalAddress = await page.request.get("/foobar/draco-dormiens-nunquam-titillandus");
+	expect(oldFinalAddress.status()).toBe(404);
 });
 
 test("develops hint 4 without exposing its text", async ({ page }) => {
@@ -507,7 +491,6 @@ test.describe("cloud save with the shared e2e user", () => {
 			page.getByText(`${FOOBAR_REQUIRED_ACHIEVEMENTS.length - 1} gold`, { exact: true }),
 		).toBeVisible();
 		await expect(page.getByText("1 silver", { exact: true })).toBeVisible();
-		await expect(page.locator('[data-foobar-tier-word="protocol"]')).toHaveText("titillandus");
 		await expect(page.locator("html")).toHaveAttribute("data-foobar-karma", "");
 		const card = await page.request.get(
 			`${new URL(page.url()).pathname.replace("/foobar/", "/api/foobar/")}/og.png`,

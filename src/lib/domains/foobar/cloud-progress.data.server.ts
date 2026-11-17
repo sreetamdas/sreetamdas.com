@@ -4,8 +4,7 @@
  *
  * completed_at is set once, on the first save that finishes the hunt, from when
  * the player actually finished (the latest required completion clue, never in
- * the future). The Finishers list only counts saves that include the final
- * puzzle, so runs finished before it existed drop off until they solve it.
+ * the future). The Finishers list counts every finished save, without ranks.
  */
 import type { SQLiteAsyncDatabase } from "drizzle-orm/sqlite-core";
 
@@ -225,14 +224,9 @@ function getFoobarFinishTime(progress: FoobarDataType, now: number): number {
 	return seenAt.length === 0 ? now : Math.min(now, Math.max(...seenAt));
 }
 
-const solvedFinalPuzzle = sql`exists (select 1 from json_each(${foobarProgress.progressJson}, '$.completed') where json_each.value = 'completed')`;
-
 export async function getFoobarCommunity(db: FoobarProgressDb): Promise<FoobarCommunity> {
 	const [countRows, leaderboardRows] = await Promise.all([
-		db
-			.select({ value: count() })
-			.from(foobarProgress)
-			.where(and(isNotNull(foobarProgress.completedAt), solvedFinalPuzzle)),
+		db.select({ value: count() }).from(foobarProgress).where(isNotNull(foobarProgress.completedAt)),
 		db
 			.select({
 				name: authUser.name,
@@ -246,7 +240,6 @@ export async function getFoobarCommunity(db: FoobarProgressDb): Promise<FoobarCo
 					eq(foobarProgress.publicProfile, true),
 					isNotNull(foobarProgress.completedAt),
 					isNotNull(foobarProgress.certificateId),
-					solvedFinalPuzzle,
 				),
 			)
 			.orderBy(asc(foobarProgress.completedAt))

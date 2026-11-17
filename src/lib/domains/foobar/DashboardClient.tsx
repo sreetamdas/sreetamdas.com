@@ -21,7 +21,6 @@ import {
 	FOOBAR_ACHIEVEMENT_ORDER,
 	FOOBAR_ACHIEVEMENTS,
 	getFoobarStars,
-	hasFinishedFoobarPuzzleTiers,
 	isFoobarAchievement,
 	type FoobarAchievement,
 } from "@/lib/domains/foobar/catalog";
@@ -30,7 +29,7 @@ import { getFoobarRewardPath } from "@/lib/domains/foobar/codes";
 import { EntryArticle } from "@/lib/domains/foobar/EntryArticle";
 import { FieldNotes } from "@/lib/domains/foobar/FieldNotes";
 import { FOOBAR_FLAGS } from "@/lib/domains/foobar/flags";
-import { FoobarMountainArt, FoobarTierWords } from "@/lib/domains/foobar/MountainArt";
+import { FoobarMountainArt } from "@/lib/domains/foobar/MountainArt";
 import { useSharedHunterPresence } from "@/lib/domains/foobar/sharedHunterPresence";
 import { type FoobarSchrodingerProps, initialFoobarData } from "@/lib/domains/foobar/store";
 import { useFoobarKarma } from "@/lib/domains/foobar/useFoobarKarma";
@@ -40,7 +39,7 @@ import { useHasMounted } from "@/lib/helpers/hooks";
 const LINK_CLASS =
 	"inline-flex min-h-11 items-center text-karma-green hover:[text-shadow:0_0_6px_currentColor] focus-visible:outline-2 focus-visible:outline-karma-yellow";
 
-export const FoobarDashboard = ({ notice }: { notice?: string }) => {
+export const FoobarDashboard = () => {
 	useFoobarKarma();
 	const trackEvent = useTrackEvent();
 	const { foobar_data, setFoobarData, completeFoobarFlag, recordFoobarClue } = useGlobalStore(
@@ -152,7 +151,6 @@ export const FoobarDashboard = ({ notice }: { notice?: string }) => {
 						</span>
 					</p>
 				</div>
-				<FoobarTierWords className="pl-[2ch]" completed={completed} />
 			</header>
 			<p className="mt-6 max-w-[62ch] text-pretty">
 				There are strange things hiding around this website. Some are obvious. Some are decidedly
@@ -161,11 +159,6 @@ export const FoobarDashboard = ({ notice }: { notice?: string }) => {
 			<p className="mt-2 text-karma-comment">
 				Best on a laptop. Some clues need real browser tools.
 			</p>
-			{notice ? (
-				<output className="mt-6 block border-l-2 border-karma-yellow pl-3 text-foreground">
-					{notice}
-				</output>
-			) : null}
 			<div className="mt-6 flex flex-wrap items-center gap-x-[1ch]">
 				<p>
 					<strong className="font-normal text-foreground">{completed.length}</strong> of{" "}
@@ -225,11 +218,7 @@ export const FoobarDashboard = ({ notice }: { notice?: string }) => {
 					/>
 				) : null}
 			</section>
-			<FieldNotes
-				clues_seen={clues_seen}
-				completed={completed}
-				onSelectAchievement={handleSelectAchievement}
-			/>
+			<FieldNotes clues_seen={clues_seen} onSelectAchievement={handleSelectAchievement} />
 			<Basecamp handleClearFoobarData={handleClearFoobarData} onUserNameChange={setCloudName} />
 			<p aria-hidden="true" data-foobar-print-clue>
 				{`The paper remembers a path the screen will not: ${getFoobarRewardPath("print-preview")}`}
@@ -382,11 +371,9 @@ export const FoobarSchrodinger = ({ completed_page }: FoobarSchrodingerProps) =>
 	);
 	const has_mounted = useHasMounted();
 	const trackEvent = useTrackEvent();
-	const isEarlyFinalVisit =
-		completed_page === FOOBAR_FLAGS.completed.slug && !hasFinishedFoobarPuzzleTiers(completed);
 
 	useEffect(() => {
-		if (unlocked && completed_page && !isEarlyFinalVisit) {
+		if (unlocked && completed_page) {
 			const completed_flag = Object.values(FOOBAR_FLAGS).find((flag_props) => {
 				if ("slug" in flag_props) {
 					return flag_props.slug === completed_page;
@@ -403,18 +390,10 @@ export const FoobarSchrodinger = ({ completed_page }: FoobarSchrodingerProps) =>
 				completeFoobarFlag(completed_flag);
 			}
 		}
-	}, [completeFoobarFlag, completed, completed_page, isEarlyFinalVisit, trackEvent, unlocked]);
+	}, [completeFoobarFlag, completed, completed_page, trackEvent, unlocked]);
 
 	if (!has_mounted) return null;
 	if (!unlocked) return <FoobarButLocked />;
 
-	return (
-		<FoobarDashboard
-			notice={
-				isEarlyFinalVisit
-					? "The words are right, but the dragon isn't asleep yet. Finish every tier first."
-					: undefined
-			}
-		/>
-	);
+	return <FoobarDashboard />;
 };

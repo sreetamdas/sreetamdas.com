@@ -22,7 +22,7 @@ import {
 import { fetchFoobarCertificateServerFn } from "@/lib/domains/foobar/certificate.server";
 import { CertificateShare } from "@/lib/domains/foobar/CertificateShare";
 import { FOOBAR_GLOW_CLASS } from "@/lib/domains/foobar/karma";
-import { FoobarMountainArt, FoobarTierWords } from "@/lib/domains/foobar/MountainArt";
+import { FoobarMountainArt } from "@/lib/domains/foobar/MountainArt";
 import { FoobarNotFoundAward } from "@/lib/domains/foobar/Pixel";
 import { useFoobarKarma } from "@/lib/domains/foobar/useFoobarKarma";
 import { absoluteUrl } from "@/lib/seo";
@@ -73,7 +73,6 @@ function FoobarCertificatePage() {
 			<p className="mt-3 max-w-[56ch] text-foreground">
 				mapped every hidden corner and completed the Foobar hunt.
 			</p>
-			<FoobarTierWords className="mt-3" completed={completed} />
 			<p className="mt-4">
 				<span className={`text-karma-yellow ${FOOBAR_GLOW_CLASS}`}>{completed.length}*</span>
 				<span className="text-karma-comment"> · </span>
