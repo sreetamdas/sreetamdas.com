@@ -415,7 +415,7 @@ export const FOOBAR_ACHIEVEMENTS = {
 			},
 			{
 				id: "campfire:hint:3",
-				text: "Keep Foobar unlocked while another person visits the site.",
+				text: "Keep Foobar unlocked while another hunter who has unlocked it too is on the site.",
 			},
 			{
 				id: "campfire:hint:4",
