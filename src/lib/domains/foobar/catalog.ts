@@ -515,6 +515,21 @@ export const FOOBAR_ACHIEVEMENTS = {
 			},
 		],
 	},
+	curl: {
+		title: "Curl Up and Dial",
+		tier: "protocol",
+		device: "laptop",
+		completion: { id: "curl:completed", note: "The short road answered in plain text." },
+		hints: [
+			{ id: "curl:hint:1", text: "Not every visitor brings a browser." },
+			{ id: "curl:hint:2", text: "The site's short links answer a terminal differently." },
+			{ id: "curl:hint:3", text: "Ask srtm.fyi for its front door with curl." },
+			{
+				id: "curl:hint:4",
+				text: "Run curl https://srtm.fyi and open the path printed on the card.",
+			},
+		],
+	},
 	completed: {
 		title: "Foo Bar None",
 		tier: "meta",
@@ -569,6 +584,7 @@ export const FOOBAR_TEASERS = {
 	"og-qr": "A social card contains more than a picture.",
 	"cookie-jar": "A sealed jar arrives with the response.",
 	"service-worker": "An invisible worker knows one private path.",
+	curl: "Not every visitor brings a browser.",
 	completed: "The summit lights itself when nothing else is left.",
 } satisfies Record<FoobarAchievement, string>;
 

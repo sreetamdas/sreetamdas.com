@@ -174,7 +174,7 @@ test("orients hunters and keeps one field entry open", async ({ page }) => {
 	await page.goto("/foobar");
 
 	await expect(page.getByRole("heading", { level: 1, name: "Foobar" })).toBeVisible();
-	await expect(page.getByText("2 of 24 weird things found.", { exact: true })).toBeVisible();
+	await expect(page.getByText("2 of 25 weird things found.", { exact: true })).toBeVisible();
 	await page.getByRole("button", { name: "Continue hunting" }).click();
 	await expect(
 		page.getByRole("button", { name: "Close field entry for Behind the Screens" }),
@@ -261,7 +261,7 @@ test("awards completion as soon as the last prerequisite is found", async ({ pag
 
 	await expect.poll(() => hasPersistedAchievement(page, "completed")).toBe(true);
 	await expect(
-		page.getByText(`${FOOBAR_COMPLETION_PREREQUISITES.length + 1} of 24 weird things found.`, {
+		page.getByText(`${FOOBAR_COMPLETION_PREREQUISITES.length + 1} of 25 weird things found.`, {
 			exact: true,
 		}),
 	).toBeVisible();
@@ -699,6 +699,16 @@ test("claims the well-known notice and announces it with its display title", asy
 	await expect(title).toHaveCount(1);
 	await expect(title).toHaveCSS("animation-name", "reveal-title");
 	await expect.poll(() => hasPersistedAchievement(page, "well-known")).toBe(true);
+});
+
+test("claims the curl reward page when unlocked", async ({ page }) => {
+	await seedProgress(page);
+	await page.goto(getFoobarRewardPath("curl"));
+
+	await expect.poll(() => hasPersistedAchievement(page, "curl")).toBe(true);
+	await expect(page.getByTestId("foobar-achievement-reveal")).toContainText(
+		"The short road answered in plain text.",
+	);
 });
 
 test("awards the offline achievement in place when the network drops", async ({ page }) => {
