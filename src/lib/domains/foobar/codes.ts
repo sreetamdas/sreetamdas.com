@@ -13,6 +13,7 @@ export const FOOBAR_REWARD_ADDRESSES = {
 	"og-qr": "sleight-of-hand",
 	"cookie-jar": "forty-thieves",
 	"service-worker": "works-from-home",
+	curl: "command-performance",
 	devtools: "x-ray-specs",
 	"tab-visibility": "peekaboo",
 	hack: "there-there",

@@ -139,7 +139,7 @@ describe("Foobar catalogue", () => {
 			if ("slug" in flag && flag.slug !== "/") slugs.push(flag.slug);
 		}
 
-		expect(slugs).toHaveLength(15);
+		expect(slugs).toHaveLength(16);
 		for (const slug of slugs) {
 			expect(slug).toMatch(/^[a-z]+(-[a-z]+)*$/);
 		}

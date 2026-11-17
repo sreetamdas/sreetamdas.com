@@ -23,6 +23,7 @@ import {
 	FaRobot,
 	FaRss,
 	FaSkull,
+	FaTerminal,
 } from "react-icons/fa";
 import { GiTeapot } from "react-icons/gi";
 import { IoIosRocket } from "react-icons/io";
@@ -120,6 +121,12 @@ export const FOOBAR_FLAGS = {
 		name: "service-worker",
 		slug: FOOBAR_REWARD_ADDRESSES["service-worker"],
 		icon: (props: IconBaseProps) => <FaRobot {...props} />,
+	},
+	curl: {
+		...FOOBAR_ACHIEVEMENTS.curl,
+		name: "curl",
+		slug: FOOBAR_REWARD_ADDRESSES.curl,
+		icon: (props: IconBaseProps) => <FaTerminal {...props} />,
 	},
 	devtools: {
 		...FOOBAR_ACHIEVEMENTS.devtools,
