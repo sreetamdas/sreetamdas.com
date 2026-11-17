@@ -4,6 +4,7 @@ Disallow: /foobar
 Disallow: /foobar/
 Disallow: /aoc
 Disallow: /aoc/
+Disallow: /api/coffee
 
 # The crawlers were here first: /foobar/disallowed
 
